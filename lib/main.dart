@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'package:saglamspot/core/util/app_theme.dart';
+import 'presentation/pages/main_pages/home_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -25,18 +26,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sağlam Spot',
-      theme: ThemeData(primarySwatch: Colors.brown),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
-        // Diğer sayfaları buraya ekleyin
         '/urunler': (context) => const PlaceholderPage('Ürünler'),
         '/sifir': (context) => const PlaceholderPage('Sıfır'),
         '/ikinciel': (context) => const PlaceholderPage('2. El'),
-        '/sss': (context) => const PlaceholderPage('SSS'),
         '/hakkinda': (context) => const PlaceholderPage('Hakkında'),
         '/ulasim': (context) => const PlaceholderPage('Ulaşım'),
         '/iletisim': (context) => const PlaceholderPage('İletişim'),
+        '/sss': (context) => const PlaceholderPage('SSS'),
       },
     );
   }
