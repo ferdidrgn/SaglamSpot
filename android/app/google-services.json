@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "46238966317",
+    "project_id": "gen-lang-client-0004103607",
+    "storage_bucket": "gen-lang-client-0004103607.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46238966317:android:0c5beb56dd776fa525cea4",
+        "android_client_info": {
+          "package_name": "com.ferdidrgn.saglamspot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADsj3JVxAE8ctwR_NpQHuMSAKKSKqQzUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
