@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final ScrollController scrollController = ScrollController();
 
     return SizedBox(
-      height: 370,
+      height: 390,
       child: Row(
         children: [
           // Sol Ok

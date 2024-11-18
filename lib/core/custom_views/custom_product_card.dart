@@ -18,94 +18,125 @@ class _ProductCardState extends State<ProductCard> {
     final product = widget.product;
 
     return SizedBox(
-      width: 350, // Yatay genişlik 300
+      width: 500, // Yatay genişlik 300
       child: Card(
-        elevation: 4,
+        elevation: 10,
         margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              product.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            // Görselleri gösteren alan
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    // Görsel tam ekran göstermek için
-                    showDialog(
-                      context: context,
-                      builder: (_) =>
-                          Dialog(
-                            child: Image.network(
-                              product.imageUrl[_currentImageIndex],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                    );
-                  },
-                  child: Image.network(
+        shadowColor: Colors.black,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              // Ürün Adı
+              Text(
+                product.name,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+
+              // Görsel ve Oklar
+              Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  Image.network(
                     product.imageUrl[_currentImageIndex],
                     fit: BoxFit.cover,
                     height: 280,
-                    width: 350,
+                    width: double.infinity,
                   ),
+                  // Oklar
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: _buildArrowButton(
+                      Icons.arrow_back,
+                      onPressed: () =>
+                          _changeImageIndex(-1, product.imageUrl.length),
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: _buildArrowButton(
+                      Icons.arrow_forward,
+                      onPressed: () =>
+                          _changeImageIndex(1, product.imageUrl.length),
+                    ),
+                  ),
+                  // İndikatör
+                  Positioned(
+                    bottom: 8,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                        product.imageUrl.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: CircleAvatar(
+                            radius: 4,
+                            backgroundColor: _currentImageIndex == index
+                                ? Colors.black
+                                : Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // Açıklama
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  product.desc,
+                  style: const TextStyle(fontSize: 14),
+                  maxLines: 2, // Maksimum 2 satır
+                  overflow: TextOverflow.ellipsis, // Üç nokta ekler
                 ),
-                // Sol Navigasyon
-                if (product.imageUrl.length > 1)
-                  Positioned(
-                    left: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        setState(() {
-                          _currentImageIndex = (_currentImageIndex -
-                              1 +
-                              product.imageUrl.length) %
-                              product.imageUrl.length;
-                        });
-                      },
-                    ),
+              ),
+
+              // Ürün Detayları
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    product.isSpotProduct ? "2. El Ürün" : "Sıfır Ürün",
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
-                // Sağ Navigasyon
-                if (product.imageUrl.length > 1)
-                  Positioned(
-                    right: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        setState(() {
-                          _currentImageIndex = (_currentImageIndex + 1) %
-                              product.imageUrl.length;
-                        });
-                      },
-                    ),
+                  Text(
+                    '${product.price} TL',
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
-              ],
-            ),
-            Text(product.desc,
-                style: const TextStyle(
-                    fontWeight: FontWeight.normal, fontSize: 17)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(product.isSpotProduct ? "2. El Ürün" : "Sıfır Ürün",
-                    style: customStyle()),
-                Text('${product.price} TL',
-                    style: customStyle()),
-              ],
-            )
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  customStyle() {
-    const TextStyle(
-        fontWeight: FontWeight.normal, fontSize: 17);
+  // Ok Butonları
+  Widget _buildArrowButton(IconData icon, {required VoidCallback onPressed}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        padding: const EdgeInsets.all(8),
+        backgroundColor: Colors.white.withOpacity(0.8),
+      ),
+      child: Icon(icon, color: Colors.black),
+    );
+  }
+
+  // Görsel İndeksi Değiştirme
+  void _changeImageIndex(int direction, int length) {
+    setState(() {
+      _currentImageIndex = (_currentImageIndex + direction + length) % length;
+    });
   }
 }

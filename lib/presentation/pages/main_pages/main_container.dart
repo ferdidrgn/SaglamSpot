@@ -16,7 +16,8 @@ class _MainContainerState extends State<MainContainer> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
-HomeScreen(),    NewProductsScreen(),
+    HomeScreen(),
+    NewProductsScreen(),
     SpotProductsScreen(),
     InfoScreen(),
     SSSScreen(),
