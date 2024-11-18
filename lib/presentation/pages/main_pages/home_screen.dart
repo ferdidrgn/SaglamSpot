@@ -51,11 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildSearchBar(),
                   const SizedBox(height: 32),
                   const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
-                  _buildHorizontalProductList(
+                  _buildHorizontalListWithArrows(
                       products: _products.where((p) => !p.isSold).toList()),
                   const SizedBox(height: 32),
-                  const CustomSectionTitle(title: '3 Ay İçinde Satılmış Ürünler'),
-                  _buildHorizontalProductList(
+                  const CustomSectionTitle(
+                      title: '3 Ay İçinde Satılmış Ürünler'),
+                  _buildHorizontalListWithArrows(
                       products: _products.where((p) => p.isSold).toList()),
                   const SizedBox(height: 24),
                 ],
@@ -79,21 +80,55 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Yatay Ürün Listesi
-  Widget _buildHorizontalProductList({required List<Product> products}) {
+  // Yatay Liste Ok İşaretleri ile
+  Widget _buildHorizontalListWithArrows({required List<Product> products}) {
+    final ScrollController scrollController = ScrollController();
+
     return SizedBox(
       height: 250,
-      child: products.isEmpty
-          ? const Center(child: Text('Ürün bulunamadı.'))
-          : ListView.separated(
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              _scrollList(scrollController, -1);
+            },
+          ),
+
+          // Liste
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
               scrollDirection: Axis.horizontal,
               itemCount: products.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              // Kartlar arası boşluk
               itemBuilder: (context, index) {
-                return ProductCard(product: products[index]);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16), // Kart aralığı
+                  child: ProductCard(product: products[index]),
+                );
               },
             ),
+          ),
+
+          IconButton(
+            icon: const Icon(Icons.arrow_forward_ios),
+            onPressed: () {
+              _scrollList(scrollController, 1);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Listeyi Kaydırma Fonksiyonu
+  void _scrollList(ScrollController controller, int direction) {
+    const double itemWidth = 200; // Kart genişliği (kart + padding)
+    final double offset = direction * itemWidth;
+    controller.animateTo(
+      controller.offset + offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 }
