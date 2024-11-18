@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Product {
   final String id;
   final String name;
+  final String soldDate;
   final String description;
   final double price;
   final String imageUrl;
-  final DateTime createdAt;
   final bool isSold;
 
   Product({
@@ -14,9 +14,9 @@ class Product {
     required this.name,
     required this.description,
     required this.price,
+    required this.soldDate,
     required this.imageUrl,
-    required this.createdAt,
-    this.isSold = false,
+  required this.isSold,
   });
 
   // Firestore'dan veri çekerken kullanılır
@@ -25,10 +25,10 @@ class Product {
     return Product(
       id: doc.id,
       name: data['name'] ?? '',
+      soldDate: data['soldDate'] ?? '',
       description: data['description'] ?? '',
       price: (data['price'] as num).toDouble(),
       imageUrl: data['imageUrl'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
       isSold: data['isSold'] ?? false,
     );
   }
@@ -37,10 +37,10 @@ class Product {
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
+      'soldDate': soldDate,
       'description': description,
       'price': price,
       'imageUrl': imageUrl,
-      'createdAt': Timestamp.fromDate(createdAt),
       'isSold': isSold,
     };
   }
