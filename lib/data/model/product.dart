@@ -1,35 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
-  final String id;
   final String name;
   final String soldDate;
-  final String description;
   final double price;
-  final String imageUrl;
+  final List<String> imageUrl;
   final bool isSold;
 
   Product({
-    required this.id,
     required this.name,
-    required this.description,
     required this.price,
     required this.soldDate,
+    required this.isSold,
     required this.imageUrl,
-  required this.isSold,
   });
 
   // Firestore'dan veri çekerken kullanılır
   factory Product.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Product(
-      id: doc.id,
       name: data['name'] ?? '',
       soldDate: data['soldDate'] ?? '',
-      description: data['description'] ?? '',
-      price: (data['price'] as num).toDouble(),
-      imageUrl: data['imageUrl'] ?? '',
       isSold: data['isSold'] ?? false,
+      price: (data['price'] as num).toDouble(),
+      imageUrl: (data['imageUrl'] as List<dynamic>)
+          .map((item) => item as String)
+          .toList(),
     );
   }
 
@@ -38,10 +34,9 @@ class Product {
     return {
       'name': name,
       'soldDate': soldDate,
-      'description': description,
+      'isSold': isSold,
       'price': price,
       'imageUrl': imageUrl,
-      'isSold': isSold,
     };
   }
 }

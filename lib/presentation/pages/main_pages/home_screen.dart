@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/data/model/product.dart';
-import '../../../data/repository/product_service.dart';
+import 'package:saglamspot/data/repository/product_service.dart';
+import '../../../core/custom_views/custom_product_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,78 +12,98 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ProductService _productService = ProductService();
-  late Future<List<Product>> _productsFuture;
+  List<Product> _products = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _productsFuture = _productService.fetchProducts();
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      final products = await _productService.fetchProducts();
+      setState(() {
+        _products = products;
+        _isLoading = false;
+      });
+    } catch (e) {
+      // Hata durumunda bir işlem yapabilirsiniz.
+      setState(() {
+        _isLoading = false;
+      });
+      print('Ürünler yüklenirken hata: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mobilya Dükkânı')),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Ürün ara...',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                prefixIcon: const Icon(Icons.search),
-              ),
-            ),
-          ),
-
-          // Mevcut Ürünler
-          FutureBuilder<List<Product>>(
-            future: _productsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Hata: ${snapshot.error}');
-              }
-              final products = snapshot.data ?? [];
-              return Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 3 / 4,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Ürün ara...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  itemCount: products.length,
+                  prefixIcon: const Icon(Icons.search),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Yeni Gelen Ürünler
+              const Text(
+                'Yeni Gelen Ürünler',
+                style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _products.length,
                   itemBuilder: (context, index) {
-                    final product = products[index];
-                    return Card(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(product.imageUrl, fit: BoxFit.cover),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(product.name,
-                                style: const TextStyle(fontSize: 16)),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text('${product.price} TL',
-                                style: const TextStyle(fontSize: 14)),
-                          ),
-                        ],
-                      ),
-                    );
+                    return ProductCard(product: _products[index]);
                   },
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 16),
+
+              // Satılmış Ürünler
+              const Text(
+                '3 Ay İçinde Satılmış Ürünler',
+                style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _products
+                      .where((p) => p.isSold)
+                      .toList()
+                      .length,
+                  itemBuilder: (context, index) {
+                    final soldProducts =
+                    _products.where((p) => p.isSold).toList();
+                    return ProductCard(product: soldProducts[index]);
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
