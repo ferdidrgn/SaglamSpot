@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saglamspot/core/custom_views/custom_title.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
 import '../../../core/custom_views/custom_product_card.dart';
@@ -29,11 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      // Hata durumunda bir işlem yapabilirsiniz.
       setState(() {
         _isLoading = false;
       });
-      print('Ürünler yüklenirken hata: $e');
+      debugPrint('Ürünler yüklenirken hata: $e');
     }
   }
 
@@ -43,68 +43,57 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search Bar
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Ürün ara...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: const Icon(Icons.search),
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  _buildSearchBar(),
+                  const SizedBox(height: 32),
+                  const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
+                  _buildHorizontalProductList(
+                      products: _products.where((p) => !p.isSold).toList()),
+                  const SizedBox(height: 32),
+                  const CustomSectionTitle(title: '3 Ay İçinde Satılmış Ürünler'),
+                  _buildHorizontalProductList(
+                      products: _products.where((p) => p.isSold).toList()),
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 16),
+            ),
+    );
+  }
 
-              // Yeni Gelen Ürünler
-              const Text(
-                'Yeni Gelen Ürünler',
-                style:
-                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _products.length,
-                  itemBuilder: (context, index) {
-                    return ProductCard(product: _products[index]);
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Satılmış Ürünler
-              const Text(
-                '3 Ay İçinde Satılmış Ürünler',
-                style:
-                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _products
-                      .where((p) => p.isSold)
-                      .toList()
-                      .length,
-                  itemBuilder: (context, index) {
-                    final soldProducts =
-                    _products.where((p) => p.isSold).toList();
-                    return ProductCard(product: soldProducts[index]);
-                  },
-                ),
-              ),
-            ],
-          ),
+  // Search Bar
+  Widget _buildSearchBar() {
+    return TextField(
+      decoration: InputDecoration(
+        hintText: 'Ürün ara...',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
+        prefixIcon: const Icon(Icons.search),
+        filled: true,
+        fillColor: Colors.grey[200],
       ),
+    );
+  }
+
+  // Yatay Ürün Listesi
+  Widget _buildHorizontalProductList({required List<Product> products}) {
+    return SizedBox(
+      height: 250,
+      child: products.isEmpty
+          ? const Center(child: Text('Ürün bulunamadı.'))
+          : ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: products.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              // Kartlar arası boşluk
+              itemBuilder: (context, index) {
+                return ProductCard(product: products[index]);
+              },
+            ),
     );
   }
 }
