@@ -18,7 +18,7 @@ class _ProductCardState extends State<ProductCard> {
     final product = widget.product;
 
     return SizedBox(
-      width: 500, // Yatay genişlik 300
+      width: 500, // Yatay genişlik
       child: Card(
         elevation: 10,
         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -31,19 +31,23 @@ class _ProductCardState extends State<ProductCard> {
               // Ürün Adı
               Text(
                 product.name,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
               // Görsel ve Oklar
               Stack(
                 alignment: Alignment.topCenter,
                 children: [
-                  Image.network(
-                    product.imageUrl[_currentImageIndex],
-                    fit: BoxFit.cover,
-                    height: 280,
-                    width: double.infinity,
+                  GestureDetector(
+                    onTap: () {
+                      _showFullScreenImage(context, product.imageUrl[_currentImageIndex]);
+                    },
+                    child: Image.network(
+                      product.imageUrl[_currentImageIndex],
+                      fit: BoxFit.cover,
+                      height: 280,
+                      width: double.infinity,
+                    ),
                   ),
                   // Oklar
                   Positioned(
@@ -71,7 +75,7 @@ class _ProductCardState extends State<ProductCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(
                         product.imageUrl.length,
-                        (index) => Padding(
+                            (index) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: CircleAvatar(
                             radius: 4,
@@ -114,6 +118,25 @@ class _ProductCardState extends State<ProductCard> {
                 ],
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Görsel Tam Ekran Fonksiyonu
+  void _showFullScreenImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.black,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context); // Tam ekran modundan çıkış
+          },
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.contain,
           ),
         ),
       ),
