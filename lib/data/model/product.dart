@@ -2,16 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
   final String name;
-  final String soldDate;
+  final String desc;
+  final String category;
   final double price;
   final List<String> imageUrl;
   final bool isSold;
+  final bool isSpotProduct;
 
   Product({
     required this.name,
+    required this.desc,
+    required this.category,
     required this.price,
-    required this.soldDate,
     required this.isSold,
+    required this.isSpotProduct,
     required this.imageUrl,
   });
 
@@ -20,8 +24,10 @@ class Product {
     final data = doc.data() as Map<String, dynamic>;
     return Product(
       name: data['name'] ?? '',
-      soldDate: data['soldDate'] ?? '',
+      category: data['category'] ?? '',
+      desc: data['desc'] ?? '',
       isSold: data['isSold'] ?? false,
+      isSpotProduct: data['isSpotProduct'] ?? false,
       price: (data['price'] as num).toDouble(),
       imageUrl: (data['imageUrl'] as List<dynamic>)
           .map((item) => item as String)
@@ -33,8 +39,10 @@ class Product {
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
-      'soldDate': soldDate,
+      'desc': desc,
+      'category':category,
       'isSold': isSold,
+      'isSpotProduct': isSpotProduct,
       'price': price,
       'imageUrl': imageUrl,
     };
