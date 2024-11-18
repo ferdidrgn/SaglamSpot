@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
+  final String id;
+  final String createdAt;
+  final String updatedAt;
+  final String soldAt;
   final String name;
   final String desc;
   final String category;
@@ -10,6 +14,10 @@ class Product {
   final bool isSpotProduct;
 
   Product({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.soldAt,
     required this.name,
     required this.desc,
     required this.category,
@@ -23,6 +31,10 @@ class Product {
   factory Product.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Product(
+      id: data['_id'] ?? '',
+      createdAt: data['_createdAt'] ?? '',
+      updatedAt: data['updatedAt'] ?? '',
+      soldAt: data['_soldAt'] ?? '',
       name: data['name'] ?? '',
       category: data['category'] ?? '',
       desc: data['desc'] ?? '',
@@ -38,9 +50,13 @@ class Product {
   // Firestore'a veri gönderirken kullanılır
   Map<String, dynamic> toFirestore() {
     return {
+      'id': id,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'soldAt': soldAt,
       'name': name,
       'desc': desc,
-      'category':category,
+      'category': category,
       'isSold': isSold,
       'isSpotProduct': isSpotProduct,
       'price': price,
