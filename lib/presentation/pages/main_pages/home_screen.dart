@@ -43,29 +43,28 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-                  _buildSearchBar(),
-                  const SizedBox(height: 32),
-                  const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
-                  _buildHorizontalListWithArrows(
-                      products: _products.where((p) => !p.isSold).toList()),
-                  const SizedBox(height: 32),
-                  const CustomSectionTitle(
-                      title: '3 Ay İçinde Satılmış Ürünler'),
-                  _buildHorizontalListWithArrows(
-                      products: _products.where((p) => p.isSold).toList()),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 50),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 24),
+            _buildSearchBar(),
+            const SizedBox(height: 32),
+            const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
+            _buildHorizontalListWithArrows(
+                products: _products.where((p) => !p.isSold).toList()),
+            const SizedBox(height: 32),
+            const CustomSectionTitle(
+                title: '3 Ay İçinde Satılmış Ürünler'),
+            _buildHorizontalListWithArrows(
+                products: _products.where((p) => p.isSold).toList()),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
     );
   }
 
-  // Search Bar
   Widget _buildSearchBar() {
     return TextField(
       decoration: InputDecoration(
@@ -80,22 +79,23 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Yatay Liste Ok İşaretleri ile
   Widget _buildHorizontalListWithArrows({required List<Product> products}) {
     final ScrollController scrollController = ScrollController();
 
     return SizedBox(
-      height: 250,
+      height: 300,
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              _scrollList(scrollController, -1);
-            },
+          // Sol Ok
+          Align(
+            alignment: Alignment.center,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                _scrollList(scrollController, -1);
+              },
+            ),
           ),
-
-          // Liste
           Expanded(
             child: ListView.builder(
               controller: scrollController,
@@ -103,27 +103,29 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: products.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.only(right: 16), // Kart aralığı
+                  padding: const EdgeInsets.only(right: 16),
                   child: ProductCard(product: products[index]),
                 );
               },
             ),
           ),
-
-          IconButton(
-            icon: const Icon(Icons.arrow_forward_ios),
-            onPressed: () {
-              _scrollList(scrollController, 1);
-            },
+          // Sağ Ok
+          Align(
+            alignment: Alignment.center,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_forward_ios),
+              onPressed: () {
+                _scrollList(scrollController, 1);
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Listeyi Kaydırma Fonksiyonu
   void _scrollList(ScrollController controller, int direction) {
-    const double itemWidth = 200; // Kart genişliği (kart + padding)
+    const double itemWidth = 300; // Kart genişliği
     final double offset = direction * itemWidth;
     controller.animateTo(
       controller.offset + offset,
