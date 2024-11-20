@@ -91,3 +91,4 @@ tmp/
 # Temporary as codelabs used to be a submodule
 examples/codelabs
 lib/web_config.dart
+lib/firebase_options.dart
