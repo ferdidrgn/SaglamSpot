@@ -50,10 +50,10 @@ class Product {
   // Firestore'a veri gönderirken kullanılır
   Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'soldAt': soldAt,
+      '_id': id,
+      '_createdAt': createdAt,
+      '_updatedAt': updatedAt,
+      '_soldAt': soldAt,
       'name': name,
       'desc': desc,
       'category': category,

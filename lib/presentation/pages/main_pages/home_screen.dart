@@ -3,6 +3,8 @@ import 'package:saglamspot/core/custom_views/custom_title.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
 import '../../../core/custom_views/custom_product_card.dart';
+import '../../../core/custom_views/custom_search.dart';
+import '../search_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,10 +32,16 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      debugPrint('Ürünler yüklenirken hata: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+        // Hata durumunda Snackbar göster
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ürünler yüklenirken hata oluştu: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -43,45 +51,37 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 50),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 24),
-            _buildSearchBar(),
-            const SizedBox(height: 32),
-            const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
-            _buildHorizontalListWithArrows(
-                products: _products.where((p) => !p.isSold).toList()),
-            const SizedBox(height: 32),
-            const CustomSectionTitle(
-                title: '3 Ay İçinde Satılmış Ürünler'),
-            _buildHorizontalListWithArrows(
-                products: _products.where((p) => p.isSold).toList()),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  CustomSearchBar(onSearchTap: _navigateToSearch),
+                  const SizedBox(height: 32),
+                  const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
+                  _buildHorizontalListWithArrows(
+                      products: _products.where((p) => !p.isSold).toList()),
+                  const SizedBox(height: 32),
+                  const CustomSectionTitle(
+                      title: 'Satılmış Ürünler (3 Ay İçinde)'),
+                  _buildHorizontalListWithArrows(
+                      products: _products.where((p) => p.isSold).toList()),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
     );
   }
 
-  Widget _buildSearchBar() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Ürün ara...',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        prefixIcon: const Icon(Icons.search),
-        filled: true,
-        fillColor: Colors.grey[200],
-      ),
+  void _navigateToSearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SearchPage()),
     );
   }
 
   Widget _buildHorizontalListWithArrows({required List<Product> products}) {
     final ScrollController scrollController = ScrollController();
-
     return SizedBox(
       height: 390,
       child: Row(
