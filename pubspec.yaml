@@ -41,6 +41,7 @@ dependencies:
   firebase_storage: ^12.3.2
   image_picker: ^0.8.7+5 # Mobil cihazlarda kamera ve galeri erişimi için
   file_picker: ^5.2.6    # Web ortamında dosya seçimi için (opsiyonel, gelişmiş durumlarda kullanılabilir)
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

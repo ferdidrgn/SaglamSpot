@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:saglamspot/data/model/product.dart';
 
@@ -31,7 +32,8 @@ class _ProductCardState extends State<ProductCard> {
               // Ürün Adı
               Text(
                 product.name,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
               // Görsel ve Oklar
@@ -39,16 +41,20 @@ class _ProductCardState extends State<ProductCard> {
                 alignment: Alignment.topCenter,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      _showFullScreenImage(context, product.imageUrl[_currentImageIndex]);
-                    },
-                    child: Image.network(
-                      product.imageUrl[_currentImageIndex],
-                      fit: BoxFit.cover,
-                      height: 280,
-                      width: double.infinity,
-                    ),
-                  ),
+                      onTap: () {
+                        _showFullScreenImage(
+                            context, product.imageUrl[_currentImageIndex]);
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: product.imageUrl[_currentImageIndex],
+                        height: 280,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      )),
                   // Oklar
                   Positioned(
                     top: 8,
@@ -75,7 +81,7 @@ class _ProductCardState extends State<ProductCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(
                         product.imageUrl.length,
-                            (index) => Padding(
+                        (index) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: CircleAvatar(
                             radius: 4,
@@ -129,17 +135,18 @@ class _ProductCardState extends State<ProductCard> {
     showDialog(
       context: context,
       builder: (_) => Dialog(
-        backgroundColor: Colors.black,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pop(context); // Tam ekran modundan çıkış
-          },
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
+          backgroundColor: Colors.black,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context); // Tam ekran modundan çıkış
+            },
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              width: double.infinity * 0.5,
+              height: double.infinity * 0.5,
+              fit: BoxFit.cover,
+            ),
+          )),
     );
   }
 

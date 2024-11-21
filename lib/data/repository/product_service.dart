@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../../core/util/date_formatter.dart';
@@ -12,24 +13,27 @@ class ProductService {
   Future<List<Product>> fetchProducts() async {
     try {
       final querySnapshot = await _firestore.collection('Product').get();
-      return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+      return querySnapshot.docs
+          .map((doc) => Product.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Ürünler yüklenirken hata oluştu: $e');
     }
   }
 
-  /// Ürün Ekleme
-  Future<void> addProductWithImages(Product product, List<Uint8List> images) async {
+  // Ürün Ekleme
+  Future<void> addProductWithImages(
+      Product product, List<dynamic> images) async {
     try {
       // Görselleri Firebase'e yükle
       final imageUrls = await uploadProductImages(images);
 
       // Tarihleri ayarla
       final nowDateTime = DateFormatter.nowFormatDateTime();
-      final nowDate = DateFormatter.parseFormattedDateTime(nowDateTime, formatWithMonthName: false);
+      final nowDate = DateFormatter.parseFormattedDateTime(nowDateTime,
+          formatWithMonthName: false);
       final newProduct = Product(
         id: _firestore.collection('Product').doc().id,
-        // Otomatik ID oluşturma
         createdAt: nowDate['date'].toString() ?? '',
         updatedAt: nowDate['date'].toString() ?? '',
         soldAt: '',
@@ -43,28 +47,46 @@ class ProductService {
       );
 
       // Firestore'a kaydet
-      await _firestore.collection('Product').doc(newProduct.id).set(newProduct.toFirestore());
+      await _firestore
+          .collection('Product')
+          .doc(newProduct.id)
+          .set(newProduct.toFirestore());
     } catch (e) {
       throw Exception('Ürün eklenirken hata oluştu: $e');
     }
   }
 
   /// Görselleri Firebase Storage'a yükle
-  Future<List<String>> uploadProductImages(List<Uint8List> images) async {
+  Future<List<String>> uploadProductImages(List<dynamic> images) async {
     if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı.');
 
     List<String> downloadUrls = [];
     try {
       for (var image in images) {
-        final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-        final storageRef = _storage.ref().child('product_images/$fileName');
+        String fileName;
 
-        // Uint8List'i yükle
-        final uploadTask = await storageRef.putData(image);
+        if (image is File) {
+          fileName =
+              '${DateTime.now().millisecondsSinceEpoch}_${image.uri.pathSegments.last}';
+          final storageRef = _storage.ref().child('product_images/$fileName');
 
-        // Download URL'yi al ve listeye ekle
-        final downloadUrl = await uploadTask.ref.getDownloadURL();
-        downloadUrls.add(downloadUrl);
+          // File'i yükle
+          final uploadTask = await storageRef.putFile(image);
+
+          // Download URL'yi al ve listeye ekle
+          final downloadUrl = await uploadTask.ref.getDownloadURL();
+          downloadUrls.add(downloadUrl);
+        } else if (image is Uint8List) {
+          fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+          final storageRef = _storage.ref().child('product_images/$fileName');
+
+          // Uint8List'i yükle
+          final uploadTask = await storageRef.putData(image);
+
+          // Download URL'yi al ve listeye ekle
+          final downloadUrl = await uploadTask.ref.getDownloadURL();
+          downloadUrls.add(downloadUrl);
+        }
       }
       return downloadUrls;
     } catch (e) {

@@ -1,6 +1,5 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../core/custom_views/custom_image_selector.dart';
 import '../../data/model/product.dart';
 import '../../data/repository/product_service.dart';
@@ -20,7 +19,7 @@ class _AddProductPageState extends State<AddProductPage> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
 
-  List<Uint8List> _selectedImages = [];
+  final List<dynamic> _selectedImages = [];
   bool _isSold = false;
   String _productCondition = "Sıfır Ürün";
 
@@ -64,7 +63,8 @@ class _AddProductPageState extends State<AddProductPage> {
         _priceController.text.isEmpty ||
         _categoryController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
+        const SnackBar(
+            content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
       );
       return false;
     }
@@ -73,8 +73,14 @@ class _AddProductPageState extends State<AddProductPage> {
 
   void _pickImages() async {
     final images = await _imageSelector.pickImages();
+    if (images.length + _selectedImages.length > 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
+      );
+      return;
+    }
     setState(() {
-      _selectedImages = images; // Tüm seçilen görselleri ayarlıyoruz
+      _selectedImages.addAll(images); // Tüm seçilen görselleri ayarlıyoruz
     });
   }
 
@@ -114,12 +120,19 @@ class _AddProductPageState extends State<AddProductPage> {
                   itemCount: _selectedImages.length,
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Image.memory(
-                      _selectedImages[index],
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                    ),
+                    child: _selectedImages[index] is File
+                        ? Image.file(
+                            _selectedImages[index],
+                            height: 80,
+                            width: 80,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.memory(
+                            _selectedImages[index],
+                            height: 80,
+                            width: 80,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               ),
@@ -168,7 +181,8 @@ class _AddProductPageState extends State<AddProductPage> {
           const Text('Ürün 2. El mi?'),
           Checkbox(
             value: _productCondition == "2. El Ürün",
-            onChanged: (value) => setState(() => _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün"),
+            onChanged: (value) => setState(
+                () => _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün"),
           ),
         ],
       ),
