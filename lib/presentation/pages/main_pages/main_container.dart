@@ -15,6 +15,15 @@ class MainContainer extends StatefulWidget {
 class _MainContainerState extends State<MainContainer> {
   int _currentIndex = 0;
 
+  // Menü etiketlerini ve sayfalarını saklayan listeler
+  final List<String> _menuItems = [
+    'Anasayfa',
+    'Yeni Ürünler',
+    'Spot Ürünler',
+    'Bilgiler',
+    'SSS',
+  ];
+
   final List<Widget> _pages = const [
     HomeScreen(),
     NewProductsScreen(),
@@ -35,26 +44,30 @@ class _MainContainerState extends State<MainContainer> {
       appBar: AppBar(
         title: PreferredSize(
           preferredSize: const Size.fromHeight(50),
-          child: Row(
-            children: [
-              const Text(
-                'SAĞLAM SPOT',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.red),
-              ),
-              const Spacer(), // Boşluk bırak
-              _buildMenuItem(0, 'Anasayfa'),
-              const SizedBox(width: 16), // Menü elemanları arasında boşluk
-              _buildMenuItem(1, 'Yeni Ürünler'),
-              const SizedBox(width: 16),
-              _buildMenuItem(2, 'Spot Ürünler'),
-              const SizedBox(width: 16),
-              _buildMenuItem(3, 'Bilgiler'),
-              const SizedBox(width: 16),
-              _buildMenuItem(4, 'SSS'),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Row(
+                children: [
+                  const Text(
+                    'SAĞLAM SPOT',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.red),
+                  ),
+                  const Spacer(),
+                  // Menü öğelerini dinamik olarak oluştur
+                  ..._menuItems.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    String label = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _buildMenuItem(index, label),
+                    );
+                  }),
+                ],
+              );
+            },
           ),
         ),
       ),
