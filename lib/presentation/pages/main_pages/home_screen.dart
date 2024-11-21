@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
+              padding: const EdgeInsets.all(50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -66,7 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: 'Satılmış Ürünler (3 Ay İçinde)'),
                   _buildHorizontalListWithArrows(
                       products: _products.where((p) => p.isSold).toList()),
-                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -83,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHorizontalListWithArrows({required List<Product> products}) {
     final ScrollController scrollController = ScrollController();
     return SizedBox(
-      height: 390,
+      height: 405,
       child: Row(
         children: [
           // Sol Ok
@@ -102,8 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               itemCount: products.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 16),
+                return Container(
+                  padding: const EdgeInsets.only(right: 16, bottom: 16),
                   child: ProductCard(product: products[index]),
                 );
               },
