@@ -6,13 +6,13 @@ import '../model/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CollectionReference _firestore = FirebaseFirestore.instance.collection('Product');
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Ürünleri getirme
   Future<List<Product>> fetchProducts() async {
     try {
-      final querySnapshot = await _firestore.collection('Product').get();
+      final querySnapshot = await _firestore.get();
       return querySnapshot.docs
           .map((doc) => Product.fromFirestore(doc))
           .toList();
@@ -33,7 +33,7 @@ class ProductService {
       final nowDate = DateFormatter.parseFormattedDateTime(nowDateTime,
           formatWithMonthName: false);
       final newProduct = Product(
-        id: _firestore.collection('Product').doc().id,
+        id: _firestore.doc().id,
         createdAt: nowDate['date'].toString() ?? '',
         updatedAt: nowDate['date'].toString() ?? '',
         soldAt: '',
@@ -48,11 +48,36 @@ class ProductService {
 
       // Firestore'a kaydet
       await _firestore
-          .collection('Product')
           .doc(newProduct.id)
           .set(newProduct.toFirestore());
     } catch (e) {
       throw Exception('Ürün eklenirken hata oluştu: $e');
+    }
+  }
+
+  Future<List<Product>> fetchFilteredProducts({
+    String? condition,
+    double? minPrice,
+    double? maxPrice,
+  }) async {
+    Query query = _firestore;
+
+    try {
+      if (condition != null) {
+        query = query.where('isSpotProduct', isEqualTo: condition == 'İkinci El');
+      }
+      if (minPrice != null) {
+        query = query.where('price', isGreaterThanOrEqualTo: minPrice);
+      }
+      if (maxPrice != null) {
+        query = query.where('price', isLessThanOrEqualTo: maxPrice);
+      }
+
+      final snapshot = await query.get();
+      return snapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+    } catch (e) {
+      // Hata durumunda bir hata fırlat
+      throw Exception('Ürünler filtrelenirken hata oluştu: $e');
     }
   }
 

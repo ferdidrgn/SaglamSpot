@@ -55,13 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   CustomSearchBar(onSearchTap: _navigateToSearch),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 30),
                   const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
                   _buildHorizontalListWithArrows(
                       products: _products.where((p) => !p.isSold).toList()),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 30),
                   const CustomSectionTitle(
                       title: 'Satılmış Ürünler (3 Ay İçinde)'),
                   _buildHorizontalListWithArrows(
