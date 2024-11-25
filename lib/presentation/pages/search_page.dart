@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/core/custom_views/custom_search.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
-import '../../../core/custom_views/custom_product_card.dart'; // Ürün kartı bileşeni
+import '../../../core/custom_views/custom_product_card.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -13,15 +13,14 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final ProductService _productService = ProductService();
-  List<Product> products = [];
-  List<Product> _filteredProducts = [];
+  List<Product> _products = [];
   bool _isLoading = false;
 
   // Filtre değişkenleri
   String? _selectedCondition;
   double _minPrice = 0;
   double _maxPrice = 10000; // Varsayılan maksimum fiyat
-  List<String> conditions = ['Sıfır', 'İkinci El', 'Temizle'];
+  final List<String> _conditions = ['Sıfır', 'İkinci El', 'Temizle'];
 
   @override
   void initState() {
@@ -31,51 +30,35 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _fetchData() async {
     setState(() => _isLoading = true);
-
     try {
-      final fetchedProducts = await _productService.fetchFilteredProducts();
-      setState(() {
-        products = fetchedProducts;
-        _filteredProducts = fetchedProducts; // İlk başta tüm ürünleri göster
-      });
+      _products = await _productService.fetchFilteredProducts();
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Veriler getirilemedi: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _showErrorSnackbar('Veriler getirilemedi: $e');
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
   Future<void> _filterProducts() async {
-    setState(() => _isLoading = true); // Yükleme göstergesini aç
-
+    setState(() => _isLoading = true);
     try {
-      final filteredProducts = _selectedCondition == 'Temizle'
-          ? products
-          : await _productService.fetchFilteredProducts(
+      _products = await _productService.fetchFilteredProducts(
         condition: _selectedCondition,
         minPrice: _minPrice,
         maxPrice: _maxPrice,
       );
-
-      setState(() {
-        _filteredProducts = filteredProducts; // Filtrelenmiş ürünleri güncelle
-      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Filtreleme sırasında hata oluştu: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showErrorSnackbar('Filtreleme sırasında hata oluştu: $e');
     } finally {
-      setState(() => _isLoading = false); // Yükleme göstergesini kapat
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showErrorSnackbar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
     }
   }
 
@@ -86,41 +69,7 @@ class _SearchPageState extends State<SearchPage> {
         return AlertDialog(
           title: const Text('Filtrele'),
           content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DropdownButtonFormField<String>(
-                  value: _selectedCondition,
-                  hint: const Text('Ürün Durumu'),
-                  items: conditions.map((condition) {
-                    return DropdownMenuItem(
-                      value: condition,
-                      child: Text(condition),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCondition = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Minimum Fiyat'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    _minPrice = double.tryParse(value) ?? 0;
-                  },
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Maksimum Fiyat'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    _maxPrice = double.tryParse(value) ?? 10000;
-                  },
-                ),
-              ],
-            ),
+            child: _buildFilterDialogContent(),
           ),
           actions: [
             TextButton(
@@ -128,13 +77,11 @@ class _SearchPageState extends State<SearchPage> {
                 Navigator.of(context).pop(); // Dialog kapat
                 await _filterProducts(); // Ürünleri filtrele
               },
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue, // Buton arka plan rengi
+              style: TextButton.styleFrom(backgroundColor: Colors.blue),
+              child: Text(
+                'Uygula',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
-              child: Text('Uygula',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  )),
             ),
           ],
         );
@@ -142,12 +89,50 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  Widget _buildFilterDialogContent() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildConditionDropdown(),
+        const SizedBox(height: 20),
+        _buildPriceTextField('Minimum Fiyat', (value) {
+          _minPrice = double.tryParse(value) ?? 0;
+        }),
+        _buildPriceTextField('Maksimum Fiyat', (value) {
+          _maxPrice = double.tryParse(value) ?? 10000;
+        }),
+      ],
+    );
+  }
+
+  Widget _buildConditionDropdown() {
+    return DropdownButtonFormField<String>(
+      value: _selectedCondition,
+      hint: const Text('Ürün Durumu'),
+      items: _conditions.map((condition) {
+        return DropdownMenuItem(value: condition, child: Text(condition));
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedCondition = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildPriceTextField(String label, Function(String) onChanged) {
+    return TextField(
+      decoration: InputDecoration(labelText: label),
+      keyboardType: TextInputType.number,
+      onChanged: onChanged,
+    );
+  }
+
   void _onSearchChanged(String query) {
     setState(() {
-      _filteredProducts = products
-          .where((product) =>
-          product.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _products = _products.where((product) {
+        return product.name.toLowerCase().contains(query.toLowerCase());
+      }).toList();
     });
   }
 
@@ -163,68 +148,71 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      body: Padding(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomSearchBar(onSearchChanged: _onSearchChanged),
-            const SizedBox(height: 16),
-            if (_isLoading)
-              const Center(child: CircularProgressIndicator())
-            else
-              Expanded(
-                child: _buildProductScrollableSection(),
-              ),
+            _buildProductsByCategory(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProductScrollableSection() {
-    final ScrollController scrollController = ScrollController();
+  Widget _buildProductsByCategory() {
+    final soldProducts = _products.where((p) => p.isSold).toList();
+    final newProducts = _products.where((p) => !p.isSold && !p.isSpotProduct).toList();
+    final spotProducts = _products.where((p) => !p.isSold && p.isSpotProduct).toList();
+
+    return Column(
+      children: [
+        if (newProducts.isNotEmpty) _buildHorizontalListWithArrows('Sıfır Ürünler', newProducts),
+        if (spotProducts.isNotEmpty) _buildHorizontalListWithArrows('İkinci El Ürünler', spotProducts),
+        if (soldProducts.isNotEmpty) _buildHorizontalListWithArrows('Satılmış Ürünler', soldProducts),
+      ],
+    );
+  }
+
+  Widget _buildHorizontalListWithArrows(String title, List<Product> products) {
+    final scrollController = ScrollController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Ürünler',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
+        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(
-          height: 200,
+          height: 405,
           child: Row(
             children: [
-              // Sol Ok
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  _scrollList(scrollController, -1);
-                },
-              ),
+              _buildScrollButton(scrollController, -1),
               Expanded(
                 child: ListView.builder(
                   controller: scrollController,
                   scrollDirection: Axis.horizontal,
-                  itemCount: _filteredProducts.length,
+                  itemCount: products.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.only(right: 16, bottom: 16),
-                      child: ProductCard(product: _filteredProducts[index]),
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: ProductCard(product: products[index]),
                     );
                   },
                 ),
               ),
-              // Sağ Ok
-              IconButton(
-                icon: const Icon(Icons.arrow_forward_ios),
-                onPressed: () {
-                  _scrollList(scrollController, 1);
-                },
-              ),
+              _buildScrollButton(scrollController, 1),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildScrollButton(ScrollController controller, int direction) {
+    return IconButton(
+      icon: Icon(direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
+      onPressed: () => _scrollList(controller, direction),
     );
   }
 
