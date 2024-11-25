@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/custom_views/custom_search.dart';
+import 'package:saglamspot/core/custom_views/custom_title.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
 import '../../../core/custom_views/custom_product_card.dart';
@@ -33,8 +34,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() => _isLoading = true);
     try {
       _products = await _productService.fetchFilteredProducts();
-      _filteredProducts = List.from(
-          _products); // Başlangıçta tüm ürünler filtrelenmiş listeye eklenir
+      _filteredProducts = List.from(_products);
     } catch (e) {
       _showErrorSnackbar('Veriler getirilemedi: $e');
     } finally {
@@ -60,8 +60,7 @@ class _SearchPageState extends State<SearchPage> {
   void _showErrorSnackbar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: Colors.red),
-      );
+          SnackBar(content: Text(message), backgroundColor: Colors.red));
     }
   }
 
@@ -71,9 +70,7 @@ class _SearchPageState extends State<SearchPage> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Filtrele'),
-          content: SingleChildScrollView(
-            child: _buildFilterDialogContent(),
-          ),
+          content: SingleChildScrollView(child: _buildFilterDialogContent()),
           actions: [
             TextButton(
               onPressed: () async {
@@ -148,28 +145,24 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Arama', style: TextStyle(fontSize: 20)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: _showFilterDialog,
-          ),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomSearchBar(onSearchChanged: _onSearchChanged),
-                  _buildProductsByCategory(),
-                ],
-              ),
-            ),
-    );
+        appBar: AppBar(
+            title: const Text('Arama', style: TextStyle(fontSize: 20)),
+            actions: [
+              IconButton(
+                  icon: const Icon(Icons.filter_list),
+                  onPressed: _showFilterDialog)
+            ]),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(40),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomSearchBar(onSearchChanged: _onSearchChanged),
+                      _buildProductsByCategory()
+                    ]),
+              ));
   }
 
   Widget _buildProductsByCategory() {
@@ -186,7 +179,7 @@ class _SearchPageState extends State<SearchPage> {
         if (spotProducts.isNotEmpty)
           _buildHorizontalListWithArrows('İkinci El Ürünler', spotProducts),
         if (soldProducts.isNotEmpty)
-          _buildHorizontalListWithArrows('Satılmış Ürünler', soldProducts),
+          _buildHorizontalListWithArrows('Satılmış Ürünler', soldProducts)
       ],
     );
   }
@@ -196,8 +189,8 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 30),
+        CustomSectionTitle(title: title),
         SizedBox(
           height: 405,
           child: Row(
@@ -209,8 +202,8 @@ class _SearchPageState extends State<SearchPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: products.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
+                    return Container(
+                      padding: const EdgeInsets.only(right: 16, bottom: 16),
                       child: ProductCard(product: products[index]),
                     );
                   },

@@ -51,21 +51,16 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(50),
+              padding: const EdgeInsets.all(40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
                   CustomSearchBar(onSearchTap: _navigateToSearch),
-                  const SizedBox(height: 30),
-                  const CustomSectionTitle(title: 'Yeni Gelen Ürünler'),
+                  _buildHorizontalListWithArrows('Yeni Gelen Ürünler',
+                      _products.where((p) => !p.isSold).toList()),
                   _buildHorizontalListWithArrows(
-                      products: _products.where((p) => !p.isSold).toList()),
-                  const SizedBox(height: 30),
-                  const CustomSectionTitle(
-                      title: 'Satılmış Ürünler (3 Ay İçinde)'),
-                  _buildHorizontalListWithArrows(
-                      products: _products.where((p) => p.isSold).toList()),
+                      'Satılmış Ürünler (3 Ay İçinde)',
+                      _products.where((p) => p.isSold).toList()),
                 ],
               ),
             ),
@@ -79,47 +74,46 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHorizontalListWithArrows({required List<Product> products}) {
+  Widget _buildHorizontalListWithArrows(String title, List<Product> products) {
     final ScrollController scrollController = ScrollController();
-    return SizedBox(
-      height: 405,
-      child: Row(
-        children: [
-          // Sol Ok
-          Align(
-            alignment: Alignment.center,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                _scrollList(scrollController, -1);
-              },
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 30),
+        CustomSectionTitle(title: title),
+        SizedBox(
+          height: 405,
+          child: Row(
+            children: [
+              // Sol Ok
+              _buildScrollButton(scrollController, -1),
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: const EdgeInsets.only(right: 16, bottom: 16),
+                      child: ProductCard(product: products[index]),
+                    );
+                  },
+                ),
+              ),
+              // Sağ Ok
+              _buildScrollButton(scrollController, 1),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.only(right: 16, bottom: 16),
-                  child: ProductCard(product: products[index]),
-                );
-              },
-            ),
-          ),
-          // Sağ Ok
-          Align(
-            alignment: Alignment.center,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: () {
-                _scrollList(scrollController, 1);
-              },
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScrollButton(ScrollController controller, int direction) {
+    return IconButton(
+      icon: Icon(
+          direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
+      onPressed: () => _scrollList(controller, direction),
     );
   }
 
