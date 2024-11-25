@@ -14,6 +14,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final ProductService _productService = ProductService();
   List<Product> _products = [];
+  List<Product> _filteredProducts = []; // Filtrelenmiş ürünler için ayrı liste
   bool _isLoading = false;
 
   // Filtre değişkenleri
@@ -32,6 +33,8 @@ class _SearchPageState extends State<SearchPage> {
     setState(() => _isLoading = true);
     try {
       _products = await _productService.fetchFilteredProducts();
+      _filteredProducts = List.from(
+          _products); // Başlangıçta tüm ürünler filtrelenmiş listeye eklenir
     } catch (e) {
       _showErrorSnackbar('Veriler getirilemedi: $e');
     } finally {
@@ -42,7 +45,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> _filterProducts() async {
     setState(() => _isLoading = true);
     try {
-      _products = await _productService.fetchFilteredProducts(
+      _filteredProducts = await _productService.fetchFilteredProducts(
         condition: _selectedCondition,
         minPrice: _minPrice,
         maxPrice: _maxPrice,
@@ -80,7 +83,8 @@ class _SearchPageState extends State<SearchPage> {
               style: TextButton.styleFrom(backgroundColor: Colors.blue),
               child: Text(
                 'Uygula',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           ],
@@ -130,9 +134,14 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onSearchChanged(String query) {
     setState(() {
-      _products = _products.where((product) {
-        return product.name.toLowerCase().contains(query.toLowerCase());
-      }).toList();
+      if (query.isEmpty) {
+        _filteredProducts =
+            List.from(_products); // Arama kutusu boşsa, tüm ürünleri geri getir
+      } else {
+        _filteredProducts = _products.where((product) {
+          return product.name.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      }
     });
   }
 
@@ -151,28 +160,33 @@ class _SearchPageState extends State<SearchPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomSearchBar(onSearchChanged: _onSearchChanged),
-            _buildProductsByCategory(),
-          ],
-        ),
-      ),
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomSearchBar(onSearchChanged: _onSearchChanged),
+                  _buildProductsByCategory(),
+                ],
+              ),
+            ),
     );
   }
 
   Widget _buildProductsByCategory() {
-    final soldProducts = _products.where((p) => p.isSold).toList();
-    final newProducts = _products.where((p) => !p.isSold && !p.isSpotProduct).toList();
-    final spotProducts = _products.where((p) => !p.isSold && p.isSpotProduct).toList();
+    final soldProducts = _filteredProducts.where((p) => p.isSold).toList();
+    final newProducts =
+        _filteredProducts.where((p) => !p.isSold && !p.isSpotProduct).toList();
+    final spotProducts =
+        _filteredProducts.where((p) => !p.isSold && p.isSpotProduct).toList();
 
     return Column(
       children: [
-        if (newProducts.isNotEmpty) _buildHorizontalListWithArrows('Sıfır Ürünler', newProducts),
-        if (spotProducts.isNotEmpty) _buildHorizontalListWithArrows('İkinci El Ürünler', spotProducts),
-        if (soldProducts.isNotEmpty) _buildHorizontalListWithArrows('Satılmış Ürünler', soldProducts),
+        if (newProducts.isNotEmpty)
+          _buildHorizontalListWithArrows('Sıfır Ürünler', newProducts),
+        if (spotProducts.isNotEmpty)
+          _buildHorizontalListWithArrows('İkinci El Ürünler', spotProducts),
+        if (soldProducts.isNotEmpty)
+          _buildHorizontalListWithArrows('Satılmış Ürünler', soldProducts),
       ],
     );
   }
@@ -182,7 +196,8 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(
           height: 405,
           child: Row(
@@ -211,7 +226,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildScrollButton(ScrollController controller, int direction) {
     return IconButton(
-      icon: Icon(direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
+      icon: Icon(
+          direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
       onPressed: () => _scrollList(controller, direction),
     );
   }
