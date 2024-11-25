@@ -6,7 +6,8 @@ import '../model/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductService {
-  final CollectionReference _firestore = FirebaseFirestore.instance.collection('Product');
+  final CollectionReference _firestore =
+      FirebaseFirestore.instance.collection('Product');
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Ürünleri getirme
@@ -47,9 +48,7 @@ class ProductService {
       );
 
       // Firestore'a kaydet
-      await _firestore
-          .doc(newProduct.id)
-          .set(newProduct.toFirestore());
+      await _firestore.doc(newProduct.id).set(newProduct.toFirestore());
     } catch (e) {
       throw Exception('Ürün eklenirken hata oluştu: $e');
     }
@@ -64,7 +63,8 @@ class ProductService {
 
     try {
       if (condition != null) {
-        query = query.where('isSpotProduct', isEqualTo: condition == 'İkinci El');
+        query =
+            query.where('isSpotProduct', isEqualTo: condition == 'İkinci El');
       }
       if (minPrice != null) {
         query = query.where('price', isGreaterThanOrEqualTo: minPrice);
