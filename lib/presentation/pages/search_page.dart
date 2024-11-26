@@ -79,33 +79,37 @@ class _SearchPageState extends State<SearchPage> {
           content: SingleChildScrollView(child: _buildFilterDialogContent()),
           actions: [
             SizedBox(
-                height: 40,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop(); // Dialog kapat
-                          await _filterProducts(); // Ürünleri filtrele
-                        },
-                        style: TextButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.errorContainer),
-                        child: const Text("Uygula",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          _clearFilters();
-                        },
-                        style: TextButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.errorContainer),
-                        child: const Text("Temizle",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                    ]))
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop(); // Dialog kapat
+                      await _filterProducts(); // Ürünleri filtrele
+                    },
+                    style: TextButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.errorContainer),
+                    child: const Text("Uygula",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _clearFilters();
+                    },
+                    style: TextButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.errorContainer),
+                    child: const Text(
+                      "Temizle",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         );
       },
@@ -123,6 +127,7 @@ class _SearchPageState extends State<SearchPage> {
             _minPrice = double.tryParse(value) ?? 0;
           });
         }),
+        const SizedBox(height: 20),
         _buildPriceTextField('Maksimum Fiyat', (value) {
           setState(() {
             _maxPrice = double.tryParse(value) ?? 10000;
@@ -149,7 +154,17 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildPriceTextField(String label, Function(String) onChanged) {
     return TextField(
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(
+        labelText: label,
+        focusedBorder: const UnderlineInputBorder(
+          borderSide:
+              BorderSide(color: Colors.red), // Odaklandığında kırmızı çizgi
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide:
+              BorderSide(color: Colors.grey), // Varsayılan durumda gri çizgi
+        ),
+      ),
       keyboardType: TextInputType.number,
       onChanged: onChanged,
     );
