@@ -19,7 +19,7 @@ class _ProductCardState extends State<ProductCard> {
     final product = widget.product;
 
     return SizedBox(
-      width: 500, // Yatay genişlik
+      width: 280, // Yatay genişlik
       child: Card(
         elevation: 10,
         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -29,13 +29,6 @@ class _ProductCardState extends State<ProductCard> {
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              // Ürün Adı
-              Text(
-                product.name,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-
               // Görsel ve Oklar
               Stack(
                 alignment: Alignment.topCenter,
@@ -47,9 +40,9 @@ class _ProductCardState extends State<ProductCard> {
                       },
                       child: CachedNetworkImage(
                         imageUrl: product.imageUrl[_currentImageIndex],
-                        height: 280,
+                        height: 250,
                         width: double.infinity,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         placeholder: (context, url) =>
                             const CircularProgressIndicator(),
                         errorWidget: (context, url, error) =>
@@ -96,12 +89,19 @@ class _ProductCardState extends State<ProductCard> {
                 ],
               ),
 
+              // Ürün Adı
+              Text(
+                product.name,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+
               // Açıklama
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   product.desc,
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(fontSize: 15),
                   maxLines: 2, // Maksimum 2 satır
                   overflow: TextOverflow.ellipsis, // Üç nokta ekler
                 ),
@@ -114,12 +114,12 @@ class _ProductCardState extends State<ProductCard> {
                   Text(
                     product.isSpotProduct ? "2. El Ürün" : "Sıfır Ürün",
                     style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold),
+                        fontSize: 15, fontWeight: FontWeight.normal),
                   ),
                   Text(
                     '${product.price} TL',
                     style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold),
+                        fontSize: 15, fontWeight: FontWeight.normal),
                   ),
                 ],
               ),

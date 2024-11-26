@@ -22,9 +22,14 @@ class _AddProductPageState extends State<AddProductPage> {
   final List<dynamic> _selectedImages = [];
   bool _isSold = false;
   String _productCondition = "Sıfır Ürün";
+  bool _isLoading = false; // Yükleme durumu için değişken
 
   Future<void> _addProduct() async {
     if (_validateInputs()) {
+      setState(() {
+        _isLoading = true; // Yükleme başladığında true yap
+      });
+
       try {
         await _productService.addProductWithImages(
           Product(
@@ -52,6 +57,10 @@ class _AddProductPageState extends State<AddProductPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Hata: $e')),
         );
+      } finally {
+        setState(() {
+          _isLoading = false; // Yükleme tamamlandığında false yap
+        });
       }
     }
   }
@@ -122,26 +131,30 @@ class _AddProductPageState extends State<AddProductPage> {
                     padding: const EdgeInsets.all(4.0),
                     child: _selectedImages[index] is File
                         ? Image.file(
-                            _selectedImages[index],
-                            height: 80,
-                            width: 80,
-                            fit: BoxFit.cover,
-                          )
+                      _selectedImages[index],
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                    )
                         : Image.memory(
-                            _selectedImages[index],
-                            height: 80,
-                            width: 80,
-                            fit: BoxFit.cover,
-                          ),
+                      _selectedImages[index],
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             const SizedBox(height: 16),
             // Add product button
             ElevatedButton(
-              onPressed: _addProduct,
-              child: const Text('Ürün Ekle'),
+              onPressed: _isLoading ? null : _addProduct, // Buton tıklamaya kapalı
+              child: _isLoading
+                  ? const CircularProgressIndicator() // Yükleme göstergesi
+                  : const Text('Ürün Ekle'),
             ),
+            if (_isLoading) const SizedBox(height: 16),
+            if (_isLoading) const Text('Yükleniyor...'), // Yükleniyor metni
           ],
         ),
       ),
@@ -182,7 +195,7 @@ class _AddProductPageState extends State<AddProductPage> {
           Checkbox(
             value: _productCondition == "2. El Ürün",
             onChanged: (value) => setState(
-                () => _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün"),
+                    () => _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün"),
           ),
         ],
       ),

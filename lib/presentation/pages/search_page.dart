@@ -93,7 +93,8 @@ class _SearchPageState extends State<SearchPage> {
                         backgroundColor:
                             Theme.of(context).colorScheme.errorContainer),
                     child: const Text("Uygula",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                   TextButton(
                     onPressed: () {
@@ -104,7 +105,8 @@ class _SearchPageState extends State<SearchPage> {
                             Theme.of(context).colorScheme.errorContainer),
                     child: const Text(
                       "Temizle",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

@@ -35,8 +35,8 @@ class ProductService {
           formatWithMonthName: false);
       final newProduct = Product(
         id: _firestore.doc().id,
-        createdAt: nowDate['date'].toString() ?? '',
-        updatedAt: nowDate['date'].toString() ?? '',
+        createdAt: nowDate['date'].toString(),
+        updatedAt: nowDate['date'].toString(),
         soldAt: '',
         name: product.name,
         desc: product.desc,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/core/custom_views/custom_title.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
+import '../../../core/custom_views/custom_footer.dart';
 import '../../../core/custom_views/custom_product_card.dart';
 import '../../../core/custom_views/custom_search.dart';
 import '../search_page.dart';
@@ -34,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        // Hata durumunda Snackbar göster
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Ürünler yüklenirken hata oluştu: $e'),
@@ -51,16 +51,22 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomSearchBar(onSearchTap: _navigateToSearch),
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: CustomSearchBar(onSearchTap: _navigateToSearch)),
+                  const SizedBox(height: 20),
+                  _buildHeroSection(),
+                  const SizedBox(height: 20),
                   _buildHorizontalListWithArrows('Yeni Gelen Ürünler',
                       _products.where((p) => !p.isSold).toList()),
                   _buildHorizontalListWithArrows(
                       'Satılmış Ürünler (3 Ay İçinde)',
                       _products.where((p) => p.isSold).toList()),
+                  const SizedBox(height: 40),
+                  const CustomFooter(),
                 ],
               ),
             ),
@@ -74,39 +80,76 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildHeroSection() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.blueAccent,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          const Text(
+            'Hayalinizdeki Ürünler Burada!',
+            style: TextStyle(
+                fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'En yeni ve en kaliteli ürünleri keşfedin.',
+            style: TextStyle(fontSize: 16, color: Colors.white70),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Image.network(
+            'https://example.com/hero-image.jpg',
+            // Buraya uygun bir görsel URL'si ekleyin
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildHorizontalListWithArrows(String title, List<Product> products) {
     final ScrollController scrollController = ScrollController();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 30),
-        CustomSectionTitle(title: title),
-        SizedBox(
-          height: 405,
-          child: Row(
-            children: [
-              // Sol Ok
-              _buildScrollButton(scrollController, -1),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.only(right: 16, bottom: 16),
-                      child: ProductCard(product: products[index]),
-                    );
-                  },
-                ),
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 30),
+            CustomSectionTitle(title: title),
+            SizedBox(
+              height: 375,
+              child: Row(
+                children: [
+                  // Sol Ok
+                  _buildScrollButton(scrollController, -1),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 350,
+                          padding: const EdgeInsets.only(right: 16, bottom: 16),
+                          child: ProductCard(product: products[index]),
+                        );
+                      },
+                    ),
+                  ),
+                  // Sağ Ok
+                  _buildScrollButton(scrollController, 1),
+                ],
               ),
-              // Sağ Ok
-              _buildScrollButton(scrollController, 1),
-            ],
-          ),
-        ),
-      ],
-    );
+            ),
+          ],
+        ));
   }
 
   Widget _buildScrollButton(ScrollController controller, int direction) {
