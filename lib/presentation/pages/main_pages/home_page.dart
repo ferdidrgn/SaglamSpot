@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:saglamspot/core/custom_views/custom_title.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
-import '../../../core/custom_views/custom_footer.dart';
-import '../../../core/custom_views/custom_product_card.dart';
-import '../../../core/custom_views/custom_search.dart';
+import '../../../core/widgets/custom_footer.dart';
+import '../../../core/widgets/custom_product_card.dart';
+import '../../../core/widgets/custom_search.dart';
+import '../../../core/widgets/custom_title.dart';
 import '../search_page.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomePageState extends State<HomePage> {
   final ProductService _productService = ProductService();
   List<Product> _products = [];
   bool _isLoading = true;
@@ -84,10 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.blueAccent,
-        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFF8B4513),
+        borderRadius: BorderRadius.circular(40),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(40),
+      margin: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
           const Text(

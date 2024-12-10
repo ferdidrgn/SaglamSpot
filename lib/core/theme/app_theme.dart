@@ -1,96 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-class AppDarkColors {
-  static const Color primary = Color(0xFF343541);
-  static const Color primaryVariant = Color(0xFF3C3E4A);
-  static const Color secondary = Color(0xFF444653);
-  static const Color secondaryVariant = Color(0xFF565864);
-  static const Color error = Color(0xFFCF6679);
-  static const Color onPrimary = Color(0xFFFFFFFF);
-  static const Color onError = Color(0xFF000000);
-}
+import '../constants/app_constants.dart';
 
 class AppTheme {
+  // Mobilya teması için renkler
+  static const _primaryColor = Color(AppConstants.primaryColor); // Kahverengi
+  static const _secondaryColor = Color(AppConstants.secondaryColor); // Açık kahve
+
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
-    primarySwatch: Colors.red,
+    primarySwatch: Colors.brown,
     colorScheme: ColorScheme.light(
-      primary: Colors.red,
-      primaryContainer: Colors.redAccent,
-      secondary: Colors.red.shade200,
-      secondaryContainer: Colors.red.shade100,
+      primary: _primaryColor,
+      primaryContainer: _primaryColor.withOpacity(0.8),
+      secondary: _secondaryColor,
+      secondaryContainer: _secondaryColor.withOpacity(0.8),
       surface: Colors.white,
-      background: Colors.white,
-      error: Colors.red,
+      background: Colors.grey[50]!,
+      error: Colors.red[700]!,
       onPrimary: Colors.white,
-      onSecondary: Colors.black,
-      onSurface: Colors.black,
-      onBackground: Colors.white,
-      onError: Colors.black,
+      onSecondary: Colors.white,
+      onSurface: Colors.black87,
+      onBackground: Colors.black87,
+      onError: Colors.white,
     ),
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       iconTheme: IconThemeData(color: Colors.white, size: 30),
-      backgroundColor: Colors.red,
+      backgroundColor: _primaryColor,
       titleTextStyle: TextStyle(
-          color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.red,
+        statusBarColor: _primaryColor,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.red,
+        systemNavigationBarColor: _primaryColor,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
-      selectedItemColor: Colors.red,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: _primaryColor,
+      unselectedItemColor: Colors.grey[600],
     ),
     textTheme: _lightTextTheme,
   );
 
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primarySwatch: Colors.grey,
-    colorScheme: const ColorScheme.dark(
-      primary: AppDarkColors.secondary,
-      primaryContainer: AppDarkColors.primaryVariant,
-      secondary: AppDarkColors.primaryVariant,
-      secondaryContainer: AppDarkColors.secondaryVariant,
-      surface: AppDarkColors.secondary,
-      background: AppDarkColors.primaryVariant,
-      error: AppDarkColors.error,
-      onPrimary: AppDarkColors.onPrimary,
-      onSecondary: AppDarkColors.onPrimary,
-      onSurface: AppDarkColors.onPrimary,
-      onBackground: AppDarkColors.onPrimary,
-      onError: AppDarkColors.onError,
+    primarySwatch: Colors.brown,
+    colorScheme: ColorScheme.dark(
+      primary: _primaryColor,
+      primaryContainer: _primaryColor.withOpacity(0.7),
+      secondary: _secondaryColor,
+      secondaryContainer: _secondaryColor.withOpacity(0.7),
+      surface: const Color(0xFF1E1E1E),
+      background: const Color(0xFF121212),
+      error: Colors.red[700]!,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: Colors.white,
+      onBackground: Colors.white,
+      onError: Colors.white,
     ),
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       iconTheme: IconThemeData(color: Colors.white, size: 30),
-      backgroundColor: AppDarkColors.primary,
+      backgroundColor: _primaryColor,
       titleTextStyle: TextStyle(
-          color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: AppDarkColors.primary,
+        statusBarColor: _primaryColor,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: AppDarkColors.primary,
+        systemNavigationBarColor: _primaryColor,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Colors.grey,
-      selectedItemColor: AppDarkColors.primary,
-      unselectedItemColor: Colors.white,
+      backgroundColor: Color(0xFF1E1E1E),
+      selectedItemColor: _secondaryColor,
+      unselectedItemColor: Colors.white70,
     ),
     textTheme: _darkTextTheme,
   );
 
   static const _baseLightTextStyle = TextStyle(
     fontFamily: 'Roboto',
-    color: Colors.black,
+    color: Colors.black87,
   );
 
   static const _baseDarkTextStyle = TextStyle(
@@ -168,11 +169,17 @@ class AppTheme {
 List<Color> gradientColors(BuildContext context, bool isTrue) {
   return isTrue
       ? (Theme.of(context).brightness == Brightness.light
-          ? [Colors.red.shade300, Colors.red.shade900]
-          : [Colors.pink[500]!, Colors.purple[600]!])
+      ? [
+    const Color(AppConstants.primaryColor).withOpacity(0.7),
+    const Color(AppConstants.primaryColor)
+  ]
+      : [
+    const Color(AppConstants.secondaryColor).withOpacity(0.7),
+    const Color(AppConstants.secondaryColor)
+  ])
       : [Colors.grey[500]!, Colors.grey[800]!];
 }
 
 List<Color> gradientOpacityColors() {
   return [Colors.transparent, Colors.black.withOpacity(0.3)];
-}
+} 

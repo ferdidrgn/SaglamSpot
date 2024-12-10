@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class InfoScreen extends StatelessWidget {
-  const InfoScreen({super.key});
+class InfoPage extends StatelessWidget {
+  const InfoPage({super.key});
 
   @override
   Widget build(BuildContext context) {

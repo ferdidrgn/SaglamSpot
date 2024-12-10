@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SpotProductsScreen extends StatelessWidget {
-  const SpotProductsScreen({super.key});
+class SpotProductsPage extends StatelessWidget {
+  const SpotProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../../core/custom_views/custom_image_selector.dart';
+import '../../core/widgets/custom_image_selector.dart';
 import '../../data/model/product.dart';
 import '../../data/repository/product_service.dart';
 

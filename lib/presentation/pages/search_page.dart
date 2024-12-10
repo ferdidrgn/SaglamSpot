@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:saglamspot/core/custom_views/custom_search.dart';
-import 'package:saglamspot/core/custom_views/custom_title.dart';
 import 'package:saglamspot/data/model/product.dart';
 import 'package:saglamspot/data/repository/product_service.dart';
-import '../../../core/custom_views/custom_product_card.dart';
+
+import '../../core/widgets/custom_product_card.dart';
+import '../../core/widgets/custom_search.dart';
+import '../../core/widgets/custom_title.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../add_product_page.dart';
 
-class SSSScreen extends StatelessWidget {
-  const SSSScreen({super.key});
+class SSSPage extends StatelessWidget {
+  const SSSPage({super.key});
 
   @override
   Widget build(BuildContext context) {
