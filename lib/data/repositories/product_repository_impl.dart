@@ -57,16 +57,16 @@ class ProductRepositoryImpl implements ProductRepository {
       try {
         final productModel = ProductModel(
           id: product.id,
-          createdAt: DateTime.now().toIso8601String(),
-          updatedAt: DateTime.now().toIso8601String(),
-          soldAt: '',
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+          soldAt: product.soldAt,
           name: product.name,
           desc: product.desc,
-          category: '',
+          category: product.category,
           price: product.price,
           imageUrl: product.imageUrl,
           isSold: product.isSold,
-          isSpotProduct: false,
+          isSpotProduct: product.isSpotProduct,
         );
         await remoteDataSource.addProduct(productModel, images);
         return const Right(null);

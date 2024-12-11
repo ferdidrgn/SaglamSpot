@@ -112,7 +112,7 @@ class ProductModel {
     return ProductModel(
       id: product.id,
       createdAt: product.createdAt,
-      updatedAt: DateTime.now().toIso8601String(),
+      updatedAt: product.updatedAt,
       soldAt: product.soldAt,
       name: product.name,
       desc: product.desc,
