@@ -42,12 +42,12 @@ class CustomSearchBar extends StatelessWidget {
             ),
             hintText: 'Eşya Ara...',
             hintStyle: TextStyle(
-              fontSize: 16,
+              fontSize: 18,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.onSurface,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 25),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
             prefixIcon: IconButton(
               icon: Icon(
                   Icons.youtube_searched_for,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/widgets/custom_footer.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_search.dart';
 import '../../../core/widgets/custom_title.dart';
@@ -60,7 +59,6 @@ class _HomePageState extends State<HomePage> {
             products.where((p) => p.isSold).toList(),
           ),
           const SizedBox(height: 40),
-          const CustomFooter(),
         ],
       ),
     );

@@ -162,8 +162,6 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Header
-          _buildHeader(screenWidth),
           // Main Content
           Expanded(
             child: Container(
@@ -196,52 +194,6 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(double screenWidth) {
-    return Container(
-      width: double.infinity,
-      color: Theme.of(context).primaryColor,
-      child: Container(
-        constraints: BoxConstraints(maxWidth: screenWidth * 0.9),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'LOGO',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Row(
-              children: [
-                _buildHeaderButton(Icons.home, 'Ana Sayfa'),
-                _buildHeaderButton(Icons.category, 'Kategoriler'),
-                _buildHeaderButton(Icons.shopping_cart, 'Sepet'),
-                _buildHeaderButton(Icons.person, 'Hesabım'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderButton(IconData icon, String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: TextButton.icon(
-        onPressed: () {},
-        icon: Icon(icon, color: Colors.white),
-        label: Text(
-          label,
-          style: const TextStyle(color: Colors.white),
-        ),
       ),
     );
   }
@@ -338,7 +290,7 @@ class _SearchPageState extends State<SearchPage> {
     return SingleChildScrollView(
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: isWideScreen ? 1200 : (isMediumScreen ? 900 : 600),
+          maxWidth: isWideScreen ? 1500 : (isMediumScreen ? 900 : 600),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
