@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../core/widgets/custom_search.dart';
-import '../../core/widgets/custom_title.dart';
 import '../../domain/entities/product.dart';
 import '../bloc/product_bloc.dart';
 import 'dart:async';
@@ -156,56 +155,44 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWideScreen = screenWidth > 1200;
+    final isMediumScreen = screenWidth > 800 && screenWidth <= 1200;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Arama'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: _showFilterDialog,
-          ),
-        ],
-      ),
       body: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                CustomSearchBar(
-                  controller: _searchController,
-                  onSearchTap: () {},
-                  onSearchChanged: _onSearchChanged,
-                ),
-                const SizedBox(height: 10),
-                if (_selectedCondition != null || _minPrice > 0 || _maxPrice < 50000)
-                  _buildActiveFilters(),
-              ],
-            ),
-          ),
+          // Header
+          _buildHeader(screenWidth),
+          // Main Content
           Expanded(
-            child: BlocBuilder<ProductBloc, ProductState>(
-              builder: (context, state) {
-                if (state is ProductLoading) {
-                  return _buildLoadingState();
-                } else if (state is ProductLoaded) {
-                  return _buildLoadedState(state.products);
-                } else if (state is ProductError) {
-                  return _buildErrorState(state.message);
-                }
-                return const SizedBox();
-              },
+            child: Container(
+              color: const Color(0xFFF8F9FA),
+              child: Column(
+                children: [
+                  // Search Section
+                  _buildSearchSection(screenWidth),
+                  // Content Area
+                  Expanded(
+                    child: BlocBuilder<ProductBloc, ProductState>(
+                      builder: (context, state) {
+                        if (state is ProductLoading) {
+                          return _buildLoadingState();
+                        } else if (state is ProductLoaded) {
+                          return _buildLoadedState(
+                            state.products,
+                            isWideScreen,
+                            isMediumScreen,
+                          );
+                        } else if (state is ProductError) {
+                          return _buildErrorState(state.message);
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -213,24 +200,246 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildActiveFilters() {
-    return Wrap(
-      spacing: 8,
+  Widget _buildHeader(double screenWidth) {
+    return Container(
+      width: double.infinity,
+      color: Theme.of(context).primaryColor,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: screenWidth * 0.9),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'LOGO',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Row(
+              children: [
+                _buildHeaderButton(Icons.home, 'Ana Sayfa'),
+                _buildHeaderButton(Icons.category, 'Kategoriler'),
+                _buildHeaderButton(Icons.shopping_cart, 'Sepet'),
+                _buildHeaderButton(Icons.person, 'Hesabım'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderButton(IconData icon, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: TextButton.icon(
+        onPressed: () {},
+        icon: Icon(icon, color: Colors.white),
+        label: Text(
+          label,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchSection(double screenWidth) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Container(
+        constraints: BoxConstraints(maxWidth: screenWidth * 0.9),
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ürün Kataloğu',
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'İhtiyacınız olan tüm ürünler burada',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _showFilterDialog,
+                  icon: const Icon(Icons.filter_list),
+                  label: const Text('Filtrele'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomSearchBar(
+                    controller: _searchController,
+                    onSearchTap: () {},
+                    onSearchChanged: _onSearchChanged,
+                  ),
+                ),
+              ],
+            ),
+            if (_selectedCondition != null || _minPrice > 0 || _maxPrice < 50000)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: _buildActiveFilters(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadedState(
+      List<Product> products,
+      bool isWideScreen,
+      bool isMediumScreen,
+      ) {
+    if (products.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    return SingleChildScrollView(
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: isWideScreen ? 1200 : (isMediumScreen ? 900 : 600),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildCategorySection('Mevcut Ürünler',
+              products.where((p) => !p.isSold).toList(),
+              isWideScreen,
+              isMediumScreen,
+            ),
+            const SizedBox(height: 32),
+            _buildCategorySection('Satılmış Ürünler',
+              products.where((p) => p.isSold).toList(),
+              isWideScreen,
+              isMediumScreen,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategorySection(
+      String title,
+      List<Product> products,
+      bool isWideScreen,
+      bool isMediumScreen,
+      ) {
+    if (products.isEmpty) return const SizedBox();
+
+    final crossAxisCount = isWideScreen ? 4 : (isMediumScreen ? 3 : 2);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (_selectedCondition != null)
-          _buildFilterChip(_selectedCondition!),
-        if (_minPrice > 0)
-          _buildFilterChip('Min: ₺${_minPrice.toStringAsFixed(2)}'),
-        if (_maxPrice < 50000)
-          _buildFilterChip('Max: ₺${_maxPrice.toStringAsFixed(2)}'),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.8,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: products.length,
+          itemBuilder: (context, index) => ProductCard(product: products[index]),
+        ),
       ],
+    );
+  }
+
+  Widget _buildActiveFilters() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          Text(
+            'Aktif Filtreler:',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 8),
+          if (_selectedCondition != null)
+            _buildFilterChip(_selectedCondition!),
+          if (_minPrice > 0)
+            _buildFilterChip('Min: ₺${_minPrice.toStringAsFixed(2)}'),
+          if (_maxPrice < 50000)
+            _buildFilterChip('Max: ₺${_maxPrice.toStringAsFixed(2)}'),
+        ],
+      ),
     );
   }
 
   Widget _buildFilterChip(String label) {
     return Chip(
-      label: Text(label),
-      deleteIcon: const Icon(Icons.close, size: 18),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      deleteIcon: Icon(
+        Icons.close,
+        size: 18,
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
       onDeleted: () {
         setState(() {
           if (label == _selectedCondition) {
@@ -252,45 +461,70 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           Text(
-            'Ürünler yükleniyor...',
-            style: Theme.of(context).textTheme.titleMedium,
+            'Ürünler Yükleniyor',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Lütfen bekleyin...',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLoadedState(List<Product> products) {
-    if (products.isEmpty) {
-      return Center(
+  Widget _buildEmptyState() {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        constraints: const BoxConstraints(maxWidth: 400),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.search_off,
-              size: 64,
-              color: Theme.of(context).colorScheme.secondary,
+              Icons.search_off_rounded,
+              size: 80,
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Sonuç Bulunamadı',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
-              'Ürün bulunamadı.',
-              style: Theme.of(context).textTheme.titleLarge,
+              'Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Farklı arama kriterleri deneyebilirsiniz.',
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                _clearFilters();
+                _searchController.clear();
+                _loadProducts();
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('Tüm Ürünleri Göster'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+              ),
             ),
           ],
         ),
-      );
-    }
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: _buildProductsByCategory(products),
+      ),
     );
   }
 
@@ -323,78 +557,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildProductsByCategory(List<Product> products) {
-    final soldProducts = products.where((p) => p.isSold).toList();
-    final availableProducts = products.where((p) => !p.isSold).toList();
-
-    return Column(
-      children: [
-        if (availableProducts.isNotEmpty)
-          _buildProductSection('Mevcut Ürünler', availableProducts),
-        if (soldProducts.isNotEmpty)
-          _buildProductSection('Satılmış Ürünler', soldProducts),
-        if (products.isEmpty)
-          const Center(
-            child: Text('Ürün bulunamadı.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildProductSection(String title, List<Product> products) {
-    final ScrollController scrollController = ScrollController();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomSectionTitle(title: title),
-        SizedBox(
-          height: 400,
-          child: Row(
-            children: [
-              _buildScrollButton(scrollController, -1),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: 300,
-                      padding: const EdgeInsets.only(right: 16),
-                      child: ProductCard(product: products[index]),
-                    );
-                  },
-                ),
-              ),
-              _buildScrollButton(scrollController, 1),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildScrollButton(ScrollController controller, int direction) {
-    return IconButton(
-      icon: Icon(
-        direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-      ),
-      onPressed: () => _scrollList(controller, direction),
-    );
-  }
-
-  void _scrollList(ScrollController controller, int direction) {
-    const double scrollAmount = 300;
-    final double offset = controller.offset + (direction * scrollAmount);
-    controller.animateTo(
-      offset.clamp(0.0, controller.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
     );
   }
 }
