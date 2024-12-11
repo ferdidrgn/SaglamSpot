@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:saglamspot/presentation/bloc/product_bloc.dart';
 import 'package:saglamspot/presentation/pages/main_pages/main_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'web_config.dart';
@@ -25,14 +27,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Sağlam Spot',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.lightTheme,
-      themeMode: ThemeMode.system,
-      home: const MainScreen(),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<ProductBloc>(
+            create: (_) => di.sl<ProductBloc>(),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Sağlam Spot',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.lightTheme,
+          themeMode: ThemeMode.system,
+          home: const MainScreen(),
+        ));
   }
 }
-

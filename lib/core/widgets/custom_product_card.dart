@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:saglamspot/data/model/product.dart';
+import 'package:saglamspot/domain/entities/product.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;

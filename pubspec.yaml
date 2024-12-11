@@ -48,6 +48,7 @@ dependencies:
   shared_preferences: ^2.2.0
   # Service Locator
   injectable: ^2.3.2
+  internet_connection_checker: ^1.0.0
 
   equatable: ^2.0.5
 
@@ -57,6 +58,7 @@ dependencies:
   image_picker: ^0.8.7+5 # Mobil cihazlarda kamera ve galeri erişimi için
   file_picker: ^5.2.6    # Web ortamında dosya seçimi için (opsiyonel, gelişmiş durumlarda kullanılabilir)
   cached_network_image: ^3.2.3
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

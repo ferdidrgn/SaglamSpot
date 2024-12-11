@@ -1,75 +1,178 @@
 import 'package:flutter/material.dart';
-import 'package:saglamspot/data/model/product.dart';
-import 'package:saglamspot/data/repository/product_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/widgets/custom_footer.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_search.dart';
 import '../../../core/widgets/custom_title.dart';
+import '../../bloc/product_bloc.dart';
 import '../search_page.dart';
+import 'package:saglamspot/domain/entities/product.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final ProductService _productService = ProductService();
-  List<Product> _products = [];
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _loadProducts();
-  }
-
-  Future<void> _loadProducts() async {
-    try {
-      final products = await _productService.fetchProducts();
-      setState(() {
-        _products = products;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Ürünler yüklenirken hata oluştu: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
+    context.read<ProductBloc>().add(const LoadProducts());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: CustomSearchBar(onSearchTap: _navigateToSearch)),
-                  const SizedBox(height: 20),
-                  _buildHeroSection(),
-                  const SizedBox(height: 20),
-                  _buildHorizontalListWithArrows('Yeni Gelen Ürünler',
-                      _products.where((p) => !p.isSold).toList()),
-                  _buildHorizontalListWithArrows(
-                      'Satılmış Ürünler (3 Ay İçinde)',
-                      _products.where((p) => p.isSold).toList()),
-                  const SizedBox(height: 40),
-                  const CustomFooter(),
-                ],
-              ),
+    return BlocBuilder<ProductBloc, ProductState>(
+      builder: (context, state) {
+        if (state is ProductLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is ProductLoaded) {
+          return _buildContent(state.products);
+        } else if (state is ProductError) {
+          return Center(child: Text(state.message));
+        }
+        return const SizedBox();
+      },
+    );
+  }
+
+  Widget _buildContent(List<Product> products) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: CustomSearchBar(onSearchTap: _navigateToSearch),
+          ),
+          const SizedBox(height: 20),
+          _buildHeroSection(),
+          const SizedBox(height: 20),
+          _buildProductSection(
+            'Yeni Gelen Ürünler',
+            products.where((p) => !p.isSold).toList(),
+          ),
+          _buildProductSection(
+            'Satılmış Ürünler (3 Ay İçinde)',
+            products.where((p) => p.isSold).toList(),
+          ),
+          const SizedBox(height: 40),
+          const CustomFooter(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroSection() {
+    return Container(
+      margin: const EdgeInsets.all(AppConstants.defaultPadding),
+      padding: const EdgeInsets.all(AppConstants.defaultPadding),
+      decoration: BoxDecoration(
+        color: const Color(AppConstants.primaryColor),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          const Text(
+            'Evinizi Güzelleştirin',
+            style: TextStyle(
+              fontSize: 32,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Kaliteli ve şık mobilyalarla yaşam alanınızı yenileyin',
+            style: TextStyle(fontSize: 18, color: Colors.white70),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(AppConstants.primaryColor),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            ),
+            child: const Text('Hemen Keşfet'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductSection(String title, List<Product> products) {
+    final ScrollController scrollController = ScrollController();
+
+    return Padding(
+      padding: const EdgeInsets.all(AppConstants.defaultPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomSectionTitle(title: title),
+          SizedBox(
+            height: 400,
+            child: Row(
+              children: [
+                _buildScrollButton(scrollController, -1),
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: 300,
+                        padding: const EdgeInsets.only(right: 16),
+                        child: ProductCard(product: products[index]),
+                      );
+                    },
+                  ),
+                ),
+                _buildScrollButton(scrollController, 1),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScrollButton(ScrollController controller, int direction) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(
+          direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+          color: const Color(AppConstants.primaryColor),
+        ),
+        onPressed: () => _scrollList(controller, direction),
+      ),
+    );
+  }
+
+  void _scrollList(ScrollController controller, int direction) {
+    const double scrollAmount = 300;
+    final double offset = controller.offset + (direction * scrollAmount);
+    controller.animateTo(
+      offset.clamp(0.0, controller.position.maxScrollExtent),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 
@@ -77,97 +180,6 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SearchPage()),
-    );
-  }
-
-  Widget _buildHeroSection() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFF8B4513),
-        borderRadius: BorderRadius.circular(40),
-      ),
-      padding: const EdgeInsets.all(40),
-      margin: const EdgeInsets.symmetric(horizontal: 40),
-      child: Column(
-        children: [
-          const Text(
-            'Hayalinizdeki Ürünler Burada!',
-            style: TextStyle(
-                fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'En yeni ve en kaliteli ürünleri keşfedin.',
-            style: TextStyle(fontSize: 16, color: Colors.white70),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Image.network(
-            'https://example.com/hero-image.jpg',
-            // Buraya uygun bir görsel URL'si ekleyin
-            height: 200,
-            fit: BoxFit.cover,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHorizontalListWithArrows(String title, List<Product> products) {
-    final ScrollController scrollController = ScrollController();
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 30),
-            CustomSectionTitle(title: title),
-            SizedBox(
-              height: 375,
-              child: Row(
-                children: [
-                  // Sol Ok
-                  _buildScrollButton(scrollController, -1),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: 350,
-                          padding: const EdgeInsets.only(right: 16, bottom: 16),
-                          child: ProductCard(product: products[index]),
-                        );
-                      },
-                    ),
-                  ),
-                  // Sağ Ok
-                  _buildScrollButton(scrollController, 1),
-                ],
-              ),
-            ),
-          ],
-        ));
-  }
-
-  Widget _buildScrollButton(ScrollController controller, int direction) {
-    return IconButton(
-      icon: Icon(
-          direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
-      onPressed: () => _scrollList(controller, direction),
-    );
-  }
-
-  void _scrollList(ScrollController controller, int direction) {
-    const double itemWidth = 300; // Kart genişliği
-    final double offset = direction * itemWidth;
-    controller.animateTo(
-      controller.offset + offset,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
     );
   }
 }

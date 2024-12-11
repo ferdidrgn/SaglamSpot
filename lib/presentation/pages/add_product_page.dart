@@ -1,204 +1,126 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import '../../core/widgets/custom_image_selector.dart';
-import '../../data/model/product.dart';
-import '../../data/repository/product_service.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
 
   @override
-  State<AddProductPage> createState() => _AddProductPageState();
+  _AddProductPageState createState() => _AddProductPageState();
 }
 
 class _AddProductPageState extends State<AddProductPage> {
-  final ProductService _productService = ProductService();
-  final ImageSelector _imageSelector = ImageSelector();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
-
   final List<dynamic> _selectedImages = [];
-  bool _isSold = false;
-  String _productCondition = "Sıfır Ürün";
-  bool _isLoading = false; // Yükleme durumu için değişken
-
-  Future<void> _addProduct() async {
-    if (_validateInputs()) {
-      setState(() {
-        _isLoading = true; // Yükleme başladığında true yap
-      });
-
-      try {
-        await _productService.addProductWithImages(
-          Product(
-            id: '',
-            createdAt: '',
-            updatedAt: '',
-            soldAt: '',
-            name: _nameController.text,
-            desc: _descController.text,
-            category: _categoryController.text,
-            price: double.tryParse(_priceController.text) ?? 0.0,
-            isSold: _isSold,
-            isSpotProduct: _productCondition == "2. El Ürün",
-            imageUrl: [],
-          ),
-          _selectedImages,
-        );
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ürün başarıyla eklendi!')),
-        );
-
-        _clearForm();
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hata: $e')),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false; // Yükleme tamamlandığında false yap
-        });
-      }
-    }
-  }
-
-  bool _validateInputs() {
-    if (_nameController.text.isEmpty ||
-        _descController.text.isEmpty ||
-        _selectedImages.isEmpty ||
-        _priceController.text.isEmpty ||
-        _categoryController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
-      );
-      return false;
-    }
-    return true;
-  }
-
-  void _pickImages() async {
-    final images = await _imageSelector.pickImages();
-    if (images.length + _selectedImages.length > 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
-      );
-      return;
-    }
-    setState(() {
-      _selectedImages.addAll(images); // Tüm seçilen görselleri ayarlıyoruz
-    });
-  }
-
-  void _clearForm() {
-    _nameController.clear();
-    _descController.clear();
-    _priceController.clear();
-    _categoryController.clear();
-    setState(() {
-      _selectedImages.clear();
-      _isSold = false;
-      _productCondition = "Sıfır Ürün";
-    });
-  }
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ürün Ekle')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Input fields
-            ..._buildInputFields(),
-            // Image selection button
-            ElevatedButton(
-              onPressed: _pickImages,
-              child: const Text('Görsel Seç'),
-            ),
-            // Selected images preview
-            if (_selectedImages.isNotEmpty)
-              SizedBox(
-                height: 100,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _selectedImages.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: _selectedImages[index] is File
-                        ? Image.file(
-                      _selectedImages[index],
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                    )
-                        : Image.memory(
-                      _selectedImages[index],
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Input fields
+              ..._buildInputFields(),
+              // Image selection button
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ElevatedButton.icon(
+                  onPressed: _pickImages,
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text('Görsel Seç'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
                   ),
                 ),
               ),
-            const SizedBox(height: 16),
-            // Add product button
-            ElevatedButton(
-              onPressed: _isLoading ? null : _addProduct, // Buton tıklamaya kapalı
-              child: _isLoading
-                  ? const CircularProgressIndicator() // Yükleme göstergesi
-                  : const Text('Ürün Ekle'),
-            ),
-            if (_isLoading) const SizedBox(height: 16),
-            if (_isLoading) const Text('Yükleniyor...'), // Yükleniyor metni
-          ],
+              // Selected images preview
+              if (_selectedImages.isNotEmpty)
+                Container(
+                  height: 120,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _selectedImages.length,
+                    itemBuilder: (context, index) => Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: _selectedImages[index] is File
+                              ? Image.file(
+                                  _selectedImages[index],
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.memory(
+                                  _selectedImages[index],
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                _selectedImages.removeAt(index);
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              // Add product button
+              Container(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _isLoading ? null : _addProduct,
+                  icon: _isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.add_shopping_cart),
+                  label: Text(_isLoading ? 'Yükleniyor...' : 'Ürün Ekle'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  void _pickImages() {
+    // Implement image picking logic
+  }
+
+  void _addProduct() {
+    setState(() {
+      _isLoading = true;
+    });
+    // Implement product adding logic
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   List<Widget> _buildInputFields() {
-    return [
-      TextField(
-        controller: _nameController,
-        decoration: const InputDecoration(labelText: 'Ürün Adı'),
-      ),
-      TextField(
-        controller: _descController,
-        decoration: const InputDecoration(labelText: 'Ürün Açıklaması'),
-      ),
-      TextField(
-        controller: _categoryController,
-        decoration: const InputDecoration(labelText: 'Kategori'),
-      ),
-      TextField(
-        controller: _priceController,
-        keyboardType: TextInputType.number,
-        decoration: const InputDecoration(labelText: 'Fiyat'),
-      ),
-      Row(
-        children: [
-          const Text('Ürün Satıldı mı?'),
-          Checkbox(
-            value: _isSold,
-            onChanged: (value) => setState(() => _isSold = value ?? false),
-          ),
-        ],
-      ),
-      Row(
-        children: [
-          const Text('Ürün 2. El mi?'),
-          Checkbox(
-            value: _productCondition == "2. El Ürün",
-            onChanged: (value) => setState(
-                    () => _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün"),
-          ),
-        ],
-      ),
-    ];
+    // Implement input fields building logic
+    return [];
   }
 }
