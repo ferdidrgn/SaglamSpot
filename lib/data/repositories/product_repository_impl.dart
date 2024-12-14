@@ -17,16 +17,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<Either<Failure, List<Product>>> getProducts() async {
-    if (await networkInfo.isConnected) {
-      try {
-        final products = await remoteDataSource.getProducts();
-        return Right(products.map((model) => model.toEntity()).toList());
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('İnternet bağlantısı yok'));
-    }
+    return await _getProducts(() => remoteDataSource.getProducts());
   }
 
   @override
@@ -35,13 +26,19 @@ class ProductRepositoryImpl implements ProductRepository {
     double? minPrice,
     double? maxPrice,
   }) async {
+    return await _getProducts(() => remoteDataSource.getFilteredProducts(
+      condition: condition,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+    ));
+  }
+
+  Future<Either<Failure, List<Product>>> _getProducts(
+    Future<List<ProductModel>> Function() getProductsFromSource,
+  ) async {
     if (await networkInfo.isConnected) {
       try {
-        final products = await remoteDataSource.getFilteredProducts(
-          condition: condition,
-          minPrice: minPrice,
-          maxPrice: maxPrice,
-        );
+        final products = await getProductsFromSource();
         return Right(products.map((model) => model.toEntity()).toList());
       } catch (e) {
         return Left(ServerFailure(e.toString()));
@@ -52,22 +49,10 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addProduct(Product product, List<dynamic> images) async {
+  Future<Either<Failure, void>> addProduct(Product product, List<String> images) async {
     if (await networkInfo.isConnected) {
       try {
-        final productModel = ProductModel(
-          id: product.id,
-          createdAt: product.createdAt,
-          updatedAt: product.updatedAt,
-          soldAt: product.soldAt,
-          name: product.name,
-          desc: product.desc,
-          category: product.category,
-          price: product.price,
-          imageUrl: product.imageUrl,
-          isSold: product.isSold,
-          isSpotProduct: product.isSpotProduct,
-        );
+        final productModel = ProductModel.fromEntity(product);
         await remoteDataSource.addProduct(productModel, images);
         return const Right(null);
       } catch (e) {
@@ -77,4 +62,4 @@ class ProductRepositoryImpl implements ProductRepository {
       return const Left(NetworkFailure('İnternet bağlantısı yok'));
     }
   }
-} 
+}
