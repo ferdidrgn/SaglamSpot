@@ -7,8 +7,14 @@ import 'core/theme/app_theme.dart';
 import 'web_config.dart';
 import 'injection.dart' as di;
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _initializeFirebase();
+  await di.init();
+  runApp(const MyApp());
+}
+
+Future<void> _initializeFirebase() async {
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: firebaseConfig['apiKey']!,
@@ -18,8 +24,6 @@ void main() async {
       storageBucket: firebaseConfig['storageBucket']!,
     ),
   );
-  await di.init();
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,18 +32,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider<ProductBloc>(
-            create: (_) => di.sl<ProductBloc>(),
-          ),
-        ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Sağlam Spot',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.lightTheme,
-          themeMode: ThemeMode.system,
-          home: const MainScreen(),
-        ));
+      providers: [
+        BlocProvider<ProductBloc>(
+          create: (_) => di.sl<ProductBloc>(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Sağlam Spot',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.lightTheme,
+        themeMode: ThemeMode.system,
+        home: const MainScreen(),
+      ),
+    );
   }
 }

@@ -81,7 +81,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
               const SizedBox(height: 16),
               // Add product button
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: _isLoading ? null : _addProduct,
