@@ -59,7 +59,6 @@ dependencies:
   file_picker: ^5.2.6    # Web ortamında dosya seçimi için (opsiyonel, gelişmiş durumlarda kullanılabilir)
   cached_network_image: ^3.2.3
   intl: ^0.18.1
-  google_maps_flutter: ^2.2.0
 
 dev_dependencies:
   flutter_test:
