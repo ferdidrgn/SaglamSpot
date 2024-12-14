@@ -52,8 +52,8 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 20),
           _buildHeroSection(),
           const SizedBox(height: 20),
-          _buildProductSection('Yeni Gelen Ürünlerimiz', products.where((p) => !p.isSold).toList()),
-          _buildProductSection('Satılmış Ürünlerimiz (3 Ay İçinde)', products.where((p) => p.isSold).toList()),
+          _buildProductSection('Yeni Gelen Ürünler', products.where((p) => !p.isSold).toList()),
+          _buildProductSection('Satılmış Ürünler (3 Ay İçinde)', products.where((p) => p.isSold).toList()),
           const SizedBox(height: 40),
         ],
       ),
@@ -66,8 +66,15 @@ class _HomePageState extends State<HomePage> {
       margin: const EdgeInsets.all(AppConstants.defaultPadding),
       padding: const EdgeInsets.all(AppConstants.defaultPadding),
       decoration: BoxDecoration(
-        color: AppTheme.lightTheme.colorScheme.primary,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -85,11 +92,12 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: AppTheme.lightTheme.colorScheme.primary,
+              backgroundColor: AppColors.accent,
+              surfaceTintColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             ),
-            child: const Text('Hemen Keşfet'),
+            child: const Text('Hemen Keşfet', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
@@ -150,7 +158,7 @@ class _HomePageState extends State<HomePage> {
       child: IconButton(
         icon: Icon(
           direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-          color: AppTheme.lightTheme.colorScheme.primary,
+          color: AppColors.primary,
         ),
         onPressed: () => _scrollList(controller, direction),
       ),
