@@ -57,7 +57,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => ProductModel.fromFirestore(doc as DocumentSnapshot<Map<String, dynamic>>))
+          .map((doc) => ProductModel.fromFirestore(doc))
           .toList();
     } catch (e) {
       throw Exception('Ürünler filtrelenirken hata oluştu: $e');
@@ -103,14 +103,15 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     List<String> downloadUrls = [];
     try {
       for (var image in images) {
-        final String fileName =
-            'product_images/${DateTime.now().millisecondsSinceEpoch}';
+        final String fileName = 'product_images/${DateTime.now().millisecondsSinceEpoch}';
         final Reference ref = storage.ref().child(fileName);
         
         if (image is File) {
           await ref.putFile(image);
         } else if (image is Uint8List) {
           await ref.putData(image);
+        } else {
+          throw Exception('Geçersiz görsel türü.');
         }
         
         final String downloadUrl = await ref.getDownloadURL();
@@ -121,4 +122,4 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       throw Exception('Görseller yüklenirken hata oluştu: $e');
     }
   }
-} 
+}
