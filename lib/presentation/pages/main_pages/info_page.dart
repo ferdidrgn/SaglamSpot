@@ -17,28 +17,28 @@ class InfoPage extends StatelessWidget {
               title: 'İş Yeri Bilgileri',
               content: 'Kuruluşumuz, kaliteli mobilya hizmetleri sunarak müşterilerimizin memnuniyetini ön planda tutmaktadır.',
               color: Colors.brown[200]!, // Nostalgic brown color
-              icon: Icons.business,
+              imageUrl: 'assets/store_image.png', // İş Yeri Görseli
             ),
             _buildInfoRow(
               context,
               title: 'Taşıma Hizmeti',
               content: '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
               color: Colors.orange[200]!, // Nostalgic orange color
-              icon: Icons.local_shipping,
+              imageUrl: 'assets/shipping_image.png', // Taşıma Hizmeti Görseli
             ),
             _buildInfoRow(
               context,
               title: 'Ulaşım',
               content: 'Otobüs Hatları ve Durakları:\nZiyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB',
               color: Colors.green[200]!, // Nostalgic green color
-              icon: Icons.map,
+              imageUrl: 'assets/images/transport_image.png', // Ulaşım Görseli
             ),
             _buildInfoRow(
               context,
               title: 'Harita',
               content: 'Harita burada gösterilecek.',
               color: Colors.blue[200]!, // Nostalgic blue color
-              icon: Icons.place,
+              imageUrl: 'assets/map_image.png', // Harita Görseli
             ),
           ],
         ),
@@ -51,7 +51,7 @@ class InfoPage extends StatelessWidget {
     required String title,
     required String content,
     required Color color,
-    required IconData icon,
+    required String imageUrl,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -67,9 +67,12 @@ class InfoPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Icon(icon, size: 40, color: Colors.white),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
