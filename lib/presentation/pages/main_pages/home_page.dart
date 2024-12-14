@@ -7,6 +7,7 @@ import '../../../core/widgets/custom_title.dart';
 import '../../bloc/product_bloc.dart';
 import '../search_page.dart';
 import 'package:saglamspot/domain/entities/product.dart';
+import '../../../core/theme/app_theme.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,6 +44,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: CustomSearchBar(onSearchTap: _navigateToSearch),
@@ -66,10 +68,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildHeroSection() {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.all(AppConstants.defaultPadding),
       padding: const EdgeInsets.all(AppConstants.defaultPadding),
       decoration: BoxDecoration(
-        color: const Color(AppConstants.primaryColor),
+        color: AppTheme.lightTheme.colorScheme.primary,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -93,7 +96,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
-              foregroundColor: const Color(AppConstants.primaryColor),
+              foregroundColor: AppTheme.lightTheme.colorScheme.primary,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             ),
             child: const Text('Hemen Keşfet'),
@@ -157,7 +160,7 @@ class _HomePageState extends State<HomePage> {
       child: IconButton(
         icon: Icon(
           direction == -1 ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-          color: const Color(AppConstants.primaryColor),
+          color: AppTheme.lightTheme.colorScheme.primary,
         ),
         onPressed: () => _scrollList(controller, direction),
       ),
