@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:saglamspot/domain/entities/product.dart';
 
 class ProductCard extends StatefulWidget {
@@ -19,7 +19,7 @@ class _ProductCardState extends State<ProductCard> {
     final product = widget.product;
 
     return SizedBox(
-      width: 280, // Yatay genişlik
+      width: 280,
       child: Card(
         elevation: 10,
         margin: const EdgeInsets.symmetric(horizontal: 8),
