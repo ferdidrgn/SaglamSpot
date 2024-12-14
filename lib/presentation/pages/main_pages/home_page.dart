@@ -52,14 +52,8 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 20),
           _buildHeroSection(),
           const SizedBox(height: 20),
-          _buildProductSection(
-            'Yeni Gelen Ürünler',
-            products.where((p) => !p.isSold).toList(),
-          ),
-          _buildProductSection(
-            'Satılmış Ürünler (3 Ay İçinde)',
-            products.where((p) => p.isSold).toList(),
-          ),
+          _buildProductSection('Yeni Gelen Ürünlerimiz', products.where((p) => !p.isSold).toList()),
+          _buildProductSection('Satılmış Ürünlerimiz (3 Ay İçinde)', products.where((p) => p.isSold).toList()),
           const SizedBox(height: 40),
         ],
       ),
@@ -79,11 +73,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           const Text(
             'Evinizi Güzelleştirin',
-            style: TextStyle(
-              fontSize: 32,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           const Text(
