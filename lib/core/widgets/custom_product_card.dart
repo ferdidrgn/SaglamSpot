@@ -29,100 +29,10 @@ class _ProductCardState extends State<ProductCard> {
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              // Görsel ve Oklar
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        _showFullScreenImage(
-                            context, product.imageUrl[_currentImageIndex]);
-                      },
-                      child: CachedNetworkImage(
-                        imageUrl: product.imageUrl[_currentImageIndex],
-                        height: 250,
-                        width: double.infinity,
-                        fit: BoxFit.contain,
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      )),
-                  // Oklar
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: _buildArrowButton(
-                      Icons.arrow_back,
-                      onPressed: () =>
-                          _changeImageIndex(-1, product.imageUrl.length),
-                    ),
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: _buildArrowButton(
-                      Icons.arrow_forward,
-                      onPressed: () =>
-                          _changeImageIndex(1, product.imageUrl.length),
-                    ),
-                  ),
-                  // İndikatör
-                  Positioned(
-                    bottom: 8,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(
-                        product.imageUrl.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: CircleAvatar(
-                            radius: 4,
-                            backgroundColor: _currentImageIndex == index
-                                ? Colors.black
-                                : Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // Ürün Adı
-              Text(
-                product.name,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-
-              // Açıklama
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  product.desc,
-                  style: const TextStyle(fontSize: 15),
-                  maxLines: 2, // Maksimum 2 satır
-                  overflow: TextOverflow.ellipsis, // Üç nokta ekler
-                ),
-              ),
-
-              // Ürün Detayları
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    product.isSpotProduct ? "2. El Ürün" : "Sıfır Ürün",
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.normal),
-                  ),
-                  Text(
-                    '${product.price} TL',
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.normal),
-                  ),
-                ],
-              ),
+              _buildImageSection(product),
+              _buildProductName(product.name),
+              _buildProductDescription(product.desc),
+              _buildProductDetails(product),
             ],
           ),
         ),
@@ -130,28 +40,41 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  // Görsel Tam Ekran Fonksiyonu
-  void _showFullScreenImage(BuildContext context, String imageUrl) {
-    showDialog(
-      context: context,
-      builder: (_) => Dialog(
-          backgroundColor: Colors.black,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context); // Tam ekran modundan çıkış
-            },
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              width: double.infinity * 0.5,
-              height: double.infinity * 0.5,
-              fit: BoxFit.cover,
-            ),
-          )),
+  Widget _buildImageSection(Product product) {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        GestureDetector(
+          onTap: () => _showFullScreenImage(context, product.imageUrl[_currentImageIndex]),
+          child: CachedNetworkImage(
+            imageUrl: product.imageUrl[_currentImageIndex],
+            height: 250,
+            width: double.infinity,
+            fit: BoxFit.contain,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+        ),
+        _buildArrowButtons(product),
+        _buildImageIndicator(product.imageUrl.length),
+      ],
     );
   }
 
-  // Ok Butonları
-  Widget _buildArrowButton(IconData icon, {required VoidCallback onPressed}) {
+  Widget _buildArrowButtons(Product product) {
+    return Positioned(
+      top: 8,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildArrowButton(Icons.arrow_back, () => _changeImageIndex(-1, product.imageUrl.length)),
+          _buildArrowButton(Icons.arrow_forward, () => _changeImageIndex(1, product.imageUrl.length)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildArrowButton(IconData icon, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
@@ -163,7 +86,78 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  // Görsel İndeksi Değiştirme
+  Widget _buildImageIndicator(int length) {
+    return Positioned(
+      bottom: 8,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(
+          length,
+          (index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: CircleAvatar(
+              radius: 4,
+              backgroundColor: _currentImageIndex == index ? Colors.black : Colors.grey,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductName(String name) {
+    return Text(
+      name,
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    );
+  }
+
+  Widget _buildProductDescription(String desc) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        desc,
+        style: const TextStyle(fontSize: 15),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Widget _buildProductDetails(Product product) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          product.isSpotProduct ? "2. El Ürün" : "Sıfır Ürün",
+          style: const TextStyle(fontSize: 15),
+        ),
+        Text(
+          '${product.price} TL',
+          style: const TextStyle(fontSize: 15),
+        ),
+      ],
+    );
+  }
+
+  void _showFullScreenImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.black,
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
   void _changeImageIndex(int direction, int length) {
     setState(() {
       _currentImageIndex = (_currentImageIndex + direction + length) % length;
