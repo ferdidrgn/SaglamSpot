@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Defines the color palette for the app.
 class AppColors {
-  static const Color primary = Color(0xFF8B5A2B); // SaddleBrown
-  static const Color secondary = Color(0xFFD2B48C); // Tan
-  static const Color background = Color(0xFFF5F5DC); // Beige
+  static const Color primary = Color(0xFF4A90E2); // Modern Mavi
+  static const Color secondary = Color(0xFFD6E9F9); // Açık Mavi
+  static const Color background = Color(0xFFF8F9FA); // Açık Gri
   static const Color surface = Colors.white;
-  static const Color darkSurface = Color(0xFF1E1E1E);
-  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkSurface = Color(0xFF2C3E50); // Koyu Mavi
+  static const Color darkBackground = Color(0xFF34495E); // Koyu Gri
+  static const Color accent = Color(0xFFe67e22); // Turuncu
 }
 
-/// Defines the text styles for the app.
 class AppTextStyles {
   static const String fontFamily = 'Roboto';
 
@@ -26,31 +25,20 @@ class AppTextStyles {
   );
 
   static TextTheme lightTextTheme = TextTheme(
-    displayLarge: baseLight.copyWith(fontSize: 96.0, fontWeight: FontWeight.w300),
-    displayMedium: baseLight.copyWith(fontSize: 60.0, fontWeight: FontWeight.w300),
-    displaySmall: baseLight.copyWith(fontSize: 48.0, fontWeight: FontWeight.w400),
-    headlineLarge: baseLight.copyWith(fontSize: 34.0, fontWeight: FontWeight.w400),
-    headlineMedium: baseLight.copyWith(fontSize: 24.0, fontWeight: FontWeight.w400),
-    headlineSmall: baseLight.copyWith(fontSize: 20.0, fontWeight: FontWeight.w500),
-    titleLarge: baseLight.copyWith(fontSize: 16.0, fontWeight: FontWeight.w400),
-    bodyLarge: baseLight.copyWith(fontSize: 16.0, fontWeight: FontWeight.w400),
-    labelLarge: baseLight.copyWith(fontSize: 14.0, fontWeight: FontWeight.w500),
+    displayLarge: baseLight.copyWith(fontSize: 32.0, fontWeight: FontWeight.bold),
+    displayMedium: baseLight.copyWith(fontSize: 24.0, fontWeight: FontWeight.w500),
+    bodyLarge: baseLight.copyWith(fontSize: 16.0, fontWeight: FontWeight.normal),
+    labelLarge: baseLight.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold),
   );
 
   static TextTheme darkTextTheme = TextTheme(
-    displayLarge: baseDark.copyWith(fontSize: 96.0, fontWeight: FontWeight.w300),
-    displayMedium: baseDark.copyWith(fontSize: 60.0, fontWeight: FontWeight.w300),
-    displaySmall: baseDark.copyWith(fontSize: 48.0, fontWeight: FontWeight.w400),
-    headlineLarge: baseDark.copyWith(fontSize: 34.0, fontWeight: FontWeight.w400),
-    headlineMedium: baseDark.copyWith(fontSize: 24.0, fontWeight: FontWeight.w400),
-    headlineSmall: baseDark.copyWith(fontSize: 20.0, fontWeight: FontWeight.w500),
-    titleLarge: baseDark.copyWith(fontSize: 16.0, fontWeight: FontWeight.w400),
-    bodyLarge: baseDark.copyWith(fontSize: 16.0, fontWeight: FontWeight.w400),
-    labelLarge: baseDark.copyWith(fontSize: 14.0, fontWeight: FontWeight.w500),
+    displayLarge: baseDark.copyWith(fontSize: 32.0, fontWeight: FontWeight.bold),
+    displayMedium: baseDark.copyWith(fontSize: 24.0, fontWeight: FontWeight.w500),
+    bodyLarge: baseDark.copyWith(fontSize: 16.0, fontWeight: FontWeight.normal),
+    labelLarge: baseDark.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold),
   );
 }
 
-/// Defines the theme configuration for the app.
 class AppTheme {
   static ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
@@ -111,18 +99,4 @@ class AppTheme {
         ),
         systemOverlayStyle: SystemUiOverlayStyle.light,
       );
-
-  /// Utility methods for gradient colors.
-  static List<Color> gradientColors(BuildContext context, bool isConditionMet) {
-    final brightness = Theme.of(context).brightness;
-    return isConditionMet
-        ? (brightness == Brightness.light
-            ? [AppColors.primary.withOpacity(0.7), AppColors.primary]
-            : [AppColors.secondary.withOpacity(0.7), AppColors.secondary])
-        : [Colors.grey[500]!, Colors.grey[800]!];
-  }
-
-  static List<Color> gradientOpacityColors() {
-    return [Colors.transparent, Colors.black.withOpacity(0.3)];
-  }
 }
