@@ -79,22 +79,16 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<SearchProducts>(_onSearchProducts);
   }
 
-  Future<void> _onLoadProducts(
-      LoadProducts event,
-      Emitter<ProductState> emit,
-      ) async {
+  Future<void> _onLoadProducts(LoadProducts event, Emitter<ProductState> emit) async {
     emit(ProductLoading());
     final result = await repository.getProducts();
     result.fold(
-          (failure) => emit(ProductError(failure.message)),
-          (products) => emit(ProductLoaded(products)),
+      (failure) => emit(ProductError(failure.message)),
+      (products) => emit(ProductLoaded(products)),
     );
   }
 
-  Future<void> _onFilterProducts(
-      FilterProducts event,
-      Emitter<ProductState> emit,
-      ) async {
+  Future<void> _onFilterProducts(FilterProducts event, Emitter<ProductState> emit) async {
     emit(ProductLoading());
     final result = await repository.getFilteredProducts(
       condition: event.condition,
@@ -102,26 +96,28 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       maxPrice: event.maxPrice,
     );
     result.fold(
-          (failure) => emit(ProductError(failure.message)),
-          (products) => emit(ProductLoaded(products)),
+      (failure) => emit(ProductError(failure.message)),
+      (products) => emit(ProductLoaded(products)),
     );
   }
 
-  Future<void> _onSearchProducts(
-      SearchProducts event,
-      Emitter<ProductState> emit,
-      ) async {
+  Future<void> _onSearchProducts(SearchProducts event, Emitter<ProductState> emit) async {
     emit(ProductLoading());
     final result = await repository.getProducts();
     result.fold(
-          (failure) => emit(ProductError(failure.message)),
-          (products) {
-        final filteredProducts = products.where((product) =>
-        product.name.toLowerCase().contains(event.query.toLowerCase()) ||
-            product.desc.toLowerCase().contains(event.query.toLowerCase())
-        ).toList();
+      (failure) => emit(ProductError(failure.message)),
+      (products) {
+        final filteredProducts = _filterProductsByQuery(products, event.query);
         emit(ProductLoaded(filteredProducts));
       },
     );
   }
-} 
+
+  List<Product> _filterProductsByQuery(List<Product> products, String query) {
+    final lowerCaseQuery = query.toLowerCase();
+    return products.where((product) {
+      return product.name.toLowerCase().contains(lowerCaseQuery) ||
+             product.desc.toLowerCase().contains(lowerCaseQuery);
+    }).toList();
+  }
+}
