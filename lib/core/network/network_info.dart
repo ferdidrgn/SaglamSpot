@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 abstract class NetworkInfo {
@@ -6,16 +5,15 @@ abstract class NetworkInfo {
 }
 
 class NetworkInfoImpl implements NetworkInfo {
-  final InternetConnectionChecker connectionChecker;
+  final InternetConnectionChecker? connectionChecker;
 
-  NetworkInfoImpl(this.connectionChecker);
+  NetworkInfoImpl(this.connectionChecker); // Burada nullable
 
   @override
   Future<bool> get isConnected async {
-    if (kIsWeb) {
-      // Web platformunda her zaman bağlı kabul et
-      return true;
+    if (connectionChecker == null) {
+      return false; // veya uygun bir varsayılan değer
     }
-    return await connectionChecker.hasConnection;
+    return await connectionChecker!.hasConnection; // Null kontrolü
   }
 }
