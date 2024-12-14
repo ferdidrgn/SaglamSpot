@@ -5,7 +5,7 @@ import 'package:saglamspot/presentation/bloc/product_bloc.dart';
 import 'package:saglamspot/presentation/pages/main_pages/main_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'web_config.dart';
-import 'injection.dart' as di;
+import 'dependency_injection.dart' as di;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
