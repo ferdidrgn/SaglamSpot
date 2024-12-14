@@ -66,6 +66,8 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   @override
   Future<void> addProduct(ProductModel product, List<dynamic> images) async {
+    if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı.');
+
     try {
       final imageUrls = await _uploadImages(images);
       final nowDateTime = DateFormatter.nowFormatDateTime();
