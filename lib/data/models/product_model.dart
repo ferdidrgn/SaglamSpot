@@ -41,10 +41,7 @@ class ProductModel {
       price: (data['price'] as num).toDouble(),
       isSold: data['isSold'] ?? false,
       isSpotProduct: data['isSpotProduct'] ?? false,
-      imageUrl: (data['imageUrl'] as List<dynamic>?)
-              ?.map((item) => item as String)
-              .toList() ??
-          [],
+      imageUrl: List<String>.from(data['imageUrl'] ?? []),
     );
   }
 
@@ -104,7 +101,7 @@ class ProductModel {
       price: price,
       isSpotProduct: isSpotProduct,
       isSold: isSold,
-      imageUrl: imageUrl.isNotEmpty ? imageUrl : [],
+      imageUrl: imageUrl,
     );
   }
 
