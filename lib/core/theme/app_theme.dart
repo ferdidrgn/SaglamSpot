@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF4A90E2); // Modern Mavi
-  static const Color secondary = Color(0xFFD6E9F9); // Açık Mavi
-  static const Color background = Color(0xFFF8F9FA); // Açık Gri
-  static const Color surface = Colors.white;
-  static const Color darkSurface = Color(0xFF2C3E50); // Koyu Mavi
-  static const Color darkBackground = Color(0xFF34495E); // Koyu Gri
-  static const Color accent = Color(0xFFe67e22); // Turuncu
+  static const Color primary = Color(0xFF8B4513); // Saddle Brown (Kahverengi)
+  static const Color secondary = Color(0xFFD2B48C); // Tan (Bej)
+  static const Color background = Color(0xFFF5F5DC); // Beige (Krem)
+  static const Color surface = Color(0xFFFFFFFF); // Beyaz
+  static const Color accent = Color(0xFFDEB887); // Burlywood (Açık Kahverengi)
+  static const Color darkSurface = Color(0xFF3E2723); // Koyu Kahverengi
+  static const Color darkBackground = Color(0xFF3C3F41); // Koyu Gri
 }
 
 class AppTextStyles {
@@ -58,7 +58,7 @@ class AppTheme {
         appBarTheme: _appBarTheme(AppColors.primary),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: AppColors.surface,
-          selectedItemColor: AppColors.primary,
+          selectedItemColor: AppColors.accent,
           unselectedItemColor: Colors.grey,
         ),
         textTheme: AppTextStyles.lightTextTheme,
