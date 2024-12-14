@@ -8,8 +8,8 @@ class AppConstants {
   static const String cacheUser = 'CACHE_USER';
 
   // Theme Constants
-  static const primaryColor = 0xFF8B4513;
-  static const secondaryColor = 0xFFD2691E;
+  static const int primaryColor = 0xFF8B4513; // Kahverengi
+  static const int secondaryColor = 0xFFD2691E; // Koyu Turuncu
 
   // Layout Constants
   static const double headerHeight = 70.0;
@@ -19,4 +19,8 @@ class AppConstants {
   // Text Styles
   static const double headerFontSize = 24.0;
   static const double navigationFontSize = 16.0;
+
+  // Other Constants
+  static const String appName = 'My Awesome App'; // Uygulama adı
+  static const String copyright = '© 2024 My Company'; // Telif hakkı
 }
