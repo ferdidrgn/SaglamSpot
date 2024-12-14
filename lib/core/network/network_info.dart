@@ -6,7 +6,7 @@ abstract class NetworkInfo {
 }
 
 class NetworkInfoImpl implements NetworkInfo {
-  final InternetConnectionChecker? connectionChecker;
+  final InternetConnectionChecker connectionChecker;
 
   NetworkInfoImpl(this.connectionChecker);
 
@@ -16,6 +16,6 @@ class NetworkInfoImpl implements NetworkInfo {
       // Web platformunda her zaman bağlı kabul et
       return true;
     }
-    return await connectionChecker?.hasConnection ?? true;
+    return await connectionChecker.hasConnection;
   }
-} 
+}
