@@ -12,7 +12,6 @@ class InfoPage extends StatelessWidget {
         backgroundColor: Colors.brown,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             _buildDecoratedCard(
@@ -57,7 +56,6 @@ class InfoPage extends StatelessWidget {
     required String imageUrl,
   }) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
@@ -81,12 +79,10 @@ class InfoPage extends StatelessWidget {
                     BlendMode.dstATop,
                   ),
                 ),
-                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
             child: Image.asset(
               imageUrl,
               height: MediaQuery.of(context).size.height * 0.4,
