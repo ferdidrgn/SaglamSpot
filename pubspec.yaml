@@ -89,7 +89,8 @@ flutter:
   assets:
     - assets/images/furniture_shop.png
     - assets/images/volvo_transport.jpg
-
+    - assets/images/taksim_train.jpg
+    - assets/images/map.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
