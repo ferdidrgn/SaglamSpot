@@ -18,24 +18,21 @@ class InfoPage extends StatelessWidget {
             _buildDecoratedCard(
               context,
               title: 'İş Yeri Bilgileri',
-              content:
-                  'Kuruluşumuz, kaliteli mobilya hizmetleri sunarak müşterilerimizin memnuniyetini ön planda tutmaktadır.',
+              content: 'Kuruluşumuz, kaliteli mobilya hizmetleri sunarak müşterilerimizin memnuniyetini ön planda tutmaktadır.',
               color: Colors.brown[300]!,
               imageUrl: 'assets/images/furniture_shop.png',
             ),
             _buildDecoratedCard(
               context,
               title: 'Taşıma Hizmeti',
-              content:
-                  '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
+              content: '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
               color: Colors.orange[300]!,
               imageUrl: 'assets/images/volvo_transport.jpg',
             ),
             _buildDecoratedCard(
               context,
               title: 'Ulaşım',
-              content:
-                  'Otobüs Hatları ve Durakları:\nZiyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB',
+              content: 'Otobüs Hatları ve Durakları:\nZiyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB',
               color: Colors.green[300]!,
               imageUrl: 'assets/images/taksim_train.jpg',
             ),
@@ -67,37 +64,35 @@ class InfoPage extends StatelessWidget {
           BoxShadow(
             color: Colors.black26,
             blurRadius: 8,
-            offset: Offset(0, 4), // Shadow position
+            offset: Offset(0, 4),
           ),
         ],
       ),
       child: Stack(
         children: [
-          // Background pattern or shape
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(imageUrl), // Add a furniture pattern image
+                  image: AssetImage(imageUrl),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                      Colors.white.withOpacity(0.5),
-                      BlendMode.dstATop), // Optional overlay for better contrast
+                    Colors.white.withOpacity(0.5),
+                    BlendMode.dstATop,
+                  ),
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
-          // Full-width image with appropriate height
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
               imageUrl,
-              height: MediaQuery.of(context).size.height * 0.3, // Set height to 30% of the screen
+              height: MediaQuery.of(context).size.height * 0.3,
               fit: BoxFit.cover,
             ),
           ),
-          // Overlay text centered
           Center(
             child: Container(
               padding: const EdgeInsets.all(16.0),
@@ -106,27 +101,27 @@ class InfoPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Center text vertically
-                crossAxisAlignment: CrossAxisAlignment.center, // Center text horizontally
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 24, // Increased font size for title
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
-                    textAlign: TextAlign.center, // Center text
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     content,
                     style: const TextStyle(
-                      fontSize: 16, // Adjusted font size for content
+                      fontSize: 16,
                       color: Colors.white,
-                      height: 1.5, // Increased line height for better readability
+                      height: 1.5,
                     ),
-                    textAlign: TextAlign.center, // Center text
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
