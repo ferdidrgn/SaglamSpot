@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/custom_decorated_card.dart';
+
 class InfoPage extends StatelessWidget {
   const InfoPage({super.key});
 
@@ -14,23 +16,21 @@ class InfoPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildDecoratedCard(
-              context,
+            CustomDecoratedCard(
               title: 'İş Yeri Bilgileri',
-              content: 'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
+              content:
+                  'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
               color: Colors.brown[200]!,
               imageUrl: 'assets/images/bicycle_france.jpg',
             ),
-            _buildDecoratedCard(
-              context,
+            CustomDecoratedCard(
               title: 'Taşıma Hizmeti',
               content:
                   '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
               color: Colors.orange[300]!,
               imageUrl: 'assets/images/volvo_transport.jpg',
             ),
-            _buildDecoratedCard(
-              context,
+            CustomDecoratedCard(
               title: 'Ulaşım',
               content: 'Otobüs Hatları ve Durakları:\n'
                   'Ziyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB, 14KS, 18UK, KM46-1\n'
@@ -39,8 +39,7 @@ class InfoPage extends StatelessWidget {
               color: Colors.green[200]!,
               imageUrl: 'assets/images/tram_bus.jpg',
             ),
-            _buildDecoratedCard(
-              context,
+            CustomDecoratedCard(
               title: 'Harita',
               content: 'Harita burada gösterilecek.',
               color: Colors.blue[300]!,
@@ -48,88 +47,6 @@ class InfoPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildDecoratedCard(
-    BuildContext context, {
-    required String title,
-    required String content,
-    required Color color,
-    required String imageUrl,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imageUrl),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.white.withOpacity(0.5),
-                    BlendMode.dstATop,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          ClipRRect(
-            child: Image.asset(
-              imageUrl,
-              height: MediaQuery.of(context).size.height * 0.4,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.87,
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    content,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

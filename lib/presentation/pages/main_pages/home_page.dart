@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/widgets/custom_decorated_card.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_search.dart';
 import '../../../core/widgets/custom_title.dart';
@@ -51,6 +52,14 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 20),
           _buildHeroSection(),
+          const SizedBox(height: 20),
+           CustomDecoratedCard(
+              title: 'Merhaba',
+              content:
+                  'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
+              color: Colors.brown[200]!,
+              imageUrl: 'assets/images/bicycle_france.jpg',
+            ),
           const SizedBox(height: 20),
           _buildProductSection('Yeni Gelen Ürünler', products.where((p) => !p.isSold).toList()),
           _buildProductSection('Satılmış Ürünler (3 Ay İçinde)', products.where((p) => p.isSold).toList()),
