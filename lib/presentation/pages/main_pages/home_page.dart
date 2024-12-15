@@ -29,7 +29,11 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is ProductLoading) {
-          return Container(padding: const EdgeInsets.all(50), alignment: Alignment.center, child: const CircularProgressIndicator());
+          return Container(
+            padding: const EdgeInsets.all(50),
+            alignment: Alignment.center,
+            child: const CircularProgressIndicator(),
+          );
         } else if (state is ProductLoaded) {
           return _buildContent(state.products);
         } else if (state is ProductError) {
@@ -51,67 +55,19 @@ class _HomePageState extends State<HomePage> {
             child: CustomSearchBar(onSearchTap: _navigateToSearch),
           ),
           const SizedBox(height: 20),
-          _buildHeroSection(),
-          const SizedBox(height: 20),
           CustomDecoratedCard(
-            title: 'Merhaba',
-            content:
-                'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
+            title: 'Evinizi Güzelleştirin',
+            content: 'Kaliteli ve şık mobilyalarla yaşam alanınızı yenileyin',
             color: Colors.brown[200]!,
             imageUrl: 'assets/images/bicycle_france.jpg',
           ),
           const SizedBox(height: 20),
-          _buildProductSection(
-              'Yeni Gelen Ürünler', products.where((p) => !p.isSold).toList()),
-          _buildProductSection('Satılmış Ürünler (3 Ay İçinde)',
+          _buildProductSection('Yeni Gelen Ürünlerimiz',
+              products.where((p) => !p.isSold).toList()),
+          const SizedBox(height: 20),
+          _buildProductSection('Satılmış Ürünlerimiz (3 Ay İçinde)',
               products.where((p) => p.isSold).toList()),
           const SizedBox(height: 40),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeroSection() {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(AppConstants.defaultPadding),
-      padding: const EdgeInsets.all(AppConstants.defaultPadding),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Evinizi Güzelleştirin',
-            style: TextStyle(
-                fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Kaliteli ve şık mobilyalarla yaşam alanınızı yenileyin',
-            style: TextStyle(fontSize: 18, color: Colors.white70),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent,
-              surfaceTintColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
-            ),
-            child: const Text('Hemen Keşfet', style: TextStyle(fontSize: 16)),
-          ),
         ],
       ),
     );
@@ -139,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       return Container(
                         width: 300,
-                        padding: const EdgeInsets.only(right: 16),
+                        margin: const EdgeInsets.only(right: 16),
                         child: ProductCard(product: products[index]),
                       );
                     },
