@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:saglamspot/domain/entities/product.dart';
 
 class ProductCard extends StatefulWidget {
@@ -41,23 +40,51 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _buildImageSection(Product product) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        GestureDetector(
-          onTap: () => _showFullScreenImage(context, product.imageUrl[_currentImageIndex]),
-          child: CachedNetworkImage(
-            imageUrl: product.imageUrl[_currentImageIndex],
-            height: 250,
-            width: double.infinity,
-            fit: BoxFit.contain,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+    return Container(
+      height: 250,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.grey[200],
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => _showFullScreenImage(
+                context,
+                product.imageUrl.isNotEmpty
+                    ? product.imageUrl[_currentImageIndex]
+                    : ''),
+            child: product.imageUrl.isNotEmpty
+                ? Image.network(
+                    product.imageUrl[_currentImageIndex],
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.brown),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Icon(Icons.error, size: 50),
+                      );
+                    },
+                  )
+                : const Center(
+                    child: Icon(Icons.image, size: 100, color: Colors.grey),
+                  ),
           ),
-        ),
-        _buildArrowButtons(product),
-        _buildImageIndicator(product.imageUrl.length),
-      ],
+          _buildArrowButtons(product),
+          _buildImageIndicator(product.imageUrl.length),
+        ],
+      ),
     );
   }
 
@@ -67,8 +94,10 @@ class _ProductCardState extends State<ProductCard> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildArrowButton(Icons.arrow_back, () => _changeImageIndex(-1, product.imageUrl.length)),
-          _buildArrowButton(Icons.arrow_forward, () => _changeImageIndex(1, product.imageUrl.length)),
+          _buildArrowButton(Icons.arrow_back,
+              () => _changeImageIndex(-1, product.imageUrl.length)),
+          _buildArrowButton(Icons.arrow_forward,
+              () => _changeImageIndex(1, product.imageUrl.length)),
         ],
       ),
     );
@@ -97,7 +126,8 @@ class _ProductCardState extends State<ProductCard> {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: CircleAvatar(
               radius: 4,
-              backgroundColor: _currentImageIndex == index ? Colors.black : Colors.grey,
+              backgroundColor:
+                  _currentImageIndex == index ? Colors.black : Colors.grey,
             ),
           ),
         ),
@@ -147,12 +177,29 @@ class _ProductCardState extends State<ProductCard> {
         backgroundColor: Colors.black,
         child: GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
+          child: imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(Icons.error, size: 50),
+                    );
+                  },
+                )
+              : const Center(
+                  child: Icon(Icons.image, size: 100, color: Colors.grey),
+                ),
         ),
       ),
     );
