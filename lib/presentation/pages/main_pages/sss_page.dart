@@ -7,7 +7,6 @@ class SSSPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('SSS (Sıkça Sorulan Sorular)')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -19,10 +18,12 @@ class SSSPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text("1. Ürün nasıl eklenir?"),
-            const Text("Cevap: Ürün eklemek için 'Ürün Ekle' butonuna tıklayın."),
+            const Text(
+                "Cevap: Ürün eklemek için 'Ürün Ekle' butonuna tıklayın."),
             const SizedBox(height: 16),
             const Text("2. Görsel nasıl yüklenir?"),
-            const Text("Cevap: Görsel seçmek için 'Görsel Seç' butonuna tıklayın."),
+            const Text(
+                "Cevap: Görsel seçmek için 'Görsel Seç' butonuna tıklayın."),
             const SizedBox(height: 16),
             const Text("3. Ürün satıldı mı? Nasıl belirlenir?"),
             const Text("Cevap: 'Ürün Satıldı mı?' kutucuğuna tıklayın."),
@@ -32,7 +33,8 @@ class SSSPage extends StatelessWidget {
                 // AddProductPage sayfasına yönlendirme
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AddProductPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const AddProductPage()),
                 );
               },
               child: const Text('Ürün Ekle Sayfasına Git'),
