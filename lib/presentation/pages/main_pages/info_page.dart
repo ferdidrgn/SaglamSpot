@@ -17,22 +17,27 @@ class InfoPage extends StatelessWidget {
             _buildDecoratedCard(
               context,
               title: 'İş Yeri Bilgileri',
-              content: 'Kuruluşumuz, kaliteli mobilya hizmetleri sunarak müşterilerimizin memnuniyetini ön planda tutmaktadır.',
-              color: Colors.brown[300]!,
+              content:
+                  'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
+              color: Colors.brown[200]!,
               imageUrl: 'assets/images/furniture_shop.png',
             ),
             _buildDecoratedCard(
               context,
               title: 'Taşıma Hizmeti',
-              content: '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
+              content:
+                  '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
               color: Colors.orange[300]!,
               imageUrl: 'assets/images/volvo_transport.jpg',
             ),
             _buildDecoratedCard(
               context,
               title: 'Ulaşım',
-              content: 'Otobüs Hatları ve Durakları:\nZiyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB',
-              color: Colors.green[300]!,
+              content: 'Otobüs Hatları ve Durakları:\n'
+                  'Ziyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB, 14KS, 18UK, KM46-1\n'
+                  'İçerenköy Durağı Kayışdağı Yönü: 19, 19F, 19FB, 14KS, 18UK, KM46-1\n'
+                  'İçerenköy Durağı Yeniyol\'dan: 10, 319, KM46, 13AB, 14T',
+              color: Colors.green[200]!,
               imageUrl: 'assets/images/tram_bus.jpg',
             ),
             _buildDecoratedCard(
