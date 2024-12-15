@@ -33,7 +33,7 @@ class InfoPage extends StatelessWidget {
               title: 'Ulaşım',
               content: 'Otobüs Hatları ve Durakları:\nZiyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB',
               color: Colors.green[300]!,
-              imageUrl: 'assets/images/taksim_train.jpg',
+              imageUrl: 'assets/images/tram_bus.jpg',
             ),
             _buildDecoratedCard(
               context,
