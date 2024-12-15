@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomDecoratedCard extends StatelessWidget {
@@ -54,18 +53,18 @@ class CustomDecoratedCard extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-           Align(
+          Align(
             alignment: Alignment.centerRight,
-            child:
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              imageUrl,
-              width: 100,
-              height: MediaQuery.of(context).size.height * 0.4,
-              fit: BoxFit.cover,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                imageUrl,
+                width: 100,
+                height: MediaQuery.of(context).size.height * 0.4,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),),
+          ),
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -102,7 +101,6 @@ class CustomDecoratedCard extends StatelessWidget {
               ),
             ),
           ),
-      
         ],
       ),
     );
