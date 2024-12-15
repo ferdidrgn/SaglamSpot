@@ -17,28 +17,28 @@ class InfoPage extends StatelessWidget {
               title: 'İş Yeri Bilgileri',
               content: 'Kuruluşumuz, kaliteli mobilya hizmetleri sunarak müşterilerimizin memnuniyetini ön planda tutmaktadır.',
               color: Colors.brown[200]!, // Nostalgic brown color
-              imageUrl: 'assets/store_image.png', // İş Yeri Görseli
+              imageUrl: 'assets/images/furniture_shop.png', // İş Yeri Görseli
             ),
             _buildInfoRow(
               context,
               title: 'Taşıma Hizmeti',
               content: '1. İçerenköy Mahallesi\n2. İçerenköy Mah yakın çevreleri',
               color: Colors.orange[200]!, // Nostalgic orange color
-              imageUrl: 'assets/shipping_image.png', // Taşıma Hizmeti Görseli
+              imageUrl: 'assets/images/volvo_transport.jpg', // Taşıma Hizmeti Görseli
             ),
             _buildInfoRow(
               context,
               title: 'Ulaşım',
               content: 'Otobüs Hatları ve Durakları:\nZiyapaşa Durağı Kadıköy Yönü: 19, 19F, 19FB',
               color: Colors.green[200]!, // Nostalgic green color
-              imageUrl: 'assets/images/transport_image.png', // Ulaşım Görseli
+              imageUrl: 'assets/images/volvo_transport.jpg', // Ulaşım Görseli
             ),
             _buildInfoRow(
               context,
               title: 'Harita',
               content: 'Harita burada gösterilecek.',
               color: Colors.blue[200]!, // Nostalgic blue color
-              imageUrl: 'assets/map_image.png', // Harita Görseli
+              imageUrl: 'assets/images/furniture_shop.png', // Harita Görseli
             ),
           ],
         ),
