@@ -32,10 +32,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWideScreen = screenWidth > 1200;
-    final isMediumScreen = screenWidth > 800 && screenWidth <= 1200;
-
     return Scaffold(
       body: Column(
         children: [
@@ -50,12 +46,7 @@ class _MainScreenState extends State<MainScreen> {
                 child: Column(
                   children: [
                     // İçerik alanı
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: isWideScreen ? 1500 : (isMediumScreen ? 900 : 600),
-                      ),
-                      child: _pages[_selectedIndex],
-                    ),
+                    _pages[_selectedIndex],
                     // Footer
                     _buildFooter(),
                   ],
@@ -120,15 +111,15 @@ class _MainScreenState extends State<MainScreen> {
         ),
         const SizedBox(height: 16),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              item,
-              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-            ),
-          ),
-        )),
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: TextButton(
+                onPressed: () {},
+                child: Text(
+                  item,
+                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                ),
+              ),
+            )),
       ],
     );
   }
