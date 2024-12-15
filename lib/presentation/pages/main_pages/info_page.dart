@@ -38,11 +38,6 @@ class InfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mobilya Dükkanı Bilgi Sayfası'),
-        centerTitle: true,
-        backgroundColor: Colors.brown,
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: infoCards.map((info) {
@@ -63,13 +58,13 @@ class InfoPage extends StatelessWidget {
       case 'brown':
         return Colors.brown[200]!;
       case 'orange':
-        return Colors.orange[300]!;
+        return Colors.orange[200]!;
       case 'green':
         return Colors.green[200]!;
       case 'blue':
-        return Colors.blue[300]!;
+        return Colors.blue[200]!;
       default:
-        return Colors.white;
+        return Colors.black26;
     }
   }
 }
