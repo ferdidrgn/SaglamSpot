@@ -44,14 +44,6 @@ class CustomDecoratedCard extends StatelessWidget {
               ),
             ),
           ),
-          ClipRRect(
-            child: Image.asset(
-              imageUrl,
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.5,
-              fit: BoxFit.cover,
-            ),
-          ),
           Align(
             alignment: Alignment.centerLeft,
             child: ClipRRect(
@@ -59,7 +51,7 @@ class CustomDecoratedCard extends StatelessWidget {
               child: Image.asset(
                 imageUrl,
                 width: 100,
-                height: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height,
                 fit: BoxFit.cover,
               ),
             ),
@@ -71,7 +63,7 @@ class CustomDecoratedCard extends StatelessWidget {
               child: Image.asset(
                 imageUrl,
                 width: 100,
-                height: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height,
                 fit: BoxFit.cover,
               ),
             ),
