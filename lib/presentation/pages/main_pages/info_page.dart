@@ -19,7 +19,7 @@ class InfoPage extends StatelessWidget {
               title: 'İş Yeri Bilgileri',
               content: 'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
               color: Colors.brown[200]!,
-              imageUrl: 'assets/images/furniture_shop.png',
+              imageUrl: 'assets/images/bicycle_france.jpg',
             ),
             _buildDecoratedCard(
               context,
