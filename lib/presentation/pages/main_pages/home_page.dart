@@ -76,8 +76,17 @@ class _HomePageState extends State<HomePage> {
   Widget _buildProductSection(String title, List<Product> products) {
     final ScrollController scrollController = ScrollController();
 
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(AppConstants.defaultPadding),
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(174, 101, 41, 0.8),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
