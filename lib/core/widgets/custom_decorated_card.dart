@@ -17,10 +17,9 @@ class CustomDecoratedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10), // Space between cards
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: const BoxDecoration(
+        boxShadow: [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 8,
@@ -33,7 +32,6 @@ class CustomDecoratedCard extends StatelessWidget {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
                   image: AssetImage(imageUrl),
                   fit: BoxFit.cover,
@@ -46,12 +44,23 @@ class CustomDecoratedCard extends StatelessWidget {
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
             child: Image.asset(
               imageUrl,
-              width: 100,
+              width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.4,
               fit: BoxFit.cover,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                imageUrl,
+                width: 100,
+                height: MediaQuery.of(context).size.height * 0.4,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Align(
@@ -72,11 +81,9 @@ class CustomDecoratedCard extends StatelessWidget {
             right: 20,
             bottom: 20,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.87,
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -85,7 +92,7 @@ class CustomDecoratedCard extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 32,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -95,7 +102,7 @@ class CustomDecoratedCard extends StatelessWidget {
                   Text(
                     content,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 20,
                       color: Colors.white,
                       height: 1.5,
                     ),
