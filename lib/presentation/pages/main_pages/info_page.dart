@@ -89,12 +89,14 @@ class InfoPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
               imageUrl,
-              height: MediaQuery.of(context).size.height * 0.3,
+              height: MediaQuery.of(context).size.height * 0.4,
               fit: BoxFit.cover,
             ),
           ),
-          Center(
+          Align(
+            alignment: Alignment.centerRight,
             child: Container(
+              width: MediaQuery.of(context).size.width * 0.87,
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.8),
