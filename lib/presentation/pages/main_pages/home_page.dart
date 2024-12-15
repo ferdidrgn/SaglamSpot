@@ -53,16 +53,18 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 20),
           _buildHeroSection(),
           const SizedBox(height: 20),
-           CustomDecoratedCard(
-              title: 'Merhaba',
-              content:
-                  'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
-              color: Colors.brown[200]!,
-              imageUrl: 'assets/images/bicycle_france.jpg',
-            ),
+          CustomDecoratedCard(
+            title: 'Merhaba',
+            content:
+                'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz. Her bir ürünümüz, zarafet ve işlevselliği bir araya getirerek, evlerinizi ve ofislerinizi hayalinizdeki mekanlara dönüştürmeyi hedefliyor. Bizimle, sadece bir alışveriş değil, aynı zamanda bir yaşam tarzı deneyimi yaşıyorsunuz.',
+            color: Colors.brown[200]!,
+            imageUrl: 'assets/images/bicycle_france.jpg',
+          ),
           const SizedBox(height: 20),
-          _buildProductSection('Yeni Gelen Ürünler', products.where((p) => !p.isSold).toList()),
-          _buildProductSection('Satılmış Ürünler (3 Ay İçinde)', products.where((p) => p.isSold).toList()),
+          _buildProductSection(
+              'Yeni Gelen Ürünler', products.where((p) => !p.isSold).toList()),
+          _buildProductSection('Satılmış Ürünler (3 Ay İçinde)',
+              products.where((p) => p.isSold).toList()),
           const SizedBox(height: 40),
         ],
       ),
@@ -89,7 +91,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           const Text(
             'Evinizi Güzelleştirin',
-            style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           const Text(
@@ -104,7 +107,8 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: AppColors.accent,
               surfaceTintColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
             ),
             child: const Text('Hemen Keşfet', style: TextStyle(fontSize: 16)),
           ),
