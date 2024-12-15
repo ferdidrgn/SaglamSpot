@@ -33,6 +33,7 @@ class CustomDecoratedCard extends StatelessWidget {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
                   image: AssetImage(imageUrl),
                   fit: BoxFit.cover,
@@ -65,8 +66,11 @@ class CustomDecoratedCard extends StatelessWidget {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.center,
+          Positioned.fill(
+            top: 20,
+            left: 20,
+            right: 20,
+            bottom: 20,
             child: Container(
               width: MediaQuery.of(context).size.width * 0.87,
               padding: const EdgeInsets.all(16.0),
