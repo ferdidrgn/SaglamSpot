@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is ProductLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(padding: const EdgeInsets.all(50), alignment: Alignment.center, child: const CircularProgressIndicator());
         } else if (state is ProductLoaded) {
           return _buildContent(state.products);
         } else if (state is ProductError) {
