@@ -23,7 +23,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
   final List<dynamic> _selectedImages = [];
   bool _isSold = false;
-  String _productCondition = "Sıfır Ürün";
+  bool _isSecondHand = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +49,31 @@ class _AddProductPageState extends State<AddProductPage> {
               return const Center(child: CircularProgressIndicator());
             }
 
-            return Column(
-              children: [
-                ..._buildInputFields(),
-                ElevatedButton(
-                  onPressed: _pickImages,
-                  child: const Text('Görsel Seç'),
-                ),
-                if (_selectedImages.isNotEmpty) _buildImagePreview(),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _addProduct,
-                  child: const Text('Ürün Ekle'),
-                ),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 20),
+                  ..._buildInputFields(),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _pickImages,
+                      child: const Text('Görsel Seç'),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  if (_selectedImages.isNotEmpty) _buildImagePreview(),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _addProduct,
+                      child: const Text('Ürün Ekle'),
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),
@@ -70,46 +81,74 @@ class _AddProductPageState extends State<AddProductPage> {
     );
   }
 
+  Widget _buildHeader() {
+    return Center(
+      child: Column(
+        children: [
+          const Text(
+            'Yeni Ürün Ekle',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            'İlgili bilgileri doldurun ve görsel ekleyin',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
   List<Widget> _buildInputFields() {
     return [
-      TextField(
-        controller: _nameController,
-        decoration: const InputDecoration(labelText: 'Ürün Adı'),
-      ),
-      TextField(
-        controller: _descController,
-        decoration: const InputDecoration(labelText: 'Ürün Açıklaması'),
-      ),
-      TextField(
-        controller: _categoryController,
-        decoration: const InputDecoration(labelText: 'Kategori'),
-      ),
-      TextField(
-        controller: _priceController,
-        keyboardType: TextInputType.number,
-        decoration: const InputDecoration(labelText: 'Fiyat'),
-      ),
-      Row(
-        children: [
-          const Text('Ürün Satıldı mı?'),
-          Checkbox(
-            value: _isSold,
-            onChanged: (value) => setState(() => _isSold = value ?? false),
-          ),
-        ],
-      ),
-      Row(
-        children: [
-          const Text('Ürün 2. El mi?'),
-          Checkbox(
-            value: _productCondition == "2. El Ürün",
-            onChanged: (value) => setState(() {
-              _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün";
-            }),
-          ),
-        ],
-      ),
+      _buildTextField(_nameController, 'Ürün Adı'),
+      _buildTextField(_descController, 'Ürün Açıklaması'),
+      _buildTextField(_categoryController, 'Kategori'),
+      _buildTextField(_priceController, 'Fiyat', isNumeric: true),
+      _buildSwitchRow('Ürün Satıldı mı?', _isSold, (value) {
+        setState(() {
+          _isSold = value;
+        });
+      }),
+      _buildSwitchRow('Ürün 2. El mi?', _isSecondHand, (value) {
+        setState(() {
+          _isSecondHand = value;
+        });
+      }),
     ];
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, {bool isNumeric = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchRow(String label, bool value, ValueChanged<bool> onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 16)),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildImagePreview() {
@@ -120,11 +159,14 @@ class _AddProductPageState extends State<AddProductPage> {
         itemCount: _selectedImages.length,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(4.0),
-          child: Image.memory(
-            _selectedImages[index],
-            height: 80,
-            width: 80,
-            fit: BoxFit.cover,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.memory(
+              _selectedImages[index],
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
@@ -132,30 +174,30 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   Future<void> _pickImages() async {
-  final images = await _imageSelector.pickImages();
-  if (images != null) {
-    if (images.length + _selectedImages.length > 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
-      );
-      return;
-    }
-    // Geçerli türdeki görselleri filtrele
-    final validImages = images.where((image) =>
-        image is File || image is Uint8List).toList();
+    final images = await _imageSelector.pickImages();
+    if (images != null) {
+      if (images.length + _selectedImages.length > 8) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
+        );
+        return;
+      }
 
-    if (validImages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Geçersiz görsel türü. bu en baştaki NOOOOTT')),
-      );
-      return;
-    }
+      final validImages = images.where((image) =>
+          image is File || image is Uint8List).toList();
 
-    setState(() {
-      _selectedImages.addAll(validImages);
-    });
+      if (validImages.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Geçersiz görsel türü.')),
+        );
+        return;
+      }
+
+      setState(() {
+        _selectedImages.addAll(validImages);
+      });
+    }
   }
-}
 
   Future<void> _addProduct() async {
     if (_validateInputs()) {
@@ -169,11 +211,10 @@ class _AddProductPageState extends State<AddProductPage> {
         category: _categoryController.text,
         price: double.tryParse(_priceController.text) ?? 0.0,
         isSold: _isSold,
-        isSpotProduct: _productCondition == "2. El Ürün",
+        isSpotProduct: _isSecondHand,
         imageUrl: [],
       );
 
-      // Bloc'a AddProduct olayını gönder
       context.read<ProductBloc>().add(AddProduct(product, _selectedImages));
     }
   }
@@ -201,7 +242,7 @@ class _AddProductPageState extends State<AddProductPage> {
     setState(() {
       _selectedImages.clear();
       _isSold = false;
-      _productCondition = "Sıfır Ürün";
+      _isSecondHand = false;
     });
   }
 }
