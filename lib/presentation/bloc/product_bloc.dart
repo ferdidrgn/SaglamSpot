@@ -41,7 +41,7 @@ class SearchProducts extends ProductEvent {
 
 class AddProduct extends ProductEvent {
   final Product product;
-  final List<String> images;
+  final List<dynamic> images;
 
   const AddProduct(this.product, this.images);
 
