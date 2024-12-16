@@ -10,23 +10,27 @@ class ImageSelector {
     List<dynamic> selectedFiles = [];
 
     if (kIsWeb) {
-      // Pc den Web için dosya seçme işlemi
+      // Web üzerinde dosya seçme işlemi
       final pickedFiles = await _picker.pickMultiImage();
-      for (var file in pickedFiles) {
-        // Web üzerinde Uint8List kullanıyoruz
-        final byteData = await file.readAsBytes();
-        selectedFiles.add(byteData); // Uint8List olarak ekle
+      if (pickedFiles != null) {
+        for (var file in pickedFiles) {
+          // Web üzerinde Uint8List kullanıyoruz
+          final byteData = await file.readAsBytes();
+          selectedFiles.add(byteData); // Uint8List olarak ekle
+        }
       }
-        } else {
-      // Mobilden web için dosya seçme
+    } else {
+      // Mobil platformlarda dosya seçme işlemi
       final pickedFiles = allowMultiple
           ? await _picker.pickMultiImage()
           : [await _picker.pickImage(source: ImageSource.gallery)];
-      selectedFiles.addAll(
-        pickedFiles
-            .map((file) => File(file!.path)), // File nesneleri olarak ekle
-      );
-        }
+
+      if (pickedFiles != null) {
+        selectedFiles.addAll(
+          pickedFiles.map((file) => File(file!.path)), // File nesneleri olarak ekle
+        );
+      }
+    }
 
     return selectedFiles;
   }
