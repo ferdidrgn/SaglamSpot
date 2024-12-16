@@ -49,7 +49,7 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addProduct(Product product, List<String> images) async {
+  Future<Either<Failure, void>> addProduct(Product product, List<dynamic> images) async {
     if (await networkInfo.isConnected) {
       try {
         final productModel = ProductModel.fromEntity(product);
