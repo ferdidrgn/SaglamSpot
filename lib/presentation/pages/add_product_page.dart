@@ -1,126 +1,207 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/widgets/custom_image_selector.dart';
+import '../../domain/entities/product.dart';
+import '../bloc/product_bloc.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
 
   @override
-  _AddProductPageState createState() => _AddProductPageState();
+  State<AddProductPage> createState() => _AddProductPageState();
 }
 
 class _AddProductPageState extends State<AddProductPage> {
+  final ImageSelector _imageSelector = ImageSelector();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+
   final List<dynamic> _selectedImages = [];
-  bool _isLoading = false;
+  bool _isSold = false;
+  String _productCondition = "Sıfır Ürün";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ürün Ekle')),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Input fields
-              ..._buildInputFields(),
-              // Image selection button
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: ElevatedButton.icon(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BlocConsumer<ProductBloc, ProductState>(
+          listener: (context, state) {
+            if (state is ProductAdded) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ürün başarıyla eklendi!')),
+              );
+              _clearForm();
+            } else if (state is ProductError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Hata: ${state.message}')),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is ProductLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return Column(
+              children: [
+                ..._buildInputFields(),
+                ElevatedButton(
                   onPressed: _pickImages,
-                  icon: const Icon(Icons.photo_library),
-                  label: const Text('Görsel Seç'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
-                  ),
+                  child: const Text('Görsel Seç'),
                 ),
-              ),
-              // Selected images preview
-              if (_selectedImages.isNotEmpty)
-                Container(
-                  height: 120,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _selectedImages.length,
-                    itemBuilder: (context, index) => Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: _selectedImages[index] is File
-                              ? Image.file(
-                                  _selectedImages[index],
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.memory(
-                                  _selectedImages[index],
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: IconButton(
-                            icon: const Icon(Icons.close, color: Colors.red),
-                            onPressed: () {
-                              setState(() {
-                                _selectedImages.removeAt(index);
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                if (_selectedImages.isNotEmpty) _buildImagePreview(),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _addProduct,
+                  child: const Text('Ürün Ekle'),
                 ),
-              const SizedBox(height: 16),
-              // Add product button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _isLoading ? null : _addProduct,
-                  icon: _isLoading
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.add_shopping_cart),
-                  label: Text(_isLoading ? 'Yükleniyor...' : 'Ürün Ekle'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildInputFields() {
+    return [
+      TextField(
+        controller: _nameController,
+        decoration: const InputDecoration(labelText: 'Ürün Adı'),
+      ),
+      TextField(
+        controller: _descController,
+        decoration: const InputDecoration(labelText: 'Ürün Açıklaması'),
+      ),
+      TextField(
+        controller: _categoryController,
+        decoration: const InputDecoration(labelText: 'Kategori'),
+      ),
+      TextField(
+        controller: _priceController,
+        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(labelText: 'Fiyat'),
+      ),
+      Row(
+        children: [
+          const Text('Ürün Satıldı mı?'),
+          Checkbox(
+            value: _isSold,
+            onChanged: (value) => setState(() => _isSold = value ?? false),
+          ),
+        ],
+      ),
+      Row(
+        children: [
+          const Text('Ürün 2. El mi?'),
+          Checkbox(
+            value: _productCondition == "2. El Ürün",
+            onChanged: (value) => setState(() {
+              _productCondition = value! ? "2. El Ürün" : "Sıfır Ürün";
+            }),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  Widget _buildImagePreview() {
+    return SizedBox(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _selectedImages.length,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Image.memory(
+            _selectedImages[index],
+            height: 80,
+            width: 80,
+            fit: BoxFit.cover,
           ),
         ),
       ),
     );
   }
 
-  void _pickImages() {
-    // Implement image picking logic
+  Future<void> _pickImages() async {
+  final images = await _imageSelector.pickImages();
+  if (images != null) {
+    if (images.length + _selectedImages.length > 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
+      );
+      return;
+    }
+    // Geçerli türdeki görselleri filtrele
+    final validImages = images.where((image) =>
+        image is File || image is Uint8List).toList();
+
+    if (validImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Geçersiz görsel türü. bu en baştaki NOOOOTT')),
+      );
+      return;
+    }
+
+    setState(() {
+      _selectedImages.addAll(validImages);
+    });
+  }
+}
+
+  Future<void> _addProduct() async {
+    if (_validateInputs()) {
+      final product = Product(
+        id: '', // ID'yi uygun bir şekilde ayarlayın
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: '',
+        soldAt: '',
+        name: _nameController.text,
+        desc: _descController.text,
+        category: _categoryController.text,
+        price: double.tryParse(_priceController.text) ?? 0.0,
+        isSold: _isSold,
+        isSpotProduct: _productCondition == "2. El Ürün",
+        imageUrl: [],
+      );
+
+      // Bloc'a AddProduct olayını gönder
+      context.read<ProductBloc>().add(AddProduct(product, _selectedImages));
+    }
   }
 
-  void _addProduct() {
-    setState(() {
-      _isLoading = true;
-    });
-    // Implement product adding logic
-    setState(() {
-      _isLoading = false;
-    });
+  bool _validateInputs() {
+    if (_nameController.text.isEmpty ||
+        _descController.text.isEmpty ||
+        _selectedImages.isEmpty ||
+        _priceController.text.isEmpty ||
+        _categoryController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
+      );
+      return false;
+    }
+    return true;
   }
 
-  List<Widget> _buildInputFields() {
-    // Implement input fields building logic
-    return [];
+  void _clearForm() {
+    _nameController.clear();
+    _descController.clear();
+    _priceController.clear();
+    _categoryController.clear();
+    setState(() {
+      _selectedImages.clear();
+      _isSold = false;
+      _productCondition = "Sıfır Ürün";
+    });
   }
 }
