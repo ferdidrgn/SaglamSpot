@@ -10,6 +10,9 @@ import 'domain/repositories/product_repository.dart';
 import 'presentation/bloc/product_bloc.dart';
 import 'core/network/network_info.dart';
 import 'domain/usecases/get_products_usecase.dart';
+import 'domain/usecases/add_product_usecase.dart';
+import 'domain/usecases/update_product_usecase.dart';
+import 'domain/usecases/delete_product_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -59,8 +62,20 @@ void _registerExternal() {
   sl.registerLazySingleton(() => FirebaseStorage.instance);
   sl.registerLazySingleton(() => InternetConnectionChecker());
   
-  // Use Case
+  // Use Cases
   sl.registerLazySingleton<GetProductsUseCase>(
     () => GetProductsUseCaseImpl(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<AddProductUseCase>(
+    () => AddProductUseCaseImpl(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateProductUseCase>(
+    () => UpdateProductUseCaseImpl(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteProductUseCase>(
+    () => DeleteProductUseCaseImpl(sl<ProductRepository>()),
   );
 }
