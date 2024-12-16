@@ -138,7 +138,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         } else if (image is Uint8List) {
           await ref.putData(image);
         } else {
-          throw Exception('Geçersiz görsel türü.');
+          throw Exception('Geçersiz görsel türü: ${image.runtimeType}');
         }
 
         final String downloadUrl = await ref.getDownloadURL();
