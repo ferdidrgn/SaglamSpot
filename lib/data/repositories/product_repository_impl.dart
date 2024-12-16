@@ -62,4 +62,33 @@ class ProductRepositoryImpl implements ProductRepository {
       return const Left(NetworkFailure('İnternet bağlantısı yok'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateProduct(Product product) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final productModel = ProductModel.fromEntity(product);
+        await remoteDataSource.updateProduct(productModel);
+        return const Right(null);
+      } catch (e) {
+        return Left(ServerFailure(e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure('İnternet bağlantısı yok'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteProduct(String productId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.deleteProduct(productId);
+        return const Right(null);
+      } catch (e) {
+        return Left(ServerFailure(e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure('İnternet bağlantısı yok'));
+    }
+  }
 }

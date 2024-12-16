@@ -39,6 +39,34 @@ class SearchProducts extends ProductEvent {
   List<Object?> get props => [query];
 }
 
+class AddProduct extends ProductEvent {
+  final Product product;
+  final List<String> images;
+
+  const AddProduct(this.product, this.images);
+
+  @override
+  List<Object?> get props => [product, images];
+}
+
+class UpdateProduct extends ProductEvent {
+  final Product product;
+
+  const UpdateProduct(this.product);
+
+  @override
+  List<Object?> get props => [product];
+}
+
+class DeleteProduct extends ProductEvent {
+  final String productId;
+
+  const DeleteProduct(this.productId);
+
+  @override
+  List<Object?> get props => [productId];
+}
+
 // States
 abstract class ProductState extends Equatable {
   const ProductState();
@@ -69,6 +97,12 @@ class ProductError extends ProductState {
   List<Object> get props => [message];
 }
 
+class ProductAdded extends ProductState {}
+
+class ProductUpdated extends ProductState {}
+
+class ProductDeleted extends ProductState {}
+
 // Bloc
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductRepository repository;
@@ -77,6 +111,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<LoadProducts>(_onLoadProducts);
     on<FilterProducts>(_onFilterProducts);
     on<SearchProducts>(_onSearchProducts);
+    on<AddProduct>(_onAddProduct);
+    on<UpdateProduct>(_onUpdateProduct);
+    on<DeleteProduct>(_onDeleteProduct);
   }
 
   Future<void> _onLoadProducts(LoadProducts event, Emitter<ProductState> emit) async {
@@ -110,6 +147,33 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         final filteredProducts = _filterProductsByQuery(products, event.query);
         emit(ProductLoaded(filteredProducts));
       },
+    );
+  }
+
+  Future<void> _onAddProduct(AddProduct event, Emitter<ProductState> emit) async {
+    emit(ProductLoading());
+    final result = await repository.addProduct(event.product, event.images);
+    result.fold(
+      (failure) => emit(ProductError(failure.message)),
+      (_) => emit(ProductAdded()),
+    );
+  }
+
+  Future<void> _onUpdateProduct(UpdateProduct event, Emitter<ProductState> emit) async {
+    emit(ProductLoading());
+    final result = await repository.updateProduct(event.product);
+    result.fold(
+      (failure) => emit(ProductError(failure.message)),
+      (_) => emit(ProductUpdated()),
+    );
+  }
+
+  Future<void> _onDeleteProduct(DeleteProduct event, Emitter<ProductState> emit) async {
+    emit(ProductLoading());
+    final result = await repository.deleteProduct(event.productId);
+    result.fold(
+      (failure) => emit(ProductError(failure.message)),
+      (_) => emit(ProductDeleted()),
     );
   }
 

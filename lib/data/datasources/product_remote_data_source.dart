@@ -13,6 +13,8 @@ abstract class ProductRemoteDataSource {
     double? minPrice,
     double? maxPrice,
   });
+  Future<void> updateProduct(ProductModel product);
+  Future<void> deleteProduct(String productId);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -46,7 +48,8 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
     try {
       if (condition != null) {
-        query = query.where('isSpotProduct', isEqualTo: condition == 'İkinci El');
+        query =
+            query.where('isSpotProduct', isEqualTo: condition == 'İkinci El');
       }
       if (minPrice != null) {
         query = query.where('price', isGreaterThanOrEqualTo: minPrice);
@@ -99,15 +102,37 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     }
   }
 
+  @override
+  Future<void> updateProduct(ProductModel product) async {
+    try {
+      await firestore
+          .collection('Product')
+          .doc(product.id)
+          .update(product.toFirestore());
+    } catch (e) {
+      throw Exception('Ürün güncellenirken hata oluştu: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteProduct(String productId) async {
+    try {
+      await firestore.collection('Product').doc(productId).delete();
+    } catch (e) {
+      throw Exception('Ürün silinirken hata oluştu: $e');
+    }
+  }
+
   Future<List<String>> _uploadImages(List<dynamic> images) async {
     if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı.');
 
     List<String> downloadUrls = [];
     try {
       for (var image in images) {
-        final String fileName = 'product_images/${DateTime.now().millisecondsSinceEpoch}';
+        final String fileName =
+            'product_images/${DateTime.now().millisecondsSinceEpoch}';
         final Reference ref = storage.ref().child(fileName);
-        
+
         if (image is File) {
           await ref.putFile(image);
         } else if (image is Uint8List) {
@@ -115,7 +140,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         } else {
           throw Exception('Geçersiz görsel türü.');
         }
-        
+
         final String downloadUrl = await ref.getDownloadURL();
         downloadUrls.add(downloadUrl);
       }
