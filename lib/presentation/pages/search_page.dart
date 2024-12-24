@@ -39,13 +39,11 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _filterProducts() {
-    context.read<ProductBloc>().add(
-          FilterProducts(
-            condition: _selectedCondition,
-            minPrice: _minPrice,
-            maxPrice: _maxPrice,
-          ),
-        );
+    context.read<ProductBloc>().add(FilterProducts(
+          condition: _selectedCondition,
+          minPrice: _minPrice,
+          maxPrice: _maxPrice,
+        ));
   }
 
   void _showFilterDialog() {
@@ -55,36 +53,34 @@ class _SearchPageState extends State<SearchPage> {
         title: const Text('Filtrele'),
         content: SingleChildScrollView(child: _buildFilterDialogContent()),
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _filterProducts();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-                child: const Text(
-                  'Uygula',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              TextButton(
-                onPressed: _clearFilters,
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                ),
-                child: const Text(
-                  'Temizle',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
+          _buildDialogActions(),
         ],
       ),
+    );
+  }
+
+  Widget _buildDialogActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildDialogButton('Uygula', () {
+          Navigator.pop(context);
+          _filterProducts();
+        }),
+        _buildDialogButton('Temizle', () {
+          _clearFilters();
+          Navigator.pop(context);
+        }),
+      ],
+    );
+  }
+
+  TextButton _buildDialogButton(String label, VoidCallback onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary),
+      child: Text(label, style: const TextStyle(color: Colors.white)),
     );
   }
 
@@ -143,7 +139,6 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (query.isEmpty) {
         _loadProducts();
@@ -162,27 +157,23 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Main Content
           Expanded(
             child: Container(
               color: Colors.white,
               child: Column(
                 children: [
-                  // Search Section
-                  _buildSearchSection(screenWidth),
-                  // Content Area
+                  _buildSearchSection(),
                   Expanded(
                     child: BlocBuilder<ProductBloc, ProductState>(
                       builder: (context, state) {
                         if (state is ProductLoading) {
                           return _buildLoadingState();
-                        } else if (state is ProductLoaded) {
+                        }
+                        if (state is ProductLoaded) {
                           return _buildLoadedState(
-                            state.products,
-                            isWideScreen,
-                            isMediumScreen,
-                          );
-                        } else if (state is ProductError) {
+                              state.products, isWideScreen, isMediumScreen);
+                        }
+                        if (state is ProductError) {
                           return _buildErrorState(state.message);
                         }
                         return const SizedBox();
@@ -198,7 +189,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchSection(double screenWidth) {
+  Widget _buildSearchSection() {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -212,141 +203,120 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      child: Container(
-        constraints: BoxConstraints(maxWidth: screenWidth * 0.9),
-        padding: const EdgeInsets.all(24),
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Ürün Kataloğu',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'İhtiyacınız olan tüm ürünler burada',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _showFilterDialog,
-                  icon: const Icon(Icons.filter_list),
-                  label: const Text('Filtrele'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 16),
-                  ),
-                ),
-              ],
+      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          const SizedBox(height: 24),
+          CustomSearchBar(
+            controller: _searchController,
+            onSearchChanged: _onSearchChanged,
+          ),
+          if (_activeFiltersExist())
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: _buildActiveFilters(),
             ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: CustomSearchBar(
-                    controller: _searchController,
-                    onSearchTap: () {},
-                    onSearchChanged: _onSearchChanged,
-                  ),
-                ),
-              ],
-            ),
-            if (_selectedCondition != null ||
-                _minPrice > 0 ||
-                _maxPrice < 50000)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: _buildActiveFilters(),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Ürün Kataloğu',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('İhtiyacınız olan tüm ürünler burada',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.grey[600])),
+          ],
+        ),
+        ElevatedButton.icon(
+          onPressed: _showFilterDialog,
+          icon: const Icon(Icons.filter_list),
+          label: const Text('Filtrele'),
+        ),
+      ],
+    );
+  }
+
+  bool _activeFiltersExist() {
+    return _selectedCondition != null || _minPrice > 0 || _maxPrice < 50000;
+  }
+
   Widget _buildLoadedState(
-    List<Product> products,
-    bool isWideScreen,
-    bool isMediumScreen,
-  ) {
-    if (products.isEmpty) {
-      return _buildEmptyState();
-    }
+      List<Product> products, bool isWideScreen, bool isMediumScreen) {
+    if (products.isEmpty) return _buildEmptyState();
 
     return SingleChildScrollView(
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: isWideScreen ? 1500 : (isMediumScreen ? 900 : 600),
-        ),
+            maxWidth: isWideScreen
+                ? 1500
+                : isMediumScreen
+                    ? 900
+                    : 600),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildCategorySection(
-              'Mevcut Ürünler',
-              products.where((p) => !p.isSold).toList(),
-              isWideScreen,
-              isMediumScreen,
-            ),
+                'Mevcut Ürünler',
+                products.where((p) => !p.isSold).toList(),
+                isWideScreen,
+                isMediumScreen),
             const SizedBox(height: 32),
             _buildCategorySection(
-              'Satılmış Ürünler',
-              products.where((p) => p.isSold).toList(),
-              isWideScreen,
-              isMediumScreen,
-            ),
+                'Satılmış Ürünler',
+                products.where((p) => p.isSold).toList(),
+                isWideScreen,
+                isMediumScreen),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategorySection(
-    String title,
-    List<Product> products,
-    bool isWideScreen,
-    bool isMediumScreen,
-  ) {
+  Widget _buildCategorySection(String title, List<Product> products,
+      bool isWideScreen, bool isMediumScreen) {
     if (products.isEmpty) return const SizedBox();
 
-    final crossAxisCount = isWideScreen ? 4 : (isMediumScreen ? 3 : 2);
+    final crossAxisCount = isWideScreen
+        ? 4
+        : isMediumScreen
+            ? 3
+            : 2;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor),
-          ),
+          child: Text(title,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold)),
         ),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.9, // Daha orantılı bir yapı için
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
@@ -366,13 +336,11 @@ class _SearchPageState extends State<SearchPage> {
         spacing: 8,
         runSpacing: 8,
         children: [
-          Text(
-            'Aktif Filtreler:',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(width: 8),
+          Text('Aktif Filtreler:',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.bold)),
           if (_selectedCondition != null) _buildFilterChip(_selectedCondition!),
           if (_minPrice > 0)
             _buildFilterChip('Min: ₺${_minPrice.toStringAsFixed(2)}'),
@@ -385,18 +353,11 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildFilterChip(String label) {
     return Chip(
-      label: Text(
-        label,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-      ),
+      label: Text(label,
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
       backgroundColor: Theme.of(context).colorScheme.primary,
-      deleteIcon: Icon(
-        Icons.close,
-        size: 18,
-        color: Theme.of(context).colorScheme.onPrimary,
-      ),
+      deleteIcon: Icon(Icons.close,
+          size: 18, color: Theme.of(context).colorScheme.onPrimary),
       onDeleted: () {
         setState(() {
           if (label == _selectedCondition) {
@@ -419,18 +380,8 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 24),
-          Text(
-            'Ürünler Yükleniyor',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Lütfen bekleyin...',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                ),
-          ),
+          Text('Ürünler Yükleniyor',
+              style: Theme.of(context).textTheme.titleLarge)
         ],
       ),
     );
@@ -438,53 +389,32 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off_rounded,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.search_off_rounded,
               size: 80,
-              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Sonuç Bulunamadı',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.7),
-                  ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () {
-                _clearFilters();
-                _searchController.clear();
-                _loadProducts();
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Tüm Ürünleri Göster'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-              ),
-            ),
-          ],
-        ),
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5)),
+          const SizedBox(height: 24),
+          Text('Sonuç Bulunamadı',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          const Text('Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.',
+              textAlign: TextAlign.center),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {
+              _clearFilters();
+              _searchController.clear();
+              _loadProducts();
+            },
+            icon: const Icon(Icons.refresh),
+            label: const Text('Tüm Ürünleri Göster'),
+          ),
+        ],
       ),
     );
   }
@@ -494,28 +424,13 @@ class _SearchPageState extends State<SearchPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.error,
-          ),
+          Icon(Icons.error_outline,
+              size: 64, color: Theme.of(context).colorScheme.error),
           const SizedBox(height: 16),
-          Text(
-            'Bir hata oluştu',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('Bir hata oluştu',
+              style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
-          Text(
-            message,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: _loadProducts,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Tekrar Dene'),
-          ),
+          Text(message, style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
     );
