@@ -82,18 +82,18 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   Widget _buildHeader() {
-    return Center(
+    return const Center(
       child: Column(
         children: [
-          const Text(
+          Text(
             'Yeni Ürün Ekle',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 5),
-          const Text(
+          SizedBox(height: 5),
+          Text(
             'İlgili bilgileri doldurun ve görsel ekleyin',
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
@@ -129,7 +129,7 @@ class _AddProductPageState extends State<AddProductPage> {
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
