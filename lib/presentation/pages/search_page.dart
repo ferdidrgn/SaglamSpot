@@ -66,6 +66,9 @@ class _SearchPageState extends State<SearchPage> {
         _buildDialogButton('Uygula', () {
           Navigator.pop(context);
           _filterProducts();
+          setState(() {
+            _showChips = true; // Chip'leri göstermek için flag
+          });
         }),
         _buildDialogButton('Temizle', () {
           _clearFilters();
@@ -131,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
       _minPrice = 0;
       _maxPrice = 50000;
       _searchController.clear();
-      _onSearchChanged('');
+      _showChips = false; // Chip'leri gizle
     });
     _loadProducts();
     Navigator.pop(context);
@@ -147,6 +150,8 @@ class _SearchPageState extends State<SearchPage> {
       }
     });
   }
+
+  bool _showChips = false; // Chip'lerin görünürlüğü için flag
 
   @override
   Widget build(BuildContext context) {
@@ -166,16 +171,13 @@ class _SearchPageState extends State<SearchPage> {
                   Expanded(
                     child: BlocBuilder<ProductBloc, ProductState>(
                       builder: (context, state) {
-                        if (state is ProductLoading) {
+                        if (state is ProductLoading)
                           return _buildLoadingState();
-                        }
-                        if (state is ProductLoaded) {
+                        if (state is ProductLoaded)
                           return _buildLoadedState(
                               state.products, isWideScreen, isMediumScreen);
-                        }
-                        if (state is ProductError) {
+                        if (state is ProductError)
                           return _buildErrorState(state.message);
-                        }
                         return const SizedBox();
                       },
                     ),
@@ -214,7 +216,7 @@ class _SearchPageState extends State<SearchPage> {
             controller: _searchController,
             onSearchChanged: _onSearchChanged,
           ),
-          if (_activeFiltersExist())
+          if (_showChips)
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: _buildActiveFilters(),
@@ -251,10 +253,6 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ],
     );
-  }
-
-  bool _activeFiltersExist() {
-    return _selectedCondition != null || _minPrice > 0 || _maxPrice < 50000;
   }
 
   Widget _buildLoadedState(
@@ -316,7 +314,7 @@ class _SearchPageState extends State<SearchPage> {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            childAspectRatio: 0.9, // Daha orantılı bir yapı için
+            childAspectRatio: 0.9,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
@@ -367,6 +365,9 @@ class _SearchPageState extends State<SearchPage> {
           } else if (label.startsWith('Max:')) {
             _maxPrice = 50000;
           }
+          // Chip'leri gizle
+          _showChips =
+              _selectedCondition != null || _minPrice > 0 || _maxPrice < 50000;
         });
         _filterProducts();
       },
@@ -381,7 +382,7 @@ class _SearchPageState extends State<SearchPage> {
           const CircularProgressIndicator(),
           const SizedBox(height: 24),
           Text('Ürünler Yükleniyor',
-              style: Theme.of(context).textTheme.titleLarge)
+              style: Theme.of(context).textTheme.titleLarge),
         ],
       ),
     );
@@ -402,7 +403,8 @@ class _SearchPageState extends State<SearchPage> {
                   .headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          const Text('Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.',
+          const Text(
+              'Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.',
               textAlign: TextAlign.center),
           const SizedBox(height: 24),
           ElevatedButton.icon(
