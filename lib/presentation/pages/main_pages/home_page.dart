@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/widgets/custom_category.dart';
 import '../../../core/widgets/custom_decorated_card.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_search.dart';
@@ -29,31 +30,35 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is ProductLoading) {
-          return Container(
-            padding: const EdgeInsets.all(50),
-            alignment: Alignment.center,
-            child: const CircularProgressIndicator(),
-          );
+          return _buildLoading();
         } else if (state is ProductLoaded) {
           return _buildContent(state.products);
         } else if (state is ProductError) {
-          return Center(child: Text(state.message));
+          return _buildError(state.message);
         }
         return const SizedBox();
       },
     );
   }
 
+  Widget _buildLoading() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildError(String message) {
+    return Center(child: Text(message));
+  }
+
   Widget _buildContent(List<Product> products) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: CustomSearchBar(onSearchTap: _navigateToSearch),
-          ),
+          CustomSearchBar(onSearchTap: _navigateToSearch),
+          const SizedBox(height: 20),
+          _buildCategorySection(),
           const SizedBox(height: 20),
           CustomDecoratedCard(
             title: 'Evinizi Güzelleştirin',
@@ -68,6 +73,53 @@ class _HomePageState extends State<HomePage> {
           _buildProductSection('Satılmış Ürünlerimiz (3 Ay İçinde)',
               products.where((p) => p.isSold).toList()),
           const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategorySection() {
+    final ScrollController scrollController = ScrollController();
+
+    return Container(
+      padding: const EdgeInsets.all(AppConstants.defaultPadding),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CustomSectionTitle(title: "Kategoriler"),
+          SizedBox(
+            height: 100,
+            child: Row(
+              children: [
+                _buildScrollButton(scrollController, -1),
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      CustomCategory(icon: Icons.chair, label: "Sandalye"),
+                      CustomCategory(icon: Icons.weekend, label: "Kanepe"),
+                      CustomCategory(icon: Icons.bed, label: "Yatak"),
+                      CustomCategory(icon: Icons.table_chart, label: "Masa"),
+                      CustomCategory(icon: Icons.tv, label: "TV Ünitesi"),
+                    ],
+                  ),
+                ),
+                _buildScrollButton(scrollController, 1),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -40,12 +40,12 @@ class _SearchPageState extends State<SearchPage> {
 
   void _filterProducts() {
     context.read<ProductBloc>().add(
-      FilterProducts(
-        condition: _selectedCondition,
-        minPrice: _minPrice,
-        maxPrice: _maxPrice,
-      ),
-    );
+          FilterProducts(
+            condition: _selectedCondition,
+            minPrice: _minPrice,
+            maxPrice: _maxPrice,
+          ),
+        );
   }
 
   void _showFilterDialog() {
@@ -165,7 +165,7 @@ class _SearchPageState extends State<SearchPage> {
           // Main Content
           Expanded(
             child: Container(
-              color: const Color(0xFFF8F9FA),
+              color: Colors.white,
               child: Column(
                 children: [
                   // Search Section
@@ -227,17 +227,21 @@ class _SearchPageState extends State<SearchPage> {
                     children: [
                       Text(
                         'Ürün Kataloğu',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'İhtiyacınız olan tüm ürünler burada',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Colors.grey[600],
+                                ),
                       ),
                     ],
                   ),
@@ -248,9 +252,7 @@ class _SearchPageState extends State<SearchPage> {
                   label: const Text('Filtrele'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
-                    ),
+                        horizontal: 20, vertical: 16),
                   ),
                 ),
               ],
@@ -267,7 +269,9 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ],
             ),
-            if (_selectedCondition != null || _minPrice > 0 || _maxPrice < 50000)
+            if (_selectedCondition != null ||
+                _minPrice > 0 ||
+                _maxPrice < 50000)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: _buildActiveFilters(),
@@ -279,10 +283,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildLoadedState(
-      List<Product> products,
-      bool isWideScreen,
-      bool isMediumScreen,
-      ) {
+    List<Product> products,
+    bool isWideScreen,
+    bool isMediumScreen,
+  ) {
     if (products.isEmpty) {
       return _buildEmptyState();
     }
@@ -296,13 +300,15 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCategorySection('Mevcut Ürünler',
+            _buildCategorySection(
+              'Mevcut Ürünler',
               products.where((p) => !p.isSold).toList(),
               isWideScreen,
               isMediumScreen,
             ),
             const SizedBox(height: 32),
-            _buildCategorySection('Satılmış Ürünler',
+            _buildCategorySection(
+              'Satılmış Ürünler',
               products.where((p) => p.isSold).toList(),
               isWideScreen,
               isMediumScreen,
@@ -314,11 +320,11 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildCategorySection(
-      String title,
-      List<Product> products,
-      bool isWideScreen,
-      bool isMediumScreen,
-      ) {
+    String title,
+    List<Product> products,
+    bool isWideScreen,
+    bool isMediumScreen,
+  ) {
     if (products.isEmpty) return const SizedBox();
 
     final crossAxisCount = isWideScreen ? 4 : (isMediumScreen ? 3 : 2);
@@ -331,9 +337,8 @@ class _SearchPageState extends State<SearchPage> {
           child: Text(
             title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-            ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor),
           ),
         ),
         GridView.builder(
@@ -346,7 +351,8 @@ class _SearchPageState extends State<SearchPage> {
             mainAxisSpacing: 16,
           ),
           itemCount: products.length,
-          itemBuilder: (context, index) => ProductCard(product: products[index]),
+          itemBuilder: (context, index) =>
+              ProductCard(product: products[index]),
         ),
       ],
     );
@@ -363,12 +369,11 @@ class _SearchPageState extends State<SearchPage> {
           Text(
             'Aktif Filtreler:',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(width: 8),
-          if (_selectedCondition != null)
-            _buildFilterChip(_selectedCondition!),
+          if (_selectedCondition != null) _buildFilterChip(_selectedCondition!),
           if (_minPrice > 0)
             _buildFilterChip('Min: ₺${_minPrice.toStringAsFixed(2)}'),
           if (_maxPrice < 50000)
@@ -422,8 +427,9 @@ class _SearchPageState extends State<SearchPage> {
           Text(
             'Lütfen bekleyin...',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-            ),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
           ),
         ],
       ),
@@ -447,16 +453,19 @@ class _SearchPageState extends State<SearchPage> {
             Text(
               'Sonuç Bulunamadı',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             Text(
               'Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7),
+                  ),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
