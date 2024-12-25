@@ -20,6 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   final List<String> _conditions = ['Hepsi', 'Sıfır', 'İkinci El'];
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
+  bool _showChips = false;
 
   @override
   void initState() {
@@ -34,6 +35,11 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+  Future<bool> _onWillPop() async {
+    _resetFilters();
+    return true; // Geri dönüşü onayla
+  }
+
   void _loadProducts() {
     context.read<ProductBloc>().add(const LoadProducts());
   }
@@ -44,6 +50,11 @@ class _SearchPageState extends State<SearchPage> {
           minPrice: _minPrice,
           maxPrice: _maxPrice,
         ));
+  }
+
+  void _resetFilters() {
+    context.read<ProductBloc>().add(ResetFilters()); // Filtreleri sıfırla
+    _searchController.clear(); // Arama çubuğunu temizle
   }
 
   void _showFilterDialog() {
@@ -71,7 +82,7 @@ class _SearchPageState extends State<SearchPage> {
           });
         }),
         _buildDialogButton('Temizle', () {
-          _clearFilters();
+          _resetFilters();
           Navigator.pop(context);
         }),
       ],
@@ -127,19 +138,6 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  void _clearFilters() {
-    _debounce?.cancel();
-    setState(() {
-      _selectedCondition = null;
-      _minPrice = 0;
-      _maxPrice = 50000;
-      _searchController.clear();
-      _showChips = false; // Chip'leri gizle
-    });
-    _loadProducts();
-    Navigator.pop(context);
-  }
-
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -151,42 +149,43 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  bool _showChips = false; // Chip'lerin görünürlüğü için flag
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isWideScreen = screenWidth > 1200;
     final isMediumScreen = screenWidth > 800 && screenWidth <= 1200;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  _buildSearchSection(),
-                  Expanded(
-                    child: BlocBuilder<ProductBloc, ProductState>(
-                      builder: (context, state) {
-                        if (state is ProductLoading)
-                          return _buildLoadingState();
-                        if (state is ProductLoaded)
-                          return _buildLoadedState(
-                              state.products, isWideScreen, isMediumScreen);
-                        if (state is ProductError)
-                          return _buildErrorState(state.message);
-                        return const SizedBox();
-                      },
+    return WillPopScope(
+      onWillPop: _onWillPop, // Geri butonuna tıklandığında filtreleri sıfırla
+      child: Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    _buildSearchSection(),
+                    Expanded(
+                      child: BlocBuilder<ProductBloc, ProductState>(
+                        builder: (context, state) {
+                          if (state is ProductLoading)
+                            return _buildLoadingState();
+                          if (state is ProductLoaded)
+                            return _buildLoadedState(
+                                state.products, isWideScreen, isMediumScreen);
+                          if (state is ProductError)
+                            return _buildErrorState(state.message);
+                          return const SizedBox();
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -409,7 +408,7 @@ class _SearchPageState extends State<SearchPage> {
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () {
-              _clearFilters();
+              _resetFilters();
               _searchController.clear();
               _loadProducts();
             },

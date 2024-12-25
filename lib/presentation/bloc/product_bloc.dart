@@ -30,6 +30,8 @@ class FilterProducts extends ProductEvent {
   List<Object?> get props => [condition, minPrice, maxPrice];
 }
 
+class ResetFilters extends ProductEvent {}
+
 class SearchProducts extends ProductEvent {
   final String query;
 
@@ -110,6 +112,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({required this.repository}) : super(ProductInitial()) {
     on<LoadProducts>(_onLoadProducts);
     on<FilterProducts>(_onFilterProducts);
+    on<ResetFilters>(_onResetFilters);
     on<SearchProducts>(_onSearchProducts);
     on<AddProduct>(_onAddProduct);
     on<UpdateProduct>(_onUpdateProduct);
@@ -137,6 +140,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       (products) => emit(ProductLoaded(products)),
     );
   }
+
+  Future<void> _onResetFilters(ResetFilters event, Emitter<ProductState> emit) async {
+    emit(ProductLoading());
+    final result = await repository.getProducts(); // Tüm ürünleri yükle
+    result.fold(
+          (failure) => emit(ProductError(failure.message)),
+          (products) => emit(ProductLoaded(products)),
+    );
+    }
 
   Future<void> _onSearchProducts(SearchProducts event, Emitter<ProductState> emit) async {
     emit(ProductLoading());

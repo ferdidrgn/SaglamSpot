@@ -1,12 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:saglamspot/core/widgets/custom_product_card.dart';
+import '../../../domain/entities/product.dart';
+import '../../bloc/product_bloc.dart';
 
 class NewProductsPage extends StatelessWidget {
   const NewProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Yeni Ürünler'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      body: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          if (state is ProductLoading) {
+            return _buildLoadingState();
+          } else if (state is ProductLoaded) {
+            return _buildLoadedState(state.products);
+          } else if (state is ProductError) {
+            return _buildErrorState(state.message);
+          }
+          return const Center(child: Text('Bir şeyler yanlış gitti.'));
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
     return const Center(
-      child: Text('Sıfır Ürünler', style: TextStyle(fontSize: 24)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 24),
+          Text('Sıfır ürünler yükleniyor...'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadedState(List<Product> products) {
+    final newProducts = products.where((p) => !p.isSold).toList();
+
+    if (newProducts.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: newProducts.length,
+      itemBuilder: (context, index) {
+        return ProductCard(product: newProducts[index]);
+      },
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.shopping_cart_outlined,
+            size: 80,
+            color: Colors.grey.withOpacity(0.5),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Henüz yeni ürün bulunmamaktadır.',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error, size: 64, color: Colors.red),
+          const SizedBox(height: 16),
+          Text('Hata: $message'),
+        ],
+      ),
     );
   }
 }
