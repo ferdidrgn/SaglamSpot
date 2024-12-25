@@ -47,7 +47,7 @@ class CustomDecoratedCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(5),
               child: Image.asset(
                 imageUrl,
                 width: 100,
@@ -59,7 +59,7 @@ class CustomDecoratedCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(5),
               child: Image.asset(
                 imageUrl,
                 width: 100,
@@ -76,7 +76,7 @@ class CustomDecoratedCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.8),
+                color: color.withOpacity(0.3),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

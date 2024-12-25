@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saglamspot/presentation/bloc/product_bloc.dart';
 import 'package:saglamspot/presentation/pages/main_pages/main_screen.dart';
+import 'package:saglamspot/presentation/pages/main_pages/sss_page.dart';
 import 'core/theme/app_theme.dart';
 import 'web_config.dart';
 import 'dependency_injection.dart' as di;
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.lightTheme,
         themeMode: ThemeMode.system,
-        home: const MainScreen(),
+        home: const SSSPage(),
       ),
     );
   }

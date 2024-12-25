@@ -21,15 +21,6 @@ class _ProductCardState extends State<ProductCard> {
       width: 280,
       margin: const EdgeInsets.only(bottom: 20),
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(174, 101, 41, 0.8),
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
       child: Card(
         elevation: 10,
         margin: const EdgeInsets.symmetric(horizontal: 8),
