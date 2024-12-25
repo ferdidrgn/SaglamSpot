@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saglamspot/presentation/bloc/product_bloc.dart';
+import 'package:saglamspot/presentation/pages/main_pages/info_page.dart';
 import 'package:saglamspot/presentation/pages/main_pages/main_screen.dart';
 import 'package:saglamspot/presentation/pages/main_pages/sss_page.dart';
 import 'core/theme/app_theme.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.lightTheme,
         themeMode: ThemeMode.system,
-        home: const SSSPage(),
+        home: const InfoPage(),
       ),
     );
   }
