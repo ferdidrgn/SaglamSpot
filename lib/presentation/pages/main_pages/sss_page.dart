@@ -29,13 +29,13 @@ class SSSPage extends StatelessWidget {
               const SizedBox(height: 16),
               _buildQuestionAnswerCard(
                 "1. Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?",
-"Ustamız, 1992 yılından beri bu sektörde aktif olarak çalışmaktadır. "
-                "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
-                "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
-                "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
-                "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır. "
-                "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",      'color': 'purple',
-                     Icons.work,
+                "Ustamız, 1992 yılından beri bu sektörde aktif olarak çalışmaktadır. "
+                    "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
+                    "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
+                    "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
+                    "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır. "
+                    "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",
+                Icons.work,
               ),
               _buildQuestionAnswerCard(
                 "5. Ürün fiyatları nasıl belirleniyor?",
@@ -111,7 +111,8 @@ class SSSPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionAnswerCard(String question, String answer, IconData icon) {
+  Widget _buildQuestionAnswerCard(
+      String question, String answer, IconData icon) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       elevation: 3,
