@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'custom_gradient_background_image.dart';
+
 class CustomDecoratedCard extends StatelessWidget {
   final String title;
   final String content;
@@ -16,58 +18,48 @@ class CustomDecoratedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.all(Radius.circular(16));
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(right: 20, left: 10, bottom: 20),
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 4),
+            color: Colors.black.withOpacity(0.8),
+            blurRadius: 5,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Stack(
+        fit: StackFit.expand,
         children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imageUrl),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.white.withOpacity(0.5),
-                    BlendMode.dstATop,
-                  ),
-                ),
-              ),
+          // Background image
+          ClipRRect(
+            borderRadius: borderRadius,
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) {
+                  return child;
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return const Center(
+                    child: Icon(Icons.error, color: Colors.red));
+              },
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Image.asset(
-                imageUrl,
-                width: 100,
-                height: MediaQuery.of(context).size.height,
-                fit: BoxFit.cover,
-              ),
-            ),
+          const GradientStrip(
+            isAlignmentCenterLeft: true,
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Image.asset(
-                imageUrl,
-                width: 100,
-                height: MediaQuery.of(context).size.height,
-                fit: BoxFit.cover,
-              ),
-            ),
+          const GradientStrip(
+            isAlignmentCenterLeft: false,
           ),
+          // Bilgiler adı overlay'i
           Positioned.fill(
             top: 20,
             left: 20,
@@ -76,7 +68,7 @@ class CustomDecoratedCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.3),
+                color: color.withOpacity(0.4),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -84,19 +76,22 @@ class CustomDecoratedCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 32,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                       color: Colors.white,
+                      backgroundColor: Colors.black.withOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     content,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
+                      fontWeight: FontWeight.w700,
                       color: Colors.white,
+                      backgroundColor: Colors.black.withOpacity(0.5),
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,
