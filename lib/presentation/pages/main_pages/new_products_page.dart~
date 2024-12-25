@@ -10,6 +10,11 @@ class NewProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Yeni Ürünler'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       body: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           if (state is ProductLoading) {
@@ -47,12 +52,13 @@ class NewProductsPage extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: double.infinity, // Ekranın tamamını kapla
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GridView.builder(
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.65,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
         ),
@@ -60,20 +66,16 @@ class NewProductsPage extends StatelessWidget {
         itemBuilder: (context, index) {
           return Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: ProductCard(product: newProducts[index]),
-            ),
+            child: ProductCard(product: newProducts[index]),
           );
         },
       ),
