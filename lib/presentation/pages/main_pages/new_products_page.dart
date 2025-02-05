@@ -100,7 +100,7 @@ class NewProductsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorState(String message) {
+  Widget _buildErrorState(final String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
