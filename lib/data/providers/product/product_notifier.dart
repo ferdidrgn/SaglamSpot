@@ -1,16 +1,34 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:saglamspot/domain/usecases/product/add_product_usecase.dart';
 import '../../../domain/entities/product.dart';
-import '../../../domain/repositories/product_repository.dart';
+import '../../../domain/usecases/product/delete_product_usecase.dart';
+import '../../../domain/usecases/product/filter_product_usecase.dart';
+import '../../../domain/usecases/product/get_products_usecase.dart';
+import '../../../domain/usecases/product/search_product_usecase.dart';
+import '../../../domain/usecases/product/update_product_usecase.dart';
 import 'product_state.dart';
 
 class ProductNotifier extends StateNotifier<ProductState> {
-  final ProductRepository repository;
+  final GetProductsUseCase getProductsUseCase;
+  final AddProductUseCase addProductUseCase;
+  final UpdateProductUseCase updateProductUseCase;
+  final DeleteProductUseCase deleteProductUseCase;
+  final FilterProductUseCase filterProductUseCase;
+  final SearchProductUseCase searchProductUseCase;
 
-  ProductNotifier(this.repository) : super(ProductState());
+  ProductNotifier(
+      this.getProductsUseCase,
+      this.addProductUseCase,
+      this.updateProductUseCase,
+      this.deleteProductUseCase,
+      this.filterProductUseCase,
+      this.searchProductUseCase)
+      : super(ProductState());
 
   Future<void> loadProducts() async {
     state = ProductState(isLoading: true);
-    final result = await repository.getProducts();
+    final result = await getProductsUseCase.call();
+
     result.fold(
       (final failure) => state = ProductState(errorMessage: failure.message),
       (final products) => state = ProductState(products: products),
@@ -20,7 +38,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
   Future<void> addProduct(
       final Product product, final List<dynamic> images) async {
     state = ProductState(isLoading: true);
-    final result = await repository.addProduct(product, images);
+    final result = await addProductUseCase.call(product, images);
     result.fold(
       (final failure) => state = ProductState(errorMessage: failure.message),
       (final _) => loadProducts(),
@@ -29,7 +47,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   Future<void> updateProduct(final Product product) async {
     state = ProductState(isLoading: true);
-    final result = await repository.updateProduct(product);
+    final result = await updateProductUseCase.call(product);
     result.fold(
       (final failure) => state = ProductState(errorMessage: failure.message),
       (final _) => loadProducts(),
@@ -38,19 +56,20 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   Future<void> deleteProduct(final String productId) async {
     state = ProductState(isLoading: true);
-    final result = await repository.deleteProduct(productId);
+    final result = await deleteProductUseCase.call(productId);
     result.fold(
       (final failure) => state = ProductState(errorMessage: failure.message),
       (final _) => loadProducts(),
     );
   }
 
-  Future<void> filterProducts(
-      {final String? condition,
-      final double? minPrice,
-      final double? maxPrice}) async {
+  Future<void> filterProducts({
+    final String? condition,
+    final double? minPrice,
+    final double? maxPrice,
+  }) async {
     state = ProductState(isLoading: true);
-    final result = await repository.getFilteredProducts(
+    final result = await filterProductUseCase.call(
       condition: condition,
       minPrice: minPrice,
       maxPrice: maxPrice,
@@ -63,20 +82,20 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   Future<void> resetFilters() async {
     state = ProductState(isLoading: true);
-    final result = await repository.getProducts(); // Tüm ürünleri yükle
+    final result = await getProductsUseCase.call(); // Tüm ürünleri yükle
     result.fold(
       (final failure) => state = ProductState(errorMessage: failure.message),
       (final products) => state = ProductState(products: products),
     );
   }
 
-  Future<void> searchProducts({final String? query}) async {
+  Future<void> searchProducts({required final String query}) async {
     state = ProductState(isLoading: true);
-    final result = await repository.getProducts();
+    final result = await getProductsUseCase.call(); // Tüm ürünleri al
     result.fold(
       (final failure) => state = ProductState(errorMessage: failure.message),
       (final products) {
-        if (query == null || query.isEmpty) {
+        if (query.isEmpty) {
           state = ProductState(products: products);
           return;
         }
