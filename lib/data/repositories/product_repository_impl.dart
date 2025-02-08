@@ -8,11 +8,9 @@ import '../models/product_model.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
-  final NetworkInfo networkInfo;
 
   ProductRepositoryImpl({
     required this.remoteDataSource,
-    required this.networkInfo,
   });
 
   @override
@@ -21,12 +19,12 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, List<Product>>> getFilteredProducts({
+  Future<Either<Failure, List<Product>>> filterProducts({
     final String? condition,
     final double? minPrice,
     final double? maxPrice,
   }) async {
-    return _getProducts(() => remoteDataSource.getFilteredProducts(
+    return _getProducts(() => remoteDataSource.filterProducts(
           condition: condition,
           minPrice: minPrice,
           maxPrice: maxPrice,
@@ -36,60 +34,45 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, List<Product>>> _getProducts(
     final Future<List<ProductModel>> Function() getProductsFromSource,
   ) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final products = await getProductsFromSource();
-        return Right(products.map((final model) => model.toEntity()).toList());
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('İnternet bağlantısı yok'));
+    try {
+      final products = await getProductsFromSource();
+      return Right(products.map((final model) => model.toEntity()).toList());
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
+
 
   @override
   Future<Either<Failure, void>> addProduct(
       final Product product, final List<dynamic> images) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final productModel = ProductModel.fromEntity(product);
-        await remoteDataSource.addProduct(productModel, images);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('İnternet bağlantısı yok'));
+    try {
+      final productModel = ProductModel.fromEntity(product);
+      await remoteDataSource.addProduct(productModel, images);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> updateProduct(final Product product) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final productModel = ProductModel.fromEntity(product);
-        await remoteDataSource.updateProduct(productModel);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('İnternet bağlantısı yok'));
+    try {
+      final productModel = ProductModel.fromEntity(product);
+      await remoteDataSource.updateProduct(productModel);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> deleteProduct(final String productId) async {
-    if (await networkInfo.isConnected) {
-      try {
-        await remoteDataSource.deleteProduct(productId);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('İnternet bağlantısı yok'));
+    try {
+      await remoteDataSource.deleteProduct(productId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 }

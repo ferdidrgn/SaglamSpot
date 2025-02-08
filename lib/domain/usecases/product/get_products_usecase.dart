@@ -10,10 +10,10 @@ abstract class GetProductsUseCase {
 class GetProductsUseCaseImpl implements GetProductsUseCase {
   final ProductRepository repository;
 
-  GetProductsUseCaseImpl(this.repository);
+  GetProductsUseCaseImpl(this.repository);  // Yapıcı
 
   @override
   Future<Either<Failure, List<Product>>> call() async {
-    return repository.getProducts();
+    return repository.getProducts(); // Repository'den ürünleri al
   }
 }

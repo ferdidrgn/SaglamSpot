@@ -4,7 +4,6 @@ import '../../../domain/entities/product.dart';
 import '../../../domain/usecases/product/delete_product_usecase.dart';
 import '../../../domain/usecases/product/filter_product_usecase.dart';
 import '../../../domain/usecases/product/get_products_usecase.dart';
-import '../../../domain/usecases/product/search_product_usecase.dart';
 import '../../../domain/usecases/product/update_product_usecase.dart';
 import 'product_state.dart';
 
@@ -14,15 +13,13 @@ class ProductNotifier extends StateNotifier<ProductState> {
   final UpdateProductUseCase updateProductUseCase;
   final DeleteProductUseCase deleteProductUseCase;
   final FilterProductUseCase filterProductUseCase;
-  final SearchProductUseCase searchProductUseCase;
 
   ProductNotifier(
       this.getProductsUseCase,
       this.addProductUseCase,
       this.updateProductUseCase,
       this.deleteProductUseCase,
-      this.filterProductUseCase,
-      this.searchProductUseCase)
+      this.filterProductUseCase)
       : super(ProductState());
 
   Future<void> loadProducts() async {

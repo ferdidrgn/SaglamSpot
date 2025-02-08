@@ -9,8 +9,5 @@ final productRemoteDataSourceProvider =
   final firestore = ref.watch(firestoreProvider); // Firestore sağlayıcınız
   final storage = ref.watch(storageProvider); // Firebase Storage sağlayıcınız
 
-  return ProductRemoteDataSourceImpl(
-    firestore: firestore,
-    storage: storage,
-  );
+  return ProductRemoteDataSourceImpl(firestore: firestore, storage: storage);
 });

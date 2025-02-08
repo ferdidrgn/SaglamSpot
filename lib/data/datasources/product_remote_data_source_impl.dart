@@ -19,16 +19,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<List<ProductModel>> getProducts() async {
     try {
       final querySnapshot = await firestore.collection('Product').get();
-      return querySnapshot.docs
-          .map((final doc) => ProductModel.fromFirestore(doc))
-          .toList();
+      return _mapQuerySnapshotToProducts(querySnapshot);
     } catch (e) {
       throw Exception('Ürünler yüklenirken hata oluştu: $e');
     }
   }
 
   @override
-  Future<List<ProductModel>> getFilteredProducts({
+  Future<List<ProductModel>> filterProducts({
     final String? condition,
     final double? minPrice,
     final double? maxPrice,
@@ -48,17 +46,38 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       }
 
       final snapshot = await query.get();
-      return snapshot.docs
-          .map((final doc) => ProductModel.fromFirestore(doc))
-          .toList();
+      return _mapQuerySnapshotToProducts(snapshot);
     } catch (e) {
       throw Exception('Ürünler filtrelenirken hata oluştu: $e');
     }
   }
 
   @override
-  Future<void> addProduct(final ProductModel product, final List<dynamic> images) async {
-    if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı.');
+  Future<List<ProductModel>> searchProducts({
+    final String? searchQueryText,
+  }) async {
+    Query<Map<String, dynamic>> query = firestore.collection('Product');
+
+    try {
+      query = query
+          .where('name', isGreaterThanOrEqualTo: searchQueryText)
+          .where('name', isLessThan: searchQueryText)
+          .where('description', isGreaterThanOrEqualTo: searchQueryText)
+          .where('description', isLessThan: searchQueryText);
+
+      final snapshot = await query.get();
+      return _mapQuerySnapshotToProducts(snapshot);
+    } catch (e) {
+      throw Exception('Ürünler arama sırasında hata oluştu: $e');
+    }
+  }
+
+  @override
+  Future<void> addProduct(
+      final ProductModel product, final List<dynamic> images) async {
+    if (images.isEmpty) {
+      throw Exception('Yüklenecek görsel bulunamadı.');
+    }
 
     try {
       final imageUrls = await _uploadImages(images);
@@ -107,7 +126,9 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   }
 
   Future<List<String>> _uploadImages(final List<dynamic> images) async {
-    if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı.');
+    if (images.isEmpty) {
+      throw Exception('Yüklenecek görsel bulunamadı.');
+    }
 
     final List<String> downloadUrls = [];
     try {
@@ -131,5 +152,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     } catch (e) {
       throw Exception('Görseller yüklenirken hata oluştu: $e');
     }
+  }
+
+  List<ProductModel> _mapQuerySnapshotToProducts(
+      final QuerySnapshot<Map<String, dynamic>> snapshot) {
+    return snapshot.docs
+        .map((final doc) => ProductModel.fromFirestore(doc))
+        .toList();
   }
 }

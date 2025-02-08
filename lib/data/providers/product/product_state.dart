@@ -6,8 +6,8 @@ class ProductState {
   final String? errorMessage;
 
   ProductState({
-    this.products = const [],
     this.isLoading = false,
     this.errorMessage,
-  });
+    final List<Product>? products,
+  }) : products = products ?? [];
 }
