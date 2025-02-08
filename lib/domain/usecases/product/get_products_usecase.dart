@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/failures.dart';
-import '../entities/product.dart';
-import '../repositories/product_repository.dart';
+import '../../../../../core/errors/failures.dart';
+import '../../entities/product.dart';
+import '../../repositories/product_repository.dart';
 
 abstract class GetProductsUseCase {
   Future<Either<Failure, List<Product>>> call();
@@ -14,6 +14,6 @@ class GetProductsUseCaseImpl implements GetProductsUseCase {
 
   @override
   Future<Either<Failure, List<Product>>> call() async {
-    return await repository.getProducts();
+    return repository.getProducts();
   }
 }

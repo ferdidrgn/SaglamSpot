@@ -42,7 +42,7 @@ class Product extends Equatable {
         imageUrl,
       ];
 
-  factory Product.fromMap(Map<String, dynamic> map) {
+  factory Product.fromMap(final Map<String, dynamic> map) {
     return Product(
       id: map['id'],
       createdAt: map['createdAt'],
