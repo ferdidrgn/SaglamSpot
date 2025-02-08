@@ -24,12 +24,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   bool _showChips = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadProducts();
-  }
-
-  @override
   void dispose() {
     _searchController.dispose();
     _debounce?.cancel();
