@@ -10,23 +10,16 @@ import 'product_state.dart';
 
 final productProvider =
     StateNotifierProvider<ProductNotifier, ProductState>((final ref) {
-  final getProductsUseCase = ref.watch(getProductsUseCaseProvider);
-  final addProductUseCase = ref.watch(addProductUseCaseProvider);
-  final updateProductUseCase = ref.watch(updateProductUseCaseProvider);
-  final deleteProductUseCase = ref.watch(deleteProductUseCaseProvider);
-  final filterProductUseCase = ref.watch(filterProductUseCaseProvider);
-
   return ProductNotifier(
-      getProductsUseCase,
-      addProductUseCase,
-      updateProductUseCase,
-      deleteProductUseCase,
-      filterProductUseCase
+    ref.watch(getProductsUseCaseProvider),
+    ref.watch(addProductUseCaseProvider),
+    ref.watch(updateProductUseCaseProvider),
+    ref.watch(deleteProductUseCaseProvider),
+    ref.watch(filterProductUseCaseProvider),
   );
 });
 
 // ProductsUseCase providers
-
 final getProductsUseCaseProvider = Provider<GetProductsUseCase>((final ref) {
   final repository = ref.watch(productRepositoryProvider); // ProductRepository provider'ını kullan
   return GetProductsUseCaseImpl(repository); // Use case'i döndür

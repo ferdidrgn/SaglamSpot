@@ -65,17 +65,13 @@ class ProductNotifier extends StateNotifier<ProductState> {
     );
   }
 
-  Future<void> filterProducts({
-    final String? condition,
-    final double? minPrice,
-    final double? maxPrice,
-  }) async {
+  Future<void> filterProducts(
+      {final String? condition,
+      final double? minPrice,
+      final double? maxPrice}) async {
     _setLoadingState(true);
     final result = await filterProductUseCase.call(
-      condition: condition,
-      minPrice: minPrice,
-      maxPrice: maxPrice,
-    );
+        condition: condition, minPrice: minPrice, maxPrice: maxPrice);
 
     result.fold(
       (final failure) => _setErrorState(failure.message),
