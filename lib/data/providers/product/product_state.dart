@@ -10,4 +10,16 @@ class ProductState {
     this.errorMessage,
     final List<Product>? products,
   }) : products = products ?? [];
+
+  ProductState copyWith({
+    final List<Product>? products,
+    final bool? isLoading,
+    final String? errorMessage,
+  }) {
+    return ProductState(
+      products: products ?? this.products,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 }

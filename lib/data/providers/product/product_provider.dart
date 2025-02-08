@@ -28,8 +28,7 @@ final productProvider =
 // ProductsUseCase providers
 
 final getProductsUseCaseProvider = Provider<GetProductsUseCase>((final ref) {
-  final repository = ref.watch(
-      productRepositoryProvider); // ProductRepository provider'ını kullan
+  final repository = ref.watch(productRepositoryProvider); // ProductRepository provider'ını kullan
   return GetProductsUseCaseImpl(repository); // Use case'i döndür
 });
 

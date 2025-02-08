@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/domain/usecases/product/add_product_usecase.dart';
-import '../../../domain/entities/product.dart';
+import 'package:saglamspot/domain/entities/product.dart';
+import '../../../domain/usecases/product/add_product_usecase.dart';
 import '../../../domain/usecases/product/delete_product_usecase.dart';
 import '../../../domain/usecases/product/filter_product_usecase.dart';
 import '../../../domain/usecases/product/get_products_usecase.dart';
@@ -15,47 +15,52 @@ class ProductNotifier extends StateNotifier<ProductState> {
   final FilterProductUseCase filterProductUseCase;
 
   ProductNotifier(
-      this.getProductsUseCase,
-      this.addProductUseCase,
-      this.updateProductUseCase,
-      this.deleteProductUseCase,
-      this.filterProductUseCase)
-      : super(ProductState());
+    this.getProductsUseCase,
+    this.addProductUseCase,
+    this.updateProductUseCase,
+    this.deleteProductUseCase,
+    this.filterProductUseCase,
+  ) : super(ProductState()) {
+    loadProducts(); // Uygulama başladığında ürünleri yükle
+  }
 
   Future<void> loadProducts() async {
-    state = ProductState(isLoading: true);
+    _setLoadingState(true);
     final result = await getProductsUseCase.call();
 
     result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
-      (final products) => state = ProductState(products: products),
+      (final failure) => _setErrorState(failure.message),
+      (final products) => _setProductsState(products),
     );
   }
 
   Future<void> addProduct(
       final Product product, final List<dynamic> images) async {
-    state = ProductState(isLoading: true);
+    _setLoadingState(true);
     final result = await addProductUseCase.call(product, images);
+
     result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
+      (final failure) => _setErrorState(failure.message),
       (final _) => loadProducts(),
     );
   }
 
   Future<void> updateProduct(final Product product) async {
-    state = ProductState(isLoading: true);
+    _setLoadingState(true);
     final result = await updateProductUseCase.call(product);
+
     result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
+      (final failure) => _setErrorState(failure.message),
       (final _) => loadProducts(),
     );
   }
 
   Future<void> deleteProduct(final String productId) async {
-    state = ProductState(isLoading: true);
+    _setLoadingState(true);
     final result = await deleteProductUseCase.call(productId);
+
     result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
+      (final failure) => _setErrorState(failure.message),
       (final _) => loadProducts(),
     );
   }
@@ -65,39 +70,36 @@ class ProductNotifier extends StateNotifier<ProductState> {
     final double? minPrice,
     final double? maxPrice,
   }) async {
-    state = ProductState(isLoading: true);
+    _setLoadingState(true);
     final result = await filterProductUseCase.call(
       condition: condition,
       minPrice: minPrice,
       maxPrice: maxPrice,
     );
+
     result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
-      (final products) => state = ProductState(products: products),
+      (final failure) => _setErrorState(failure.message),
+      (final products) => _setProductsState(products),
     );
   }
 
   Future<void> resetFilters() async {
-    state = ProductState(isLoading: true);
-    final result = await getProductsUseCase.call(); // Tüm ürünleri yükle
-    result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
-      (final products) => state = ProductState(products: products),
-    );
+    await loadProducts(); // Tüm ürünleri yükle
   }
 
   Future<void> searchProducts({required final String query}) async {
-    state = ProductState(isLoading: true);
+    _setLoadingState(true);
     final result = await getProductsUseCase.call(); // Tüm ürünleri al
+
     result.fold(
-      (final failure) => state = ProductState(errorMessage: failure.message),
+      (final failure) => _setErrorState(failure.message),
       (final products) {
         if (query.isEmpty) {
-          state = ProductState(products: products);
+          _setProductsState(products);
           return;
         }
         final filteredProducts = _filterProductsByQuery(products, query);
-        state = ProductState(products: filteredProducts);
+        _setProductsState(filteredProducts);
       },
     );
   }
@@ -109,5 +111,17 @@ class ProductNotifier extends StateNotifier<ProductState> {
       return product.name.toLowerCase().contains(lowerCaseQuery) ||
           product.desc.toLowerCase().contains(lowerCaseQuery);
     }).toList();
+  }
+
+  void _setLoadingState(final bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
+  }
+
+  void _setErrorState(final String errorMessage) {
+    state = state.copyWith(errorMessage: errorMessage, isLoading: false);
+  }
+
+  void _setProductsState(final List<Product> products) {
+    state = state.copyWith(products: products, isLoading: false);
   }
 }
