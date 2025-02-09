@@ -11,7 +11,7 @@ class AppColors {
   static const Color darkBackground = Color(0xFF3C3F41); // Koyu Gri
 }
 
-class AppTextStyles {
+mixin AppTextStyles {
   static const String fontFamily = 'Roboto';
 
   static const TextStyle baseLight = TextStyle(
@@ -39,7 +39,7 @@ class AppTextStyles {
   );
 }
 
-class AppTheme {
+mixin AppTheme {
   static ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.brown,
@@ -84,7 +84,7 @@ class AppTheme {
         textTheme: AppTextStyles.darkTextTheme,
       );
 
-  static AppBarTheme _appBarTheme(Color backgroundColor) => AppBarTheme(
+  static AppBarTheme _appBarTheme(final Color backgroundColor) => AppBarTheme(
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white, size: 30),
         backgroundColor: backgroundColor,
