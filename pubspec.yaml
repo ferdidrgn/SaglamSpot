@@ -35,12 +35,7 @@ dependencies:
   #cupertino_icons: ^1.0.8
 
   # State Management
-  flutter_bloc: ^8.1.3  # Uygulama durumu yönetimi için BLoC (Business Logic Component) desenini sağlar.
-
   equatable: ^2.0.5  # Nesnelerin eşitliğini karşılaştırmak için kullanılır, BLoC ve diğer state yönetimi durumlarında faydalıdır.
-
-  # Dependency Injection
-  get_it: ^7.6.0  # Bağımlılık enjeksiyonu için basit bir servis bulucu.
 
   # Functional Programming
   dartz: ^0.10.1  # Fonksiyonel programlama için gerekli yapıları sağlar (Option, Either gibi).
@@ -52,31 +47,38 @@ dependencies:
   shared_preferences: ^2.2.0  # Kalıcı yerel veri depolama için kullanılır (key-value çifti).
 
   # Service Locator
-  injectable: ^2.3.2  # Servislerin otomatik olarak bulunması ve enjeksiyonu için kullanılan bir kütüphane.
+  internet_connection_checker: ^3.0.1  # İnternet bağlantısının durumunu kontrol etmek için kullanılır.
 
-  internet_connection_checker: ^1.0.0  # İnternet bağlantısının durumunu kontrol etmek için kullanılır.
-
-  firebase_core: ^3.6.0  # Firebase servislerini uygulamada kullanmak için gerekli temel yapı.
-
+  # Firebase
+  firebase_core: ^3.6.0  # Firebase servislerini kullanmak için gerekli temel yapı.
   cloud_firestore: ^5.4.4  # Firebase'in NoSQL veritabanı olan Cloud Firestore'u kullanmak için.
+  firebase_storage: ^12.3.2  # Firebase'in dosya depolama hizmetini kullanmak için.
 
-  firebase_storage: ^12.3.2  # Firebase'in dosya depolama hizmeti olan Cloud Storage'ı kullanmak için.
+  # URL ve Dosya Seçimi
+  url_launcher: ^6.0.20  # Uygulama içinden URL açmak için.
+  image_picker: ^0.8.7+5  # Mobil cihazlarda kamera ve galeriye erişim için.
+  file_picker: ^8.1.7  # Web ortamında dosya seçimi yapmayı sağlar.
 
-  url_launcher: ^6.0.20  # Uygulama içinden URL açmak (tarayıcıda, telefon araması, e-posta gibi).
+  # Uluslararasılaştırma
+  intl: ^0.18.1  # Tarih, saat ve sayı biçimlendirme gibi işlemler için.
 
-  image_picker: ^0.8.7+5  # Mobil cihazlarda kamera ve galeriye erişim için kullanılır.
+  # Diğer Kütüphaneler
+  flutter_riverpod: ^2.4.10  # State yönetimi için Riverpod.
+  freezed_annotation: ^2.4.1  # Immutable data class oluşturmak için.
+  riverpod_annotation: ^2.3.4  # Riverpod için anotasyon desteği.
 
-  file_picker: ^8.1.7  # Web ortamında dosya seçimi yapmayı sağlar (opsiyonel, gelişmiş durumlarda kullanılabilir).
-
-  intl: ^0.18.1  # Uluslararasılaştırma, tarih, saat ve sayı biçimlendirme gibi işlemler için.
+  # Kod Üretimi
+  build_runner: ^2.4.8  # Kod üretimi için kullanılan araç.
+  freezed: ^2.4.7  # Freezed ile veri sınıfları oluşturmak için.
+  riverpod_generator: ^2.3.9  # Riverpod için kod üretimi.
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^4.0.0  # Dart kodunun kalitesini artırmak için lint kuralları sağlar.
-  build_runner: ^2.4.8
-  injectable_generator: ^2.4.1
+  build_runner: ^2.4.8  # Kod üretimi için kullanılan araç.
+  injectable_generator: ^2.4.1  # Injectable için otomatik kod üretimi.
 
 
 # For information on the generic Dart part of this file, see the
