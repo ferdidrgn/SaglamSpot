@@ -13,7 +13,7 @@ class CustomSearchBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 40),
       elevation: 5,
@@ -59,8 +59,8 @@ class CustomSearchBar extends StatelessWidget {
     );
   }
 
-  OutlineInputBorder _buildBorder(BuildContext context, bool isFocused) {
-    Color borderColor = Theme.of(context).brightness == Brightness.light
+  OutlineInputBorder _buildBorder(final BuildContext context, final bool isFocused) {
+    final Color borderColor = Theme.of(context).brightness == Brightness.light
         ? (isFocused ? Colors.red.shade500 : Colors.red.shade200)
         : (isFocused ? Colors.red.shade200 : const Color(0xFFCF6679));
 

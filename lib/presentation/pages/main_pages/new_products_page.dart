@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
+import '../../../data/providers/product/product_provider.dart';
 import '../../../domain/entities/product.dart';
-import '../../bloc/product_bloc.dart';
 
-class NewProductsPage extends StatelessWidget {
+class NewProductsPage extends ConsumerWidget {
   const NewProductsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<ProductBloc, ProductState>(
-        builder: (context, state) {
-          if (state is ProductLoading) {
-            return _buildLoadingState();
-          } else if (state is ProductLoaded) {
-            return _buildLoadedState(state.products);
-          } else if (state is ProductError) {
-            return _buildErrorState(state.message);
-          }
-          return const Center(child: Text('Bir şeyler yanlış gitti.'));
-        },
-      ),
-    );
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final productState = ref.watch(productProvider);
+
+    return productState.isLoading
+        ? _buildLoadingState()
+        : productState.errorMessage != null
+            ? _buildErrorState(productState.errorMessage!)
+            : _buildLoadedState(productState.products);
   }
 
   Widget _buildLoadingState() {
@@ -38,9 +31,9 @@ class NewProductsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedState(List<Product> products) {
+  Widget _buildLoadedState(final List<Product> products) {
     final newProducts =
-    products.where((p) => !p.isSold && !p.isSpotProduct).toList();
+        products.where((final p) => !p.isSold && !p.isSpotProduct).toList();
 
     if (newProducts.isEmpty) {
       return _buildEmptyState();
@@ -57,7 +50,7 @@ class NewProductsPage extends StatelessWidget {
           mainAxisSpacing: 16,
         ),
         itemCount: newProducts.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (final context, final index) {
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
