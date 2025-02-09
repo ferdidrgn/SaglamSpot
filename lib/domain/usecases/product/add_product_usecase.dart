@@ -16,4 +16,4 @@ class AddProductUseCaseImpl implements AddProductUseCase {
   Future<Either<Failure, void>> call(Product product, List<dynamic> images) async {
     return await repository.addProduct(product, images);
   }
-} 
+}
