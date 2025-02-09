@@ -49,7 +49,7 @@ dependencies:
   shared_preferences: ^2.2.0  # Kalıcı yerel veri depolama için kullanılır (key-value çifti).
 
   # Service Locator
-  internet_connection_checker: ^1.0.0  # İnternet bağlantısının durumunu kontrol etmek için kullanılır.
+  internet_connection_checker: ^3.0.1  # İnternet bağlantısının durumunu kontrol etmek için kullanılır.
 
   # Firebase
   firebase_core: ^3.6.0  # Firebase servislerini kullanmak için gerekli temel yapı.

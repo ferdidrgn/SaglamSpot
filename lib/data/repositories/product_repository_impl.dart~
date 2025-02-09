@@ -36,61 +36,45 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, List<Product>>> _getProducts(
     final Future<List<ProductModel>> Function() getProductsFromSource,
   ) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final products = await getProductsFromSource();
-        return Right(products.map((final model) => model.toEntity()).toList());
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
+    try {
+      final products = await getProductsFromSource();
+      return Right(products.map((final model) => model.toEntity()).toList());
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
+
 
   @override
   Future<Either<Failure, void>> addProduct(
       final Product product, final List<dynamic> images) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final productModel = ProductModel.fromEntity(product);
-        await remoteDataSource.addProduct(productModel, images);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
+    try {
+      final productModel = ProductModel.fromEntity(product);
+      await remoteDataSource.addProduct(productModel, images);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> updateProduct(final Product product) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final productModel = ProductModel.fromEntity(product);
-        await remoteDataSource.updateProduct(productModel);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
+    try {
+      final productModel = ProductModel.fromEntity(product);
+      await remoteDataSource.updateProduct(productModel);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> deleteProduct(final String productId) async {
-    if (await networkInfo.isConnected) {
-      try {
-        await remoteDataSource.deleteProduct(productId);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
+    try {
+      await remoteDataSource.deleteProduct(productId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 }
-

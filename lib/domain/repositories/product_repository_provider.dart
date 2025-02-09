@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/domain/repositories/product_repository.dart';
-import '../../core/network/network_info_provider.dart';
+import '../../core/network/network_info.dart';
 import '../../data/datasources/product_remote_data_source_provider.dart';
 import '../../data/repositories/product_repository_impl.dart';
 
