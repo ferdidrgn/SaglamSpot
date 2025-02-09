@@ -1,20 +1,19 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-import '../../../data/providers/product/product_provider.dart';
 import '../../core/widgets/custom_search.dart';
-import '../../data/providers/product/product_state.dart';
 import '../../domain/entities/product.dart';
+import '../bloc/product_bloc.dart';
+import 'dart:async';
 
-class SearchPage extends ConsumerStatefulWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
   @override
-  ConsumerState<SearchPage> createState() => _SearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends ConsumerState<SearchPage> {
+class _SearchPageState extends State<SearchPage> {
   String? _selectedCondition;
   double _minPrice = 0;
   double _maxPrice = 50000;
@@ -24,23 +23,166 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   bool _showChips = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     _debounce?.cancel();
     super.dispose();
   }
 
+  Future<bool> _onWillPop() async {
+    _resetFilters();
+    return true; // Geri dönüşü onayla
+  }
+
+  void _loadProducts() {
+    context.read<ProductBloc>().add(const LoadProducts());
+  }
+
+  void _filterProducts() {
+    context.read<ProductBloc>().add(FilterProducts(
+          condition: _selectedCondition,
+          minPrice: _minPrice,
+          maxPrice: _maxPrice,
+        ));
+  }
+
+  void _resetFilters() {
+    context.read<ProductBloc>().add(ResetFilters()); // Filtreleri sıfırla
+    _searchController.clear(); // Arama çubuğunu temizle
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Filtrele'),
+        content: SingleChildScrollView(child: _buildFilterDialogContent()),
+        actions: [
+          _buildDialogActions(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDialogActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildDialogButton('Uygula', () {
+          Navigator.pop(context);
+          _filterProducts();
+          setState(() {
+            _showChips = true; // Chip'leri göstermek için flag
+          });
+        }),
+        _buildDialogButton('Temizle', () {
+          _resetFilters();
+          Navigator.pop(context);
+        }),
+      ],
+    );
+  }
+
+  TextButton _buildDialogButton(String label, VoidCallback onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary),
+      child: Text(label, style: const TextStyle(color: Colors.white)),
+    );
+  }
+
+  Widget _buildFilterDialogContent() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildConditionDropdown(),
+        const SizedBox(height: 20),
+        _buildPriceTextField('Minimum Fiyat', (value) {
+          _minPrice = double.tryParse(value) ?? 0;
+        }),
+        const SizedBox(height: 20),
+        _buildPriceTextField('Maksimum Fiyat', (value) {
+          _maxPrice = double.tryParse(value) ?? 50000;
+        }),
+      ],
+    );
+  }
+
+  Widget _buildConditionDropdown() {
+    return DropdownButtonFormField<String>(
+      value: _selectedCondition,
+      hint: const Text('Ürün Durumu'),
+      items: _conditions.map((condition) {
+        return DropdownMenuItem(value: condition, child: Text(condition));
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedCondition = value == 'Hepsi' ? null : value;
+        });
+      },
+    );
+  }
+
+  Widget _buildPriceTextField(String label, Function(String) onChanged) {
+    return TextField(
+      decoration: InputDecoration(labelText: label),
+      keyboardType: TextInputType.number,
+      onChanged: onChanged,
+    );
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (query.isEmpty) {
+        _loadProducts();
+      } else {
+        context.read<ProductBloc>().add(SearchProducts(query: query));
+      }
+    });
+  }
+
   @override
-  Widget build(final BuildContext context) {
-    final productState = ref.watch(productProvider);
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWideScreen = screenWidth > 1200;
+    final isMediumScreen = screenWidth > 800 && screenWidth <= 1200;
+
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: _onWillPop, // Geri butonuna tıklandığında filtreleri sıfırla
       child: Scaffold(
         body: Column(
           children: [
-            _buildSearchSection(),
             Expanded(
-              child: _buildProductList(productState),
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    _buildSearchSection(),
+                    Expanded(
+                      child: BlocBuilder<ProductBloc, ProductState>(
+                        builder: (context, state) {
+                          if (state is ProductLoading)
+                            return _buildLoadingState();
+                          if (state is ProductLoaded)
+                            return _buildLoadedState(
+                                state.products, isWideScreen, isMediumScreen);
+                          if (state is ProductError)
+                            return _buildErrorState(state.message);
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -48,33 +190,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  Future<bool> _onWillPop() async {
-    _resetFilters();
-    return true;
-  }
-
-  void _loadProducts() {
-    ref.read(productProvider.notifier).loadProducts();
-  }
-
-  void _filterProducts() {
-    ref.read(productProvider.notifier).filterProducts(
-          condition: _selectedCondition,
-          minPrice: _minPrice,
-          maxPrice: _maxPrice,
-        );
-  }
-
-  void _resetFilters() {
-    ref.read(productProvider.notifier).resetFilters();
-    _searchController.clear();
-  }
-
-  // UI Bileşenleri
   Widget _buildSearchSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -86,6 +204,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ),
         ],
       ),
+      padding: const EdgeInsets.all(24),
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,11 +212,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           _buildHeader(),
           const SizedBox(height: 24),
           CustomSearchBar(
-              controller: _searchController, onSearchChanged: _onSearchChanged),
+            controller: _searchController,
+            onSearchChanged: _onSearchChanged,
+          ),
           if (_showChips)
             Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: _buildActiveFilters()),
+              padding: const EdgeInsets.only(top: 16),
+              child: _buildActiveFilters(),
+            ),
         ],
       ),
     );
@@ -107,81 +229,96 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Ürün Kataloğu',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Text('İhtiyacınız olan tüm ürünler burada',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.grey[600])),
-        ]),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Ürün Kataloğu',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('İhtiyacınız olan tüm ürünler burada',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.grey[600])),
+          ],
+        ),
         ElevatedButton.icon(
-            onPressed: _showFilterDialog,
-            icon: const Icon(Icons.filter_list),
-            label: const Text('Filtrele')),
+          onPressed: _showFilterDialog,
+          icon: const Icon(Icons.filter_list),
+          label: const Text('Filtrele'),
+        ),
       ],
     );
   }
 
-  Widget _buildProductList(final ProductState productState) {
-    return productState.isLoading
-        ? _buildLoadingState()
-        : productState.errorMessage != null
-            ? _buildErrorState(productState.errorMessage!)
-            : productState.products.isEmpty
-                ? _buildEmptyState()
-                : _buildContentState(productState.products);
-  }
+  Widget _buildLoadedState(
+      List<Product> products, bool isWideScreen, bool isMediumScreen) {
+    if (products.isEmpty) return _buildEmptyState();
 
-  Widget _buildContentState(final List<Product> products) {
     return SingleChildScrollView(
       child: Container(
+        constraints: BoxConstraints(
+            maxWidth: isWideScreen
+                ? 1500
+                : isMediumScreen
+                    ? 900
+                    : 600),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCategorySection('Mevcut Ürünler',
-                products.where((final p) => !p.isSold).toList()),
+            _buildCategorySection(
+                'Mevcut Ürünler',
+                products.where((p) => !p.isSold).toList(),
+                isWideScreen,
+                isMediumScreen),
             const SizedBox(height: 32),
-            _buildCategorySection('Satılmış Ürünler',
-                products.where((final p) => p.isSold).toList()),
+            _buildCategorySection(
+                'Satılmış Ürünler',
+                products.where((p) => p.isSold).toList(),
+                isWideScreen,
+                isMediumScreen),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategorySection(
-      final String title, final List<Product> products) {
-    if (products.isEmpty) {
-      return const SizedBox();
-    }
+  Widget _buildCategorySection(String title, List<Product> products,
+      bool isWideScreen, bool isMediumScreen) {
+    if (products.isEmpty) return const SizedBox();
+
+    final crossAxisCount = isWideScreen
+        ? 4
+        : isMediumScreen
+            ? 3
+            : 2;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(title,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold))),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Text(title,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold)),
+        ),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
             childAspectRatio: 0.9,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
           itemCount: products.length,
-          itemBuilder: (final context, final index) =>
+          itemBuilder: (context, index) =>
               ProductCard(product: products[index]),
         ),
       ],
@@ -211,7 +348,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  Widget _buildFilterChip(final String label) {
+  Widget _buildFilterChip(String label) {
     return Chip(
       label: Text(label,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
@@ -272,6 +409,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ElevatedButton.icon(
             onPressed: () {
               _resetFilters();
+              _searchController.clear();
+              _loadProducts();
             },
             icon: const Icon(Icons.refresh),
             label: const Text('Tüm Ürünleri Göster'),
@@ -281,7 +420,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  Widget _buildErrorState(final String message) {
+  Widget _buildErrorState(String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -295,100 +434,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           Text(message, style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
-    );
-  }
-
-  void _onSearchChanged(final String query) {
-    if (_debounce?.isActive ?? false) {
-      _debounce!.cancel();
-    }
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (query.isEmpty) {
-        _loadProducts();
-      } else {
-        ref.read(productProvider.notifier).searchProducts(query: query);
-      }
-    });
-  }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (final context) => AlertDialog(
-        title: const Text('Filtrele'),
-        content: SingleChildScrollView(child: _buildFilterDialogContent()),
-        actions: [_buildDialogActions()],
-      ),
-    );
-  }
-
-  Widget _buildDialogActions() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildDialogButton('Uygula', () {
-          Navigator.pop(context);
-          _filterProducts();
-          setState(() {
-            _showChips = true;
-          });
-        }),
-        _buildDialogButton('Temizle', () {
-          _resetFilters();
-          Navigator.pop(context);
-        }),
-      ],
-    );
-  }
-
-  TextButton _buildDialogButton(
-      final String label, final VoidCallback onPressed) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary),
-      child: Text(label, style: const TextStyle(color: Colors.white)),
-    );
-  }
-
-  Widget _buildFilterDialogContent() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildConditionDropdown(),
-        const SizedBox(height: 20),
-        _buildPriceTextField('Minimum Fiyat', (final value) {
-          _minPrice = double.tryParse(value) ?? 0;
-        }),
-        const SizedBox(height: 20),
-        _buildPriceTextField('Maksimum Fiyat', (final value) {
-          _maxPrice = double.tryParse(value) ?? 50000;
-        }),
-      ],
-    );
-  }
-
-  Widget _buildConditionDropdown() {
-    return DropdownButtonFormField<String>(
-      value: _selectedCondition,
-      hint: const Text('Ürün Durumu'),
-      items: _conditions.map((final condition) {
-        return DropdownMenuItem(value: condition, child: Text(condition));
-      }).toList(),
-      onChanged: (final value) {
-        setState(() {
-          _selectedCondition = value == 'Hepsi' ? null : value;
-        });
-      },
-    );
-  }
-
-  Widget _buildPriceTextField(
-      final String label, final Function(String) onChanged) {
-    return TextField(
-      decoration: InputDecoration(labelText: label),
-      keyboardType: TextInputType.number,
-      onChanged: onChanged,
     );
   }
 }

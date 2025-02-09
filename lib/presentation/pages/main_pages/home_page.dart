@@ -1,47 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/domain/entities/product.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_category.dart';
 import '../../../core/widgets/custom_decorated_card.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_search.dart';
 import '../../../core/widgets/custom_title.dart';
-import '../../../data/providers/product/product_provider.dart';
+import '../../bloc/product_bloc.dart';
 import '../search_page.dart';
+import 'package:saglamspot/domain/entities/product.dart';
+import '../../../core/theme/app_theme.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final productState = ref.watch(productProvider);
+  State<HomePage> createState() => _HomePageState();
+}
 
-    return productState.isLoading
-        ? _buildLoadingState()
-        : productState.errorMessage != null
-            ? _buildErrorState(productState.errorMessage!)
-            : _buildContentState(context, productState.products);
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProductBloc>().add(const LoadProducts());
   }
 
-  Widget _buildLoadingState() {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProductBloc, ProductState>(
+      builder: (context, state) {
+        if (state is ProductLoading) {
+          return _buildLoading();
+        } else if (state is ProductLoaded) {
+          return _buildContent(state.products);
+        } else if (state is ProductError) {
+          return _buildError(state.message);
+        }
+        return const SizedBox();
+      },
+    );
+  }
+
+  Widget _buildLoading() {
     return const Center(child: CircularProgressIndicator());
   }
 
-  Widget _buildErrorState(final String message) {
+  Widget _buildError(String message) {
     return Center(child: Text(message));
   }
 
-  Widget _buildContentState(
-      final BuildContext context, final List<Product> products) {
+  Widget _buildContent(List<Product> products) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 30),
-          CustomSearchBar(onSearchTap: () => _navigateToSearch(context)),
+          CustomSearchBar(onSearchTap: _navigateToSearch),
           const SizedBox(height: 20),
           _buildCategorySection(),
           const SizedBox(height: 20),
@@ -52,15 +67,11 @@ class HomePage extends ConsumerWidget {
             imageUrl: 'assets/images/bicycle_france.jpg',
           ),
           const SizedBox(height: 20),
-          _buildProductSection(
-            'Yeni Gelen Ürünlerimiz',
-            products.where((final p) => !p.isSold).toList(),
-          ),
+          _buildProductSection('Yeni Gelen Ürünlerimiz',
+              products.where((p) => !p.isSold).toList()),
           const SizedBox(height: 20),
-          _buildProductSection(
-            'Satılmış Ürünlerimiz (3 Ay İçinde)',
-            products.where((final p) => p.isSold).toList(),
-          ),
+          _buildProductSection('Satılmış Ürünlerimiz (3 Ay İçinde)',
+              products.where((p) => p.isSold).toList()),
           const SizedBox(height: 40),
         ],
       ),
@@ -114,8 +125,7 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildProductSection(
-      final String title, final List<Product> products) {
+  Widget _buildProductSection(String title, List<Product> products) {
     final ScrollController scrollController = ScrollController();
 
     return Container(
@@ -143,7 +153,7 @@ class HomePage extends ConsumerWidget {
                     controller: scrollController,
                     scrollDirection: Axis.horizontal,
                     itemCount: products.length,
-                    itemBuilder: (final context, final index) {
+                    itemBuilder: (context, index) {
                       return Container(
                         width: 300,
                         margin: const EdgeInsets.only(right: 16),
@@ -161,8 +171,7 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildScrollButton(
-      final ScrollController controller, final int direction) {
+  Widget _buildScrollButton(ScrollController controller, int direction) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
@@ -186,7 +195,7 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  void _scrollList(final ScrollController controller, final int direction) {
+  void _scrollList(ScrollController controller, int direction) {
     const double scrollAmount = 300;
     final double offset = controller.offset + (direction * scrollAmount);
     controller.animateTo(
@@ -196,10 +205,10 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  void _navigateToSearch(final BuildContext context) {
+  void _navigateToSearch() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (final context) => const SearchPage()),
+      MaterialPageRoute(builder: (context) => const SearchPage()),
     );
   }
 }

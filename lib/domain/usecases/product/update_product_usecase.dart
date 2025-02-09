@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import '../../../../../core/errors/failures.dart';
-import '../../entities/product.dart';
-import '../../repositories/product_repository.dart';
+import '../../../../core/errors/failures.dart';
+import '../entities/product.dart';
+import '../repositories/product_repository.dart';
 
 abstract class UpdateProductUseCase {
-  Future<Either<Failure, void>> call(final Product product);
+  Future<Either<Failure, void>> call(Product product);
 }
 
 class UpdateProductUseCaseImpl implements UpdateProductUseCase {
@@ -13,7 +13,7 @@ class UpdateProductUseCaseImpl implements UpdateProductUseCase {
   UpdateProductUseCaseImpl(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(final Product product) async {
-    return repository.updateProduct(product);
+  Future<Either<Failure, void>> call(Product product) async {
+    return await repository.updateProduct(product);
   }
-}
+} 

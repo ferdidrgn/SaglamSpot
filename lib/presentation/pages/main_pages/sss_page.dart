@@ -6,12 +6,12 @@ class SSSPage extends StatelessWidget {
   const SSSPage({super.key});
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/book_room.jpg'),
+            image: AssetImage('assets/images/book_roomjpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -98,7 +98,7 @@ class SSSPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (final context) => const AddProductPage(),
+                      builder: (context) => const AddProductPage(),
                     ),
                   );
                 },
@@ -111,7 +111,8 @@ class SSSPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionAnswerCard(final String question, final String answer, final IconData icon) {
+  Widget _buildQuestionAnswerCard(
+      String question, String answer, IconData icon) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       elevation: 3,

@@ -28,9 +28,8 @@ class ProductModel {
     required this.imageUrl,
   });
 
-  // Firestore'dan veri alırken kullanılan factory
-  factory ProductModel.fromFirestore(final DocumentSnapshot doc) {
-    final data = doc.data()! as Map<String, dynamic>;
+  factory ProductModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return ProductModel(
       id: data['_id'] ?? '',
       createdAt: data['_createdAt'] ?? '',
@@ -46,7 +45,6 @@ class ProductModel {
     );
   }
 
-  // Firestore'a veri gönderirken kullanılan metod
   Map<String, dynamic> toFirestore() {
     return {
       '_id': id,
@@ -63,19 +61,18 @@ class ProductModel {
     };
   }
 
-  // Kopyalama metodu
   ProductModel copyWith({
-    final String? id,
-    final String? createdAt,
-    final String? updatedAt,
-    final String? soldAt,
-    final String? name,
-    final String? desc,
-    final String? category,
-    final double? price,
-    final List<String>? imageUrl,
-    final bool? isSold,
-    final bool? isSpotProduct,
+    String? id,
+    String? createdAt,
+    String? updatedAt,
+    String? soldAt,
+    String? name,
+    String? desc,
+    String? category,
+    double? price,
+    List<String>? imageUrl,
+    bool? isSold,
+    bool? isSpotProduct,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -92,25 +89,23 @@ class ProductModel {
     );
   }
 
-  // Entity'e dönüştürme metodu
   Product toEntity() {
     return Product(
-      id: id,
       createdAt: createdAt,
       updatedAt: updatedAt,
       soldAt: soldAt,
+      id: id,
       name: name,
       desc: desc,
       category: category,
       price: price,
-      imageUrl: imageUrl,
-      isSold: isSold,
       isSpotProduct: isSpotProduct,
+      isSold: isSold,
+      imageUrl: imageUrl,
     );
   }
 
-  // Entity'den ProductModel oluşturma metodu
-  factory ProductModel.fromEntity(final Product product) {
+  factory ProductModel.fromEntity(Product product) {
     return ProductModel(
       id: product.id,
       createdAt: product.createdAt,

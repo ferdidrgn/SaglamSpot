@@ -17,22 +17,22 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   // List of pages
-  final List<Widget> _pages = const [
-    HomePage(),
-    NewProductsPage(),
-    SpotProductsPage(),
-    InfoPage(),
-    SSSPage(),
+  final List<Widget> _pages = [
+    const HomePage(),
+    const NewProductsPage(),
+    const SpotProductsPage(),
+    const InfoPage(),
+    const SSSPage(),
   ];
 
-  void _onItemSelected(final int index) {
+  void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [

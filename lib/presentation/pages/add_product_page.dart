@@ -1,19 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../data/providers/product/product_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/widgets/custom_image_selector.dart';
 import '../../domain/entities/product.dart';
+import '../bloc/product_bloc.dart';
 
-class AddProductPage extends ConsumerStatefulWidget {
+class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
 
   @override
-  ConsumerState<AddProductPage> createState() => _AddProductPageState();
+  State<AddProductPage> createState() => _AddProductPageState();
 }
 
-class _AddProductPageState extends ConsumerState<AddProductPage> {
+class _AddProductPageState extends State<AddProductPage> {
   final ImageSelector _imageSelector = ImageSelector();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -25,54 +26,58 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   bool _isSecondHand = false;
 
   @override
-  Widget build(final BuildContext context) {
-    final productState = ref.watch(productProvider);
-
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ürün Ekle')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: productState.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : productState.errorMessage != null
-                ? _buildErrorState(productState.errorMessage!)
-                : _buildContentState(context),
-      ),
-    );
-  }
+        child: BlocConsumer<ProductBloc, ProductState>(
+          listener: (context, state) {
+            if (state is ProductAdded) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ürün başarıyla eklendi!')),
+              );
+              _clearForm();
+            } else if (state is ProductError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Hata: ${state.message}')),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is ProductLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-  Widget _buildContentState(final BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 20),
-          ..._buildInputFields(),
-          const SizedBox(height: 20),
-          Center(
-            child: ElevatedButton(
-              onPressed: _pickImages,
-              child: const Text('Görsel Seç'),
-            ),
-          ),
-          const SizedBox(height: 10),
-          if (_selectedImages.isNotEmpty) _buildImagePreview(),
-          const SizedBox(height: 20),
-          Center(
-            child: ElevatedButton(
-              onPressed: _addProduct,
-              child: const Text('Ürün Ekle'),
-            ),
-          ),
-        ],
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 20),
+                  ..._buildInputFields(),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _pickImages,
+                      child: const Text('Görsel Seç'),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  if (_selectedImages.isNotEmpty) _buildImagePreview(),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _addProduct,
+                      child: const Text('Ürün Ekle'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
-    );
-  }
-
-  Widget _buildErrorState(final String message) {
-    return Center(
-      child: Text('Hata: $message', style: const TextStyle(color: Colors.red)),
     );
   }
 
@@ -103,12 +108,12 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       _buildTextField(_descController, 'Ürün Açıklaması'),
       _buildTextField(_categoryController, 'Kategori'),
       _buildTextField(_priceController, 'Fiyat', isNumeric: true),
-      _buildSwitchRow('Ürün Satıldı mı?', _isSold, (final value) {
+      _buildSwitchRow('Ürün Satıldı mı?', _isSold, (value) {
         setState(() {
           _isSold = value;
         });
       }),
-      _buildSwitchRow('Ürün 2. El mi?', _isSecondHand, (final value) {
+      _buildSwitchRow('Ürün 2. El mi?', _isSecondHand, (value) {
         setState(() {
           _isSecondHand = value;
         });
@@ -116,7 +121,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     ];
   }
 
-  Widget _buildTextField(final TextEditingController controller, final String label, {final bool isNumeric = false}) {
+  Widget _buildTextField(TextEditingController controller, String label, {bool isNumeric = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -130,7 +135,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     );
   }
 
-  Widget _buildSwitchRow(final String label, final bool value, final ValueChanged<bool> onChanged) {
+  Widget _buildSwitchRow(String label, bool value, ValueChanged<bool> onChanged) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -152,7 +157,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _selectedImages.length,
-        itemBuilder: (final context, final index) => Padding(
+        itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(4.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
@@ -170,26 +175,29 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   Future<void> _pickImages() async {
     final images = await _imageSelector.pickImages();
-    if (images.length + _selectedImages.length > 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
-      );
-      return;
-    }
+    if (images != null) {
+      if (images.length + _selectedImages.length > 8) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('En fazla 8 fotoğraf ekleyebilirsiniz.')),
+        );
+        return;
+      }
 
-    final validImages = images.where((final image) => image is File || image is Uint8List).toList();
+      final validImages = images.where((image) =>
+          image is File || image is Uint8List).toList();
 
-    if (validImages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Geçersiz görsel türü.')),
-      );
-      return;
-    }
+      if (validImages.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Geçersiz görsel türü.')),
+        );
+        return;
+      }
 
-    setState(() {
-      _selectedImages.addAll(validImages);
-    });
+      setState(() {
+        _selectedImages.addAll(validImages);
+      });
     }
+  }
 
   Future<void> _addProduct() async {
     if (_validateInputs()) {
@@ -204,12 +212,10 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         price: double.tryParse(_priceController.text) ?? 0.0,
         isSold: _isSold,
         isSpotProduct: _isSecondHand,
-        imageUrl: const [],
+        imageUrl: [],
       );
 
-      // Product ekleme işlemini Riverpod ile yapıyoruz
-      await ref.read(productProvider.notifier).addProduct(product, _selectedImages);
-      _clearForm();
+      context.read<ProductBloc>().add(AddProduct(product, _selectedImages));
     }
   }
 
@@ -220,7 +226,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         _priceController.text.isEmpty ||
         _categoryController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
+        const SnackBar(
+            content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
       );
       return false;
     }

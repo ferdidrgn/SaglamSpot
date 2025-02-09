@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/widgets/custom_decorated_card.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InfoPage extends StatelessWidget {
   const InfoPage({super.key});
@@ -46,13 +46,13 @@ class InfoPage extends StatelessWidget {
   ];
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
-              children: infoCards.map((final info) {
+              children: infoCards.map((info) {
                 return CustomDecoratedCard(
                   title: info['title']!,
                   content: info['content']!,
@@ -102,7 +102,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
-  Color _getColor(final String colorName) {
+  Color _getColor(String colorName) {
     switch (colorName) {
       case 'brown':
         return Colors.brown[200]!;
