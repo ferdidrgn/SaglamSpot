@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/product.dart';
 
 class ProductModel {
@@ -29,8 +28,7 @@ class ProductModel {
   });
 
   // Firestore'dan veri alırken kullanılan factory
-  factory ProductModel.fromFirestore(final DocumentSnapshot doc) {
-    final data = doc.data()! as Map<String, dynamic>;
+  factory ProductModel.fromFirestore(final Map<String, dynamic> data) {
     return ProductModel(
       id: data['_id'] ?? '',
       createdAt: data['_createdAt'] ?? '',
