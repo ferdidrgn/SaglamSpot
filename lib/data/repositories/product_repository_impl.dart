@@ -49,6 +49,11 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
+  Future<Either<Failure, List<Product>>> searchProducts({final String? searchQueryText}) {
+    return _getProducts(() => remoteDataSource.searchProducts(searchQueryText ?? ''));
+  }
+
+  @override
   Future<Either<Failure, void>> addProduct(
       final Product product, final List<dynamic> images) async {
     if (await internetService.isConnected) {

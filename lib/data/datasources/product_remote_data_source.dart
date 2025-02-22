@@ -2,6 +2,7 @@ import '../models/product_model.dart';
 
 abstract class ProductRemoteDataSource {
   Future<void> addProduct(final ProductModel product, final List<dynamic> images);
+
   Future<List<ProductModel>> getProducts();
 
   Future<List<ProductModel>> filterProducts({
@@ -10,6 +11,9 @@ abstract class ProductRemoteDataSource {
     final double? maxPrice,
   });
 
+  Future<List<ProductModel>> searchProducts(final String productId);
+
   Future<void> updateProduct(final ProductModel product);
+
   Future<void> deleteProduct(final String productId);
 }

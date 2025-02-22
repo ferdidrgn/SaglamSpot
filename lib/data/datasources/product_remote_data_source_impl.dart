@@ -53,17 +53,15 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   }
 
   @override
-  Future<List<ProductModel>> searchProducts({
-    final String? searchQueryText,
-  }) async {
+  Future<List<ProductModel>> searchProducts(final String searchQueryText) async {
     Query<Map<String, dynamic>> query = firestore.collection('Product');
 
     try {
       query = query
           .where('name', isGreaterThanOrEqualTo: searchQueryText)
-          .where('name', isLessThan: searchQueryText)
+          .where('name', isLessThan: '$searchQueryText\uf8ff') // tam eşleşme için
           .where('description', isGreaterThanOrEqualTo: searchQueryText)
-          .where('description', isLessThan: searchQueryText);
+          .where('description', isLessThan: '$searchQueryText\uf8ff'); // tam eşleşme için
 
       final snapshot = await query.get();
       return _mapQuerySnapshotToProducts(snapshot);

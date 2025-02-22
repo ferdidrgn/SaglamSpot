@@ -34,8 +34,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
     );
   }
 
-  Future<void> addProduct(
-      final Product product, final List<dynamic> images) async {
+  Future<void> addProduct(final Product product, final List<dynamic> images) async {
     _setLoadingState(true);
     final result = await addProductUseCase.call(product, images);
 
