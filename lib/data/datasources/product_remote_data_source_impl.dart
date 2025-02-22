@@ -155,7 +155,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   List<ProductModel> _mapQuerySnapshotToProducts(
       final QuerySnapshot<Map<String, dynamic>> snapshot) {
     return snapshot.docs
-        .map((final doc) => ProductModel.fromFirestore(doc))
+        .map((final doc) => ProductModel.fromFirestore(doc.data()))
         .toList();
   }
 }
