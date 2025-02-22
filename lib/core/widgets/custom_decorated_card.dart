@@ -16,7 +16,7 @@ class CustomDecoratedCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(right: 16, left: 5, bottom: 20),
       height: MediaQuery.of(context).size.height * 0.8,
@@ -52,11 +52,11 @@ class CustomDecoratedCard extends StatelessWidget {
       child: Image.network(
         imageUrl,
         fit: BoxFit.cover,
-        loadingBuilder: (context, child, progress) {
+        loadingBuilder: (final context, final child, final progress) {
           if (progress == null) return child;
           return const Center(child: CircularProgressIndicator());
         },
-        errorBuilder: (context, error, stackTrace) {
+        errorBuilder: (final context, final error, final stackTrace) {
           return const Center(child: Icon(Icons.error, color: Colors.red));
         },
       ),
@@ -90,7 +90,7 @@ class CustomDecoratedCard extends StatelessWidget {
     );
   }
 
-  TextStyle _textStyle(double fontSize, FontWeight fontWeight) {
+  TextStyle _textStyle(final double fontSize, final FontWeight fontWeight) {
     return TextStyle(
       fontSize: fontSize,
       fontWeight: fontWeight,

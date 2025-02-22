@@ -6,8 +6,8 @@ class ImageSelector {
   final ImagePicker _picker = ImagePicker();
 
   /// Görsel Seçimi
-  Future<List<dynamic>> pickImages({final bool allowMultiple = true}) async {
-    final List<dynamic> selectedFiles = [];
+  Future<List<dynamic>> pickImages({bool allowMultiple = true}) async {
+    List<dynamic> selectedFiles = [];
 
     if (kIsWeb) {
       // Web üzerinde dosya seçme işlemi
@@ -27,7 +27,7 @@ class ImageSelector {
 
       if (pickedFiles != null) {
         selectedFiles.addAll(
-          pickedFiles.map((final file) => File(file!.path)), // File nesneleri olarak ekle
+          pickedFiles.map((file) => File(file!.path)), // File nesneleri olarak ekle
         );
       }
     }

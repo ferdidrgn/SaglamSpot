@@ -14,7 +14,7 @@ class _ProductCardState extends State<ProductCard> {
   int _currentImageIndex = 0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final product = widget.product;
 
     return Container(
@@ -41,7 +41,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  Widget _buildImageSection(Product product) {
+  Widget _buildImageSection(final Product product) {
     return Container(
       height: 250,
       width: double.infinity,
@@ -64,7 +64,7 @@ class _ProductCardState extends State<ProductCard> {
                     height: 250,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
+                    loadingBuilder: (final context, final child, final loadingProgress) {
                       if (loadingProgress == null) return child;
                       return const Center(
                         child: CircularProgressIndicator(
@@ -73,7 +73,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       );
                     },
-                    errorBuilder: (context, error, stackTrace) {
+                    errorBuilder: (final context, final error, final stackTrace) {
                       return const Center(
                         child: Icon(Icons.error, size: 50),
                       );
@@ -90,7 +90,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  Widget _buildArrowButtons(Product product) {
+  Widget _buildArrowButtons(final Product product) {
     return Positioned(
       top: 8,
       child: Row(
@@ -105,7 +105,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  Widget _buildArrowButton(IconData icon, VoidCallback onPressed) {
+  Widget _buildArrowButton(final IconData icon, final VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
@@ -117,14 +117,14 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  Widget _buildImageIndicator(int length) {
+  Widget _buildImageIndicator(final int length) {
     return Positioned(
       bottom: 8,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(
           length,
-          (index) => Padding(
+          (final index) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: CircleAvatar(
               radius: 4,
@@ -137,14 +137,14 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  Widget _buildProductName(String name) {
+  Widget _buildProductName(final String name) {
     return Text(
       name,
       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
     );
   }
 
-  Widget _buildProductDescription(String desc) {
+  Widget _buildProductDescription(final String desc) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
@@ -156,7 +156,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  Widget _buildProductDetails(Product product) {
+  Widget _buildProductDetails(final Product product) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -172,10 +172,10 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  void _showFullScreenImage(BuildContext context, String imageUrl) {
+  void _showFullScreenImage(final BuildContext context, final String imageUrl) {
     showDialog(
       context: context,
-      builder: (_) => Dialog(
+      builder: (final _) => Dialog(
         backgroundColor: Colors.black,
         child: GestureDetector(
           onTap: () => Navigator.pop(context),
@@ -185,7 +185,7 @@ class _ProductCardState extends State<ProductCard> {
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
+                  loadingBuilder: (final context, final child, final loadingProgress) {
                     if (loadingProgress == null) return child;
                     return const Center(
                       child: CircularProgressIndicator(
@@ -193,7 +193,7 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     );
                   },
-                  errorBuilder: (context, error, stackTrace) {
+                  errorBuilder: (final context, final error, final stackTrace) {
                     return const Center(
                       child: Icon(Icons.error, size: 50),
                     );
@@ -207,7 +207,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  void _changeImageIndex(int direction, int length) {
+  void _changeImageIndex(final int direction, final int length) {
     setState(() {
       _currentImageIndex = (_currentImageIndex + direction + length) % length;
     });
