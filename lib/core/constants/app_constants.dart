@@ -1,15 +1,11 @@
 class AppConstants {
-  // API Constants
-  static const String baseUrl = 'https://api.example.com';
-  static const String apiKey = 'your_api_key';
-
   // Cache Keys
   static const String cacheToken = 'CACHE_TOKEN';
   static const String cacheUser = 'CACHE_USER';
 
   // Theme Constants
-  static const int primaryColor = 0xFF8B4513; // Kahverengi
-  static const int secondaryColor = 0xFFD2691E; // Koyu Turuncu
+  static const int primaryColor = 0xFF8B4513; // Brown
+  static const int secondaryColor = 0xFFD2691E; // Dark Orange
 
   // Layout Constants
   static const double headerHeight = 70.0;
@@ -21,6 +17,6 @@ class AppConstants {
   static const double navigationFontSize = 16.0;
 
   // Other Constants
-  static const String appName = 'My Awesome App'; // Uygulama adı
-  static const String copyright = '© 2024 My Company'; // Telif hakkı
+  static const String appName = 'Sağlam Spot'; // Application name
+  static const String copyright = '© 2024 My Company'; // Copyright
 }
