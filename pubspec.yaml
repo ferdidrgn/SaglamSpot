@@ -34,6 +34,8 @@ dependencies:
   # iOS stil ikonlar için Cupertino Icons paketi (opsiyonel).
   #cupertino_icons: ^1.0.8
 
+  #flutter_launcher_icons: ^0.9.2
+
   # State Management
   equatable: ^2.0.5  # Nesnelerin eşitliğini karşılaştırmak için kullanılır, BLoC ve diğer state yönetimi durumlarında faydalıdır.
 
