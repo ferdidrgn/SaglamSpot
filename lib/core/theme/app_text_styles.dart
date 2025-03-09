@@ -9,7 +9,7 @@ mixin AppTextStyles {
   static const TextStyle baseDark =
       TextStyle(fontFamily: fontFamily, color: Colors.white);
 
-  static TextTheme lightTextTheme = TextTheme(
+  static final TextTheme lightTextTheme = TextTheme(
     displayLarge:
         baseLight.copyWith(fontSize: 32.0, fontWeight: FontWeight.bold),
     displayMedium:
@@ -19,7 +19,7 @@ mixin AppTextStyles {
     labelLarge: baseLight.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold),
   );
 
-  static TextTheme darkTextTheme = TextTheme(
+  static final TextTheme darkTextTheme = TextTheme(
     displayLarge:
         baseDark.copyWith(fontSize: 32.0, fontWeight: FontWeight.bold),
     displayMedium:

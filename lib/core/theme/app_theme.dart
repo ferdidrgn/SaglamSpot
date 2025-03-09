@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../util/app_text_styles.dart';
+import 'app_text_styles.dart';
 
 class AppColors {
   static const Color primary = Color(0xFF8B4513); // Saddle Brown (Kahverengi)

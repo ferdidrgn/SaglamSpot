@@ -3,10 +3,6 @@ class AppConstants {
   static const String cacheToken = 'CACHE_TOKEN';
   static const String cacheUser = 'CACHE_USER';
 
-  // Theme Constants
-  static const int primaryColor = 0xFF8B4513; // Brown
-  static const int secondaryColor = 0xFFD2691E; // Dark Orange
-
   // Layout Constants
   static const double headerHeight = 70.0;
   static const double footerHeight = 200.0;
