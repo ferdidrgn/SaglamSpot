@@ -42,19 +42,19 @@ class Product extends Equatable {
         imageUrl,
       ];
 
-  factory Product.fromMap(final Map<String, dynamic> map) {
+  factory Product.fromMap(final Map<String, dynamic> data) {
     return Product(
-      id: map['id'],
-      createdAt: map['createdAt'],
-      updatedAt: map['updatedAt'],
-      soldAt: map['soldAt'],
-      name: map['name'],
-      desc: map['desc'],
-      category: map['category'],
-      price: (map['price'] as num).toDouble(),
-      isSold: map['isSold'],
-      isSpotProduct: map['isSpotProduct'],
-      imageUrl: List<String>.from(map['imageUrl'] ?? []),
+      id: data['id'],
+      createdAt: data['createdAt'],
+      updatedAt: data['updatedAt'],
+      soldAt: data['soldAt'],
+      name: data['name'],
+      desc: data['desc'],
+      category: data['category'],
+      price: (data['price'] as num).toDouble(),
+      isSold: data['isSold'],
+      isSpotProduct: data['isSpotProduct'],
+      imageUrl: List<String>.from(data['imageUrl'] ?? []),
     );
   }
 
