@@ -53,8 +53,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     return true;
   }
 
-  void _loadProducts() {
-    ref.read(productProvider.notifier).loadProducts();
+  Future<void> _loadProducts() async {
+    await ref.read(productProvider.notifier).loadProducts();
   }
 
   void _filterProducts() {
@@ -303,11 +303,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       _debounce!.cancel();
     }
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (query.isEmpty) {
-        _loadProducts();
-      } else {
-        ref.read(productProvider.notifier).searchProducts(query: query);
-      }
+      if (query.isEmpty) _loadProducts();
+      else ref.read(productProvider.notifier).searchProducts(query: query);
     });
   }
 
