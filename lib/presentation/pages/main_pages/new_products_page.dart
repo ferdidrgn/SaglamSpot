@@ -11,11 +11,12 @@ class NewProductsPage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final productState = ref.watch(productProvider);
 
-    return productState.isLoading
-        ? _buildLoadingState()
-        : productState.errorMessage != null
-            ? _buildErrorState(productState.errorMessage!)
-            : _buildLoadedState(productState.products);
+    return Scaffold(
+        body: productState.isLoading
+            ? _buildLoadingState()
+            : productState.errorMessage != null
+                ? _buildErrorState(productState.errorMessage!)
+                : _buildContentState(productState.products));
   }
 
   Widget _buildLoadingState() {
@@ -31,7 +32,7 @@ class NewProductsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadedState(final List<Product> products) {
+  Widget _buildContentState(final List<Product> products) {
     final newProducts =
         products.where((final p) => !p.isSold && !p.isSpotProduct).toList();
 

@@ -18,19 +18,20 @@ class HomePage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final productState = ref.watch(productProvider);
 
-    return productState.isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : productState.errorMessage != null
-        ? _buildErrorState(productState.errorMessage!)
-        : _buildContentState(context, productState.products);
+    return Scaffold(
+        body: productState.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : productState.errorMessage != null
+                ? _buildErrorState(productState.errorMessage!)
+                : _buildContentState(context, productState.products));
   }
 
   Widget _buildErrorState(final String message) {
     return Center(child: Text(message));
   }
 
-  Widget _buildContentState(final BuildContext context,
-      final List<Product> products) {
+  Widget _buildContentState(
+      final BuildContext context, final List<Product> products) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -110,8 +111,8 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildProductSection(final String title,
-      final List<Product> products) {
+  Widget _buildProductSection(
+      final String title, final List<Product> products) {
     final ScrollController scrollController = ScrollController();
 
     return Container(
@@ -157,8 +158,8 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildScrollButton(final ScrollController controller,
-      final int direction) {
+  Widget _buildScrollButton(
+      final ScrollController controller, final int direction) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(

@@ -8,8 +8,7 @@ import '../../../domain/usecases/product/update_product_usecase.dart';
 import 'product_notifier.dart';
 import 'product_state.dart';
 
-final productProvider =
-    StateNotifierProvider<ProductNotifier, ProductState>((final ref) {
+final productProvider = StateNotifierProvider.autoDispose<ProductNotifier, ProductState>((final ref) {
   return ProductNotifier(
     ref.watch(getProductsUseCaseProvider),
     ref.watch(addProductUseCaseProvider),

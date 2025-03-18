@@ -11,22 +11,15 @@ class SpotProductsPage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final productState = ref.watch(productProvider);
 
-    if (productState.isLoading) {
-      return _buildLoadingState();
-    } else if (productState.errorMessage != null) {
-      return _buildErrorState(productState.errorMessage!);
-    } else {
-      return _buildLoadedState(productState.products);
-    }
+    return Scaffold(
+        body: productState.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : productState.errorMessage != null
+                ? _buildErrorState(productState.errorMessage!)
+                : _buildContentState(productState.products));
   }
 
-  Widget _buildLoadingState() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget _buildLoadedState(final List<Product> products) {
+  Widget _buildContentState(final List<Product> products) {
     final spotProducts =
         products.where((final p) => p.isSpotProduct && !p.isSold).toList();
 
