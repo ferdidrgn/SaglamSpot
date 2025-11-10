@@ -8,41 +8,24 @@ import '../../../domain/usecases/product/update_product_usecase.dart';
 import 'product_notifier.dart';
 import 'product_state.dart';
 
-final productProvider = StateNotifierProvider.autoDispose<ProductNotifier, ProductState>((final ref) {
-  return ProductNotifier(
-    ref.watch(getProductsUseCaseProvider),
-    ref.watch(addProductUseCaseProvider),
-    ref.watch(updateProductUseCaseProvider),
-    ref.watch(deleteProductUseCaseProvider),
-    ref.watch(filterProductUseCaseProvider),
-  );
-});
+final productProvider =
+    NotifierProvider<ProductNotifier, ProductState>(ProductNotifier.new);
 
 // ProductsUseCase providers
-final getProductsUseCaseProvider = Provider<GetProductsUseCase>((final ref) {
-  final repository = ref.watch(productRepositoryProvider); // ProductRepository provider'ını kullan
-  return GetProductsUseCaseImpl(repository); // Use case'i döndür
-});
+final getProductsUseCaseProvider = Provider<GetProductsUseCase>((final ref) =>
+    GetProductsUseCaseImpl(ref.watch(productRepositoryProvider)));
 
-final addProductUseCaseProvider = Provider<AddProductUseCase>((final ref) {
-  final repository = ref.watch(productRepositoryProvider);
-  return AddProductUseCaseImpl(repository);
-});
+final addProductUseCaseProvider = Provider<AddProductUseCase>(
+    (final ref) => AddProductUseCaseImpl(ref.watch(productRepositoryProvider)));
 
-final updateProductUseCaseProvider =
-    Provider<UpdateProductUseCase>((final ref) {
-  final repository = ref.watch(productRepositoryProvider);
-  return UpdateProductUseCaseImpl(repository);
-});
+final updateProductUseCaseProvider = Provider<UpdateProductUseCase>(
+    (final ref) =>
+        UpdateProductUseCaseImpl(ref.watch(productRepositoryProvider)));
 
-final deleteProductUseCaseProvider =
-    Provider<DeleteProductUseCase>((final ref) {
-  final repository = ref.watch(productRepositoryProvider);
-  return DeleteProductUseCaseImpl(repository);
-});
+final deleteProductUseCaseProvider = Provider<DeleteProductUseCase>(
+    (final ref) =>
+        DeleteProductUseCaseImpl(ref.watch(productRepositoryProvider)));
 
-final filterProductUseCaseProvider =
-    Provider<FilterProductUseCase>((final ref) {
-  final repository = ref.watch(productRepositoryProvider);
-  return FilterProductUseCaseImpl(repository);
-});
+final filterProductUseCaseProvider = Provider<FilterProductUseCase>(
+    (final ref) =>
+        FilterProductUseCaseImpl(ref.watch(productRepositoryProvider)));

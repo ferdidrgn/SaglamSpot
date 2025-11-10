@@ -1,103 +1,52 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/domain/entities/product.dart';
-import '../../../domain/usecases/product/add_product_usecase.dart';
-import '../../../domain/usecases/product/delete_product_usecase.dart';
-import '../../../domain/usecases/product/filter_product_usecase.dart';
-import '../../../domain/usecases/product/get_products_usecase.dart';
-import '../../../domain/usecases/product/update_product_usecase.dart';
+import 'package:saglamspot/data/providers/product/product_provider.dart';
+import '../../../core/common/base_notifier_with_network_checker.dart';
+import '../../../domain/entities/product.dart';
 import 'product_state.dart';
 
-class ProductNotifier extends StateNotifier<ProductState> {
-  final GetProductsUseCase getProductsUseCase;
-  final AddProductUseCase addProductUseCase;
-  final UpdateProductUseCase updateProductUseCase;
-  final DeleteProductUseCase deleteProductUseCase;
-  final FilterProductUseCase filterProductUseCase;
+class ProductNotifier extends BaseNotifierWithNetworkChecker<ProductState> {
+  @override
+  ProductState initialState() => const ProductState();
 
-  ProductNotifier(
-    this.getProductsUseCase,
-    this.addProductUseCase,
-    this.updateProductUseCase,
-    this.deleteProductUseCase,
-    this.filterProductUseCase,
-  ) : super(ProductState()) {
-    loadProducts(); // Uygulama başladığında ürünleri yükle
-  }
+  @override
+  void reloadData() => loadProducts();
 
-  Future<void> loadProducts() async {
-    _setLoadingState(true);
-    final result = await getProductsUseCase.call();
+  Future<void> loadProducts() => executeWithInternetCheck(
+      () => ref.read(getProductsUseCaseProvider).call(),
+      onSuccess: (final products) => _setProductsState(products));
 
-    result.fold(
-      (final failure) => _setErrorState(failure.message),
-      (final products) => _setProductsState(products),
-    );
-  }
+  Future<void> addProduct(final Product product, final List<dynamic> images) =>
+      executeWithInternetCheck(
+          () => ref.read(addProductUseCaseProvider).call(product, images),
+          onSuccess: (final _) => loadProducts());
 
-  Future<void> addProduct(final Product product, final List<dynamic> images) async {
-    _setLoadingState(true);
-    final result = await addProductUseCase.call(product, images);
+  Future<void> updateProduct(final Product product) => executeWithInternetCheck(
+      () => ref.read(updateProductUseCaseProvider).call(product),
+      onSuccess: (final _) => loadProducts());
 
-    result.fold(
-      (final failure) => _setErrorState(failure.message),
-      (final _) => loadProducts(),
-    );
-  }
+  Future<void> deleteProduct(final String productId) =>
+      executeWithInternetCheck(
+          () => ref.read(deleteProductUseCaseProvider).call(productId),
+          onSuccess: (final _) => loadProducts());
 
-  Future<void> updateProduct(final Product product) async {
-    _setLoadingState(true);
-    final result = await updateProductUseCase.call(product);
+  Future<void> filterProducts({
+    final String? condition,
+    final double? minPrice,
+    final double? maxPrice,
+  }) =>
+      executeWithInternetCheck(
+          () => ref.read(filterProductUseCaseProvider).call(
+              condition: condition, minPrice: minPrice, maxPrice: maxPrice),
+          onSuccess: (final products) => _setProductsState(products));
 
-    result.fold(
-      (final failure) => _setErrorState(failure.message),
-      (final _) => loadProducts(),
-    );
-  }
+  Future<void> resetFilters() => loadProducts();
 
-  Future<void> deleteProduct(final String productId) async {
-    _setLoadingState(true);
-    final result = await deleteProductUseCase.call(productId);
-
-    result.fold(
-      (final failure) => _setErrorState(failure.message),
-      (final _) => loadProducts(),
-    );
-  }
-
-  Future<void> filterProducts(
-      {final String? condition,
-      final double? minPrice,
-      final double? maxPrice}) async {
-    _setLoadingState(true);
-    final result = await filterProductUseCase.call(
-        condition: condition, minPrice: minPrice, maxPrice: maxPrice);
-
-    result.fold(
-      (final failure) => _setErrorState(failure.message),
-      (final products) => _setProductsState(products),
-    );
-  }
-
-  Future<void> resetFilters() async {
-    await loadProducts(); // Tüm ürünleri yükle
-  }
-
-  Future<void> searchProducts({required final String query}) async {
-    _setLoadingState(true);
-    final result = await getProductsUseCase.call(); // Tüm ürünleri al
-
-    result.fold(
-      (final failure) => _setErrorState(failure.message),
-      (final products) {
-        if (query.isEmpty) {
-          _setProductsState(products);
-          return;
-        }
+  Future<void> searchProducts({required final String query}) =>
+      executeWithInternetCheck(
+          () => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) {
         final filteredProducts = _filterProductsByQuery(products, query);
         _setProductsState(filteredProducts);
-      },
-    );
-  }
+      });
 
   List<Product> _filterProductsByQuery(
       final List<Product> products, final String query) {
@@ -108,15 +57,8 @@ class ProductNotifier extends StateNotifier<ProductState> {
     }).toList();
   }
 
-  void _setLoadingState(final bool isLoading) {
-    state = state.copyWith(isLoading: isLoading);
-  }
-
-  void _setErrorState(final String errorMessage) {
-    state = state.copyWith(errorMessage: errorMessage, isLoading: false);
-  }
-
   void _setProductsState(final List<Product> products) {
-    state = state.copyWith(products: products, isLoading: false);
+    state = state.copyWith(
+        dataList: products, isLoading: false, errorMessage: null);
   }
 }

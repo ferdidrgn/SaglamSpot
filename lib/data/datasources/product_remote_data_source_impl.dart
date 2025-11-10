@@ -78,7 +78,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     }
 
     try {
-      final imageUrls = await _uploadImages(images);
+      final imagesUrls = await _uploadImages(images);
       final nowDateTime = DateFormatter.nowFormatDateTime();
       final nowDate = DateFormatter.parseFormattedDateTime(
         nowDateTime,
@@ -90,7 +90,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         createdAt: nowDate['date'].toString(),
         updatedAt: nowDate['date'].toString(),
         soldAt: '',
-        imageUrl: imageUrls,
+        imagesUrl: imagesUrls,
       );
 
       await firestore

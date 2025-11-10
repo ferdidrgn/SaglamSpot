@@ -9,7 +9,7 @@ class Product extends Equatable {
   final String desc;
   final String category;
   final double price;
-  final List<String> imageUrl;
+  final List<String> imagesUrl;
   final bool isSold;
   final bool isSpotProduct;
 
@@ -24,7 +24,7 @@ class Product extends Equatable {
     required this.price,
     required this.isSold,
     required this.isSpotProduct,
-    required this.imageUrl,
+    required this.imagesUrl,
   });
 
   @override
@@ -39,7 +39,7 @@ class Product extends Equatable {
         price,
         isSold,
         isSpotProduct,
-        imageUrl,
+        imagesUrl,
       ];
 
   factory Product.fromMap(final Map<String, dynamic> data) {
@@ -54,7 +54,7 @@ class Product extends Equatable {
       price: (data['price'] as num).toDouble(),
       isSold: data['isSold'],
       isSpotProduct: data['isSpotProduct'],
-      imageUrl: List<String>.from(data['imageUrl'] ?? []),
+      imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
     );
   }
 
@@ -70,7 +70,7 @@ class Product extends Equatable {
       'price': price,
       'isSold': isSold,
       'isSpotProduct': isSpotProduct,
-      'imageUrl': imageUrl,
+      'imagesUrl': imagesUrl,
     };
   }
 }

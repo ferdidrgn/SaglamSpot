@@ -9,7 +9,7 @@ class ProductModel {
   final String desc;
   final String category;
   final double price;
-  final List<String> imageUrl;
+  final List<String> imagesUrl;
   final bool isSold;
   final bool isSpotProduct;
 
@@ -24,7 +24,7 @@ class ProductModel {
     required this.price,
     required this.isSold,
     required this.isSpotProduct,
-    required this.imageUrl,
+    required this.imagesUrl,
   });
 
   // Firestore'dan veri alırken kullanılan factory
@@ -40,7 +40,7 @@ class ProductModel {
       price: (data['price'] as num).toDouble(),
       isSold: data['isSold'] ?? false,
       isSpotProduct: data['isSpotProduct'] ?? false,
-      imageUrl: List<String>.from(data['imageUrl'] ?? []),
+      imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
     );
   }
 
@@ -57,7 +57,7 @@ class ProductModel {
       'price': price,
       'isSold': isSold,
       'isSpotProduct': isSpotProduct,
-      'imageUrl': imageUrl,
+      'imagesUrl': imagesUrl,
     };
   }
 
@@ -71,7 +71,7 @@ class ProductModel {
     final String? desc,
     final String? category,
     final double? price,
-    final List<String>? imageUrl,
+    final List<String>? imagesUrl,
     final bool? isSold,
     final bool? isSpotProduct,
   }) {
@@ -84,7 +84,7 @@ class ProductModel {
       desc: desc ?? this.desc,
       category: category ?? this.category,
       price: price ?? this.price,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imagesUrl: imagesUrl ?? this.imagesUrl,
       isSold: isSold ?? this.isSold,
       isSpotProduct: isSpotProduct ?? this.isSpotProduct,
     );
@@ -101,7 +101,7 @@ class ProductModel {
       desc: desc,
       category: category,
       price: price,
-      imageUrl: imageUrl,
+      imagesUrl: imagesUrl,
       isSold: isSold,
       isSpotProduct: isSpotProduct,
     );
@@ -118,7 +118,7 @@ class ProductModel {
       desc: product.desc,
       category: product.category,
       price: product.price,
-      imageUrl: product.imageUrl,
+      imagesUrl: product.imagesUrl,
       isSold: product.isSold,
       isSpotProduct: product.isSpotProduct,
     );

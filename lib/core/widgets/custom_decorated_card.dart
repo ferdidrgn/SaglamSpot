@@ -5,14 +5,14 @@ class CustomDecoratedCard extends StatelessWidget {
   final String title;
   final String content;
   final Color color;
-  final String imageUrl;
+  final String imagesUrl;
 
   const CustomDecoratedCard({
     super.key,
     required this.title,
     required this.content,
     required this.color,
-    required this.imageUrl,
+    required this.imagesUrl,
   });
 
   @override
@@ -50,7 +50,7 @@ class CustomDecoratedCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: Image.network(
-        imageUrl,
+        imagesUrl,
         fit: BoxFit.cover,
         loadingBuilder: (final context, final child, final progress) {
           if (progress == null) return child;

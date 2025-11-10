@@ -55,12 +55,12 @@ class _ProductCardState extends State<ProductCard> {
           GestureDetector(
             onTap: () => _showFullScreenImage(
                 context,
-                product.imageUrl.isNotEmpty
-                    ? product.imageUrl[_currentImageIndex]
+                product.imagesUrl.isNotEmpty
+                    ? product.imagesUrl[_currentImageIndex]
                     : ''),
-            child: product.imageUrl.isNotEmpty
+            child: product.imagesUrl.isNotEmpty
                 ? Image.network(
-                    product.imageUrl[_currentImageIndex],
+                    product.imagesUrl[_currentImageIndex],
                     height: 250,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -84,7 +84,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
           ),
           _buildArrowButtons(product),
-          _buildImageIndicator(product.imageUrl.length),
+          _buildImageIndicator(product.imagesUrl.length),
         ],
       ),
     );
@@ -97,9 +97,9 @@ class _ProductCardState extends State<ProductCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildArrowButton(Icons.arrow_back,
-              () => _changeImageIndex(-1, product.imageUrl.length)),
+              () => _changeImageIndex(-1, product.imagesUrl.length)),
           _buildArrowButton(Icons.arrow_forward,
-              () => _changeImageIndex(1, product.imageUrl.length)),
+              () => _changeImageIndex(1, product.imagesUrl.length)),
         ],
       ),
     );
@@ -172,16 +172,16 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  void _showFullScreenImage(final BuildContext context, final String imageUrl) {
+  void _showFullScreenImage(final BuildContext context, final String imagesUrl) {
     showDialog(
       context: context,
       builder: (final _) => Dialog(
         backgroundColor: Colors.black,
         child: GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: imageUrl.isNotEmpty
+          child: imagesUrl.isNotEmpty
               ? Image.network(
-                  imageUrl,
+                  imagesUrl,
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.contain,

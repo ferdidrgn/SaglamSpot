@@ -204,7 +204,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         price: double.tryParse(_priceController.text) ?? 0.0,
         isSold: _isSold,
         isSpotProduct: _isSecondHand,
-        imageUrl: const [],
+        imagesUrl: const [],
       );
 
       // Product ekleme işlemini Riverpod ile yapıyoruz
