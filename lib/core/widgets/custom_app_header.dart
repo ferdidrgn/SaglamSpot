@@ -3,11 +3,11 @@ import '../../presentation/pages/search_page.dart';
 import '../theme/app_colors.dart';
 import 'custom_search.dart';
 
-class ModernAppHeader extends StatelessWidget {
+class CustomAppHeader extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onItemSelected;
 
-  const ModernAppHeader({
+  const CustomAppHeader({
     super.key,
     required this.selectedIndex,
     required this.onItemSelected,

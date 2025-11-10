@@ -519,7 +519,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     const SizedBox(width: 20),
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
-                  return ModernProductCard(product: product, width: 280);
+                  return CustomProductCard(product: product, width: 280);
                 },
               ),
             ),
@@ -746,7 +746,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               itemCount: newArrivals.length.clamp(0, 8),
               itemBuilder: (final context, final index) {
                 final product = newArrivals[index];
-                return ModernProductCard(product: product);
+                return CustomProductCard(product: product);
               },
             ),
             const SizedBox(height: 40),

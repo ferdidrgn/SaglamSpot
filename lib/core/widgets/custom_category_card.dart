@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
-class ModernCategoryCard extends StatelessWidget {
+class CustomCategoryCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
   final VoidCallback onTap;
 
-  const ModernCategoryCard({
+  const CustomCategoryCard({
     super.key,
     required this.icon,
     required this.label,

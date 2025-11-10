@@ -13,7 +13,7 @@ class ImageSelector {
       // Web üzerinde dosya seçme işlemi
       final pickedFiles = await _picker.pickMultiImage();
       if (pickedFiles != null) {
-        for (var file in pickedFiles) {
+        for (final file in pickedFiles) {
           // Web üzerinde Uint8List kullanıyoruz
           final byteData = await file.readAsBytes();
           selectedFiles.add(byteData); // Uint8List olarak ekle

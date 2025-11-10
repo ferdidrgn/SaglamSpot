@@ -182,7 +182,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ),
           itemCount: products.length,
           itemBuilder: (final context, final index) =>
-              ProductCard(product: products[index]),
+              CustomProductCard(product: products[index]),
         ),
       ],
     );

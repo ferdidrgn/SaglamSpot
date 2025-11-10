@@ -44,7 +44,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         child: Column(
           children: [
             // Modern App Header
-            ModernAppHeader(
+            CustomAppHeader(
               selectedIndex: _selectedIndex,
               onItemSelected: _onItemSelected,
             ),

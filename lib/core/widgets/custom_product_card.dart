@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/product.dart';
 import '../theme/app_colors.dart';
 
-class ModernProductCard extends StatefulWidget {
+class CustomProductCard extends StatefulWidget {
   final Product product;
   final double? width;
 
-  const ModernProductCard({
+  const CustomProductCard({
     super.key,
     required this.product,
     this.width,
   });
 
   @override
-  State<ModernProductCard> createState() => _ModernProductCardState();
+  State<CustomProductCard> createState() => _CustomProductCardState();
 }
 
-class _ModernProductCardState extends State<ModernProductCard> {
+class _CustomProductCardState extends State<CustomProductCard> {
   int _currentImageIndex = 0;
   final PageController _pageController = PageController();
 
