@@ -5,15 +5,11 @@ class SearchFiltersNotifier extends Notifier<SearchState> {
   @override
   SearchState build() => const SearchState();
 
-  void setCondition(final String? condition) {
-    state = state.copyWith(condition: condition == 'Hepsi' ? null : condition);
-  }
+  void setCondition(final String? condition) => state =
+      state.copyWith(condition: condition == 'Hepsi' ? null : condition);
 
-  void setPriceRange(final double min, final double max) {
-    state = state.copyWith(minPrice: min, maxPrice: max);
-  }
+  void setPriceRange(final double min, final double max) =>
+      state = state.copyWith(minPrice: min, maxPrice: max);
 
-  void reset() {
-    state = const SearchState();
-  }
+  void reset() => state = const SearchState();
 }
