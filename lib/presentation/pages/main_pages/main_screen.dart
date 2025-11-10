@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/modern_app_header.dart';
+import '../../../core/widgets/custom_app_header.dart';
 import 'home_page.dart';
 import 'info_page.dart';
 import 'new_products_page.dart';

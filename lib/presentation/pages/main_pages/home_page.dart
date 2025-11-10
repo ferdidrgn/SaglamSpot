@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/modern_category_card.dart';
-import '../../../core/widgets/modern_product_card.dart';
-import '../../../core/widgets/section_header.dart';
+import '../../../core/widgets/custom_category_card.dart';
+import '../../../core/widgets/custom_product_card.dart';
+import '../../../core/widgets/custom_section_header.dart';
 import '../../../data/providers/product/product_provider.dart';
 import '../../../data/providers/product/product_state.dart';
 
@@ -507,9 +507,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SectionHeader(
-              title: 'Öne Çıkan Ürünler',
-              subtitle: 'En çok beğenilen mobilyalar',
-            ),
+                title: 'Öne Çıkan Ürünler',
+                subtitle: 'En çok beğenilen mobilyalar'),
             const SizedBox(height: 20),
             SizedBox(
               height: 320,
@@ -541,10 +540,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 4)),
           ],
         ),
         child: Row(
