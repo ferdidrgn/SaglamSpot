@@ -133,9 +133,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ? _buildLoadingState()
         : productState.errorMessage != null
             ? _buildErrorState(productState.errorMessage!)
-            : productState.products.isEmpty
+            : productState.dataList?.isEmpty ?? true
                 ? _buildEmptyState()
-                : _buildContentState(productState.products);
+                : _buildContentState(productState.dataList!);
   }
 
   Widget _buildContentState(final List<Product> products) {
@@ -303,8 +303,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       _debounce!.cancel();
     }
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (query.isEmpty) _loadProducts();
-      else ref.read(productProvider.notifier).searchProducts(query: query);
+      if (query.isEmpty)
+        _loadProducts();
+      else
+        ref.read(productProvider.notifier).searchProducts(query: query);
     });
   }
 
