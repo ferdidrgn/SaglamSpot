@@ -73,7 +73,7 @@ class CustomAppHeader extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             const Text(
-              'MobilyaEvim',
+              'Sağlam Spot',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

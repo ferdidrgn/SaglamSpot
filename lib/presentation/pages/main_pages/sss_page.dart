@@ -24,7 +24,7 @@ class _SSSPageState extends State<SSSPage> {
   final List<Map<String, String>> _faqs = [
     {
       'category': 'Genel',
-      'question': 'MobilyaEvim güvenilir mi?',
+      'question': 'Sağlam Spot güvenilir mi?',
       'answer':
           '15 yıldır sektörde hizmet veren, binlerce mutlu müşterisi olan köklü bir firmayız. Tüm ürünlerimiz için garanti sağlıyoruz ve müşteri memnuniyeti bizim için her şeyden önemlidir.',
     },
@@ -329,7 +329,7 @@ class _SSSPageState extends State<SSSPage> {
               child: _buildQuickHelpCard(
                 Icons.email_outlined,
                 'E-posta Desteği',
-                'destek@mobilyaevim.com',
+                '-',
                 AppColors.info,
               ),
             ),
