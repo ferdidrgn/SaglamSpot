@@ -22,4 +22,12 @@ class ProductState extends LoadableState<Product, List<Product>> {
         isLoading: isLoading ?? this.isLoading,
         errorMessage: errorMessage,
       );
+
+  @override
+  List<Object?> get props => [
+        dataList,
+        dataSingle,
+        isLoading,
+        errorMessage,
+      ];
 }

@@ -1,12 +1,21 @@
 import 'dart:async';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:saglamspot/core/common/base_notifier_with_network_checker.dart';
 import '../../../domain/repositories/product_repository.dart';
 import '../../../domain/repositories/product_repository_provider.dart';
+import '../product/product_provider.dart';
 import 'search_state.dart';
 
-class SearchNotifier extends AutoDisposeNotifier<SearchState> {
+class SearchNotifier extends BaseNotifierWithNetworkChecker<SearchState> {
   Timer? _debounce;
   late final ProductRepository _repository;
+
+  @override
+  SearchState initialState() => const SearchState();
+
+  @override
+  void reloadData() {
+    // TODO: implement reloadData
+  }
 
   @override
   SearchState build() {
@@ -15,23 +24,15 @@ class SearchNotifier extends AutoDisposeNotifier<SearchState> {
     return const SearchState(isLoading: true);
   }
 
-  Future<void> _loadInitialProducts() async {
-    try {
-      final result = await _repository.getProducts();
+  Future<void> _loadInitialProducts() =>
+      executeWithInternetCheck(() => _repository.getProducts(),
+          onSuccess: (final products) =>
+              state = state.copyWith(products: products, isLoading: false));
 
-      result.fold(
-        (final failure) {
-          state =
-              state.copyWith(isLoading: false, errorMessage: failure.message);
-        },
-        (final products) {
-          state = state.copyWith(products: products, isLoading: false);
-        },
-      );
-    } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
-    }
-  }
+  Future<void> loadProducts() => executeWithInternetCheck(
+      () => ref.read(getProductsUseCaseProvider).call(),
+      onSuccess: (final products) =>
+          state = state.copyWith(products: products, isLoading: false));
 
   void onQueryChanged(final String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -42,42 +43,31 @@ class SearchNotifier extends AutoDisposeNotifier<SearchState> {
   }
 
   Future<void> _filterAndSearch() async {
-    try {
-      final result = await _repository.getProducts();
+    await executeWithInternetCheck(
+      () => _repository.getProducts(),
+      onSuccess: (final products) {
+        final filtered = products.where((final p) {
+          final matchesQuery = state.query.isEmpty ||
+              p.name.toLowerCase().contains(state.query.toLowerCase());
 
-      result.fold(
-        (final failure) {
-          state =
-              state.copyWith(isLoading: false, errorMessage: failure.message);
-        },
-        (final products) {
-          final filtered = products.where((final p) {
-            final matchesQuery = state.query.isEmpty ||
-                p.name.toLowerCase().contains(state.query.toLowerCase());
+          final matchesCondition = state.condition == null ||
+              (state.condition == 'Sıfır' && !p.isSpotProduct) ||
+              (state.condition == 'İkinci El' && p.isSpotProduct);
 
-            final matchesCondition = state.condition == null ||
-                (state.condition == 'Sıfır' && !p.isSpotProduct) ||
-                (state.condition == 'İkinci El' && p.isSpotProduct);
+          final matchesPrice =
+              p.price >= state.minPrice && p.price <= state.maxPrice;
 
-            final matchesPrice =
-                p.price >= state.minPrice && p.price <= state.maxPrice;
+          return matchesQuery && matchesCondition && matchesPrice;
+        }).toList();
 
-            return matchesQuery && matchesCondition && matchesPrice;
-          }).toList();
-
-          state = state.copyWith(products: filtered, isLoading: false);
-        },
-      );
-    } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
-    }
+        state = state.copyWith(products: filtered, isLoading: false);
+      },
+    );
   }
 
   void setCondition(final String? condition) {
     state = state.copyWith(
-      condition: condition == 'Hepsi' ? null : condition,
-      isLoading: true,
-    );
+        condition: condition == 'Hepsi' ? null : condition, isLoading: true);
     _filterAndSearch();
   }
 
