@@ -342,11 +342,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildValueItem(
-    final IconData icon,
-    final String title,
-    final String subtitle,
-    final Color color,
-  ) {
+      final IconData icon,
+      final String title,
+      final String subtitle,
+      final Color color,
+      ) {
     return Column(
       children: [
         Container(
@@ -384,23 +384,38 @@ class _HomePageState extends ConsumerState<HomePage> {
       {
         'icon': Icons.chair_outlined,
         'label': 'Sandalye',
+        'count': '234+',
         'color': AppColors.primary
       },
       {
         'icon': Icons.weekend_outlined,
         'label': 'Kanepe',
+        'count': '156+',
         'color': AppColors.secondary
       },
-      {'icon': Icons.bed_outlined, 'label': 'Yatak', 'color': AppColors.accent},
+      {
+        'icon': Icons.bed_outlined,
+        'label': 'Yatak',
+        'count': '189+',
+        'color': AppColors.accent
+      },
       {
         'icon': Icons.table_restaurant_outlined,
         'label': 'Masa',
+        'count': '278+',
         'color': AppColors.info
       },
       {
         'icon': Icons.tv_outlined,
         'label': 'TV Ünitesi',
+        'count': '145+',
         'color': AppColors.warning
+      },
+      {
+        'icon': Icons.light_outlined,
+        'label': 'Aydınlatma',
+        'count': '92+',
+        'color': AppColors.success
       },
     ];
 
@@ -440,8 +455,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         border: Border.all(color: AppColors.border),
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                (category['color'] as Color).withOpacity(0.1),
+                            color: (category['color'] as Color).withOpacity(0.1),
                             blurRadius: 20,
                             offset: const Offset(0, 4),
                           ),
@@ -453,8 +467,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color:
-                                  (category['color'] as Color).withOpacity(0.1),
+                              color: (category['color'] as Color).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Icon(
