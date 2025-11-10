@@ -45,10 +45,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           children: [
             // Modern App Header
             CustomAppHeader(
-              selectedIndex: _selectedIndex,
-              onItemSelected: _onItemSelected,
-            ),
-
+                selectedIndex: _selectedIndex, onItemSelected: _onItemSelected),
             // Page Content
             Expanded(
               child: Container(
@@ -62,10 +59,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     ],
                   ),
                 ),
-                child: IndexedStack(
-                  index: _selectedIndex,
-                  children: _pages,
-                ),
+                child: IndexedStack(index: _selectedIndex, children: _pages),
               ),
             ),
           ],
