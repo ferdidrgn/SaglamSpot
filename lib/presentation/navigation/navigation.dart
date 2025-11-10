@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_header.dart';
-import 'home_page.dart';
-import 'info_page.dart';
-import 'new_products_page.dart';
-import 'spot_products_page.dart';
-import 'sss_page.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/widgets/custom_app_header.dart';
+import '../pages/main_pages/home_page.dart';
+import '../pages/main_pages/info_page.dart';
+import '../pages/main_pages/new_products_page.dart';
+import '../pages/main_pages/spot_products_page.dart';
+import '../pages/main_pages/sss_page.dart';
 
-class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key});
+class NavigationScreen extends ConsumerStatefulWidget {
+  const NavigationScreen({super.key});
 
   @override
-  ConsumerState<MainScreen> createState() => _MainScreenState();
+  ConsumerState<NavigationScreen> createState() => _NavigationScreenState();
 }
 
-class _MainScreenState extends ConsumerState<MainScreen> {
+class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = const [

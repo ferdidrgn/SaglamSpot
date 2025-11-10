@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'presentation/pages/main_pages/main_screen.dart';
+import 'presentation/navigation/navigation.dart';
 import 'web_config.dart';
 
 Future<void> main() async {
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
       themeMode: ThemeMode.system,
-      home: const MainScreen(),
+      home: const NavigationScreen(),
     );
   }
 }
