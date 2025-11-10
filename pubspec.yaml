@@ -65,9 +65,9 @@ dependencies:
   intl: ^0.18.1  # Tarih, saat ve sayı biçimlendirme gibi işlemler için.
 
   # Diğer Kütüphaneler
-  flutter_riverpod: ^2.4.10  # State yönetimi için Riverpod.
-  freezed_annotation: ^2.4.1  # Immutable data class oluşturmak için.
-  riverpod_annotation: ^2.3.4  # Riverpod için anotasyon desteği.
+  flutter_riverpod:  # State yönetimi için Riverpod.
+  freezed_annotation:  # Immutable veri sınıfları için.
+  riverpod_annotation:  # Riverpod için anotasyon desteği.
 
   # Kod Üretimi
   build_runner: ^2.4.8  # Kod üretimi için kullanılan araç.
