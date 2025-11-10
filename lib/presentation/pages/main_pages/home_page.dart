@@ -29,37 +29,41 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return CustomScrollView(
       slivers: [
-        // Hero Section - Dinamik ve Çekici
+        // Hero Section
         _buildEnhancedHeroSection(context),
 
-        // Value Proposition - Neden Bizi Seçmelisiniz?
+        // Value Proposition
         _buildValueProposition(),
 
         // Categories Section
         _buildCategoriesSection(),
 
-        // Featured Products - Öne Çıkan Ürünler
+        // Featured Products
         _buildFeaturedProducts(productState),
 
-        // Special Offers Banner
-        _buildSpecialOffersBanner(),
+        // Esnaf Tanıtımı
+        _buildBusinessIntroduction(),
 
-        // New Arrivals - Yeni Gelenler
+        // Special Offers - DÜZELTİLDİ
+        _buildSpecialOffers(),
+
+        // New Arrivals
         _buildNewArrivals(productState),
 
-        // Testimonials - Müşteri Yorumları
+        // Google Maps & Teslimat Bilgisi
+        _buildDeliveryMapSection(),
+
+        // Testimonials
         _buildTestimonials(),
 
-        // Stats Section - İstatistikler
+        // Stats Section
         _buildStatsSection(),
 
-        // Bottom Spacer
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
       ],
     );
   }
 
-  // Enhanced Hero Section with Multiple Slides
   SliverToBoxAdapter _buildEnhancedHeroSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -304,11 +308,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 AppColors.success,
               ),
             ),
-            Container(
-              width: 1,
-              height: 60,
-              color: AppColors.border,
-            ),
+            Container(width: 1, height: 60, color: AppColors.border),
             Expanded(
               child: _buildValueItem(
                 Icons.local_shipping_outlined,
@@ -317,11 +317,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 AppColors.info,
               ),
             ),
-            Container(
-              width: 1,
-              height: 60,
-              color: AppColors.border,
-            ),
+            Container(width: 1, height: 60, color: AppColors.border),
             Expanded(
               child: _buildValueItem(
                 Icons.attach_money_outlined,
@@ -330,16 +326,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                 AppColors.warning,
               ),
             ),
-            Container(
-              width: 1,
-              height: 60,
-              color: AppColors.border,
-            ),
+            Container(width: 1, height: 60, color: AppColors.border),
             Expanded(
               child: _buildValueItem(
-                Icons.support_agent_outlined,
-                '7/24 Destek',
-                'Müşteri memnuniyeti',
+                Icons.access_time_outlined, // Değişti
+                '9:00 - 22:00',
+                'Müşteri hizmetleri',
                 AppColors.secondary,
               ),
             ),
@@ -392,38 +384,23 @@ class _HomePageState extends ConsumerState<HomePage> {
       {
         'icon': Icons.chair_outlined,
         'label': 'Sandalye',
-        'count': '234+',
         'color': AppColors.primary
       },
       {
         'icon': Icons.weekend_outlined,
         'label': 'Kanepe',
-        'count': '156+',
         'color': AppColors.secondary
       },
-      {
-        'icon': Icons.bed_outlined,
-        'label': 'Yatak',
-        'count': '189+',
-        'color': AppColors.accent
-      },
+      {'icon': Icons.bed_outlined, 'label': 'Yatak', 'color': AppColors.accent},
       {
         'icon': Icons.table_restaurant_outlined,
         'label': 'Masa',
-        'count': '278+',
         'color': AppColors.info
       },
       {
         'icon': Icons.tv_outlined,
         'label': 'TV Ünitesi',
-        'count': '145+',
         'color': AppColors.warning
-      },
-      {
-        'icon': Icons.light_outlined,
-        'label': 'Aydınlatma',
-        'count': '92+',
-        'color': AppColors.success
       },
     ];
 
@@ -520,9 +497,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   SliverToBoxAdapter _buildFeaturedProducts(final ProductState productState) {
     final featuredProducts = productState.dataList?.take(6).toList() ?? [];
 
-    if (featuredProducts.isEmpty) {
+    if (featuredProducts.isEmpty)
       return const SliverToBoxAdapter(child: SizedBox());
-    }
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -530,21 +506,13 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SectionHeader(
+            const SectionHeader(
               title: 'Öne Çıkan Ürünler',
               subtitle: 'En çok beğenilen mobilyalar',
-              action: TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('Tümünü Gör'),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                ),
-              ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             SizedBox(
-              height: 380,
+              height: 320,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: featuredProducts.length,
@@ -552,30 +520,117 @@ class _HomePageState extends ConsumerState<HomePage> {
                     const SizedBox(width: 20),
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
-                  return ModernProductCard(
-                    product: product,
-                    width: 300,
-                  );
+                  return ModernProductCard(product: product, width: 280);
                 },
               ),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
 
-  // Special Offers Banner
-  SliverToBoxAdapter _buildSpecialOffersBanner() {
+  SliverToBoxAdapter _buildBusinessIntroduction() {
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        height: 280,
+        padding: const EdgeInsets.all(40),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Esnaf Fotoğrafı/Logo
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(60),
+                border: Border.all(color: AppColors.primary, width: 2),
+              ),
+              child: const Icon(Icons.storefront_outlined,
+                  color: AppColors.primary, size: 50),
+            ),
+            const SizedBox(width: 32),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '20 Yıllık Esnaf Güvencesi',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
+                    'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
+                    'alışverişin adresi olduk.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary,
+                      height: 1.6,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      _buildBusinessFeature('✓ Kalite Garantisi'),
+                      const SizedBox(width: 20),
+                      _buildBusinessFeature('✓ Profesyonel Montaj'),
+                      const SizedBox(width: 20),
+                      _buildBusinessFeature('✓ Geri Alım Garantisi'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBusinessFeature(final String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: AppColors.primary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  // SPECIAL OFFERS - DÜZELTİLDİ (UI Sığma Sorunu Çözüldü)
+  SliverToBoxAdapter _buildSpecialOffers() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: const EdgeInsets.all(40),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
           gradient: const LinearGradient(
-            colors: [Color(0xFFFF6B6B), Color(0xFFFFE66D)],
+            colors: [Color(0xFFFF6B6B), Color(0xFFFF8E53)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -587,89 +642,79 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        child: Stack(
+        child: Row(
           children: [
-            Positioned(
-              right: -30,
-              bottom: -30,
-              child: Icon(
-                Icons.local_offer_outlined,
-                size: 200,
-                color: Colors.white.withOpacity(0.2),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(48),
-              child: Row(
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            '🔥 Sınırlı Süre',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Özel İndirimler\nBaşladı!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 42,
-                            fontWeight: FontWeight.bold,
-                            height: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Seçili ürünlerde %70\'e varan indirim fırsatı',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        FilledButton(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFFFF6B6B),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Fırsatları Kaçırma',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      '🔥 Sınırlı Süre',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Süper İndirimler!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Seçili ürünlerde %70\'e varan indirim fırsatı. '
+                    'Kaçırmayın!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: () {},
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFFFF6B6B),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text(
+                      'Fırsatları Gör',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
+            ),
+            const SizedBox(width: 40),
+            // Daha küçük ve uyumlu ikon
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.local_offer_outlined,
+                  color: Colors.white.withOpacity(0.7), size: 50),
             ),
           ],
         ),
@@ -679,10 +724,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   SliverToBoxAdapter _buildNewArrivals(final ProductState productState) {
     final newArrivals = productState.dataList ?? [];
-
-    if (newArrivals.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox());
-    }
+    if (newArrivals.isEmpty) return const SliverToBoxAdapter(child: SizedBox());
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -690,26 +732,17 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SectionHeader(
-              title: 'Yeni Gelenler',
-              subtitle: 'En yeni mobilya tasarımları',
-              action: TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('Tümünü Gör'),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            const SectionHeader(
+                title: 'Yeni Gelenler',
+                subtitle: 'En yeni mobilya tasarımları'),
+            const SizedBox(height: 20),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                crossAxisSpacing: 24,
-                mainAxisSpacing: 24,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
                 childAspectRatio: 0.75,
               ),
               itemCount: newArrivals.length.clamp(0, 8),
@@ -718,14 +751,133 @@ class _HomePageState extends ConsumerState<HomePage> {
                 return ModernProductCard(product: product);
               },
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
 
-  // Testimonials Section
+  SliverToBoxAdapter _buildDeliveryMapSection() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 4)),
+          ],
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24)),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Teslimat Bilgileri',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDeliveryInfo('🚚 Ücretsiz Teslimat',
+                        'İstanbul İçerenköy ve yakın mahalleleri'),
+                    _buildDeliveryInfo('⏰ Teslimat Saatleri', '09:00 - 22:00'),
+                    _buildDeliveryInfo('📍 Hizmet Verilen Semtler',
+                        'İçerenköy, Küçükbakkalköy, Kayışdağı, Fındıklı, İnönü, Bostancı Sanayi'),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 40),
+              // Çalışma Saatleri
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Column(
+                  children: [
+                    Icon(Icons.access_time_filled,
+                        color: AppColors.primary, size: 40),
+                    SizedBox(height: 12),
+                    Text(
+                      'Çalışma Saatleri',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Pazartesi - Cumartesi\n09:00 - 22:00',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Pazar: 12:00 - 20:00',
+                      style: TextStyle(
+                        color: AppColors.textTertiary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeliveryInfo(final String title, final String subtitle) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.check_circle_outlined,
+              color: AppColors.success, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary)),
+                const SizedBox(height: 2),
+                Text(subtitle,
+                    style: const TextStyle(
+                        color: AppColors.textSecondary, fontSize: 14)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   SliverToBoxAdapter _buildTestimonials() {
     return SliverToBoxAdapter(
       child: Container(
@@ -736,48 +888,36 @@ class _HomePageState extends ConsumerState<HomePage> {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
           children: [
-            const Text(
-              'Müşterilerimiz Ne Diyor?',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
+            const Text('Müşterilerimiz Ne Diyor?',
+                style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary)),
             const SizedBox(height: 40),
             Row(
               children: [
                 Expanded(
-                  child: _buildTestimonialCard(
-                    'Harika bir deneyimdi! Ürünler tam olarak görseldeki gibi.',
-                    'Ayşe K.',
-                    '⭐⭐⭐⭐⭐',
-                  ),
-                ),
+                    child: _buildTestimonialCard(
+                        'Ürünler tam olarak görseldeki gibi.',
+                        'Ayşe K.',
+                        '⭐⭐⭐⭐⭐')),
                 const SizedBox(width: 24),
                 Expanded(
-                  child: _buildTestimonialCard(
-                    'Kaliteli ürünler ve hızlı teslimat. Kesinlikle tavsiye ederim.',
-                    'Mehmet Y.',
-                    '⭐⭐⭐⭐⭐',
-                  ),
-                ),
+                    child: _buildTestimonialCard(
+                        'Hızlı montaj. Kesinlikle tavsiye ederim.',
+                        'Mehmet Y.',
+                        '⭐⭐⭐⭐⭐')),
                 const SizedBox(width: 24),
                 Expanded(
-                  child: _buildTestimonialCard(
-                    'İkinci el ürünler çok temiz ve bakımlı. Fiyatlar da çok uygun.',
-                    'Zeynep A.',
-                    '⭐⭐⭐⭐⭐',
-                  ),
-                ),
+                    child: _buildTestimonialCard(
+                        'Fiyatlar çok uygun.', 'Zeynep A.', '⭐⭐⭐⭐⭐')),
               ],
             ),
           ],
@@ -787,10 +927,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildTestimonialCard(
-    final String comment,
-    final String name,
-    final String rating,
-  ) {
+      final String comment, final String name, final String rating) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -801,19 +938,11 @@ class _HomePageState extends ConsumerState<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            rating,
-            style: const TextStyle(fontSize: 20),
-          ),
+          Text(rating, style: const TextStyle(fontSize: 20)),
           const SizedBox(height: 12),
-          Text(
-            comment,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-              height: 1.5,
-            ),
-          ),
+          Text(comment,
+              style: const TextStyle(
+                  fontSize: 16, color: AppColors.textSecondary, height: 1.5)),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -821,23 +950,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.person,
-                  color: AppColors.primary,
-                ),
+                    color: AppColors.primary.withOpacity(0.2),
+                    shape: BoxShape.circle),
+                child: const Icon(Icons.person, color: AppColors.primary),
               ),
               const SizedBox(width: 12),
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
+              Text(name,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary)),
             ],
           ),
         ],
@@ -845,7 +967,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // Stats Section
   SliverToBoxAdapter _buildStatsSection() {
     return SliverToBoxAdapter(
       child: Container(
@@ -860,8 +981,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           children: [
             _buildStatItem('2,500+', 'Mutlu Müşteri'),
             _buildStatItem('5,000+', 'Satılan Ürün'),
-            _buildStatItem('98%', 'Memnuniyet Oranı'),
-            _buildStatItem('15+', 'Yıllık Deneyim'),
+            _buildStatItem('97%', 'Memnuniyet Oranı'),
+            _buildStatItem('20+', 'Yıllık Deneyim'),
           ],
         ),
       ),
@@ -871,23 +992,17 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildStatItem(final String number, final String label) {
     return Column(
       children: [
-        Text(
-          number,
-          style: const TextStyle(
-            fontSize: 48,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        Text(number,
+            style: const TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.w500)),
       ],
     );
   }

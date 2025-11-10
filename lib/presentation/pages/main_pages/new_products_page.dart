@@ -16,7 +16,9 @@ class NewProductsPage extends ConsumerWidget {
             ? _buildLoadingState()
             : productState.errorMessage != null
                 ? _buildErrorState(productState.errorMessage!)
-                : _buildContentState(productState.products));
+                : productState.dataList?.isEmpty ?? true
+                    ? _buildErrorState("Liste Boş")
+                    : _buildContentState(productState.dataList!));
   }
 
   Widget _buildLoadingState() {
