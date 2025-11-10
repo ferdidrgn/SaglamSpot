@@ -68,7 +68,7 @@ class NewProductsPage extends ConsumerWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: ProductCard(product: newProducts[index]),
+              child: CustomProductCard(product: newProducts[index]),
             ),
           );
         },
