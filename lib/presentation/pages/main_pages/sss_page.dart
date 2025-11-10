@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
+import '../add_product_page.dart';
 
 class SSSPage extends StatefulWidget {
   const SSSPage({super.key});
@@ -15,114 +17,152 @@ class _SSSPageState extends State<SSSPage> {
   final List<String> _categories = [
     'Tümü',
     'Genel',
-    'Sipariş',
-    'Ödeme',
-    'Teslimat',
-    'İade',
+    'Ürün & Hizmet',
+    'Teslimat & Montaj',
+    'Ödeme & Sipariş',
+    'İade & Garanti',
   ];
 
   final List<Map<String, String>> _faqs = [
+    // GENEL SORULAR
     {
       'category': 'Genel',
-      'question': 'Sağlam Spot güvenilir mi?',
-      'answer':
-          '15 yıldır sektörde hizmet veren, binlerce mutlu müşterisi olan köklü bir firmayız. Tüm ürünlerimiz için garanti sağlıyoruz ve müşteri memnuniyeti bizim için her şeyden önemlidir.',
+      'question':
+          'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?',
+      'answer': "Ustamız, 1992 yılından beri bu sektörde aktif olarak çalışmaktadır. "
+          "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
+          "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
+          "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
+          "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır. "
+          "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",
     },
     {
       'category': 'Genel',
+      'question': 'MobilyaEvim güvenilir mi?',
+      'answer':
+          '1992\'den beri sektörde hizmet veren, binlerce mutlu müşterisi olan köklü bir esnaf firmasıyız. Müşteri memnuniyeti bizim için her şeyden önemlidir.',
+    },
+    {
+      'category': 'Genel',
+      'question': 'Ürünleri incelemek için mağazanıza gelebilir miyim?',
+      'answer':
+          'Evet, ürünleri görmek için mağazamıza gelebilirsiniz. İçerenköy Mahallesi\'ndeki mağazamızı ziyaret edebilirsiniz.',
+    },
+
+    // ÜRÜN & HİZMET SORULARI
+    {
+      'category': 'Ürün & Hizmet',
       'question': 'İkinci el ürünlerin durumu nasıl kontrol ediliyor?',
       'answer':
-          'Tüm ikinci el ürünlerimiz uzman ekibimiz tarafından detaylı olarak incelenir, temizlenir ve gerekli bakımları yapılır. Ürünlerin fotoğrafları gerçek durumu yansıtır ve detaylı açıklamalar eklenir.',
+          'Tüm ikinci el ürünlerimiz ustamız tarafından detaylı olarak incelenir, temizlenir ve gerekli bakımları yapılır. Ürünlerin fotoğrafları gerçek durumu yansıtır.',
     },
     {
-      'category': 'Sipariş',
-      'question': 'Nasıl sipariş verebilirim?',
+      'category': 'Ürün & Hizmet',
+      'question': 'Mobilyaların malzeme kalitesi nedir?',
       'answer':
-          'Web sitemizden beğendiğiniz ürünü seçin, sepete ekleyin ve ödeme adımlarını tamamlayın. Alternatif olarak telefon ile de sipariş verebilirsiniz: +90 (212) 555 0123',
+          'Ürünlerimizin açıklamalarında detaylı bilgiler yer almaktadır. Her ürünün malzeme bilgisi açıklamalar kısmında belirtilmiştir.',
     },
     {
-      'category': 'Sipariş',
-      'question': 'Siparişimi iptal edebilir miyim?',
+      'category': 'Ürün & Hizmet',
+      'question': 'Ürün fiyatları nasıl belirleniyor?',
       'answer':
-          'Ürün henüz kargoya verilmemişse siparişinizi ücretsiz iptal edebilirsiniz. Müşteri hizmetlerimizle iletişime geçmeniz yeterli. Kargo sürecindeki siparişler için iade prosedürü uygulanır.',
+          'Benzer ürünlerin piyasa fiyatlarına göre rekabetçi bir fiyat belirliyoruz. Kalite-fiyat dengesini gözetiyoruz.',
     },
     {
-      'category': 'Sipariş',
-      'question': 'Stoğu olmayan ürünleri sipariş edebilir miyim?',
+      'category': 'Ürün & Hizmet',
+      'question': 'Ürünlerinizde renk seçenekleri var mı?',
       'answer':
-          'Stoğu tükenen ürünler için "Beni Haberdar Et" butonunu kullanabilirsiniz. Ürün tekrar stoğa girdiğinde e-posta ile bilgilendirilirsiniz.',
+          'Hayır, renk seçeneği sunamayız. Mevcut ürünlerimizin renkleri sabittir.',
     },
     {
-      'category': 'Ödeme',
-      'question': 'Hangi ödeme yöntemlerini kabul ediyorsunuz?',
+      'category': 'Ürün & Hizmet',
+      'question': 'Özel sipariş alıyor musunuz?',
       'answer':
-          'Kredi kartı (tek çekim ve taksit), banka kartı, havale/EFT ve kapıda ödeme seçeneklerimiz mevcuttur. Taksit seçenekleri için bankanızla görüşebilirsiniz.',
+          'Hayır, özel tasarım siparişler almıyoruz. Mevcut ürün yelpazemizden seçim yapabilirsiniz.',
     },
     {
-      'category': 'Ödeme',
-      'question': 'Taksit imkanı var mı?',
+      'category': 'Ürün & Hizmet',
+      'question': 'Ürün açıklamalarında nelere dikkat etmeliyim?',
       'answer':
-          'Evet! Tüm kredi kartlarına 9 taksit imkanı sunuyoruz. Bazı kampanyalı dönemlerde taksit sayısı artabilmektedir.',
+          'Ürünün kapladığı alan bilgilerini evinizin ölçüleri ile karşılaştırın. Malzeme bilgisi ve ürün durumunu dikkatlice okuyun.',
     },
+
+    // TESLİMAT & MONTAJ SORULARI
     {
-      'category': 'Ödeme',
-      'question': 'Faturamı nasıl alabilirim?',
+      'category': 'Teslimat & Montaj',
+      'question': 'Taşıma hizmeti sağlıyor musunuz?',
       'answer':
-          'Faturanız sipariş tamamlandığında e-posta adresinize otomatik gönderilir. Ayrıca hesabınızdan "Siparişlerim" bölümünden faturanızı indirebilirsiniz.',
+          'Evet, İçerenköy Mahallesi ve yakın çevrelerine ücretsiz taşıma hizmeti sunuyoruz.',
     },
     {
-      'category': 'Teslimat',
-      'question': 'Kargo ücreti ne kadar?',
-      'answer':
-          '500 TL ve üzeri alışverişlerde kargo ücretsizdir. 500 TL altı siparişlerde bölgeye göre 50-100 TL kargo ücreti uygulanır.',
-    },
-    {
-      'category': 'Teslimat',
+      'category': 'Teslimat & Montaj',
       'question': 'Teslimat süresi ne kadar?',
       'answer':
-          'Stokta bulunan ürünler 2-5 iş günü içinde adresinize teslim edilir. Büyük boy mobilyalar için montaj hizmeti talep ederseniz, uygun bir tarih planlanır ve size bildirilir.',
+          'Stokta bulunan ürünler en kısa sürede adresinize teslim edilir. Büyük boy mobilyalar için montaj hizmeti talep ederseniz, uygun bir tarih planlanır.',
     },
     {
-      'category': 'Teslimat',
+      'category': 'Teslimat & Montaj',
       'question': 'Montaj hizmeti veriyor musunuz?',
       'answer':
-          'Evet, tüm büyük mobilyalar için profesyonel montaj hizmeti sunuyoruz. Montaj ücreti ürüne göre değişiklik gösterir ve sipariş sırasında size bildirilir.',
+          'Evet, tüm büyük mobilyalar için profesyonel montaj hizmeti sunuyoruz. Montaj ücretsizdir.',
     },
     {
-      'category': 'Teslimat',
-      'question': 'Kargom nerede, nasıl takip edebilirim?',
+      'category': 'Teslimat & Montaj',
+      'question': 'Mobilya siparişi ne kadar sürede teslim edilir?',
       'answer':
-          'Siparişiniz kargoya verildiğinde size SMS ve e-posta ile kargo takip numarası gönderilir. Bu numara ile kargo firmasının web sitesinden takip yapabilirsiniz.',
+          'Siparişiniz, ödemeden sonra en uygun vakitte teslim edilir. Genellikle 1-3 iş günü içinde teslimat yapıyoruz.',
+    },
+
+    // ÖDEME & SİPARİŞ SORULARI
+    {
+      'category': 'Ödeme & Sipariş',
+      'question': 'Nasıl sipariş verebilirim?',
+      'answer':
+          'Web sitemizden beğendiğiniz ürünü seçin veya telefon ile sipariş verebilirsiniz: +90 553 920 1996',
     },
     {
-      'category': 'İade',
-      'question': 'İade şartları nelerdir?',
+      'category': 'Ödeme & Sipariş',
+      'question': 'Hangi ödeme yöntemlerini kabul ediyorsunuz?',
       'answer':
-          'Ürünü teslim aldıktan sonra 14 gün içinde iade edebilirsiniz. Ürün kullanılmamış, orijinal ambalajında ve etiketleri sağlam olmalıdır. İkinci el ürünlerde değişiklik yapılmamış olması gerekir.',
+          'Nakit, kredi kartı ve havale/EFT ödeme seçeneklerimiz mevcuttur.',
     },
     {
-      'category': 'İade',
-      'question': 'İade kargo ücreti kim tarafından karşılanır?',
+      'category': 'Ödeme & Sipariş',
+      'question': 'Taksit imkanı var mı?',
       'answer':
-          'Ürün kusurlu veya hatalı ise iade kargo ücreti tarafımızca karşılanır. Cayma hakkı kullanımında iade kargo ücreti müşteriye aittir.',
+          'Evet! Kredi kartlarına taksit imkanı sunuyoruz. Taksit seçenekleri için bankanızla görüşebilirsiniz.',
     },
     {
-      'category': 'İade',
-      'question': 'İade sürecim ne kadar sürer?',
+      'category': 'Ödeme & Sipariş',
+      'question': 'Siparişimi iptal edebilir miyim?',
       'answer':
-          'Ürün tarafımıza ulaştıktan sonra 2-3 iş günü içinde kontrol edilir. Onay durumunda ödeme iadesi 5-7 iş günü içinde hesabınıza yansır.',
+          'Ürün henüz kargoya verilmemişse siparişinizi iptal edebilirsiniz. Müşteri hizmetlerimizle iletişime geçmeniz yeterli.',
+    },
+
+    // İADE & GARANTİ SORULARI
+    {
+      'category': 'İade & Garanti',
+      'question': 'Ürün iade politikası nedir?',
+      'answer':
+          'Ürün iade politikamız bulunmamaktadır. Satın almadan önce ürünleri detaylı incelemenizi öneririz.',
+    },
+    {
+      'category': 'İade & Garanti',
+      'question': 'Ürünlerin garanti süresi var mı?',
+      'answer':
+          'Hayır, garantimiz yoktur. Ancak ürünlerimiz kaliteli malzemeden üretilmiştir ve uzun ömürlüdür.',
     },
   ];
 
   List<Map<String, String>> get _filteredFaqs {
-    if (_selectedCategory == 'Tümü') {
-      return _faqs;
-    }
-    return _faqs.where((faq) => faq['category'] == _selectedCategory).toList();
+    if (_selectedCategory == 'Tümü') return _faqs;
+    return _faqs
+        .where((final faq) => faq['category'] == _selectedCategory)
+        .toList();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return CustomScrollView(
       slivers: [
         // Hero Section
@@ -139,6 +179,9 @@ class _SSSPageState extends State<SSSPage> {
 
         // Contact CTA
         _buildContactCTA(),
+
+        // Ürün Ekle Butonu
+        _buildAddProductButton(),
 
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
       ],
@@ -163,11 +206,8 @@ class _SSSPageState extends State<SSSPage> {
             Positioned(
               right: -50,
               bottom: -50,
-              child: Icon(
-                Icons.help_outline_rounded,
-                size: 300,
-                color: Colors.white.withOpacity(0.1),
-              ),
+              child: Icon(Icons.help_outline_rounded,
+                  size: 300, color: Colors.white.withOpacity(0.1)),
             ),
             Padding(
               padding: const EdgeInsets.all(60),
@@ -177,43 +217,31 @@ class _SSSPageState extends State<SSSPage> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
+                        horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: const Text(
-                      'YARDIM MERKEZİ',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24)),
+                    child: const Text('YARDIM MERKEZİ',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5)),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Sıkça Sorulan\nSorular',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 52,
-                      fontWeight: FontWeight.bold,
-                      height: 1.1,
-                      letterSpacing: -1,
-                    ),
-                  ),
+                  const Text('Sıkça Sorulan\nSorular',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 52,
+                          fontWeight: FontWeight.bold,
+                          height: 1.1,
+                          letterSpacing: -1)),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Merak ettiğiniz her şeyin cevabı burada',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  const Text('Merak ettiğiniz her şeyin cevabı burada',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400)),
                 ],
               ),
             ),
@@ -234,20 +262,19 @@ class _SSSPageState extends State<SSSPage> {
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2))
           ],
         ),
         child: Wrap(
           spacing: 12,
           runSpacing: 12,
-          children: _categories.map((category) {
+          children: _categories.map((final category) {
             final isSelected = _selectedCategory == category;
             final count = category == 'Tümü'
                 ? _faqs.length
-                : _faqs.where((f) => f['category'] == category).length;
+                : _faqs.where((final f) => f['category'] == category).length;
 
             return FilterChip(
               label: Row(
@@ -279,7 +306,7 @@ class _SSSPageState extends State<SSSPage> {
                 ],
               ),
               selected: isSelected,
-              onSelected: (selected) {
+              onSelected: (final selected) {
                 setState(() {
                   _selectedCategory = category;
                   _expandedIndex = null;
@@ -320,27 +347,18 @@ class _SSSPageState extends State<SSSPage> {
               child: _buildQuickHelpCard(
                 Icons.phone_outlined,
                 'Telefon Desteği',
-                '+90 (212) 555 0123',
+                '+90 5392019961',
                 AppColors.success,
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _buildQuickHelpCard(
-                Icons.email_outlined,
-                'E-posta Desteği',
-                '-',
-                AppColors.info,
-              ),
-            ),
+                child: _buildQuickHelpCard(Icons.access_time_outlined,
+                    'Çalışma Saatleri', '09:00 - 22:00', AppColors.info)),
             const SizedBox(width: 16),
             Expanded(
-              child: _buildQuickHelpCard(
-                Icons.chat_bubble_outline,
-                'Canlı Sohbet',
-                'Hemen Başlat',
-                AppColors.secondary,
-              ),
+              child: _buildQuickHelpCard(Icons.location_on_outlined,
+                  'Mağaza Adresi', 'İçerenköy Mahallesi', AppColors.secondary),
             ),
           ],
         ),
@@ -349,10 +367,10 @@ class _SSSPageState extends State<SSSPage> {
   }
 
   Widget _buildQuickHelpCard(
-    IconData icon,
-    String title,
-    String subtitle,
-    Color color,
+    final IconData icon,
+    final String title,
+    final String subtitle,
+    final Color color,
   ) {
     return Container(
       padding: const EdgeInsets.all(24),
@@ -409,7 +427,7 @@ class _SSSPageState extends State<SSSPage> {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (context, index) {
+          (final context, final index) {
             final faq = filteredFaqs[index];
             final isExpanded = _expandedIndex == index;
 
@@ -557,7 +575,7 @@ class _SSSPageState extends State<SSSPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FilledButton(
-                  onPressed: () {},
+                  onPressed: () => _launchPhone(),
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.primary,
@@ -585,7 +603,7 @@ class _SSSPageState extends State<SSSPage> {
                 ),
                 const SizedBox(width: 16),
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => _launchMaps(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
@@ -599,10 +617,10 @@ class _SSSPageState extends State<SSSPage> {
                   ),
                   child: const Row(
                     children: [
-                      Icon(Icons.email_outlined),
+                      Icon(Icons.map_outlined),
                       SizedBox(width: 12),
                       Text(
-                        'E-posta Gönderin',
+                        'Mağazaya Gel',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -619,17 +637,75 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Color _getCategoryColor(String category) {
+  Widget _buildAddProductButton() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Center(
+          child: FilledButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (final context) => const AddProductPage(),
+                ),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 40,
+                vertical: 20,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add_circle_outline),
+                SizedBox(width: 12),
+                Text(
+                  'Ürün Ekle Sayfasına Git',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _launchPhone() async {
+    const phoneNumber = 'tel:+905539201996';
+    if (await canLaunch(phoneNumber)) {
+      await launch(phoneNumber);
+    }
+  }
+
+  Future<void> _launchMaps() async {
+    const mapsUrl =
+        'https://www.google.com/maps/place/Sa%C4%9Flam+Spot/@40.9699248,29.1146853,21z/data=!4m6!3m5!1s0x14cac64216b4ccb7:0x49124944b40496f6!8m2!3d40.9699196!4d29.1148379!16s%2Fg%2F11dxc20095?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D';
+    if (await canLaunch(mapsUrl)) await launch(mapsUrl);
+  }
+
+  Color _getCategoryColor(final String category) {
     switch (category) {
       case 'Genel':
         return AppColors.primary;
-      case 'Sipariş':
+      case 'Ürün & Hizmet':
         return AppColors.info;
-      case 'Ödeme':
+      case 'Teslimat & Montaj':
         return AppColors.success;
-      case 'Teslimat':
+      case 'Ödeme & Sipariş':
         return AppColors.warning;
-      case 'İade':
+      case 'İade & Garanti':
         return AppColors.secondary;
       default:
         return AppColors.textSecondary;
