@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 
 class InfoPage extends StatelessWidget {
@@ -8,22 +9,31 @@ class InfoPage extends StatelessWidget {
   Widget build(final BuildContext context) {
     return CustomScrollView(
       slivers: [
-        // Hero Section
+        // Hero Section - SENİN VERİLERİNLE GÜNCELLENDİ
         _buildHeroSection(),
 
-        // Our Story
+        // Our Story - SENİN VERİLERİNLE GÜNCELLENDİ
         _buildOurStory(),
 
-        // Our Values
+        // Our Values - AYNI KALDI
         _buildOurValues(),
 
-        // Team Section
+        // Ustamızın Geçmişi - YENİ EKLENDİ
+        _buildMasterHistory(),
+
+        // Taşıma Hizmeti - YENİ EKLENDİ
+        _buildDeliveryService(),
+
+        // Ulaşım Bilgileri - YENİ EKLENDİ
+        _buildTransportationInfo(),
+
+        // Team Section - AYNI KALDI
         _buildTeamSection(),
 
-        // Contact Info
+        // Contact Info - SENİN VERİLERİNLE GÜNCELLENDİ
         _buildContactSection(),
 
-        // Map Section (Placeholder)
+        // Map Section - SENİN VERİLERİNLE GÜNCELLENDİ
         _buildMapSection(),
 
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
@@ -31,6 +41,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
+  // Hero Section - SENİN VERİLERİNLE
   Widget _buildHeroSection() {
     return SliverToBoxAdapter(
       child: Container(
@@ -50,7 +61,7 @@ class InfoPage extends StatelessWidget {
               right: -50,
               bottom: -50,
               child: Icon(
-                Icons.info_outline,
+                Icons.storefront_outlined,
                 size: 300,
                 color: Colors.white.withOpacity(0.1),
               ),
@@ -71,7 +82,7 @@ class InfoPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: const Text(
-                      'HAKKIMIZDA',
+                      '20 YILLIK ESNAF',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -82,7 +93,7 @@ class InfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Hayalinizdeki Evi\nBirlikte Oluşturalım',
+                    'Sağlam Spot\nGüvenin Adresi',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 52,
@@ -93,7 +104,7 @@ class InfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    '15 yıldır kaliteli mobilya ve müşteri memnuniyeti\nodaklı hizmet anlayışımızla yanınızdayız.',
+                    '1992\'den beri kalite ve güven odaklı hizmet\nanlayışımızla yanınızdayız.',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -110,6 +121,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
+  // Our Story - SENİN VERİLERİNLE GÜNCELLENDİ
   Widget _buildOurStory() {
     return SliverToBoxAdapter(
       child: Container(
@@ -133,12 +145,12 @@ class InfoPage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
                   child: Container(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: Colors.brown.withOpacity(0.1), // SENİN RENGİN
                     child: const Center(
                       child: Icon(
                         Icons.store,
                         size: 120,
-                        color: AppColors.primary,
+                        color: Colors.brown, // SENİN RENGİN
                       ),
                     ),
                   ),
@@ -151,7 +163,7 @@ class InfoPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Hikayemiz',
+                    'İş Yeri Bilgileri', // SENİN BAŞLIĞIN
                     style: TextStyle(
                       fontSize: 42,
                       fontWeight: FontWeight.bold,
@@ -160,7 +172,16 @@ class InfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    '2009 yılında küçük bir atölye olarak başladık. Mobilya sektöründe kalite ve müşteri memnuniyeti odaklı yaklaşımımızla kısa sürede büyüdük.',
+                    'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz.', // SENİN İÇERİĞİN
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: AppColors.textSecondary,
+                      height: 1.8,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    '1992 yılında küçük bir atölye olarak başladık. Mobilya sektöründe kalite ve müşteri memnuniyeti odaklı yaklaşımımızla kısa sürede büyüdük.',
                     style: TextStyle(
                       fontSize: 18,
                       color: AppColors.textSecondary,
@@ -176,23 +197,14 @@ class InfoPage extends StatelessWidget {
                       height: 1.8,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Sürdürülebilir yaşam anlayışıyla, kaliteli ikinci el ürünlere yeni bir hayat verirken, çevreye olan sorumluluğumuzu da yerine getiriyoruz.',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppColors.textSecondary,
-                      height: 1.8,
-                    ),
-                  ),
                   const SizedBox(height: 32),
                   Row(
                     children: [
-                      _buildStoryHighlight('2009', 'Kuruluş Yılı'),
+                      _buildStoryHighlight('1992', 'Kuruluş'), // SENİN TARİHİN
                       const SizedBox(width: 32),
-                      _buildStoryHighlight('15+', 'Yıllık Deneyim'),
+                      _buildStoryHighlight('30+', 'Yıllık Deneyim'), // SENİN DENEYİMİN
                       const SizedBox(width: 32),
-                      _buildStoryHighlight('2.5K+', 'Mutlu Müşteri'),
+                      _buildStoryHighlight('5K+', 'Mutlu Müşteri'),
                     ],
                   ),
                 ],
@@ -228,6 +240,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
+  // Our Values - AYNI KALDI (Değişmedi)
   Widget _buildOurValues() {
     return SliverToBoxAdapter(
       child: Container(
@@ -310,11 +323,11 @@ class InfoPage extends StatelessWidget {
   }
 
   Widget _buildValueCard(
-    final IconData icon,
-    final String title,
-    final String description,
-    final Color color,
-  ) {
+      final IconData icon,
+      final String title,
+      final String description,
+      final Color color,
+      ) {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
@@ -356,6 +369,241 @@ class InfoPage extends StatelessWidget {
     );
   }
 
+  // Ustamızın Geçmişi - YENİ EKLENDİ (SENİN VERİLERİN)
+  Widget _buildMasterHistory() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        padding: const EdgeInsets.all(48),
+        decoration: BoxDecoration(
+          color: Colors.purple.withOpacity(0.1), // SENİN RENGİN
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: Colors.purple.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.purple.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: const Icon(
+                Icons.engineering_outlined,
+                size: 60,
+                color: Colors.purple,
+              ),
+            ),
+            const SizedBox(width: 32),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Ustamızın Geçmişi ve Yetenekleri', // SENİN BAŞLIĞIN
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Ustamız, 1992 yılından beri bu sektörde aktif olarak çalışmaktadır. "
+                        "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
+                        "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır.\n\n"
+                        "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
+                        "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır.\n\n"
+                        "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, "
+                        "sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.", // SENİN İÇERİĞİN
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary,
+                      height: 1.7,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Taşıma Hizmeti - YENİ EKLENDİ (SENİN VERİLERİN)
+  Widget _buildDeliveryService() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        padding: const EdgeInsets.all(48),
+        decoration: BoxDecoration(
+          color: Colors.orange.withOpacity(0.1), // SENİN RENGİN
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: const Icon(
+                Icons.local_shipping_outlined,
+                size: 60,
+                color: Colors.orange,
+              ),
+            ),
+            const SizedBox(width: 32),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Taşıma Hizmeti', // SENİN BAŞLIĞIN
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Ücretsiz Teslimat',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.orange,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Hizmet Verilen Bölgeler:', // SENİN İÇERİĞİN
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    '• İçerenköy Mahallesi\n• İçerenköy Mahallesi yakın çevreleri', // SENİN İÇERİĞİN
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary,
+                      height: 1.6,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    '⏰ Teslimat Saatleri: 09:00 - 22:00',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Ulaşım Bilgileri - YENİ EKLENDİ (SENİN VERİLERİN)
+  Widget _buildTransportationInfo() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        padding: const EdgeInsets.all(48),
+        decoration: BoxDecoration(
+          color: Colors.green.withOpacity(0.1), // SENİN RENGİN
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: Colors.green.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: const Icon(
+                Icons.directions_bus_outlined,
+                size: 60,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(width: 32),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Ulaşım', // SENİN BAŞLIĞIN
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Otobüs Hatları ve Durakları:', // SENİN İÇERİĞİN
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildBusInfo('Ziyapaşa Durağı Kadıköy Yönü:', '19, 19F, 19FB, 14KS, 18UK, KM46-1'),
+                  _buildBusInfo('İçerenköy Durağı Kayışdağı Yönü:', '19, 19F, 19FB, 14KS, 18UK, KM46-1'),
+                  _buildBusInfo('İçerenköy Durağı Yeniyol\'dan:', '10, 319, KM46, 13AB, 14T'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBusInfo(final String route, final String buses) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            route,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            buses,
+            style: const TextStyle(
+              fontSize: 15,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Team Section - AYNI KALDI (Değişmedi)
   Widget _buildTeamSection() {
     return SliverToBoxAdapter(
       child: Container(
@@ -472,6 +720,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
+  // Contact Info - SENİN VERİLERİNLE GÜNCELLENDİ
   Widget _buildContactSection() {
     return SliverToBoxAdapter(
       child: Container(
@@ -498,15 +747,7 @@ class InfoPage extends StatelessWidget {
                   child: _buildContactItem(
                     Icons.phone_outlined,
                     'Telefon',
-                    '+90 (212) 555 0123',
-                  ),
-                ),
-                const SizedBox(width: 32),
-                Expanded(
-                  child: _buildContactItem(
-                    Icons.email_outlined,
-                    'E-posta',
-                    'info@mobilyaevim.com',
+                    '+90 553 920 1996', // SENİN TELEFONUN
                   ),
                 ),
                 const SizedBox(width: 32),
@@ -514,7 +755,7 @@ class InfoPage extends StatelessWidget {
                   child: _buildContactItem(
                     Icons.location_on_outlined,
                     'Adres',
-                    'İstanbul, Türkiye',
+                    'İçerenköy Mahallesi', // SENİN ADRESİN
                   ),
                 ),
                 const SizedBox(width: 32),
@@ -522,32 +763,71 @@ class InfoPage extends StatelessWidget {
                   child: _buildContactItem(
                     Icons.access_time_outlined,
                     'Çalışma Saatleri',
-                    'Pzt-Cmt: 09:00-18:00',
+                    'Pzt-Cmt: 09:00-22:00\nPazar: 10:00-18:00', // SENİN SAATLERİN
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 40),
-            FilledButton(
-              onPressed: () {},
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 48,
-                  vertical: 20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FilledButton(
+                  onPressed: () => _launchPhone(),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.phone),
+                      SizedBox(width: 8),
+                      Text(
+                        'Hemen Ara',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                const SizedBox(width: 16),
+                OutlinedButton(
+                  onPressed: () => _launchMaps(),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.map),
+                      SizedBox(width: 8),
+                      Text(
+                        'Haritada Gör',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              child: const Text(
-                'Bize Ulaşın',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
           ],
         ),
@@ -588,6 +868,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
+  // Map Section - SENİN VERİLERİNLE GÜNCELLENDİ
   Widget _buildMapSection() {
     return SliverToBoxAdapter(
       child: Container(
@@ -607,32 +888,56 @@ class InfoPage extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(32),
-          child: Container(
-            color: AppColors.background,
-            child: const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.map_outlined,
-                    size: 80,
-                    color: AppColors.textTertiary,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Konum Haritası',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+          child: GestureDetector(
+            onTap: () => _launchMaps(),
+            child: Container(
+              color: AppColors.background,
+              child: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.map_outlined,
+                      size: 80,
+                      color: AppColors.textTertiary,
                     ),
-                  ),
-                ],
+                    SizedBox(height: 16),
+                    Text(
+                      'Mağaza Konumumuz',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Haritayı görüntülemek için tıklayın',
+                      style: TextStyle(
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _launchPhone() async {
+    const phoneNumber = 'tel:+905539201996';
+    if (await canLaunch(phoneNumber)) {
+      await launch(phoneNumber);
+    }
+  }
+
+  void _launchMaps() async {
+    const mapsUrl = 'https://www.google.com/maps/place/Sa%C4%9Flam+Spot/@40.9699248,29.1146853,21z/data=!4m6!3m5!1s0x14cac64216b4ccb7:0x49124944b40496f6!8m2!3d40.9699196!4d29.1148379!16s%2Fg%2F11dxc20095?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D';
+    if (await canLaunch(mapsUrl)) {
+      await launch(mapsUrl);
+    }
   }
 }

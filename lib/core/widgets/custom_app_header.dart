@@ -89,7 +89,7 @@ class CustomAppHeader extends StatelessWidget {
   Widget _buildDesktopNavigation() {
     const navItems = [
       'Ana Sayfa',
-      'Yeni Ürünler',
+      'Sıfır Ürünler',
       'Spot Ürünler',
       'Hakkımızda',
       'SSS'
@@ -101,10 +101,9 @@ class CustomAppHeader extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: _NavItem(
-            title: navItems[index],
-            isSelected: isSelected,
-            onTap: () => onItemSelected(index),
-          ),
+              title: navItems[index],
+              isSelected: isSelected,
+              onTap: () => onItemSelected(index)),
         );
       }),
     );
@@ -113,48 +112,62 @@ class CustomAppHeader extends StatelessWidget {
   Widget _buildUserActions(final BuildContext context) {
     return Row(
       children: [
+        _buildSearchBar(context),
+        const SizedBox(width: 16),
         _buildActionButton(
           icon: Icons.search_outlined,
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (final context) => const SearchPage(),
-              ),
+              MaterialPageRoute(builder: (final context) => const SearchPage()),
             );
           },
           badge: false,
         ),
-        const SizedBox(width: 8),
-        _buildActionButton(
-          icon: Icons.favorite_outline,
-          onPressed: () {},
-          badge: true,
-          badgeCount: 3,
-        ),
-        const SizedBox(width: 8),
-        _buildActionButton(
-          icon: Icons.shopping_cart_outlined,
-          onPressed: () {},
-          badge: true,
-          badgeCount: 2,
-        ),
         const SizedBox(width: 16),
         Container(
-          width: 40,
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: const Icon(Icons.person_outline,
+                color: AppColors.primary, size: 20)),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar(final BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (final context) => const SearchPage()),
+          );
+        },
+        child: Container(
+          width: 200,
           height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: const Icon(
-            Icons.person_outline,
-            color: AppColors.primary,
-            size: 20,
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border)),
+          child: const Row(
+            children: [
+              Icon(Icons.search_rounded,
+                  size: 20, color: AppColors.textTertiary),
+              SizedBox(width: 8),
+              Text('Ürün ara...',
+                  style: TextStyle(color: AppColors.textTertiary, fontSize: 14))
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -170,16 +183,14 @@ class CustomAppHeader extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
-          ),
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border)),
           child: IconButton(
-            icon: Icon(icon, size: 20),
-            onPressed: onPressed,
-            color: AppColors.textSecondary,
-            padding: EdgeInsets.zero,
-          ),
+              icon: Icon(icon, size: 20),
+              onPressed: onPressed,
+              color: AppColors.textSecondary,
+              padding: EdgeInsets.zero),
         ),
         if (badge && badgeCount > 0)
           Positioned(
@@ -189,19 +200,15 @@ class CustomAppHeader extends StatelessWidget {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: AppColors.secondary,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.surface, width: 2),
-              ),
+                  color: AppColors.secondary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.surface, width: 2)),
               child: Center(
-                child: Text(
-                  badgeCount.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: Text(badgeCount.toString(),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold)),
               ),
             ),
           ),
@@ -242,10 +249,9 @@ class _NavItem extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              color: isSelected ? AppColors.primary : AppColors.textSecondary,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              fontSize: 15,
-            ),
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 15),
           ),
         ),
       ),
