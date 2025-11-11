@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_category_card.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_section_header.dart';
 import '../../../data/providers/product/product_provider.dart';
@@ -342,11 +341,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildValueItem(
-      final IconData icon,
-      final String title,
-      final String subtitle,
-      final Color color,
-      ) {
+    final IconData icon,
+    final String title,
+    final String subtitle,
+    final Color color,
+  ) {
     return Column(
       children: [
         Container(
@@ -455,7 +454,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                         border: Border.all(color: AppColors.border),
                         boxShadow: [
                           BoxShadow(
-                            color: (category['color'] as Color).withOpacity(0.1),
+                            color:
+                                (category['color'] as Color).withOpacity(0.1),
                             blurRadius: 20,
                             offset: const Offset(0, 4),
                           ),
@@ -467,7 +467,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: (category['color'] as Color).withOpacity(0.1),
+                              color:
+                                  (category['color'] as Color).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Icon(
