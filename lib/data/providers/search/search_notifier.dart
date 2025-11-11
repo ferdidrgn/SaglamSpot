@@ -13,15 +13,12 @@ class SearchNotifier extends BaseNotifierWithNetworkChecker<SearchState> {
   SearchState initialState() => const SearchState();
 
   @override
-  void reloadData() {
-    // TODO: implement reloadData
-  }
+  void reloadData() => loadProducts();
 
   @override
   SearchState build() {
     _repository = ref.read(productRepositoryProvider);
-    _loadInitialProducts();
-    return const SearchState(isLoading: true);
+    return const SearchState();
   }
 
   Future<void> _loadInitialProducts() =>
@@ -31,8 +28,8 @@ class SearchNotifier extends BaseNotifierWithNetworkChecker<SearchState> {
 
   Future<void> loadProducts() => executeWithInternetCheck(
       () => ref.read(getProductsUseCaseProvider).call(),
-      onSuccess: (final products) =>
-          state = state.copyWith(products: products, isLoading: false));
+      onSuccess: (final products) => state = state.copyWith(
+          products: products, filteredProducts: products, isLoading: false));
 
   void onQueryChanged(final String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -63,6 +60,17 @@ class SearchNotifier extends BaseNotifierWithNetworkChecker<SearchState> {
         state = state.copyWith(products: filtered, isLoading: false);
       },
     );
+  }
+
+  void filterByCategory(final String category) {
+    if (category == 'Tümü')
+      state = state.copyWith(filteredProducts: state.products);
+    else {
+      final filtered = state.products
+          .where((final product) => product.category == category)
+          .toList();
+      state = state.copyWith(filteredProducts: filtered);
+    }
   }
 
   void setCondition(final String? condition) {

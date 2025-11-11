@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../data/providers/search/search_providers.dart';
 import '../../data/providers/search/search_filters_notifier.dart';
+import '../../data/providers/search/search_providers.dart';
 import '../../data/providers/search/search_state.dart';
 
 class FilterSheet extends ConsumerWidget {
@@ -15,7 +14,7 @@ class FilterSheet extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: const EdgeInsets.all(24),
@@ -51,14 +50,16 @@ class FilterSheet extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Filtrele',
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Filtrele',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1E293B),
+              ),
+        ),
         IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close_rounded),
+          icon: const Icon(Icons.close_rounded, color: Color(0xFF64748B)),
         ),
       ],
     );
@@ -70,8 +71,14 @@ class FilterSheet extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Ürün Durumu',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+        const Text(
+          'Ürün Durumu',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: Color(0xFF1E293B),
+          ),
+        ),
         const SizedBox(height: 12),
         Wrap(
           spacing: 10,
@@ -79,19 +86,23 @@ class FilterSheet extends ConsumerWidget {
             final isSelected =
                 selected == c || (c == 'Hepsi' && selected == null);
             return ChoiceChip(
-              label: Text(c),
+              label: Text(
+                c,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : const Color(0xFF64748B),
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
+                ),
+              ),
               selected: isSelected,
               onSelected: (final _) => notifier.setCondition(c),
-              labelStyle: TextStyle(
-                color: isSelected ? AppColors.primary : AppColors.textSecondary,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
-              ),
-              backgroundColor: AppColors.background,
-              selectedColor: AppColors.primary.withOpacity(0.15),
+              backgroundColor: const Color(0xFFF8FAFC),
+              selectedColor: const Color(0xFF6366F1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected
+                      ? const Color(0xFF6366F1)
+                      : const Color(0xFFE2E8F0),
                 ),
               ),
             );
@@ -106,21 +117,35 @@ class FilterSheet extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Fiyat Aralığı',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+        const Text(
+          'Fiyat Aralığı',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: Color(0xFF1E293B),
+          ),
+        ),
         const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
-              child: _buildPriceField('Min ₺', filters.minPrice, (final v) {
-                notifier.setPriceRange(v, filters.maxPrice);
-              }),
+              child: _buildPriceField(
+                'Min ₺',
+                filters.minPrice,
+                (final v) {
+                  notifier.setPriceRange(v, filters.maxPrice);
+                },
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _buildPriceField('Max ₺', filters.maxPrice, (final v) {
-                notifier.setPriceRange(filters.minPrice, v);
-              }),
+              child: _buildPriceField(
+                'Max ₺',
+                filters.maxPrice,
+                (final v) {
+                  notifier.setPriceRange(filters.minPrice, v);
+                },
+              ),
             ),
           ],
         ),
@@ -128,18 +153,29 @@ class FilterSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildPriceField(final String label, final double value,
-      final ValueChanged<double> onChanged) {
+  Widget _buildPriceField(
+    final String label,
+    final double value,
+    final ValueChanged<double> onChanged,
+  ) {
     return TextField(
       controller: TextEditingController(
-          text: value > 0 ? value.toStringAsFixed(0) : ''),
+        text: value > 0 ? value.toStringAsFixed(0) : '',
+      ),
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: AppColors.surface,
+        fillColor: const Color(0xFFF8FAFC),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       keyboardType: TextInputType.number,
       onChanged: (final text) => onChanged(double.tryParse(text) ?? 0),
@@ -155,25 +191,32 @@ class FilterSheet extends ConsumerWidget {
             onPressed: notifier.reset,
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: const BorderSide(color: AppColors.border),
+              side: const BorderSide(color: Color(0xFFE2E8F0)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('Temizle'),
+            child: const Text(
+              'Temizle',
+              style: TextStyle(color: Color(0xFF64748B)),
+            ),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              // Apply filters to main search
+              Navigator.pop(context);
+            },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: const Color(0xFF6366F1),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
+              elevation: 0,
             ),
             child: const Text('Uygula'),
           ),

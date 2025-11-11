@@ -3,6 +3,7 @@ import '../../../domain/entities/product.dart';
 
 class SearchState extends BaseState {
   final List<Product> products;
+  final List<Product> filteredProducts;
   final String query;
   final String? condition;
   final double minPrice;
@@ -10,6 +11,7 @@ class SearchState extends BaseState {
 
   const SearchState({
     this.products = const [],
+    this.filteredProducts = const [],
     this.query = '',
     this.condition,
     this.minPrice = 0,
@@ -21,6 +23,7 @@ class SearchState extends BaseState {
   @override
   SearchState copyWith({
     final List<Product>? products,
+    final List<Product>? filteredProducts,
     final String? query,
     final String? condition,
     final double? minPrice,
@@ -30,22 +33,24 @@ class SearchState extends BaseState {
   }) =>
       SearchState(
         products: products ?? this.products,
+        filteredProducts: filteredProducts ?? this.filteredProducts,
         query: query ?? this.query,
         condition: condition ?? this.condition,
         minPrice: minPrice ?? this.minPrice,
         maxPrice: maxPrice ?? this.maxPrice,
         isLoading: isLoading ?? this.isLoading,
-        errorMessage: errorMessage,
+        errorMessage: errorMessage ?? this.errorMessage,
       );
 
   @override
   List<Object?> get props => [
         products,
-        isLoading,
-        errorMessage,
+        filteredProducts,
         query,
         condition,
         minPrice,
         maxPrice,
+        isLoading,
+        errorMessage,
       ];
 }
