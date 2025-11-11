@@ -21,7 +21,7 @@ class ModernProductCard extends StatelessWidget {
       decoration: _buildCardDecoration(context),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(
-          ResponsiveUtils.getBorderRadius(context),
+          ResponsiveUtils.getBorderRadius(context, scale: 1.25),
         ),
         child: Material(
           color: Colors.transparent,
@@ -29,14 +29,16 @@ class ModernProductCard extends StatelessWidget {
             onTap: onTap,
             splashColor: const Color(0xFF6366F1).withOpacity(0.1),
             highlightColor: const Color(0xFF6366F1).withOpacity(0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ImageSection(product: product),
-                Expanded(
-                  child: _InfoSection(product: product),
-                ),
-              ],
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ImageSection(product: product),
+                  Expanded(
+                    child: _InfoSection(product: product),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -48,13 +50,13 @@ class ModernProductCard extends StatelessWidget {
     return BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(
-        ResponsiveUtils.getBorderRadius(context),
+        ResponsiveUtils.getBorderRadius(context, scale: 1.25),
       ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.06),
-          blurRadius: ResponsiveUtils.getShadowBlurRadius(context),
-          offset: const Offset(0, 4),
+          color: Colors.black.withOpacity(0.08),
+          blurRadius: 15,
+          offset: const Offset(0, 6),
         ),
       ],
     );
@@ -113,8 +115,10 @@ class _ImageSection extends StatelessWidget {
         ? Image.network(
             product.imagesUrl.first,
             fit: BoxFit.cover,
-            errorBuilder: (final context, final error, final stackTrace) => _buildPlaceholder(),
-            loadingBuilder: (final context, final child, final loadingProgress) {
+            errorBuilder: (final context, final error, final stackTrace) =>
+                _buildPlaceholder(),
+            loadingBuilder:
+                (final context, final child, final loadingProgress) {
               if (loadingProgress == null) return child;
               return _buildPlaceholder();
             },
