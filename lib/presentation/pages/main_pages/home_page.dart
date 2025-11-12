@@ -51,6 +51,10 @@ class _HomePageState extends ConsumerState<HomePage> {
         // Special Offers (Turuncu Kart - İçerik hatası düzeltildi)
         _buildSpecialOffers(context, isMobile),
 
+        // --- BÖLÜM GERİ EKLENDİ (RESPONSIVE OLARAK) ---
+        _buildBusinessIntroduction(context, isMobile),
+        // --- EKLEME SONU ---
+
         // Testimonials
         _buildTestimonials(context, isMobile),
 
@@ -570,7 +574,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // --- DÜZELTME 1: MOBİL GRIDVIEW KALDIRILDI, TEKRAR YATAY LISTVIEW'A DÖNÜLDÜ ---
   SliverToBoxAdapter _buildFeaturedProducts(
     final BuildContext context,
     final ProductState productState,
@@ -603,9 +606,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               subtitle: 'En çok beğenilen mobilyalar',
             ),
             SizedBox(height: context.responsive(mobile: 16.0, desktop: 20.0)),
-
-            // Mobil ve Desktop için TEK YAPI: Yatay Kaydırılabilir Liste
-            // Overflow hatasını çözmek için yükseklik artırıldı.
             SizedBox(
               height: context.responsive(mobile: 340.0, desktop: 360.0),
               child: ListView.separated(
@@ -615,7 +615,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                     width: context.responsive(mobile: 12.0, desktop: 20.0)),
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
-                  // Yatay liste içinde CustomProductCard (belirli genişlikte)
                   return SizedBox(
                     width: context.responsive(mobile: 200.0, desktop: 220.0),
                     child: CustomProductCard(product: product),
@@ -623,7 +622,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               ),
             ),
-
             SizedBox(height: context.responsive(mobile: 24.0, desktop: 40.0)),
           ],
         ),
@@ -631,10 +629,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // --- DÜZELTME 2: TURUNCU KART İÇERİK GÖSTERME HATASI DÜZELTİLDİ ---
   SliverToBoxAdapter _buildSpecialOffers(
       final BuildContext context, final bool isMobile) {
-    // İçerik widget'ı, `Expanded` hatasını önlemek için dışarıda tanımlandı.
+    // İçerik widget'ı
     final contentColumn = Column(
       crossAxisAlignment:
           isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
@@ -732,10 +729,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: Flex(
           direction: isMobile ? Axis.vertical : Axis.horizontal,
           children: [
-            // HATA DÜZELTMESİ: Mobilde 'Expanded' kaldırıldı,
-            // masaüstünde 'Expanded' korundu.
             isMobile ? contentColumn : Expanded(child: contentColumn),
-
             SizedBox(
               width: isMobile ? 0 : 40.0,
               height: isMobile ? 24.0 : 0,
@@ -758,7 +752,121 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // --- DÜZELTME SONU ---
+  // --- YENİ EKLENEN WIDGET (RESPONSIVE) ---
+  SliverToBoxAdapter _buildBusinessIntroduction(
+      final BuildContext context, final bool isMobile) {
+    final double iconSize = context.responsive(mobile: 80.0, desktop: 120.0);
+
+    // İçerik (Metinler ve Butonlar)
+    final content = Column(
+      crossAxisAlignment:
+          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Text(
+          '20 Yıllık Esnaf Güvencesi',
+          style: TextStyle(
+            fontSize: context.responsive(mobile: 22.0, desktop: 28.0),
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
+          'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
+          'alışverişin adresi olduk.',
+          style: TextStyle(
+            fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+            color: AppColors.textSecondary,
+            height: 1.6,
+          ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 20),
+        // Yatayda sığmazsa alt satıra atar (Wrap)
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+          children: [
+            _buildBusinessFeature('✓ Kalite Garantisi'),
+            _buildBusinessFeature('✓ Profesyonel Montaj'),
+            _buildBusinessFeature('✓ Geri Alım Garantisi'),
+          ],
+        ),
+      ],
+    );
+
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+          vertical: context.responsive(mobile: 12.0, desktop: 20.0),
+        ),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 20.0, desktop: 40.0)),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(
+              context.responsive(mobile: 16.0, desktop: 24.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Flex(
+          direction: isMobile ? Axis.vertical : Axis.horizontal,
+          crossAxisAlignment:
+              isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          children: [
+            // Esnaf Fotoğrafı/Logo
+            Container(
+              width: iconSize,
+              height: iconSize,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(iconSize / 2),
+                border: Border.all(color: AppColors.primary, width: 2),
+              ),
+              child: Icon(Icons.storefront_outlined,
+                  color: AppColors.primary,
+                  size: context.responsive(mobile: 32.0, desktop: 50.0)),
+            ),
+            SizedBox(
+              width: isMobile ? 0 : 32.0,
+              height: isMobile ? 24.0 : 0,
+            ),
+            // Mobilde normal, Desktop'ta Expanded
+            isMobile ? content : Expanded(child: content),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Esnaf Tanıtımı için yardımcı widget
+  Widget _buildBusinessFeature(final String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: AppColors.primary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  // --- EKLEME SONU ---
 
   SliverToBoxAdapter _buildTestimonials(
       final BuildContext context, final bool isMobile) {
