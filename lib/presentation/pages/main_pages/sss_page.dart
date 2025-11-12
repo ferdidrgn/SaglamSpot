@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../add_product_page.dart';
@@ -166,35 +167,40 @@ class _SSSPageState extends State<SSSPage> {
     return CustomScrollView(
       slivers: [
         // Hero Section
-        _buildHeroSection(),
+        _buildHeroSection(context),
 
         // Category Filters
-        _buildCategoryFilters(),
+        _buildCategoryFilters(context),
 
         // Quick Help
-        _buildQuickHelp(),
+        _buildQuickHelp(context),
 
         // FAQ List
-        _buildFAQList(),
+        _buildFAQList(context),
 
         // Contact CTA
-        _buildContactCTA(),
+        _buildContactCTA(context),
 
         // Ürün Ekle Butonu
-        _buildAddProductButton(),
+        _buildAddProductButton(context),
 
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
       ],
     );
   }
 
-  Widget _buildHeroSection() {
+  Widget _buildHeroSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.all(24),
-        height: 350,
+        margin: context.responsive(
+          mobile: const EdgeInsets.all(16),
+          desktop: const EdgeInsets.all(24),
+        ),
+        height: context.responsive(mobile: 250, desktop: 350),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(
+            context.responsive(mobile: 24.0, desktop: 32.0),
+          ),
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -206,11 +212,17 @@ class _SSSPageState extends State<SSSPage> {
             Positioned(
               right: -50,
               bottom: -50,
-              child: Icon(Icons.help_outline_rounded,
-                  size: 300, color: Colors.white.withOpacity(0.1)),
+              child: Icon(
+                Icons.help_outline_rounded,
+                size: context.responsive(mobile: 200, desktop: 300),
+                color: Colors.white.withOpacity(0.1),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(60),
+              padding: context.responsive(
+                mobile: const EdgeInsets.all(24),
+                desktop: const EdgeInsets.all(60),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -221,26 +233,27 @@ class _SSSPageState extends State<SSSPage> {
                     decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(24)),
-                    child: const Text('YARDIM MERKEZİ',
+                    child: Text('YARDIM MERKEZİ',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize:
+                                context.responsive(mobile: 12, desktop: 14),
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.5)),
                   ),
                   const SizedBox(height: 24),
-                  const Text('Sıkça Sorulan\nSorular',
+                  Text('Sıkça Sorulan\nSorular',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 52,
+                          fontSize: context.responsive(mobile: 32, desktop: 52),
                           fontWeight: FontWeight.bold,
                           height: 1.1,
                           letterSpacing: -1)),
                   const SizedBox(height: 20),
-                  const Text('Merak ettiğiniz her şeyin cevabı burada',
+                  Text('Merak ettiğiniz her şeyin cevabı burada',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: context.responsive(mobile: 16, desktop: 20),
                           fontWeight: FontWeight.w400)),
                 ],
               ),
@@ -251,14 +264,22 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildCategoryFilters() {
+  Widget _buildCategoryFilters(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        padding: const EdgeInsets.all(24),
+        margin: context.responsive(
+          mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        ),
+        padding: context.responsive(
+          mobile: const EdgeInsets.all(16),
+          desktop: const EdgeInsets.all(24),
+        ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(
+            context.responsive(mobile: 16.0, desktop: 24.0),
+          ),
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
@@ -317,7 +338,7 @@ class _SSSPageState extends State<SSSPage> {
               labelStyle: TextStyle(
                 color: isSelected ? AppColors.primary : AppColors.textSecondary,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                fontSize: 16,
+                fontSize: context.responsive(mobile: 14, desktop: 16),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -326,9 +347,11 @@ class _SSSPageState extends State<SSSPage> {
                   width: 2,
                 ),
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
+              padding: context.responsive(
+                mobile:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                desktop:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             );
           }).toList(),
@@ -337,46 +360,76 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildQuickHelp() {
+  Widget _buildQuickHelp(final BuildContext context) {
+    final children = [
+      Expanded(
+        child: _buildQuickHelpCard(
+          context,
+          Icons.phone_outlined,
+          'Telefon Desteği',
+          '+90 5392019961',
+          AppColors.success,
+        ),
+      ),
+      SizedBox(
+        width: context.responsive(mobile: 0, desktop: 16),
+        height: context.responsive(mobile: 16, desktop: 0),
+      ),
+      Expanded(
+        child: _buildQuickHelpCard(
+          context,
+          Icons.access_time_outlined,
+          'Çalışma Saatleri',
+          '09:00 - 22:00',
+          AppColors.info,
+        ),
+      ),
+      SizedBox(
+        width: context.responsive(mobile: 0, desktop: 16),
+        height: context.responsive(mobile: 16, desktop: 0),
+      ),
+      Expanded(
+        child: _buildQuickHelpCard(
+          context,
+          Icons.location_on_outlined,
+          'Mağaza Adresi',
+          'İçerenköy Mahallesi',
+          AppColors.secondary,
+        ),
+      ),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: _buildQuickHelpCard(
-                Icons.phone_outlined,
-                'Telefon Desteği',
-                '+90 5392019961',
-                AppColors.success,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-                child: _buildQuickHelpCard(Icons.access_time_outlined,
-                    'Çalışma Saatleri', '09:00 - 22:00', AppColors.info)),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildQuickHelpCard(Icons.location_on_outlined,
-                  'Mağaza Adresi', 'İçerenköy Mahallesi', AppColors.secondary),
-            ),
-          ],
+        margin: context.responsive(
+          mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        ),
+        child: context.responsive<Widget>(
+          mobile: Column(children: children),
+          desktop: Row(children: children),
         ),
       ),
     );
   }
 
   Widget _buildQuickHelpCard(
+    final BuildContext context,
     final IconData icon,
     final String title,
     final String subtitle,
     final Color color,
   ) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: context.responsive(
+        mobile: const EdgeInsets.all(16),
+        desktop: const EdgeInsets.all(24),
+      ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(
+          context.responsive(mobile: 16.0, desktop: 20.0),
+        ),
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
@@ -394,13 +447,17 @@ class _SSSPageState extends State<SSSPage> {
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: color, size: 32),
+            child: Icon(
+              icon,
+              color: color,
+              size: context.responsive(mobile: 28, desktop: 32),
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: context.responsive(mobile: 14, desktop: 16),
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -410,7 +467,7 @@ class _SSSPageState extends State<SSSPage> {
             subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: context.responsive(mobile: 14, desktop: 14),
               color: color,
               fontWeight: FontWeight.w500,
             ),
@@ -420,11 +477,14 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildFAQList() {
+  Widget _buildFAQList(final BuildContext context) {
     final filteredFaqs = _filteredFaqs;
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      padding: context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      ),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
@@ -435,7 +495,9 @@ class _SSSPageState extends State<SSSPage> {
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(
+                  context.responsive(mobile: 16.0, desktop: 20.0),
+                ),
                 border: Border.all(
                   color: isExpanded ? AppColors.primary : AppColors.border,
                   width: isExpanded ? 2 : 1,
@@ -458,9 +520,14 @@ class _SSSPageState extends State<SSSPage> {
                         _expandedIndex = isExpanded ? null : index;
                       });
                     },
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(
+                      context.responsive(mobile: 16.0, desktop: 20.0),
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: context.responsive(
+                        mobile: const EdgeInsets.all(16),
+                        desktop: const EdgeInsets.all(24),
+                      ),
                       child: Row(
                         children: [
                           Container(
@@ -476,7 +543,7 @@ class _SSSPageState extends State<SSSPage> {
                             child: Text(
                               faq['category']!,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: context.captionSize,
                                 fontWeight: FontWeight.w600,
                                 color: _getCategoryColor(faq['category']!),
                               ),
@@ -487,7 +554,7 @@ class _SSSPageState extends State<SSSPage> {
                             child: Text(
                               faq['question']!,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: context.titleSize,
                                 fontWeight: FontWeight.w600,
                                 color: isExpanded
                                     ? AppColors.primary
@@ -510,7 +577,10 @@ class _SSSPageState extends State<SSSPage> {
                   ),
                   if (isExpanded)
                     Container(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                      padding: context.responsive(
+                        mobile: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        desktop: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -518,8 +588,8 @@ class _SSSPageState extends State<SSSPage> {
                           const SizedBox(height: 20),
                           Text(
                             faq['answer']!,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: context.bodySize,
                               color: AppColors.textSecondary,
                               height: 1.6,
                             ),
@@ -537,99 +607,116 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildContactCTA() {
+  Widget _buildContactCTA(final BuildContext context) {
+    final buttonPadding = context.responsive(
+      mobile: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      desktop: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    );
+    final buttonTextStyle = TextStyle(
+      fontSize: context.responsive(mobile: 16, desktop: 18),
+      fontWeight: FontWeight.bold,
+    );
+
+    final buttons = [
+      FilledButton(
+        onPressed: () => _launchPhone(),
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.primary,
+          padding: buttonPadding,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.phone),
+            const SizedBox(width: 12),
+            Text('Bizi Arayın', style: buttonTextStyle),
+          ],
+        ),
+      ),
+      SizedBox(
+        height: context.responsive(mobile: 12, desktop: 16),
+        width: context.responsive(mobile: 0, desktop: 16),
+      ),
+      OutlinedButton(
+        onPressed: () => _launchMaps(),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white,
+          padding: buttonPadding,
+          side: const BorderSide(color: Colors.white, width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.map_outlined),
+            const SizedBox(width: 12),
+            Text(
+              'Mağazaya Gel',
+              style: buttonTextStyle.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        padding: const EdgeInsets.all(48),
+        margin: context.responsive(
+          mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        ),
+        padding: context.responsive(
+          mobile: const EdgeInsets.all(24),
+          desktop: const EdgeInsets.all(48),
+        ),
         decoration: BoxDecoration(
           gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(
+            context.responsive(mobile: 24.0, desktop: 32.0),
+          ),
         ),
         child: Column(
           children: [
-            const Icon(
+            Icon(
               Icons.support_agent_outlined,
-              size: 80,
+              size: context.responsive(mobile: 48, desktop: 80),
               color: Colors.white,
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Sorunuz Yanıt Bulamadı mı?',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 32,
+                fontSize: context.responsive(mobile: 24, desktop: 32),
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Müşteri hizmetleri ekibimiz size yardımcı olmak için hazır',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: context.responsive(mobile: 16, desktop: 18),
                 color: Colors.white,
               ),
             ),
             const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FilledButton(
-                  onPressed: () => _launchPhone(),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 20,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.phone),
-                      SizedBox(width: 12),
-                      Text(
-                        'Bizi Arayın',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                OutlinedButton(
-                  onPressed: () => _launchMaps(),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 20,
-                    ),
-                    side: const BorderSide(color: Colors.white, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.map_outlined),
-                      SizedBox(width: 12),
-                      Text(
-                        'Mağazaya Gel',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            context.responsive<Widget>(
+              mobile: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: buttons,
+              ),
+              desktop: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: buttons,
+              ),
             ),
           ],
         ),
@@ -637,10 +724,13 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildAddProductButton() {
+  Widget _buildAddProductButton(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        margin: context.responsive(
+          mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        ),
         child: Center(
           child: FilledButton(
             onPressed: () {
@@ -654,23 +744,25 @@ class _SSSPageState extends State<SSSPage> {
             style: FilledButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40,
-                vertical: 20,
+              padding: context.responsive(
+                mobile:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                desktop:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.add_circle_outline),
-                SizedBox(width: 12),
+                const Icon(Icons.add_circle_outline),
+                const SizedBox(width: 12),
                 Text(
                   'Ürün Ekle Sayfasına Git',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: context.responsive(mobile: 16, desktop: 18),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -684,15 +776,17 @@ class _SSSPageState extends State<SSSPage> {
 
   void _launchPhone() async {
     const phoneNumber = 'tel:+905539201996';
-    if (await canLaunch(phoneNumber)) {
-      await launch(phoneNumber);
+    if (await canLaunchUrl(Uri.parse(phoneNumber))) {
+      await launchUrl(Uri.parse(phoneNumber));
     }
   }
 
   Future<void> _launchMaps() async {
     const mapsUrl =
         'https://www.google.com/maps/place/Sa%C4%9Flam+Spot/@40.9699248,29.1146853,21z/data=!4m6!3m5!1s0x14cac64216b4ccb7:0x49124944b40496f6!8m2!3d40.9699196!4d29.1148379!16s%2Fg%2F11dxc20095?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D';
-    if (await canLaunch(mapsUrl)) await launch(mapsUrl);
+    if (await canLaunchUrl(Uri.parse(mapsUrl))) {
+      await launchUrl(Uri.parse(mapsUrl));
+    }
   }
 
   Color _getCategoryColor(final String category) {
