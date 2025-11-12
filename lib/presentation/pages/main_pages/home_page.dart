@@ -45,19 +45,11 @@ class _HomePageState extends ConsumerState<HomePage> {
         // Categories Section
         _buildCategoriesSection(context),
 
-        // Featured Products (İsteğiniz üzerine 10 ürün gösterecek şekilde güncellendi)
+        // Featured Products (Hata düzeltildi, tekrar yatay liste oldu)
         _buildFeaturedProducts(context, productState),
 
-        // --- KALDIRILAN BÖLÜMLER ---
-        // İsteğiniz üzerine "beyaz boşluk" (Esnaf Tanıtımı),
-        // "turuncu boşluk" (Special Offers) ve "Yeni Gelenler" kaldırıldı.
-        // _buildBusinessIntroduction(context, isMobile),
-        // _buildSpecialOffers(context, isMobile),
-        // _buildNewArrivals(context, productState),
-        // --- KALDIRMA SONU ---
-
-        // Google Maps & Teslimat Bilgisi
-        _buildDeliveryMapSection(context, isMobile),
+        // Special Offers (Turuncu Kart - İçerik hatası düzeltildi)
+        _buildSpecialOffers(context, isMobile),
 
         // Testimonials
         _buildTestimonials(context, isMobile),
@@ -578,9 +570,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  // --- DÜZELTME 1: MOBİL GRIDVIEW KALDIRILDI, TEKRAR YATAY LISTVIEW'A DÖNÜLDÜ ---
   SliverToBoxAdapter _buildFeaturedProducts(
-      final BuildContext context, final ProductState productState) {
-    // Ürün sayısı 10 (önceki adımdaki gibi)
+    final BuildContext context,
+    final ProductState productState,
+  ) {
+    // Ürün sayısı 10
     final featuredProducts = productState.dataList?.take(10).toList() ?? [];
 
     if (featuredProducts.isEmpty && productState.isLoading) {
@@ -609,8 +604,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             SizedBox(height: context.responsive(mobile: 16.0, desktop: 20.0)),
 
-            // --- DÜZELTME: OVERFLOW HATASI İÇİN YÜKSEKLİK ARTIRILDI ---
-            // CustomProductCard'ın sığması için yükseklik artırıldı.
+            // Mobil ve Desktop için TEK YAPI: Yatay Kaydırılabilir Liste
+            // Overflow hatasını çözmek için yükseklik artırıldı.
             SizedBox(
               height: context.responsive(mobile: 340.0, desktop: 360.0),
               child: ListView.separated(
@@ -620,7 +615,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     width: context.responsive(mobile: 12.0, desktop: 20.0)),
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
-                  // CustomProductCard zaten responsive
+                  // Yatay liste içinde CustomProductCard (belirli genişlikte)
                   return SizedBox(
                     width: context.responsive(mobile: 200.0, desktop: 220.0),
                     child: CustomProductCard(product: product),
@@ -628,7 +623,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               ),
             ),
-            // --- DÜZELTME SONU ---
 
             SizedBox(height: context.responsive(mobile: 24.0, desktop: 40.0)),
           ],
@@ -637,144 +631,134 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildDeliveryMapSection(
+  // --- DÜZELTME 2: TURUNCU KART İÇERİK GÖSTERME HATASI DÜZELTİLDİ ---
+  SliverToBoxAdapter _buildSpecialOffers(
       final BuildContext context, final bool isMobile) {
+    // İçerik widget'ı, `Expanded` hatasını önlemek için dışarıda tanımlandı.
+    final contentColumn = Column(
+      crossAxisAlignment:
+          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 12.0, desktop: 16.0),
+            vertical: context.responsive(mobile: 6.0, desktop: 8.0),
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(
+                context.responsive(mobile: 16.0, desktop: 20.0)),
+          ),
+          child: Text(
+            '🔥 Sınırlı Süre',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.responsive(mobile: 12.0, desktop: 14.0),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Süper İndirimler!',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: context.responsive(mobile: 28.0, desktop: 36.0),
+            fontWeight: FontWeight.bold,
+            height: 1.1,
+          ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Seçili ürünlerde %70\'e varan indirim fırsatı. '
+          'Kaçırmayın!',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+            height: 1.4,
+          ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed: () {},
+          style: FilledButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: const Color(0xFFFF6B6B),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(mobile: 24.0, desktop: 32.0),
+              vertical: context.responsive(mobile: 14.0, desktop: 16.0),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  context.responsive(mobile: 10.0, desktop: 12.0)),
+            ),
+          ),
+          child: Text(
+            'Fırsatları Gör',
+            style: TextStyle(
+                fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
+
     return SliverToBoxAdapter(
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
           vertical: context.responsive(mobile: 12.0, desktop: 20.0),
         ),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 20.0, desktop: 40.0)),
         decoration: BoxDecoration(
-          color: AppColors.surface,
           borderRadius: BorderRadius.circular(
               context.responsive(mobile: 16.0, desktop: 24.0)),
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFF6B6B), Color(0xFFFF8E53)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 4)),
+              color: const Color(0xFFFF6B6B).withOpacity(0.3),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
+            ),
           ],
         ),
-        child: Container(
-          padding:
-              EdgeInsets.all(context.responsive(mobile: 20.0, desktop: 32.0)),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(
-                  context.responsive(mobile: 16.0, desktop: 24.0)),
-              bottomRight: Radius.circular(
-                  context.responsive(mobile: 16.0, desktop: 24.0)),
+        child: Flex(
+          direction: isMobile ? Axis.vertical : Axis.horizontal,
+          children: [
+            // HATA DÜZELTMESİ: Mobilde 'Expanded' kaldırıldı,
+            // masaüstünde 'Expanded' korundu.
+            isMobile ? contentColumn : Expanded(child: contentColumn),
+
+            SizedBox(
+              width: isMobile ? 0 : 40.0,
+              height: isMobile ? 24.0 : 0,
             ),
-          ),
-          child: Flex(
-            direction: isMobile ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Teslimat Bilgileri',
-                      style: TextStyle(
-                          fontSize:
-                              context.responsive(mobile: 18.0, desktop: 20.0),
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildDeliveryInfo('🚚 Ücretsiz Teslimat',
-                        'İstanbul İçerenköy ve yakın mahalleleri'),
-                    _buildDeliveryInfo('⏰ Teslimat Saatleri', '09:00 - 22:00'),
-                    _buildDeliveryInfo('📍 Hizmet Verilen Semtler',
-                        'İçerenköy, Küçükbakkalköy, Kayışdağı, Fındıklı, İnönü, Bostancı Sanayi'),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: isMobile ? 0 : 40.0,
-                height: isMobile ? 24.0 : 0,
-              ),
-              // Çalışma Saatleri
+            if (!isMobile) // Mobil cihazda bu ikonu gizle
               Container(
-                width: isMobile ? double.infinity : null,
-                // Mobilse tam genişlik
-                padding: EdgeInsets.all(
-                    context.responsive(mobile: 20.0, desktop: 24.0)),
+                width: context.responsive(mobile: 80.0, desktop: 120.0),
+                height: context.responsive(mobile: 80.0, desktop: 120.0),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(
-                      context.responsive(mobile: 12.0, desktop: 16.0)),
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
                 ),
-                child: const Column(
-                  children: [
-                    Icon(Icons.access_time_filled,
-                        color: AppColors.primary, size: 40),
-                    SizedBox(height: 12),
-                    Text(
-                      'Çalışma Saatleri',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Pazartesi - Cumartesi\n09:00 - 22:00',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Pazar: 12:00 - 20:00',
-                      style: TextStyle(
-                        color: AppColors.textTertiary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
+                child: Icon(Icons.local_offer_outlined,
+                    color: Colors.white.withOpacity(0.7),
+                    size: context.responsive(mobile: 32.0, desktop: 50.0)),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildDeliveryInfo(final String title, final String subtitle) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.check_circle_outlined,
-              color: AppColors.success, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary)),
-                const SizedBox(height: 2),
-                Text(subtitle,
-                    style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 14)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // --- DÜZELTME SONU ---
 
   SliverToBoxAdapter _buildTestimonials(
       final BuildContext context, final bool isMobile) {
