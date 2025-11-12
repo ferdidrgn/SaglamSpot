@@ -33,16 +33,17 @@ class CustomProductCard extends StatelessWidget {
             onTap: onTap,
             splashColor: const Color(0xFF6366F1).withOpacity(0.1),
             highlightColor: const Color(0xFF6366F1).withOpacity(0.05),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ImageSection(product: product),
-                  Expanded(
-                    child: _InfoSection(product: product),
-                  ),
-                ],
-              ),
+            // DÜZELTME: IntrinsicHeight kaldırıldı.
+            // Bu, 'Expanded' ile birlikte layout'u bozuyordu.
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ImageSection(product: product),
+                // Expanded, _InfoSection'ın kalan tüm alanı doldurmasını sağlar.
+                Expanded(
+                  child: _InfoSection(product: product),
+                ),
+              ],
             ),
           ),
         ),
@@ -80,15 +81,22 @@ class _ImageSection extends StatelessWidget {
     final imageHeight =
         context.responsive(mobile: 140.0, tablet: 160.0, desktop: 180.0);
 
+    // Cihazın piksel yoğunluğunu al (retina ekranlar için)
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+    // Yüksek çözünürlüklü ekranlar için cache boyutunu ayarla
+    // Max yükseklik 180 * 3 (yüksek pixelRatio) = 540
+    // Bu, 4K bir resmi decode etmek yerine 540px'lik bir resmi decode etmeyi sağlar.
+    final cacheHeight = (imageHeight * pixelRatio).round();
+
     return SizedBox(
       height: imageHeight,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _buildProductImage(),
-          _buildGradientOverlay(),
+          _buildProductImage(context, cacheHeight), // DÜZELTME
+          _buildGradientOverlay(context),
           Positioned(
-            // getValueForDevice yerine responsive()
             top: context.responsive(mobile: 6.0, desktop: 8.0),
             right: context.responsive(mobile: 6.0, desktop: 8.0),
             child: _StatusBadge(product: product),
@@ -104,40 +112,48 @@ class _ImageSection extends StatelessWidget {
     );
   }
 
-  Widget _buildProductImage() {
+  Widget _buildProductImage(BuildContext context, int cacheHeight) {
+    // DÜZELTME
     return product.imagesUrl.isNotEmpty
         ? Image.network(
             product.imagesUrl.first,
             fit: BoxFit.cover,
+
+            // --- PERFORMANS DÜZELTMESİ ---
+            // Resmi bu piksel yüksekliğinde işle, bu UI donmasını engeller.
+            cacheHeight: cacheHeight,
+            // ---------------------------------
+
             errorBuilder: (final context, final error, final stackTrace) =>
-                _buildPlaceholder(),
+                _buildPlaceholder(context),
             loadingBuilder:
                 (final context, final child, final loadingProgress) {
               if (loadingProgress == null) return child;
-              return _buildPlaceholder();
+              // Yüklenirken de placeholder göster
+              return _buildPlaceholder(context);
             },
           )
-        : _buildPlaceholder();
+        : _buildPlaceholder(context);
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildPlaceholder(BuildContext context) {
     return Container(
       color: const Color(0xFFF1F5F9),
       child: Icon(
         Icons.image_outlined,
-        size: 48,
+        size: context.responsive(mobile: 40.0, desktop: 48.0),
         color: const Color(0xFF94A3B8).withOpacity(0.5),
       ),
     );
   }
 
-  Widget _buildGradientOverlay() {
+  Widget _buildGradientOverlay(BuildContext context) {
     return Positioned(
       bottom: 0,
       left: 0,
       right: 0,
       child: Container(
-        height: 50,
+        height: context.responsive(mobile: 40.0, desktop: 50.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -162,12 +178,10 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    // getBadgePadding yerine responsive()
     final padding = EdgeInsets.symmetric(
       horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
-      vertical: 4.0,
+      vertical: context.responsive(mobile: 3.0, desktop: 4.0),
     );
-    // getIconSize yerine responsive()
     final iconSize =
         context.responsive(mobile: 20.0 * 0.6, desktop: 24.0 * 0.6);
 
@@ -176,8 +190,14 @@ class _StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color:
             product.isSold ? const Color(0xFFEF4444) : const Color(0xFF10B981),
-        borderRadius: BorderRadius.circular(12),
-        // ... (shadow)
+        borderRadius: BorderRadius.circular(context.borderRadius(0.75)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -216,7 +236,7 @@ class _SpotBadge extends StatelessWidget {
   Widget build(final BuildContext context) {
     final padding = EdgeInsets.symmetric(
       horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
-      vertical: 4.0,
+      vertical: context.responsive(mobile: 3.0, desktop: 4.0),
     );
     final iconSize =
         context.responsive(mobile: 20.0 * 0.6, desktop: 24.0 * 0.6);
@@ -227,8 +247,14 @@ class _SpotBadge extends StatelessWidget {
         gradient: const LinearGradient(
           colors: [Color(0xFFEC4899), Color(0xFFF472B6)],
         ),
-        borderRadius: BorderRadius.circular(12),
-        // ... (shadow)
+        borderRadius: BorderRadius.circular(context.borderRadius(0.75)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFEC4899).withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -273,30 +299,25 @@ class _InfoSection extends StatelessWidget {
       padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        // DÜZELTME: Bu, fiyatı en alta itecek.
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _CategoryChip(category: product.category),
-                SizedBox(
-                  height: context.responsive(mobile: 4.0, desktop: 6.0),
-                ),
-                _ProductTitle(title: product.name),
-                SizedBox(
-                  height: context.responsive(mobile: 2.0, desktop: 4.0),
-                ),
-                Flexible(
-                  child: _ProductDescription(description: product.desc),
-                ),
-              ],
-            ),
+          // 1. Grup: Başlık ve açıklama
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // Sadece gerektiği kadar yer kapla
+            children: [
+              _CategoryChip(category: product.category),
+              SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
+              _ProductTitle(title: product.name),
+              SizedBox(height: context.responsive(mobile: 2.0, desktop: 4.0)),
+              // DÜZELTME: 'Flexible' sarmalayıcıları kaldırıldı.
+              // Bu, overflow hatasını düzeltir.
+              _ProductDescription(description: product.desc),
+            ],
           ),
-          SizedBox(
-            height: context.responsive(mobile: 6.0, desktop: 8.0),
-          ),
+
+          // 2. Grup: Fiyat (Aradaki SizedBox kaldırıldı)
           _PriceSection(price: product.price),
         ],
       ),
@@ -316,11 +337,11 @@ class _CategoryChip extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
-        vertical: 2,
+        vertical: context.responsive(mobile: 2.0, desktop: 3.0),
       ),
       decoration: BoxDecoration(
         color: const Color(0xFF6366F1).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(context.borderRadius(0.25)),
       ),
       child: Text(
         category.toUpperCase(),
@@ -406,8 +427,14 @@ class _PriceSection extends StatelessWidget {
               gradient: const LinearGradient(
                 colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
               ),
-              borderRadius: BorderRadius.circular(8),
-              // ... (shadow)
+              borderRadius: BorderRadius.circular(context.borderRadius(0.5)),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6366F1).withOpacity(0.25),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Text(
               '₺${price.toStringAsFixed(2)}',
@@ -432,7 +459,7 @@ class _PriceSection extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: const Color(0xFFEC4899).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(context.borderRadius(0.5)),
           ),
           child: Icon(
             Icons.arrow_forward_rounded,
