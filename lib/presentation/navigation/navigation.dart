@@ -16,6 +16,8 @@ class NavigationScreen extends ConsumerStatefulWidget {
 }
 
 class _NavigationScreenState extends ConsumerState<NavigationScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   int _selectedIndex = 0;
 
   final List<Widget> _pages = const [
@@ -30,11 +32,16 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
     setState(() {
       _selectedIndex = index;
     });
+
+    // Bonus: Mobilde bir seçim yapıldığında çekmeceyi (drawer) kapatın
+    if (_scaffoldKey.currentState?.isEndDrawerOpen ?? false)
+      Navigator.of(context).pop();
   }
 
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: AppColors.background,
       body: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -45,7 +52,10 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           children: [
             // Modern App Header
             CustomAppHeader(
-                selectedIndex: _selectedIndex, onItemSelected: _onItemSelected),
+              selectedIndex: _selectedIndex,
+              onItemSelected: _onItemSelected,
+              scaffoldKey: _scaffoldKey,
+            ),
             // Page Content
             Expanded(
               child: Container(
@@ -61,6 +71,57 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
                 ),
                 child: IndexedStack(index: _selectedIndex, children: _pages),
               ),
+            ),
+          ],
+        ),
+      ),
+      // 4. ADIM: Mobil menü butonunun açması için bir endDrawer tanımlayın
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColors.primary, // Veya logonuzu/renginizi kullanın
+              ),
+              child: Text(
+                'Sağlam Spot',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home_outlined),
+              title: const Text('Ana Sayfa'),
+              selected: _selectedIndex == 0,
+              onTap: () => _onItemSelected(0),
+            ),
+            ListTile(
+              leading: const Icon(Icons.new_releases_outlined),
+              title: const Text('Sıfır Ürünler'),
+              selected: _selectedIndex == 1,
+              onTap: () => _onItemSelected(1),
+            ),
+            ListTile(
+              leading: const Icon(Icons.star_outline),
+              title: const Text('Spot Ürünler'),
+              selected: _selectedIndex == 2,
+              onTap: () => _onItemSelected(2),
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('Hakkımızda'),
+              selected: _selectedIndex == 3,
+              onTap: () => _onItemSelected(3),
+            ),
+            ListTile(
+              leading: const Icon(Icons.quiz_outlined),
+              title: const Text('SSS'),
+              selected: _selectedIndex == 4,
+              onTap: () => _onItemSelected(4),
             ),
           ],
         ),

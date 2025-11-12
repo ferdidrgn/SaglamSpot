@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../util/responsive_utils.dart';
+import '../util/responsive_utils.dart'; // Extension'lar için import
 
-class CustomSearchBar extends StatelessWidget with ResponsiveUtils {
+// Mixin kaldırıldı
+class CustomSearchBar extends StatelessWidget {
   final ValueChanged<String>? onSearchChanged;
   final VoidCallback? onSearchTap;
   final TextEditingController? controller;
@@ -17,7 +18,8 @@ class CustomSearchBar extends StatelessWidget with ResponsiveUtils {
   Widget build(final BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(
-          horizontal: getValueForDevice(context, mobile: 16, desktop: 40)),
+          horizontal:
+              context.responsive(mobile: 16.0, desktop: 40.0)), // Extension
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: TextField(
@@ -27,12 +29,14 @@ class CustomSearchBar extends StatelessWidget with ResponsiveUtils {
           focusedBorder: _buildBorder(context, true),
           hintText: 'Eşya Ara...',
           hintStyle: TextStyle(
-              fontSize: getValueForDevice(context, mobile: 16, desktop: 18),
+              fontSize:
+                  context.responsive(mobile: 16.0, desktop: 18.0), // Extension
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.onSurface),
-          contentPadding: EdgeInsets.all(
-              getValueForDevice(context, mobile: 20, desktop: 25)),
+          contentPadding:
+              EdgeInsets.all(context.responsive(mobile: 20.0, desktop: 25.0)),
+          // Extension
           prefixIcon: IconButton(
             icon: Icon(Icons.search,
                 color: Theme.of(context).colorScheme.primary),

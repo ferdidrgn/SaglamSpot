@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/product.dart';
-import '../util/responsive_utils.dart';
-import 'custom_search_product_card.dart';
+import '../util/responsive_utils.dart'; // Extension'lar için import
+import 'custom_product_card.dart';
 
 /// Responsive product grid with optimal performance
 /// Uses SliverGrid for better performance with large lists
+// Mixin kaldırıldı
 class ResponsiveProductGrid extends ConsumerWidget {
   final List<Product> products;
   final ScrollController? scrollController;
@@ -24,19 +25,24 @@ class ResponsiveProductGrid extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    if (products.isEmpty) {
-      return _buildEmptyState(context);
-    }
+    if (products.isEmpty) return _buildEmptyState(context);
 
-    final crossAxisCount = ResponsiveUtils.getGridCrossAxisCount(context);
-    final spacing = ResponsiveUtils.getGridSpacing(context);
-    final aspectRatio = ResponsiveUtils.getCardAspectRatio(context);
+    // Extension'lar kullanıldı
+    final crossAxisCount = context.gridColumns();
+    final spacing = context.gridSpacing;
+    // getCardAspectRatio extension'da yok, bu yüzden responsive() kullandık
+    final aspectRatio =
+        context.responsive(mobile: 0.72, tablet: 0.78, desktop: 0.80);
+    // getScreenPadding extension'da yok, bu yüzden responsive() kullandık
+    final screenPadding = context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
 
     return GridView.builder(
       controller: scrollController,
       shrinkWrap: shrinkWrap,
       physics: physics,
-      padding: ResponsiveUtils.getScreenPadding(context),
+      padding: screenPadding,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         childAspectRatio: aspectRatio,
@@ -45,67 +51,51 @@ class ResponsiveProductGrid extends ConsumerWidget {
       ),
       itemCount: products.length,
       itemBuilder: (final context, final index) {
-        final product = products[index];
-        return ModernProductCard(
-          product: product,
-          onTap: onProductTap != null ? () => onProductTap!(product) : null,
-        );
+        // ...
       },
     );
   }
 
   Widget _buildEmptyState(final BuildContext context) {
+    final screenPadding = context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
+
     return Center(
       child: Padding(
-        padding: ResponsiveUtils.getScreenPadding(context),
+        padding: screenPadding,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.search_off_rounded,
-              size: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 64.0,
-                desktop: 80.0,
-              ),
+              size: context.responsive(mobile: 64.0, desktop: 80.0),
+              // Extension
               color: const Color(0xFF94A3B8),
             ),
             SizedBox(
-              height: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 16.0,
-                desktop: 24.0,
-              ),
+              height:
+                  context.responsive(mobile: 16.0, desktop: 24.0), // Extension
             ),
             Text(
               'Ürün bulunamadı',
               style: TextStyle(
-                fontSize: ResponsiveUtils.getValueForDevice(
-                  context,
-                  mobile: 18.0,
-                  tablet: 20.0,
-                  desktop: 22.0,
-                ),
+                fontSize: context.responsive(
+                    mobile: 18.0, tablet: 20.0, desktop: 22.0), // Extension
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF1E293B),
               ),
             ),
             SizedBox(
-              height: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 8.0,
-                desktop: 12.0,
-              ),
+              height:
+                  context.responsive(mobile: 8.0, desktop: 12.0), // Extension
             ),
             Text(
               'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: ResponsiveUtils.getValueForDevice(
-                  context,
-                  mobile: 14.0,
-                  desktop: 16.0,
-                ),
+                fontSize: context.responsive(
+                    mobile: 14.0, desktop: 16.0), // Extension
                 color: const Color(0xFF64748B),
               ),
             ),
@@ -135,12 +125,16 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
       );
     }
 
-    final crossAxisCount = ResponsiveUtils.getGridCrossAxisCount(context);
-    final spacing = ResponsiveUtils.getGridSpacing(context);
-    final aspectRatio = ResponsiveUtils.getCardAspectRatio(context);
+    final crossAxisCount = context.gridColumns();
+    final spacing = context.gridSpacing;
+    final aspectRatio =
+        context.responsive(mobile: 0.72, tablet: 0.78, desktop: 0.80);
+    final screenPadding = context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
 
     return SliverPadding(
-      padding: ResponsiveUtils.getScreenPadding(context),
+      padding: screenPadding,
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
@@ -151,7 +145,7 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
             final product = products[index];
-            return ModernProductCard(
+            return CustomProductCard(
               product: product,
               onTap: onProductTap != null ? () => onProductTap!(product) : null,
             );
@@ -163,57 +157,45 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(final BuildContext context) {
+    final screenPadding = context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
+
     return Center(
       child: Padding(
-        padding: ResponsiveUtils.getScreenPadding(context),
+        padding: screenPadding,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.search_off_rounded,
-              size: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 64.0,
-                desktop: 80.0,
-              ),
+              size: context.responsive(mobile: 64.0, desktop: 80.0),
+              // Extension
               color: const Color(0xFF94A3B8),
             ),
             SizedBox(
-              height: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 16.0,
-                desktop: 24.0,
-              ),
+              height:
+                  context.responsive(mobile: 16.0, desktop: 24.0), // Extension
             ),
             Text(
               'Ürün bulunamadı',
               style: TextStyle(
-                fontSize: ResponsiveUtils.getValueForDevice(
-                  context,
-                  mobile: 18.0,
-                  tablet: 20.0,
-                  desktop: 22.0,
-                ),
+                fontSize: context.responsive(
+                    mobile: 18.0, tablet: 20.0, desktop: 22.0), // Extension
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF1E293B),
               ),
             ),
             SizedBox(
-              height: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 8.0,
-                desktop: 12.0,
-              ),
+              height:
+                  context.responsive(mobile: 8.0, desktop: 12.0), // Extension
             ),
             Text(
               'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: ResponsiveUtils.getValueForDevice(
-                  context,
-                  mobile: 14.0,
-                  desktop: 16.0,
-                ),
+                fontSize: context.responsive(
+                    mobile: 14.0, desktop: 16.0), // Extension
                 color: const Color(0xFF64748B),
               ),
             ),

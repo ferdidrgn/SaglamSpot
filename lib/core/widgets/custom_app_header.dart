@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+
 import '../../presentation/pages/search_page.dart';
 import '../theme/app_colors.dart';
-import 'custom_search.dart';
+import '../util/responsive_utils.dart';
 
 class CustomAppHeader extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onItemSelected;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   const CustomAppHeader({
     super.key,
     required this.selectedIndex,
     required this.onItemSelected,
+    required this.scaffoldKey, // Bu anahtar mobil menü için zorunludur
   });
 
   @override
@@ -20,37 +23,77 @@ class CustomAppHeader extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4)),
         ],
         border: Border(
-          bottom: BorderSide(color: AppColors.border.withOpacity(0.3)),
-        ),
+            bottom: BorderSide(color: AppColors.border.withOpacity(0.3))),
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Row(
-            children: [
-              // Logo
-              _buildLogo(),
-              const Spacer(),
-              // Navigation Items
-              _buildDesktopNavigation(),
-              const Spacer(),
-              // User Actions
-              _buildUserActions(context),
-            ],
+          padding: EdgeInsets.symmetric(
+            // Düzeltme: 'getValueForDevice' yerine 'context.responsive'
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: context.responsive(mobile: 12.0, desktop: 16.0),
           ),
+          // Düzeltme: 'ResponsiveUtils.isMobile' yerine 'context.isMobile'
+          child: context.isMobile
+              ? _buildMobileLayout(context) // Mobil düzen
+              : _buildDesktopLayout(context), // Desktop düzen
         ),
       ),
     );
   }
 
-  Widget _buildLogo() {
+  // --- DESKTOP DÜZENİ ---
+  Widget _buildDesktopLayout(final BuildContext context) {
+    return Row(
+      children: [
+        _buildLogo(context),
+        const Spacer(),
+        _buildDesktopNavigation(context),
+        const Spacer(),
+        _buildUserActions(context),
+      ],
+    );
+  }
+
+  // --- MOBİL DÜZENİ ---
+  Widget _buildMobileLayout(final BuildContext context) {
+    return Row(
+      children: [
+        // Mobil Logo (Daha küçük)
+        _buildLogo(context),
+        const Spacer(),
+        // Mobil Arama Butonu
+        _buildActionButton(
+          context: context,
+          icon: Icons.search_outlined,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (final context) => const SearchPage()),
+            );
+          },
+        ),
+        const SizedBox(width: 8),
+        // Mobil Menü Butonu (Drawer'ı açmak için)
+        _buildActionButton(
+          context: context,
+          icon: Icons.menu,
+          onPressed: () {
+            // Anahtarın (scaffoldKey) asıl kullanım amacı budur.
+            // Eğer 'null' gelirse burada uygulama çöker.
+            scaffoldKey.currentState?.openEndDrawer();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLogo(final BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -59,23 +102,25 @@ class CustomAppHeader extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 40,
-              height: 40,
+              // Düzeltme: 'getValueForDevice' yerine 'context.responsive'
+              width: context.responsive(mobile: 32.0, desktop: 40.0),
+              height: context.responsive(mobile: 32.0, desktop: 40.0),
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(
+                    context.responsive(mobile: 8.0, desktop: 12.0)),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.weekend_outlined,
                 color: Colors.white,
-                size: 24,
+                size: context.responsive(mobile: 18.0, desktop: 24.0),
               ),
             ),
             const SizedBox(width: 12),
-            const Text(
+            Text(
               'Sağlam Spot',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: context.responsive(mobile: 20.0, desktop: 24.0),
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -86,7 +131,9 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopNavigation() {
+  Widget _buildDesktopNavigation(final BuildContext context) {
+    // Bu başlıkların index'leri (0, 1, 2, 3, 4)
+    // _onItemSelected'a giden index'ler ile eşleşmelidir.
     const navItems = [
       'Ana Sayfa',
       'Sıfır Ürünler',
@@ -112,29 +159,17 @@ class CustomAppHeader extends StatelessWidget {
   Widget _buildUserActions(final BuildContext context) {
     return Row(
       children: [
+        // Desktop'taki arama çubuğu (görsel)
         _buildSearchBar(context),
         const SizedBox(width: 16),
+        // Desktop'taki profil/giriş butonu
         _buildActionButton(
-          icon: Icons.search_outlined,
+          context: context,
+          icon: Icons.person_outline,
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (final context) => const SearchPage()),
-            );
+            // TODO: Profil veya Giriş sayfasına yönlendir
           },
-          badge: false,
         ),
-        const SizedBox(width: 16),
-        Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: const Icon(Icons.person_outline,
-                color: AppColors.primary, size: 20)),
       ],
     );
   }
@@ -150,7 +185,7 @@ class CustomAppHeader extends StatelessWidget {
           );
         },
         child: Container(
-          width: 200,
+          width: context.responsive(mobile: 150.0, desktop: 200.0),
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
@@ -172,51 +207,31 @@ class CustomAppHeader extends StatelessWidget {
   }
 
   Widget _buildActionButton({
+    required final BuildContext context,
     required final IconData icon,
     required final VoidCallback onPressed,
-    required final bool badge,
-    final int badgeCount = 0,
   }) {
-    return Stack(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border)),
-          child: IconButton(
-              icon: Icon(icon, size: 20),
-              onPressed: onPressed,
-              color: AppColors.textSecondary,
-              padding: EdgeInsets.zero),
-        ),
-        if (badge && badgeCount > 0)
-          Positioned(
-            top: 4,
-            right: 4,
-            child: Container(
-              width: 16,
-              height: 16,
-              decoration: BoxDecoration(
-                  color: AppColors.secondary,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.surface, width: 2)),
-              child: Center(
-                child: Text(badgeCount.toString(),
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold)),
-              ),
-            ),
-          ),
-      ],
+    final double size = context.responsive(mobile: 40.0, desktop: 40.0);
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(
+              context.responsive(mobile: 10.0, desktop: 12.0)),
+          border: Border.all(color: AppColors.border)),
+      child: IconButton(
+          icon:
+              Icon(icon, size: context.responsive(mobile: 20.0, desktop: 20.0)),
+          onPressed: onPressed,
+          color: AppColors.textSecondary,
+          padding: EdgeInsets.zero),
     );
   }
 }
 
+/// Header için gezinme butonu (Navigation Item)
 class _NavItem extends StatelessWidget {
   final String title;
   final bool isSelected;
@@ -236,7 +251,11 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            // Düzeltme: 'getValueForDevice' yerine 'context.responsive'
+            horizontal: context.responsive(mobile: 12.0, desktop: 20.0),
+            vertical: context.responsive(mobile: 8.0, desktop: 12.0),
+          ),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.primary.withOpacity(0.1)
@@ -251,7 +270,7 @@ class _NavItem extends StatelessWidget {
             style: TextStyle(
                 color: isSelected ? AppColors.primary : AppColors.textSecondary,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                fontSize: 15),
+                fontSize: context.responsive(mobile: 14.0, desktop: 15.0)),
           ),
         ),
       ),

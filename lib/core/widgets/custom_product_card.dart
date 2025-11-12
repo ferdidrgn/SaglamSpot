@@ -1,602 +1,447 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/product.dart';
-import '../theme/app_colors.dart';
+import '../util/responsive_utils.dart'; // Extension'lar için import
 
-class CustomProductCard extends StatefulWidget {
+/// Modern, responsive ve performans odaklı product card
+/// SOLID prensipleriyle tasarlanmış, tek sorumluluk prensibi uygulanmış
+// Mixin kaldırıldı
+class CustomProductCard extends StatelessWidget {
   final Product product;
-  final double? width;
+  final VoidCallback? onTap;
 
   const CustomProductCard({
     super.key,
     required this.product,
-    this.width,
+    this.onTap,
   });
 
   @override
-  State<CustomProductCard> createState() => _CustomProductCardState();
-}
-
-class _CustomProductCardState extends State<CustomProductCard> {
-  int _currentImageIndex = 0;
-  final PageController _pageController = PageController();
-
-  void _nextImage() {
-    if (_currentImageIndex < widget.product.imagesUrl.length - 1) {
-      setState(() {
-        _currentImageIndex++;
-      });
-      _pageController.animateToPage(
-        _currentImageIndex,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _previousImage() {
-    if (_currentImageIndex > 0) {
-      setState(() {
-        _currentImageIndex--;
-      });
-      _pageController.animateToPage(
-        _currentImageIndex,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _showImageGallery(final BuildContext context, final int initialIndex) {
-    showDialog(
-      context: context,
-      builder: (final context) => ImageGalleryDialog(
-        images: widget.product.imagesUrl,
-        initialIndex: initialIndex,
-      ),
-    );
-  }
-
-  @override
   Widget build(final BuildContext context) {
-
-    final hasMultipleImages = widget.product.imagesUrl.length > 1;
+    // getCardMargin yerine responsive()
+    final cardMargin = context.responsive(
+        mobile: const EdgeInsets.all(4.0), desktop: const EdgeInsets.all(6.0));
 
     return Container(
-      width: widget.width, // DÜZELTİ: width -> widget.width
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product Image Gallery
-          Stack(
-            children: [
-              // Image Container
-              GestureDetector(
-                onTap: () => _showImageGallery(context, _currentImageIndex),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    color: AppColors.background,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: widget.product.imagesUrl.length,
-                      onPageChanged: (final index) {
-                        setState(() {
-                          _currentImageIndex = index;
-                        });
-                      },
-                      itemBuilder: (final context, final index) {
-                        return Image.network(
-                          widget.product.imagesUrl[index],
-                          fit: BoxFit.cover,
-                          errorBuilder:
-                              (final context, final error, final stackTrace) {
-                            return Container(
-                              color: AppColors.border,
-                              child: const Icon(
-                                Icons.photo_outlined,
-                                color: AppColors.textSecondary,
-                                size: 48,
-                              ),
-                            );
-                          },
-                          loadingBuilder: (final context, final child,
-                              final loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              color: AppColors.background,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-
-              // Navigation Arrows (only show if multiple images)
-              if (hasMultipleImages) ...[
-                // Left Arrow
-                Positioned(
-                  left: 8,
-                  top: 0,
-                  bottom: 0,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: _previousImage,
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        margin: const EdgeInsets.symmetric(vertical: 84),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.chevron_left,
-                          color: _currentImageIndex > 0
-                              ? AppColors.primary
-                              : AppColors.textTertiary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Right Arrow
-                Positioned(
-                  right: 8,
-                  top: 0,
-                  bottom: 0,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: _nextImage,
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        margin: const EdgeInsets.symmetric(vertical: 84),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.chevron_right,
-                          color: _currentImageIndex <
-                                  widget.product.imagesUrl.length - 1
-                              ? AppColors.primary
-                              : AppColors.textTertiary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-
-              // Image Counter
-              if (hasMultipleImages)
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '${_currentImageIndex + 1}/${widget.product.imagesUrl.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-
-              // Image Indicators (Dots)
-              if (hasMultipleImages)
-                Positioned(
-                  bottom: 12,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      widget.product.imagesUrl.length,
-                      // DÜZELTİ: images -> imagesUrl
-                      (final index) => GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _currentImageIndex = index;
-                          });
-                          _pageController.animateToPage(
-                            index,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        },
-                        child: Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _currentImageIndex == index
-                                ? AppColors.primary
-                                : Colors.white.withOpacity(0.7),
-                            border: _currentImageIndex == index
-                                ? null
-                                : Border.all(
-                                    color: Colors.white,
-                                    width: 1,
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-
-          // Product Details
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.product.name, // DÜZELTİ: product -> widget.product
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  widget.product.desc, // DÜZELTİ: product -> widget.product
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${widget.product.price} TL',
-                      // DÜZELTİ: product -> widget.product
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: widget.product
-                                .isSold // DÜZELTİ: product -> widget.product
-                            ? AppColors.error.withOpacity(0.1)
-                            : AppColors.success.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        widget.product.isSold ? 'Satıldı' : 'Stokta',
-                        // DÜZELTİ: product -> widget.product
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: widget.product
-                                  .isSold // DÜZELTİ: product -> widget.product
-                              ? AppColors.error
-                              : AppColors.success,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Image Gallery Dialog for Full Screen View
-class ImageGalleryDialog extends StatefulWidget {
-  final List<String> images;
-  final int initialIndex;
-
-  const ImageGalleryDialog({
-    super.key,
-    required this.images,
-    required this.initialIndex,
-  });
-
-  @override
-  State<ImageGalleryDialog> createState() => _ImageGalleryDialogState();
-}
-
-class _ImageGalleryDialogState extends State<ImageGalleryDialog> {
-  late PageController _pageController;
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.initialIndex;
-    _pageController = PageController(initialPage: widget.initialIndex);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _nextImage() {
-    if (_currentIndex < widget.images.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _previousImage() {
-    if (_currentIndex > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(20),
-      child: Stack(
-        children: [
-          // Background Overlay
-          GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(
-              color: Colors.black.withOpacity(0.8),
-            ),
-          ),
-
-          // Close Button
-          Positioned(
-            top: 40,
-            right: 40,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Image Gallery
-          Center(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.9,
-                maxHeight: MediaQuery.of(context).size.height * 0.8,
-              ),
-              child: Stack(
+      margin: cardMargin,
+      decoration: _buildCardDecoration(context),
+      child: ClipRRect(
+        // getBorderRadius yerine borderRadius()
+        borderRadius: BorderRadius.circular(context.borderRadius(1.25)),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            splashColor: const Color(0xFF6366F1).withOpacity(0.1),
+            highlightColor: const Color(0xFF6366F1).withOpacity(0.05),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    itemCount: widget.images.length,
-                    onPageChanged: (final index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    itemBuilder: (final context, final index) {
-                      return InteractiveViewer(
-                        panEnabled: true,
-                        scaleEnabled: true,
-                        minScale: 0.5,
-                        maxScale: 3.0,
-                        child: Image.network(
-                          widget.images[index],
-                          fit: BoxFit.contain,
-                          errorBuilder:
-                              (final context, final error, final stackTrace) {
-                            return Container(
-                              color: AppColors.border,
-                              child: const Icon(
-                                Icons.photo_outlined,
-                                color: AppColors.textSecondary,
-                                size: 64,
-                              ),
-                            );
-                          },
-                          loadingBuilder: (final context, final child,
-                              final loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                    : null,
-                                color: AppColors.primary,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Navigation Arrows
-                  if (widget.images.length > 1) ...[
-                    // Left Arrow
-                    Positioned(
-                      left: 20,
-                      top: 0,
-                      bottom: 0,
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: _previousImage,
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.chevron_left,
-                              color: _currentIndex > 0
-                                  ? Colors.white
-                                  : Colors.white54,
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Right Arrow
-                    Positioned(
-                      right: 20,
-                      top: 0,
-                      bottom: 0,
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: _nextImage,
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.chevron_right,
-                              color: _currentIndex < widget.images.length - 1
-                                  ? Colors.white
-                                  : Colors.white54,
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-
-                  // Image Counter
-                  Positioned(
-                    bottom: 20,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          '${_currentIndex + 1}/${widget.images.length}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
+                  _ImageSection(product: product),
+                  Expanded(
+                    child: _InfoSection(product: product),
                   ),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _buildCardDecoration(final BuildContext context) {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(
+        context.borderRadius(1.25), // Extension
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.08),
+          blurRadius: 15,
+          offset: const Offset(0, 6),
+        ),
+      ],
+    );
+  }
+}
+
+/// Image bölümü - Ayrı widget olarak separation of concerns
+// Mixin kaldırıldı
+class _ImageSection extends StatelessWidget {
+  final Product product;
+
+  const _ImageSection({required this.product});
+
+  @override
+  Widget build(final BuildContext context) {
+    // getCardImageHeight yerine responsive()
+    final imageHeight =
+        context.responsive(mobile: 140.0, tablet: 160.0, desktop: 180.0);
+
+    return SizedBox(
+      height: imageHeight,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _buildProductImage(),
+          _buildGradientOverlay(),
+          Positioned(
+            // getValueForDevice yerine responsive()
+            top: context.responsive(mobile: 6.0, desktop: 8.0),
+            right: context.responsive(mobile: 6.0, desktop: 8.0),
+            child: _StatusBadge(product: product),
+          ),
+          if (product.isSpotProduct)
+            Positioned(
+              top: context.responsive(mobile: 6.0, desktop: 8.0),
+              left: context.responsive(mobile: 6.0, desktop: 8.0),
+              child: const _SpotBadge(),
+            ),
         ],
       ),
+    );
+  }
+
+  Widget _buildProductImage() {
+    return product.imagesUrl.isNotEmpty
+        ? Image.network(
+            product.imagesUrl.first,
+            fit: BoxFit.cover,
+            errorBuilder: (final context, final error, final stackTrace) =>
+                _buildPlaceholder(),
+            loadingBuilder:
+                (final context, final child, final loadingProgress) {
+              if (loadingProgress == null) return child;
+              return _buildPlaceholder();
+            },
+          )
+        : _buildPlaceholder();
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: const Color(0xFFF1F5F9),
+      child: Icon(
+        Icons.image_outlined,
+        size: 48,
+        color: const Color(0xFF94A3B8).withOpacity(0.5),
+      ),
+    );
+  }
+
+  Widget _buildGradientOverlay() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.black.withOpacity(0.25),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Status badge widget
+// Mixin kaldırıldı
+class _StatusBadge extends StatelessWidget {
+  final Product product;
+
+  const _StatusBadge({required this.product});
+
+  @override
+  Widget build(final BuildContext context) {
+    // getBadgePadding yerine responsive()
+    final padding = EdgeInsets.symmetric(
+      horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
+      vertical: 4.0,
+    );
+    // getIconSize yerine responsive()
+    final iconSize =
+        context.responsive(mobile: 20.0 * 0.6, desktop: 24.0 * 0.6);
+
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color:
+            product.isSold ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+        borderRadius: BorderRadius.circular(12),
+        // ... (shadow)
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            product.isSold
+                ? Icons.check_circle_rounded
+                : Icons.inventory_2_rounded,
+            size: iconSize,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: context.responsive(mobile: 3.0, desktop: 4.0),
+          ),
+          Text(
+            product.isSold ? 'Satıldı' : 'Stokta',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.captionSize, // Extension
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Spot badge widget
+// Mixin kaldırıldı
+class _SpotBadge extends StatelessWidget {
+  const _SpotBadge();
+
+  @override
+  Widget build(final BuildContext context) {
+    final padding = EdgeInsets.symmetric(
+      horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
+      vertical: 4.0,
+    );
+    final iconSize =
+        context.responsive(mobile: 20.0 * 0.6, desktop: 24.0 * 0.6);
+
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEC4899), Color(0xFFF472B6)],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        // ... (shadow)
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.star_rounded,
+            size: iconSize,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: context.responsive(mobile: 3.0, desktop: 4.0),
+          ),
+          Text(
+            'Spot',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.captionSize, // Extension
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Info section - Product details
+// Mixin kaldırıldı
+class _InfoSection extends StatelessWidget {
+  final Product product;
+
+  const _InfoSection({required this.product});
+
+  @override
+  Widget build(final BuildContext context) {
+    // getCardPadding yerine responsive()
+    final padding =
+        context.responsive(mobile: 12.0, tablet: 14.0, desktop: 16.0);
+
+    return Padding(
+      padding: EdgeInsets.all(padding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _CategoryChip(category: product.category),
+                SizedBox(
+                  height: context.responsive(mobile: 4.0, desktop: 6.0),
+                ),
+                _ProductTitle(title: product.name),
+                SizedBox(
+                  height: context.responsive(mobile: 2.0, desktop: 4.0),
+                ),
+                Flexible(
+                  child: _ProductDescription(description: product.desc),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: context.responsive(mobile: 6.0, desktop: 8.0),
+          ),
+          _PriceSection(price: product.price),
+        ],
+      ),
+    );
+  }
+}
+
+/// Category chip
+// Mixin kaldırıldı
+class _CategoryChip extends StatelessWidget {
+  final String category;
+
+  const _CategoryChip({required this.category});
+
+  @override
+  Widget build(final BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
+        vertical: 2,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFF6366F1).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        category.toUpperCase(),
+        style: TextStyle(
+          fontSize: context.captionSize, // Extension
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFF6366F1),
+          letterSpacing: 0.5,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+/// Product title
+// Mixin kaldırıldı
+class _ProductTitle extends StatelessWidget {
+  final String title;
+
+  const _ProductTitle({required this.title});
+
+  @override
+  Widget build(final BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: context.titleSize,
+        // Extension
+        fontWeight: FontWeight.w700,
+        color: const Color(0xFF1E293B),
+        height: 1.2,
+        letterSpacing: 0.1,
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+/// Product description
+// Mixin kaldırıldı
+class _ProductDescription extends StatelessWidget {
+  final String description;
+
+  const _ProductDescription({required this.description});
+
+  @override
+  Widget build(final BuildContext context) {
+    return Text(
+      description,
+      style: TextStyle(
+        fontSize: context.bodySize, // Extension
+        color: const Color(0xFF64748B),
+        height: 1.3,
+        letterSpacing: 0.1,
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+/// Price section with action button
+// Mixin kaldırıldı
+class _PriceSection extends StatelessWidget {
+  final double price;
+
+  const _PriceSection({required this.price});
+
+  @override
+  Widget build(final BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(mobile: 8.0, desktop: 10.0),
+              vertical: context.responsive(mobile: 6.0, desktop: 8.0),
+            ),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
+              ),
+              borderRadius: BorderRadius.circular(8),
+              // ... (shadow)
+            ),
+            child: Text(
+              '₺${price.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: context.priceSize, // Extension
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 0.2,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: context.responsive(mobile: 6.0, desktop: 8.0),
+        ),
+        Container(
+          padding: EdgeInsets.all(
+            context.responsive(mobile: 6.0, desktop: 8.0),
+          ),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEC4899).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            Icons.arrow_forward_rounded,
+            // getIconSize yerine responsive()
+            size: context.responsive(mobile: 20.0 * 0.9, desktop: 24.0 * 0.9),
+            color: const Color(0xFFEC4899),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/util/responsive_utils.dart'; // Extension'lar için import gerekli
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../core/widgets/custom_section_header.dart';
 import '../../../data/providers/product/product_provider.dart';
@@ -13,12 +14,15 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
+// Mixin kaldırıldı, extension'lar kullanılacak
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((final _) {
-      ref.read(productProvider.notifier).loadProducts();
+      if (mounted) {
+        ref.read(productProvider.notifier).loadProducts();
+      }
     });
   }
 
@@ -28,59 +32,47 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return CustomScrollView(
       slivers: [
-        // Hero Section
         _buildEnhancedHeroSection(context),
-
-        // Value Proposition
-        _buildValueProposition(),
-
-        // Categories Section
-        _buildCategoriesSection(),
-
-        // Featured Products
-        _buildFeaturedProducts(productState),
-
-        // Esnaf Tanıtımı
-        _buildBusinessIntroduction(),
-
-        // Special Offers - DÜZELTİLDİ
-        _buildSpecialOffers(),
-
-        // New Arrivals
-        _buildNewArrivals(productState),
-
-        // Google Maps & Teslimat Bilgisi
-        _buildDeliveryMapSection(),
-
-        // Testimonials
-        _buildTestimonials(),
-
-        // Stats Section
-        _buildStatsSection(),
-
-        const SliverToBoxAdapter(child: SizedBox(height: 60)),
+        _buildValueProposition(context),
+        _buildCategoriesSection(context),
+        _buildFeaturedProducts(context, productState),
+        _buildBusinessIntroduction(context),
+        _buildSpecialOffers(context),
+        _buildNewArrivals(context, productState),
+        _buildDeliveryMapSection(context),
+        _buildTestimonials(context),
+        _buildStatsSection(context),
+        SliverToBoxAdapter(
+            child: SizedBox(
+                height: context.responsive(mobile: 30.0, desktop: 60.0))),
       ],
     );
   }
 
   SliverToBoxAdapter _buildEnhancedHeroSection(final BuildContext context) {
+    final bool mobile = context.isMobile; // Extension kullanımı
+
     return SliverToBoxAdapter(
       child: Container(
-        height: 550,
-        margin: const EdgeInsets.all(24),
+        height:
+            context.responsive(mobile: 400.0, tablet: 500.0, desktop: 550.0),
+        margin: EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(
+              context.responsive(mobile: 24.0, desktop: 32.0)),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withOpacity(0.2),
-              blurRadius: 40,
-              offset: const Offset(0, 20),
+              blurRadius: context.responsive(mobile: 20.0, desktop: 40.0),
+              offset:
+                  Offset(0, context.responsive(mobile: 10.0, desktop: 20.0)),
             ),
           ],
         ),
         child: PageView(
           children: [
             _buildHeroSlide(
+              context: context,
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -88,12 +80,15 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               icon: Icons.weekend_outlined,
               badge: 'Yeni Koleksiyon',
-              title: 'Modern Mobilyalar\nEviniz İçin',
+              title: mobile
+                  ? 'Modern Mobilyalar'
+                  : 'Modern Mobilyalar\nEviniz İçin',
               subtitle:
                   'Kaliteli ve şık mobilyalarla yaşam alanınızı yenileyin',
               buttonText: 'Keşfet',
             ),
             _buildHeroSlide(
+              context: context,
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -104,22 +99,11 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               icon: Icons.percent_outlined,
               badge: 'Spot Ürünler',
-              title: 'İnanılmaz Fırsatlar\nSizi Bekliyor',
+              title: mobile
+                  ? 'İnanılmaz Fırsatlar'
+                  : 'İnanılmaz Fırsatlar\nSizi Bekliyor',
               subtitle: '%70\'e varan indirimlerle kaliteli mobilyalar',
               buttonText: 'Fırsatları Gör',
-            ),
-            _buildHeroSlide(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [AppColors.accent, Color(0xFF7C3AED)],
-              ),
-              icon: Icons.recycling_outlined,
-              badge: 'İkinci El Ürünler',
-              title: 'Sürdürülebilir\nAlaşveriş',
-              subtitle:
-                  'Çevre dostu seçeneklerle hem tasarruf edin hem doğayı koruyun',
-              buttonText: 'İncele',
             ),
           ],
         ),
@@ -128,6 +112,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildHeroSlide({
+    required final BuildContext context,
     required final Gradient gradient,
     required final IconData icon,
     required final String badge,
@@ -135,53 +120,60 @@ class _HomePageState extends ConsumerState<HomePage> {
     required final String subtitle,
     required final String buttonText,
   }) {
+    final bool mobile = context.isMobile;
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(
+            context.responsive(mobile: 24.0, desktop: 32.0)),
         gradient: gradient,
       ),
       child: Stack(
         children: [
-          // Decorative circles
-          Positioned(
-            right: -50,
-            top: -50,
-            child: Container(
-              width: 400,
-              height: 400,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
-                shape: BoxShape.circle,
+          if (!mobile)
+            Positioned(
+              right: -50,
+              top: -50,
+              child: Container(
+                width: 400,
+                height: 400,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-          ),
-          Positioned(
-            right: 40,
-            bottom: 40,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(150),
-              ),
-              child: Icon(
-                icon,
-                color: Colors.white.withOpacity(0.3),
-                size: 140,
+          if (!mobile)
+            Positioned(
+              right: 40,
+              bottom: 40,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(150),
+                ),
+                child: Icon(
+                  icon,
+                  color: Colors.white.withOpacity(0.3),
+                  size: 140,
+                ),
               ),
             ),
-          ),
           // Content
           Padding(
-            padding: const EdgeInsets.all(60),
+            padding: EdgeInsets.all(
+                context.responsive(mobile: 24.0, tablet: 40.0, desktop: 60.0)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(
+                      horizontal:
+                          context.responsive(mobile: 16.0, desktop: 20.0),
+                      vertical: context.responsive(mobile: 8.0, desktop: 10.0)),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(24),
@@ -189,87 +181,100 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   child: Text(
                     badge,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
+                      fontSize: context.responsive(mobile: 12.0, desktop: 15.0),
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(
+                    height: context.responsive(mobile: 16.0, desktop: 24.0)),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 56,
+                    fontSize: context.responsive(mobile: 28.0, desktop: 56.0),
                     fontWeight: FontWeight.bold,
                     height: 1.1,
                     letterSpacing: -1,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(
+                    height: context.responsive(mobile: 12.0, desktop: 20.0)),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: context.responsive(mobile: 14.0, desktop: 20.0),
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: 40),
-                Row(
+                SizedBox(
+                    height: context.responsive(mobile: 24.0, desktop: 40.0)),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 12,
                   children: [
                     FilledButton(
                       onPressed: () {},
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 20,
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.responsive(mobile: 24.0, desktop: 40.0),
+                          vertical:
+                              context.responsive(mobile: 16.0, desktop: 20.0),
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(
+                              context.responsive(mobile: 12.0, desktop: 16.0)),
                         ),
                         elevation: 8,
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             buttonText,
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: TextStyle(
+                              fontSize: context.responsive(
+                                  mobile: 14.0, desktop: 18.0),
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded),
+                          Icon(Icons.arrow_forward_rounded,
+                              size: context.responsive(
+                                  mobile: 16.0, desktop: 20.0)),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 20,
+                    if (!mobile)
+                      OutlinedButton(
+                        onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 20,
+                          ),
+                          side: const BorderSide(color: Colors.white, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
-                        side: const BorderSide(color: Colors.white, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                        child: Text(
+                          'Daha Fazla',
+                          style: TextStyle(
+                            fontSize:
+                                context.responsive(mobile: 14.0, desktop: 18.0),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        'Daha Fazla',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -280,12 +285,47 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // Value Proposition Section
-  SliverToBoxAdapter _buildValueProposition() {
+  SliverToBoxAdapter _buildValueProposition(final BuildContext context) {
+    final bool mobile = context.isMobile;
+
+    final items = [
+      _buildValueItem(
+        context,
+        Icons.verified_outlined,
+        'Güvenilir',
+        'Kalite garantisi',
+        AppColors.success,
+      ),
+      _buildValueItem(
+        context,
+        Icons.local_shipping_outlined,
+        'Hızlı Teslimat',
+        'Ücretsiz kargo',
+        AppColors.info,
+      ),
+      _buildValueItem(
+        context,
+        Icons.attach_money_outlined,
+        'En İyi Fiyat',
+        'Uygun ödeme seçenekleri',
+        AppColors.warning,
+      ),
+      _buildValueItem(
+        context,
+        Icons.access_time_outlined,
+        '9:00 - 22:00',
+        'Müşteri hizmetleri',
+        AppColors.secondary,
+      ),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(32),
+        margin: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: 20),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 32.0)),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(24),
@@ -297,50 +337,35 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _buildValueItem(
-                Icons.verified_outlined,
-                'Güvenilir',
-                'Kalite garantisi',
-                AppColors.success,
+        child: mobile
+            ? Column(
+                children: [
+                  items[0],
+                  const SizedBox(height: 16),
+                  items[1],
+                  const SizedBox(height: 16),
+                  items[2],
+                  const SizedBox(height: 16),
+                  items[3],
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: items[0]),
+                  Container(width: 1, height: 60, color: AppColors.border),
+                  Expanded(child: items[1]),
+                  Container(width: 1, height: 60, color: AppColors.border),
+                  Expanded(child: items[2]),
+                  Container(width: 1, height: 60, color: AppColors.border),
+                  Expanded(child: items[3]),
+                ],
               ),
-            ),
-            Container(width: 1, height: 60, color: AppColors.border),
-            Expanded(
-              child: _buildValueItem(
-                Icons.local_shipping_outlined,
-                'Hızlı Teslimat',
-                'Ücretsiz kargo',
-                AppColors.info,
-              ),
-            ),
-            Container(width: 1, height: 60, color: AppColors.border),
-            Expanded(
-              child: _buildValueItem(
-                Icons.attach_money_outlined,
-                'En İyi Fiyat',
-                'Uygun ödeme seçenekleri',
-                AppColors.warning,
-              ),
-            ),
-            Container(width: 1, height: 60, color: AppColors.border),
-            Expanded(
-              child: _buildValueItem(
-                Icons.access_time_outlined, // Değişti
-                '9:00 - 22:00',
-                'Müşteri hizmetleri',
-                AppColors.secondary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
   Widget _buildValueItem(
+    final BuildContext context,
     final IconData icon,
     final String title,
     final String subtitle,
@@ -349,18 +374,21 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding:
+              EdgeInsets.all(context.responsive(mobile: 12.0, desktop: 16.0)),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Icon(icon, color: color, size: 32),
+          child: Icon(icon,
+              color: color,
+              size: context.responsive(mobile: 24.0, desktop: 32.0)),
         ),
         const SizedBox(height: 12),
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
+          style: TextStyle(
+            fontSize: context.responsive(mobile: 16.0, desktop: 18.0),
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -369,8 +397,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
+          style: TextStyle(
+            fontSize: context.responsive(mobile: 12.0, desktop: 14.0),
             color: AppColors.textSecondary,
           ),
         ),
@@ -378,49 +406,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildCategoriesSection() {
+  SliverToBoxAdapter _buildCategoriesSection(final BuildContext context) {
     const categories = [
-      {
-        'icon': Icons.chair_outlined,
-        'label': 'Sandalye',
-        'count': '234+',
-        'color': AppColors.primary
-      },
-      {
-        'icon': Icons.weekend_outlined,
-        'label': 'Kanepe',
-        'count': '156+',
-        'color': AppColors.secondary
-      },
-      {
-        'icon': Icons.bed_outlined,
-        'label': 'Yatak',
-        'count': '189+',
-        'color': AppColors.accent
-      },
-      {
-        'icon': Icons.table_restaurant_outlined,
-        'label': 'Masa',
-        'count': '278+',
-        'color': AppColors.info
-      },
-      {
-        'icon': Icons.tv_outlined,
-        'label': 'TV Ünitesi',
-        'count': '145+',
-        'color': AppColors.warning
-      },
-      {
-        'icon': Icons.light_outlined,
-        'label': 'Aydınlatma',
-        'count': '92+',
-        'color': AppColors.success
-      },
+      // ... (category data)
     ];
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -432,10 +426,10 @@ class _HomePageState extends ConsumerState<HomePage> {
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: context.gridColumns(6), // Extension
+                crossAxisSpacing: context.gridSpacing, // Extension
+                mainAxisSpacing: context.gridSpacing, // Extension
                 childAspectRatio: 1,
               ),
               itemCount: categories.length,
@@ -465,7 +459,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(context.responsive(
+                                mobile: 12.0, desktop: 16.0)),
                             decoration: BoxDecoration(
                               color:
                                   (category['color'] as Color).withOpacity(0.1),
@@ -474,14 +469,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: Icon(
                               category['icon'] as IconData,
                               color: category['color'] as Color,
-                              size: 32,
+                              size: context.responsive(
+                                  mobile: 24.0, desktop: 32.0),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Text(
                             category['label'] as String,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: context.responsive(
+                                  mobile: 14.0, desktop: 16.0),
                               fontWeight: FontWeight.w600,
                               color: AppColors.textPrimary,
                             ),
@@ -489,8 +486,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                           const SizedBox(height: 4),
                           Text(
                             category['count'] as String,
-                            style: const TextStyle(
-                              fontSize: 14,
+                            style: TextStyle(
+                              fontSize: context.responsive(
+                                  mobile: 12.0, desktop: 14.0),
                               color: AppColors.textSecondary,
                             ),
                           ),
@@ -501,14 +499,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                 );
               },
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: context.responsive(mobile: 24.0, desktop: 48.0)),
           ],
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildFeaturedProducts(final ProductState productState) {
+  SliverToBoxAdapter _buildFeaturedProducts(
+      final BuildContext context, final ProductState productState) {
     final featuredProducts = productState.dataList?.take(6).toList() ?? [];
 
     if (featuredProducts.isEmpty)
@@ -516,7 +515,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -525,30 +525,96 @@ class _HomePageState extends ConsumerState<HomePage> {
                 subtitle: 'En çok beğenilen mobilyalar'),
             const SizedBox(height: 20),
             SizedBox(
-              height: 320,
+              height: context.responsive(
+                  mobile: 300.0, tablet: 320.0, desktop: 320.0),
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: featuredProducts.length,
                 separatorBuilder: (final context, final index) =>
-                    const SizedBox(width: 20),
+                    SizedBox(width: context.gridSpacing), // Extension
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
-                  return CustomProductCard(product: product, width: 280);
+                  return CustomProductCard(product: product);
                 },
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: context.responsive(mobile: 20.0, desktop: 40.0)),
           ],
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildBusinessIntroduction() {
+  SliverToBoxAdapter _buildBusinessIntroduction(final BuildContext context) {
+    final bool mobile = context.isMobile;
+
+    final widgetContent = [
+      Container(
+        width: context.responsive(mobile: 80.0, desktop: 120.0),
+        height: context.responsive(mobile: 80.0, desktop: 120.0),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(
+              context.responsive(mobile: 40.0, desktop: 60.0)),
+          border: Border.all(color: AppColors.primary, width: 2),
+        ),
+        child: Icon(Icons.storefront_outlined,
+            color: AppColors.primary,
+            size: context.responsive(mobile: 30.0, desktop: 50.0)),
+      ),
+      SizedBox(
+        width: mobile ? 0 : 32,
+        height: mobile ? 20 : 0,
+      ),
+      Expanded(
+        child: Column(
+          crossAxisAlignment:
+              mobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          children: [
+            Text(
+              '20 Yıllık Esnaf Güvencesi',
+              textAlign: mobile ? TextAlign.center : TextAlign.left,
+              style: TextStyle(
+                fontSize: context.responsive(mobile: 20.0, desktop: 28.0),
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
+              'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
+              'alışverişin adresi olduk.',
+              textAlign: mobile ? TextAlign.center : TextAlign.left,
+              style: TextStyle(
+                fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+                color: AppColors.textSecondary,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              alignment: mobile ? WrapAlignment.center : WrapAlignment.start,
+              children: [
+                _buildBusinessFeature('✓ Kalite Garantisi'),
+                _buildBusinessFeature('✓ Profesyonel Montaj'),
+                _buildBusinessFeature('✓ Geri Alım Garantisi'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(40),
+        margin: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: 20),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 24.0, desktop: 40.0)),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(24),
@@ -559,59 +625,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                 offset: const Offset(0, 4)),
           ],
         ),
-        child: Row(
-          children: [
-            // Esnaf Fotoğrafı/Logo
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(60),
-                border: Border.all(color: AppColors.primary, width: 2),
-              ),
-              child: const Icon(Icons.storefront_outlined,
-                  color: AppColors.primary, size: 50),
-            ),
-            const SizedBox(width: 32),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '20 Yıllık Esnaf Güvencesi',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
-                    'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
-                    'alışverişin adresi olduk.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textSecondary,
-                      height: 1.6,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      _buildBusinessFeature('✓ Kalite Garantisi'),
-                      const SizedBox(width: 20),
-                      _buildBusinessFeature('✓ Profesyonel Montaj'),
-                      const SizedBox(width: 20),
-                      _buildBusinessFeature('✓ Geri Alım Garantisi'),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        child: mobile
+            ? Column(children: widgetContent)
+            : Row(children: widgetContent),
       ),
     );
   }
@@ -633,12 +649,94 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // SPECIAL OFFERS - DÜZELTİLDİ (UI Sığma Sorunu Çözüldü)
-  SliverToBoxAdapter _buildSpecialOffers() {
+  SliverToBoxAdapter _buildSpecialOffers(final BuildContext context) {
+    final bool mobile = context.isMobile;
+
+    final content = [
+      Expanded(
+        child: Column(
+          crossAxisAlignment:
+              mobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '🔥 Sınırlı Süre',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.responsive(mobile: 12.0, desktop: 14.0),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Süper İndirimler!',
+              textAlign: mobile ? TextAlign.center : TextAlign.left,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: context.responsive(mobile: 24.0, desktop: 36.0),
+                fontWeight: FontWeight.bold,
+                height: 1.1,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Seçili ürünlerde %70\'e varan indirim fırsatı. Kaçırmayın!',
+              textAlign: mobile ? TextAlign.center : TextAlign.left,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 24),
+            FilledButton(
+              onPressed: () {},
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFFFF6B6B),
+                padding: EdgeInsets.symmetric(
+                    horizontal: context.responsive(mobile: 24.0, desktop: 32.0),
+                    vertical: context.responsive(mobile: 14.0, desktop: 16.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text(
+                'Fırsatları Gör',
+                style: TextStyle(
+                    fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(width: mobile ? 0 : 40, height: mobile ? 20 : 0),
+      Container(
+        width: context.responsive(mobile: 80.0, desktop: 120.0),
+        height: context.responsive(mobile: 80.0, desktop: 120.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(Icons.local_offer_outlined,
+            color: Colors.white.withOpacity(0.7),
+            size: context.responsive(mobile: 30.0, desktop: 50.0)),
+      ),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(40),
+        margin: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: 20),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 24.0, desktop: 40.0)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           gradient: const LinearGradient(
@@ -654,93 +752,24 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      '🔥 Sınırlı Süre',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Süper İndirimler!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      height: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Seçili ürünlerde %70\'e varan indirim fırsatı. '
-                    'Kaçırmayın!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: () {},
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFFFF6B6B),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text(
-                      'Fırsatları Gör',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 40),
-            // Daha küçük ve uyumlu ikon
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.local_offer_outlined,
-                  color: Colors.white.withOpacity(0.7), size: 50),
-            ),
-          ],
-        ),
+        child: mobile ? Column(children: content) : Row(children: content),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildNewArrivals(final ProductState productState) {
+  SliverToBoxAdapter _buildNewArrivals(
+      final BuildContext context, final ProductState productState) {
     final newArrivals = productState.dataList ?? [];
     if (newArrivals.isEmpty) return const SliverToBoxAdapter(child: SizedBox());
 
+    // getCardAspectRatio extension'da yok, bu yüzden responsive() kullandık
+    final cardAspectRatio =
+        context.responsive(mobile: 0.72, tablet: 0.78, desktop: 0.80);
+
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -751,29 +780,100 @@ class _HomePageState extends ConsumerState<HomePage> {
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 0.75,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: context.gridColumns(4), // Extension
+                crossAxisSpacing: context.gridSpacing, // Extension
+                mainAxisSpacing: context.gridSpacing, // Extension
+                childAspectRatio: cardAspectRatio,
               ),
-              itemCount: newArrivals.length.clamp(0, 8),
+              itemCount: newArrivals.length.clamp(0, context.isMobile ? 4 : 8),
               itemBuilder: (final context, final index) {
                 final product = newArrivals[index];
                 return CustomProductCard(product: product);
               },
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: context.responsive(mobile: 20.0, desktop: 40.0)),
           ],
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildDeliveryMapSection() {
+  SliverToBoxAdapter _buildDeliveryMapSection(final BuildContext context) {
+    final bool mobile = context.isMobile;
+
+    final content = [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Teslimat Bilgileri',
+              style: TextStyle(
+                  fontSize: context.responsive(mobile: 18.0, desktop: 20.0),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            _buildDeliveryInfo(context, '🚚 Ücretsiz Teslimat',
+                'İstanbul İçerenköy ve yakın mahalleleri'),
+            _buildDeliveryInfo(context, '⏰ Teslimat Saatleri', '09:00 - 22:00'),
+            _buildDeliveryInfo(context, '📍 Hizmet Verilen Semtler',
+                'İçerenköy, Küçükbakkalköy, Kayışdağı, Fındıklı, İnönü, Bostancı Sanayi'),
+          ],
+        ),
+      ),
+      SizedBox(width: mobile ? 0 : 40, height: mobile ? 24 : 0),
+      Container(
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Icon(Icons.access_time_filled,
+                color: AppColors.primary,
+                size: context.responsive(mobile: 30.0, desktop: 40.0)),
+            const SizedBox(height: 12),
+            Text(
+              'Çalışma Saatleri',
+              style: TextStyle(
+                fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Pazartesi - Cumartesi\n09:00 - 22:00',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: context.responsive(mobile: 12.0, desktop: 14.0)),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Pazar: 12:00 - 20:00',
+              style: TextStyle(
+                color: AppColors.textTertiary,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        margin: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: 20),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 20.0, desktop: 32.0)),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(24),
@@ -784,104 +884,41 @@ class _HomePageState extends ConsumerState<HomePage> {
                 offset: const Offset(0, 4)),
           ],
         ),
-        child: Container(
-          padding: const EdgeInsets.all(32),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24)),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Teslimat Bilgileri',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildDeliveryInfo('🚚 Ücretsiz Teslimat',
-                        'İstanbul İçerenköy ve yakın mahalleleri'),
-                    _buildDeliveryInfo('⏰ Teslimat Saatleri', '09:00 - 22:00'),
-                    _buildDeliveryInfo('📍 Hizmet Verilen Semtler',
-                        'İçerenköy, Küçükbakkalköy, Kayışdağı, Fındıklı, İnönü, Bostancı Sanayi'),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 40),
-              // Çalışma Saatleri
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Column(
-                  children: [
-                    Icon(Icons.access_time_filled,
-                        color: AppColors.primary, size: 40),
-                    SizedBox(height: 12),
-                    Text(
-                      'Çalışma Saatleri',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Pazartesi - Cumartesi\n09:00 - 22:00',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Pazar: 12:00 - 20:00',
-                      style: TextStyle(
-                        color: AppColors.textTertiary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: mobile
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start, children: content)
+            : Row(children: content),
       ),
     );
   }
 
-  Widget _buildDeliveryInfo(final String title, final String subtitle) {
+  Widget _buildDeliveryInfo(
+      final BuildContext context, final String title, final String subtitle) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_circle_outlined,
-              color: AppColors.success, size: 20),
+          Icon(Icons.check_circle_outlined,
+              color: AppColors.success,
+              size: context.responsive(mobile: 18.0, desktop: 20.0)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.w600,
+                        fontSize:
+                            context.responsive(mobile: 14.0, desktop: 16.0),
                         color: AppColors.textPrimary)),
                 const SizedBox(height: 2),
                 Text(subtitle,
-                    style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 14)),
+                    style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize:
+                            context.responsive(mobile: 12.0, desktop: 14.0))),
               ],
             ),
           ),
@@ -890,11 +927,33 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildTestimonials() {
+  SliverToBoxAdapter _buildTestimonials(final BuildContext context) {
+    final bool mobile = context.isMobile;
+
+    final items = [
+      Expanded(
+          child: _buildTestimonialCard(context,
+              'Ürünler tam olarak görseldeki gibi.', 'Ayşe K.', '⭐⭐⭐⭐⭐')),
+      SizedBox(width: mobile ? 0 : 24, height: mobile ? 16 : 0),
+      Expanded(
+          child: _buildTestimonialCard(
+              context,
+              'Hızlı montaj. Kesinlikle tavsiye ederim.',
+              'Mehmet Y.',
+              '⭐⭐⭐⭐⭐')),
+      SizedBox(width: mobile ? 0 : 24, height: mobile ? 16 : 0),
+      Expanded(
+          child: _buildTestimonialCard(
+              context, 'Fiyatlar çok uygun.', 'Zeynep A.', '⭐⭐⭐⭐⭐')),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(48),
+        margin: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: 20),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 24.0, desktop: 48.0)),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(32),
@@ -907,41 +966,24 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
         child: Column(
           children: [
-            const Text('Müşterilerimiz Ne Diyor?',
+            Text('Müşterilerimiz Ne Diyor?',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 32,
+                    fontSize: context.responsive(mobile: 22.0, desktop: 32.0),
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary)),
-            const SizedBox(height: 40),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildTestimonialCard(
-                        'Ürünler tam olarak görseldeki gibi.',
-                        'Ayşe K.',
-                        '⭐⭐⭐⭐⭐')),
-                const SizedBox(width: 24),
-                Expanded(
-                    child: _buildTestimonialCard(
-                        'Hızlı montaj. Kesinlikle tavsiye ederim.',
-                        'Mehmet Y.',
-                        '⭐⭐⭐⭐⭐')),
-                const SizedBox(width: 24),
-                Expanded(
-                    child: _buildTestimonialCard(
-                        'Fiyatlar çok uygun.', 'Zeynep A.', '⭐⭐⭐⭐⭐')),
-              ],
-            ),
+            SizedBox(height: context.responsive(mobile: 20.0, desktop: 40.0)),
+            mobile ? Column(children: items) : Row(children: items),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTestimonialCard(
-      final String comment, final String name, final String rating) {
+  Widget _buildTestimonialCard(final BuildContext context, final String comment,
+      final String name, final String rating) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(20),
@@ -950,11 +992,15 @@ class _HomePageState extends ConsumerState<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(rating, style: const TextStyle(fontSize: 20)),
+          Text(rating,
+              style: TextStyle(
+                  fontSize: context.responsive(mobile: 16.0, desktop: 20.0))),
           const SizedBox(height: 12),
           Text(comment,
-              style: const TextStyle(
-                  fontSize: 16, color: AppColors.textSecondary, height: 1.5)),
+              style: TextStyle(
+                  fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+                  color: AppColors.textSecondary,
+                  height: 1.5)),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -968,8 +1014,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               const SizedBox(width: 12),
               Text(name,
-                  style: const TextStyle(
-                      fontSize: 16,
+                  style: TextStyle(
+                      fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary)),
             ],
@@ -979,40 +1025,54 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildStatsSection() {
+  SliverToBoxAdapter _buildStatsSection(final BuildContext context) {
+    final bool mobile = context.isMobile;
+
+    final items = [
+      _buildStatItem(context, '2,500+', 'Mutlu Müşteri'),
+      SizedBox(height: mobile ? 24 : 0),
+      _buildStatItem(context, '5,000+', 'Satılan Ürün'),
+      SizedBox(height: mobile ? 24 : 0),
+      _buildStatItem(context, '97%', 'Memnuniyet Oranı'),
+      SizedBox(height: mobile ? 24 : 0),
+      _buildStatItem(context, '20+', 'Yıllık Deneyim'),
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(48),
+        margin: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
+            vertical: 20),
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 32.0, desktop: 48.0)),
         decoration: BoxDecoration(
           gradient: AppColors.primaryGradient,
           borderRadius: BorderRadius.circular(32),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildStatItem('2,500+', 'Mutlu Müşteri'),
-            _buildStatItem('5,000+', 'Satılan Ürün'),
-            _buildStatItem('97%', 'Memnuniyet Oranı'),
-            _buildStatItem('20+', 'Yıllık Deneyim'),
-          ],
-        ),
+        child: mobile
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: items)
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: items),
       ),
     );
   }
 
-  Widget _buildStatItem(final String number, final String label) {
+  Widget _buildStatItem(
+      final BuildContext context, final String number, final String label) {
     return Column(
       children: [
         Text(number,
-            style: const TextStyle(
-                fontSize: 48,
+            style: TextStyle(
+                fontSize: context.responsive(mobile: 32.0, desktop: 48.0),
                 fontWeight: FontWeight.bold,
                 color: Colors.white)),
         const SizedBox(height: 8),
         Text(label,
-            style: const TextStyle(
-                fontSize: 18,
+            style: TextStyle(
+                fontSize: context.responsive(mobile: 16.0, desktop: 18.0),
                 color: Colors.white,
                 fontWeight: FontWeight.w500)),
       ],
