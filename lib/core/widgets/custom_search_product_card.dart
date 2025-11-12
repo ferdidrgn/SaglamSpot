@@ -115,8 +115,10 @@ class _ImageSection extends StatelessWidget {
         ? Image.network(
             product.imagesUrl.first,
             fit: BoxFit.cover,
-            errorBuilder: (final context, final error, final stackTrace) => _buildPlaceholder(),
-            loadingBuilder: (final context, final child, final loadingProgress) {
+            errorBuilder: (final context, final error, final stackTrace) =>
+                _buildPlaceholder(),
+            loadingBuilder:
+                (final context, final child, final loadingProgress) {
               if (loadingProgress == null) return child;
               return _buildPlaceholder();
             },
@@ -141,14 +143,14 @@ class _ImageSection extends StatelessWidget {
       left: 0,
       right: 0,
       child: Container(
-        height: 60,
+        height: 50,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              Colors.black.withOpacity(0.3),
+              Colors.black.withOpacity(0.25),
             ],
           ),
         ),
@@ -170,11 +172,11 @@ class _StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color:
             product.isSold ? const Color(0xFFEF4444) : const Color(0xFF10B981),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
-            blurRadius: 6,
+            blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
@@ -183,7 +185,9 @@ class _StatusBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            product.isSold ? Icons.check_circle : Icons.inventory_2,
+            product.isSold
+                ? Icons.check_circle_rounded
+                : Icons.inventory_2_rounded,
             size: ResponsiveUtils.getIconSize(context, scale: 0.6),
             color: Colors.white,
           ),
@@ -200,6 +204,7 @@ class _StatusBadge extends StatelessWidget {
               color: Colors.white,
               fontSize: ResponsiveUtils.getCaptionFontSize(context),
               fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ],
@@ -220,11 +225,11 @@ class _SpotBadge extends StatelessWidget {
         gradient: const LinearGradient(
           colors: [Color(0xFFEC4899), Color(0xFFF472B6)],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFEC4899).withOpacity(0.3),
-            blurRadius: 6,
+            blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
@@ -250,6 +255,7 @@ class _SpotBadge extends StatelessWidget {
               color: Colors.white,
               fontSize: ResponsiveUtils.getCaptionFontSize(context),
               fontWeight: FontWeight.bold,
+              letterSpacing: 0.3,
             ),
           ),
         ],
@@ -272,27 +278,39 @@ class _InfoSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _CategoryChip(category: product.category),
-              SizedBox(
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _CategoryChip(category: product.category),
+                SizedBox(
                   height: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 4.0,
-                desktop: 6.0,
-              )),
-              _ProductTitle(title: product.name),
-              SizedBox(
+                    context,
+                    mobile: 4.0,
+                    desktop: 6.0,
+                  ),
+                ),
+                _ProductTitle(title: product.name),
+                SizedBox(
                   height: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 2.0,
-                desktop: 4.0,
-              )),
-              Flexible(
-                child: _ProductDescription(description: product.desc),
-              ),
-            ],
+                    context,
+                    mobile: 2.0,
+                    desktop: 4.0,
+                  ),
+                ),
+                Flexible(
+                  child: _ProductDescription(description: product.desc),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 6.0,
+              desktop: 8.0,
+            ),
           ),
           _PriceSection(price: product.price),
         ],
@@ -390,88 +408,75 @@ class _PriceSection extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: ResponsiveUtils.getValueForDevice(
-          context,
-          mobile: 4.0,
-          desktop: 6.0,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveUtils.getValueForDevice(
-                  context,
-                  mobile: 8.0,
-                  desktop: 10.0,
-                ),
-                vertical: ResponsiveUtils.getValueForDevice(
-                  context,
-                  mobile: 6.0,
-                  desktop: 8.0,
-                ),
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 8.0,
+                desktop: 10.0,
               ),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-                ),
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF6366F1).withOpacity(0.3),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(
-                '₺${price.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: ResponsiveUtils.getPriceFontSize(context),
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: ResponsiveUtils.getValueForDevice(
-              context,
-              mobile: 6.0,
-              desktop: 8.0,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(
-              ResponsiveUtils.getValueForDevice(
+              vertical: ResponsiveUtils.getValueForDevice(
                 context,
                 mobile: 6.0,
                 desktop: 8.0,
               ),
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFFEC4899).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.arrow_forward_rounded,
-              size: ResponsiveUtils.getValueForDevice(
-                context,
-                mobile: 16.0,
-                desktop: 18.0,
+              gradient: const LinearGradient(
+                colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
               ),
-              color: const Color(0xFFEC4899),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6366F1).withOpacity(0.25),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Text(
+              '₺${price.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: ResponsiveUtils.getPriceFontSize(context),
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 0.2,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
             ),
           ),
-        ],
-      ),
+        ),
+        SizedBox(
+          width: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 6.0,
+            desktop: 8.0,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(
+            ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 6.0,
+              desktop: 8.0,
+            ),
+          ),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEC4899).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            Icons.arrow_forward_rounded,
+            size: ResponsiveUtils.getIconSize(context, scale: 0.9),
+            color: const Color(0xFFEC4899),
+          ),
+        ),
+      ],
     );
   }
 }
