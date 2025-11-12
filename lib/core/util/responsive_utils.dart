@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Responsive tasarım için merkezi utility sınıfı
 /// Clean Architecture ve SOLID prensipleriyle tasarlanmıştır
-class ResponsiveUtils {
-  ResponsiveUtils._(); // Private constructor - utility class
-
+mixin ResponsiveUtils {
   // Breakpoint sabitleri
   static const double mobileBreakpoint = 600;
   static const double tabletBreakpoint = 1024;
@@ -14,19 +12,19 @@ class ResponsiveUtils {
   static bool isMobile(final BuildContext context) =>
       MediaQuery.of(context).size.width < mobileBreakpoint;
 
-  static bool isTablet(final BuildContext context) {
+  bool isTablet(final BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return width >= mobileBreakpoint && width < tabletBreakpoint;
   }
 
-  static bool isDesktop(final BuildContext context) =>
+  bool isDesktop(final BuildContext context) =>
       MediaQuery.of(context).size.width >= tabletBreakpoint;
 
-  static bool isLargeDesktop(final BuildContext context) =>
+  bool isLargeDesktop(final BuildContext context) =>
       MediaQuery.of(context).size.width >= desktopBreakpoint;
 
   /// Cihaz tipine göre değer döndüren generic metot
-  static T getValueForDevice<T>(
+  T getValueForDevice<T>(
     final BuildContext context, {
     required final T mobile,
     final T? tablet,
@@ -40,7 +38,7 @@ class ResponsiveUtils {
   }
 
   /// Grid için cross axis count
-  static int getGridCrossAxisCount(final BuildContext context) {
+  int getGridCrossAxisCount(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 2,
@@ -51,7 +49,7 @@ class ResponsiveUtils {
   }
 
   /// Grid spacing
-  static double getGridSpacing(final BuildContext context) {
+  double getGridSpacing(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 8.0,
@@ -62,7 +60,7 @@ class ResponsiveUtils {
   }
 
   /// Card aspect ratio
-  static double getCardAspectRatio(final BuildContext context) {
+  double getCardAspectRatio(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 0.72,
@@ -73,7 +71,7 @@ class ResponsiveUtils {
   }
 
   /// Card padding
-  static EdgeInsets getCardPadding(final BuildContext context) {
+  EdgeInsets getCardPadding(final BuildContext context) {
     return EdgeInsets.all(
       getValueForDevice(
         context,
@@ -86,7 +84,7 @@ class ResponsiveUtils {
   }
 
   /// Card margin
-  static EdgeInsets getCardMargin(final BuildContext context) {
+  EdgeInsets getCardMargin(final BuildContext context) {
     return EdgeInsets.all(
       getValueForDevice(
         context,
@@ -98,7 +96,7 @@ class ResponsiveUtils {
   }
 
   /// Border radius
-  static double getBorderRadius(final BuildContext context,
+  double getBorderRadius(final BuildContext context,
       {final double scale = 1.0}) {
     return getValueForDevice(
           context,
@@ -110,8 +108,7 @@ class ResponsiveUtils {
   }
 
   /// Icon size
-  static double getIconSize(final BuildContext context,
-      {final double scale = 1.0}) {
+  double getIconSize(final BuildContext context, {final double scale = 1.0}) {
     return getValueForDevice(
           context,
           mobile: 16.0,
@@ -122,7 +119,7 @@ class ResponsiveUtils {
   }
 
   /// Font sizes - Semantic naming
-  static double getTitleFontSize(final BuildContext context) {
+  double getTitleFontSize(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 12.0,
@@ -131,7 +128,7 @@ class ResponsiveUtils {
     );
   }
 
-  static double getBodyFontSize(final BuildContext context) {
+  double getBodyFontSize(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 10.0,
@@ -140,7 +137,7 @@ class ResponsiveUtils {
     );
   }
 
-  static double getCaptionFontSize(final BuildContext context) {
+  double getCaptionFontSize(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 8.0,
@@ -149,7 +146,7 @@ class ResponsiveUtils {
     );
   }
 
-  static double getPriceFontSize(final BuildContext context) {
+  double getPriceFontSize(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 13.0,
@@ -159,7 +156,7 @@ class ResponsiveUtils {
   }
 
   /// Image height for cards
-  static double getCardImageHeight(final BuildContext context) {
+  double getCardImageHeight(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 120.0,
@@ -170,7 +167,7 @@ class ResponsiveUtils {
   }
 
   /// Badge sizes
-  static EdgeInsets getBadgePadding(final BuildContext context) {
+  EdgeInsets getBadgePadding(final BuildContext context) {
     return EdgeInsets.symmetric(
       horizontal: getValueForDevice(context, mobile: 6.0, desktop: 8.0),
       vertical: getValueForDevice(context, mobile: 2.0, desktop: 3.0),
@@ -178,7 +175,7 @@ class ResponsiveUtils {
   }
 
   /// Content max width (for centering on large screens)
-  static double getMaxContentWidth(final BuildContext context) {
+  double getMaxContentWidth(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: double.infinity,
@@ -188,7 +185,7 @@ class ResponsiveUtils {
   }
 
   /// Screen padding
-  static EdgeInsets getScreenPadding(final BuildContext context) {
+  EdgeInsets getScreenPadding(final BuildContext context) {
     return EdgeInsets.symmetric(
       horizontal: getValueForDevice(
         context,
@@ -206,7 +203,7 @@ class ResponsiveUtils {
   }
 
   /// Chip/Tag sizes
-  static double getChipHeight(final BuildContext context) {
+  double getChipHeight(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 24.0,
@@ -216,7 +213,7 @@ class ResponsiveUtils {
   }
 
   /// Button sizes
-  static double getButtonHeight(final BuildContext context) {
+  double getButtonHeight(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 40.0,
@@ -226,7 +223,7 @@ class ResponsiveUtils {
   }
 
   /// Shadow blur radius
-  static double getShadowBlurRadius(final BuildContext context) {
+  double getShadowBlurRadius(final BuildContext context) {
     return getValueForDevice(
       context,
       mobile: 8.0,
