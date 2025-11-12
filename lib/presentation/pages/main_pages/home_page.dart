@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_product_card.dart';
+import '../../../core/util/responsive_utils.dart';
+import '../../../core/widgets/custom_search_product_card.dart';
 import '../../../core/widgets/custom_section_header.dart';
 import '../../../data/providers/product/product_provider.dart';
 import '../../../data/providers/product/product_state.dart';
@@ -28,37 +29,25 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return CustomScrollView(
       slivers: [
-        // Hero Section
         _buildEnhancedHeroSection(context),
-
-        // Value Proposition
-        _buildValueProposition(),
-
-        // Categories Section
-        _buildCategoriesSection(),
-
-        // Featured Products
-        _buildFeaturedProducts(productState),
-
-        // Esnaf Tanıtımı
-        _buildBusinessIntroduction(),
-
-        // Special Offers - DÜZELTİLDİ
-        _buildSpecialOffers(),
-
-        // New Arrivals
-        _buildNewArrivals(productState),
-
-        // Google Maps & Teslimat Bilgisi
-        _buildDeliveryMapSection(),
-
-        // Testimonials
-        _buildTestimonials(),
-
-        // Stats Section
-        _buildStatsSection(),
-
-        const SliverToBoxAdapter(child: SizedBox(height: 60)),
+        _buildValueProposition(context),
+        _buildCategoriesSection(context),
+        _buildFeaturedProducts(context, productState),
+        _buildBusinessIntroduction(context),
+        _buildSpecialOffers(context),
+        _buildNewArrivals(context, productState),
+        _buildDeliveryMapSection(context),
+        _buildTestimonials(context),
+        _buildStatsSection(context),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 40.0,
+              desktop: 60.0,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -66,10 +55,17 @@ class _HomePageState extends ConsumerState<HomePage> {
   SliverToBoxAdapter _buildEnhancedHeroSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        height: 550,
-        margin: const EdgeInsets.all(24),
+        height: ResponsiveUtils.getValueForDevice(
+          context,
+          mobile: 400.0,
+          tablet: 450.0,
+          desktop: 550.0,
+        ),
+        margin: ResponsiveUtils.getScreenPadding(context),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 2),
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withOpacity(0.2),
@@ -81,6 +77,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: PageView(
           children: [
             _buildHeroSlide(
+              context,
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -94,6 +91,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               buttonText: 'Keşfet',
             ),
             _buildHeroSlide(
+              context,
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -108,26 +106,14 @@ class _HomePageState extends ConsumerState<HomePage> {
               subtitle: '%70\'e varan indirimlerle kaliteli mobilyalar',
               buttonText: 'Fırsatları Gör',
             ),
-            _buildHeroSlide(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [AppColors.accent, Color(0xFF7C3AED)],
-              ),
-              icon: Icons.recycling_outlined,
-              badge: 'İkinci El Ürünler',
-              title: 'Sürdürülebilir\nAlaşveriş',
-              subtitle:
-                  'Çevre dostu seçeneklerle hem tasarruf edin hem doğayı koruyun',
-              buttonText: 'İncele',
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeroSlide({
+  Widget _buildHeroSlide(
+    final BuildContext context, {
     required final Gradient gradient,
     required final IconData icon,
     required final String badge,
@@ -135,53 +121,100 @@ class _HomePageState extends ConsumerState<HomePage> {
     required final String subtitle,
     required final String buttonText,
   }) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(
+          ResponsiveUtils.getBorderRadius(context, scale: 2),
+        ),
         gradient: gradient,
       ),
       child: Stack(
         children: [
           // Decorative circles
-          Positioned(
-            right: -50,
-            top: -50,
-            child: Container(
-              width: 400,
-              height: 400,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
-                shape: BoxShape.circle,
+          if (!isMobile) ...[
+            Positioned(
+              right: -50,
+              top: -50,
+              child: Container(
+                width: ResponsiveUtils.getValueForDevice(
+                  context,
+                  mobile: 200.0,
+                  desktop: 400.0,
+                ),
+                height: ResponsiveUtils.getValueForDevice(
+                  context,
+                  mobile: 200.0,
+                  desktop: 400.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-          ),
-          Positioned(
-            right: 40,
-            bottom: 40,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(150),
-              ),
-              child: Icon(
-                icon,
-                color: Colors.white.withOpacity(0.3),
-                size: 140,
+            Positioned(
+              right: 40,
+              bottom: 40,
+              child: Container(
+                width: ResponsiveUtils.getValueForDevice(
+                  context,
+                  mobile: 150.0,
+                  desktop: 300.0,
+                ),
+                height: ResponsiveUtils.getValueForDevice(
+                  context,
+                  mobile: 150.0,
+                  desktop: 300.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(150),
+                ),
+                child: Icon(
+                  icon,
+                  color: Colors.white.withOpacity(0.3),
+                  size: ResponsiveUtils.getValueForDevice(
+                    context,
+                    mobile: 70.0,
+                    desktop: 140.0,
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
           // Content
           Padding(
-            padding: const EdgeInsets.all(60),
+            padding: ResponsiveUtils.getScreenPadding(context).copyWith(
+              top: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 40.0,
+                desktop: 60.0,
+              ),
+              bottom: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 40.0,
+                desktop: 60.0,
+              ),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 12.0,
+                      desktop: 20.0,
+                    ),
+                    vertical: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 6.0,
+                      desktop: 10.0,
+                    ),
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(24),
@@ -189,45 +222,87 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   child: Text(
                     badge,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
+                      fontSize: ResponsiveUtils.getCaptionFontSize(context) + 3,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(
+                  height: ResponsiveUtils.getValueForDevice(
+                    context,
+                    mobile: 16.0,
+                    desktop: 24.0,
+                  ),
+                ),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 56,
+                    fontSize: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 32.0,
+                      tablet: 42.0,
+                      desktop: 56.0,
+                    ),
                     fontWeight: FontWeight.bold,
                     height: 1.1,
                     letterSpacing: -1,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(
+                  height: ResponsiveUtils.getValueForDevice(
+                    context,
+                    mobile: 12.0,
+                    desktop: 20.0,
+                  ),
+                ),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 14.0,
+                      tablet: 16.0,
+                      desktop: 20.0,
+                    ),
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: 40),
-                Row(
+                SizedBox(
+                  height: ResponsiveUtils.getValueForDevice(
+                    context,
+                    mobile: 24.0,
+                    desktop: 40.0,
+                  ),
+                ),
+                Wrap(
+                  spacing: ResponsiveUtils.getValueForDevice(
+                    context,
+                    mobile: 8.0,
+                    desktop: 16.0,
+                  ),
+                  runSpacing: 12,
                   children: [
                     FilledButton(
                       onPressed: () {},
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 20,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: ResponsiveUtils.getValueForDevice(
+                            context,
+                            mobile: 24.0,
+                            desktop: 40.0,
+                          ),
+                          vertical: ResponsiveUtils.getValueForDevice(
+                            context,
+                            mobile: 12.0,
+                            desktop: 20.0,
+                          ),
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -235,41 +310,55 @@ class _HomePageState extends ConsumerState<HomePage> {
                         elevation: 8,
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             buttonText,
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getBodyFontSize(context) + 4,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            size: ResponsiveUtils.getIconSize(context),
+                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 20,
+                    if (!isMobile)
+                      OutlinedButton(
+                        onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 20.0,
+                              desktop: 32.0,
+                            ),
+                            vertical: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 12.0,
+                              desktop: 20.0,
+                            ),
+                          ),
+                          side: const BorderSide(color: Colors.white, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
-                        side: const BorderSide(color: Colors.white, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                        child: Text(
+                          'Daha Fazla',
+                          style: TextStyle(
+                            fontSize:
+                                ResponsiveUtils.getBodyFontSize(context) + 4,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        'Daha Fazla',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -280,15 +369,40 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // Value Proposition Section
-  SliverToBoxAdapter _buildValueProposition() {
+  SliverToBoxAdapter _buildValueProposition(final BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(32),
+        margin: ResponsiveUtils.getScreenPadding(context).copyWith(
+          top: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 16.0,
+            desktop: 20.0,
+          ),
+          bottom: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 16.0,
+            desktop: 20.0,
+          ),
+        ),
+        padding: ResponsiveUtils.getCardPadding(context).copyWith(
+          top: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 20.0,
+            desktop: 32.0,
+          ),
+          bottom: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 20.0,
+            desktop: 32.0,
+          ),
+        ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 1.5),
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -297,50 +411,78 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _buildValueItem(
-                Icons.verified_outlined,
-                'Güvenilir',
-                'Kalite garantisi',
-                AppColors.success,
+        child: isMobile
+            ? Column(
+                children: [
+                  _buildValueItem(context, Icons.verified_outlined, 'Güvenilir',
+                      'Kalite garantisi', AppColors.success),
+                  const SizedBox(height: 16),
+                  _buildValueItem(context, Icons.local_shipping_outlined,
+                      'Hızlı Teslimat', 'Ücretsiz kargo', AppColors.info),
+                  const SizedBox(height: 16),
+                  _buildValueItem(context, Icons.attach_money_outlined,
+                      'En İyi Fiyat', 'Uygun ödeme', AppColors.warning),
+                  const SizedBox(height: 16),
+                  _buildValueItem(
+                      context,
+                      Icons.access_time_outlined,
+                      '9:00 - 22:00',
+                      'Müşteri hizmetleri',
+                      AppColors.secondary),
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    child: _buildValueItem(context, Icons.verified_outlined,
+                        'Güvenilir', 'Kalite garantisi', AppColors.success),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 60,
+                    color: AppColors.border,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  Expanded(
+                    child: _buildValueItem(
+                        context,
+                        Icons.local_shipping_outlined,
+                        'Hızlı Teslimat',
+                        'Ücretsiz kargo',
+                        AppColors.info),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 60,
+                    color: AppColors.border,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  Expanded(
+                    child: _buildValueItem(context, Icons.attach_money_outlined,
+                        'En İyi Fiyat', 'Uygun ödeme', AppColors.warning),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 60,
+                    color: AppColors.border,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  Expanded(
+                    child: _buildValueItem(
+                        context,
+                        Icons.access_time_outlined,
+                        '9:00 - 22:00',
+                        'Müşteri hizmetleri',
+                        AppColors.secondary),
+                  ),
+                ],
               ),
-            ),
-            Container(width: 1, height: 60, color: AppColors.border),
-            Expanded(
-              child: _buildValueItem(
-                Icons.local_shipping_outlined,
-                'Hızlı Teslimat',
-                'Ücretsiz kargo',
-                AppColors.info,
-              ),
-            ),
-            Container(width: 1, height: 60, color: AppColors.border),
-            Expanded(
-              child: _buildValueItem(
-                Icons.attach_money_outlined,
-                'En İyi Fiyat',
-                'Uygun ödeme seçenekleri',
-                AppColors.warning,
-              ),
-            ),
-            Container(width: 1, height: 60, color: AppColors.border),
-            Expanded(
-              child: _buildValueItem(
-                Icons.access_time_outlined, // Değişti
-                '9:00 - 22:00',
-                'Müşteri hizmetleri',
-                AppColors.secondary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
   Widget _buildValueItem(
+    final BuildContext context,
     final IconData icon,
     final String title,
     final String subtitle,
@@ -349,18 +491,35 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(
+            ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 12.0,
+              desktop: 16.0,
+            ),
+          ),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Icon(icon, color: color, size: 32),
+          child: Icon(
+            icon,
+            color: color,
+            size: ResponsiveUtils.getIconSize(context, scale: 1.6),
+          ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(
+          height: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 8.0,
+            desktop: 12.0,
+          ),
+        ),
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: ResponsiveUtils.getTitleFontSize(context) + 2,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -369,8 +528,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
+          style: TextStyle(
+            fontSize: ResponsiveUtils.getBodyFontSize(context),
             color: AppColors.textSecondary,
           ),
         ),
@@ -378,7 +537,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildCategoriesSection() {
+  SliverToBoxAdapter _buildCategoriesSection(final BuildContext context) {
     const categories = [
       {
         'icon': Icons.chair_outlined,
@@ -420,7 +579,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: ResponsiveUtils.getScreenPadding(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -428,14 +587,25 @@ class _HomePageState extends ConsumerState<HomePage> {
               title: 'Kategoriler',
               subtitle: 'İhtiyacınıza uygun mobilyaları keşfedin',
             ),
-            const SizedBox(height: 24),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 16.0,
+                desktop: 24.0,
+              ),
+            ),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: ResponsiveUtils.getValueForDevice(
+                  context,
+                  mobile: 2,
+                  tablet: 3,
+                  desktop: 6,
+                ),
+                crossAxisSpacing: ResponsiveUtils.getGridSpacing(context),
+                mainAxisSpacing: ResponsiveUtils.getGridSpacing(context),
                 childAspectRatio: 1,
               ),
               itemCount: categories.length,
@@ -450,7 +620,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(
+                          ResponsiveUtils.getBorderRadius(context, scale: 1.25),
+                        ),
                         border: Border.all(color: AppColors.border),
                         boxShadow: [
                           BoxShadow(
@@ -465,7 +637,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(
+                              ResponsiveUtils.getValueForDevice(
+                                context,
+                                mobile: 12.0,
+                                desktop: 16.0,
+                              ),
+                            ),
                             decoration: BoxDecoration(
                               color:
                                   (category['color'] as Color).withOpacity(0.1),
@@ -474,14 +652,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: Icon(
                               category['icon'] as IconData,
                               color: category['color'] as Color,
-                              size: 32,
+                              size: ResponsiveUtils.getIconSize(context,
+                                  scale: 1.6),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(
+                            height: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 8.0,
+                              desktop: 12.0,
+                            ),
+                          ),
                           Text(
                             category['label'] as String,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getTitleFontSize(context),
                               fontWeight: FontWeight.w600,
                               color: AppColors.textPrimary,
                             ),
@@ -489,8 +675,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                           const SizedBox(height: 4),
                           Text(
                             category['count'] as String,
-                            style: const TextStyle(
-                              fontSize: 14,
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getBodyFontSize(context),
                               color: AppColors.textSecondary,
                             ),
                           ),
@@ -501,146 +688,314 @@ class _HomePageState extends ConsumerState<HomePage> {
                 );
               },
             ),
-            const SizedBox(height: 48),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 32.0,
+                desktop: 48.0,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildFeaturedProducts(final ProductState productState) {
+  SliverToBoxAdapter _buildFeaturedProducts(
+    final BuildContext context,
+    final ProductState productState,
+  ) {
     final featuredProducts = productState.dataList?.take(6).toList() ?? [];
 
-    if (featuredProducts.isEmpty)
+    if (featuredProducts.isEmpty) {
       return const SliverToBoxAdapter(child: SizedBox());
+    }
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: ResponsiveUtils.getScreenPadding(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SectionHeader(
-                title: 'Öne Çıkan Ürünler',
-                subtitle: 'En çok beğenilen mobilyalar'),
-            const SizedBox(height: 20),
+              title: 'Öne Çıkan Ürünler',
+              subtitle: 'En çok beğenilen mobilyalar',
+            ),
             SizedBox(
-              height: 320,
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 16.0,
+                desktop: 20.0,
+              ),
+            ),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 280.0,
+                desktop: 320.0,
+              ),
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: featuredProducts.length,
-                separatorBuilder: (final context, final index) =>
-                    const SizedBox(width: 20),
+                separatorBuilder: (final context, final index) => SizedBox(
+                  width: ResponsiveUtils.getGridSpacing(context),
+                ),
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
-                  return CustomProductCard(product: product, width: 280);
+                  return SizedBox(
+                    width: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 220.0,
+                      tablet: 250.0,
+                      desktop: 280.0,
+                    ),
+                    child: ModernProductCard(product: product),
+                  );
                 },
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 24.0,
+                desktop: 40.0,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildBusinessIntroduction() {
+  SliverToBoxAdapter _buildBusinessIntroduction(final BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(40),
+        margin: ResponsiveUtils.getScreenPadding(context).copyWith(
+          top: 16,
+          bottom: 16,
+        ),
+        padding: ResponsiveUtils.getCardPadding(context).copyWith(
+          top: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 24.0,
+            desktop: 40.0,
+          ),
+          bottom: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 24.0,
+            desktop: 40.0,
+          ),
+        ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 1.5),
+          ),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 4)),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
-        child: Row(
-          children: [
-            // Esnaf Fotoğrafı/Logo
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(60),
-                border: Border.all(color: AppColors.primary, width: 2),
-              ),
-              child: const Icon(Icons.storefront_outlined,
-                  color: AppColors.primary, size: 50),
-            ),
-            const SizedBox(width: 32),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: isMobile
+            ? Column(
                 children: [
-                  const Text(
-                    '20 Yıllık Esnaf Güvencesi',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                  Container(
+                    width: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 80.0,
+                      desktop: 120.0,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
-                    'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
-                    'alışverişin adresi olduk.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textSecondary,
-                      height: 1.6,
+                    height: ResponsiveUtils.getValueForDevice(
+                      context,
+                      mobile: 80.0,
+                      desktop: 120.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(color: AppColors.primary, width: 2),
+                    ),
+                    child: Icon(
+                      Icons.storefront_outlined,
+                      color: AppColors.primary,
+                      size: ResponsiveUtils.getIconSize(context, scale: 2.5),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildBusinessFeature('✓ Kalite Garantisi'),
-                      const SizedBox(width: 20),
-                      _buildBusinessFeature('✓ Profesyonel Montaj'),
-                      const SizedBox(width: 20),
-                      _buildBusinessFeature('✓ Geri Alım Garantisi'),
+                      Text(
+                        '20 Yıllık Esnaf Güvencesi',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: ResponsiveUtils.getValueForDevice(
+                            context,
+                            mobile: 20.0,
+                            desktop: 28.0,
+                          ),
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
+                        'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
+                        'alışverişin adresi olduk.',
+                        style: TextStyle(
+                          fontSize:
+                              ResponsiveUtils.getBodyFontSize(context) + 2,
+                          color: AppColors.textSecondary,
+                          height: 1.6,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _buildBusinessFeature(context, '✓ Kalite Garantisi'),
+                          _buildBusinessFeature(
+                              context, '✓ Profesyonel Montaj'),
+                          _buildBusinessFeature(
+                              context, '✓ Geri Alım Garantisi'),
+                        ],
+                      ),
                     ],
                   ),
                 ],
+              )
+            : Row(
+                children: [
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(color: AppColors.primary, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.storefront_outlined,
+                      color: AppColors.primary,
+                      size: 50,
+                    ),
+                  ),
+                  const SizedBox(width: 32),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '20 Yıllık Esnaf Güvencesi',
+                          style: TextStyle(
+                            fontSize: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 20.0,
+                              desktop: 28.0,
+                            ),
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '2003\'ten beri İstanbul\'da hizmet veren köklü bir esnaf firmasıyız. '
+                          'Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ve güvenilir '
+                          'alışverişin adresi olduk.',
+                          style: TextStyle(
+                            fontSize:
+                                ResponsiveUtils.getBodyFontSize(context) + 2,
+                            color: AppColors.textSecondary,
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Wrap(
+                          spacing: ResponsiveUtils.getValueForDevice(
+                            context,
+                            mobile: 8.0,
+                            desktop: 20.0,
+                          ),
+                          runSpacing: 12,
+                          children: [
+                            _buildBusinessFeature(
+                                context, '✓ Kalite Garantisi'),
+                            _buildBusinessFeature(
+                                context, '✓ Profesyonel Montaj'),
+                            _buildBusinessFeature(
+                                context, '✓ Geri Alım Garantisi'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildBusinessFeature(final String text) {
+  Widget _buildBusinessFeature(final BuildContext context, final String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveUtils.getValueForDevice(
+          context,
+          mobile: 10.0,
+          desktop: 12.0,
+        ),
+        vertical: ResponsiveUtils.getValueForDevice(
+          context,
+          mobile: 4.0,
+          desktop: 6.0,
+        ),
+      ),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppColors.primary,
           fontWeight: FontWeight.w500,
+          fontSize: ResponsiveUtils.getBodyFontSize(context),
         ),
       ),
     );
   }
 
-  // SPECIAL OFFERS - DÜZELTİLDİ (UI Sığma Sorunu Çözüldü)
-  SliverToBoxAdapter _buildSpecialOffers() {
+  SliverToBoxAdapter _buildSpecialOffers(final BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(40),
+        margin: ResponsiveUtils.getScreenPadding(context).copyWith(
+          top: 16,
+          bottom: 16,
+        ),
+        padding: ResponsiveUtils.getCardPadding(context).copyWith(
+          top: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 24.0,
+            desktop: 40.0,
+          ),
+          bottom: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 24.0,
+            desktop: 40.0,
+          ),
+        ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 1.5),
+          ),
           gradient: const LinearGradient(
             colors: [Color(0xFFFF6B6B), Color(0xFFFF8E53)],
             begin: Alignment.topLeft,
@@ -654,234 +1009,503 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: isMobile
+            ? Column(
                 children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      '🔥 Sınırlı Süre',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: ResponsiveUtils.getValueForDevice(
+                            context,
+                            mobile: 12.0,
+                            desktop: 16.0,
+                          ),
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '🔥 Sınırlı Süre',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: ResponsiveUtils.getBodyFontSize(context),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Süper İndirimler!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      height: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Seçili ürünlerde %70\'e varan indirim fırsatı. '
-                    'Kaçırmayın!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      height: 1.4,
-                    ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Süper İndirimler!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: ResponsiveUtils.getValueForDevice(
+                            context,
+                            mobile: 28.0,
+                            desktop: 36.0,
+                          ),
+                          fontWeight: FontWeight.bold,
+                          height: 1.1,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Seçili ürünlerde %70\'e varan indirim fırsatı. Kaçırmayın!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize:
+                              ResponsiveUtils.getBodyFontSize(context) + 2,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      FilledButton(
+                        onPressed: () {},
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFFFF6B6B),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 24.0,
+                              desktop: 32.0,
+                            ),
+                            vertical: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 12.0,
+                              desktop: 16.0,
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Fırsatları Gör',
+                          style: TextStyle(
+                            fontSize:
+                                ResponsiveUtils.getBodyFontSize(context) + 2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: () {},
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFFFF6B6B),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
                     ),
-                    child: const Text(
-                      'Fırsatları Gör',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.local_offer_outlined,
+                      color: Colors.white.withOpacity(0.7),
+                      size: 50,
+                    ),
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '🔥 Sınırlı Süre',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  ResponsiveUtils.getBodyFontSize(context),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Süper İndirimler!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: ResponsiveUtils.getValueForDevice(
+                              context,
+                              mobile: 28.0,
+                              desktop: 36.0,
+                            ),
+                            fontWeight: FontWeight.bold,
+                            height: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Seçili ürünlerde %70\'e varan indirim fırsatı. Kaçırmayın!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize:
+                                ResponsiveUtils.getBodyFontSize(context) + 2,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        FilledButton(
+                          onPressed: () {},
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFFFF6B6B),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'Fırsatları Gör',
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getBodyFontSize(context) + 2,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 40),
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.local_offer_outlined,
+                      color: Colors.white.withOpacity(0.7),
+                      size: 50,
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(width: 40),
-            // Daha küçük ve uyumlu ikon
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.local_offer_outlined,
-                  color: Colors.white.withOpacity(0.7), size: 50),
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildNewArrivals(final ProductState productState) {
+  SliverToBoxAdapter _buildNewArrivals(
+    final BuildContext context,
+    final ProductState productState,
+  ) {
     final newArrivals = productState.dataList ?? [];
-    if (newArrivals.isEmpty) return const SliverToBoxAdapter(child: SizedBox());
+    if (newArrivals.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox());
+    }
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: ResponsiveUtils.getScreenPadding(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SectionHeader(
-                title: 'Yeni Gelenler',
-                subtitle: 'En yeni mobilya tasarımları'),
-            const SizedBox(height: 20),
+              title: 'Yeni Gelenler',
+              subtitle: 'En yeni mobilya tasarımları',
+            ),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 16.0,
+                desktop: 20.0,
+              ),
+            ),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 0.75,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: ResponsiveUtils.getGridCrossAxisCount(context),
+                crossAxisSpacing: ResponsiveUtils.getGridSpacing(context),
+                mainAxisSpacing: ResponsiveUtils.getGridSpacing(context),
+                childAspectRatio: ResponsiveUtils.getCardAspectRatio(context),
               ),
               itemCount: newArrivals.length.clamp(0, 8),
               itemBuilder: (final context, final index) {
                 final product = newArrivals[index];
-                return CustomProductCard(product: product);
+                return ModernProductCard(product: product);
               },
             ),
-            const SizedBox(height: 40),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 24.0,
+                desktop: 40.0,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildDeliveryMapSection() {
+  SliverToBoxAdapter _buildDeliveryMapSection(final BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        margin: ResponsiveUtils.getScreenPadding(context).copyWith(
+          top: 16,
+          bottom: 16,
+        ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 1.5),
+          ),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 4)),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
         child: Container(
-          padding: const EdgeInsets.all(32),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24)),
+          padding: ResponsiveUtils.getCardPadding(context).copyWith(
+            top: ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 20.0,
+              desktop: 32.0,
+            ),
+            bottom: ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 20.0,
+              desktop: 32.0,
+            ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: isMobile
+              ? Column(
                   children: [
-                    const Text(
-                      'Teslimat Bilgileri',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Teslimat Bilgileri',
+                          style: TextStyle(
+                            fontSize:
+                                ResponsiveUtils.getTitleFontSize(context) + 4,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildDeliveryInfo(
+                          context,
+                          '🚚 Ücretsiz Teslimat',
+                          'İstanbul İçerenköy ve yakın mahalleleri',
+                        ),
+                        _buildDeliveryInfo(
+                          context,
+                          '⏰ Teslimat Saatleri',
+                          '09:00 - 22:00',
+                        ),
+                        _buildDeliveryInfo(
+                          context,
+                          '📍 Hizmet Verilen Semtler',
+                          'İçerenköy, Küçükbakkalköy, Kayışdağı',
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    _buildDeliveryInfo('🚚 Ücretsiz Teslimat',
-                        'İstanbul İçerenköy ve yakın mahalleleri'),
-                    _buildDeliveryInfo('⏰ Teslimat Saatleri', '09:00 - 22:00'),
-                    _buildDeliveryInfo('📍 Hizmet Verilen Semtler',
-                        'İçerenköy, Küçükbakkalköy, Kayışdağı, Fındıklı, İnönü, Bostancı Sanayi'),
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: EdgeInsets.all(
+                        ResponsiveUtils.getValueForDevice(
+                          context,
+                          mobile: 20.0,
+                          desktop: 24.0,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.access_time_filled,
+                            color: AppColors.primary,
+                            size:
+                                ResponsiveUtils.getIconSize(context, scale: 2),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Çalışma Saatleri',
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getTitleFontSize(context),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Pazartesi - Cumartesi\n09:00 - 22:00',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize:
+                                  ResponsiveUtils.getBodyFontSize(context),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Pazar: 12:00 - 20:00',
+                            style: TextStyle(
+                              color: AppColors.textTertiary,
+                              fontSize:
+                                  ResponsiveUtils.getCaptionFontSize(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Teslimat Bilgileri',
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getTitleFontSize(context) + 4,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildDeliveryInfo(
+                            context,
+                            '🚚 Ücretsiz Teslimat',
+                            'İstanbul İçerenköy ve yakın mahalleleri',
+                          ),
+                          _buildDeliveryInfo(
+                            context,
+                            '⏰ Teslimat Saatleri',
+                            '09:00 - 22:00',
+                          ),
+                          _buildDeliveryInfo(
+                            context,
+                            '📍 Hizmet Verilen Semtler',
+                            'İçerenköy, Küçükbakkalköy, Kayışdağı, Fındıklı',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 40),
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        children: [
+                          const Icon(
+                            Icons.access_time_filled,
+                            color: AppColors.primary,
+                            size: 40,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Çalışma Saatleri',
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.getTitleFontSize(context),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Pazartesi - Cumartesi\n09:00 - 22:00',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Pazar: 12:00 - 20:00',
+                            style: TextStyle(
+                              color: AppColors.textTertiary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 40),
-              // Çalışma Saatleri
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Column(
-                  children: [
-                    Icon(Icons.access_time_filled,
-                        color: AppColors.primary, size: 40),
-                    SizedBox(height: 12),
-                    Text(
-                      'Çalışma Saatleri',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Pazartesi - Cumartesi\n09:00 - 22:00',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Pazar: 12:00 - 20:00',
-                      style: TextStyle(
-                        color: AppColors.textTertiary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
 
-  Widget _buildDeliveryInfo(final String title, final String subtitle) {
+  Widget _buildDeliveryInfo(
+    final BuildContext context,
+    final String title,
+    final String subtitle,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_circle_outlined,
-              color: AppColors.success, size: 20),
+          Icon(
+            Icons.check_circle_outlined,
+            color: AppColors.success,
+            size: ResponsiveUtils.getIconSize(context),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary)),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    fontSize: ResponsiveUtils.getBodyFontSize(context),
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(subtitle,
-                    style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 14)),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: ResponsiveUtils.getBodyFontSize(context),
+                  ),
+                ),
               ],
             ),
           ),
@@ -890,46 +1514,94 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildTestimonials() {
+  SliverToBoxAdapter _buildTestimonials(final BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+    final crossAxisCount = ResponsiveUtils.getValueForDevice(
+      context,
+      mobile: 1,
+      tablet: 2,
+      desktop: 3,
+    );
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(48),
+        margin: ResponsiveUtils.getScreenPadding(context).copyWith(
+          top: 16,
+          bottom: 16,
+        ),
+        padding: ResponsiveUtils.getCardPadding(context).copyWith(
+          top: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 32.0,
+            desktop: 48.0,
+          ),
+          bottom: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 32.0,
+            desktop: 48.0,
+          ),
+        ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 2),
+          ),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 4)),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
         child: Column(
           children: [
-            const Text('Müşterilerimiz Ne Diyor?',
-                style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary)),
-            const SizedBox(height: 40),
-            Row(
+            Text(
+              'Müşterilerimiz Ne Diyor?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: ResponsiveUtils.getValueForDevice(
+                  context,
+                  mobile: 24.0,
+                  desktop: 32.0,
+                ),
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(
+              height: ResponsiveUtils.getValueForDevice(
+                context,
+                mobile: 24.0,
+                desktop: 40.0,
+              ),
+            ),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: ResponsiveUtils.getGridSpacing(context),
+              mainAxisSpacing: ResponsiveUtils.getGridSpacing(context),
+              childAspectRatio: isMobile ? 1.5 : 1.2,
               children: [
-                Expanded(
-                    child: _buildTestimonialCard(
-                        'Ürünler tam olarak görseldeki gibi.',
-                        'Ayşe K.',
-                        '⭐⭐⭐⭐⭐')),
-                const SizedBox(width: 24),
-                Expanded(
-                    child: _buildTestimonialCard(
-                        'Hızlı montaj. Kesinlikle tavsiye ederim.',
-                        'Mehmet Y.',
-                        '⭐⭐⭐⭐⭐')),
-                const SizedBox(width: 24),
-                Expanded(
-                    child: _buildTestimonialCard(
-                        'Fiyatlar çok uygun.', 'Zeynep A.', '⭐⭐⭐⭐⭐')),
+                _buildTestimonialCard(
+                  context,
+                  'Ürünler tam olarak görseldeki gibi.',
+                  'Ayşe K.',
+                  '⭐⭐⭐⭐⭐',
+                ),
+                _buildTestimonialCard(
+                  context,
+                  'Hızlı montaj. Kesinlikle tavsiye ederim.',
+                  'Mehmet Y.',
+                  '⭐⭐⭐⭐⭐',
+                ),
+                _buildTestimonialCard(
+                  context,
+                  'Fiyatlar çok uygun.',
+                  'Zeynep A.',
+                  '⭐⭐⭐⭐⭐',
+                ),
               ],
             ),
           ],
@@ -939,39 +1611,73 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildTestimonialCard(
-      final String comment, final String name, final String rating) {
+    final BuildContext context,
+    final String comment,
+    final String name,
+    final String rating,
+  ) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: ResponsiveUtils.getCardPadding(context).copyWith(
+        top: ResponsiveUtils.getValueForDevice(
+          context,
+          mobile: 16.0,
+          desktop: 24.0,
+        ),
+        bottom: ResponsiveUtils.getValueForDevice(
+          context,
+          mobile: 16.0,
+          desktop: 24.0,
+        ),
+      ),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(
+          ResponsiveUtils.getBorderRadius(context, scale: 1.25),
+        ),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(rating, style: const TextStyle(fontSize: 20)),
+          Text(
+            rating,
+            style: TextStyle(
+              fontSize: ResponsiveUtils.getTitleFontSize(context) + 4,
+            ),
+          ),
           const SizedBox(height: 12),
-          Text(comment,
-              style: const TextStyle(
-                  fontSize: 16, color: AppColors.textSecondary, height: 1.5)),
-          const SizedBox(height: 16),
+          Text(
+            comment,
+            style: TextStyle(
+              fontSize: ResponsiveUtils.getBodyFontSize(context) + 2,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+          const Spacer(),
           Row(
             children: [
               Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.2),
-                    shape: BoxShape.circle),
-                child: const Icon(Icons.person, color: AppColors.primary),
+                  color: AppColors.primary.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.person,
+                  color: AppColors.primary,
+                ),
               ),
               const SizedBox(width: 12),
-              Text(name,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary)),
+              Text(
+                name,
+                style: TextStyle(
+                  fontSize: ResponsiveUtils.getBodyFontSize(context) + 2,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
             ],
           ),
         ],
@@ -979,42 +1685,84 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  SliverToBoxAdapter _buildStatsSection() {
+  SliverToBoxAdapter _buildStatsSection(final BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        padding: const EdgeInsets.all(48),
+        margin: ResponsiveUtils.getScreenPadding(context).copyWith(
+          top: 16,
+          bottom: 16,
+        ),
+        padding: ResponsiveUtils.getCardPadding(context).copyWith(
+          top: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 32.0,
+            desktop: 48.0,
+          ),
+          bottom: ResponsiveUtils.getValueForDevice(
+            context,
+            mobile: 32.0,
+            desktop: 48.0,
+          ),
+        ),
         decoration: BoxDecoration(
           gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.getBorderRadius(context, scale: 2),
+          ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildStatItem('2,500+', 'Mutlu Müşteri'),
-            _buildStatItem('5,000+', 'Satılan Ürün'),
-            _buildStatItem('97%', 'Memnuniyet Oranı'),
-            _buildStatItem('20+', 'Yıllık Deneyim'),
-          ],
-        ),
+        child: isMobile
+            ? Column(
+                children: [
+                  _buildStatItem(context, '2,500+', 'Mutlu Müşteri'),
+                  const SizedBox(height: 24),
+                  _buildStatItem(context, '5,000+', 'Satılan Ürün'),
+                  const SizedBox(height: 24),
+                  _buildStatItem(context, '97%', 'Memnuniyet Oranı'),
+                  const SizedBox(height: 24),
+                  _buildStatItem(context, '20+', 'Yıllık Deneyim'),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildStatItem(context, '2,500+', 'Mutlu Müşteri'),
+                  _buildStatItem(context, '5,000+', 'Satılan Ürün'),
+                  _buildStatItem(context, '97%', 'Memnuniyet Oranı'),
+                  _buildStatItem(context, '20+', 'Yıllık Deneyim'),
+                ],
+              ),
       ),
     );
   }
 
-  Widget _buildStatItem(final String number, final String label) {
+  Widget _buildStatItem(
+      final BuildContext context, final String number, final String label) {
     return Column(
       children: [
-        Text(number,
-            style: const TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.white)),
+        Text(
+          number,
+          style: TextStyle(
+            fontSize: ResponsiveUtils.getValueForDevice(
+              context,
+              mobile: 36.0,
+              desktop: 48.0,
+            ),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text(label,
-            style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: ResponsiveUtils.getBodyFontSize(context) + 4,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
