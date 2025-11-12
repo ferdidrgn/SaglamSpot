@@ -1,10 +1,10 @@
+import 'dart:ui'; // BackdropFilter için eklendi
 import 'package:flutter/material.dart';
 import '../../domain/entities/product.dart';
 import '../util/responsive_utils.dart'; // Extension'lar için import
 
 /// Modern, responsive ve performans odaklı product card
 /// SOLID prensipleriyle tasarlanmış, tek sorumluluk prensibi uygulanmış
-// Mixin kaldırıldı
 class CustomProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
@@ -33,11 +33,10 @@ class CustomProductCard extends StatelessWidget {
             onTap: onTap,
             splashColor: const Color(0xFF6366F1).withOpacity(0.1),
             highlightColor: const Color(0xFF6366F1).withOpacity(0.05),
-            // DÜZELTME: IntrinsicHeight kaldırıldı.
-            // Bu, 'Expanded' ile birlikte layout'u bozuyordu.
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // _ImageSection artık galeriyi yönetiyor
                 _ImageSection(product: product),
                 // Expanded, _InfoSection'ın kalan tüm alanı doldurmasını sağlar.
                 Expanded(
@@ -68,74 +67,164 @@ class CustomProductCard extends StatelessWidget {
   }
 }
 
-/// Image bölümü - Ayrı widget olarak separation of concerns
-// Mixin kaldırıldı
-class _ImageSection extends StatelessWidget {
+// ===================================================================
+// GÖRSEL BÖLÜMÜ (GALERİ OLARAK GÜNCELLENDİ)
+// ===================================================================
+
+/// Image bölümü - Artık galeriyi yöneten bir StatefulWidget
+class _ImageSection extends StatefulWidget {
   final Product product;
 
   const _ImageSection({required this.product});
 
   @override
+  State<_ImageSection> createState() => _ImageSectionState();
+}
+
+class _ImageSectionState extends State<_ImageSection> {
+  late final PageController _pageController;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  /// Tam ekran galeri gösterimi
+  void _showFullscreenGallery(BuildContext context, int initialIndex) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.8), // Arka planı koyulaştır
+      builder: (BuildContext context) {
+        return _FullscreenImageGallery(
+          imageUrls: widget.product.imagesUrl,
+          initialIndex: initialIndex,
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(final BuildContext context) {
-    // getCardImageHeight yerine responsive()
+    // --- DÜZELTME: GÖRSEL YÜKSEKLİĞİ İSTEK ÜZERİNE GERİ ALINDI ---
     final imageHeight =
         context.responsive(mobile: 140.0, tablet: 160.0, desktop: 180.0);
+    // --- DÜZELTME SONU ---
 
-    // Cihazın piksel yoğunluğunu al (retina ekranlar için)
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-
-    // Yüksek çözünürlüklü ekranlar için cache boyutunu ayarla
-    // Max yükseklik 180 * 3 (yüksek pixelRatio) = 540
-    // Bu, 4K bir resmi decode etmek yerine 540px'lik bir resmi decode etmeyi sağlar.
-    final cacheHeight = (imageHeight * pixelRatio).round();
+    final hasMultipleImages = widget.product.imagesUrl.length > 1;
 
     return SizedBox(
       height: imageHeight,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _buildProductImage(context, cacheHeight), // DÜZELTME
+          // 1. Resim Galerisi (PageView)
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.product.imagesUrl.isEmpty
+                ? 1
+                : widget.product.imagesUrl.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              final String? imageUrl = widget.product.imagesUrl.isEmpty
+                  ? null
+                  : widget.product.imagesUrl[index];
+              return GestureDetector(
+                onTap: () {
+                  // Sadece geçerli resim varsa tam ekran aç
+                  if (imageUrl != null) {
+                    _showFullscreenGallery(context, index);
+                  }
+                },
+                child: _buildProductImage(context, imageUrl, imageHeight),
+              );
+            },
+          ),
+
+          // 2. Diğer Arayüz Elemanları
           _buildGradientOverlay(context),
           Positioned(
             top: context.responsive(mobile: 6.0, desktop: 8.0),
             right: context.responsive(mobile: 6.0, desktop: 8.0),
-            child: _StatusBadge(product: product),
+            child: _StatusBadge(product: widget.product),
           ),
-          if (product.isSpotProduct)
+          if (widget.product.isSpotProduct)
             Positioned(
               top: context.responsive(mobile: 6.0, desktop: 8.0),
               left: context.responsive(mobile: 6.0, desktop: 8.0),
               child: const _SpotBadge(),
             ),
+
+          // 3. Galeri Navigasyonu (Sadece 1'den fazla resim varsa)
+          if (hasMultipleImages) ...[
+            // Sayfa Göstergeleri (Noktalar)
+            Positioned(
+              bottom: 8.0,
+              left: 0,
+              right: 0,
+              child: _buildIndicators(),
+            ),
+            // Navigasyon Okları
+            _buildNavigationArrow(
+              context,
+              isLeft: true,
+              onPressed: () {
+                _pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              },
+            ),
+            _buildNavigationArrow(
+              context,
+              isLeft: false,
+              onPressed: () {
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              },
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildProductImage(BuildContext context, int cacheHeight) {
-    // DÜZELTME
-    return product.imagesUrl.isNotEmpty
-        ? Image.network(
-            product.imagesUrl.first,
-            fit: BoxFit.cover,
+  /// Resim widget'ını oluşturan yardımcı metot
+  Widget _buildProductImage(
+      BuildContext context, String? imageUrl, double imageHeight) {
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final cacheHeight = (imageHeight * pixelRatio).round();
 
-            // --- PERFORMANS DÜZELTMESİ ---
-            // Resmi bu piksel yüksekliğinde işle, bu UI donmasını engeller.
-            cacheHeight: cacheHeight,
-            // ---------------------------------
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return _buildPlaceholder(context);
+    }
 
-            errorBuilder: (final context, final error, final stackTrace) =>
-                _buildPlaceholder(context),
-            loadingBuilder:
-                (final context, final child, final loadingProgress) {
-              if (loadingProgress == null) return child;
-              // Yüklenirken de placeholder göster
-              return _buildPlaceholder(context);
-            },
-          )
-        : _buildPlaceholder(context);
+    return Image.network(
+      imageUrl,
+      fit: BoxFit.cover,
+      cacheHeight: cacheHeight,
+      errorBuilder: (context, error, stackTrace) => _buildPlaceholder(context),
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return _buildPlaceholder(context); // Yüklenirken de placeholder
+      },
+    );
   }
 
+  /// Placeholder widget'ı
   Widget _buildPlaceholder(BuildContext context) {
     return Container(
       color: const Color(0xFFF1F5F9),
@@ -147,6 +236,7 @@ class _ImageSection extends StatelessWidget {
     );
   }
 
+  /// Alttaki gölge
   Widget _buildGradientOverlay(BuildContext context) {
     return Positioned(
       bottom: 0,
@@ -167,10 +257,192 @@ class _ImageSection extends StatelessWidget {
       ),
     );
   }
+
+  /// Galeri noktalarını oluşturan metot
+  Widget _buildIndicators() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(widget.product.imagesUrl.length, (index) {
+        final bool isSelected = _currentIndex == index;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+          height: isSelected ? 8.0 : 6.0,
+          width: isSelected ? 8.0 : 6.0,
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 2,
+                offset: const Offset(0, 1),
+              )
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  /// Navigasyon oklarını oluşturan metot
+  Widget _buildNavigationArrow(BuildContext context,
+      {required bool isLeft, required VoidCallback onPressed}) {
+    // İlk ve son resimde ilgili oku gizle
+    if (isLeft && _currentIndex == 0) {
+      return const SizedBox.shrink();
+    }
+    if (!isLeft && _currentIndex == widget.product.imagesUrl.length - 1) {
+      return const SizedBox.shrink();
+    }
+
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      left: isLeft ? 4.0 : null,
+      right: isLeft ? null : 4.0,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.3),
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            icon: Icon(
+              isLeft ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
+              color: Colors.white,
+              size: 16.0,
+            ),
+            onPressed: onPressed,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
+// ===================================================================
+// TAM EKRAN GALERİ WIDGET'I (YENİ)
+// ===================================================================
+
+class _FullscreenImageGallery extends StatefulWidget {
+  final List<String> imageUrls;
+  final int initialIndex;
+
+  const _FullscreenImageGallery({
+    required this.imageUrls,
+    required this.initialIndex,
+  });
+
+  @override
+  State<_FullscreenImageGallery> createState() =>
+      _FullscreenImageGalleryState();
+}
+
+class _FullscreenImageGalleryState extends State<_FullscreenImageGallery> {
+  late final PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.initialIndex);
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.zero,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Bulanık arka plan
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
+          ),
+          // Resim Galerisi
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.imageUrls.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return InteractiveViewer(
+                // Zoom yapabilmek için
+                child: Image.network(
+                  widget.imageUrls[index],
+                  fit: BoxFit.contain, // Tam ekran için 'contain'
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                ),
+              );
+            },
+          ),
+          // Kapatma Butonu
+          Positioned(
+            top: 40.0,
+            right: 20.0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+          // Sayfa Göstergesi (Noktalar)
+          if (widget.imageUrls.length > 1)
+            Positioned(
+              bottom: 30.0,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(widget.imageUrls.length, (index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    height: 8.0,
+                    width: 8.0,
+                    decoration: BoxDecoration(
+                      color: _currentIndex == index
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                }),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// ===================================================================
+// DİĞER WIDGET'LAR (OVERFLOW İÇİN GÜNCELLENDİ)
+// ===================================================================
+
 /// Status badge widget
-// Mixin kaldırıldı
 class _StatusBadge extends StatelessWidget {
   final Product product;
 
@@ -228,7 +500,6 @@ class _StatusBadge extends StatelessWidget {
 }
 
 /// Spot badge widget
-// Mixin kaldırıldı
 class _SpotBadge extends StatelessWidget {
   const _SpotBadge();
 
@@ -283,7 +554,6 @@ class _SpotBadge extends StatelessWidget {
 }
 
 /// Info section - Product details
-// Mixin kaldırıldı
 class _InfoSection extends StatelessWidget {
   final Product product;
 
@@ -299,25 +569,28 @@ class _InfoSection extends StatelessWidget {
       padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        // DÜZELTME: Bu, fiyatı en alta itecek.
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 1. Grup: Başlık ve açıklama
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // Sadece gerektiği kadar yer kapla
-            children: [
-              _CategoryChip(category: product.category),
-              SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
-              _ProductTitle(title: product.name),
-              SizedBox(height: context.responsive(mobile: 2.0, desktop: 4.0)),
-              // DÜZELTME: 'Flexible' sarmalayıcıları kaldırıldı.
-              // Bu, overflow hatasını düzeltir.
-              _ProductDescription(description: product.desc),
-            ],
+          // --- DÜZELTME: OVERFLOW HATASI İÇİN ---
+          // Yazı grubu (Kategori, Başlık, Açıklama) bir Flexible widget
+          // ile sarıldı. Bu, fiyatın taşmasını engeller.
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              // Sadece gerektiği kadar yer kapla
+              children: [
+                _CategoryChip(category: product.category),
+                SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
+                _ProductTitle(title: product.name),
+                SizedBox(height: context.responsive(mobile: 2.0, desktop: 4.0)),
+                _ProductDescription(description: product.desc),
+              ],
+            ),
           ),
+          // --- DÜZELTME SONU ---
 
-          // 2. Grup: Fiyat (Aradaki SizedBox kaldırıldı)
+          // 2. Grup: Fiyat
           _PriceSection(price: product.price),
         ],
       ),
@@ -326,7 +599,6 @@ class _InfoSection extends StatelessWidget {
 }
 
 /// Category chip
-// Mixin kaldırıldı
 class _CategoryChip extends StatelessWidget {
   final String category;
 
@@ -359,7 +631,6 @@ class _CategoryChip extends StatelessWidget {
 }
 
 /// Product title
-// Mixin kaldırıldı
 class _ProductTitle extends StatelessWidget {
   final String title;
 
@@ -384,7 +655,6 @@ class _ProductTitle extends StatelessWidget {
 }
 
 /// Product description
-// Mixin kaldırıldı
 class _ProductDescription extends StatelessWidget {
   final String description;
 
@@ -400,17 +670,14 @@ class _ProductDescription extends StatelessWidget {
         height: 1.3,
         letterSpacing: 0.1,
       ),
-      // --- DÜZELTME: OVERFLOW HATASI İÇİN ---
-      // Dikey alanı azaltmak için 2 satırdan 1 satıra düşürüldü.
+      // Overflow düzeltmesi (1 satır)
       maxLines: 1,
-      // --- DÜZELTME SONU ---
       overflow: TextOverflow.ellipsis,
     );
   }
 }
 
 /// Price section with action button
-// Mixin kaldırıldı
 class _PriceSection extends StatelessWidget {
   final double price;
 

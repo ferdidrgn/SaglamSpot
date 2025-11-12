@@ -55,24 +55,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   void _filterByCategory(final String category) {
     if (category == 'Tümü') {
-      ref.read(searchProvider.notifier).resetFilters();
+      // Artık sadece provider'ı değil, arama çubuğu dahil her şeyi sıfırlar.
+      _resetFilters();
     } else {
       ref.read(searchProvider.notifier).filterByCategory(category);
+      setState(() {
+        _selectedCategory = category;
+        _showFilters = category != 'Tümü' ||
+            ref.read(searchProvider).condition != null ||
+            ref.read(searchProvider).minPrice > 0 ||
+            ref.read(searchProvider).maxPrice < 50000;
+      });
     }
-
-    setState(() {
-      _selectedCategory = category;
-      _showFilters = category != 'Tümü' ||
-          ref
-              .read(searchProvider)
-              .condition != null ||
-          ref
-              .read(searchProvider)
-              .minPrice > 0 ||
-          ref
-              .read(searchProvider)
-              .maxPrice < 50000;
-    });
   }
 
   void _applyFiltersFromDialog() {
@@ -113,14 +107,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (final context) =>
-          FilterSheet(
-            onApplyFilters: _applyFiltersFromDialog,
-            onResetFilters: _resetFilters,
-          ),
+      builder: (final context) => FilterSheet(
+        onApplyFilters: _applyFiltersFromDialog,
+        onResetFilters: _resetFilters,
+      ),
     );
   }
-
 
   // --- MAIN BUILD METHOD ---
   @override
@@ -143,10 +135,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
-          // 1. AppBar (isMobile prop'unu extension'dan alıyor)
-          _ModernAppBar(isMobile: isMobile),
+          // --- DÜZELTME: YARATICI VE ANİMASYONLU APPBAR ---
+          const _CreativeAppBar(),
+          // --- DÜZELTME SONU ---
 
-          // 2. Arama ve Filtreler (isMobile prop'unu extension'dan alıyor)
+          // 2. Arama ve Filtreler
           SliverToBoxAdapter(
             child: _SearchAndFilterSection(
               isMobile: isMobile,
@@ -168,7 +161,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 categories: _categories,
                 onCategoryFilterRemoved: () => _filterByCategory('Tümü'),
                 onFilterRemoved: (final String label) {
-                  // _ActiveFiltersSection'dan gelen 'kaldır' eventi
                   if (label == searchState.condition) {
                     ref.read(searchProvider.notifier).setCondition(null);
                   } else if (label.startsWith('Min:')) {
@@ -184,24 +176,21 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               ),
             ),
 
-          // --- 4. ÜRÜN GRID (DÜZELTİLDİ) ---
-          // Duruma göre içerik göster
+          // --- 4. ÜRÜN GRID ---
           if (searchState.isLoading)
             _buildLoadingSliver(context)
+          else if (searchState.errorMessage != null)
+            _buildErrorSliver(context, searchState.errorMessage!)
+          else if (products.isEmpty)
+            _buildEmptyStateSliver(context, _resetFilters)
           else
-            if (searchState.errorMessage != null)
-              _buildErrorSliver(context, searchState.errorMessage!)
-            else
-              if (products.isEmpty)
-                _buildEmptyStateSliver(context, _resetFilters)
-              else
-                ..._buildProductGrids(context, products),
+            ..._buildProductGrids(context, products),
         ],
       ),
 
-      // 5. FAB (isMobile kontrolü extension'dan geliyor)
+      // 5. FAB
       floatingActionButton:
-      isMobile ? _FilterFAB(onPressed: _showFilterDialog) : null,
+          isMobile ? _FilterFAB(onPressed: _showFilterDialog) : null,
     );
   }
 
@@ -292,8 +281,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  Widget _buildEmptyStateSliver(final BuildContext context,
-      final VoidCallback onResetFilters) {
+  Widget _buildEmptyStateSliver(
+      final BuildContext context, final VoidCallback onResetFilters) {
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -358,8 +347,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   // --- _buildProductGrids Metodu ---
-  List<Widget> _buildProductGrids(final BuildContext context,
-      final List<Product> products) {
+  List<Widget> _buildProductGrids(
+      final BuildContext context, final List<Product> products) {
     final availableProducts = products.where((final p) => !p.isSold).toList();
     final soldProducts = products.where((final p) => p.isSold).toList();
 
@@ -367,12 +356,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
 
-    // --- DÜZELTME: BOTTOM OVERFLOW HATASI İÇİN ---
-    // Mobil için en boy oranı (aspect ratio) 0.65'ten 0.60'a düşürüldü.
-    // Bu, karta daha fazla dikey yükseklik alanı verir.
+    // Overflow'u önlemek için mobil en boy oranı
     final cardAspectRatio =
-    context.responsive(mobile: 0.60, tablet: 0.75, desktop: 0.78);
-    // --- DÜZELTME SONU ---
+        context.responsive(mobile: 0.60, tablet: 0.75, desktop: 0.78);
 
     List<Widget> slivers = [];
 
@@ -395,10 +381,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               crossAxisCount: context.gridColumns(),
               crossAxisSpacing: context.gridSpacing,
               mainAxisSpacing: context.gridSpacing,
-              childAspectRatio: cardAspectRatio, // Güncellenmiş değer
+              childAspectRatio: cardAspectRatio,
             ),
             delegate: SliverChildBuilderDelegate(
-                  (final context, final index) {
+              (final context, final index) {
                 return CustomProductCard(product: availableProducts[index]);
               },
               childCount: availableProducts.length,
@@ -427,10 +413,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               crossAxisCount: context.gridColumns(),
               crossAxisSpacing: context.gridSpacing,
               mainAxisSpacing: context.gridSpacing,
-              childAspectRatio: cardAspectRatio, // Güncellenmiş değer
+              childAspectRatio: cardAspectRatio,
             ),
             delegate: SliverChildBuilderDelegate(
-                  (final context, final index) {
+              (final context, final index) {
                 return CustomProductCard(product: soldProducts[index]);
               },
               childCount: soldProducts.length,
@@ -448,8 +434,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   // --- İç Helper Metot (_buildProductGrids'e ait) ---
-  Widget _buildSectionHeader(final String title, final int count,
-      final Color color) {
+  Widget _buildSectionHeader(
+      final String title, final int count, final Color color) {
     return Row(
       children: [
         Container(
@@ -491,69 +477,84 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 } // _SearchPageState sonu
 
 // ===================================================================
-// --- DİĞER WIDGET'LAR (DEĞİŞİKLİK YOK) ---
+// --- YENİ EKLENEN WIDGET ---
 // ===================================================================
 
-// --- 1. MODERN APPBAR ---
-class _ModernAppBar extends StatelessWidget {
-  final bool isMobile;
-
-  const _ModernAppBar({required this.isMobile});
+class _CreativeAppBar extends StatelessWidget {
+  const _CreativeAppBar();
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return SliverAppBar(
-      // context.responsive kullanımı
-      expandedHeight: context.responsive(mobile: 140.0, desktop: 180.0),
+      expandedHeight: context.responsive(mobile: 200.0, desktop: 250.0),
       floating: false,
       pinned: true,
+      // Geri okunun beyaz olmasını sağlar
+      iconTheme: const IconThemeData(color: Colors.white),
+      backgroundColor: const Color(0xFF334155),
+      // Resim yüklenemezse fallback
+
       flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF6366F1), Color(0xFF8B87EA), Color(0xFFEC4899)],
-            ),
+        // Başlık (kaydırınca küçülen)
+        title: Text(
+          'İlham Veren Parçalar',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: context.responsive(mobile: 16.0, desktop: 18.0),
+            fontWeight: FontWeight.bold,
           ),
-          child: SafeArea(
-            child: Padding(
-              // context.responsive kullanımı
-              padding: EdgeInsets.all(
-                  context.responsive(mobile: 16.0, desktop: 24.0)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'Premium Koleksiyon',
-                    style: TextStyle(
-                      color: Colors.white,
-                      // context.responsive kullanımı
-                      fontSize: context.responsive(mobile: 28.0, desktop: 36.0),
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Özel tasarım ürünler keşfedin',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      // context.responsive kullanımı
-                      fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
+        ),
+        titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
+        centerTitle: false,
+
+        // Arka plan (Resim + Gradient)
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            // 1. Arka Plan Resmi
+            Image.network(
+              // "Ahşap" ve "Sanatsal" temasına uygun bir resim
+              'https://images.unsplash.com/photo-1511401332200-038b5093b79f?q=80&w=1974&auto=format&fit=crop',
+              fit: BoxFit.cover,
+              // Yüklenirken animasyon
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+                return Container(color: const Color(0xFF334155));
+              },
+              // Hata durumunda
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: const Color(0xFF334155),
+                  child: const Icon(Icons.palette_outlined,
+                      color: Colors.white54, size: 50),
+                );
+              },
+            ),
+
+            // 2. Gradient (Metnin okunabilirliği için)
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.8),
+                    Colors.black.withOpacity(0.1),
+                  ],
+                  stops: const [0.0, 0.7], // Alttan %70'e kadar
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 }
+
+// ===================================================================
+// --- DİĞER WIDGET'LAR (DEĞİŞİKLİK YOK) ---
+// ===================================================================
 
 // --- 2. ARAMA VE FİLTRE BÖLÜMÜ ---
 class _SearchAndFilterSection extends StatelessWidget {
@@ -655,12 +656,12 @@ class _SearchBar extends StatelessWidget {
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-            icon: const Icon(Icons.clear_rounded, size: 20),
-            onPressed: () {
-              controller.clear();
-              onChanged('');
-            },
-          )
+                  icon: const Icon(Icons.clear_rounded, size: 20),
+                  onPressed: () {
+                    controller.clear();
+                    onChanged('');
+                  },
+                )
               : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
@@ -706,12 +707,12 @@ class _CategoryChips extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? const LinearGradient(
-                      colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-                    )
+                            colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
+                          )
                         : null,
                     color: isSelected ? null : Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -723,21 +724,21 @@ class _CategoryChips extends StatelessWidget {
                     ),
                     boxShadow: isSelected
                         ? [
-                      BoxShadow(
-                        color: const Color(0xFF6366F1).withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
+                            BoxShadow(
+                              color: const Color(0xFF6366F1).withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
                         : [],
                   ),
                   child: Text(
                     category,
                     style: TextStyle(
                       color:
-                      isSelected ? Colors.white : const Color(0xFF64748B),
+                          isSelected ? Colors.white : const Color(0xFF64748B),
                       fontWeight:
-                      isSelected ? FontWeight.w600 : FontWeight.w500,
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
                       fontSize: 14,
                     ),
                   ),
@@ -788,7 +789,7 @@ class _DesktopFilters extends ConsumerWidget {
               'Durum',
               filters.condition ?? 'Hepsi',
               const ['Hepsi', 'Sıfır', 'İkinci El'],
-                  (final value) {
+              (final value) {
                 filtersNotifier.setCondition(value == 'Hepsi' ? null : value);
                 onApplyFilters(); // Ana sayfaya haber ver
               },
@@ -819,10 +820,12 @@ class _DesktopFilters extends ConsumerWidget {
   }
 
   // _buildFilterDropdown metodunu _DesktopFilters'ın içine taşıdık
-  Widget _buildFilterDropdown(final String label,
-      final String value,
-      final List<String> items,
-      final Function(String?) onChanged,) {
+  Widget _buildFilterDropdown(
+    final String label,
+    final String value,
+    final List<String> items,
+    final Function(String?) onChanged,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -861,8 +864,8 @@ class _DesktopFilters extends ConsumerWidget {
   }
 
   // _buildPriceRangeFilter metodunu _DesktopFilters'ın içine taşıdık
-  Widget _buildPriceRangeFilter(final SearchState filters,
-      final SearchFiltersNotifier notifier) {
+  Widget _buildPriceRangeFilter(
+      final SearchState filters, final SearchFiltersNotifier notifier) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
