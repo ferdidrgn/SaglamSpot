@@ -1,12 +1,13 @@
-import 'dart:async'; // Timer için eklendi
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/custom_section_header.dart';
 import '../../../data/providers/product/product_provider.dart';
 import '../../../data/providers/product/product_state.dart';
+import '../../../core/util/responsive_utils.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -16,73 +17,52 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  // --- Hero Section için State Değişkenleri Eklendi ---
-  late PageController _pageController;
-  Timer? _timer;
-  int _currentPage = 0;
-  final int _numPages = 3; // Slayt sayımız
-  // --- Ekleme Sonu ---
+  final PageController _heroPageController = PageController();
+  int _currentHeroPage = 0;
+  Timer? _autoSlideTimer;
+  bool _showLeftArrow = false;
+  bool _showRightArrow = false;
 
   @override
   void initState() {
     super.initState();
-
-    // --- Hero Section için Init Eklendi ---
-    _pageController = PageController();
-    _pageController.addListener(_onPageChanged);
-    _startTimer();
-    // --- Ekleme Sonu ---
-
     WidgetsBinding.instance.addPostFrameCallback((final _) {
-      // initState içinde ref.read kullanmak best practice'dir.
       if (mounted) {
         ref.read(productProvider.notifier).loadProducts();
+        _startAutoSlide();
       }
     });
   }
 
-  // --- Hero Section için Dispose ve Helper Metotlar Eklendi ---
   @override
   void dispose() {
-    _timer?.cancel();
-    _pageController.removeListener(_onPageChanged);
-    _pageController.dispose();
+    _autoSlideTimer?.cancel();
+    _heroPageController.dispose();
     super.dispose();
   }
 
-  void _onPageChanged() {
-    if (_pageController.hasClients) {
-      setState(() {
-        _currentPage = _pageController.page!.round() % _numPages;
-      });
-    }
-  }
-
-  void _startTimer() {
-    _timer?.cancel(); // Mevcut timer'ı iptal et
-    _timer = Timer.periodic(const Duration(seconds: 5), (final timer) {
-      if (_pageController.hasClients) {
-        int nextPage = (_currentPage + 1) % _numPages;
-        _pageController.animateToPage(
+  void _startAutoSlide() {
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 5), (final timer) {
+      if (_heroPageController.hasClients && mounted) {
+        final nextPage = (_currentHeroPage + 1) % 3;
+        _heroPageController.animateToPage(
           nextPage,
-          duration: const Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
       }
     });
   }
 
-  void _resetTimer() {
-    _timer?.cancel();
-    _startTimer();
+  void _onHeroPageChanged(final int page) {
+    setState(() {
+      _currentHeroPage = page;
+    });
   }
-
-  // --- Ekleme Sonu ---
 
   @override
   Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
-    // Responsive extension'dan isMobile bilgisini alıyoruz
     final isMobile = context.isMobile;
 
     return CustomScrollView(
@@ -96,15 +76,14 @@ class _HomePageState extends ConsumerState<HomePage> {
         // Categories Section
         _buildCategoriesSection(context),
 
-        // Featured Products (Hata düzeltildi, tekrar yatay liste oldu)
+        // Featured Products
         _buildFeaturedProducts(context, productState),
 
-        // Special Offers (Turuncu Kart - İçerik hatası düzeltildi)
+        // Special Offers
         _buildSpecialOffers(context, isMobile),
 
-        // --- BÖLÜM GERİ EKLENDİ (RESPONSIVE OLARAK) ---
+        // Business Introduction
         _buildBusinessIntroduction(context, isMobile),
-        // --- EKLEME SONU ---
 
         // Testimonials
         _buildTestimonials(context, isMobile),
@@ -112,7 +91,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         // Stats Section
         _buildStatsSection(context, isMobile),
 
-        // Alt boşluk
+        // Bottom spacing
         SliverToBoxAdapter(
             child: SizedBox(
                 height: context.responsive(mobile: 30.0, desktop: 60.0))),
@@ -122,170 +101,243 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   SliverToBoxAdapter _buildEnhancedHeroSection(
       final BuildContext context, final bool isMobile) {
-    // Slayt listesini PageView'dan önce tanımlıyoruz
-    final slideList = [
-      _buildHeroSlide(
-        context: context,
-        isMobile: isMobile,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primary, AppColors.primaryDark],
-        ),
-        icon: Icons.weekend_outlined,
-        badge: 'Yeni Koleksiyon',
-        title: 'Modern Mobilyalar\nEviniz İçin',
-        subtitle: 'Kaliteli ve şık mobilyalarla yaşam alanınızı yenileyin',
-        buttonText: 'Keşfet',
-      ),
-      _buildHeroSlide(
-        context: context,
-        isMobile: isMobile,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.secondary, AppColors.secondary.withOpacity(0.7)],
-        ),
-        icon: Icons.percent_outlined,
-        badge: 'Spot Ürünler',
-        title: 'İnanılmaz Fırsatlar\nSizi Bekliyor',
-        subtitle: '%70\'e varan indirimlerle kaliteli mobilyalar',
-        buttonText: 'Fırsatları Gör',
-      ),
-      _buildHeroSlide(
-        context: context,
-        isMobile: isMobile,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.accent, Color(0xFF7C3AED)],
-        ),
-        icon: Icons.recycling_outlined,
-        badge: 'İkinci El Ürünler',
-        title: 'Sürdürülebilir\nAlışveriş',
-        subtitle:
-            'Çevre dostu seçeneklerle hem tasarruf edin hem doğayı koruyun',
-        buttonText: 'İncele',
-      ),
-    ];
-
     return SliverToBoxAdapter(
-      child: Container(
-        height: context.responsive(mobile: 400.0, desktop: 550.0),
-        margin: EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-              context.responsive(mobile: 24.0, desktop: 32.0)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.2),
-              blurRadius: 40,
-              offset: const Offset(0, 20),
+      child: Column(
+        children: [
+          Container(
+            height: context.responsive(mobile: 400.0, desktop: 550.0),
+            margin:
+                EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                  context.responsive(mobile: 24.0, desktop: 32.0)),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.2),
+                  blurRadius: 40,
+                  offset: const Offset(0, 20),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                // PageView
+                PageView(
+                  controller: _heroPageController,
+                  onPageChanged: _onHeroPageChanged,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    _buildHeroSlide(
+                      context: context,
+                      isMobile: isMobile,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppColors.primary, AppColors.primaryDark],
+                      ),
+                      icon: Icons.weekend_outlined,
+                      badge: 'Yeni Koleksiyon',
+                      title: 'Modern Mobilyalar\nEviniz İçin',
+                      subtitle:
+                          'Kaliteli ve şık mobilyalarla yaşam alanınızı yenileyin',
+                      buttonText: 'Keşfet',
+                    ),
+                    _buildHeroSlide(
+                      context: context,
+                      isMobile: isMobile,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.secondary,
+                          AppColors.secondary.withOpacity(0.7)
+                        ],
+                      ),
+                      icon: Icons.percent_outlined,
+                      badge: 'Spot Ürünler',
+                      title: 'İnanılmaz Fırsatlar\nSizi Bekliyor',
+                      subtitle: '%70\'e varan indirimlerle kaliteli mobilyalar',
+                      buttonText: 'Fırsatları Gör',
+                    ),
+                    _buildHeroSlide(
+                      context: context,
+                      isMobile: isMobile,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppColors.accent, Color(0xFF7C3AED)],
+                      ),
+                      icon: Icons.recycling_outlined,
+                      badge: 'İkinci El Ürünler',
+                      title: 'Sürdürülebilir\nAlaşveriş',
+                      subtitle:
+                          'Çevre dostu seçeneklerle hem tasarruf edin hem doğayı koruyun',
+                      buttonText: 'İncele',
+                    ),
+                  ],
+                ),
+
+                // Desktop için navigation dots
+                if (!isMobile) ...[
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(3, (final index) {
+                        return GestureDetector(
+                          onTap: () {
+                            _heroPageController.animateToPage(
+                              index,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: _currentHeroPage == index ? 32 : 12,
+                            height: 12,
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              shape: _currentHeroPage == index
+                                  ? BoxShape.rectangle
+                                  : BoxShape.circle,
+                              borderRadius: _currentHeroPage == index
+                                  ? BorderRadius.circular(6)
+                                  : null,
+                              color: _currentHeroPage == index
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.5),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.8),
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+
+                  // Sol ok butonu
+                  Positioned(
+                    left: 20,
+                    top: 0,
+                    bottom: 0,
+                    child: MouseRegion(
+                      onEnter: (_) => setState(() => _showLeftArrow = true),
+                      onExit: (_) => setState(() => _showLeftArrow = false),
+                      child: AnimatedOpacity(
+                        opacity: _showLeftArrow ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: IconButton(
+                          onPressed: () {
+                            final previousPage = (_currentHeroPage - 1) % 3;
+                            _heroPageController.animateToPage(
+                              previousPage,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.9),
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(16),
+                            shadowColor: Colors.black.withOpacity(0.3),
+                            elevation: 8,
+                          ),
+                          icon: Icon(
+                            Icons.arrow_back_ios_rounded,
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Sağ ok butonu
+                  Positioned(
+                    right: 20,
+                    top: 0,
+                    bottom: 0,
+                    child: MouseRegion(
+                      onEnter: (_) => setState(() => _showRightArrow = true),
+                      onExit: (_) => setState(() => _showRightArrow = false),
+                      child: AnimatedOpacity(
+                        opacity: _showRightArrow ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: IconButton(
+                          onPressed: () {
+                            final nextPage = (_currentHeroPage + 1) % 3;
+                            _heroPageController.animateToPage(
+                              nextPage,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.9),
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(16),
+                            shadowColor: Colors.black.withOpacity(0.3),
+                            elevation: 8,
+                          ),
+                          icon: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Mobile için indicator
+                if (isMobile) ...[
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(3, (final index) {
+                        return Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _currentHeroPage == index
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.5),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // Desktop için ek bilgilendirme
+          if (!isMobile) ...[
+            SizedBox(height: context.responsive(mobile: 0, desktop: 16)),
+            Text(
+              'Diğer kampanyaları görmek için kaydırın veya okları kullanın',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: context.responsive(mobile: 0, desktop: 14),
+              ),
             ),
           ],
-        ),
-        // PageView'ı Stack ile sarmalıyoruz (Oklar ve Noktalar için)
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            PageView(
-              controller: _pageController, // Controller'ı atıyoruz
-              onPageChanged: (page) {
-                // Kullanıcı elle kaydırırsa timer'ı sıfırla
-                _resetTimer();
-              },
-              children: slideList,
-            ),
-            // 1. Nokta Göstergeler
-            Positioned(
-              bottom: context.responsive(mobile: 16.0, desktop: 32.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_numPages, (index) {
-                  return _buildDotIndicator(context, index);
-                }),
-              ),
-            ),
-            // 2. Navigasyon Okları (Sadece Desktop/Tablet)
-            if (!isMobile)
-              Positioned(
-                left: context.responsive(mobile: 8.0, desktop: 32.0),
-                child: _buildNavArrow(context, isLeft: true),
-              ),
-            if (!isMobile)
-              Positioned(
-                right: context.responsive(mobile: 8.0, desktop: 32.0),
-                child: _buildNavArrow(context, isLeft: false),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
-
-  // --- Hero Section için Yeni Helper Widget'lar ---
-
-  /// Navigasyon Okları (Sol/Sağ)
-  Widget _buildNavArrow(BuildContext context, {required bool isLeft}) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          if (isLeft) {
-            _pageController.previousPage(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          } else {
-            _pageController.nextPage(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          }
-          _resetTimer(); // Ok'a basınca timer'ı sıfırla
-        },
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            isLeft ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
-            color: Colors.white,
-            size: 24.0,
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Nokta Göstergeler
-  Widget _buildDotIndicator(BuildContext context, int index) {
-    bool isActive = _currentPage == index;
-    return GestureDetector(
-      onTap: () {
-        _pageController.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOut,
-        );
-        _resetTimer(); // Noktaya basınca timer'ı sıfırla
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        height: 8.0,
-        width: isActive ? 24.0 : 8.0,
-        decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.white.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      ),
-    );
-  }
-
-  // --- Ekleme Sonu ---
 
   Widget _buildHeroSlide({
     required final BuildContext context,
@@ -388,7 +440,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
                 SizedBox(
                     height: context.responsive(mobile: 24.0, desktop: 40.0)),
-                // Butonları mobil için alt alta, desktop için yan yana getir
+                // Butonlar
                 Flex(
                   direction: isMobile ? Axis.vertical : Axis.horizontal,
                   crossAxisAlignment: isMobile
@@ -619,7 +671,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         'label': 'TV Ünitesi',
         'color': AppColors.warning
       },
-      // 6. kategoriyi ekleyelim ki grid dolsun
       {
         'icon': Icons.storage_outlined,
         'label': 'Dolap',
@@ -898,7 +949,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // --- YENİ EKLENEN WIDGET (RESPONSIVE) ---
   SliverToBoxAdapter _buildBusinessIntroduction(
       final BuildContext context, final bool isMobile) {
     final double iconSize = context.responsive(mobile: 80.0, desktop: 120.0);
@@ -1011,8 +1061,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-
-  // --- EKLEME SONU ---
 
   SliverToBoxAdapter _buildTestimonials(
       final BuildContext context, final bool isMobile) {
