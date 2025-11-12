@@ -400,7 +400,10 @@ class _ProductDescription extends StatelessWidget {
         height: 1.3,
         letterSpacing: 0.1,
       ),
-      maxLines: 2,
+      // --- DÜZELTME: OVERFLOW HATASI İÇİN ---
+      // Dikey alanı azaltmak için 2 satırdan 1 satıra düşürüldü.
+      maxLines: 1,
+      // --- DÜZELTME SONU ---
       overflow: TextOverflow.ellipsis,
     );
   }

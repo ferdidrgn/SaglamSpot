@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/util/responsive_utils.dart'; // Extension'lar için import
-import '../../core/widgets/custom_product_card.dart'; // DÜZELTME: Card'ı doğrudan kullanacağız
+import '../../core/widgets/custom_product_card.dart';
 import '../../core/widgets/filter_sheet.dart';
 import '../../data/providers/search/search_filters_notifier.dart';
 import '../../data/providers/search/search_providers.dart';
@@ -63,9 +63,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     setState(() {
       _selectedCategory = category;
       _showFilters = category != 'Tümü' ||
-          ref.read(searchProvider).condition != null ||
-          ref.read(searchProvider).minPrice > 0 ||
-          ref.read(searchProvider).maxPrice < 50000;
+          ref
+              .read(searchProvider)
+              .condition != null ||
+          ref
+              .read(searchProvider)
+              .minPrice > 0 ||
+          ref
+              .read(searchProvider)
+              .maxPrice < 50000;
     });
   }
 
@@ -107,9 +113,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (final context) => const FilterSheet(),
+      builder: (final context) =>
+          FilterSheet(
+            onApplyFilters: _applyFiltersFromDialog,
+            onResetFilters: _resetFilters,
+          ),
     );
   }
+
 
   // --- MAIN BUILD METHOD ---
   @override
@@ -177,26 +188,25 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           // Duruma göre içerik göster
           if (searchState.isLoading)
             _buildLoadingSliver(context)
-          else if (searchState.errorMessage != null)
-            _buildErrorSliver(context, searchState.errorMessage!)
-          else if (products.isEmpty)
-            _buildEmptyStateSliver(context, _resetFilters)
           else
-            // DÜZELTME: _ProductGridContent artık SliverList değil,
-            // doğrudan sliver'lar döndüren bir metot oldu.
-            ..._buildProductGrids(context, products),
+            if (searchState.errorMessage != null)
+              _buildErrorSliver(context, searchState.errorMessage!)
+            else
+              if (products.isEmpty)
+                _buildEmptyStateSliver(context, _resetFilters)
+              else
+                ..._buildProductGrids(context, products),
         ],
       ),
 
       // 5. FAB (isMobile kontrolü extension'dan geliyor)
       floatingActionButton:
-          isMobile ? _FilterFAB(onPressed: _showFilterDialog) : null,
+      isMobile ? _FilterFAB(onPressed: _showFilterDialog) : null,
     );
   }
 
-  // --- YENİ YARDIMCI METOTLAR (YÜKLEME, HATA, BOŞ DURUM) ---
+  // --- YARDIMCI METOTLAR (YÜKLEME, HATA, BOŞ DURUM) ---
 
-  /// Yükleme animasyonu gösteren bir Sliver.
   Widget _buildLoadingSliver(final BuildContext context) {
     return SliverFillRemaining(
       hasScrollBody: false,
@@ -218,7 +228,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  /// Hata durumunda gösterilecek Sliver.
   Widget _buildErrorSliver(final BuildContext context, final String message) {
     return SliverFillRemaining(
       hasScrollBody: false,
@@ -283,9 +292,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  /// Boş sonuç durumunda gösterilecek Sliver.
-  Widget _buildEmptyStateSliver(
-      final BuildContext context, final VoidCallback onResetFilters) {
+  Widget _buildEmptyStateSliver(final BuildContext context,
+      final VoidCallback onResetFilters) {
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -349,10 +357,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  // --- PERFORMANS DÜZELTMESİ YAPILAN METOT ---
-  /// Artık `SliverList` döndürmüyor, bir `List<Widget>` (sliver listesi) döndürüyor.
-  List<Widget> _buildProductGrids(
-      final BuildContext context, final List<Product> products) {
+  // --- _buildProductGrids Metodu ---
+  List<Widget> _buildProductGrids(final BuildContext context,
+      final List<Product> products) {
     final availableProducts = products.where((final p) => !p.isSold).toList();
     final soldProducts = products.where((final p) => p.isSold).toList();
 
@@ -360,8 +367,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
 
+    // --- DÜZELTME: BOTTOM OVERFLOW HATASI İÇİN ---
+    // Mobil için en boy oranı (aspect ratio) 0.65'ten 0.60'a düşürüldü.
+    // Bu, karta daha fazla dikey yükseklik alanı verir.
     final cardAspectRatio =
-        context.responsive(mobile: 0.72, tablet: 0.78, desktop: 0.80);
+    context.responsive(mobile: 0.60, tablet: 0.75, desktop: 0.78);
+    // --- DÜZELTME SONU ---
 
     List<Widget> slivers = [];
 
@@ -384,10 +395,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               crossAxisCount: context.gridColumns(),
               crossAxisSpacing: context.gridSpacing,
               mainAxisSpacing: context.gridSpacing,
-              childAspectRatio: cardAspectRatio,
+              childAspectRatio: cardAspectRatio, // Güncellenmiş değer
             ),
             delegate: SliverChildBuilderDelegate(
-              (final context, final index) {
+                  (final context, final index) {
                 return CustomProductCard(product: availableProducts[index]);
               },
               childCount: availableProducts.length,
@@ -416,10 +427,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               crossAxisCount: context.gridColumns(),
               crossAxisSpacing: context.gridSpacing,
               mainAxisSpacing: context.gridSpacing,
-              childAspectRatio: cardAspectRatio,
+              childAspectRatio: cardAspectRatio, // Güncellenmiş değer
             ),
             delegate: SliverChildBuilderDelegate(
-              (final context, final index) {
+                  (final context, final index) {
                 return CustomProductCard(product: soldProducts[index]);
               },
               childCount: soldProducts.length,
@@ -437,8 +448,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   // --- İç Helper Metot (_buildProductGrids'e ait) ---
-  Widget _buildSectionHeader(
-      final String title, final int count, final Color color) {
+  Widget _buildSectionHeader(final String title, final int count,
+      final Color color) {
     return Row(
       children: [
         Container(
@@ -644,12 +655,12 @@ class _SearchBar extends StatelessWidget {
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear_rounded, size: 20),
-                  onPressed: () {
-                    controller.clear();
-                    onChanged('');
-                  },
-                )
+            icon: const Icon(Icons.clear_rounded, size: 20),
+            onPressed: () {
+              controller.clear();
+              onChanged('');
+            },
+          )
               : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
@@ -695,12 +706,12 @@ class _CategoryChips extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? const LinearGradient(
-                            colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-                          )
+                      colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
+                    )
                         : null,
                     color: isSelected ? null : Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -712,21 +723,21 @@ class _CategoryChips extends StatelessWidget {
                     ),
                     boxShadow: isSelected
                         ? [
-                            BoxShadow(
-                              color: const Color(0xFF6366F1).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
+                      BoxShadow(
+                        color: const Color(0xFF6366F1).withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
                         : [],
                   ),
                   child: Text(
                     category,
                     style: TextStyle(
                       color:
-                          isSelected ? Colors.white : const Color(0xFF64748B),
+                      isSelected ? Colors.white : const Color(0xFF64748B),
                       fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      isSelected ? FontWeight.w600 : FontWeight.w500,
                       fontSize: 14,
                     ),
                   ),
@@ -777,7 +788,7 @@ class _DesktopFilters extends ConsumerWidget {
               'Durum',
               filters.condition ?? 'Hepsi',
               const ['Hepsi', 'Sıfır', 'İkinci El'],
-              (final value) {
+                  (final value) {
                 filtersNotifier.setCondition(value == 'Hepsi' ? null : value);
                 onApplyFilters(); // Ana sayfaya haber ver
               },
@@ -808,12 +819,10 @@ class _DesktopFilters extends ConsumerWidget {
   }
 
   // _buildFilterDropdown metodunu _DesktopFilters'ın içine taşıdık
-  Widget _buildFilterDropdown(
-    final String label,
-    final String value,
-    final List<String> items,
-    final Function(String?) onChanged,
-  ) {
+  Widget _buildFilterDropdown(final String label,
+      final String value,
+      final List<String> items,
+      final Function(String?) onChanged,) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -852,8 +861,8 @@ class _DesktopFilters extends ConsumerWidget {
   }
 
   // _buildPriceRangeFilter metodunu _DesktopFilters'ın içine taşıdık
-  Widget _buildPriceRangeFilter(
-      final SearchState filters, final SearchFiltersNotifier notifier) {
+  Widget _buildPriceRangeFilter(final SearchState filters,
+      final SearchFiltersNotifier notifier) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
