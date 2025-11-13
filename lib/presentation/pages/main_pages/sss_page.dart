@@ -22,6 +22,7 @@ class _SSSPageState extends State<SSSPage> {
     'Teslimat & Montaj',
     'Ödeme & Sipariş',
     'İade & Garanti',
+    'İkinci El Alım Süreci'
   ];
 
   final List<Map<String, String>> _faqs = [
@@ -32,7 +33,7 @@ class _SSSPageState extends State<SSSPage> {
           'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?',
       'answer': "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. "
           "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
-          "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
+          "Çalışma hayatı boyunca, teslimatlar için sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
           "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
           "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır. "
           "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",
@@ -41,13 +42,13 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Genel',
       'question': 'Sağlam Spot güvenilir mi?',
       'answer':
-          '2012\'den beri sektörde hizmet veren, binlerce mutlu müşterisi olan köklü bir esnafız.',
+          '2012 yılından beri İçerenköy\'de, komşularımıza hizmet veriyoruz. Sayısızca evlere konuk olduk ve hâlâ konuk olmaya devam ediyoruz.',
     },
     {
       'category': 'Genel',
       'question': 'Ürünleri incelemek için mağazanıza gelebilir miyim?',
       'answer':
-          'Evet, ürünleri görmek için mağazamıza gelebilirsiniz. İçerenköy Mahallesi\'ndeki mağazamızı ziyaret edebilirsiniz.',
+          'Elbette! Hatta biz de özellikle bunu tavsiye ediyoruz. Çayımızı içerken ürünleri canlı canlı görmeniz, dokunmanız ve içinize sinmesi en sağlıklısı. İçerenköy Mahallesi\'ndeki dükkanımıza her zaman bekleriz.',
     },
 
     // ÜRÜN & HİZMET SORULARI
@@ -55,77 +56,84 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Ürün & Hizmet',
       'question': 'İkinci el ürünlerin durumu nasıl kontrol ediliyor?',
       'answer':
-          'Tüm ikinci el ürünlerimiz ustamız tarafından detaylı olarak incelenir, temizlenir ve gerekli bakımları yapılır. Ürünlerin fotoğrafları gerçek durumu yansıtır. Ama yine de mağazamıza incelemenizi öneriyoruz.',
+          "Bizim için ikinci el, 'ikinci kalite' demek değildir. Her ürün ustamızın titiz kontrolünden geçer; temizliği, bakımı ve gerekli onarımları eksiksiz yapılır. Fotoğraflarda ne görüyorsanız o, ama biz yine de 'gelin, bir de siz görün' deriz. Gözünüzle görmeniz her zaman en iyisidir.",
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Mobilyaların malzeme kalitesi nedir?',
       'answer':
-          'Ürünlerimizin açıklamalarında detaylı bilgiler yer almaktadır. Her ürünün malzeme bilgisi açıklamalar kısmında belirtilmiştir.',
+          'Şeffaflığı önemsiyoruz. Her ürünün kendine ait bir hikayesi ve malzemesi var. Bu yüzden tüm detayları, malzeme kalitesini ve özelliklerini ürün açıklama bölümlerine net bir şekilde yazıyoruz. Aklınıza takılan bir şey olursa sormaktan çekinmeyin.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Ürün fiyatları nasıl belirleniyor?',
       'answer':
-          'Benzer ürünlerin piyasa fiyatlarına göre rekabetçi bir fiyat belirliyoruz. Kalite-fiyat dengesini gözetiyoruz.',
+          'Fiyatlarımızı belirlerken hem ürünün kalitesine hem de piyasa koşullarına adil bir şekilde bakıyoruz. Amacımız, bütçenizi zorlamadan, kaliteli ve uzun ömürlü ürünlere ulaşmanızı sağlamaktır. Hakkı neyse, o.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Ürünlerinizde renk seçenekleri var mı?',
       'answer':
-          'Hayır, renk seçeneği sunamayız. Mevcut ürünlerimizin renkleri sabittir.',
+          'Ürünlerimiz genellikle anlık ve tek parçalar olduğu için, mevcut renkleri neyse o şekilde sunuyoruz. Maalesef farklı renk seçenekleri yapamıyoruz. Beğendiğiniz ürünün rengi, gördüğünüz renktir.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Özel sipariş alıyor musunuz?',
       'answer':
-          'Hayır, özel tasarım siparişler almıyoruz. Mevcut ürün yelpazemizden seçim yapabilirsiniz.',
+          'Keşke yapabilsek! Ancak biz daha çok mevcut, özenle seçilmiş ürünlerimize odaklanıyoruz. Özel üretim veya tasarım siparişi şu an için maalesef alamıyoruz. Hazırdaki ürünlerimizi incelemenizi öneririz.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Ürün açıklamalarında nelere dikkat etmeliyim?',
       'answer':
-          'Ürünün kapladığı alan bilgilerini evinizin ölçüleri ile karşılaştırın. Malzeme bilgisi ve ürün durumunu dikkatlice okuyun.',
+          'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Malzeme ve durum bilgilerini de mutlaka okuyun.',
     },
 
     // TESLİMAT & MONTAJ SORULARI
     {
       'category': 'Teslimat & Montaj',
+      'question':
+          'Asansör olmayan binalara veya yüksek katlara teslimat yapıyor musunuz?',
+      'answer':
+          "Bu, bizim için en hassas ve önemli konulardan biri. Biz, işini bizzat yapan küçük bir esnafız. Ustamız, yılların tecrübesiyle birlikte artık genç olmadığı için sağlığını da düşünmek zorundayız. Anlayışınıza sığınarak, asansör olmayan binalarda yüksek katlara (örneğin 2. kat ve üzeri) **eşya çıkarma ve indirme hizmeti kesinlikle veremiyoruz**. Lütfen siparişinizi vermeden önce bu konuyu netleştirelim, size mahcup olmak istemeyiz."
+    },
+    {
+      'category': 'Teslimat & Montaj',
       'question': 'Taşıma hizmeti sağlıyor musunuz?',
       'answer':
-          'Evet, İçerenköy Mahallesi ve yakın çevrelerine (Bostancı ve Kozyatağı hariç) ücretsiz taşıma hizmeti sunuyoruz. Genellikle: İçerenköy, Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü, Bostancı Sanayi kısımları',
+          'Elbette, komşularımıza yardımcı oluyoruz. İçerenköy başta olmak üzere Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü ve Bostancı Sanayi gibi yakın çevremize ücretsiz nakliye hizmetimiz var. (Bostancı ve Kozyatağı\'nın bazı bölgeleri hariç, ve yaşlılık açısından yüksek katlara asansörsüz taşıyamıyoruz, onu ayrıca konuşuruz).',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Teslimat süresi ne kadar?',
       'answer':
-          'Stokta bulunan ürünler en kısa sürede adresinize teslim edilir. Montaj hizmeti genellikle ürünler getirldiği an ile  birlikte aynı gün içerisinde yapılmaktadır',
+          'Siparişi verdiğiniz an sizinle iletişime geçeriz. \'Ne zaman müsaitsiniz?\' diye sorarız. Hem size hem bize uyan en yakın vakit için sözleşiriz. Genellikle 1-3 gün içinde, anlaştığımız saatte teslimatı ve montajı tamamlamış oluruz.',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Montaj hizmeti veriyor musunuz?',
       'answer':
-          'Evet, tüm büyük mobilyalar için profesyonel montaj hizmeti sunuyoruz. Montaj ücretsizdir.',
+          'Tabii ki. Mobilyayı alıp kapıya bırakmak bizim tarzımız değil. Büyük ürünlerin hepsini ustamız bizzat kurar ve bu hizmet için ekstra bir ücret talep etmeyiz. Siz sadece yerini gösterin, gerisi bizde.',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Mobilya siparişi ne kadar sürede teslim edilir?',
       'answer':
-          'Siparişiniz, ödemeden sonra sözlü iletişmler ile her iki tarafa uygun vakit ve saatte teslim  ve montaj yapılır. Genellikle 1-3 iş günü içinde teslimat yapıyoruz.',
+          'Ürün hazırsa, sizinle ortak belirlediğimiz bir zamanda en kısa sürede kapınızdayız. Montajı da dert etmeyin; getirdiğimiz gibi kurar, öyle teslim ederiz. Genellikle aynı gün içinde her şey biter.',
     },
 
     // ÖDEME & SİPARİŞ SORULARI
     {
       'category': 'Ödeme & Sipariş',
-      'question': 'Veresiye sipraiş verebilir miyim?',
+      'question': 'Veresiye sipariş verebilir miyim?',
       'answer':
-          'Maalesef. Lütfen veresiye teklif etmeyiniz. Ayrıca lütfen eşyaları kapınıza getirdiğimizde anlaştığımız ücreti daha sonra vereceğinizi söylemeyiniz.',
+          'Bu konuda anlayışınızı rica ediyoruz. Bir esnaf olarak ayakta kalabilmemiz için \'veresiye\' veya \'sonra ödeme\' gibi yöntemlerle maalesef çalışamıyoruz. Anlaştığımız ücreti, ürünü teslim ederken peşin olarak almamız gerekiyor. Size mahcup olmamak için bu kuralımızı baştan belirtmeyi tercih ediyoruz.',
     },
     {
       'category': 'Ödeme & Sipariş',
       'question': 'Nasıl sipariş verebilirim?',
       'answer':
-          'Web sitemizden beğendiğiniz ürünü mağazamıza gelip ürünü inceleyerek sipariş vermenizi öneriyoruz. En sağlıklı adımları tercih ediyoruz.',
+          'En sağlıklı yöntem, her zaman yüz yüze olandır. Siteden beğendiğiniz ürünü not edin, sonra dükkanımıza gelin. Ürünü canlı görün, aklınızdaki soruları sorun, içinize sinerse siparişinizi orada tamamlayalım. Böylece hiçbir şüphe kalmaz.',
     },
 
     // İADE & GARANTİ SORULARI
@@ -133,13 +141,43 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'İade & Garanti',
       'question': 'Ürün iade politikası nedir?',
       'answer':
-          'Ürün iade politikamız bulunmamaktadır. Satın almadan önce ürünleri detaylı incelemenizi öneririz.',
+          'İkinci el ürünlerin doğası gereği ve esnaf usulü çalıştığımız için maalesef iade kabul edemiyoruz. Bu yüzden \'gelin, görün, çayımızı için\' diye ısrar ediyoruz. Almadan önce ürünü detaylıca incelemeniz, ölçüp biçmeniz en doğrusu. Emin olmadan alışverişi tamamlamayalım.',
     },
     {
       'category': 'İade & Garanti',
       'question': 'Ürünlerin garanti süresi var mı?',
       'answer':
-          'Hayır, garantimiz yoktur.',
+          'Ürünlerimiz ikinci el olduğu için, bir markanın sunduğu gibi resmi bir garanti süremiz maalesef yok. Ancak biz \'sattık, bitti\' diyenlerden değiliz. Teslimat ve montaj sırasında her şeyin düzgün çalıştığından emin oluruz.',
+    },
+
+// === YENİ KATEGORİ: İKİNCİ EL ALIM SÜRECİ ===
+    {
+      'category': 'İkinci El Alım Süreci',
+      'question':
+          'Evimdeki eşyaları satmak istiyorum, ikinci el alımı yapıyor musunuz?',
+      'answer': 'Evet, dükkanımızda sergileyebileceğimize inandığımız, temiz ve yeniden satılabilir durumdaki seçili ürünleri alıyoruz. Ancak, dükkanımızın yeri gerçekten çok küçük olduğu için bu konuda maalesef çok seçici davranmak zorundayız. \n\n'
+          'Bu konuda baştan dürüst olmayı severiz: Bizden alacağınız teklif, muhtemelen Letgo gibi platformlarda kendinizin satabileceğiniz rakamdan biraz daha düşük olabilir. Bunun sebebi şudur: Biz esnaf olarak o eşyayı almak için **benzin yakıyor, taşıma için emek harcıyor** ve en önemlisi, onu satmak için **dükkanımızda sergileyip tüm müşteri süreciyle (pazarlık, sorular vs.) biz ilgileniyoruz.** \n\n'
+          'Siz o platformlarda satarken bu süreçlerin tamamını kendiniz üstlenirsiniz. Biz ise sizden bu zahmeti de devralmış oluyoruz. Teklifimizi bu hizmeti de içerecek şekilde veriyoruz. Anlayışınız için teşekkür ederiz.',
+    },
+    {
+      'category': 'İkinci El Alım Süreci',
+      'question':
+          'Komple takım mobilyaları (Yatak odası, salon takımı vb.) alıyor musunuz?',
+      'answer':
+          'Dükkanımızın küçük olmasından dolayı, maalesef komple yatak odası, koltuk takımı gibi **büyük setleri alamıyoruz**. Yerimiz çok kısıtlı. Biz daha çok tek parça, satışı daha kolay olan (konsol, dolap, masa, sandalye gibi) ürünlere odaklanıyoruz.'
+    },
+    {
+      'category': 'İkinci El Alım Süreci',
+      'question':
+          'Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?',
+      'answer':
+          'Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda **yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz**. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.'
+    },
+    {
+      'category': 'İkinci El Alım Süreci',
+      'question': 'Her zaman eşya alımı yapıyor musunuz?',
+      'answer':
+          'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.'
     },
   ];
 
@@ -789,6 +827,8 @@ class _SSSPageState extends State<SSSPage> {
         return AppColors.warning;
       case 'İade & Garanti':
         return AppColors.secondary;
+      case 'İkinci El Alım Süreci':
+        return AppColors.textPrimary;
       default:
         return AppColors.textSecondary;
     }
