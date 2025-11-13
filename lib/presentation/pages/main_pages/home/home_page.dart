@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
-import 'package:saglamspot/presentation/pages/main_pages/home/widgets/furniture_tips_section.dart';
+import 'package:saglamspot/presentation/pages/main_pages/home/widgets/furniture_tips_section.dart'; // Düzgün import
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_section_header.dart';
 import '../../../../data/providers/product/product_provider.dart';
@@ -86,7 +86,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         _buildBusinessIntroduction(context, isMobile),
 
         // YENİ: Ayrılmış Furniture Tips Section
-        const FurnitureTipsSection(),
+        const FurnitureTipsSection(), // BU SATIR DOĞRU
 
         _buildTestimonials(context, isMobile),
         _buildStatsSection(context, isMobile),
@@ -98,7 +98,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // ... Diğer tüm metodlar aynı kalacak (hero section, value proposition, vs.)
-  // Sadece _buildFurnitureTipsSection metodunu siliyoruz çünkü artık ayrı dosyada
 
   SliverToBoxAdapter _buildEnhancedHeroSection(
       final BuildContext context, final bool isMobile) {

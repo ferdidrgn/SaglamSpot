@@ -24,28 +24,27 @@ class FurnitureTipsSection extends StatelessWidget {
             ),
             SizedBox(height: context.responsive(mobile: 20.0, desktop: 32.0)),
 
-            // Grid yerine ListView.builder kullanıyoruz
-            SizedBox(
-              height: context.responsive(mobile: 2200.0, desktop: 1200.0),
-              // Sabit yükseklik veriyoruz
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                // Scroll'u devre dışı bırak
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: isMobile ? 1 : 2,
-                  crossAxisSpacing:
-                      context.responsive(mobile: 16.0, desktop: 24.0),
-                  mainAxisSpacing:
-                      context.responsive(mobile: 16.0, desktop: 24.0),
-                  childAspectRatio:
-                      context.responsive(mobile: 3.5, desktop: 4.0),
-                ),
-                itemCount: _furnitureTips.length,
-                itemBuilder: (final context, final index) {
-                  final tip = _furnitureTips[index];
-                  return _buildTipCard(context, tip, index + 1);
-                },
+            // DÜZELTME 1: Sabit yükseklik SIZEDBOX KALDIRILDI
+            GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              // DÜZELTME 2: shrinkWrap eklendi
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isMobile ? 1 : 2,
+                crossAxisSpacing:
+                    context.responsive(mobile: 16.0, desktop: 24.0),
+                mainAxisSpacing:
+                    context.responsive(mobile: 16.0, desktop: 24.0),
+                // DÜZELTME 3: childAspectRatio yerine mainAxisExtent kullanıldı
+                mainAxisExtent:
+                    context.responsive(mobile: 200.0, desktop: 230.0),
               ),
+              itemCount: _furnitureTips.length,
+              // Artık 30'unu da gösterecek
+              itemBuilder: (final context, final index) {
+                final tip = _furnitureTips[index];
+                return _buildTipCard(context, tip, index + 1);
+              },
             ),
 
             SizedBox(height: context.responsive(mobile: 24.0, desktop: 40.0)),
@@ -107,7 +106,7 @@ class FurnitureTipsSection extends StatelessWidget {
 
             SizedBox(width: context.responsive(mobile: 12.0, desktop: 16.0)),
 
-            // İçerik
+            // DÜZELTME 4: İçerik Column'u EXPANDED ile sarıldı
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,12 +144,14 @@ class FurnitureTipsSection extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                     ),
+                    maxLines: 2, // Güvenlik için maxLines eklendi
+                    overflow: TextOverflow.ellipsis,
                   ),
 
                   SizedBox(
                       height: context.responsive(mobile: 8.0, desktop: 12.0)),
 
-                  // Açıklama - overflow'u önlemek için maxLines ve overflow ekliyoruz
+                  // Açıklama
                   Text(
                     tip.description,
                     style: TextStyle(
@@ -191,6 +192,8 @@ class FurnitureTipsSection extends StatelessWidget {
         return Colors.orange;
       case 'Düzen':
         return Colors.purple;
+      case 'Genel': // DÜZELTME 5: Eksik 'Genel' kategorisi eklendi
+        return AppColors.textTertiary;
       default:
         return AppColors.primary;
     }
