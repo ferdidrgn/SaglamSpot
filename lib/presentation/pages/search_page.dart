@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/util/responsive_utils.dart'; // Extension'lar için import
 import '../../core/widgets/custom_product_card.dart';
 import '../../core/widgets/filter_sheet.dart';
+import '../../core/widgets/responsive_product_grid.dart';
 import '../../data/providers/search/search_filters_notifier.dart';
 import '../../data/providers/search/search_providers.dart';
 import '../../data/providers/search/search_state.dart';
@@ -356,10 +357,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
 
-    // Overflow'u önlemek için mobil en boy oranı
-    final cardAspectRatio =
-        context.responsive(mobile: 0.60, tablet: 0.75, desktop: 0.78);
-
     List<Widget> slivers = [];
 
     // Mevcut Ürünler Grid'i
@@ -373,23 +370,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ),
         ),
       );
+      // -----------------------------------------------------------------
+      //  DEĞİŞİKLİK BURADA: Karmaşık SliverGrid yerine artık
+      //  ResponsiveProductSliverGrid widget'ını kullanıyoruz.
+      // -----------------------------------------------------------------
       slivers.add(
-        SliverPadding(
-          padding: screenPadding,
-          sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: context.gridColumns(),
-              crossAxisSpacing: context.gridSpacing,
-              mainAxisSpacing: context.gridSpacing,
-              childAspectRatio: cardAspectRatio,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (final context, final index) {
-                return CustomProductCard(product: availableProducts[index]);
-              },
-              childCount: availableProducts.length,
-            ),
-          ),
+        ResponsiveProductSliverGrid(
+          products: availableProducts,
+          onProductTap: (final product) {
+            // Ürüne tıklama olayı
+            // print('${product.name} tıklandı!');
+            // Navigator.push(...);
+          },
         ),
       );
     }
@@ -406,22 +398,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ),
       );
       slivers.add(
-        SliverPadding(
-          padding: screenPadding,
-          sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: context.gridColumns(),
-              crossAxisSpacing: context.gridSpacing,
-              mainAxisSpacing: context.gridSpacing,
-              childAspectRatio: cardAspectRatio,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (final context, final index) {
-                return CustomProductCard(product: soldProducts[index]);
-              },
-              childCount: soldProducts.length,
-            ),
-          ),
+        ResponsiveProductSliverGrid(
+          products: soldProducts,
+          onProductTap: (final product) {
+            // print('${product.name} tıklandı!');
+          },
         ),
       );
     }

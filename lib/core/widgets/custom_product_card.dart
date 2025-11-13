@@ -98,11 +98,11 @@ class _ImageSectionState extends State<_ImageSection> {
   }
 
   /// Tam ekran galeri gösterimi
-  void _showFullscreenGallery(BuildContext context, int initialIndex) {
+  void _showFullscreenGallery(final BuildContext context, final int initialIndex) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.8), // Arka planı koyulaştır
-      builder: (BuildContext context) {
+      builder: (final BuildContext context) {
         return _FullscreenImageGallery(
           imageUrls: widget.product.imagesUrl,
           initialIndex: initialIndex,
@@ -113,10 +113,12 @@ class _ImageSectionState extends State<_ImageSection> {
 
   @override
   Widget build(final BuildContext context) {
-    // --- DÜZELTME: GÖRSEL YÜKSEKLİĞİ İSTEK ÜZERİNE GERİ ALINDI ---
+    // --- DEĞİŞİKLİK BURADA ---
+    // Masaüstü görselini daha uzun yapmak için 180.0 -> 210.0 yapıldı.
+    // Bu, grid'deki (desktop: 0.72) oranıyla uyumlu çalışacaktır.
     final imageHeight =
-        context.responsive(mobile: 140.0, tablet: 160.0, desktop: 180.0);
-    // --- DÜZELTME SONU ---
+        context.responsive(mobile: 140.0, tablet: 160.0, desktop: 210.0);
+    // --- DEĞİŞİKLİK SONU ---
 
     final hasMultipleImages = widget.product.imagesUrl.length > 1;
 
@@ -131,12 +133,12 @@ class _ImageSectionState extends State<_ImageSection> {
             itemCount: widget.product.imagesUrl.isEmpty
                 ? 1
                 : widget.product.imagesUrl.length,
-            onPageChanged: (index) {
+            onPageChanged: (final index) {
               setState(() {
                 _currentIndex = index;
               });
             },
-            itemBuilder: (context, index) {
+            itemBuilder: (final context, final index) {
               final String? imageUrl = widget.product.imagesUrl.isEmpty
                   ? null
                   : widget.product.imagesUrl[index];
@@ -204,7 +206,7 @@ class _ImageSectionState extends State<_ImageSection> {
 
   /// Resim widget'ını oluşturan yardımcı metot
   Widget _buildProductImage(
-      BuildContext context, String? imageUrl, double imageHeight) {
+      final BuildContext context, final String? imageUrl, final double imageHeight) {
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final cacheHeight = (imageHeight * pixelRatio).round();
 
@@ -216,8 +218,8 @@ class _ImageSectionState extends State<_ImageSection> {
       imageUrl,
       fit: BoxFit.cover,
       cacheHeight: cacheHeight,
-      errorBuilder: (context, error, stackTrace) => _buildPlaceholder(context),
-      loadingBuilder: (context, child, loadingProgress) {
+      errorBuilder: (final context, final error, final stackTrace) => _buildPlaceholder(context),
+      loadingBuilder: (final context, final child, final loadingProgress) {
         if (loadingProgress == null) return child;
         return _buildPlaceholder(context); // Yüklenirken de placeholder
       },
@@ -225,7 +227,7 @@ class _ImageSectionState extends State<_ImageSection> {
   }
 
   /// Placeholder widget'ı
-  Widget _buildPlaceholder(BuildContext context) {
+  Widget _buildPlaceholder(final BuildContext context) {
     return Container(
       color: const Color(0xFFF1F5F9),
       child: Icon(
@@ -237,7 +239,7 @@ class _ImageSectionState extends State<_ImageSection> {
   }
 
   /// Alttaki gölge
-  Widget _buildGradientOverlay(BuildContext context) {
+  Widget _buildGradientOverlay(final BuildContext context) {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -262,7 +264,7 @@ class _ImageSectionState extends State<_ImageSection> {
   Widget _buildIndicators() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(widget.product.imagesUrl.length, (index) {
+      children: List.generate(widget.product.imagesUrl.length, (final index) {
         final bool isSelected = _currentIndex == index;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 150),
@@ -286,8 +288,8 @@ class _ImageSectionState extends State<_ImageSection> {
   }
 
   /// Navigasyon oklarını oluşturan metot
-  Widget _buildNavigationArrow(BuildContext context,
-      {required bool isLeft, required VoidCallback onPressed}) {
+  Widget _buildNavigationArrow(final BuildContext context,
+      {required final bool isLeft, required final VoidCallback onPressed}) {
     // İlk ve son resimde ilgili oku gizle
     if (isLeft && _currentIndex == 0) {
       return const SizedBox.shrink();
@@ -357,7 +359,7 @@ class _FullscreenImageGalleryState extends State<_FullscreenImageGallery> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.zero,
@@ -375,18 +377,18 @@ class _FullscreenImageGalleryState extends State<_FullscreenImageGallery> {
           PageView.builder(
             controller: _pageController,
             itemCount: widget.imageUrls.length,
-            onPageChanged: (index) {
+            onPageChanged: (final index) {
               setState(() {
                 _currentIndex = index;
               });
             },
-            itemBuilder: (context, index) {
+            itemBuilder: (final context, final index) {
               return InteractiveViewer(
                 // Zoom yapabilmek için
                 child: Image.network(
                   widget.imageUrls[index],
                   fit: BoxFit.contain, // Tam ekran için 'contain'
-                  loadingBuilder: (context, child, loadingProgress) {
+                  loadingBuilder: (final context, final child, final loadingProgress) {
                     if (loadingProgress == null) return child;
                     return const Center(child: CircularProgressIndicator());
                   },
@@ -417,7 +419,7 @@ class _FullscreenImageGalleryState extends State<_FullscreenImageGallery> {
               right: 0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(widget.imageUrls.length, (index) {
+                children: List.generate(widget.imageUrls.length, (final index) {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 4.0),
                     height: 8.0,
