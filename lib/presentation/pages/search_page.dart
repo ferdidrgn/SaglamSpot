@@ -484,7 +484,7 @@ class _CreativeAppBar extends StatelessWidget {
   const _CreativeAppBar();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return SliverAppBar(
       expandedHeight: context.responsive(mobile: 200.0, desktop: 250.0),
       floating: false,
@@ -517,12 +517,12 @@ class _CreativeAppBar extends StatelessWidget {
               'https://images.unsplash.com/photo-1511401332200-038b5093b79f?q=80&w=1974&auto=format&fit=crop',
               fit: BoxFit.cover,
               // Yüklenirken animasyon
-              loadingBuilder: (context, child, progress) {
+              loadingBuilder: (final context, final child, final progress) {
                 if (progress == null) return child;
                 return Container(color: const Color(0xFF334155));
               },
               // Hata durumunda
-              errorBuilder: (context, error, stackTrace) {
+              errorBuilder: (final context, final error, final stackTrace) {
                 return Container(
                   color: const Color(0xFF334155),
                   child: const Icon(Icons.palette_outlined,
@@ -1029,11 +1029,10 @@ class _ActiveFiltersSection extends ConsumerWidget {
           InkWell(
             onTap: () {
               // Ana sayfaya (controller'a) haber ver
-              if (categories.contains(label)) {
+              if (categories.contains(label))
                 onCategoryFilterRemoved();
-              } else {
+              else
                 onFilterRemoved(label);
-              }
             },
             child: const Icon(
               Icons.close_rounded,

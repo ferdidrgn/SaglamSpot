@@ -6,7 +6,6 @@ import 'custom_product_card.dart';
 
 /// Responsive product grid with optimal performance
 /// Uses SliverGrid for better performance with large lists
-// Mixin kaldırıldı
 class ResponsiveProductGrid extends ConsumerWidget {
   final List<Product> products;
   final ScrollController? scrollController;
