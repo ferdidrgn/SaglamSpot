@@ -30,13 +30,6 @@ class ResponsiveProductGrid extends ConsumerWidget {
     final crossAxisCount = context.gridColumns();
     final spacing = context.gridSpacing;
 
-    // --- DEĞİŞİKLİK BURADA ---
-    // Mobil'deki (0.72) taşma hatasını düzeltmek için 0.62'ye çektik.
-    // Desktop'u (0.80) daha uzun hale getirmek için 0.72'ye çektik.
-    final aspectRatio =
-        context.responsive(mobile: 0.62, tablet: 0.75, desktop: 0.78);
-    // --- DEĞİŞİKLİK SONU ---
-
     // getScreenPadding extension'da yok, bu yüzden responsive() kullandık
     final screenPadding = context.responsive(
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -49,7 +42,7 @@ class ResponsiveProductGrid extends ConsumerWidget {
       padding: screenPadding,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        childAspectRatio: aspectRatio, // Güncellenen değer kullanıldı
+        childAspectRatio: context.cardAspectRatio(),
         crossAxisSpacing: spacing,
         mainAxisSpacing: spacing,
       ),
@@ -150,7 +143,8 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
-          childAspectRatio: aspectRatio, // Güncellenen değer kullanıldı
+          childAspectRatio: context.cardAspectRatio(),
+          // Güncellenen değer kullanıldı
           crossAxisSpacing: spacing,
           mainAxisSpacing: spacing,
         ),

@@ -616,7 +616,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 crossAxisCount: context.responsive(mobile: 3, desktop: 6),
                 crossAxisSpacing: spacing,
                 mainAxisSpacing: spacing,
-                childAspectRatio: context.responsive(mobile: 0.9, desktop: 1.0),
+                childAspectRatio: context.cardAspectRatio(),
               ),
               itemCount: categories.length,
               itemBuilder: (final context, final index) {

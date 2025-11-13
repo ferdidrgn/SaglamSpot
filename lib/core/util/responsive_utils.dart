@@ -370,6 +370,9 @@ extension ResponsiveExtension on BuildContext {
   int gridColumns([final int desktop = 4]) =>
       isMobile ? 2 : (isTablet ? 3 : desktop);
 
+  double cardAspectRatio() =>
+      responsive(mobile: 0.55, tablet: 0.75, desktop: 0.90);
+
   double get gridSpacing => isMobile ? 12.0 : 20.0;
 
   // Border
