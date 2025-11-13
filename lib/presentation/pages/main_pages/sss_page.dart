@@ -30,7 +30,7 @@ class _SSSPageState extends State<SSSPage> {
     {
       'category': 'Genel',
       'question':
-          'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?',
+      'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?',
       'answer': "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. "
           "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
           "Çalışma hayatı boyunca, teslimatlar için sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
@@ -42,13 +42,13 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Genel',
       'question': 'Sağlam Spot güvenilir mi?',
       'answer':
-          '2012 yılından beri İçerenköy\'de, komşularımıza hizmet veriyoruz. Sayısızca evlere konuk olduk ve hâlâ konuk olmaya devam ediyoruz.',
+      '2012 yılından beri İçerenköy\'de, komşularımıza hizmet veriyoruz. Sayısızca evlere konuk olduk ve hâlâ konuk olmaya devam ediyoruz.',
     },
     {
       'category': 'Genel',
       'question': 'Ürünleri incelemek için mağazanıza gelebilir miyim?',
       'answer':
-          'Elbette! Hatta biz de özellikle bunu tavsiye ediyoruz. Çayımızı içerken ürünleri canlı canlı görmeniz, dokunmanız ve içinize sinmesi en sağlıklısı. İçerenköy Mahallesi\'ndeki dükkanımıza her zaman bekleriz.',
+      'Elbette! Hatta biz de özellikle bunu tavsiye ediyoruz. Çayımızı içerken ürünleri canlı canlı görmeniz, dokunmanız ve içinize sinmesi en sağlıklısı. İçerenköy Mahallesi\'ndeki dükkanımıza her zaman bekleriz.',
     },
 
     // ÜRÜN & HİZMET SORULARI
@@ -56,70 +56,70 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Ürün & Hizmet',
       'question': 'İkinci el ürünlerin durumu nasıl kontrol ediliyor?',
       'answer':
-          "Bizim için ikinci el, 'ikinci kalite' demek değildir. Her ürün ustamızın titiz kontrolünden geçer; temizliği, bakımı ve gerekli onarımları eksiksiz yapılır. Fotoğraflarda ne görüyorsanız o, ama biz yine de 'gelin, bir de siz görün' deriz. Gözünüzle görmeniz her zaman en iyisidir.",
+      "Bizim için ikinci el, 'ikinci kalite' demek değildir. Her ürün ustamızın titiz kontrolünden geçer; temizliği, bakımı ve gerekli onarımları eksiksiz yapılır. Fotoğraflarda ne görüyorsanız o, ama biz yine de 'gelin, bir de siz görün' deriz. Gözünüzle görmeniz her zaman en iyisidir.",
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Mobilyaların malzeme kalitesi nedir?',
       'answer':
-          'Şeffaflığı önemsiyoruz. Her ürünün kendine ait bir hikayesi ve malzemesi var. Bu yüzden tüm detayları, malzeme kalitesini ve özelliklerini ürün açıklama bölümlerine net bir şekilde yazıyoruz. Aklınıza takılan bir şey olursa sormaktan çekinmeyin.',
+      'Şeffaflığı önemsiyoruz. Her ürünün kendine ait bir hikayesi ve malzemesi var. Bu yüzden tüm detayları, malzeme kalitesini ve özelliklerini ürün açıklama bölümlerine net bir şekilde yazıyoruz. Aklınıza takılan bir şey olursa sormaktan çekinmeyin.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Ürün fiyatları nasıl belirleniyor?',
       'answer':
-          'Fiyatlarımızı belirlerken hem ürünün kalitesine hem de piyasa koşullarına adil bir şekilde bakıyoruz. Amacımız, bütçenizi zorlamadan, kaliteli ve uzun ömürlü ürünlere ulaşmanızı sağlamaktır. Hakkı neyse, o.',
+      'Fiyatlarımızı belirlerken hem ürünün kalitesine hem de piyasa koşullarına adil bir şekilde bakıyoruz. Amacımız, bütçenizi zorlamadan, kaliteli ve uzun ömürlü ürünlere ulaşmanızı sağlamaktır. Hakkı neyse, o.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Ürünlerinizde renk seçenekleri var mı?',
       'answer':
-          'Ürünlerimiz genellikle anlık ve tek parçalar olduğu için, mevcut renkleri neyse o şekilde sunuyoruz. Maalesef farklı renk seçenekleri yapamıyoruz. Beğendiğiniz ürünün rengi, gördüğünüz renktir.',
+      'Ürünlerimiz genellikle anlık ve tek parçalar olduğu için, mevcut renkleri neyse o şekilde sunuyoruz. Maalesef farklı renk seçenekleri yapamıyoruz. Beğendiğiniz ürünün rengi, gördüğünüz renktir.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Özel sipariş alıyor musunuz?',
       'answer':
-          'Keşke yapabilsek! Ancak biz daha çok mevcut, özenle seçilmiş ürünlerimize odaklanıyoruz. Özel üretim veya tasarım siparişi şu an için maalesef alamıyoruz. Hazırdaki ürünlerimizi incelemenizi öneririz.',
+      'Keşke yapabilsek! Ancak biz daha çok mevcut, özenle seçilmiş ürünlerimize odaklanıyoruz. Özel üretim veya tasarım siparişi şu an için maalesef alamıyoruz. Hazırdaki ürünlerimizi incelemenizi öneririz.',
     },
     {
       'category': 'Ürün & Hizmet',
       'question': 'Ürün açıklamalarında nelere dikkat etmeliyim?',
       'answer':
-          'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Ayrıca ölçü Alırken Koridoru Unutmayın: Sadece mobilyayı koyacağınız yeri değil, o mobilyanın kapıdan, koridordan ve merdivenden nasıl geçeceğini de ölçün. Malzeme ve durum bilgilerini de mutlaka okuyun.',
+      'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Ayrıca ölçü Alırken Koridoru Unutmayın: Sadece mobilyayı koyacağınız yeri değil, o mobilyanın kapıdan, koridordan ve merdivenden nasıl geçeceğini de ölçün. Malzeme ve durum bilgilerini de mutlaka okuyun.',
     },
 
     // TESLİMAT & MONTAJ SORULARI
     {
       'category': 'Teslimat & Montaj',
       'question':
-          'Asansör olmayan binalara veya yüksek katlara teslimat yapıyor musunuz?',
+      'Asansör olmayan binalara veya yüksek katlara teslimat yapıyor musunuz?',
       'answer':
-          "Bu, bizim için en hassas ve önemli konulardan biri. Biz, işini bizzat yapan küçük bir esnafız. Ustamız, yılların tecrübesiyle birlikte artık genç olmadığı için sağlığını da düşünmek zorundayız. Anlayışınıza sığınarak, asansör olmayan binalarda yüksek katlara (örneğin 2. kat ve üzeri) **eşya çıkarma ve indirme hizmeti kesinlikle veremiyoruz**. Lütfen siparişinizi vermeden önce bu konuyu netleştirelim, size mahcup olmak istemeyiz."
+      "Bu, bizim için en hassas ve önemli konulardan biri. Biz, işini bizzat yapan küçük bir esnafız. Ustamız, yılların tecrübesiyle birlikte artık genç olmadığı için sağlığını da düşünmek zorundayız. Anlayışınıza sığınarak, asansör olmayan binalarda yüksek katlara (örneğin 2. kat ve üzeri) **eşya çıkarma ve indirme hizmeti kesinlikle veremiyoruz**. Lütfen siparişinizi vermeden önce bu konuyu netleştirelim, size mahcup olmak istemeyiz."
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Taşıma hizmeti sağlıyor musunuz?',
       'answer':
-          'Elbette, komşularımıza yardımcı oluyoruz. İçerenköy başta olmak üzere Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü ve Bostancı Sanayi gibi yakın çevremize ücretsiz nakliye hizmetimiz var. (Bostancı ve Kozyatağı\'nın bazı bölgeleri hariç, ve yaşlılık açısından yüksek katlara asansörsüz taşıyamıyoruz, onu ayrıca konuşuruz).',
+      'Elbette, komşularımıza yardımcı oluyoruz. İçerenköy başta olmak üzere Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü ve Bostancı Sanayi gibi yakın çevremize ücretsiz nakliye hizmetimiz var. (Bostancı ve Kozyatağı\'nın bazı bölgeleri hariç, ve yaşlılık açısından yüksek katlara asansörsüz taşıyamıyoruz, onu ayrıca konuşuruz).',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Teslimat süresi ne kadar?',
       'answer':
-          'Siparişi verdiğiniz an sizinle iletişime geçeriz. \'Ne zaman müsaitsiniz?\' diye sorarız. Hem size hem bize uyan en yakın vakit için sözleşiriz. Genellikle 1-3 gün içinde, anlaştığımız saatte teslimatı ve montajı tamamlamış oluruz.',
+      'Siparişi verdiğiniz an sizinle iletişime geçeriz. \'Ne zaman müsaitsiniz?\' diye sorarız. Hem size hem bize uyan en yakın vakit için sözleşiriz. Genellikle 1-3 gün içinde, anlaştığımız saatte teslimatı ve montajı tamamlamış oluruz.',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Montaj hizmeti veriyor musunuz?',
       'answer':
-          'Tabii ki. Mobilyayı alıp kapıya bırakmak bizim tarzımız değil. Büyük ürünlerin hepsini ustamız bizzat kurar ve bu hizmet için ekstra bir ücret talep etmeyiz. Siz sadece yerini gösterin, gerisi bizde.',
+      'Tabii ki. Mobilyayı alıp kapıya bırakmak bizim tarzımız değil. Büyük ürünlerin hepsini ustamız bizzat kurar ve bu hizmet için ekstra bir ücret talep etmeyiz. Siz sadece yerini gösterin, gerisi bizde.',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Mobilya siparişi ne kadar sürede teslim edilir?',
       'answer':
-          'Ürün hazırsa, sizinle ortak belirlediğimiz bir zamanda en kısa sürede kapınızdayız. Montajı da dert etmeyin; getirdiğimiz gibi kurar, öyle teslim ederiz. Genellikle aynı gün içinde her şey biter.',
+      'Ürün hazırsa, sizinle ortak belirlediğimiz bir zamanda en kısa sürede kapınızdayız. Montajı da dert etmeyin; getirdiğimiz gibi kurar, öyle teslim ederiz. Genellikle aynı gün içinde her şey biter.',
     },
 
     // ÖDEME & SİPARİŞ SORULARI
@@ -127,13 +127,13 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Ödeme & Sipariş',
       'question': 'Veresiye sipariş verebilir miyim?',
       'answer':
-          'Bu konuda anlayışınızı rica ediyoruz. Bir esnaf olarak ayakta kalabilmemiz için \'veresiye\' veya \'sonra ödeme\' gibi yöntemlerle maalesef çalışamıyoruz. Anlaştığımız ücreti, ürünü teslim ederken peşin olarak almamız gerekiyor. Size mahcup olmamak için bu kuralımızı baştan belirtmeyi tercih ediyoruz.',
+      'Bu konuda anlayışınızı rica ediyoruz. Bir esnaf olarak ayakta kalabilmemiz için \'veresiye\' veya \'sonra ödeme\' gibi yöntemlerle maalesef çalışamıyoruz. Anlaştığımız ücreti, ürünü teslim ederken peşin olarak almamız gerekiyor. Size mahcup olmamak için bu kuralımızı baştan belirtmeyi tercih ediyoruz.',
     },
     {
       'category': 'Ödeme & Sipariş',
       'question': 'Nasıl sipariş verebilirim?',
       'answer':
-          'En sağlıklı yöntem, her zaman yüz yüze olandır. Siteden beğendiğiniz ürünü not edin, sonra dükkanımıza gelin. Ürünü canlı görün, aklınızdaki soruları sorun, içinize sinerse siparişinizi orada tamamlayalım. Böylece hiçbir şüphe kalmaz.',
+      'En sağlıklı yöntem, her zaman yüz yüze olandır. Siteden beğendiğiniz ürünü not edin, sonra dükkanımıza gelin. Ürünü canlı görün, aklınızdaki soruları sorun, içinize sinerse siparişinizi orada tamamlayalım. Böylece hiçbir şüphe kalmaz.',
     },
 
     // İADE & GARANTİ SORULARI
@@ -141,20 +141,20 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'İade & Garanti',
       'question': 'Ürün iade politikası nedir?',
       'answer':
-          'İkinci el ürünlerin doğası gereği ve esnaf usulü çalıştığımız için maalesef iade kabul edemiyoruz. Bu yüzden \'gelin, görün, çayımızı için\' diye ısrar ediyoruz. Almadan önce ürünü detaylıca incelemeniz, ölçüp biçmeniz en doğrusu. Emin olmadan alışverişi tamamlamayalım.',
+      'İkinci el ürünlerin doğası gereği ve esnaf usulü çalıştığımız için maalesef iade kabul edemiyoruz. Bu yüzden \'gelin, görün, çayımızı için\' diye ısrar ediyoruz. Almadan önce ürünü detaylıca incelemeniz, ölçüp biçmeniz en doğrusu. Emin olmadan alışverişi tamamlamayalım.',
     },
     {
       'category': 'İade & Garanti',
       'question': 'Ürünlerin garanti süresi var mı?',
       'answer':
-          'Ürünlerimiz ikinci el olduğu için, bir markanın sunduğu gibi resmi bir garanti süremiz maalesef yok. Ancak biz \'sattık, bitti\' diyenlerden değiliz. Teslimat ve montaj sırasında her şeyin düzgün çalıştığından emin oluruz.',
+      'Ürünlerimiz ikinci el olduğu için, bir markanın sunduğu gibi resmi bir garanti süremiz maalesef yok. Ancak biz \'sattık, bitti\' diyenlerden değiliz. Teslimat ve montaj sırasında her şeyin düzgün çalıştığından emin oluruz.',
     },
 
 // === YENİ KATEGORİ: İKİNCİ EL ALIM SÜRECİ ===
     {
       'category': 'İkinci El Alım Süreci',
       'question':
-          'Evimdeki eşyaları satmak istiyorum, ikinci el alımı yapıyor musunuz?',
+      'Evimdeki eşyaları satmak istiyorum, ikinci el alımı yapıyor musunuz?',
       'answer': 'Evet, dükkanımızda sergileyebileceğimize inandığımız, temiz ve yeniden satılabilir durumdaki seçili ürünleri alıyoruz. Ancak, dükkanımızın yeri gerçekten çok küçük olduğu için bu konuda maalesef çok seçici davranmak zorundayız. \n\n'
           'Bu konuda baştan dürüst olmayı severiz: Bizden alacağınız teklif, muhtemelen Letgo gibi platformlarda kendinizin satabileceğiniz rakamdan biraz daha düşük olabilir. Bunun sebebi şudur: Biz esnaf olarak o eşyayı almak için **benzin yakıyor, taşıma için emek harcıyor** ve en önemlisi, onu satmak için **dükkanımızda sergileyip tüm müşteri süreciyle (pazarlık, sorular vs.) biz ilgileniyoruz.** \n\n'
           'Siz o platformlarda satarken bu süreçlerin tamamını kendiniz üstlenirsiniz. Biz ise sizden bu zahmeti de devralmış oluyoruz. Teklifimizi bu hizmeti de içerecek şekilde veriyoruz. Anlayışınız için teşekkür ederiz.',
@@ -162,22 +162,22 @@ class _SSSPageState extends State<SSSPage> {
     {
       'category': 'İkinci El Alım Süreci',
       'question':
-          'Komple takım mobilyaları (Yatak odası, salon takımı vb.) alıyor musunuz?',
+      'Komple takım mobilyaları (Yatak odası, salon takımı vb.) alıyor musunuz?',
       'answer':
-          'Dükkanımızın küçük olmasından dolayı, maalesef komple yatak odası, koltuk takımı gibi **büyük setleri alamıyoruz**. Yerimiz çok kısıtlı. Biz daha çok tek parça, satışı daha kolay olan (konsol, dolap, masa, sandalye gibi) ürünlere odaklanıyoruz.'
+      'Dükkanımızın küçük olmasından dolayı, maalesef komple yatak odası, koltuk takımı gibi **büyük setleri alamıyoruz**. Yerimiz çok kısıtlı. Biz daha çok tek parça, satışı daha kolay olan (konsol, dolap, masa, sandalye gibi) ürünlere odaklanıyoruz.'
     },
     {
       'category': 'İkinci El Alım Süreci',
       'question':
-          'Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?',
+      'Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?',
       'answer':
-          'Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda **yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz**. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.'
+      'Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda **yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz**. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.'
     },
     {
       'category': 'İkinci El Alım Süreci',
       'question': 'Her zaman eşya alımı yapıyor musunuz?',
       'answer':
-          'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.'
+      'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.'
     },
   ];
 
@@ -208,7 +208,7 @@ class _SSSPageState extends State<SSSPage> {
         _buildContactCTA(context),
 
         // Ürün Ekle Butonu
-        _buildAddProductButton(context),
+        //_buildAddProductButton(context),
 
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
       ],
@@ -263,7 +263,7 @@ class _SSSPageState extends State<SSSPage> {
                         style: TextStyle(
                             color: Colors.white,
                             fontSize:
-                                context.responsive(mobile: 12, desktop: 14),
+                            context.responsive(mobile: 12, desktop: 14),
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.5)),
                   ),
@@ -321,7 +321,9 @@ class _SSSPageState extends State<SSSPage> {
             final isSelected = _selectedCategory == category;
             final count = category == 'Tümü'
                 ? _faqs.length
-                : _faqs.where((final f) => f['category'] == category).length;
+                : _faqs
+                .where((final f) => f['category'] == category)
+                .length;
 
             return FilterChip(
               label: Row(
@@ -346,7 +348,7 @@ class _SSSPageState extends State<SSSPage> {
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color:
-                            isSelected ? Colors.white : AppColors.textSecondary,
+                        isSelected ? Colors.white : AppColors.textSecondary,
                       ),
                     ),
                   ),
@@ -375,9 +377,9 @@ class _SSSPageState extends State<SSSPage> {
               ),
               padding: context.responsive(
                 mobile:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 desktop:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             );
           }).toList(),
@@ -439,13 +441,11 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildQuickHelpCard(
-    final BuildContext context,
-    final IconData icon,
-    final String title,
-    final String subtitle,
-    final Color color,
-  ) {
+  Widget _buildQuickHelpCard(final BuildContext context,
+      final IconData icon,
+      final String title,
+      final String subtitle,
+      final Color color,) {
     return Container(
       padding: context.responsive(
         mobile: const EdgeInsets.all(16),
@@ -513,7 +513,7 @@ class _SSSPageState extends State<SSSPage> {
       ),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (final context, final index) {
+              (final context, final index) {
             final faq = filteredFaqs[index];
             final isExpanded = _expandedIndex == index;
 
@@ -530,12 +530,12 @@ class _SSSPageState extends State<SSSPage> {
                 ),
                 boxShadow: isExpanded
                     ? [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
                     : [],
               ),
               child: Column(
@@ -726,7 +726,7 @@ class _SSSPageState extends State<SSSPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Müşteri hizmetleri ekibimiz size yardımcı olmak için hazır',
+              'Bize Ulaşabilirsiniz',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: context.responsive(mobile: 16, desktop: 18),
@@ -772,9 +772,9 @@ class _SSSPageState extends State<SSSPage> {
               foregroundColor: Colors.white,
               padding: context.responsive(
                 mobile:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 desktop:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
