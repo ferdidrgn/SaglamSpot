@@ -695,18 +695,16 @@ class _HomePageState extends ConsumerState<HomePage> {
     // Ürün sayısı 10
     final featuredProducts = productState.dataList?.take(10).toList() ?? [];
 
-    if (featuredProducts.isEmpty && productState.isLoading) {
+    if (featuredProducts.isEmpty && productState.isLoading)
       return SliverToBoxAdapter(
         child: SizedBox(
           height: context.responsive(mobile: 340.0, desktop: 360.0),
           child: const Center(child: CircularProgressIndicator()),
         ),
       );
-    }
 
-    if (featuredProducts.isEmpty) {
+    if (featuredProducts.isEmpty)
       return const SliverToBoxAdapter(child: SizedBox());
-    }
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -721,7 +719,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             SizedBox(height: context.responsive(mobile: 16.0, desktop: 20.0)),
             SizedBox(
-              height: context.responsive(mobile: 340.0, desktop: 360.0),
+              height: context.responsive(mobile: 340.0, desktop: 400.0),
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: featuredProducts.length,
@@ -730,7 +728,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 itemBuilder: (final context, final index) {
                   final product = featuredProducts[index];
                   return SizedBox(
-                    width: context.responsive(mobile: 200.0, desktop: 220.0),
+                    width: context.responsive(mobile: 200.0, desktop: 230.0),
                     child: CustomProductCard(product: product),
                   );
                 },

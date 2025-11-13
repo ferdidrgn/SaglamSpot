@@ -98,7 +98,8 @@ class _ImageSectionState extends State<_ImageSection> {
   }
 
   /// Tam ekran galeri gösterimi
-  void _showFullscreenGallery(final BuildContext context, final int initialIndex) {
+  void _showFullscreenGallery(
+      final BuildContext context, final int initialIndex) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.8), // Arka planı koyulaştır
@@ -117,7 +118,7 @@ class _ImageSectionState extends State<_ImageSection> {
     // Masaüstü görselini daha uzun yapmak için 180.0 -> 210.0 yapıldı.
     // Bu, grid'deki (desktop: 0.72) oranıyla uyumlu çalışacaktır.
     final imageHeight =
-        context.responsive(mobile: 140.0, tablet: 160.0, desktop: 210.0);
+        context.responsive(mobile: 140.0, tablet: 160.0, desktop: 230.0);
     // --- DEĞİŞİKLİK SONU ---
 
     final hasMultipleImages = widget.product.imagesUrl.length > 1;
@@ -145,9 +146,8 @@ class _ImageSectionState extends State<_ImageSection> {
               return GestureDetector(
                 onTap: () {
                   // Sadece geçerli resim varsa tam ekran aç
-                  if (imageUrl != null) {
+                  if (imageUrl != null)
                     _showFullscreenGallery(context, index);
-                  }
                 },
                 child: _buildProductImage(context, imageUrl, imageHeight),
               );
@@ -205,20 +205,20 @@ class _ImageSectionState extends State<_ImageSection> {
   }
 
   /// Resim widget'ını oluşturan yardımcı metot
-  Widget _buildProductImage(
-      final BuildContext context, final String? imageUrl, final double imageHeight) {
+  Widget _buildProductImage(final BuildContext context, final String? imageUrl,
+      final double imageHeight) {
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final cacheHeight = (imageHeight * pixelRatio).round();
 
-    if (imageUrl == null || imageUrl.isEmpty) {
+    if (imageUrl == null || imageUrl.isEmpty)
       return _buildPlaceholder(context);
-    }
 
     return Image.network(
       imageUrl,
       fit: BoxFit.cover,
       cacheHeight: cacheHeight,
-      errorBuilder: (final context, final error, final stackTrace) => _buildPlaceholder(context),
+      errorBuilder: (final context, final error, final stackTrace) =>
+          _buildPlaceholder(context),
       loadingBuilder: (final context, final child, final loadingProgress) {
         if (loadingProgress == null) return child;
         return _buildPlaceholder(context); // Yüklenirken de placeholder
@@ -291,12 +291,10 @@ class _ImageSectionState extends State<_ImageSection> {
   Widget _buildNavigationArrow(final BuildContext context,
       {required final bool isLeft, required final VoidCallback onPressed}) {
     // İlk ve son resimde ilgili oku gizle
-    if (isLeft && _currentIndex == 0) {
+    if (isLeft && _currentIndex == 0)
       return const SizedBox.shrink();
-    }
-    if (!isLeft && _currentIndex == widget.product.imagesUrl.length - 1) {
+    if (!isLeft && _currentIndex == widget.product.imagesUrl.length - 1)
       return const SizedBox.shrink();
-    }
 
     return Positioned(
       top: 0,
@@ -388,7 +386,8 @@ class _FullscreenImageGalleryState extends State<_FullscreenImageGallery> {
                 child: Image.network(
                   widget.imageUrls[index],
                   fit: BoxFit.contain, // Tam ekran için 'contain'
-                  loadingBuilder: (final context, final child, final loadingProgress) {
+                  loadingBuilder:
+                      (final context, final child, final loadingProgress) {
                     if (loadingProgress == null) return child;
                     return const Center(child: CircularProgressIndicator());
                   },

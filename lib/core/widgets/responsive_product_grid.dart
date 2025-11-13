@@ -34,7 +34,7 @@ class ResponsiveProductGrid extends ConsumerWidget {
     // Mobil'deki (0.72) taşma hatasını düzeltmek için 0.62'ye çektik.
     // Desktop'u (0.80) daha uzun hale getirmek için 0.72'ye çektik.
     final aspectRatio =
-        context.responsive(mobile: 0.62, tablet: 0.75, desktop: 0.72);
+        context.responsive(mobile: 0.62, tablet: 0.75, desktop: 0.78);
     // --- DEĞİŞİKLİK SONU ---
 
     // getScreenPadding extension'da yok, bu yüzden responsive() kullandık
