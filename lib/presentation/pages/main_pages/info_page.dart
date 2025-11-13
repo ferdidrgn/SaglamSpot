@@ -28,9 +28,6 @@ class InfoPage extends StatelessWidget {
         // Ulaşım Bilgileri
         _buildTransportationInfo(context),
 
-        // Team Section
-        _buildTeamSection(context),
-
         // Contact Info
         _buildContactSection(context),
 
@@ -91,7 +88,7 @@ class InfoPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
-                      '20 YILLIK ESNAF',
+                      '2012\'DEN BERİ SİZİNLE',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: context.responsive(mobile: 12, desktop: 14),
@@ -102,7 +99,7 @@ class InfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Sağlam Spot\nGüvenin Adresi',
+                    'Sağlam Spot\nBildiğiniz Güven',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: context.responsive(mobile: 32, desktop: 52),
@@ -113,7 +110,7 @@ class InfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    '1995\'den beri kalite ve güven odaklı hizmet\nanlayışımızla yanınızdayız.',
+                    'İşimizi sevgi ve titizlikle yaparak\nmahallemize hizmet veriyoruz.',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: context.responsive(mobile: 16, desktop: 20),
@@ -130,9 +127,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
-  // Our Story - DÜZELTİLDİ
   Widget _buildOurStory(final BuildContext context) {
-    // Widget'ları Expanded olmadan tanımla
     final imageWidget = Container(
       height: context.responsive(mobile: 300, desktop: 500),
       decoration: BoxDecoration(
@@ -165,7 +160,7 @@ class InfoPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'İş Yeri Bilgileri',
+          'Biz Kimiz? (Hikayemiz)',
           style: TextStyle(
             fontSize: context.responsive(mobile: 28, desktop: 42),
             fontWeight: FontWeight.bold,
@@ -174,7 +169,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Text(
-          'Müşterilerimize en kaliteli ve şık mobilya çözümleri sunarak, yaşam alanlarını daha konforlu ve estetik hale getiriyoruz.',
+          'Amacımız, evinize sıcaklık katacak, kaliteli ve içinize sinen mobilyaları bulmanıza yardımcı olmak. Yaşam alanlarınızı güzelleştirmek bizim işimiz.',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -183,7 +178,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          '1995 yılında küçük bir atölye olarak başladık. Mobilya sektöründe kalite ve müşteri memnuniyeti odaklı yaklaşımımızla kısa sürede büyüdük.',
+          'Her şey 2012\'de, İçerenköy\'deki bu dükkanda başladı. O günden beri en büyük önceliğimiz "kaliteli ürün" ve "gülen yüz" oldu. Sözümüzün arkasında durduk.',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -192,7 +187,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          'Bugün, hem sıfır hem de ikinci el mobilya ürünleriyle binlerce müşterimize hizmet veriyor, evlere sıcaklık ve konfor katıyoruz.',
+          'Bugün, hem sıfır hem de özenle seçtiğimiz ikinci el ürünlerimizle, binlerce komşumuzun evine konuk olduk. Sizin güveninizle büyüyoruz.',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -204,9 +199,9 @@ class InfoPage extends StatelessWidget {
           spacing: 32,
           runSpacing: 24,
           children: [
-            _buildStoryHighlight('2012', 'Kuruluş'),
-            _buildStoryHighlight('30+', 'Yıllık Deneyim'),
-            _buildStoryHighlight('5K+', 'Mutlu Müşteri'),
+            _buildStoryHighlight('2012', 'Başlangıç'),
+            _buildStoryHighlight('30+', 'Yıllık Tecrübe'),
+            _buildStoryHighlight('5K+', 'Gülen Yüz'),
           ],
         ),
       ],
@@ -263,35 +258,33 @@ class InfoPage extends StatelessWidget {
     );
   }
 
-  // Our Values - DÜZELTİLDİ
   Widget _buildOurValues(final BuildContext context) {
-    // Widget'ları Expanded olmadan tanımla
     final value1 = _buildValueCard(
       context,
       Icons.verified_outlined,
-      'Kalite',
-      'Her üründe en yüksek kalite standartlarını garanti ediyoruz.',
+      'Kalite ve Titizlik',
+      'İster sıfır ister ikinci el olsun, dükkanımıza giren her ürünün arkasındayız. Titizlikle seçer, size öyle sunarız.',
       AppColors.primary,
     );
     final value2 = _buildValueCard(
       context,
       Icons.favorite_outline,
-      'Müşteri Memnuniyeti',
-      'Müşterilerimizin mutluluğu bizim için en önemli önceliktir.',
+      'Gülen Yüz',
+      'Bizim için en büyük kazanç, dükkandan mutlu ayrılan bir komşumuzdur. Memnuniyetiniz her şeyden önce gelir.',
       AppColors.secondary,
     );
     final value3 = _buildValueCard(
       context,
       Icons.eco_outlined,
-      'Sürdürülebilirlik',
-      'Çevreye duyarlı, sürdürülebilir ticaret anlayışını benimsiyoruz.',
+      'Emeğe Saygı',
+      'Mobilya kıymetli bir emektir. İkinci el ürünlere yeniden hayat vererek hem bütçenizi hem de doğayı koruruz.',
       AppColors.success,
     );
     final value4 = _buildValueCard(
       context,
       Icons.handshake_outlined,
-      'Güven',
-      'Şeffaf ve dürüst iş ilişkileri kurmaya önem veriyoruz.',
+      'Dürüstlük ve Güven',
+      'Sözümüz senettir. Neyse o. Bizde sürpriz olmaz. Şeffaf ve dürüst esnaflık en büyük değerimizdir.',
       AppColors.info,
     );
 
@@ -341,7 +334,7 @@ class InfoPage extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Değerlerimiz',
+              'İlkelerimiz',
               style: TextStyle(
                 fontSize: context.responsive(mobile: 28, desktop: 42),
                 fontWeight: FontWeight.bold,
@@ -350,7 +343,7 @@ class InfoPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Bizi biz yapan ilkeler',
+              'Esnaflıktan ödün vermediğimiz prensiplerimiz',
               style: TextStyle(
                 fontSize: context.responsive(mobile: 16, desktop: 18),
                 color: AppColors.textSecondary,
@@ -445,7 +438,7 @@ class InfoPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ustamızın Geçmişi ve Yetenekleri',
+          'Ustamızı Tanıyın',
           style: TextStyle(
             fontSize: context.responsive(mobile: 22, desktop: 28),
             fontWeight: FontWeight.bold,
@@ -454,13 +447,9 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. "
-          "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
-          "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır.\n\n"
-          "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
-          "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır.\n\n"
-          "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, "
-          "sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",
+          "Ustamız, 1995\'ten beri, yani çeyrek asırdan fazladır bu işin içinde. Sektörün tozunu yutmuş, en iyi markalarda (İstikbal) çalışarak mobilyanın 'püf noktalarını' öğrenmiş biridir.\n\n"
+          "Sürücülükten montaja, müşteri karşılamadan taşımaya kadar her alanda bizzat çalışarak tam bir tecrübe kazanmıştır. 2012'de ise 'artık kendi dükkanım' diyerek bu tecrübesini Sağlam Spot'a taşımıştır.\n\n"
+          "Amacı, o büyük firmalarda öğrendiği kaliteyi, mahalle esnafının samimiyeti ve titizliğiyle birleştirip size en iyi hizmeti sunmaktır.",
           style: TextStyle(
             fontSize: context.responsive(mobile: 15, desktop: 16),
             color: AppColors.textSecondary,
@@ -527,7 +516,7 @@ class InfoPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Taşıma Hizmeti',
+          'Nakliye ve Montaj Hizmetimiz',
           style: TextStyle(
             fontSize: context.responsive(mobile: 22, desktop: 28),
             fontWeight: FontWeight.bold,
@@ -536,7 +525,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Ücretsiz Teslimat',
+          'Ücretsiz Nakliye ve Montaj',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: Colors.orange,
@@ -545,7 +534,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Hizmet Verilen Bölgeler:',
+          'Ücretsiz Hizmet Bölgelerimiz:',
           style: TextStyle(
             fontSize: context.responsive(mobile: 15, desktop: 16),
             fontWeight: FontWeight.w600,
@@ -554,7 +543,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          '• İçerenköy Mahallesi\n• İçerenköy Mahallesi yakın çevreleri',
+          '• İçerenköy Mahallemiz\n• Fındıklı, Kayışdağı, Küçükbakkalköy\n• İnönü ve Bostancı Sanayi gibi yakın komşularımız',
           style: TextStyle(
             fontSize: context.responsive(mobile: 15, desktop: 16),
             color: AppColors.textSecondary,
@@ -563,7 +552,17 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          '⏰ Teslimat Saatleri: 09:00 - 22:00',
+          'Önemli Not: Ustamızın sağlığını korumak için, asansör olmayan binalarda yüksek katlara maalesef hizmet veremiyoruz. Anlayışınız için teşekkür ederiz.',
+          style: TextStyle(
+            fontSize: context.responsive(mobile: 14, desktop: 15),
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          '⏰ Sizinle sözleştiğimiz saatte kapınızdayız!',
           style: TextStyle(
             fontSize: context.responsive(mobile: 14, desktop: 14),
             color: AppColors.textTertiary,
@@ -625,7 +624,7 @@ class InfoPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ulaşım',
+          'Dükkanımıza Nasıl Gelirsiniz?',
           style: TextStyle(
             fontSize: context.responsive(mobile: 22, desktop: 28),
             fontWeight: FontWeight.bold,
@@ -634,7 +633,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Otobüs Hatları ve Durakları:',
+          'Otobüsle Gelirseniz:',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             fontWeight: FontWeight.w600,
@@ -644,17 +643,17 @@ class InfoPage extends StatelessWidget {
         const SizedBox(height: 12),
         _buildBusInfo(
           context,
-          'Ziyapaşa Durağı Kadıköy Yönü:',
+          'Ziyapaşa Durağı (Kadıköy Yönü):',
           '19, 19F, 19FB, 14KS, 18UK, KM46-1',
         ),
         _buildBusInfo(
           context,
-          'İçerenköy Durağı Kayışdağı Yönü:',
+          'İçerenköy Durağı (Kayışdağı Yönü):',
           '19, 19F, 19FB, 14KS, 18UK, KM46-1',
         ),
         _buildBusInfo(
           context,
-          'İçerenköy Durağı Yeniyol\'dan:',
+          'İçerenköy Durağı (Yeniyol):',
           '10, 319, KM46, 13AB, 14T',
         ),
       ],
@@ -721,168 +720,24 @@ class InfoPage extends StatelessWidget {
     );
   }
 
-  // Team Section - DÜZELTİLDİ
-  Widget _buildTeamSection(final BuildContext context) {
-    final member1 = _buildTeamMember(
-      context,
-      'Ahmet Yılmaz',
-      'Kurucu & CEO',
-      Icons.person_outline,
-    );
-    final member2 = _buildTeamMember(
-      context,
-      'Ayşe Demir',
-      'Satış Müdürü',
-      Icons.person_outline,
-    );
-    final member3 = _buildTeamMember(
-      context,
-      'Mehmet Kaya',
-      'Lojistik Sorumlusu',
-      Icons.person_outline,
-    );
-    final member4 = _buildTeamMember(
-      context,
-      'Zeynep Şahin',
-      'Müşteri İlişkileri',
-      Icons.person_outline,
-    );
-
-    final childrenDesktop = [
-      Expanded(child: member1),
-      SizedBox(width: context.responsive(mobile: 0, desktop: 24)),
-      Expanded(child: member2),
-      SizedBox(width: context.responsive(mobile: 0, desktop: 24)),
-      Expanded(child: member3),
-      SizedBox(width: context.responsive(mobile: 0, desktop: 24)),
-      Expanded(child: member4),
-    ];
-
-    final childrenMobile = [
-      member1,
-      SizedBox(height: context.responsive(mobile: 16, desktop: 0)),
-      member2,
-      SizedBox(height: context.responsive(mobile: 16, desktop: 0)),
-      member3,
-      SizedBox(height: context.responsive(mobile: 16, desktop: 0)),
-      member4,
-    ];
-
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: context.responsive(
-          mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        ),
-        child: Column(
-          children: [
-            Text(
-              'Ekibimiz',
-              style: TextStyle(
-                fontSize: context.responsive(mobile: 28, desktop: 42),
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Uzman ve deneyimli kadromuzla hizmetinizdeyiz',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: context.responsive(mobile: 16, desktop: 18),
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 48),
-            context.responsive<Widget>(
-              mobile: Column(children: childrenMobile),
-              desktop: Row(children: childrenDesktop),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTeamMember(
-    final BuildContext context,
-    final String name,
-    final String role,
-    final IconData icon,
-  ) {
-    return Container(
-      padding: context.responsive(
-        mobile: const EdgeInsets.all(24),
-        desktop: const EdgeInsets.all(32),
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: context.responsive(mobile: 100, desktop: 120),
-            height: context.responsive(mobile: 100, desktop: 120),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              size: context.responsive(mobile: 50, desktop: 60),
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: context.responsive(mobile: 18, desktop: 20),
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            role,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Contact Info - DÜZELTİLDİ
   Widget _buildContactSection(final BuildContext context) {
     final item1 = _buildContactItem(
       context,
       Icons.phone_outlined,
-      'Telefon',
-      '+90 553 920 1996',
+      'Telefon (Hızlı Çözüm)',
+      '+90 539 201 9961',
     );
     final item2 = _buildContactItem(
       context,
       Icons.location_on_outlined,
-      'Adres',
-      'İçerenköy Mahallesi',
+      'Adres (Çaya Bekleriz)',
+      'İçerenköy Mahallesi\nBuket Sokak No:6',
     );
     final item3 = _buildContactItem(
       context,
       Icons.access_time_outlined,
-      'Çalışma Saatleri',
-      'Pzt-Cmt: 09:00-22:00\nPazar: 10:00-18:00',
+      'Çalışma Saatlerimiz',
+      'Pzt-Cmt: 09:00 - 22:00\nPazar: 10:00 - 20:00',
     );
 
     final itemsDesktop = [
@@ -983,7 +838,7 @@ class InfoPage extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'İletişim Bilgilerimiz',
+              'Bize Ulaşın',
               style: TextStyle(
                 fontSize: context.responsive(mobile: 28, desktop: 42),
                 fontWeight: FontWeight.bold,
@@ -1096,7 +951,7 @@ class InfoPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Mağaza Konumumuz',
+                      'Dükkanımız Tam Burada',
                       style: TextStyle(
                         fontSize: context.responsive(mobile: 18, desktop: 20),
                         fontWeight: FontWeight.w600,
@@ -1105,7 +960,7 @@ class InfoPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Haritayı görüntülemek için tıklayın',
+                      'Yol tarifi almak için haritaya dokunun',
                       style: TextStyle(
                         color: AppColors.textTertiary,
                       ),
@@ -1121,17 +976,13 @@ class InfoPage extends StatelessWidget {
   }
 
   Future<void> _launchPhone() async {
-    final phoneNumber = Uri.parse('tel:+905539201996');
-    if (await canLaunchUrl(phoneNumber)) {
-      await launchUrl(phoneNumber);
-    }
+    final phoneNumber = Uri.parse('tel:+905392019961');
+    if (await canLaunchUrl(phoneNumber)) await launchUrl(phoneNumber);
   }
 
   Future<void> _launchMaps() async {
     final mapsUrl = Uri.parse(
         'https://www.google.com/maps/place/Sa%C4%9Flam+Spot/@40.9699248,29.1146853,21z/data=!4m6!3m5!1s0x14cac64216b4ccb7:0x49124944b40496f6!8m2!3d40.9699196!4d29.1148379!16s%2Fg%2F11dxc20095?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D');
-    if (await canLaunchUrl(mapsUrl)) {
-      await launchUrl(mapsUrl);
-    }
+    if (await canLaunchUrl(mapsUrl)) await launchUrl(mapsUrl);
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_app_header.dart';
-import '../pages/main_pages/home_page.dart';
+import '../pages/main_pages/home/home_page.dart';
 import '../pages/main_pages/info_page.dart';
 import '../pages/main_pages/new_products_page.dart';
 import '../pages/main_pages/spot_products_page.dart';

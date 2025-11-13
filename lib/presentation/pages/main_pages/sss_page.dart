@@ -86,7 +86,7 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Ürün & Hizmet',
       'question': 'Ürün açıklamalarında nelere dikkat etmeliyim?',
       'answer':
-          'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Malzeme ve durum bilgilerini de mutlaka okuyun.',
+          'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Ayrıca ölçü Alırken Koridoru Unutmayın: Sadece mobilyayı koyacağınız yeri değil, o mobilyanın kapıdan, koridordan ve merdivenden nasıl geçeceğini de ölçün. Malzeme ve durum bilgilerini de mutlaka okuyun.',
     },
 
     // TESLİMAT & MONTAJ SORULARI

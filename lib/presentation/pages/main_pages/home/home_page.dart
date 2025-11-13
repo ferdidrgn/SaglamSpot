@@ -1,12 +1,13 @@
-import 'dart:async'; // Timer için eklendi
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_section_header.dart';
-import '../../../data/providers/product/product_provider.dart';
-import '../../../data/providers/product/product_state.dart';
+import 'package:saglamspot/presentation/pages/main_pages/home/widgets/furniture_tips_section.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/custom_section_header.dart';
+import '../../../../data/providers/product/product_provider.dart';
+import '../../../../data/providers/product/product_state.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -16,32 +17,25 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  // --- Hero Section için State Değişkenleri Eklendi ---
   late PageController _pageController;
   Timer? _timer;
   int _currentPage = 0;
-  final int _numPages = 3; // Slayt sayımız
-  // --- Ekleme Sonu ---
+  final int _numPages = 3;
 
   @override
   void initState() {
     super.initState();
-
-    // --- Hero Section için Init Eklendi ---
     _pageController = PageController();
     _pageController.addListener(_onPageChanged);
     _startTimer();
-    // --- Ekleme Sonu ---
 
     WidgetsBinding.instance.addPostFrameCallback((final _) {
-      // initState içinde ref.read kullanmak best practice'dir.
       if (mounted) {
         ref.read(productProvider.notifier).loadProducts();
       }
     });
   }
 
-  // --- Hero Section için Dispose ve Helper Metotlar Eklendi ---
   @override
   void dispose() {
     _timer?.cancel();
@@ -59,7 +53,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   void _startTimer() {
-    _timer?.cancel(); // Mevcut timer'ı iptal et
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 5), (final timer) {
       if (_pageController.hasClients) {
         int nextPage = (_currentPage + 1) % _numPages;
@@ -77,42 +71,25 @@ class _HomePageState extends ConsumerState<HomePage> {
     _startTimer();
   }
 
-  // --- Ekleme Sonu ---
-
   @override
   Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
-    // Responsive extension'dan isMobile bilgisini alıyoruz
     final isMobile = context.isMobile;
 
     return CustomScrollView(
       slivers: [
-        // Hero Section
         _buildEnhancedHeroSection(context, isMobile),
-
-        // Value Proposition
         _buildValueProposition(context, isMobile),
-
-        // Categories Section
         _buildCategoriesSection(context),
-
-        // Featured Products (Hata düzeltildi, tekrar yatay liste oldu)
         _buildFeaturedProducts(context, productState),
-
-        // Special Offers (Turuncu Kart - İçerik hatası düzeltildi)
         _buildSpecialOffers(context, isMobile),
-
-        // --- BÖLÜM GERİ EKLENDİ (RESPONSIVE OLARAK) ---
         _buildBusinessIntroduction(context, isMobile),
-        // --- EKLEME SONU ---
 
-        // Testimonials
+        // YENİ: Ayrılmış Furniture Tips Section
+        const FurnitureTipsSection(),
+
         _buildTestimonials(context, isMobile),
-
-        // Stats Section
         _buildStatsSection(context, isMobile),
-
-        // Alt boşluk
         SliverToBoxAdapter(
             child: SizedBox(
                 height: context.responsive(mobile: 30.0, desktop: 60.0))),
@@ -120,9 +97,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  // ... Diğer tüm metodlar aynı kalacak (hero section, value proposition, vs.)
+  // Sadece _buildFurnitureTipsSection metodunu siliyoruz çünkü artık ayrı dosyada
+
   SliverToBoxAdapter _buildEnhancedHeroSection(
       final BuildContext context, final bool isMobile) {
-    // Slayt listesini PageView'dan önce tanımlıyoruz
     final slideList = [
       _buildHeroSlide(
         context: context,
@@ -184,29 +163,25 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        // PageView'ı Stack ile sarmalıyoruz (Oklar ve Noktalar için)
         child: Stack(
           alignment: Alignment.center,
           children: [
             PageView(
-              controller: _pageController, // Controller'ı atıyoruz
-              onPageChanged: (page) {
-                // Kullanıcı elle kaydırırsa timer'ı sıfırla
+              controller: _pageController,
+              onPageChanged: (final page) {
                 _resetTimer();
               },
               children: slideList,
             ),
-            // 1. Nokta Göstergeler
             Positioned(
               bottom: context.responsive(mobile: 16.0, desktop: 32.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_numPages, (index) {
+                children: List.generate(_numPages, (final index) {
                   return _buildDotIndicator(context, index);
                 }),
               ),
             ),
-            // 2. Navigasyon Okları (Sadece Desktop/Tablet)
             if (!isMobile)
               Positioned(
                 left: context.responsive(mobile: 8.0, desktop: 32.0),
@@ -223,10 +198,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // --- Hero Section için Yeni Helper Widget'lar ---
-
-  /// Navigasyon Okları (Sol/Sağ)
-  Widget _buildNavArrow(BuildContext context, {required bool isLeft}) {
+  Widget _buildNavArrow(final BuildContext context,
+      {required final bool isLeft}) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -242,7 +215,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               curve: Curves.easeInOut,
             );
           }
-          _resetTimer(); // Ok'a basınca timer'ı sıfırla
+          _resetTimer();
         },
         child: Container(
           padding: const EdgeInsets.all(8.0),
@@ -260,8 +233,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  /// Nokta Göstergeler
-  Widget _buildDotIndicator(BuildContext context, int index) {
+  Widget _buildDotIndicator(final BuildContext context, final int index) {
     bool isActive = _currentPage == index;
     return GestureDetector(
       onTap: () {
@@ -270,7 +242,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeInOut,
         );
-        _resetTimer(); // Noktaya basınca timer'ı sıfırla
+        _resetTimer();
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
@@ -284,8 +256,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-
-  // --- Ekleme Sonu ---
 
   Widget _buildHeroSlide({
     required final BuildContext context,
@@ -388,7 +358,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
                 SizedBox(
                     height: context.responsive(mobile: 24.0, desktop: 40.0)),
-                // Butonları mobil için alt alta, desktop için yan yana getir
                 Flex(
                   direction: isMobile ? Axis.vertical : Axis.horizontal,
                   crossAxisAlignment: isMobile
