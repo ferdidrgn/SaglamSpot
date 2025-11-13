@@ -212,75 +212,216 @@ class FurnitureTip {
   });
 }
 
-// Püf noktaları listesi (10 adet kısaltılmış)
+// Güncellenmiş püf noktaları listesi (30 adet)
 final List<FurnitureTip> _furnitureTips = [
   FurnitureTip(
     icon: Icons.balance,
     title: 'Terazi Kontrolü Yapın',
     description:
-        'Mobilyanın tüm ayakları zemine tam bassın. Yamuk zeminlerde keçe veya kartonla destek yapın. Aksi halde mobilya esner, kapaklar sarkar.',
+        'Mobilyanızın tüm ayaklarının zemine tam bastığından emin olun. Eğimli zeminlerde keçe veya karton ile denge sağlayın. Aksi takdirde mobilya esner, kapaklar sarkar.',
     category: 'Yerleştirme',
   ),
   FurnitureTip(
     icon: Icons.space_bar,
     title: 'Duvarla Mesafe Bırakın',
     description:
-        'Mobilya ile duvar arasında 1-2 cm boşluk bırakın. Bu küçük mesafe rutubet ve küfü önler.',
+        'Mobilya ile duvar arasında 1-2 cm boşluk bırakarak hava sirkülasyonu sağlayın. Bu önlem rutubet ve küf oluşumunu engeller.',
     category: 'Yerleştirme',
   ),
   FurnitureTip(
     icon: Icons.heat_pump_outlined,
     title: 'Isı Kaynaklarından Uzak Tutun',
     description:
-        'Mobilyaları kaloriferden en az 30 cm uzak tutun. Direkt ısı ahşabı kurutur, çatlatır.',
+        'Mobilyaları kalorifer, soba gibi ısı kaynaklarından en az 30 cm uzakta konumlandırın. Yakın mesafe ahşabın çatlamasına neden olur.',
     category: 'Koruma',
   ),
   FurnitureTip(
     icon: Icons.wb_sunny_outlined,
     title: 'Güneş Işığından Koruyun',
     description:
-        'Direkt güneş ışığına maruz bırakmayın. Güneş, renk solmasına ve ahşap deformasyonuna yol açar.',
+        'Direkt güneş ışığına maruz kalmayacak şekilde yerleştirin veya perdelerle filtreleyin. Güneş, renk solmasına ve ahşap deformasyonuna yol açar.',
     category: 'Koruma',
   ),
   FurnitureTip(
     icon: Icons.water_drop_outlined,
     title: 'Nemli Temizlik Yapın',
     description:
-        'Ahşabı hafif nemli bezle silip hemen kurulayın. Sırılsıklam bez ahşabı şişirir.',
+        'Ahşap yüzeyleri hafif nemli bezle silip hemen kurulayın. Sırılsıklam bez kullanmak ahşabın şişmesine ve lekelerin kalıcı olmasına sebep olur.',
     category: 'Temizlik',
   ),
   FurnitureTip(
     icon: Icons.cleaning_services,
     title: 'Lekelere Anında Müdahale',
     description:
-        'Kumaşa dökülenleri hemen temizleyin. Bekleyen lekeler kumaşın liflerine işler.',
+        'Kumaşa bir şey döküldüğünde hemen temizleyin. Bekleyen lekeler kumaşın liflerine işleyerek çıkmaz hale gelir.',
+    category: 'Temizlik',
+  ),
+  FurnitureTip(
+    icon: Icons.touch_app,
+    title: 'Tampon Yöntemiyle Temizleyin',
+    description:
+        'Lekeleri ovalamak yerine tampon yaparak (hafifçe bastırıp çekerek) temizleyin. Ovalamak lekeyi daha geniş alana yayar.',
     category: 'Temizlik',
   ),
   FurnitureTip(
     icon: Icons.emoji_objects_outlined,
     title: 'Bardak Altlığı Kullanın',
     description:
-        'Sıcak-soğuk tüm bardaklar için altlık kullanın. Doğrudan temas beyaz halka yapar.',
+        'Sıcak ve soğuk içecekler için mutlaka bardak altlığı kullanın. Doğrudan temas ahşap yüzeyde kalıcı beyaz halkalar bırakır.',
     category: 'Koruma',
   ),
   FurnitureTip(
-    icon: Icons.construction,
-    title: 'Vidaları Kontrol Edin',
+    icon: Icons.chair_outlined,
+    title: 'Kolçaklara Oturmayın',
     description:
-        'Yılda bir tüm mobilya vidalarını sıkın. Gevşek vidalar gıcırtı ve arızaya neden olur.',
+        'Koltuk kolçakları oturmak için tasarlanmamıştır. Üzerine oturmak iskeleti zorlar ve bağlantı noktalarında gevşemeye yol açar.',
+    category: 'Kullanım',
+  ),
+  FurnitureTip(
+    icon: Icons.rotate_right,
+    title: 'Oturma Pozisyonunu Değiştirin',
+    description:
+        'Koltukta sürekli aynı yere oturmayın. Minderlerin yerini düzenli değiştirerek eşit aşınma sağlayın. Aksi halde tek taraflı çökme oluşur.',
+    category: 'Kullanım',
+  ),
+  FurnitureTip(
+    icon: Icons.construction,
+    title: 'Vidaları Düzenli Kontrol Edin',
+    description:
+        'Yılda bir kez tüm mobilya vidalarını kontrol edip gevşek olanları sıkın. Geciken bakım gıcırtı ve büyük arızalara neden olabilir.',
     category: 'Bakım',
   ),
   FurnitureTip(
     icon: Icons.auto_awesome_mosaic,
     title: 'Ayaklara Keçe Yapıştırın',
     description:
-        'Tüm ayaklara keçe yapıştırın. Parke çizilmesini ve çekme seslerini engeller.',
+        'Tüm sandalye, masa ve sehpa ayaklarına keçe yapıştırın. Bu önlem parke çizilmesini ve çekme seslerini engeller.',
     category: 'Koruma',
+  ),
+  FurnitureTip(
+    icon: Icons.cleaning_services_outlined,
+    title: 'Doğal Temizleyiciler Kullanın',
+    description:
+        'Arap sabunu gibi doğal temizleyicileri tercih edin. Ağır kimyasallar mobilyanın cila ve rengine zarar verir.',
+    category: 'Temizlik',
   ),
   FurnitureTip(
     icon: Icons.king_bed_outlined,
     title: 'Yatağınızı Çevirin',
-    description: 'Yatağınızı 6 ayda bir çevirin. Yük eşit dağılır, ömrü uzar.',
+    description:
+        'Yatağınızı 6 ayda bir baş-ayak yönünü değiştirin. Bu sayede yük eşit dağılır ve yatağın ömrü uzar, aksi takdirde çökmeler oluşur.',
     category: 'Bakım',
+  ),
+  FurnitureTip(
+    icon: Icons.directions_run,
+    title: 'Mobilyaları Kaldırarak Taşıyın',
+    description:
+        'Mobilyaları asla sürüklemeyin, daima kaldırarak taşıyın. Sürükleme ayak kırılmasına ve parke çizilmesine yol açar.',
+    category: 'Taşıma',
+  ),
+  FurnitureTip(
+    icon: Icons.library_books,
+    title: 'Rafları Dengeli Yükleyin',
+    description:
+        'Ağır kitapları alt raflara, hafif olanları üst raflara yerleştirin. Dengesiz yükleme rafların sarkmasına neden olur.',
+    category: 'Kullanım',
+  ),
+  FurnitureTip(
+    icon: Icons.pets_outlined,
+    title: 'Evcil Hayvanlar İçin Doğru Kumaş',
+    description:
+        'Kadife veya tay tüyü gibi sık dokulu kumaşları tercih edin. Dokuma kumaşlar evcil hayvan tırnaklarına karşı dayanıksızdır.',
+    category: 'Koruma',
+  ),
+  FurnitureTip(
+    icon: Icons.child_care_outlined,
+    title: 'Köşe Koruyucu Kullanın',
+    description:
+        'Küçük çocuklu evlerde tüm sivri köşelere koruyucu takın. Bu önlem hem çocuk güvenliği hem de mobilya koruması sağlar.',
+    category: 'Güvenlik',
+  ),
+  FurnitureTip(
+    icon: Icons.eco_outlined,
+    title: 'Doğal Ahşap Bakımı Uygulayın',
+    description:
+        'Sirke ve zeytinyağı karışımı ile ahşap yüzeyleri doğal yoldan parlatın. Yanlış ürün kullanımı ahşabın çatlamasına yol açar.',
+    category: 'Bakım',
+  ),
+  FurnitureTip(
+    icon: Icons.square_foot,
+    title: 'Kapak Açılımını Hesaplayın',
+    description:
+        'Mobilyayı yerleştirirken kapakların tam açılması için yeterli alan bırakın. Yetersiz alan kapakların duvara çarpıp kırılmasına sebep olur.',
+    category: 'Yerleştirme',
+  ),
+  FurnitureTip(
+    icon: Icons.settings,
+    title: 'Menteşe Ayarını Öğrenin',
+    description:
+        'Sarkan dolap kapaklarını menteşe vidaları ile kolayca ayarlayabilirsiniz. Ayarsız menteşeler kapakların kapanmamasına neden olur.',
+    category: 'Bakım',
+  ),
+  FurnitureTip(
+    icon: Icons.volume_off,
+    title: 'Gıcırtıları Giderin',
+    description:
+        'Gıcırdayan menteşe ve raylara makine yağı veya kalıp sabun sürün. Gıcırtılar zamanla menteşelerde aşınmaya yol açar.',
+    category: 'Onarım',
+  ),
+  FurnitureTip(
+    icon: Icons.inventory_2_outlined,
+    title: 'Taşıma Öncesi Boşaltın',
+    description:
+        'Mobilyaları taşımadan önce çekmece ve dolapları tamamen boşaltın. Ağırlık çekmecelerin kırılmasına neden olabilir.',
+    category: 'Taşıma',
+  ),
+  FurnitureTip(
+    icon: Icons.local_offer_outlined,
+    title: 'Vidaları Düzenli Saklayın',
+    description:
+        'Söktüğünüz vidaları poşete koyup mobilyaya bantlayın. Kaybolan vidalar mobilyanın montajını zorlaştırır.',
+    category: 'Taşıma',
+  ),
+  FurnitureTip(
+    icon: Icons.cable_outlined,
+    title: 'Kabloları Düzenleyin',
+    description:
+        'TV ünitesi arkasındaki kabloları toplayıcılarla düzenleyin. Karmaşık kablolar toz yuvası oluşturur ve görüntü kirliliği yaratır.',
+    category: 'Düzen',
+  ),
+  FurnitureTip(
+    icon: Icons.brush_outlined,
+    title: 'Kadife Kumaşları Doğru Temizleyin',
+    description:
+        'Kadife yüzeyleri daima kumaş yönünde, yumuşak fırçayla temizleyin. Ters yöne temizlik kumaşta iz bırakır.',
+    category: 'Temizlik',
+  ),
+  FurnitureTip(
+    icon: Icons.dew_point,
+    title: 'Nem Dengesini Koruyun',
+    description:
+        'Ahşap mobilyalar için ideal nem oranı %40-60 arasıdır. Aşırı kuru veya nemli ortumlar ahşabın çatlamasına veya şişmesine yol açar.',
+    category: 'Koruma',
+  ),
+  FurnitureTip(
+    icon: Icons.auto_fix_high,
+    title: 'Çizikleri Onarın',
+    description:
+        'Yüzeysel ahşap çiziklerini ayakkabı boyası veya ceviz içi sürerek kapatın. Derinleşen çizikler mobilyanın görünümünü bozar.',
+    category: 'Onarım',
+  ),
+  FurnitureTip(
+    icon: Icons.ac_unit,
+    title: 'Taze Koku İçin Doğal Çözümler',
+    description:
+        'Gardırop ve çekmecelere lavanta veya kalıp sabun yerleştirin. Doğal kokular giysilerinizin taze kalmasını sağlar.',
+    category: 'Bakım',
+  ),
+  FurnitureTip(
+    icon: Icons.history_edu,
+    title: 'İkinci Elin Hikayesine Saygı',
+    description:
+        'İkinci el mobilyalardaki ufak izleri bir kusur değil, eşyanın karakteri olarak görün. Bu izler mobilyanın geçmişini ve kalitesini yansıtır.',
+    category: 'Genel',
   ),
 ];

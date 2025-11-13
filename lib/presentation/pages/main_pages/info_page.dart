@@ -178,7 +178,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          'Her şey 2012\'de, İçerenköy\'deki bu dükkanda başladı. O günden beri en büyük önceliğimiz "kaliteli ürün" ve "gülen yüz" oldu. Sözümüzün arkasında durduk.',
+          'Her şey 2012\'de, İçerenköy\'deki bu dükkanda başladı. O günden beri konuk olduğumuz ev sayısı daha da arttı.',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -263,7 +263,7 @@ class InfoPage extends StatelessWidget {
       context,
       Icons.verified_outlined,
       'Kalite ve Titizlik',
-      'İster sıfır ister ikinci el olsun, dükkanımıza giren her ürünün arkasındayız. Titizlikle seçer, size öyle sunarız.',
+      'İster sıfır ister ikinci el olsun titizlikle seçer, size öyle sunarız.',
       AppColors.primary,
     );
     final value2 = _buildValueCard(
@@ -284,7 +284,7 @@ class InfoPage extends StatelessWidget {
       context,
       Icons.handshake_outlined,
       'Dürüstlük ve Güven',
-      'Sözümüz senettir. Neyse o. Bizde sürpriz olmaz. Şeffaf ve dürüst esnaflık en büyük değerimizdir.',
+      'Şeffaf ve dürüst esnaflık en büyük değerimizdir. Yıllardır aynı konumumuzda sizlerle birlikteyiz.',
       AppColors.info,
     );
 
