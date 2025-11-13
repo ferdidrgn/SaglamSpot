@@ -127,11 +127,10 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    if (products.isEmpty) {
+    if (products.isEmpty)
       return SliverFillRemaining(
         child: _buildEmptyState(context),
       );
-    }
 
     final crossAxisCount = context.gridColumns();
     final spacing = context.gridSpacing;
@@ -139,7 +138,7 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
     // --- DEĞİŞİKLİK BURADA ---
     // İki widget'ın da tutarlı olması için aynı oranlar girildi.
     final aspectRatio =
-        context.responsive(mobile: 0.62, tablet: 0.75, desktop: 0.72);
+        context.responsive(mobile: 0.62, tablet: 0.75, desktop: 0.78);
     // --- DEĞİŞİKLİK SONU ---
 
     final screenPadding = context.responsive(
