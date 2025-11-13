@@ -113,7 +113,7 @@ class InfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    '1992\'den beri kalite ve güven odaklı hizmet\nanlayışımızla yanınızdayız.',
+                    '1995\'den beri kalite ve güven odaklı hizmet\nanlayışımızla yanınızdayız.',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: context.responsive(mobile: 16, desktop: 20),
@@ -183,7 +183,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          '1992 yılında küçük bir atölye olarak başladık. Mobilya sektöründe kalite ve müşteri memnuniyeti odaklı yaklaşımımızla kısa sürede büyüdük.',
+          '1995 yılında küçük bir atölye olarak başladık. Mobilya sektöründe kalite ve müşteri memnuniyeti odaklı yaklaşımımızla kısa sürede büyüdük.',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -204,7 +204,7 @@ class InfoPage extends StatelessWidget {
           spacing: 32,
           runSpacing: 24,
           children: [
-            _buildStoryHighlight('1992', 'Kuruluş'),
+            _buildStoryHighlight('2012', 'Kuruluş'),
             _buildStoryHighlight('30+', 'Yıllık Deneyim'),
             _buildStoryHighlight('5K+', 'Mutlu Müşteri'),
           ],
@@ -454,7 +454,7 @@ class InfoPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          "Ustamız, 1992 yılından beri bu sektörde aktif olarak çalışmaktadır. "
+          "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. "
           "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
           "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır.\n\n"
           "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "

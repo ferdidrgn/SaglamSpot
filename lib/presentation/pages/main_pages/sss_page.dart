@@ -30,7 +30,7 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Genel',
       'question':
           'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?',
-      'answer': "Ustamız, 1992 yılından beri bu sektörde aktif olarak çalışmaktadır. "
+      'answer': "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. "
           "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
           "Çalışma hayatı boyunca, sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
           "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
@@ -39,9 +39,9 @@ class _SSSPageState extends State<SSSPage> {
     },
     {
       'category': 'Genel',
-      'question': 'MobilyaEvim güvenilir mi?',
+      'question': 'Sağlam Spot güvenilir mi?',
       'answer':
-          '1992\'den beri sektörde hizmet veren, binlerce mutlu müşterisi olan köklü bir esnaf firmasıyız. Müşteri memnuniyeti bizim için her şeyden önemlidir.',
+          '2012\'den beri sektörde hizmet veren, binlerce mutlu müşterisi olan köklü bir esnafız.',
     },
     {
       'category': 'Genel',
@@ -55,7 +55,7 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Ürün & Hizmet',
       'question': 'İkinci el ürünlerin durumu nasıl kontrol ediliyor?',
       'answer':
-          'Tüm ikinci el ürünlerimiz ustamız tarafından detaylı olarak incelenir, temizlenir ve gerekli bakımları yapılır. Ürünlerin fotoğrafları gerçek durumu yansıtır.',
+          'Tüm ikinci el ürünlerimiz ustamız tarafından detaylı olarak incelenir, temizlenir ve gerekli bakımları yapılır. Ürünlerin fotoğrafları gerçek durumu yansıtır. Ama yine de mağazamıza incelemenizi öneriyoruz.',
     },
     {
       'category': 'Ürün & Hizmet',
@@ -93,13 +93,13 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Teslimat & Montaj',
       'question': 'Taşıma hizmeti sağlıyor musunuz?',
       'answer':
-          'Evet, İçerenköy Mahallesi ve yakın çevrelerine ücretsiz taşıma hizmeti sunuyoruz.',
+          'Evet, İçerenköy Mahallesi ve yakın çevrelerine (Bostancı ve Kozyatağı hariç) ücretsiz taşıma hizmeti sunuyoruz. Genellikle: İçerenköy, Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü, Bostancı Sanayi kısımları',
     },
     {
       'category': 'Teslimat & Montaj',
       'question': 'Teslimat süresi ne kadar?',
       'answer':
-          'Stokta bulunan ürünler en kısa sürede adresinize teslim edilir. Büyük boy mobilyalar için montaj hizmeti talep ederseniz, uygun bir tarih planlanır.',
+          'Stokta bulunan ürünler en kısa sürede adresinize teslim edilir. Montaj hizmeti genellikle ürünler getirldiği an ile  birlikte aynı gün içerisinde yapılmaktadır',
     },
     {
       'category': 'Teslimat & Montaj',
@@ -111,33 +111,21 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'Teslimat & Montaj',
       'question': 'Mobilya siparişi ne kadar sürede teslim edilir?',
       'answer':
-          'Siparişiniz, ödemeden sonra en uygun vakitte teslim edilir. Genellikle 1-3 iş günü içinde teslimat yapıyoruz.',
+          'Siparişiniz, ödemeden sonra sözlü iletişmler ile her iki tarafa uygun vakit ve saatte teslim  ve montaj yapılır. Genellikle 1-3 iş günü içinde teslimat yapıyoruz.',
     },
 
     // ÖDEME & SİPARİŞ SORULARI
     {
       'category': 'Ödeme & Sipariş',
+      'question': 'Veresiye sipraiş verebilir miyim?',
+      'answer':
+          'Maalesef. Lütfen veresiye teklif etmeyiniz. Ayrıca lütfen eşyaları kapınıza getirdiğimizde anlaştığımız ücreti daha sonra vereceğinizi söylemeyiniz.',
+    },
+    {
+      'category': 'Ödeme & Sipariş',
       'question': 'Nasıl sipariş verebilirim?',
       'answer':
-          'Web sitemizden beğendiğiniz ürünü seçin veya telefon ile sipariş verebilirsiniz: +90 553 920 1996',
-    },
-    {
-      'category': 'Ödeme & Sipariş',
-      'question': 'Hangi ödeme yöntemlerini kabul ediyorsunuz?',
-      'answer':
-          'Nakit, kredi kartı ve havale/EFT ödeme seçeneklerimiz mevcuttur.',
-    },
-    {
-      'category': 'Ödeme & Sipariş',
-      'question': 'Taksit imkanı var mı?',
-      'answer':
-          'Evet! Kredi kartlarına taksit imkanı sunuyoruz. Taksit seçenekleri için bankanızla görüşebilirsiniz.',
-    },
-    {
-      'category': 'Ödeme & Sipariş',
-      'question': 'Siparişimi iptal edebilir miyim?',
-      'answer':
-          'Ürün henüz kargoya verilmemişse siparişinizi iptal edebilirsiniz. Müşteri hizmetlerimizle iletişime geçmeniz yeterli.',
+          'Web sitemizden beğendiğiniz ürünü mağazamıza gelip ürünü inceleyerek sipariş vermenizi öneriyoruz. En sağlıklı adımları tercih ediyoruz.',
     },
 
     // İADE & GARANTİ SORULARI
@@ -151,7 +139,7 @@ class _SSSPageState extends State<SSSPage> {
       'category': 'İade & Garanti',
       'question': 'Ürünlerin garanti süresi var mı?',
       'answer':
-          'Hayır, garantimiz yoktur. Ancak ürünlerimiz kaliteli malzemeden üretilmiştir ve uzun ömürlüdür.',
+          'Hayır, garantimiz yoktur.',
     },
   ];
 
@@ -393,7 +381,7 @@ class _SSSPageState extends State<SSSPage> {
           context,
           Icons.location_on_outlined,
           'Mağaza Adresi',
-          'İçerenköy Mahallesi',
+          'İçerenköy Mahallesi Buket Sok. No:6',
           AppColors.secondary,
         ),
       ),
