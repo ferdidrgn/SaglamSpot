@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/util/responsive_utils.dart'; // Extension'lar için import
-import '../../core/widgets/custom_product_card.dart';
 import '../../core/widgets/filter_sheet.dart';
 import '../../core/widgets/responsive_product_grid.dart';
 import '../../data/providers/search/search_filters_notifier.dart';
