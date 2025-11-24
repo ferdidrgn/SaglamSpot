@@ -1,21 +1,15 @@
 {
   "hosting": {
-    "site": "saglamspotcu",
     "public": "build/web",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
-    "headers": [
+    "rewrites": [
       {
-        "source": "**/*.@(eot|otf|ttf|ttc|woff|font.css)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          }
-        ]
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   },
