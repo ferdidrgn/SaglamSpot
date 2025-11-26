@@ -1,172 +1,133 @@
-# See https://www.dartlang.org/guides/libraries/private-files
-
-# Dart and Flutter
-*.dart.js
-*.info.json
-*.js
-*.js_
-*.js.deps
-*.js.map
-*.part.js
-*.incremental.dill
-app-*.dill
-*.symbols
-
-# Flutter specific
-.flutter-plugins
-.flutter-plugins-dependencies
-.gradle/
+# -----------------------
+# FLUTTER & DART ÇEKİRDEK
+# -----------------------
+.dart_tool/
 .packages
 .pub-cache/
 .pub/
-.pubignore
-build/
-flutter-build/
-.darthub/
-.dart_tool/
+/build/
 .fvm/
 
-# Android
-android/.gradle
-android/.idea
-android/app/debug/
-android/app/profile/
-android/app/release/
-android/gradle/
-android/gradlew
-android/gradlew.bat
-android/local.properties
-android/key.properties
-android/key.jks
-android/**/*.keystore
-android/**/*.jks
-android/**/GeneratedPluginRegistrant.java
-android/**/android-arm64/
-android/**/android-arm/
-android/**/android-x64/
+# DİKKAT: pubspec.lock ASLA buraya eklenmemeli!
 
-# iOS
-ios/.generated/
-ios/Flutter/App.framework/
-ios/Flutter/Flutter.framework/
-ios/Flutter/Flutter.podspec
-ios/Flutter/Generated.xcconfig
-ios/Flutter/ephemeral/
-ios/Flutter/app.flx
-ios/Flutter/app.zip
-ios/Flutter/flutter_assets/
-ios/Flutter/flutter_export_environment.sh
-ios/ServiceDefinitions.json
-ios/Runner/GeneratedPluginRegistrant.*
-ios/Pods/
-ios/.symlinks/
+# -----------------------
+# ANDROID
+# -----------------------
+# Derleme ve Önbellek Dosyaları
+/android/.gradle
+/android/captures/
+.gradle/
+
+# Android Studio IDE Ayarları
+/android/.idea
+/android/.idea/modules.xml
+/android/.idea/runConfigurations.xml
+
+# İmzalı APK ve Bundle Çıktıları
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+
+# Gizli Anahtarlar (GÜVENLİK İÇİN ÖNEMLİ)
+/android/local.properties
+/android/key.properties
+/android/*.jks
+/android/*.keystore
+/android/**/*.jks
+/android/**/*.keystore
+
+# Not: gradlew ve gradlew.bat dosyalarını ignore'dan kaldırdım.
+# Çünkü projenin başka PC'de çalışması için onlar lazım.
+
+# -----------------------
+# iOS & MACOS
+# -----------------------
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/app.flx
+/ios/Flutter/app.zip
+/ios/Flutter/flutter_assets/
+/ios/ServiceDefinitions.json
+/ios/Runner/GeneratedPluginRegistrant.*
+/ios/Pods/
+/macos/Pods/
+
+# Xcode Kullanıcı Verileri (Proje ayarı değil, senin kişisel ayarların)
 **/DerivedData/
-*.xcworkspace
-!default.xcworkspace
-xcuserdata/
-*.xccheckout
+**/xcshareddata/
 *.moved-aside
 *.pbxuser
-!default.pbxuser
 *.mode1v3
-!default.mode1v3
 *.mode2v3
-!default.mode2v3
 *.perspectivev3
-!default.perspectivev3
+/ios/Runner.xcworkspace/xcuserdata/
+/macos/Runner.xcworkspace/xcuserdata/
 
-# Web
+# -----------------------
+# WEB
+# -----------------------
+.web_config.dart
+/build/web/
 .webpack/
 .dwds/
-.web_config.dart
 
-# Firebase
+# -----------------------
+# FIREBASE & GOOGLE SERVICES
+# -----------------------
 .firebase/
 firebase-debug.log
 firebase-debug.*.log
 
-# Environment variables
+# Eğer projen herkese açıksa (Public Repo) bunları gizlemelisin.
+# Özel (Private) repo ise bunları açabilirsin (# işaretini kaldırarak).
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+
+# -----------------------
+# ÇEVRESEL DEĞİŞKENLER (.env)
+# -----------------------
 .env
 .env.*
 !.env.example
 
-# IDE
-.vscode/
+# -----------------------
+# IDE & EDİTÖR DOSYALARI
+# -----------------------
 .idea/
+.vscode/
 *.iml
 *.ipr
 *.iws
-.idea_modules/
-atlassian-ide-plugin.xml
 .sublime*
 
-# OS
+# -----------------------
+# İŞLETİM SİSTEMİ ÇÖPLERİ
+# -----------------------
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
 [Tt]humbs.db
+ehthumbs.db
 desktop.ini
-*.swp
-*.swo
 
-# Logs
+# -----------------------
+# LOGLAR VE GEÇİCİ DOSYALAR
+# -----------------------
 *.log
-logs/
-pubspec.lock
-
-# Temporary files
 *.tmp
 *.temp
-tmp/
-temp/
-
-# Coverage
 coverage/
 .lcov.info
 
-# Packages
-.pnpm-store/
-node_modules/
-
-# Exceptions (keep these)
-!packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-!ios/Runner/Assets.car
-!ios/Runner/Base.lproj/LaunchScreen.storyboard
-!ios/Runner/Base.lproj/Main.storyboard
-
-# Build outputs
-/api/
-/doc/
-/profile_type.dart
-/source.gen.dart
-
-# Flutter Web specific
-/flutter.js
-/assets/AssetManifest.json
-/assets/FontManifest.json
-/assets/NOTICES
-
-# Firebase configuration (if you want to keep it private)
-/google-services.json
-/GoogleService-Info.plist
-
-# Fastlane
+# -----------------------
+# DİĞER ARAÇLAR (Fastlane vb.)
+# -----------------------
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
-
-# Additional Flutter files
-/Generated.xcconfig
-/GeneratedPluginRegistrant.*
-/flutter_export_environment.sh
-/ServiceDefinitions.json
-/Symbols/
-
-# Development
-.notes
-.todo
-.backup/
+node_modules/
+.pnpm-store/
