@@ -26,9 +26,7 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
   Widget build(final BuildContext context) {
     if (widget.photos.isEmpty)
       return const EmptyStateMessage(
-        message: 'Galeri boş.',
-        icon: Icons.photo_library,
-      );
+          message: 'Galeri boş.', icon: Icons.photo_library);
 
     final isMobile = context.isMobile;
     final isTablet = context.isTablet;
@@ -37,7 +35,7 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
     /// MOBILE → horizontal list
     if (isMobile) {
       // Eğer çok fazla resim varsa horizontal, azsa grid göster
-      if (photos.length <= 4) {
+      if (photos.length <= 4)
         // Grid göster
         return GridView.builder(
           shrinkWrap: true,
@@ -58,7 +56,7 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
             );
           },
         );
-      } else {
+      else
         // Horizontal list göster
         return SizedBox(
           height: 200,
@@ -81,7 +79,6 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
             },
           ),
         );
-      }
     }
 
     /// DESKTOP / TABLET

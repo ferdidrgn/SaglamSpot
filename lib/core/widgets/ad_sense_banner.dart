@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 /// Mobil ve Desktop'ta boş gösterir.
 class AdsenseBanner extends StatelessWidget {
   final String? adSlot;
+  final double? width;
   final double height;
 
   const AdsenseBanner({
     super.key,
     this.adSlot,
+    this.width = 90,
     this.height = 90,
   });
 
@@ -18,6 +20,7 @@ class AdsenseBanner extends StatelessWidget {
     if (kIsWeb)
       // Web için placeholder
       return Container(
+        width: width,
         height: height,
         color: Colors.grey.shade300,
         alignment: Alignment.center,
