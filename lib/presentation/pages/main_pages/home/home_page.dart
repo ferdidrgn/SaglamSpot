@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/widgets/custom_search_bar.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
@@ -67,7 +68,14 @@ class _HomePageState extends ConsumerState<HomePage> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           _buildDiscoveryHeader(isMobile),
-          _buildCustomSearchBar(isMobile),
+          SliverToBoxAdapter(
+            child: CustomSearchBar(
+              controller: _searchController,
+              onSearch: (final query) {
+                context.push('/search?q=${Uri.encodeComponent(query)}');
+              },
+            ),
+          ),
           _buildDynamicCategorySection(isMobile),
           _buildHeroSection(isMobile),
           _buildSectionHeader(
@@ -261,75 +269,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-// ================= MODERN SEARCH BAR (Tıklanabilir) =================
-// ================= MODERN SEARCH BAR (Yaz -> Git) =================
-  SliverToBoxAdapter _buildCustomSearchBar(final bool isMobile) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding:
-        EdgeInsets.symmetric(horizontal: isMobile ? 24 : 60, vertical: 10),
-        child: Container(
-          height: 70,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.black.withOpacity(0.04)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.02),
-                blurRadius: 40,
-                offset: const Offset(0, 10),
-              )
-            ],
-          ),
-          child: TextField(
-            controller: _searchController,
-            textInputAction: TextInputAction.search,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-
-            /// ✅ ENTER'a basınca search page'e gider
-            onSubmitted: (value) {
-              if (value.trim().isEmpty) return;
-              context.push('/search?q=${Uri.encodeComponent(value)}');
-            },
-
-            decoration: InputDecoration(
-              hintText: "Eviniz için ne aramıştınız?",
-              hintStyle: const TextStyle(
-                color: Colors.black26,
-                fontSize: 18,
-              ),
-              prefixIcon: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Icon(
-                  Icons.search_rounded,
-                  color: Colors.black87,
-                  size: 28,
-                ),
-              ),
-
-              /// ✅ Sağdaki ikon = bilinçli arama
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
-                onPressed: () {
-                  final query = _searchController.text.trim();
-                  if (query.isEmpty) return;
-                  context.push('/search?q=${Uri.encodeComponent(query)}');
-                },
-              ),
-
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(vertical: 22),
-            ),
           ),
         ),
       ),
