@@ -131,19 +131,27 @@ class CustomAppHeader extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // İkonik dokunuş
+            Image.asset(
+              'assets/images/saglam_spot_logo.png',
+              height:
+                  context.responsive(mobile: 36.0, tablet: 42.0, desktop: 48.0),
+              fit: BoxFit.contain,
+              errorBuilder: (final context, final error, final stackTrace) =>
+                  Icon(Icons.auto_awesome, size: context.iconSmall),
+            ),
             const Icon(Icons.auto_awesome, color: Color(0xFF103E35), size: 24),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
+            // Flexible + FittedBox kombinasyonu 31 piksellik taşmayı engeller
             Flexible(
               child: FittedBox(
                 fit: BoxFit.scaleDown,
+                // Metin sığmazsa otomatik küçülür, asla taşmaz
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'SAĞLAM SPOT',
+                  'Sağlam Spot',
                   style: TextStyle(
-                    fontSize: context.responsive(mobile: 18.0, desktop: 20.0),
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.5, // Daha prestijli görünüm
+                    fontSize: context.responsive(mobile: 18.0, desktop: 22.0),
+                    fontWeight: FontWeight.w900,
                     color: const Color(0xFF1E293B),
                   ),
                 ),
