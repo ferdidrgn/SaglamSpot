@@ -1,745 +1,301 @@
-import 'dart:ui'; // BackdropFilter için eklendi
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 import '../../domain/entities/product.dart';
-import '../util/responsive_utils.dart'; // Extension'lar için import
+import '../util/responsive_utils.dart';
+import 'gallery_section.dart';
 
-/// Modern, responsive ve performans odaklı product card
-/// SOLID prensipleriyle tasarlanmış, tek sorumluluk prensibi uygulanmış
-class CustomProductCard extends StatelessWidget {
+class CustomProductCard extends StatefulWidget {
   final Product product;
   final VoidCallback? onTap;
 
-  const CustomProductCard({
-    super.key,
-    required this.product,
-    this.onTap,
-  });
+  const CustomProductCard({super.key, required this.product, this.onTap});
 
   @override
-  Widget build(final BuildContext context) {
-    // getCardMargin yerine responsive()
-    final cardMargin = context.responsive(
-        mobile: const EdgeInsets.all(4.0), desktop: const EdgeInsets.all(6.0));
+  State<CustomProductCard> createState() => _CustomProductCardState();
+}
 
-    return Container(
-      margin: cardMargin,
-      decoration: _buildCardDecoration(context),
-      child: ClipRRect(
-        // getBorderRadius yerine borderRadius()
-        borderRadius: BorderRadius.circular(context.borderRadius(1.25)),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            splashColor: const Color(0xFF6366F1).withOpacity(0.1),
-            highlightColor: const Color(0xFF6366F1).withOpacity(0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // _ImageSection artık galeriyi yönetiyor
-                _ImageSection(product: product),
-                // Expanded, _InfoSection'ın kalan tüm alanı doldurmasını sağlar.
-                Expanded(
-                  child: _InfoSection(product: product),
-                ),
-              ],
-            ),
-          ),
+class _CustomProductCardState extends State<CustomProductCard> {
+  bool _isHovered = false;
+
+  void _openGallery(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.zero,
+          child: GallerySection(photos: widget.product.imagesUrl),
         ),
       ),
     );
   }
 
-  BoxDecoration _buildCardDecoration(final BuildContext context) {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(
-        context.borderRadius(1.25), // Extension
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.08),
-          blurRadius: 15,
-          offset: const Offset(0, 6),
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: 280,
+        margin: const EdgeInsets.only(right: 20, bottom: 20),
+        transform: _isHovered
+            ? Matrix4.translationValues(0, -12, 0)
+            : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF3F7F5), // Görseldeki iç kart rengi
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(_isHovered ? 0.08 : 0.03),
+              blurRadius: _isHovered ? 35 : 20,
+              offset: Offset(0, _isHovered ? 15 : 10),
+            ),
+          ],
         ),
+        child: Column(
+          children: [
+            // GÖRSEL ALANI
+            Expanded(
+              flex: 3,
+              child: Stack(
+                children: [
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => _openGallery(context),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Hero(
+                          tag: 'prod_${widget.product.id}',
+                          child: Image.network(
+                            widget.product.imagesUrl.first,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (widget.product.isSpotProduct)
+                    Positioned(
+                      top: 20,
+                      left: 20,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: const Text('✨ SPOT',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            // BİLGİ ALANI
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.product.name,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w800, fontSize: 18)),
+                        Text(widget.product.category,
+                            style: TextStyle(
+                                color: Colors.grey.shade600, fontSize: 14)),
+                        const SizedBox(height: 8),
+                        Text('₺${widget.product.price.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w900, fontSize: 22)),
+                      ],
+                    ),
+                  ),
+                  // Görseldeki Siyah Buton (Hover'da renk değiştirebilir)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color:
+                          _isHovered ? const Color(0xFF6366F1) : Colors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.arrow_forward_rounded,
+                        color: Colors.white, size: 22),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ImageArea extends StatelessWidget {
+  final Product product;
+
+  const _ImageArea({required this.product});
+
+  void _openGallery(final BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (final context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.zero,
+          child:
+              GallerySection(photos: product.imagesUrl), // Senin kodun çalışır
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Ürün Görseli (Görseldeki gibi havada duran/floating efekt)
+        GestureDetector(
+          onTap: () => _openGallery(context),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Hero(
+              tag: 'product_${product.id}',
+              child: Image.network(
+                product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                fit: BoxFit.contain,
+                errorBuilder: (final context, final error, final stackTrace) =>
+                    const Icon(Icons.chair_rounded,
+                        size: 60, color: Colors.grey),
+              ),
+            ),
+          ),
+        ),
+
+        // Spot Badge (Görselde kaybolmaması için Siyah-Beyaz Tasarım)
+        if (product.isSpotProduct)
+          Positioned(
+            top: 16,
+            left: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black, // Yüksek okunabilirlik
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                '✨ SPOT',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+          ),
+
+        // Galeri İkonu (Sağ üstte küçük bir ipucu)
+        if (product.imagesUrl.length > 1)
+          Positioned(
+            top: 16,
+            right: 16,
+            child: CircleAvatar(
+              backgroundColor: Colors.white.withOpacity(0.8),
+              radius: 16,
+              child: const Icon(Icons.collections_rounded,
+                  size: 16, color: Colors.black),
+            ),
+          ),
       ],
     );
   }
 }
 
-// ===================================================================
-// GÖRSEL BÖLÜMÜ (GALERİ OLARAK GÜNCELLENDİ)
-// ===================================================================
-
-/// Image bölümü - Artık galeriyi yöneten bir StatefulWidget
-class _ImageSection extends StatefulWidget {
+class _InfoArea extends StatelessWidget {
   final Product product;
 
-  const _ImageSection({required this.product});
-
-  @override
-  State<_ImageSection> createState() => _ImageSectionState();
-}
-
-class _ImageSectionState extends State<_ImageSection> {
-  late final PageController _pageController;
-  int _currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  /// Tam ekran galeri gösterimi
-  void _showFullscreenGallery(
-      final BuildContext context, final int initialIndex) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.8), // Arka planı koyulaştır
-      builder: (final BuildContext context) {
-        return _FullscreenImageGallery(
-          imageUrls: widget.product.imagesUrl,
-          initialIndex: initialIndex,
-        );
-      },
-    );
-  }
+  const _InfoArea({required this.product});
 
   @override
   Widget build(final BuildContext context) {
-    // --- DEĞİŞİKLİK BURADA ---
-    // Masaüstü görselini daha uzun yapmak için 180.0 -> 210.0 yapıldı.
-    // Bu, grid'deki (desktop: 0.72) oranıyla uyumlu çalışacaktır.
-    final imageHeight =
-        context.responsive(mobile: 140.0, tablet: 160.0, desktop: 230.0);
-    // --- DEĞİŞİKLİK SONU ---
-
-    final hasMultipleImages = widget.product.imagesUrl.length > 1;
-
-    return SizedBox(
-      height: imageHeight,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // 1. Resim Galerisi (PageView)
-          PageView.builder(
-            controller: _pageController,
-            itemCount: widget.product.imagesUrl.isEmpty
-                ? 1
-                : widget.product.imagesUrl.length,
-            onPageChanged: (final index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            itemBuilder: (final context, final index) {
-              final String? imageUrl = widget.product.imagesUrl.isEmpty
-                  ? null
-                  : widget.product.imagesUrl[index];
-              return GestureDetector(
-                onTap: () {
-                  // Sadece geçerli resim varsa tam ekran aç
-                  if (imageUrl != null)
-                    _showFullscreenGallery(context, index);
-                },
-                child: _buildProductImage(context, imageUrl, imageHeight),
-              );
-            },
-          ),
-
-          // 2. Diğer Arayüz Elemanları
-          _buildGradientOverlay(context),
-          Positioned(
-            top: context.responsive(mobile: 6.0, desktop: 8.0),
-            right: context.responsive(mobile: 6.0, desktop: 8.0),
-            child: _StatusBadge(product: widget.product),
-          ),
-          if (widget.product.isSpotProduct)
-            Positioned(
-              top: context.responsive(mobile: 6.0, desktop: 8.0),
-              left: context.responsive(mobile: 6.0, desktop: 8.0),
-              child: const _SpotBadge(),
-            ),
-
-          // 3. Galeri Navigasyonu (Sadece 1'den fazla resim varsa)
-          if (hasMultipleImages) ...[
-            // Sayfa Göstergeleri (Noktalar)
-            Positioned(
-              bottom: 8.0,
-              left: 0,
-              right: 0,
-              child: _buildIndicators(),
-            ),
-            // Navigasyon Okları
-            _buildNavigationArrow(
-              context,
-              isLeft: true,
-              onPressed: () {
-                _pageController.previousPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              },
-            ),
-            _buildNavigationArrow(
-              context,
-              isLeft: false,
-              onPressed: () {
-                _pageController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              },
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  /// Resim widget'ını oluşturan yardımcı metot
-  Widget _buildProductImage(final BuildContext context, final String? imageUrl,
-      final double imageHeight) {
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final cacheHeight = (imageHeight * pixelRatio).round();
-
-    if (imageUrl == null || imageUrl.isEmpty)
-      return _buildPlaceholder(context);
-
-    return Image.network(
-      imageUrl,
-      fit: BoxFit.cover,
-      cacheHeight: cacheHeight,
-      errorBuilder: (final context, final error, final stackTrace) =>
-          _buildPlaceholder(context),
-      loadingBuilder: (final context, final child, final loadingProgress) {
-        if (loadingProgress == null) return child;
-        return _buildPlaceholder(context); // Yüklenirken de placeholder
-      },
-    );
-  }
-
-  /// Placeholder widget'ı
-  Widget _buildPlaceholder(final BuildContext context) {
-    return Container(
-      color: const Color(0xFFF1F5F9),
-      child: Icon(
-        Icons.image_outlined,
-        size: context.responsive(mobile: 40.0, desktop: 48.0),
-        color: const Color(0xFF94A3B8).withOpacity(0.5),
-      ),
-    );
-  }
-
-  /// Alttaki gölge
-  Widget _buildGradientOverlay(final BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        height: context.responsive(mobile: 40.0, desktop: 50.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              Colors.black.withOpacity(0.25),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Galeri noktalarını oluşturan metot
-  Widget _buildIndicators() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(widget.product.imagesUrl.length, (final index) {
-        final bool isSelected = _currentIndex == index;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-          height: isSelected ? 8.0 : 6.0,
-          width: isSelected ? 8.0 : 6.0,
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              )
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
-  /// Navigasyon oklarını oluşturan metot
-  Widget _buildNavigationArrow(final BuildContext context,
-      {required final bool isLeft, required final VoidCallback onPressed}) {
-    // İlk ve son resimde ilgili oku gizle
-    if (isLeft && _currentIndex == 0)
-      return const SizedBox.shrink();
-    if (!isLeft && _currentIndex == widget.product.imagesUrl.length - 1)
-      return const SizedBox.shrink();
-
-    return Positioned(
-      top: 0,
-      bottom: 0,
-      left: isLeft ? 4.0 : null,
-      right: isLeft ? null : 4.0,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: Icon(
-              isLeft ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
-              color: Colors.white,
-              size: 16.0,
-            ),
-            onPressed: onPressed,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ===================================================================
-// TAM EKRAN GALERİ WIDGET'I (YENİ)
-// ===================================================================
-
-class _FullscreenImageGallery extends StatefulWidget {
-  final List<String> imageUrls;
-  final int initialIndex;
-
-  const _FullscreenImageGallery({
-    required this.imageUrls,
-    required this.initialIndex,
-  });
-
-  @override
-  State<_FullscreenImageGallery> createState() =>
-      _FullscreenImageGalleryState();
-}
-
-class _FullscreenImageGalleryState extends State<_FullscreenImageGallery> {
-  late final PageController _pageController;
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: widget.initialIndex);
-    _currentIndex = widget.initialIndex;
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Bulanık arka plan
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-            ),
-          ),
-          // Resim Galerisi
-          PageView.builder(
-            controller: _pageController,
-            itemCount: widget.imageUrls.length,
-            onPageChanged: (final index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            itemBuilder: (final context, final index) {
-              return InteractiveViewer(
-                // Zoom yapabilmek için
-                child: Image.network(
-                  widget.imageUrls[index],
-                  fit: BoxFit.contain, // Tam ekran için 'contain'
-                  loadingBuilder:
-                      (final context, final child, final loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
-              );
-            },
-          ),
-          // Kapatma Butonu
-          Positioned(
-            top: 40.0,
-            right: 20.0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ),
-          // Sayfa Göstergesi (Noktalar)
-          if (widget.imageUrls.length > 1)
-            Positioned(
-              bottom: 30.0,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(widget.imageUrls.length, (final index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    height: 8.0,
-                    width: 8.0,
-                    decoration: BoxDecoration(
-                      color: _currentIndex == index
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.5),
-                      shape: BoxShape.circle,
-                    ),
-                  );
-                }),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-// ===================================================================
-// DİĞER WIDGET'LAR (OVERFLOW İÇİN GÜNCELLENDİ)
-// ===================================================================
-
-/// Status badge widget
-class _StatusBadge extends StatelessWidget {
-  final Product product;
-
-  const _StatusBadge({required this.product});
-
-  @override
-  Widget build(final BuildContext context) {
-    final padding = EdgeInsets.symmetric(
-      horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
-      vertical: context.responsive(mobile: 3.0, desktop: 4.0),
-    );
-    final iconSize =
-        context.responsive(mobile: 20.0 * 0.6, desktop: 24.0 * 0.6);
-
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color:
-            product.isSold ? const Color(0xFFEF4444) : const Color(0xFF10B981),
-        borderRadius: BorderRadius.circular(context.borderRadius(0.75)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            product.isSold
-                ? Icons.check_circle_rounded
-                : Icons.inventory_2_rounded,
-            size: iconSize,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: context.responsive(mobile: 3.0, desktop: 4.0),
-          ),
-          Text(
-            product.isSold ? 'Satıldı' : 'Stokta',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.captionSize, // Extension
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Spot badge widget
-class _SpotBadge extends StatelessWidget {
-  const _SpotBadge();
-
-  @override
-  Widget build(final BuildContext context) {
-    final padding = EdgeInsets.symmetric(
-      horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
-      vertical: context.responsive(mobile: 3.0, desktop: 4.0),
-    );
-    final iconSize =
-        context.responsive(mobile: 20.0 * 0.6, desktop: 24.0 * 0.6);
-
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFEC4899), Color(0xFFF472B6)],
-        ),
-        borderRadius: BorderRadius.circular(context.borderRadius(0.75)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFEC4899).withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.star_rounded,
-            size: iconSize,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: context.responsive(mobile: 3.0, desktop: 4.0),
-          ),
-          Text(
-            'Spot',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.captionSize, // Extension
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.3,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Info section - Product details
-class _InfoSection extends StatelessWidget {
-  final Product product;
-
-  const _InfoSection({required this.product});
-
-  @override
-  Widget build(final BuildContext context) {
-    // getCardPadding yerine responsive()
-    final padding =
-        context.responsive(mobile: 12.0, tablet: 14.0, desktop: 16.0);
-
     return Padding(
-      padding: EdgeInsets.all(padding),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // --- DÜZELTME: OVERFLOW HATASI İÇİN ---
-          // Yazı grubu (Kategori, Başlık, Açıklama) bir Flexible widget
-          // ile sarıldı. Bu, fiyatın taşmasını engeller.
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              // Sadece gerektiği kadar yer kapla
-              children: [
-                _CategoryChip(category: product.category),
-                SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
-                _ProductTitle(title: product.name),
-                SizedBox(height: context.responsive(mobile: 2.0, desktop: 4.0)),
-                _ProductDescription(description: product.desc),
-              ],
-            ),
+          // Başlık ve Kategori
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                product.name,
+                style: TextStyle(
+                  fontSize: context.responsive(mobile: 16.0, desktop: 18.0),
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                product.category,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary.withOpacity(0.6),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-          // --- DÜZELTME SONU ---
 
-          // 2. Grup: Fiyat
-          _PriceSection(price: product.price),
+          // Fiyat ve Modern Sepet Butonu
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '₺${product.price.toStringAsFixed(0)}',
+                style: TextStyle(
+                  fontSize: context.responsive(mobile: 18.0, desktop: 20.0),
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              // Görseldeki meşhur siyah yuvarlak buton
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
-    );
-  }
-}
-
-/// Category chip
-class _CategoryChip extends StatelessWidget {
-  final String category;
-
-  const _CategoryChip({required this.category});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.responsive(mobile: 6.0, desktop: 8.0),
-        vertical: context.responsive(mobile: 2.0, desktop: 3.0),
-      ),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6366F1).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(context.borderRadius(0.25)),
-      ),
-      child: Text(
-        category.toUpperCase(),
-        style: TextStyle(
-          fontSize: context.captionSize, // Extension
-          fontWeight: FontWeight.w700,
-          color: const Color(0xFF6366F1),
-          letterSpacing: 0.5,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
-
-/// Product title
-class _ProductTitle extends StatelessWidget {
-  final String title;
-
-  const _ProductTitle({required this.title});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: context.titleSize,
-        // Extension
-        fontWeight: FontWeight.w700,
-        color: const Color(0xFF1E293B),
-        height: 1.2,
-        letterSpacing: 0.1,
-      ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-}
-
-/// Product description
-class _ProductDescription extends StatelessWidget {
-  final String description;
-
-  const _ProductDescription({required this.description});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Text(
-      description,
-      style: TextStyle(
-        fontSize: context.bodySize, // Extension
-        color: const Color(0xFF64748B),
-        height: 1.3,
-        letterSpacing: 0.1,
-      ),
-      // Overflow düzeltmesi (1 satır)
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-}
-
-/// Price section with action button
-class _PriceSection extends StatelessWidget {
-  final double price;
-
-  const _PriceSection({required this.price});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: context.responsive(mobile: 8.0, desktop: 10.0),
-              vertical: context.responsive(mobile: 6.0, desktop: 8.0),
-            ),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-              ),
-              borderRadius: BorderRadius.circular(context.borderRadius(0.5)),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF6366F1).withOpacity(0.25),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Text(
-              '₺${price.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: context.priceSize, // Extension
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                letterSpacing: 0.2,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: context.responsive(mobile: 6.0, desktop: 8.0),
-        ),
-        Container(
-          padding: EdgeInsets.all(
-            context.responsive(mobile: 6.0, desktop: 8.0),
-          ),
-          decoration: BoxDecoration(
-            color: const Color(0xFFEC4899).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(context.borderRadius(0.5)),
-          ),
-          child: Icon(
-            Icons.arrow_forward_rounded,
-            // getIconSize yerine responsive()
-            size: context.responsive(mobile: 20.0 * 0.9, desktop: 24.0 * 0.9),
-            color: const Color(0xFFEC4899),
-          ),
-        ),
-      ],
     );
   }
 }

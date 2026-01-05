@@ -27,12 +27,15 @@ extension ThemeContextExtension on BuildContext {
 
   Color get textColor => colors.onSecondary;
 
+  Color get sageGreen => colors.secondary; // Ana Sage rengi
+  Color get blackButton => colors.primary; // Siyah butonlar
+  Color get hintColor => theme.inputDecorationTheme.hintStyle!.color!;
+
   // --- Özel Gradient Mantığın ---
   /// [isActive]: Eğer true ise temanın aktif renklerini (Kırmızı veya Mor),
   /// false ise pasif gri renkleri döndürür.
   List<Color> appGradient({final bool isActive = true}) {
-    if (!isActive)
-      return [Colors.grey[500]!, Colors.grey[800]!];
+    if (!isActive) return [Colors.grey[500]!, Colors.grey[800]!];
 
     return isDarkMode
         ? [Colors.pink[500]!, Colors.purple[600]!] // Dark Mode Gradient

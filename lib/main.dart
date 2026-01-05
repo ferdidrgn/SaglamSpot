@@ -14,7 +14,6 @@ Future<void> main() async {
   // 🌐 Web URL stratejisi (# kaldırır)
   if (PlatformChecker.isWeb) usePathUrlStrategy();
 
-
   await _initializeFirebase();
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -42,7 +41,6 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
 
       // 🔥 ROUTER ENTEGRASYONU

@@ -7,26 +7,26 @@ class ProductNotifier extends BaseNotifier<ProductState> {
   @override
   ProductState initialState() => const ProductState();
 
-  @override
   void reloadData() => loadProducts();
 
-  Future<void> loadProducts() => execute(
-      () => ref.read(getProductsUseCaseProvider).call(),
-      onSuccess: (final products) => _setProductsState(products));
+  Future<void> loadProducts() =>
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) => _setProductsState(products));
 
   Future<void> addProduct(final Product product, final List<dynamic> images) =>
-      execute(
-          () => ref.read(addProductUseCaseProvider).call(product, images),
-          onSuccess: (final _) => loadProducts());
+      execute(() => ref.read(addProductUseCaseProvider).call(product, images),
+          onSuccess: (final _) => ref.invalidateSelf());
 
-  Future<void> updateProduct(final Product product) => execute(
-      () => ref.read(updateProductUseCaseProvider).call(product),
-      onSuccess: (final _) => loadProducts());
+  // Listeyi yeniden çekmek yerine state'i invalidate edip
+  // provider'ın kendini refresh etmesini sağlamak Riverpod 3 tarzıdır.
+
+  Future<void> updateProduct(final Product product) =>
+      execute(() => ref.read(updateProductUseCaseProvider).call(product),
+          onSuccess: (final _) => ref.invalidateSelf());
 
   Future<void> deleteProduct(final String productId) =>
-      execute(
-          () => ref.read(deleteProductUseCaseProvider).call(productId),
-          onSuccess: (final _) => loadProducts());
+      execute(() => ref.read(deleteProductUseCaseProvider).call(productId),
+          onSuccess: (final _) => ref.invalidateSelf());
 
   Future<void> filterProducts({
     final String? condition,
@@ -41,8 +41,7 @@ class ProductNotifier extends BaseNotifier<ProductState> {
   Future<void> resetFilters() => loadProducts();
 
   Future<void> searchProducts({required final String query}) =>
-      execute(
-          () => ref.read(getProductsUseCaseProvider).call(),
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
           onSuccess: (final products) {
         final filteredProducts = _filterProductsByQuery(products, query);
         _setProductsState(filteredProducts);
@@ -70,5 +69,5 @@ extension ProductFilters on List<Product> {
 
   List<Product> get spot => where((e) => e.isSpotProduct && !e.isSold).toList();
 
-  //List<Product> get featured => where((e) => e.isFeatured && !e.isSold).toList();
+//List<Product> get featured => where((e) => e.isFeatured && !e.isSold).toList();
 }
