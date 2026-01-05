@@ -9,6 +9,7 @@ import '../../presentation/pages/main_pages/info_page.dart';
 import '../../presentation/pages/main_pages/new_products_page.dart';
 import '../../presentation/pages/main_pages/spot_products_page.dart';
 import '../../presentation/pages/main_pages/sss_page.dart';
+import '../../presentation/pages/product_detail_page.dart';
 import '../../presentation/pages/search_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -90,6 +91,18 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
             ],
           ),
         ],
+      ),
+
+      /// 🏷️ PRODUCT DETAIL PAGE (Parametrik Rota)
+      GoRoute(
+        path: '/product/:productId',
+        name: 'product-detail',
+        builder: (final context, final state) {
+          // URL'den productId'yi yakalıyoruz
+          final productId = state.pathParameters['productId'];
+          //id yi pasladık
+          return WebProductDetailPage(productId: productId ?? '');
+        },
       ),
 
       /// ➕ ADD PRODUCT (SHELL DIŞI)

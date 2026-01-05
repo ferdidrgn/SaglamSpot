@@ -49,10 +49,7 @@ class ResponsiveProductGrid extends ConsumerWidget {
       itemCount: products.length,
       itemBuilder: (final context, final index) {
         final product = products[index];
-        return CustomProductCard(
-          product: product,
-          onTap: onProductTap != null ? () => onProductTap!(product) : null,
-        );
+        return CustomProductCard(product: product);
       },
     );
   }
@@ -151,10 +148,7 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
             final product = products[index];
-            return CustomProductCard(
-              product: product,
-              onTap: onProductTap != null ? () => onProductTap!(product) : null,
-            );
+            return CustomProductCard(product: product);
           },
           childCount: products.length,
         ),
