@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/providers/product/product_provider.dart';
+import '../../core/services/seo_helper.dart';
 import '../../core/widgets/custom_image_selector.dart';
 import '../../domain/entities/product.dart';
 
@@ -23,6 +24,16 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   final List<dynamic> _selectedImages = [];
   bool _isSold = false;
   bool _isSecondHand = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setSeo(
+      title: 'Ürün Ekle | MyShop',
+      description: 'Yeni ürün ekleme sayfası',
+    );
+  }
 
   @override
   Widget build(final BuildContext context) {
@@ -116,7 +127,9 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     ];
   }
 
-  Widget _buildTextField(final TextEditingController controller, final String label, {final bool isNumeric = false}) {
+  Widget _buildTextField(
+      final TextEditingController controller, final String label,
+      {final bool isNumeric = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -130,7 +143,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     );
   }
 
-  Widget _buildSwitchRow(final String label, final bool value, final ValueChanged<bool> onChanged) {
+  Widget _buildSwitchRow(final String label, final bool value,
+      final ValueChanged<bool> onChanged) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -177,7 +191,9 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       return;
     }
 
-    final validImages = images.where((final image) => image is File || image is Uint8List).toList();
+    final validImages = images
+        .where((final image) => image is File || image is Uint8List)
+        .toList();
 
     if (validImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -189,12 +205,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     setState(() {
       _selectedImages.addAll(validImages);
     });
-    }
+  }
 
   Future<void> _addProduct() async {
     if (_validateInputs()) {
       final product = Product(
-        id: '', // ID'yi uygun bir şekilde ayarlayın
+        id: '',
+        // ID'yi uygun bir şekilde ayarlayın
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: '',
         soldAt: '',
@@ -208,7 +225,9 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       );
 
       // Product ekleme işlemini Riverpod ile yapıyoruz
-      await ref.read(productProvider.notifier).addProduct(product, _selectedImages);
+      await ref
+          .read(productProvider.notifier)
+          .addProduct(product, _selectedImages);
       _clearForm();
     }
   }
@@ -220,7 +239,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         _priceController.text.isEmpty ||
         _categoryController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
+        const SnackBar(
+            content: Text('Lütfen tüm alanları doldurun ve görsel seçin.')),
       );
       return false;
     }
