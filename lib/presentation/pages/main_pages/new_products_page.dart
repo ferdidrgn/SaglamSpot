@@ -1,10 +1,11 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/util/responsive_utils.dart';
-import 'package:saglamspot/core/widgets/custom_product_card.dart';
 import '../../../data/providers/product/product_provider.dart';
 import '../../../domain/entities/product.dart';
-import 'dart:ui'; // Glassmorphism efekti için
+import 'package:saglamspot/core/util/responsive_utils.dart';
+import 'package:saglamspot/core/widgets/custom_product_card.dart';
+import '../../../core/theme/app_colors.dart';
 
 class NewProductsPage extends ConsumerStatefulWidget {
   const NewProductsPage({super.key});
@@ -15,6 +16,7 @@ class NewProductsPage extends ConsumerStatefulWidget {
 
 class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   String _selectedLocalCategory = "Tümü";
+  int _hoveredIndex = -1; // Hover index for Web/Desktop
 
   @override
   void initState() {
@@ -25,45 +27,42 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     final newProducts = ref.watch(newProductsProvider);
     final isLoading = ref.watch(productProvider).isLoading;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F3), // Daha zengin bir zemin
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // 1. Arka Plan Dekorasyonu (Floating Typography)
+          // Floating Typography (Background)
           Positioned(
             top: 100,
             right: -50,
             child: Opacity(
-              opacity: 0.03,
-              child: Text("LUXURY",
-                  style: TextStyle(
-                      fontSize: 180,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black)),
+              opacity: 0.05,
+              child: Text(
+                "Stylish",
+                style: TextStyle(
+                  fontSize: 180,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textSecondary.withOpacity(0.15),
+                ),
+              ),
             ),
           ),
 
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              // 2. Debdebeli Header (SliverAppBar Tarzı)
-              _buildMajesticHeader(context, newProducts.length),
-
-              // 3. İhtişamlı Kategori Kartları
-              _buildMajesticCategories(context),
-
-              // 4. İçerik Durumları
+              _buildHeader(context, newProducts.length),
+              _buildCategories(context),
               if (isLoading)
-                _buildGlowingLoading()
+                _buildLoading()
               else if (newProducts.isEmpty)
-                _buildEmptySliver(context)
+                _buildEmpty()
               else
-                _buildPremiumProductGrid(context, newProducts),
-
+                _buildProductGrid(context, newProducts),
               const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
@@ -72,8 +71,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  // --- İHTİŞAMLI HEADER ---
-  SliverToBoxAdapter _buildMajesticHeader(BuildContext context, int count) {
+  // --- HEADER ---
+  SliverToBoxAdapter _buildHeader(BuildContext context, int count) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
@@ -90,15 +89,17 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 Container(
                   width: 40,
                   height: 2,
-                  color: const Color(0xFFC9A227), // Altın rengi çizgi
+                  color: AppColors.primary,
                 ),
                 const SizedBox(width: 10),
-                const Text("NEW ARRIVALS 2024",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 3,
-                        color: Color(0xFFC9A227))),
+                const Text(
+                  "NEW ARRIVALS 2024",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 3,
+                      color: AppColors.textPrimary),
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -107,24 +108,28 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               children: [
                 Expanded(
                   child: Text(
-                      "Kusursuzluğun\nYeni Adresi", // Daha etkileyici metin
-                      style: TextStyle(
-                          fontSize:
-                              context.responsive(mobile: 40.0, desktop: 64.0),
-                          fontWeight: FontWeight.w900,
-                          height: 1.1,
-                          letterSpacing: -2)),
+                    "Kusursuzluğun\nYeni Adresi",
+                    style: TextStyle(
+                      fontSize: context.responsive(mobile: 40.0, desktop: 64.0),
+                      fontWeight: FontWeight.w900,
+                      height: 1.1,
+                      letterSpacing: -2,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                 ),
                 _buildCountBadge(count),
               ],
             ),
             const SizedBox(height: 15),
-            const Text(
-                "Sıfır kilometre ihtişam, yaşam alanlarınız için yeniden tanımlandı.",
-                style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w300)),
+            Text(
+              "Sıfır kilometre ihtişam, yaşam alanlarınız için yeniden tanımlandı.",
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 18,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
           ],
         ),
       ),
@@ -136,11 +141,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.black, // Güçlü kontrast
+        color: AppColors.primary,
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: AppColors.primary.withOpacity(0.3),
               blurRadius: 30,
               offset: const Offset(0, 10))
         ],
@@ -163,8 +168,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  // --- İHTİŞAMLI KATEGORİLER ---
-  SliverToBoxAdapter _buildMajesticCategories(BuildContext context) {
+  // --- KATEGORİLER ---
+  SliverToBoxAdapter _buildCategories(BuildContext context) {
     final Map<String, IconData> cats = {
       "Tümü": Icons.auto_awesome_mosaic_rounded,
       "Koltuk": Icons.chair_rounded,
@@ -174,7 +179,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     };
 
     return SliverToBoxAdapter(
-      child: Container(
+      child: SizedBox(
         height: 100,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -191,31 +196,27 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 width: 130,
                 margin: const EdgeInsets.only(right: 15, bottom: 20),
                 decoration: BoxDecoration(
-                  color: isActive ? Colors.black : Colors.white,
+                  color: isActive ? AppColors.primary : AppColors.surface,
                   borderRadius: BorderRadius.circular(25),
-                  boxShadow: isActive
-                      ? [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8))
-                        ]
-                      : [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.03),
-                              blurRadius: 10)
-                        ],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isActive ? 0.15 : 0.05),
+                      blurRadius: isActive ? 20 : 10,
+                      offset: const Offset(0, 8),
+                    )
+                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(cats[key],
-                        color: isActive ? Colors.white : Colors.black,
+                        color: isActive ? Colors.white : AppColors.textPrimary,
                         size: 20),
                     const SizedBox(width: 10),
                     Text(key,
                         style: TextStyle(
-                            color: isActive ? Colors.white : Colors.black,
+                            color:
+                                isActive ? Colors.white : AppColors.textPrimary,
                             fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -227,8 +228,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  // --- PREMIUM PRODUCT GRID ---
-  SliverPadding _buildPremiumProductGrid(
+  // --- ÜRÜN GRID ---
+  SliverPadding _buildProductGrid(
       BuildContext context, List<Product> products) {
     final filtered = _selectedLocalCategory == "Tümü"
         ? products
@@ -247,8 +248,31 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            // Animated Slide-Up Efekti gibi bir CustomProductCard beklentisi
-            return CustomProductCard(product: filtered[index]);
+            final isHovered = _hoveredIndex == index;
+
+            return MouseRegion(
+              onEnter: (_) => setState(() => _hoveredIndex = index),
+              onExit: (_) => setState(() => _hoveredIndex = -1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isHovered ? 0.2 : 0.05),
+                      blurRadius: isHovered ? 25 : 15,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Transform.translate(
+                  offset: Offset(0, isHovered ? -10 : 0),
+                  child: Transform.scale(
+                    scale: isHovered ? 1.03 : 1.0,
+                    child: CustomProductCard(product: filtered[index]),
+                  ),
+                ),
+              ),
+            );
           },
           childCount: filtered.length,
         ),
@@ -256,35 +280,34 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  SliverToBoxAdapter _buildGlowingLoading() {
-    return const SliverToBoxAdapter(
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.all(50.0),
-          child: CircularProgressIndicator(color: Colors.black, strokeWidth: 1),
+  SliverToBoxAdapter _buildLoading() => const SliverToBoxAdapter(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(50.0),
+            child: CircularProgressIndicator(
+              color: AppColors.primary,
+              strokeWidth: 2,
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  SliverToBoxAdapter _buildEmptySliver(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 100),
-            Icon(Icons.auto_awesome_rounded,
-                size: 80, color: Colors.black.withOpacity(0.1)),
-            const SizedBox(height: 24),
-            const Text("Sessizlik ve Zerafet",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2)),
-            const Text("Bu koleksiyon yakında sizlerle buluşacak."),
-          ],
+  SliverToBoxAdapter _buildEmpty() => SliverToBoxAdapter(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 100),
+              Icon(Icons.auto_awesome_rounded,
+                  size: 80, color: AppColors.textSecondary.withOpacity(0.2)),
+              const SizedBox(height: 24),
+              const Text("Sessizlik ve Zerafet",
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2)),
+              const Text("Bu koleksiyon yakında sizlerle buluşacak."),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
