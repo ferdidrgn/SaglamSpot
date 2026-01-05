@@ -66,18 +66,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
             ],
           ),
 
-          // 🔍 SEARCH
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/search',
-                name: '/search',
-                pageBuilder: (final _, final __) =>
-                    const NoTransitionPage(child: SearchPage()),
-              ),
-            ],
-          ),
-
           // ℹ️ ABOUT
           StatefulShellBranch(
             routes: [
@@ -112,6 +100,14 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         pageBuilder: (final _, final __) => const MaterialPage(
           child: AddProductPage(),
         ),
+      ),
+
+      // 🔍 SEARCH
+      GoRoute(
+        path: '/search',
+        name: '/search',
+        pageBuilder: (final _, final __) =>
+            const NoTransitionPage(child: SearchPage()),
       ),
     ],
   );
