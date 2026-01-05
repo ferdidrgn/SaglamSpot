@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/domain/entities/product.dart';
-import '../../presentation/pages/product_detail_page.dart';
 import 'gallery_section.dart';
 
 class CustomProductCard extends StatelessWidget {
@@ -11,104 +10,119 @@ class CustomProductCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // ÜST KISIM: Görsel Alanı (Tıklayınca GALERİ açılır)
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _openGallery(context),
-              child: Container(
-                margin: const EdgeInsets.all(12),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF3F7F6), // Görseldeki soft mint
-                  borderRadius: BorderRadius.circular(24),
+    return GestureDetector(
+      onTap: () => context.push('/product/${product.id}'),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(28), // Daha kibar bir kavis
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Stack(
+            children: [
+              // 1. ARKA PLAN GÖRSELİ
+              Positioned.fill(
+                child: Hero(
+                  tag: 'prod_img_${product.id}',
+                  child: Image.network(
+                    product.imagesUrl.first,
+                    fit: BoxFit.cover,
+                    errorBuilder: (final c, final e, final s) => Container(
+                        color: const Color(0xFFF3F7F6),
+                        child: const Icon(Icons.chair, size: 40)),
+                  ),
                 ),
-                child: Stack(
+              ),
+
+              // 2. GRADYAN (Okunabilirlik için alt gölge)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.7),
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.05),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // 3. ÜST GALERİ İKONU (Daha ufak ve şeffaf)
+              Positioned(
+                top: 15,
+                right: 15,
+                child: GestureDetector(
+                  onTap: () => _openGallery(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.fullscreen_rounded,
+                        color: Colors.white, size: 20),
+                  ),
+                ),
+              ),
+
+              // 4. ALT BİLGİ ALANI (Küçültülmüş ve Düzenlenmiş Yazılar)
+              Positioned(
+                bottom: 20,
+                left: 20,
+                right: 20,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Hero(
-                        tag: 'prod_img_${product.id}',
-                        child: Image.network(
-                          product.imagesUrl.first,
-                          fit: BoxFit.contain,
-                          errorBuilder: (final c, final e, final s) =>
-                              const Icon(Icons.chair, size: 40),
-                        ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: -0.5,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '₺${product.price.toStringAsFixed(0)}',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // Galeri İpucu İkonu
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.white.withOpacity(0.8),
-                        child: const Icon(Icons.fullscreen_rounded,
-                            size: 20, color: Colors.black),
-                      ),
+                    // Minimal Ok İkonu
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: Colors.white.withOpacity(0.6),
+                      size: 14,
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-
-          // ALT KISIM: Bilgi Alanı (Tıklayınca DETAY sayfasına gider)
-          GestureDetector(
-            onTap: () => context.push('/product/${product.id}'),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '₺${product.price.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black54),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Detay Sayfasına Git Butonu (Görseldeki siyah yuvarlak buton)
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.arrow_forward_ios_rounded,
-                        color: Colors.white, size: 16),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
