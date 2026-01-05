@@ -5,27 +5,20 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_app_header.dart';
 
 class NavigationScreen extends ConsumerWidget {
-  NavigationScreen({
-    super.key,
-    required this.navigationShell,
-  });
+  NavigationScreen({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
-  // 🔥 BURASI
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _onItemSelected(final BuildContext context, final int index) {
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
+  void _onItemSelected(final BuildContext context, final int index) =>
+      navigationShell.goBranch(index,
+          initialLocation: index == navigationShell.currentIndex);
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     return Scaffold(
-      key: _scaffoldKey, // 🔥 BURASI
+      key: _scaffoldKey,
       backgroundColor: AppColors.background,
       body: Column(
         children: [
@@ -34,9 +27,7 @@ class NavigationScreen extends ConsumerWidget {
             onNavigate: (final i) => _onItemSelected(context, i),
             scaffoldKey: _scaffoldKey,
           ),
-          Expanded(
-            child: navigationShell,
-          ),
+          Expanded(child: navigationShell),
         ],
       ),
       endDrawer: Drawer(
@@ -45,10 +36,8 @@ class NavigationScreen extends ConsumerWidget {
           children: const [
             DrawerHeader(
               decoration: BoxDecoration(color: AppColors.primary),
-              child: Text(
-                'Sağlam Spot',
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
+              child: Text('Sağlam Spot',
+                  style: TextStyle(color: Colors.white, fontSize: 24)),
             ),
           ],
         ),

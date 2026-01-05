@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/util/responsive_utils.dart'; // Extension'lar için import
 import '../../core/widgets/filter_sheet.dart';
 import '../../core/widgets/responsive_product_grid.dart';
@@ -119,6 +120,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget build(final BuildContext context) {
     final searchState = ref.watch(searchProvider);
     final isMobile = context.isMobile; // Extension kullanımı
+
+    final query = GoRouterState.of(context).uri.queryParameters['q'];
+    if (query != null && _isInitialLoad) {
+      _searchController.text = query;
+      // Widget build bittikten sonra aramayı başlat
+      WidgetsBinding.instance.addPostFrameCallback((final _) {
+        ref.read(searchProvider.notifier).onQueryChanged(query);
+      });
+    }
 
     // İlk build'de ürünleri yükle
     if (_isInitialLoad && !searchState.isLoading) {
@@ -356,9 +366,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
 
-    List<Widget> slivers = [];
+    final List<Widget> slivers = [];
 
-    // Mevcut Ürünler Grid'i
+    // --- _buildProductGrids Metodu İçindeki Güncel Yapı ---
+
+// 1. MEVCUT ÜRÜNLER BLOĞU
     if (availableProducts.isNotEmpty) {
       slivers.add(
         SliverToBoxAdapter(
@@ -369,23 +381,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ),
         ),
       );
-      // -----------------------------------------------------------------
-      //  DEĞİŞİKLİK BURADA: Karmaşık SliverGrid yerine artık
-      //  ResponsiveProductSliverGrid widget'ını kullanıyoruz.
-      // -----------------------------------------------------------------
       slivers.add(
         ResponsiveProductSliverGrid(
           products: availableProducts,
           onProductTap: (final product) {
-            // Ürüne tıklama olayı
-            // print('${product.name} tıklandı!');
-            // Navigator.push(...);
+            // ✅ BURAYI DEĞİŞTİRDİK: Mevcut ürüne tıklandığında detay sayfasına git
+            context.push('/product/${product.id}');
           },
         ),
       );
     }
 
-    // Satılmış Ürünler Grid'i
+// 2. SATILMIŞ ÜRÜNLER BLOĞU
     if (soldProducts.isNotEmpty) {
       slivers.add(
         SliverToBoxAdapter(
@@ -400,7 +407,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ResponsiveProductSliverGrid(
           products: soldProducts,
           onProductTap: (final product) {
-            // print('${product.name} tıklandı!');
+            // ✅ BURAYI DA DEĞİŞTİRDİK: Satılmış olsa bile detaylarını görsün
+            context.push('/product/${product.id}');
           },
         ),
       );
