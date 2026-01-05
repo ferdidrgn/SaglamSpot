@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
+import '../../../core/services/seo_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../data/providers/product/product_provider.dart';
@@ -31,21 +32,26 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // ✅ SEO – SPOT PRODUCTS PAGE
+    setSeo(
+      title: 'Spot Ürünler | Sağlam Spot',
+      description:
+          'Sağlam Spot’ta sıfır ve ikinci el spot ürünlerde %70’e varan indirimleri kaçırmayın.',
+    );
+  }
+
+  @override
   Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
 
     return CustomScrollView(
       slivers: [
-        // Header with countdown timer
         _buildSpotHeader(context),
-
-        // Sort and Filter Bar
         _buildSortBar(context),
-
-        // Spotlight Banner
         _buildSpotlightBanner(context),
-
-        // Products Grid
         _buildProductsGrid(context, productState),
       ],
     );

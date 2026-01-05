@@ -1,39 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/services/seo_helper.dart';
 import '../../../core/theme/app_colors.dart';
 
-class InfoPage extends StatelessWidget {
+class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
+
+  @override
+  State<InfoPage> createState() => _InfoPageState();
+}
+
+class _InfoPageState extends State<InfoPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    /// 🔥 SEO BURADA
+    setSeo(
+      title: 'Hakkımızda | Sağlam Spot',
+      description:
+          '2012’den beri İçerenköy’de hizmet veren Sağlam Spot. Uygun fiyatlı spot ve ikinci el mobilyalar.',
+    );
+  }
 
   @override
   Widget build(final BuildContext context) {
     return CustomScrollView(
       slivers: [
-        // Hero Section
         _buildHeroSection(context),
-
-        // Our Story
         _buildOurStory(context),
-
-        // Our Values
         _buildOurValues(context),
-
-        // Ustamızın Geçmişi
         _buildMasterHistory(context),
-
-        // Taşıma Hizmeti
         _buildDeliveryService(context),
-
-        // Ulaşım Bilgileri
         _buildTransportationInfo(context),
-
-        // Contact Info
         _buildContactSection(context),
-
-        // Map Section
         _buildMapSection(context),
-
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
       ],
     );

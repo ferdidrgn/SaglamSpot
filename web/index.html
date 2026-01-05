@@ -1,67 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <!--
-      If you are serving your web app in a path other than the root, change the
-      href value below to reflect the base path you are serving from.
-
-      The path provided below has to start and end with a slash "/" in order for
-      it to work correctly.
-
-      For more details:
-      * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-      This is a placeholder for base href that will be replaced by the value of
-      the `--base-href` argument provided to `flutter build`.
-    -->
+    <!-- Flutter Base -->
     <base href="$FLUTTER_BASE_HREF">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-    <meta name="description" content="A new Flutter project.">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 
+    <!-- SEO -->
+    <title>Sağlam Spot | Spot & Sıfır Mobilya</title>
+    <meta
+            name="description"
+            content="Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot 20 yıllık esnaf güvencesiyle hizmetinizde."
+    />
 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
-    <meta http-equiv="Expires" content="0"/>
+    <!-- AdSense -->
+    <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5779807348211992"
+            crossorigin="anonymous">
+    </script>
 
-    <!-- iOS meta tags & icons -->
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- PWA / iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="saglamspot">
+    <meta name="apple-mobile-web-app-title" content="SaglamSpot">
     <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="saglam_spot_logo.png"/>
+    <link rel="icon" type="image/png" href="saglam_spot_logo.png">
 
-    <title>saglamspot</title>
+    <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
-<script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
 
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "",
-      authDomain: "",
-      projectId: "",
-      storageBucket: "",
-      messagingSenderId: "",
-      appId: "",
-      measurementId: ""
-    };
+<!-- 🔴 BOTLAR İÇİN STATİK İÇERİK (SEO + ADSENSE İÇİN ÇOK ÖNEMLİ) -->
+<noscript>
+    <header>
+        <h1>Sağlam Spot</h1>
+        <p>İkinci el ve sıfır mobilya ürünlerini güvenle alıp satabileceğiniz platform.</p>
+    </header>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-</script>
-<script src="flutter_bootstrap.js?v=2" async></script>
+    <section>
+        <h2>Hizmetlerimiz</h2>
+        <ul>
+            <li>İkinci el mobilya</li>
+            <li>Sıfır mobilya</li>
+            <li>Uygun fiyatlı spot ürünler</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Kurumsal</h2>
+        <p>
+            Sağlam Spot, 20 yılı aşkın tecrübesiyle güvenli alışveriş sunar.
+        </p>
+    </section>
+
+    <footer>
+        <p>© 2026 Sağlam Spot</p>
+    </footer>
+</noscript>
+
+<!-- Flutter -->
+<script src="flutter_bootstrap.js" async></script>
+
 </body>
 </html>

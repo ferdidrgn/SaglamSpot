@@ -5,15 +5,15 @@ import '../theme/app_colors.dart';
 import '../util/responsive_utils.dart';
 
 class CustomAppHeader extends StatelessWidget {
-  final int selectedIndex;
-  final ValueChanged<int> onItemSelected;
+  final int currentIndex;
+  final void Function(int index) onNavigate;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const CustomAppHeader({
     super.key,
-    required this.selectedIndex,
-    required this.onItemSelected,
-    required this.scaffoldKey, // Bu anahtar mobil menü için zorunludur
+    required this.currentIndex,
+    required this.onNavigate,
+  required this.scaffoldKey, // Bu anahtar mobil menü için zorunludur
   });
 
   @override
@@ -97,7 +97,7 @@ class CustomAppHeader extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => onItemSelected(0),
+        onTap: () => onNavigate(0), // 🔥 router.go('/')
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -132,25 +132,22 @@ class CustomAppHeader extends StatelessWidget {
   }
 
   Widget _buildDesktopNavigation(final BuildContext context) {
-    // Bu başlıkların index'leri (0, 1, 2, 3, 4)
-    // _onItemSelected'a giden index'ler ile eşleşmelidir.
-    const navItems = [
-      'Ana Sayfa',
-      'Sıfır Ürünler',
-      'Spot Ürünler',
-      'Hakkımızda',
-      'SSS'
-    ];
+    const labels = ['Ana Sayfa', 'Sıfır Ürünler', 'Spot', 'Hakkımızda', 'SSS'];
 
     return Row(
-      children: List.generate(navItems.length, (final index) {
-        final isSelected = selectedIndex == index;
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: _NavItem(
-              title: navItems[index],
-              isSelected: isSelected,
-              onTap: () => onItemSelected(index)),
+      children: List.generate(labels.length, (final i) {
+        final active = i == currentIndex;
+        return GestureDetector(
+          onTap: () => onNavigate(i),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              labels[i],
+              style: TextStyle(
+                fontWeight: active ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ),
         );
       }),
     );
