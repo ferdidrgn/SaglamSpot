@@ -3,121 +3,156 @@ import 'package:go_router/go_router.dart';
 import 'package:saglamspot/domain/entities/product.dart';
 import 'gallery_section.dart';
 
-class CustomProductCard extends StatelessWidget {
+class CustomProductCard extends StatefulWidget {
   final Product product;
 
   const CustomProductCard({super.key, required this.product});
 
   @override
+  State<CustomProductCard> createState() => _CustomProductCardState();
+}
+
+class _CustomProductCardState extends State<CustomProductCard> {
+  bool _isHovered = false;
+
+  @override
   Widget build(final BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.push('/product/${product.id}'),
-      child: Container(
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        transform:
+            _isHovered ? (Matrix4.identity()..scale(1.02)) : Matrix4.identity(),
+        margin: const EdgeInsets.only(right: 20, bottom: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28), // Daha kibar bir kavis
+          borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            ),
+              color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.05),
+              blurRadius: _isHovered ? 20 : 12,
+              offset: Offset(0, _isHovered ? 10 : 6),
+            )
           ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(28),
           child: Stack(
             children: [
-              // 1. ARKA PLAN GÖRSELİ
+              // 1. GÖRSEL VE GALERİ TETİKLEYİCİ
               Positioned.fill(
-                child: Hero(
-                  tag: 'prod_img_${product.id}',
-                  child: Image.network(
-                    product.imagesUrl.first,
-                    fit: BoxFit.cover,
-                    errorBuilder: (final c, final e, final s) => Container(
-                        color: const Color(0xFFF3F7F6),
-                        child: const Icon(Icons.chair, size: 40)),
-                  ),
-                ),
-              ),
-
-              // 2. GRADYAN (Okunabilirlik için alt gölge)
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.7),
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.05),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // 3. ÜST GALERİ İKONU (Daha ufak ve şeffaf)
-              Positioned(
-                top: 15,
-                right: 15,
                 child: GestureDetector(
                   onTap: () => _openGallery(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      shape: BoxShape.circle,
+                  // Görsele tıklayınca galeri açılır
+                  child: Hero(
+                    tag: 'prod_img_${widget.product.id}',
+                    child: Image.network(
+                      widget.product.imagesUrl.first,
+                      fit: BoxFit.cover,
+                      errorBuilder: (final c, final e, final s) => Container(
+                          color: const Color(0xFFF3F7F6),
+                          child: const Icon(Icons.chair, size: 40)),
                     ),
-                    child: const Icon(Icons.fullscreen_rounded,
-                        color: Colors.white, size: 20),
                   ),
                 ),
               ),
 
-              // 4. ALT BİLGİ ALANI (Küçültülmüş ve Düzenlenmiş Yazılar)
-              Positioned(
-                bottom: 20,
-                left: 20,
-                right: 20,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.5,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            '₺${product.price.toStringAsFixed(0)}',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+              // 2. GRADIENT OVERLAY (Yazıların okunması için)
+              Positioned.fill(
+                child: IgnorePointer(
+                  // Tıklamanın arkadaki görsele geçmesi için
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.7),
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.1),
                         ],
                       ),
                     ),
-                    // Minimal Ok İkonu
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: Colors.white.withOpacity(0.6),
-                      size: 14,
+                  ),
+                ),
+              ),
+
+              // 3. ÜSTTEKİ GALERİ İKONU (Alternatif tıklama alanı)
+              Positioned(
+                top: 15,
+                right: 15,
+                child: IconButton(
+                  icon: const Icon(Icons.fullscreen_rounded,
+                      color: Colors.white, size: 24),
+                  style: IconButton.styleFrom(backgroundColor: Colors.white12),
+                  onPressed: () => _openGallery(context),
+                ),
+              ),
+
+              // 4. ALT BİLGİ VE DETAY SAYFASI TETİKLEYİCİ
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () => context.push('/product/${widget.product.id}'),
+                  // Buraya tıklayınca detay sayfası
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+                    decoration: const BoxDecoration(
+                      // Yazı alanına özel hafif karartma
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [Colors.black54, Colors.transparent],
+                      ),
                     ),
-                  ],
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.product.name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.5,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '₺${widget.product.price.toStringAsFixed(0)}',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Detay sayfasına gidiş oku
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white24,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -131,7 +166,7 @@ class CustomProductCard extends StatelessWidget {
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
         builder: (final context) => GalleryViewerDialog(
-            images: product.imagesUrl,
+            images: widget.product.imagesUrl,
             isMobile: MediaQuery.of(context).size.width < 900),
       );
 }
