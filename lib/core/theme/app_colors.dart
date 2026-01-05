@@ -17,7 +17,7 @@ class AppColors {
   static const Color accentLight = Color(0xFF34D399);
 
   // Neutral Colors
-  static const Color background = Color(0xFFF8FAFC);
+  static const Color background = Color(0x00fafafa);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color card = Color(0xFFFFFFFF);
   static const Color textPrimary = Color(0xFF1E293B);

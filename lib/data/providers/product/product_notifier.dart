@@ -1,5 +1,5 @@
 import 'package:saglamspot/data/providers/product/product_provider.dart';
-import '../../../core/common/base_notifier_with_network_checker.dart';
+import '../../../core/common/base_notifier.dart';
 import '../../../domain/entities/product.dart';
 import 'product_state.dart';
 

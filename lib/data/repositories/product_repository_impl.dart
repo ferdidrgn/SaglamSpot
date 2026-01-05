@@ -1,100 +1,61 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../../core/network/internet_service.dart';
+import '../../core/common/base_repo.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../datasources/product_remote_data_source.dart';
 import '../models/product_model.dart';
 
-class ProductRepositoryImpl implements ProductRepository {
+class ProductRepositoryImpl extends BaseRepository
+    implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
-  final InternetService internetService;
 
   ProductRepositoryImpl({
     required this.remoteDataSource,
-    required this.internetService,
+    //required this.internetService,
   });
 
   @override
-  Future<Either<Failure, List<Product>>> getProducts() async {
-    return _getProducts(() => remoteDataSource.getProducts());
-  }
+  Future<Either<Failure, List<Product>>> getProducts() =>
+      _getProducts(() => remoteDataSource.getProducts());
 
   @override
   Future<Either<Failure, List<Product>>> filterProducts({
     final String? condition,
     final double? minPrice,
     final double? maxPrice,
-  }) async {
-    return _getProducts(() => remoteDataSource.filterProducts(
-          condition: condition,
-          minPrice: minPrice,
-          maxPrice: maxPrice,
-        ));
-  }
+  }) =>
+      _getProducts(() => remoteDataSource.filterProducts(
+            condition: condition,
+            minPrice: minPrice,
+            maxPrice: maxPrice,
+          ));
 
   Future<Either<Failure, List<Product>>> _getProducts(
-    final Future<List<ProductModel>> Function() getProductsFromSource,
-  ) async {
-    if (await internetService.isConnected) {
-      try {
-        final products = await getProductsFromSource();
-        return Right(products.map((final model) => model.toEntity()).toList());
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
-    }
-  }
+          final Future<List<ProductModel>> Function() getProductsFromSource) =>
+      execute(() {
+        final products = getProductsFromSource();
+        return products.then(
+            (final value) => value.map((final e) => e.toEntity()).toList());
+      });
 
   @override
-  Future<Either<Failure, List<Product>>> searchProducts({final String? searchQueryText}) {
-    return _getProducts(() => remoteDataSource.searchProducts(searchQueryText ?? ''));
-  }
+  Future<Either<Failure, List<Product>>> searchProducts(
+          {final String? searchQueryText}) =>
+      _getProducts(
+          () => remoteDataSource.searchProducts(searchQueryText ?? ''));
 
   @override
   Future<Either<Failure, void>> addProduct(
-      final Product product, final List<dynamic> images) async {
-    if (await internetService.isConnected) {
-      try {
-        final productModel = ProductModel.fromEntity(product);
-        await remoteDataSource.addProduct(productModel, images);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
-    }
-  }
+          final Product product, final List<dynamic> images) =>
+      execute(() => remoteDataSource.addProduct(
+          ProductModel.fromEntity(product), images));
 
   @override
-  Future<Either<Failure, void>> updateProduct(final Product product) async {
-    if (await internetService.isConnected) {
-      try {
-        final productModel = ProductModel.fromEntity(product);
-        await remoteDataSource.updateProduct(productModel);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
-    }
-  }
+  Future<Either<Failure, void>> updateProduct(final Product product) => execute(
+      () => remoteDataSource.updateProduct(ProductModel.fromEntity(product)));
 
   @override
-  Future<Either<Failure, void>> deleteProduct(final String productId) async {
-    if (await internetService.isConnected) {
-      try {
-        await remoteDataSource.deleteProduct(productId);
-        return const Right(null);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure('No internet connection'));
-    }
-  }
+  Future<Either<Failure, void>> deleteProduct(final String productId) =>
+      execute(() => remoteDataSource.deleteProduct(productId));
 }

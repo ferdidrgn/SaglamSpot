@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:saglamspot/core/common/base_notifier_with_network_checker.dart';
+import 'package:saglamspot/core/common/base_notifier.dart';
 import '../../../domain/repositories/product_repository.dart';
 import '../../../domain/repositories/product_repository_provider.dart';
 import '../product/product_provider.dart';
