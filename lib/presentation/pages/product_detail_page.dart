@@ -41,14 +41,26 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9), // Daha ferah bir zemin
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          _buildAppBar(context, product),
-          _buildResponsiveLayout(context, product),
-          _buildRelatedProducts(context),
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+      backgroundColor: const Color(0xFFF8FAF9),
+      body: Column(
+        children: [
+          // ✅ Scroll alanı
+          Expanded(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                _buildAppBar(context, product),
+                _buildResponsiveLayout(context, product),
+                _buildRelatedProducts(context),
+                const SliverToBoxAdapter(child: SizedBox(height: 80)),
+              ],
+            ),
+          ),
+
+          // ✅ ADSENSE (Sliver DIŞINDA)
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: AdsenseBanner()),
         ],
       ),
     );

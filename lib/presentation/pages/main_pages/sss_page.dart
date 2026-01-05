@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/ad_sense_banner.dart';
 import '../add_product_page.dart';
 
 class SSSPage extends StatefulWidget {
@@ -188,7 +189,6 @@ class _SSSPageState extends State<SSSPage> {
         .toList();
   }
 
-
   @override
   Widget build(final BuildContext context) {
     return CustomScrollView(
@@ -212,6 +212,7 @@ class _SSSPageState extends State<SSSPage> {
         //_buildAddProductButton(context),
 
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
+        const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
       ],
     );
   }

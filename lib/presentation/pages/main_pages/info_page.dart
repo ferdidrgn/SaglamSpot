@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/ad_sense_banner.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
@@ -11,7 +12,6 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
-
   @override
   Widget build(final BuildContext context) {
     return CustomScrollView(
@@ -25,6 +25,7 @@ class _InfoPageState extends State<InfoPage> {
         _buildContactSection(context),
         _buildMapSection(context),
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
+        const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
       ],
     );
   }

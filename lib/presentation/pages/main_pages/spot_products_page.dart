@@ -74,9 +74,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           else
             _buildProductsGrid(context, sortedProducts),
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
-          const SliverToBoxAdapter(
-            child: AdsenseBanner(height: 100),
-          ),
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
         ],
       ),
     );
