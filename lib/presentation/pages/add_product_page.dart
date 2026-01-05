@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/providers/product/product_provider.dart';
+import '../../core/widgets/ad_sense_banner.dart';
 import '../../core/widgets/custom_image_selector.dart';
 import '../../domain/entities/product.dart';
 
@@ -46,6 +47,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
           _buildHeader(),
           const SizedBox(height: 20),
           ..._buildInputFields(),
@@ -65,6 +67,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               child: const Text('Ürün Ekle'),
             ),
           ),
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
         ],
       ),
     );

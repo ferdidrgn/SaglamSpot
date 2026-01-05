@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/util/responsive_utils.dart'; // Extension'lar için import
+import '../../core/widgets/ad_sense_banner.dart';
 import '../../core/widgets/filter_sheet.dart';
 import '../../core/widgets/responsive_product_grid.dart';
 import '../../data/providers/search/search_filters_notifier.dart';
@@ -195,6 +196,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             _buildEmptyStateSliver(context, _resetFilters)
           else
             ..._buildProductGrids(context, products),
+
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
         ],
       ),
 
@@ -670,32 +673,30 @@ class _CategoryChips extends StatelessWidget {
             onTap: () => onSelected(category),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding:
-              const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
                 gradient: isSelected
                     ? const LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-                )
+                        colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
+                      )
                     : null,
                 color: isSelected ? null : Colors.white,
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: isSelected
                     ? [
-                  BoxShadow(
-                    color:
-                    const Color(0xFF6366F1).withOpacity(0.35),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
+                        BoxShadow(
+                          color: const Color(0xFF6366F1).withOpacity(0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
                     : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                 border: Border.all(
                   color: isSelected
                       ? Colors.transparent
@@ -707,9 +708,7 @@ class _CategoryChips extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isSelected
-                      ? Colors.white
-                      : const Color(0xFF475569),
+                  color: isSelected ? Colors.white : const Color(0xFF475569),
                 ),
               ),
             ),

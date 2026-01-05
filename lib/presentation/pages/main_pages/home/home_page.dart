@@ -92,6 +92,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           _buildTestimonialsSection(isMobile),
           _buildStatsSection(isMobile),
           _buildCTASection(isMobile),
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
           _buildModernFooter(isMobile),
         ],
       ),

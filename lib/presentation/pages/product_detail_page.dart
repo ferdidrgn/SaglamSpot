@@ -4,6 +4,7 @@ import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/data/providers/product/product_provider.dart';
 import 'package:saglamspot/domain/entities/product.dart';
+import '../../core/widgets/ad_sense_banner.dart';
 import '../../core/widgets/gallery_section.dart';
 
 class WebProductDetailPage extends ConsumerStatefulWidget {
@@ -29,16 +30,15 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
     final product = productState.dataList?.firstWhere(
-      (p) => p.id == widget.productId,
+      (final p) => p.id == widget.productId,
       orElse: () => throw Exception("Ürün bulunamadı"),
     );
 
-    if (product == null) {
+    if (product == null)
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF9), // Daha ferah bir zemin
@@ -54,7 +54,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  SliverAppBar _buildAppBar(BuildContext context, Product product) {
+  SliverAppBar _buildAppBar(final BuildContext context, final Product product) {
     return SliverAppBar(
       backgroundColor: Colors.white.withOpacity(0.9),
       elevation: 0,
@@ -88,18 +88,19 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildResponsiveLayout(BuildContext context, Product product) {
-    if (context.isDesktop) {
+  Widget _buildResponsiveLayout(
+      final BuildContext context, final Product product) {
+    if (context.isDesktop)
       return _buildDesktopLayout(context, product);
-    } else if (context.isTablet) {
+    else if (context.isTablet)
       return _buildTabletLayout(context, product);
-    } else {
+    else
       return _buildMobileLayout(context, product);
-    }
   }
 
   // TABLET LAYOUT (Side-by-side but tighter)
-  SliverToBoxAdapter _buildTabletLayout(BuildContext context, Product product) {
+  SliverToBoxAdapter _buildTabletLayout(
+      final BuildContext context, final Product product) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -120,7 +121,8 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   }
 
   // MOBILE LAYOUT (Stacked with improved spacing)
-  SliverToBoxAdapter _buildMobileLayout(BuildContext context, Product product) {
+  SliverToBoxAdapter _buildMobileLayout(
+      final BuildContext context, final Product product) {
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -132,7 +134,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   }
 
   SliverToBoxAdapter _buildDesktopLayout(
-      BuildContext context, Product product) {
+      final BuildContext context, final Product product) {
     return SliverToBoxAdapter(
       child: Center(
         child: Container(
@@ -153,8 +155,8 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildImageSection(BuildContext context, Product product,
-      {required double height, bool isMobile = false}) {
+  Widget _buildImageSection(final BuildContext context, final Product product,
+      {required final double height, final bool isMobile = false}) {
     return Padding(
       padding: isMobile ? const EdgeInsets.all(16.0) : EdgeInsets.zero,
       child: Column(
@@ -239,8 +241,8 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildProductInfo(BuildContext context, Product product,
-      {bool compact = false, bool isMobile = false}) {
+  Widget _buildProductInfo(final BuildContext context, final Product product,
+      {final bool compact = false, final bool isMobile = false}) {
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 40),
       decoration: isMobile
@@ -284,7 +286,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildGlassButton(IconData icon, VoidCallback onTap) {
+  Widget _buildGlassButton(final IconData icon, final VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -304,15 +306,15 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildThumbnailList(Product product) {
+  Widget _buildThumbnailList(final Product product) {
     return SizedBox(
       height: 90,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         itemCount: product.imagesUrl.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (context, index) {
+        separatorBuilder: (final _, final __) => const SizedBox(width: 16),
+        itemBuilder: (final context, final index) {
           final isSelected = _selectedImageIndex == index;
           return GestureDetector(
             onTap: () => setState(() => _selectedImageIndex = index),
@@ -350,7 +352,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildPriceSection(Product product) {
+  Widget _buildPriceSection(final Product product) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -388,7 +390,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildActionButtons(bool isMobile) {
+  Widget _buildActionButtons(final bool isMobile) {
     return Row(
       children: [
         Expanded(
@@ -414,7 +416,8 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildPrimaryButton(String text, Color bg, Color fg, IconData? icon) {
+  Widget _buildPrimaryButton(
+      final String text, final Color bg, final Color fg, final IconData? icon) {
     return Container(
       height: 60, // Yüksekliği biraz optimize ettik
       decoration: BoxDecoration(
@@ -464,7 +467,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   }
 
   // Reuse logic from previous implementation with aesthetic enhancements
-  Widget _buildCategoryBadge(String cat) {
+  Widget _buildCategoryBadge(final String cat) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -487,7 +490,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
         children: [
           ...List.generate(
               5,
-              (index) => const Icon(Icons.star_rounded,
+              (final index) => const Icon(Icons.star_rounded,
                   color: Color(0xFFFFC107), size: 22)),
           const SizedBox(width: 8),
           const Text("4.9",
@@ -508,7 +511,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
             style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
         const SizedBox(height: 16),
         Row(
-          children: _availableColors.map((c) {
+          children: _availableColors.map((final c) {
             final isSelected = _selectedColor == c;
             return Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -541,7 +544,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildQuantityAndDescription(Product product) {
+  Widget _buildQuantityAndDescription(final Product product) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -591,7 +594,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _qButton(IconData icon, VoidCallback onTap) {
+  Widget _qButton(final IconData icon, final VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -607,14 +610,14 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  void _openFullscreenGallery(List<String> images) {
+  void _openFullscreenGallery(final List<String> images) {
     showDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (context) => GalleryViewerDialog(
+        builder: (final context) => GalleryViewerDialog(
             images: images, isMobile: MediaQuery.of(context).size.width < 600));
   }
 
-  SliverToBoxAdapter _buildRelatedProducts(BuildContext context) =>
+  SliverToBoxAdapter _buildRelatedProducts(final BuildContext context) =>
       const SliverToBoxAdapter(child: SizedBox());
 }
