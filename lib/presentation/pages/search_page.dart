@@ -204,8 +204,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  // --- YARDIMCI METOTLAR (YÜKLEME, HATA, BOŞ DURUM) ---
-
   Widget _buildLoadingSliver(final BuildContext context) {
     return SliverFillRemaining(
       hasScrollBody: false,
@@ -472,64 +470,40 @@ class _CreativeAppBar extends StatelessWidget {
   const _CreativeAppBar();
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: context.responsive(mobile: 200.0, desktop: 250.0),
-      floating: false,
+      expandedHeight: context.responsive(mobile: 180.0, desktop: 230.0),
       pinned: true,
-      // Geri okunun beyaz olmasını sağlar
+      elevation: 0,
+      backgroundColor: const Color(0xFF0F172A),
       iconTheme: const IconThemeData(color: Colors.white),
-      backgroundColor: const Color(0xFF334155),
-      // Resim yüklenemezse fallback
-
       flexibleSpace: FlexibleSpaceBar(
-        // Başlık (kaydırınca küçülen)
+        titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
         title: Text(
-          'İlham Veren Parçalar',
+          'Aradığını Keşfet',
           style: TextStyle(
+            fontSize: context.responsive(mobile: 16, desktop: 18),
+            fontWeight: FontWeight.w700,
             color: Colors.white,
-            fontSize: context.responsive(mobile: 16.0, desktop: 18.0),
-            fontWeight: FontWeight.bold,
           ),
         ),
-        titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
-        centerTitle: false,
-
-        // Arka plan (Resim + Gradient)
         background: Stack(
           fit: StackFit.expand,
           children: [
-            // 1. Arka Plan Resmi
             Image.network(
-              // "Ahşap" ve "Sanatsal" temasına uygun bir resim
-              'https://images.unsplash.com/photo-1511401332200-038b5093b79f?q=80&w=1974&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1519710164239-da123dc03ef4',
               fit: BoxFit.cover,
-              // Yüklenirken animasyon
-              loadingBuilder: (final context, final child, final progress) {
-                if (progress == null) return child;
-                return Container(color: const Color(0xFF334155));
-              },
-              // Hata durumunda
-              errorBuilder: (final context, final error, final stackTrace) {
-                return Container(
-                  color: const Color(0xFF334155),
-                  child: const Icon(Icons.palette_outlined,
-                      color: Colors.white54, size: 50),
-                );
-              },
             ),
-
-            // 2. Gradient (Metnin okunabilirliği için)
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.black.withOpacity(0.8),
-                    Colors.black.withOpacity(0.1),
+                    Colors.black.withOpacity(0.85),
+                    Colors.black.withOpacity(0.25),
+                    Colors.transparent,
                   ],
-                  stops: const [0.0, 0.7], // Alttan %70'e kadar
                 ),
               ),
             ),
@@ -600,7 +574,6 @@ class _SearchAndFilterSection extends StatelessWidget {
   }
 }
 
-// --- 2a. ARAMA ÇUBUĞU ---
 class _SearchBar extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String) onChanged;
@@ -613,38 +586,47 @@ class _SearchBar extends StatelessWidget {
   });
 
   @override
-  Widget build(final BuildContext context) {
-    // _buildSearchBar'ın içeriği
+  Widget build(BuildContext context) {
     return Container(
+      height: isMobile ? 54 : 60,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 30,
+            offset: const Offset(0, 12),
           ),
         ],
+        border: Border.all(
+          color: Colors.black.withOpacity(0.04),
+        ),
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
         decoration: InputDecoration(
-          hintText: 'Lüks ürünler ara...',
+          hintText: 'Ürün, kategori veya marka ara…',
           hintStyle: TextStyle(
-            color: const Color(0xFF64748B).withOpacity(0.6),
-            // context.responsive kullanımı
-            fontSize: context.responsive(mobile: 14.0, desktop: 16.0),
+            color: Colors.grey.shade500,
+            fontSize: 15,
           ),
-          prefixIcon: const Icon(
-            Icons.search_rounded,
-            color: Color(0xFF6366F1),
-            size: 24,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Icon(
+              Icons.search_rounded,
+              size: 24,
+              color: Colors.grey.shade600,
+            ),
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear_rounded, size: 20),
+                  icon: const Icon(Icons.close_rounded, size: 20),
                   onPressed: () {
                     controller.clear();
                     onChanged('');
@@ -652,11 +634,7 @@ class _SearchBar extends StatelessWidget {
                 )
               : null,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            // context.responsive kullanımı
-            horizontal: context.responsive(mobile: 16.0, desktop: 20.0),
-            vertical: context.responsive(mobile: 16.0, desktop: 20.0),
-          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 18),
         ),
       ),
     );
@@ -676,60 +654,62 @@ class _CategoryChips extends StatelessWidget {
   });
 
   @override
-  Widget build(final BuildContext context) {
-    // _buildCategoryChips'in içeriği
+  Widget build(BuildContext context) {
     return SizedBox(
-      height: 40,
-      child: ListView.builder(
+      height: 42,
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
-        itemBuilder: (final context, final index) {
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = selectedCategory == category;
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => onSelected(category),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                    gradient: isSelected
-                        ? const LinearGradient(
-                            colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-                          )
-                        : null,
-                    color: isSelected ? null : Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : const Color(0xFFE2E8F0),
-                      width: 1,
-                    ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: const Color(0xFF6366F1).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
-                        : [],
+
+          return InkWell(
+            borderRadius: BorderRadius.circular(22),
+            onTap: () => onSelected(category),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              decoration: BoxDecoration(
+                gradient: isSelected
+                    ? const LinearGradient(
+                  colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
+                )
+                    : null,
+                color: isSelected ? null : Colors.white,
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: isSelected
+                    ? [
+                  BoxShadow(
+                    color:
+                    const Color(0xFF6366F1).withOpacity(0.35),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
-                  child: Text(
-                    category,
-                    style: TextStyle(
-                      color:
-                          isSelected ? Colors.white : const Color(0xFF64748B),
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w500,
-                      fontSize: 14,
-                    ),
+                ]
+                    : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
                   ),
+                ],
+                border: Border.all(
+                  color: isSelected
+                      ? Colors.transparent
+                      : Colors.black.withOpacity(0.06),
+                ),
+              ),
+              child: Text(
+                category,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: isSelected
+                      ? Colors.white
+                      : const Color(0xFF475569),
                 ),
               ),
             ),
