@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
 import 'package:saglamspot/presentation/pages/main_pages/home/widgets/furniture_tips_section.dart'; // Düzgün import
-import '../../../../core/services/seo_helper.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_section_header.dart';
 import '../../../../data/providers/product/product_provider.dart';
@@ -36,18 +35,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       }
     });
   }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    setSeo(
-      title: 'Sağlam Spot | Spot & Sıfır Mobilya Fırsatları',
-      description:
-      'Sağlam Spot’ta spot mobilya, sıfır ürünler ve ikinci el mobilyalarda en uygun fiyatlar. 20 yıllık esnaf güvencesiyle alışveriş.',
-    );
-  }
-
 
   @override
   void dispose() {
