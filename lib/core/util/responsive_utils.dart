@@ -44,8 +44,13 @@ mixin ResponsiveUtils {
   // BREAKPOINT SABİTLERİ
   // ═══════════════════════════════════════════════════════════
 
-  static const double mobileBreakpoint = 650;
-  static const double tabletBreakpoint = 1100;
+  // WEB BREAKPOINTS (Industry Standard)
+  static const double mobileBreakpoint = 768;
+  static const double tabletBreakpoint = 1024;
+  static const double desktopBreakpoint = 1440;
+
+  // Maximum content width (modern web design)
+  static const double maxContentWidth = 1920;
 
   // ═══════════════════════════════════════════════════════════
   // CİHAZ TİPİ KONTROLLERI (Static - her yerden erişilebilir)
@@ -65,6 +70,9 @@ mixin ResponsiveUtils {
   static bool isDesktop(final BuildContext context) =>
       MediaQuery.of(context).size.width >= tabletBreakpoint;
 
+  static bool isLargeDesktop(final BuildContext context) =>
+      MediaQuery.of(context).size.width >= desktopBreakpoint;
+
   // ═══════════════════════════════════════════════════════════
   // GENERİK VALUE SELECTOR (Ana Metot)
   // ═══════════════════════════════════════════════════════════
@@ -80,12 +88,15 @@ mixin ResponsiveUtils {
   ///   desktop: 24.0,
   /// );
   /// ```
+  // GENERIC VALUE SELECTOR
   T getValueForDevice<T>(
     final BuildContext context, {
     required final T mobile,
     final T? tablet,
     required final T desktop,
+    final T? largeDesktop,
   }) {
+    if (isLargeDesktop(context)) return largeDesktop ?? desktop;
     if (isDesktop(context)) return desktop;
     if (isTablet(context)) return tablet ?? desktop;
     return mobile;
@@ -289,6 +300,43 @@ mixin ResponsiveUtils {
     return children.take(limit).toList();
   }
 
+  // LAYOUT HELPERS
+  static Widget responsive(
+    final BuildContext context, {
+    required final Widget mobile,
+    final Widget? tablet,
+    required final Widget desktop,
+  }) {
+    if (isDesktop(context)) return desktop;
+    if (isTablet(context)) return tablet ?? desktop;
+    return mobile;
+  }
+
+  // MAX WIDTH CONTAINER (Web best practice)
+  static Widget maxWidthContainer({
+    required final Widget child,
+    final double? maxWidth,
+    final EdgeInsetsGeometry? padding,
+  }) =>
+      Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth ?? maxContentWidth),
+          child: Padding(
+            padding: padding ?? EdgeInsets.zero,
+            child: child,
+          ),
+        ),
+      );
+
+  // GRID COLUMNS (Web optimized)
+  static int gridColumns(final BuildContext context, {final int? maxColumns}) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < mobileBreakpoint) return 2;
+    if (width < tabletBreakpoint) return 3;
+    if (width < desktopBreakpoint) return maxColumns ?? 4;
+    return maxColumns ?? 6; // Large desktop
+  }
+
   // ═══════════════════════════════════════════════════════════
   // YARDIMCI HESAPLAMALAR
   // ═══════════════════════════════════════════════════════════
@@ -333,53 +381,114 @@ mixin ResponsiveUtils {
 extension ResponsiveExtension on BuildContext {
   // Cihaz tipleri
   bool get isMobile => ResponsiveUtils.isMobile(this);
+
   bool get isTablet => ResponsiveUtils.isTablet(this);
+
   bool get isDesktop => ResponsiveUtils.isDesktop(this);
+
+  bool get isLargeDesktop => ResponsiveUtils.isLargeDesktop(this);
 
   // Ekran boyutları
   double get screenWidth => ResponsiveUtils.screenWidth(this);
+
   double get screenHeight => ResponsiveUtils.screenHeight(this);
 
   // Padding
   EdgeInsets get paddingAll => ResponsiveUtils.paddingAll(this);
+
   EdgeInsets get paddingHorizontal => ResponsiveUtils.paddingHorizontal(this);
+
   EdgeInsets get paddingVertical => ResponsiveUtils.paddingVertical(this);
 
-  // Font boyutları (kısa isimler)
+  // Padding (Web spacing)
+  EdgeInsets get pagePadding => EdgeInsets.symmetric(
+        horizontal: responsive(
+            mobile: 16.0, tablet: 32.0, desktop: 48.0, largeDesktop: 64.0),
+        vertical: responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+      );
+
+  EdgeInsets get sectionPadding => EdgeInsets.symmetric(
+        horizontal: responsive(mobile: 16.0, tablet: 24.0, desktop: 40.0),
+        vertical: responsive(mobile: 24.0, tablet: 32.0, desktop: 48.0),
+      );
+
+  EdgeInsets get cardPadding =>
+      EdgeInsets.all(responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0));
+
+  // Font sizes (Web typography)
+  double get heroSize =>
+      responsive(mobile: 32.0, tablet: 48.0, desktop: 64.0, largeDesktop: 72.0);
+
+  double get h1Size => responsive(mobile: 28.0, tablet: 36.0, desktop: 48.0);
+
+  double get h2Size => responsive(mobile: 24.0, tablet: 32.0, desktop: 40.0);
+
+  double get h3Size => responsive(mobile: 20.0, tablet: 24.0, desktop: 32.0);
+
+  double get h4Size => responsive(mobile: 18.0, tablet: 20.0, desktop: 24.0);
+
   double get titleSize => isMobile ? 24.0 : 32.0;
+
   double get subtitleSize => isMobile ? 16.0 : 20.0;
-  double get bodySize => isMobile ? 14.0 : 16.0;
-  double get captionSize => isMobile ? 12.0 : 14.0;
+
+  double get bodySize => responsive(mobile: 14.0, tablet: 15.0, desktop: 16.0);
+
+  double get captionSize =>
+      responsive(mobile: 12.0, tablet: 13.0, desktop: 14.0);
+
   double get priceSize => isMobile ? 14.0 : 16.0;
 
-  // Icon boyutları
-  double get iconSmall => isMobile ? 18.0 : 20.0;
-  double get iconMedium => isMobile ? 24.0 : 24.0;
-  double get iconLarge => isMobile ? 32.0 : 40.0;
+  // Icon sizes
+  double get iconSmall => responsive(mobile: 20.0, desktop: 24.0);
 
-  // Layout
+  double get iconMedium => responsive(mobile: 28.0, desktop: 32.0);
+
+  double get iconLarge => responsive(mobile: 40.0, desktop: 48.0);
+
+  // Spacing
+  double get spacing =>
+      responsive(mobile: 12.0, tablet: 16.0, desktop: 20.0, largeDesktop: 24.0);
+
+  double get spacingLarge =>
+      responsive(mobile: 24.0, tablet: 32.0, desktop: 48.0);
+
+  // Border radius
+  double borderRadius([final double scale = 1.0]) =>
+      responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0) * scale;
+
+  // Layout - Grid
   int gridColumns([final int desktop = 4]) =>
       isMobile ? 2 : (isTablet ? 3 : desktop);
 
+  int gridColumnsManuel([final int? max]) =>
+      ResponsiveUtils.gridColumns(this, maxColumns: max);
+
+  double get gridSpacing =>
+      responsive(mobile: 12.0, tablet: 16.0, desktop: 20.0, largeDesktop: 24.0);
+
+  // Card aspect ratio (web optimized)
   double cardAspectRatio() =>
-      responsive(mobile: 0.55, tablet: 0.75, desktop: 0.90);
+      responsive(mobile: 0.65, tablet: 0.75, desktop: 0.85, largeDesktop: 0.90);
 
-  double get gridSpacing => isMobile ? 12.0 : 20.0;
-
-  // Border
-  double borderRadius([final double scale = 1.0]) =>
-      (isMobile ? 12.0 : 16.0) * scale;
+  // Max width wrapper
+  Widget maxWidth({required final Widget child, final double? width}) =>
+      ResponsiveUtils.maxWidthContainer(
+          maxWidth: width, padding: pagePadding, child: child);
 
   // Yüzdelik hesaplamalar
   double wp(final double percent) => screenWidth * (percent / 100);
+
   double hp(final double percent) => screenHeight * (percent / 100);
 
   // Generic value selector
+  // Responsive value selector
   T responsive<T>({
     required final T mobile,
     final T? tablet,
     required final T desktop,
+    final T? largeDesktop,
   }) {
+    if (isLargeDesktop) return largeDesktop ?? desktop;
     if (isDesktop) return desktop;
     if (isTablet) return tablet ?? desktop;
     return mobile;
