@@ -555,11 +555,23 @@ class _HomePageState extends ConsumerState<HomePage> {
   SliverToBoxAdapter _buildStatsSection(final bool isMobile) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: EdgeInsets.all(isMobile ? 20 : 60),
-        padding: EdgeInsets.all(isMobile ? 40 : 80),
+        margin:
+            EdgeInsets.symmetric(horizontal: isMobile ? 24 : 60, vertical: 40),
+        padding: EdgeInsets.symmetric(vertical: isMobile ? 60 : 100),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
-          borderRadius: BorderRadius.circular(50),
+          color: Colors.white.withOpacity(0.8),
+          // Saf beyaz yerine hafif transparan
+          borderRadius: BorderRadius.circular(48),
+          border: Border.all(color: Colors.white, width: 2),
+          // Cam (Glass) efekti sınırı
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF103E35).withOpacity(0.05),
+              // Siyah yerine koyu yeşil gölge
+              blurRadius: 50,
+              offset: const Offset(0, 20),
+            )
+          ],
         ),
         child: isMobile
             ? Column(children: _buildStatItems())
@@ -571,6 +583,35 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  Widget _statItem(final String val, final String label, final IconData icon) {
+    return Column(
+      children: [
+        // 3D Hissi Veren İkon Tasarımı
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8F1EF), // Yumuşak fıstık yeşili zemin
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: const Color(0xFF103E35), size: 32),
+        ),
+        const SizedBox(height: 20),
+        Text(val,
+            style: const TextStyle(
+                color: Color(0xFF1E293B),
+                fontSize: 48,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -2)),
+        Text(label,
+            style: TextStyle(
+                color: Colors.black.withOpacity(0.3),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2)),
+      ],
+    );
+  }
+
   List<Widget> _buildStatItems() {
     return [
       _statItem("2.5K", "Mutlu Müşteri", Icons.face_retouching_natural),
@@ -579,133 +620,109 @@ class _HomePageState extends ConsumerState<HomePage> {
     ];
   }
 
-  Widget _statItem(final String val, final String label, final IconData icon) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white38, size: 30),
-        const SizedBox(height: 15),
-        Text(val,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 42,
-                fontWeight: FontWeight.w900)),
-        Text(label,
-            style: const TextStyle(color: Colors.white54, fontSize: 16)),
-      ],
-    );
-  }
-
   // =================== CALL TO ACTION ===================
   SliverToBoxAdapter _buildCTASection(final bool isMobile) {
     return SliverToBoxAdapter(
       child: Container(
         margin:
-            EdgeInsets.symmetric(horizontal: isMobile ? 20 : 60, vertical: 40),
-        padding: const EdgeInsets.all(40),
+            EdgeInsets.symmetric(horizontal: isMobile ? 24 : 60, vertical: 40),
+        padding: const EdgeInsets.all(60),
         decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20)
-          ],
+          color: const Color(0xFF1E293B),
+          // Simsiyah değil, antrasit (Lüks durur)
+          borderRadius: BorderRadius.circular(48),
+          image: const DecorationImage(
+            image: NetworkImage(
+                "https://www.transparenttextures.com/patterns/cubes.png"),
+            // 3D doku
+            opacity: 0.05,
+          ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Evinizi Şimdi Yenileyin!",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
-                Text("En kaliteli ve şık mobilyalar sizi bekliyor.",
-                    style: TextStyle(color: Colors.white70, fontSize: 16)),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: AppColors.primary,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 25),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-              ),
-              child: const Text("Keşfet",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-            )
-          ],
-        ),
+        child: isMobile
+            ? Column(children: _buildCTAContent(isMobile))
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: _buildCTAContent(isMobile)),
       ),
     );
+  }
+
+  List<Widget> _buildCTAContent(bool isMobile) {
+    return [
+      Column(
+        crossAxisAlignment:
+            isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+        children: [
+          const Text("Showroom Deneyimi",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900)),
+          const SizedBox(height: 10),
+          Text("Eviniz için en kaliteli parçaları yerinde görün.",
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.5), fontSize: 16)),
+        ],
+      ),
+      if (isMobile) const SizedBox(height: 30),
+      ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFE8F1EF),
+          // Fıstık yeşili buton
+          foregroundColor: const Color(0xFF103E35),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 25),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0,
+        ),
+        child: const Text("RANDEVU AL",
+            style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1)),
+      ),
+    ];
   }
 
   // =================== MODERN FOOTER ===================
   SliverToBoxAdapter _buildModernFooter(final bool isMobile) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.all(40),
-        padding: const EdgeInsets.all(60),
+        margin: const EdgeInsets.fromLTRB(24, 60, 24, 40),
+        padding:
+            EdgeInsets.symmetric(horizontal: isMobile ? 30 : 60, vertical: 60),
         decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(50),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20)
-          ],
+          color: const Color(0xFFE8F1EF).withOpacity(0.5),
+          // Yumuşak fıstık yeşili footer
+          borderRadius: BorderRadius.circular(48),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LOGO + SOCIALS
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Sağlam Spot",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    Text("Eviniz için en kaliteli parçaları keşfedin.",
-                        style: TextStyle(color: Colors.white54)),
-                  ],
-                ),
+                Text("SAĞLAM SPOT",
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2,
+                        color: Colors.black.withOpacity(0.8))),
                 Row(
                   children: [
                     _footerSocial(Icons.facebook),
                     const SizedBox(width: 15),
                     _footerSocial(Icons.camera_alt),
-                    const SizedBox(width: 15),
-                    _footerSocial(Icons.send),
                   ],
                 )
               ],
             ),
-            const Divider(color: Colors.white12, height: 80),
-            // COPYRIGHT + LINKS
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("© 2026 Sağlam Spot Mobilya. Tüm hakları saklıdır.",
-                    style: TextStyle(color: Colors.white30)),
-                Row(
-                  children: [
-                    Text("Gizlilik Politikası",
-                        style: TextStyle(color: Colors.white30)),
-                    SizedBox(width: 30),
-                    Text("Kullanım Şartları",
-                        style: TextStyle(color: Colors.white30)),
-                  ],
-                )
-              ],
-            ),
+            const SizedBox(height: 40),
+            const Divider(color: Colors.black12),
+            const SizedBox(height: 40),
+            const Text(
+                "© 2026 Sağlam Spot. Zerafet ve Güvenin Buluştuğu Nokta.",
+                style: TextStyle(
+                    color: Colors.black38,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500)),
           ],
         ),
       ),
