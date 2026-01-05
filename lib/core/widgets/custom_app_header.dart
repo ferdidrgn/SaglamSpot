@@ -59,38 +59,48 @@ class CustomAppHeader extends StatelessWidget {
         ],
       );
 
-// --- ARAMA ÇUBUĞU (Hassas Düzenleme) ---
+// --- ARAMA ÇUBUĞU (Tıklanabilir + GoRouter) ---
   Widget _buildSearchBar(final BuildContext context) {
-    return Container(
-      // Değerleri milimetrik olarak küçülttük
-      constraints: BoxConstraints(
-        maxWidth: context.responsive(
-          mobile: 100.0,
-          tablet: 140.0,
-          desktop: 180.0, // 200'den 180'e çektik
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () {
+        // 🔥 BURASI ÖNEMLİ
+        context.push('/search');
+      },
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: context.responsive(
+            mobile: 100.0,
+            tablet: 140.0,
+            desktop: 180.0,
+          ),
         ),
-      ),
-      height: 38,
-      // 40'tan 38'e çekerek dikey alanı da rahatlattık
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
+        height: 38,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.border.withOpacity(0.5))),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.search_rounded, size: 16, color: AppColors.textTertiary),
-          SizedBox(width: 6),
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text('Ürün ara...',
-                  style:
-                      TextStyle(color: AppColors.textTertiary, fontSize: 13)),
+          border: Border.all(color: AppColors.border.withOpacity(0.5)),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.search_rounded, size: 16, color: AppColors.textTertiary),
+            SizedBox(width: 6),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'Ürün ara...',
+                  style: TextStyle(
+                    color: AppColors.textTertiary,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
