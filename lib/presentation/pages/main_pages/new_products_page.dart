@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
-import '../../../core/services/seo_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/providers/product/product_provider.dart';
 import '../../../domain/entities/product.dart';
@@ -15,17 +14,6 @@ class NewProductsPage extends ConsumerStatefulWidget {
 }
 
 class _NewProductsPageState extends ConsumerState<NewProductsPage> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // ✅ SEO – SAYFA BAZLI
-    setSeo(
-      title: 'Sıfır Ürünler | Sağlam Spot',
-      description:
-          'Sağlam Spot’ta uygun fiyatlı sıfır mobilya ve beyaz eşya ürünlerini keşfedin.',
-    );
-  }
 
   @override
   Widget build(final BuildContext context) {

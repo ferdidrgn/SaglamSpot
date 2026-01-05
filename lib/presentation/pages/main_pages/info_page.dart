@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../core/services/seo_helper.dart';
 import '../../../core/theme/app_colors.dart';
 
 class InfoPage extends StatefulWidget {
@@ -12,17 +11,6 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    /// 🔥 SEO BURADA
-    setSeo(
-      title: 'Hakkımızda | Sağlam Spot',
-      description:
-          '2012’den beri İçerenköy’de hizmet veren Sağlam Spot. Uygun fiyatlı spot ve ikinci el mobilyalar.',
-    );
-  }
 
   @override
   Widget build(final BuildContext context) {

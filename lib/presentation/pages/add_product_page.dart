@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/providers/product/product_provider.dart';
-import '../../core/services/seo_helper.dart';
 import '../../core/widgets/custom_image_selector.dart';
 import '../../domain/entities/product.dart';
 
@@ -24,16 +23,6 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   final List<dynamic> _selectedImages = [];
   bool _isSold = false;
   bool _isSecondHand = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    setSeo(
-      title: 'Ürün Ekle | MyShop',
-      description: 'Yeni ürün ekleme sayfası',
-    );
-  }
 
   @override
   Widget build(final BuildContext context) {

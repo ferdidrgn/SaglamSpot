@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../core/services/seo_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../add_product_page.dart';
 
@@ -187,17 +186,6 @@ class _SSSPageState extends State<SSSPage> {
     return _faqs
         .where((final faq) => faq['category'] == _selectedCategory)
         .toList();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    setSeo(
-      title: 'Sıkça Sorulan Sorular | Sağlam Spot',
-      description:
-      'Sağlam Spot SSS sayfasında teslimat, montaj, ödeme, iade, ikinci el alım süreci ve tüm merak edilen soruların cevaplarını bulun.',
-    );
   }
 
 

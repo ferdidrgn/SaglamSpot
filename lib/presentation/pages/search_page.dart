@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/services/seo_helper.dart';
 import '../../core/util/responsive_utils.dart'; // Extension'lar için import
 import '../../core/widgets/filter_sheet.dart';
 import '../../core/widgets/responsive_product_grid.dart';
@@ -39,13 +38,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     super.initState();
     // Alternatif -- Microtask ile build tamamlandıktan sonra çalıştır
     //Future.microtask(() {ref.read(searchProvider.notifier).loadProducts();});
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setSeo(
-        title: 'Ürün Ara | Sağlam Spot',
-        description:
-            'Spot ve sıfır mobilya ürünleri arasında arama yapın. Filtreleyin, fiyat karşılaştırın ve en uygun ürünü bulun.',
-      );
-    });
   }
 
   @override

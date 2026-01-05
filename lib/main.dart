@@ -24,11 +24,13 @@ Future<void> _initializeFirebase() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
 
       // 🔥 ROUTER ENTEGRASYONU
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }
