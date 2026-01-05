@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/theme/app_colors.dart'; //
-import 'package:saglamspot/core/util/responsive_utils.dart'; //
-import 'package:saglamspot/data/providers/product/product_provider.dart'; //
+import 'package:saglamspot/core/theme/app_colors.dart';
+import 'package:saglamspot/core/util/responsive_utils.dart';
+import 'package:saglamspot/data/providers/product/product_provider.dart';
 import 'package:saglamspot/domain/entities/product.dart';
-
-import '../../core/widgets/gallery_section.dart'; //
+import '../../core/widgets/gallery_section.dart';
 
 class WebProductDetailPage extends ConsumerStatefulWidget {
-  final String productId; // Artık nesne değil, sadece ID alıyoruz
+  final String productId;
 
   const WebProductDetailPage({super.key, required this.productId});
 
@@ -21,6 +20,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   int _quantity = 1;
   int _selectedImageIndex = 0;
   Color _selectedColor = const Color(0xFFD4A574);
+  bool _isFavorite = false;
 
   final List<Color> _availableColors = const [
     Color(0xFFD4A574),
@@ -30,7 +30,6 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Riverpod üzerinden tüm ürünleri dinle ve ilgili ID'yi bul
     final productState = ref.watch(productProvider);
     final product = productState.dataList?.firstWhere(
       (p) => p.id == widget.productId,
@@ -42,15 +41,14 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F7F5), // Görseldeki soft mint zemin
+      backgroundColor: const Color(0xFFF8FAF9), // Daha ferah bir zemin
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           _buildAppBar(context, product),
-          context.isDesktop
-              ? _buildDesktopLayout(context, product)
-              : _buildMobileLayout(context, product),
+          _buildResponsiveLayout(context, product),
           _buildRelatedProducts(context),
-          SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 2)),
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),
     );
@@ -58,227 +56,447 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
 
   SliverAppBar _buildAppBar(BuildContext context, Product product) {
     return SliverAppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white.withOpacity(0.9),
       elevation: 0,
       pinned: true,
+      stretch: true,
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
-        icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+        icon: const Icon(Icons.arrow_back_ios_new_rounded,
+            color: Colors.black, size: 20),
       ),
       title: Text(
         product.name,
-        style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary),
+        style: const TextStyle(
+            fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black),
       ),
       actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border)),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
-        const SizedBox(width: 16),
+        IconButton(
+          onPressed: () => setState(() => _isFavorite = !_isFavorite),
+          icon: Icon(
+            _isFavorite
+                ? Icons.favorite_rounded
+                : Icons.favorite_border_rounded,
+            color: _isFavorite ? Colors.red : Colors.black,
+          ),
+        ),
+        IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.share_outlined, color: Colors.black)),
+        const SizedBox(width: 8),
       ],
     );
   }
 
-  // DESKTOP LAYOUT (Görseldeki Astra Chair Sayfası Yapısı)
-  SliverToBoxAdapter _buildDesktopLayout(
-      BuildContext context, Product product) {
+  Widget _buildResponsiveLayout(BuildContext context, Product product) {
+    if (context.isDesktop) {
+      return _buildDesktopLayout(context, product);
+    } else if (context.isTablet) {
+      return _buildTabletLayout(context, product);
+    } else {
+      return _buildMobileLayout(context, product);
+    }
+  }
+
+  // TABLET LAYOUT (Side-by-side but tighter)
+  SliverToBoxAdapter _buildTabletLayout(BuildContext context, Product product) {
     return SliverToBoxAdapter(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 1440),
-        padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 40),
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sol: Galeri ve Görsel (60%)
-            Expanded(flex: 6, child: _buildImageSection(context, product)),
-            const SizedBox(width: 48),
-            // Sağ: Ürün Bilgileri (40%)
-            Expanded(flex: 4, child: _buildProductInfo(context, product)),
+            Expanded(
+                flex: 5,
+                child: _buildImageSection(context, product, height: 450)),
+            const SizedBox(width: 32),
+            Expanded(
+                flex: 5,
+                child: _buildProductInfo(context, product, compact: true)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildImageSection(BuildContext context, Product product) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () => _openFullscreenGallery(product.imagesUrl),
-          child: Container(
-            height: 550,
+  // MOBILE LAYOUT (Stacked with improved spacing)
+  SliverToBoxAdapter _buildMobileLayout(BuildContext context, Product product) {
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          _buildImageSection(context, product, height: 380, isMobile: true),
+          _buildProductInfo(context, product, isMobile: true),
+        ],
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildDesktopLayout(
+      BuildContext context, Product product) {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1400),
+          padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 40),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  flex: 6,
+                  child: _buildImageSection(context, product, height: 600)),
+              const SizedBox(width: 64),
+              Expanded(flex: 4, child: _buildProductInfo(context, product)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageSection(BuildContext context, Product product,
+      {required double height, bool isMobile = false}) {
+    return Padding(
+      padding: isMobile ? const EdgeInsets.all(16.0) : EdgeInsets.zero,
+      child: Column(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            height: height,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                    color: _selectedColor.withOpacity(0.1),
-                    blurRadius: 40,
-                    offset: const Offset(0, 20)),
+                  color: _selectedColor.withOpacity(0.08),
+                  blurRadius: 40,
+                  offset: const Offset(0, 20),
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 1,
+                  spreadRadius: 1,
+                ),
               ],
             ),
             child: Stack(
               children: [
+                // Watermark Text Animation
                 Center(
-                  child: Opacity(
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 800),
                     opacity: 0.03,
-                    child: Text(product.name,
-                        style: const TextStyle(
-                            fontSize: 80, fontWeight: FontWeight.w900)),
-                  ),
-                ),
-                Center(
-                  child: Hero(
-                    tag: 'prod_img_${product.id}',
-                    child: Padding(
-                      padding: const EdgeInsets.all(60.0),
-                      child: Image.network(
-                          product.imagesUrl[_selectedImageIndex],
-                          fit: BoxFit.contain),
+                    child: FittedBox(
+                      // Taşmayı önlemek için eklendi
+                      fit: BoxFit.scaleDown,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          product.category.toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 100,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -5),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                Positioned(bottom: 20, right: 20, child: _build3DButton()),
+                // Main Product Image with Hero
+                Center(
+                  child: GestureDetector(
+                    onTap: () => _openFullscreenGallery(product.imagesUrl),
+                    child: Hero(
+                      tag: 'prod_img_${product.id}',
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        child: Padding(
+                          key: ValueKey(_selectedImageIndex),
+                          padding: const EdgeInsets.all(40.0),
+                          child: Image.network(
+                            product.imagesUrl[_selectedImageIndex],
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // 3D/Zoom Badge
+                Positioned(
+                  bottom: 24,
+                  right: 24,
+                  child: _buildGlassButton(Icons.zoom_in_rounded,
+                      () => _openFullscreenGallery(product.imagesUrl)),
+                ),
               ],
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-        _buildThumbnailList(product),
-      ],
+          const SizedBox(height: 24),
+          _buildThumbnailList(product),
+        ],
+      ),
     );
   }
 
-  Widget _buildProductInfo(BuildContext context, Product product) {
+  Widget _buildProductInfo(BuildContext context, Product product,
+      {bool compact = false, bool isMobile = false}) {
     return Container(
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 30)
-        ],
-      ),
+      padding: EdgeInsets.all(isMobile ? 24 : 40),
+      decoration: isMobile
+          ? null
+          : BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10))
+              ],
+            ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildCategoryBadge(product.category),
-          const SizedBox(height: 20),
-          Text(product.name,
-              style:
-                  const TextStyle(fontSize: 36, fontWeight: FontWeight.w800)),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
+          Text(
+            product.name,
+            style: TextStyle(
+              fontSize: compact ? 28 : 40,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -1,
+              color: const Color(0xFF1A1A1A),
+            ),
+          ),
+          const SizedBox(height: 16),
           _buildRatingRow(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 32),
           _buildPriceSection(product),
-          const SizedBox(height: 30),
+          const SizedBox(height: 32),
           _buildColorSelector(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 32),
           _buildQuantityAndDescription(product),
-          const SizedBox(height: 40),
-          _buildActionButtons(),
+          const SizedBox(height: 48),
+          _buildActionButtons(isMobile),
         ],
       ),
     );
   }
 
-  // --- YARDIMCI WIDGETLAR ---
-
-  void _openFullscreenGallery(List<String> images) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.9),
-      builder: (context) =>
-          GalleryViewerDialog(images: images, isMobile: false),
-    );
-  }
-
-  Widget _build3DButton() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-          color: Colors.white,
+  Widget _buildGlassButton(IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
           shape: BoxShape.circle,
-          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
-      child: const Icon(Icons.threed_rotation, color: Colors.black),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10))
+          ],
+        ),
+        child: Icon(icon, color: Colors.black, size: 24),
+      ),
     );
   }
 
   Widget _buildThumbnailList(Product product) {
     return SizedBox(
-      height: 100,
+      height: 90,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         itemCount: product.imagesUrl.length,
         separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (context, index) => GestureDetector(
-          onTap: () => setState(() => _selectedImageIndex = index),
-          child: Container(
-            width: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                  color: _selectedImageIndex == index
-                      ? AppColors.primary
-                      : AppColors.border,
-                  width: 2),
-            ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
+        itemBuilder: (context, index) {
+          final isSelected = _selectedImageIndex == index;
+          return GestureDetector(
+            onTap: () => setState(() => _selectedImageIndex = index),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 90,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected ? AppColors.primary : Colors.transparent,
+                  width: 2,
+                ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                            color: AppColors.primary.withOpacity(0.2),
+                            blurRadius: 15)
+                      ]
+                    : [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            blurRadius: 5)
+                      ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
                 child:
-                    Image.network(product.imagesUrl[index], fit: BoxFit.cover)),
+                    Image.network(product.imagesUrl[index], fit: BoxFit.cover),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPriceSection(Product product) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("Fiyat",
+            style: TextStyle(
+                color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 14)),
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              "₺${product.price.toStringAsFixed(0)}",
+              style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF1A1A1A)),
+            ),
+            if (product.isSpotProduct) ...[
+              const SizedBox(width: 12),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  "₺${(product.price * 1.3).toStringAsFixed(0)}",
+                  style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      decoration: TextDecoration.lineThrough,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(bool isMobile) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: _buildPrimaryButton(
+            "Sepete Ekle",
+            Colors.black,
+            Colors.white,
+            Icons.shopping_bag_outlined,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          flex: 2,
+          child: _buildPrimaryButton(
+            "Hemen Al",
+            AppColors.primary,
+            Colors.white,
+            null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrimaryButton(String text, Color bg, Color fg, IconData? icon) {
+    return Container(
+      height: 60, // Yüksekliği biraz optimize ettik
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+              color: bg.withOpacity(0.2),
+              blurRadius: 15,
+              offset: const Offset(0, 8))
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            // İç boşluk eklendi
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, color: fg, size: 18),
+                  const SizedBox(width: 8)
+                ],
+                Flexible(
+                  // Metnin taşmasını engeller
+                  child: FittedBox(
+                    // Metin sığmazsa küçülmesini sağlar
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                          color: fg, fontWeight: FontWeight.w700, fontSize: 15),
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  // Reuse logic from previous implementation with aesthetic enhancements
   Widget _buildCategoryBadge(String cat) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8)),
-      child: Text(cat,
+          color: const Color(0xFFF1F5F2),
+          borderRadius: BorderRadius.circular(12)),
+      child: Text(cat.toUpperCase(),
           style: const TextStyle(
-              fontWeight: FontWeight.bold, color: AppColors.primary)),
+              fontWeight: FontWeight.w800,
+              color: AppColors.primary,
+              fontSize: 12,
+              letterSpacing: 1)),
     );
   }
 
   Widget _buildRatingRow() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-              color: Colors.black, borderRadius: BorderRadius.circular(20)),
-          child: const Row(children: [
-            Icon(Icons.person, color: Colors.white, size: 14),
-            SizedBox(width: 4),
-            Text('+112', style: TextStyle(color: Colors.white, fontSize: 12))
-          ]),
-        ),
-        const SizedBox(width: 16),
-        const Icon(Icons.star, color: Colors.amber, size: 20),
-        const Text(" 4.0 Stars", style: TextStyle(fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
-
-  Widget _buildPriceSection(Product product) {
-    return Row(
-      children: [
-        Text("₺${product.price.toStringAsFixed(0)}",
-            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900)),
-        const SizedBox(width: 16),
-        if (product.isSpotProduct)
-          Text("₺${(product.price * 1.3).toStringAsFixed(0)}",
-              style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey,
-                  decoration: TextDecoration.lineThrough)),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Row(
+        children: [
+          ...List.generate(
+              5,
+              (index) => const Icon(Icons.star_rounded,
+                  color: Color(0xFFFFC107), size: 22)),
+          const SizedBox(width: 8),
+          const Text("4.9",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const SizedBox(width: 8),
+          Text("(124 Değerlendirme)",
+              style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+        ],
+      ),
     );
   }
 
@@ -287,29 +505,37 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text("Renk Seçimi",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+        const SizedBox(height: 16),
         Row(
-          children: _availableColors
-              .map((c) => Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selectedColor = c),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: c,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color: _selectedColor == c
-                                    ? Colors.black
-                                    : Colors.transparent,
-                                width: 3)),
-                      ),
-                    ),
-                  ))
-              .toList(),
+          children: _availableColors.map((c) {
+            final isSelected = _selectedColor == c;
+            return Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: GestureDetector(
+                onTap: () => setState(() => _selectedColor = c),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: isSelected ? 48 : 40,
+                  height: isSelected ? 48 : 40,
+                  decoration: BoxDecoration(
+                    color: c,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isSelected
+                            ? c.withOpacity(0.5)
+                            : Colors.black.withOpacity(0.1),
+                        blurRadius: isSelected ? 12 : 4,
+                        spreadRadius: isSelected ? 2 : 0,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -322,79 +548,72 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Miktar", style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text("Miktar",
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
             _quantitySelector(),
           ],
         ),
-        const SizedBox(height: 30),
-        const Text("Açıklama",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        const SizedBox(height: 10),
-        Text(product.desc,
-            style: const TextStyle(color: Colors.black54, height: 1.6)),
+        const SizedBox(height: 32),
+        const Text("Ürün Açıklaması",
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
+        const SizedBox(height: 12),
+        Text(
+          product.desc,
+          style: TextStyle(
+              color: Colors.grey[700],
+              height: 1.7,
+              fontSize: 15,
+              fontWeight: FontWeight.w400),
+        ),
       ],
     );
   }
 
   Widget _quantitySelector() {
     return Container(
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-          color: const Color(0xFFF8F9FA),
-          borderRadius: BorderRadius.circular(12)),
+          color: const Color(0xFFF3F3F3),
+          borderRadius: BorderRadius.circular(16)),
       child: Row(
         children: [
-          IconButton(
-              onPressed: () =>
-                  setState(() => _quantity > 1 ? _quantity-- : null),
-              icon: const Icon(Icons.remove)),
-          Text("$_quantity",
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          IconButton(
-              onPressed: () => setState(() => _quantity++),
-              icon: const Icon(Icons.add)),
+          _qButton(Icons.remove,
+              () => setState(() => _quantity > 1 ? _quantity-- : null)),
+          SizedBox(
+              width: 40,
+              child: Center(
+                  child: Text("$_quantity",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w800, fontSize: 16)))),
+          _qButton(Icons.add, () => setState(() => _quantity++)),
         ],
       ),
     );
   }
 
-  Widget _buildActionButtons() {
-    return Row(
-      children: [
-        Expanded(
-            child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16))),
-          child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.shopping_cart_outlined),
-                SizedBox(width: 10),
-                Text("Sepete Ekle")
-              ]),
-        )),
-        const SizedBox(width: 16),
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16))),
-          child: const Text("Hemen Al"),
-        ),
-      ],
+  Widget _qButton(IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)
+            ]),
+        child: Icon(icon, size: 18),
+      ),
     );
   }
 
-  // Mobile Layout ve Related Products metodları benzer mantıkla (product ID dinleyerek) eklenebilir.
-  Widget _buildMobileLayout(BuildContext context, Product product) =>
-      const SliverToBoxAdapter(child: Center(child: Text("Mobil Görünüm")));
+  void _openFullscreenGallery(List<String> images) {
+    showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.9),
+        builder: (context) => GalleryViewerDialog(
+            images: images, isMobile: MediaQuery.of(context).size.width < 600));
+  }
 
   SliverToBoxAdapter _buildRelatedProducts(BuildContext context) =>
       const SliverToBoxAdapter(child: SizedBox());
