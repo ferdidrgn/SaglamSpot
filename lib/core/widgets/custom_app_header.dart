@@ -48,81 +48,134 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-  // --- DESKTOP DÜZENİ ---
+  // --- DESKTOP DÜZENİ (Milimetrik Düzenleme) ---
   Widget _buildDesktopLayout(final BuildContext context) {
     return Row(
       children: [
+        // Logo alanı - esnek
         _buildLogo(context),
-        const Spacer(),
-        _buildDesktopNavigation(context),
-        const Spacer(),
+
+        // Sabit Spacer yerine Expanded kullanarak alanı paylaştırıyoruz
+        const Expanded(flex: 1, child: SizedBox()),
+
+        // Navigasyon metinlerinin sıkışmaması için Flexible ile sardık
+        Flexible(
+          flex: 8,
+          child: SingleChildScrollView(
+            // Çok dar ekranlarda dikey taşmayı önler
+            scrollDirection: Axis.horizontal,
+            child: _buildDesktopNavigation(context),
+          ),
+        ),
+
+        const Expanded(flex: 1, child: SizedBox()),
+
+        // Kullanıcı aksiyonları (Arama ve Profil)
         _buildUserActions(context),
       ],
     );
   }
 
-  // --- MOBİL DÜZENİ ---
+// --- ARAMA ÇUBUĞU (Hassas Düzenleme) ---
+  Widget _buildSearchBar(final BuildContext context) {
+    return Container(
+      // Değerleri milimetrik olarak küçülttük
+      constraints: BoxConstraints(
+        maxWidth: context.responsive(
+          mobile: 100.0,
+          tablet: 140.0,
+          desktop: 180.0, // 200'den 180'e çektik
+        ),
+      ),
+      height: 38,
+      // 40'tan 38'e çekerek dikey alanı da rahatlattık
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.border.withOpacity(0.5))),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.search_rounded,
+              size: 16, color: AppColors.textTertiary),
+          const SizedBox(width: 6),
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text('Ürün ara...',
+                  style:
+                      TextStyle(color: AppColors.textTertiary, fontSize: 13)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+// --- MOBİL DÜZENİ (Düzeltilmiş) ---
   Widget _buildMobileLayout(final BuildContext context) {
     return Row(
       children: [
-        // Mobil Logo (Daha küçük)
-        _buildLogo(context),
-        const Spacer(),
-        // Mobil Arama Butonu
-        _buildActionButton(
-          context: context,
-          icon: Icons.search_outlined,
-          onPressed: () => context.push('/search'),
-        ),
+        // Logo Alanı: Diğer ikonlardan kalan tüm boşluğu güvenli şekilde kullanır
+        Expanded(child: _buildLogo(context)),
+
         const SizedBox(width: 8),
-        // Mobil Menü Butonu (Drawer'ı açmak için)
-        _buildActionButton(
-          context: context,
-          icon: Icons.menu,
-          onPressed: () {
-            // Anahtarın (scaffoldKey) asıl kullanım amacı budur.
-            // Eğer 'null' gelirse burada uygulama çöker.
-            scaffoldKey.currentState?.openEndDrawer();
-          },
+
+        // Aksiyon Butonları (Arama ve Menü)
+        Row(
+          mainAxisSize: MainAxisSize.min, // Sadece ikon kadar yer kaplar
+          children: [
+            _buildActionButton(
+              context: context,
+              icon: Icons.search_outlined,
+              onPressed: () => context.push('/search'),
+            ),
+            const SizedBox(width: 8),
+            _buildActionButton(
+              context: context,
+              icon: Icons.menu,
+              onPressed: () => scaffoldKey.currentState?.openEndDrawer(),
+            ),
+          ],
         ),
       ],
     );
   }
 
+// --- LOGO METODU (FittedBox ile taşma garantili çözüm) ---
   Widget _buildLogo(final BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => onNavigate(0), // 🔥 router.go('/')
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              // Düzeltme: 'getValueForDevice' yerine 'context.responsive'
-              width: context.responsive(mobile: 32.0, desktop: 40.0),
-              height: context.responsive(mobile: 32.0, desktop: 40.0),
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(
-                    context.responsive(mobile: 8.0, desktop: 12.0)),
-              ),
-              child: Icon(
-                Icons.weekend_outlined,
-                color: Colors.white,
-                size: context.responsive(mobile: 18.0, desktop: 24.0),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Sağlam Spot',
-              style: TextStyle(
-                fontSize: context.responsive(mobile: 20.0, desktop: 24.0),
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+    return GestureDetector(
+      onTap: () => context.go('/'),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            'assets/images/saglam_spot_logo.png',
+            height:
+                context.responsive(mobile: 36.0, tablet: 42.0, desktop: 48.0),
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.weekend_rounded, size: context.iconSmall),
+          ),
+          const SizedBox(width: 8),
+          // Flexible + FittedBox kombinasyonu 31 piksellik taşmayı engeller
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              // Metin sığmazsa otomatik küçülür, asla taşmaz
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Sağlam Spot',
+                style: TextStyle(
+                  fontSize: context.responsive(mobile: 18.0, desktop: 22.0),
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF1E293B),
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -151,46 +204,16 @@ class CustomAppHeader extends StatelessWidget {
 
   Widget _buildUserActions(final BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // Desktop'taki arama çubuğu (görsel)
         _buildSearchBar(context),
-        const SizedBox(width: 16),
-        // Desktop'taki profil/giriş butonu
+        const SizedBox(width: 8),
         _buildActionButton(
           context: context,
           icon: Icons.person_outline,
-          onPressed: () {
-            // TODO: Profil veya Giriş sayfasına yönlendir
-          },
+          onPressed: () {},
         ),
       ],
-    );
-  }
-
-  Widget _buildSearchBar(final BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => context.push('/search'),
-        child: Container(
-          width: context.responsive(mobile: 150.0, desktop: 200.0),
-          height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border)),
-          child: const Row(
-            children: [
-              Icon(Icons.search_rounded,
-                  size: 20, color: AppColors.textTertiary),
-              SizedBox(width: 8),
-              Text('Ürün ara...',
-                  style: TextStyle(color: AppColors.textTertiary, fontSize: 14))
-            ],
-          ),
-        ),
-      ),
     );
   }
 
@@ -215,53 +238,6 @@ class CustomAppHeader extends StatelessWidget {
           onPressed: onPressed,
           color: AppColors.textSecondary,
           padding: EdgeInsets.zero),
-    );
-  }
-}
-
-/// Header için gezinme butonu (Navigation Item)
-class _NavItem extends StatelessWidget {
-  final String title;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _NavItem({
-    required this.title,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(final BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: EdgeInsets.symmetric(
-            // Düzeltme: 'getValueForDevice' yerine 'context.responsive'
-            horizontal: context.responsive(mobile: 12.0, desktop: 20.0),
-            vertical: context.responsive(mobile: 8.0, desktop: 12.0),
-          ),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: isSelected
-                ? Border.all(color: AppColors.primary.withOpacity(0.3))
-                : null,
-          ),
-          child: Text(
-            title,
-            style: TextStyle(
-                color: isSelected ? AppColors.primary : AppColors.textSecondary,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                fontSize: context.responsive(mobile: 14.0, desktop: 15.0)),
-          ),
-        ),
-      ),
     );
   }
 }
