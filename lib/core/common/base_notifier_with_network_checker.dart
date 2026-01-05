@@ -1,92 +1,37 @@
-import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import '../../../core/errors/failures.dart';
-import '../network/internet_service.dart';
-import '../network/internet_service_provider.dart';
+import '../errors/failures.dart';
 import 'base_state.dart';
 
-/// Tüm ViewModel'ler için merkezi internet kontrolü ve state yönetimi sağlayan base sınıf
-/// Internet bağlantısı kesilip geri geldiğinde otomatik retry mekanizması sunar
-abstract class BaseNotifierWithNetworkChecker<T extends BaseState>
-    extends Notifier<T> {
-  StreamSubscription<InternetConnectionStatus>? _subscription;
-  bool _wasOffline = false;
-  Timer? _debounceTimer;
-
+/// Sayfa kapansa bile state tutulur (cache gibi)
+/// Riverpod 3+ Notifier sınıfını kullanır
+abstract class BaseNotifier<T extends BaseState> extends Notifier<T> {
   @override
   T build() {
-    _initializeNetworkListener();
-    _registerCleanup();
+    ref.onDispose(onDispose);
     return initialState();
   }
 
   T initialState();
 
-  /// İnternet geri geldiğinde veriyi yeniden yüklemek için abstract metot.
-  void reloadData();
+  // Alt sınıfların temizlik yapması için opsiyonel metod
+  void onDispose() {}
 
-  /// Ağ dinleyicisini başlatır.    // Daha önce başlatıldıysa tekrar başlatma
-  void _initializeNetworkListener() => _subscription =
-      InternetService.instance.connectionStream.listen(_handleConnectionChange);
-
-  /// Notifier dispose edildiğinde dinleyiciyi ve timer'ı temizler.
-  void _registerCleanup() => ref.onDispose(() {
-        _subscription?.cancel();
-        _subscription = null; // Referansı temizle
-        _debounceTimer?.cancel();
-        _debounceTimer = null; // Referansı temizle
-      });
-
-  /// İnternet durumu değişikliğini ele alır.
-  void _handleConnectionChange(final InternetConnectionStatus status) {
-    final isOnline = status == InternetConnectionStatus.connected;
-
-    if (isOnline && _wasOffline) {
-      _scheduleReload();
-      _wasOffline = false;
-      clearError(); // İnternet geldiğinde varsa hata mesajını temizle
-    } else if (!isOnline && !_wasOffline) {
-      _wasOffline = true;
-      setErrorState('İnternet Bağlantısı Yok!');
-    }
-  }
-
-  /// Veri yeniden yüklemesini kısa bir gecikmeyle planlar (arka arkaya gelen
-  /// bağlantı değişikliklerinde gereksiz yüklemeyi önlemek için).
-  void _scheduleReload() {
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(
-      const Duration(seconds: 2),
-      () {
-        try {
-          reloadData();
-        } catch (e, s) {
-          print("BaseNotifier: Error during scheduled reloadData: $e\n$s");
-        }
-      },
-    );
-  }
-
-  /// Network operasyonları için wrapper. Genellikle Repository metodunu çağıran ve Either<Failure, R> döndüren fonksiyon.
-  Future<void> executeWithInternetCheck<R>(
+  /// API çağrılarını wrap eden ana metod
+  Future<void> execute<R>(
     final Future<Either<Failure, R>> Function() operation, {
     final Function(R)? onSuccess,
+    final String? customErrorMessage,
   }) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null) as T;
 
-      final hasInternet = await ref.read(internetServiceProvider).isConnected;
-      if (!hasInternet) {
-        setErrorState('İnternet Bağlantısı Yok!');
-        return;
-      }
-
-      final result = await operation(); // İnternet varsa işlemi gerçekleştir
+      final result = await operation();
       result.fold(
-        (final failure) => setErrorState(
-            "Sistemimizi kitledik. Meraklılarımıza kodlarımız: ${failure.message}"),
+        (final failure) {
+          final message = _mapFailureToMessage(failure, customErrorMessage);
+          setErrorState(message);
+        },
         (final success) {
           try {
             onSuccess?.call(success);
@@ -101,11 +46,24 @@ abstract class BaseNotifierWithNetworkChecker<T extends BaseState>
     }
   }
 
-  void setErrorState(final String errorMessage) =>
-      state = state.copyWith(errorMessage: errorMessage, isLoading: false) as T;
+  String _mapFailureToMessage(final Failure failure, final String? custom) {
+    if (custom != null) return custom;
 
-  /// Mevcut hata mesajını temizler (errorMessage=null yapar).
-  void clearError() {
+    return switch (failure.runtimeType.toString()) {
+      'NetworkFailure' => 'Bağlantı hatası. Lütfen internetinizi kontrol edin.',
+      'ServerFailure' => 'Sunucu hatası. Lütfen daha sonra tekrar deneyin.',
+      'CacheFailure' => 'Önbellek hatası.',
+      _ => failure.message ?? 'Bir hata oluştu',
+    };
+  }
+
+  void setLoadingState(final bool loading) =>
+      state = state.copyWith(isLoading: loading) as T;
+
+  void setErrorState(final String message) =>
+      state = state.copyWith(errorMessage: message, isLoading: false) as T;
+
+  void clearErrorState() {
     if (state.errorMessage != null)
       state = state.copyWith(errorMessage: null) as T;
   }

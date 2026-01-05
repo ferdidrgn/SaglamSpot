@@ -8,7 +8,7 @@ import 'search_state.dart';
 /// Search ve filter işlemlerini yöneten notifier
 /// Clean Architecture ve SOLID prensipleriyle tasarlanmış
 /// Performance optimized with debouncing
-class SearchNotifier extends BaseNotifierWithNetworkChecker<SearchState> {
+class SearchNotifier extends BaseNotifier<SearchState> {
   Timer? _debounce;
   late final ProductRepository _repository;
 
@@ -29,7 +29,7 @@ class SearchNotifier extends BaseNotifierWithNetworkChecker<SearchState> {
   Future<void> loadProducts() async {
     state = state.copyWith(isLoading: true);
 
-    await executeWithInternetCheck(
+    await execute(
       () => ref.read(getProductsUseCaseProvider).call(),
       onSuccess: (final products) {
         state = state.copyWith(

@@ -3,28 +3,28 @@ import '../../../core/common/base_notifier_with_network_checker.dart';
 import '../../../domain/entities/product.dart';
 import 'product_state.dart';
 
-class ProductNotifier extends BaseNotifierWithNetworkChecker<ProductState> {
+class ProductNotifier extends BaseNotifier<ProductState> {
   @override
   ProductState initialState() => const ProductState();
 
   @override
   void reloadData() => loadProducts();
 
-  Future<void> loadProducts() => executeWithInternetCheck(
+  Future<void> loadProducts() => execute(
       () => ref.read(getProductsUseCaseProvider).call(),
       onSuccess: (final products) => _setProductsState(products));
 
   Future<void> addProduct(final Product product, final List<dynamic> images) =>
-      executeWithInternetCheck(
+      execute(
           () => ref.read(addProductUseCaseProvider).call(product, images),
           onSuccess: (final _) => loadProducts());
 
-  Future<void> updateProduct(final Product product) => executeWithInternetCheck(
+  Future<void> updateProduct(final Product product) => execute(
       () => ref.read(updateProductUseCaseProvider).call(product),
       onSuccess: (final _) => loadProducts());
 
   Future<void> deleteProduct(final String productId) =>
-      executeWithInternetCheck(
+      execute(
           () => ref.read(deleteProductUseCaseProvider).call(productId),
           onSuccess: (final _) => loadProducts());
 
@@ -33,7 +33,7 @@ class ProductNotifier extends BaseNotifierWithNetworkChecker<ProductState> {
     final double? minPrice,
     final double? maxPrice,
   }) =>
-      executeWithInternetCheck(
+      execute(
           () => ref.read(filterProductUseCaseProvider).call(
               condition: condition, minPrice: minPrice, maxPrice: maxPrice),
           onSuccess: (final products) => _setProductsState(products));
@@ -41,7 +41,7 @@ class ProductNotifier extends BaseNotifierWithNetworkChecker<ProductState> {
   Future<void> resetFilters() => loadProducts();
 
   Future<void> searchProducts({required final String query}) =>
-      executeWithInternetCheck(
+      execute(
           () => ref.read(getProductsUseCaseProvider).call(),
           onSuccess: (final products) {
         final filteredProducts = _filterProductsByQuery(products, query);
@@ -61,4 +61,14 @@ class ProductNotifier extends BaseNotifierWithNetworkChecker<ProductState> {
     state = state.copyWith(
         dataList: products, isLoading: false, errorMessage: null);
   }
+}
+
+extension ProductFilters on List<Product> {
+  List<Product> get available => where((e) => !e.isSold).toList();
+
+  List<Product> get sold => where((e) => e.isSold).toList();
+
+  List<Product> get spot => where((e) => e.isSpotProduct && !e.isSold).toList();
+
+  //List<Product> get featured => where((e) => e.isFeatured && !e.isSold).toList();
 }
