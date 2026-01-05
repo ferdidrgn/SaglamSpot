@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../presentation/pages/search_page.dart';
 import '../theme/app_colors.dart';
@@ -13,7 +14,7 @@ class CustomAppHeader extends StatelessWidget {
     super.key,
     required this.currentIndex,
     required this.onNavigate,
-  required this.scaffoldKey, // Bu anahtar mobil menü için zorunludur
+    required this.scaffoldKey, // Bu anahtar mobil menü için zorunludur
   });
 
   @override
@@ -71,12 +72,7 @@ class CustomAppHeader extends StatelessWidget {
         _buildActionButton(
           context: context,
           icon: Icons.search_outlined,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (final context) => const SearchPage()),
-            );
-          },
+          onPressed: () => context.push('/search'),
         ),
         const SizedBox(width: 8),
         // Mobil Menü Butonu (Drawer'ı açmak için)
@@ -175,12 +171,7 @@ class CustomAppHeader extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (final context) => const SearchPage()),
-          );
-        },
+        onTap: () => context.push('/search'),
         child: Container(
           width: context.responsive(mobile: 150.0, desktop: 200.0),
           height: 40,
