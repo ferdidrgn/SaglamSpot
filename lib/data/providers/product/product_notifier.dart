@@ -56,18 +56,75 @@ class ProductNotifier extends BaseNotifier<ProductState> {
     }).toList();
   }
 
-  void _setProductsState(final List<Product> products) {
-    state = state.copyWith(
-        dataList: products, isLoading: false, errorMessage: null);
+  /// Sadece mevcut (satılmamış) ürünleri yükler
+  Future<void> loadAvailableProducts() =>
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) => _setProductsState(products.available));
+
+  /// Sadece spot (fırsat) ürünlerini yükler
+  Future<void> loadSpotProducts() =>
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) => _setProductsState(products.spotDeals));
+
+  /// Sadece Sıfır (fırsat) ürünlerini yükler
+  Future<void> loadNewProducts() =>
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) => _setProductsState(products.newDeals));
+
+  /// Yeni koleksiyon ürünlerini yükler (Son 10 gün)
+  Future<void> loadNewArrivals() =>
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) => _setProductsState(products.newest));
+
+  /// Satılmış ürünlerin geçmişini yükler
+  Future<void> loadSoldProducts() =>
+      execute(() => ref.read(getProductsUseCaseProvider).call(),
+          onSuccess: (final products) => _setProductsState(products.sold));
+
+  // Not: Eğer veriyi sunucudan tekrar çekmeden sadece yerel listede
+  // filtreleme yapmak istersen 'execute' kullanmadan state'i güncelleyebilirsin.
+  void filterLocalBySpot() {
+    if (state.dataList != null) _setProductsState(state.dataList!.spotDeals);
   }
+
+  void _setProductsState(final List<Product> products) => state =
+      state.copyWith(dataList: products, isLoading: false, errorMessage: null);
 }
 
 extension ProductFilters on List<Product> {
-  List<Product> get available => where((e) => !e.isSold).toList();
+  /// Returns products that are currently in stock (not sold)
+  List<Product> get available => where((final e) => !e.isSold).toList();
 
-  List<Product> get sold => where((e) => e.isSold).toList();
+  /// Returns products that have already been sold
+  List<Product> get sold => where((final e) => e.isSold).toList();
 
-  List<Product> get spot => where((e) => e.isSpotProduct && !e.isSold).toList();
+  /// Returns available products marked as spot deals
+  List<Product> get spotDeals =>
+      where((final e) => e.isSpotProduct && !e.isSold).toList();
 
-//List<Product> get featured => where((e) => e.isFeatured && !e.isSold).toList();
+  List<Product> get newDeals =>
+      where((final e) => !e.isSpotProduct && !e.isSold).toList();
+
+  /// Son 7 gün içinde eklenen mevcut ürünler (New Collection)
+  List<Product> get newest {
+    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 10));
+    return available.where((final e) {
+      // String tarihi DateTime'a parse ediyoruz
+      final createdDate = DateTime.tryParse(e.createdAt) ?? DateTime(2000);
+      return createdDate.isAfter(sevenDaysAgo);
+    }).toList();
+  }
+
+  /// 7 günden daha eski mevcut ürünler
+  List<Product> get older {
+    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 10));
+    return available.where((final e) {
+      // String tarihi DateTime'a parse ediyoruz
+      final createdDate = DateTime.tryParse(e.createdAt) ?? DateTime(2000);
+      return createdDate.isBefore(sevenDaysAgo);
+    }).toList();
+  }
+
+  /// Optional: Featured products for the hero section
+// List<Product> get featured => where((final e) => e.isFeatured && !e.isSold).toList();
 }
