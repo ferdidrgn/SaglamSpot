@@ -421,20 +421,20 @@ class _HomePageState extends ConsumerState<HomePage> {
       {
         "name": "Oturma Odası",
         "img":
-            "https://images.unsplash.com/photo-1583847268964-b28dc2f51ac9?q=80&w=800",
-        "count": "120+ Ürün"
+            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200",
+        "count": "25+ Ürün"
       },
       {
         "name": "Yatak Odası",
         "img":
             "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
-        "count": "80+ Ürün"
+        "count": "20+ Ürün"
       },
       {
         "name": "Mutfak",
         "img":
-            "https://images.unsplash.com/photo-1617806118233-f8e1374d6f9c?q=80&w=800",
-        "count": "45+ Ürün"
+            "https://images.pexels.com/photos/2724748/pexels-photo-2724748.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "count": "10+ Ürün"
       },
     ];
 
