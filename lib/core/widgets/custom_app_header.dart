@@ -48,33 +48,16 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-  // --- DESKTOP DÜZENİ (Milimetrik Düzenleme) ---
-  Widget _buildDesktopLayout(final BuildContext context) {
-    return Row(
-      children: [
-        // Logo alanı - esnek
-        _buildLogo(context),
-
-        // Sabit Spacer yerine Expanded kullanarak alanı paylaştırıyoruz
-        const Expanded(flex: 1, child: SizedBox()),
-
-        // Navigasyon metinlerinin sıkışmaması için Flexible ile sardık
-        Flexible(
-          flex: 8,
-          child: SingleChildScrollView(
-            // Çok dar ekranlarda dikey taşmayı önler
-            scrollDirection: Axis.horizontal,
-            child: _buildDesktopNavigation(context),
-          ),
-        ),
-
-        const Expanded(flex: 1, child: SizedBox()),
-
-        // Kullanıcı aksiyonları (Arama ve Profil)
-        _buildUserActions(context),
-      ],
-    );
-  }
+  Widget _buildDesktopLayout(final BuildContext context) => Row(
+        children: [
+          _buildLogo(context),
+          const Spacer(flex: 10),
+          // 3. Navigasyon Menüsü
+          _buildDesktopNavigation(context),
+          const SizedBox(width: 30),
+          _buildUserActions(context),
+        ],
+      );
 
 // --- ARAMA ÇUBUĞU (Hassas Düzenleme) ---
   Widget _buildSearchBar(final BuildContext context) {
@@ -94,12 +77,11 @@ class CustomAppHeader extends StatelessWidget {
           color: AppColors.background,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.border.withOpacity(0.5))),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.search_rounded,
-              size: 16, color: AppColors.textTertiary),
-          const SizedBox(width: 6),
+          Icon(Icons.search_rounded, size: 16, color: AppColors.textTertiary),
+          SizedBox(width: 6),
           Flexible(
             child: FittedBox(
               fit: BoxFit.scaleDown,
@@ -143,42 +125,33 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-// --- LOGO METODU (FittedBox ile taşma garantili çözüm) ---
-  Widget _buildLogo(final BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.go('/'),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/images/saglam_spot_logo.png',
-            height:
-                context.responsive(mobile: 36.0, tablet: 42.0, desktop: 48.0),
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) =>
-                Icon(Icons.weekend_rounded, size: context.iconSmall),
-          ),
-          const SizedBox(width: 8),
-          // Flexible + FittedBox kombinasyonu 31 piksellik taşmayı engeller
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              // Metin sığmazsa otomatik küçülür, asla taşmaz
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Sağlam Spot',
-                style: TextStyle(
-                  fontSize: context.responsive(mobile: 18.0, desktop: 22.0),
-                  fontWeight: FontWeight.w900,
-                  color: const Color(0xFF1E293B),
+// --- LOGO METODU (Ferah Tasarım Güncellemesi) ---
+  Widget _buildLogo(final BuildContext context) => GestureDetector(
+        onTap: () => context.go('/'),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // İkonik dokunuş
+            const Icon(Icons.auto_awesome, color: Color(0xFF103E35), size: 24),
+            const SizedBox(width: 10),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'SAĞLAM SPOT',
+                  style: TextStyle(
+                    fontSize: context.responsive(mobile: 18.0, desktop: 20.0),
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5, // Daha prestijli görünüm
+                    color: const Color(0xFF1E293B),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 
   Widget _buildDesktopNavigation(final BuildContext context) {
     const labels = ['Ana Sayfa', 'Sıfır Ürünler', 'Spot', 'Hakkımızda', 'SSS'];
@@ -202,20 +175,24 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildUserActions(final BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildSearchBar(context),
-        const SizedBox(width: 8),
-        _buildActionButton(
-          context: context,
-          icon: Icons.person_outline,
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
+  Widget _buildUserActions(final BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min, // Sadece içerik kadar yer kaplar
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildSearchBar(context),
+          const SizedBox(width: 15),
+          // Great Showman ferahlığı için artırılmış boşluk
+
+          // Profil Butonu - En sondaki eleman
+          _buildActionButton(
+            context: context,
+            icon: Icons.person_outline_rounded,
+            onPressed: () {
+              // Profil işlemleri
+            },
+          ),
+        ],
+      );
 
   Widget _buildActionButton({
     required final BuildContext context,

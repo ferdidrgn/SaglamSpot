@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/ad_sense_banner.dart';
 import '../../../core/widgets/custom_product_card.dart';
 import '../../../data/providers/product/product_provider.dart';
-import '../../../data/providers/product/product_state.dart';
 import '../../../domain/entities/product.dart';
 
 class SpotProductsPage extends ConsumerStatefulWidget {
@@ -16,6 +16,7 @@ class SpotProductsPage extends ConsumerStatefulWidget {
 
 class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   String _sortBy = 'newest';
+  int _hoveredIndex = -1;
   final List<String> _sortOptions = [
     'newest',
     'price_low',
@@ -26,13 +27,11 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   @override
   void initState() {
     super.initState();
-    // Sayfa açıldığında verileri sunucudan çek
     WidgetsBinding.instance.addPostFrameCallback((final _) {
       ref.read(productProvider.notifier).loadProducts();
     });
   }
 
-  // --- ÜRÜN SIRALAMA MANTIĞI ---
   List<Product> _sortProducts(final List<Product> products) {
     final list = List<Product>.from(products);
     switch (_sortBy) {
@@ -43,14 +42,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         list.sort((final a, final b) => b.price.compareTo(a.price));
         break;
       /*case 'discount':
-        list.sort((final a, final b) {
-          final aDisc = a.oldPrice != null ? (a.oldPrice! - a.price) : 0;
-          final bDisc = b.oldPrice != null ? (b.oldPrice! - b.price) : 0;
-          return bDisc.compareTo(aDisc);
-        });
+        list.sort((a, b) => (b.discount ?? 0).compareTo(a.discount ?? 0));
         break;*/
       default:
-        // En yeni ürünler
         list.sort((final a, final b) => b.createdAt.compareTo(a.createdAt));
     }
     return list;
@@ -58,7 +52,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
   @override
   Widget build(final BuildContext context) {
-    // Sadece satılmamış VE spot olan ürünleri getiren provider
     final spotProducts = ref.watch(spotProductsProvider);
     final productState = ref.watch(productProvider);
     final sortedProducts = _sortProducts(spotProducts);
@@ -66,17 +59,11 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
-          // 1. DİNAMİK HEADER
-          _buildSpotHeader(context),
-
-          // 2. SIRALAMA ÇUBUĞU
+          _buildHeader(context),
           _buildSortBar(context, sortedProducts.length),
-
-          // 3. İPUCU BANNERI
           _buildSpotlightBanner(context),
-
-          // 4. İÇERİK DURUMLARI
           if (productState.isLoading)
             SliverToBoxAdapter(child: _buildLoadingState(context))
           else if (productState.errorMessage != null)
@@ -86,15 +73,17 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             SliverToBoxAdapter(child: _buildEmptyState(context))
           else
             _buildProductsGrid(context, sortedProducts),
-
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          const SliverToBoxAdapter(
+            child: AdsenseBanner(height: 100),
+          ),
         ],
       ),
     );
   }
 
-  // --- HEADER METODLARI ---
-  SliverToBoxAdapter _buildSpotHeader(final BuildContext context) {
+  // --- HEADER ---
+  SliverToBoxAdapter _buildHeader(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: context.responsive(
@@ -110,7 +99,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(
-              context.responsive(mobile: 24.0, desktop: 32.0)),
+              context.responsive(mobile: 24, desktop: 32)),
           boxShadow: [
             BoxShadow(
                 color: const Color(0xFFFF6B6B).withOpacity(0.3),
@@ -119,61 +108,93 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           ],
         ),
         child: context.isMobile
-            ? _buildMobileSpotHeader(context)
-            : _buildDesktopSpotHeader(context),
+            ? _buildMobileHeader(context)
+            : _buildDesktopHeader(context),
       ),
     );
   }
 
-  Widget _buildMobileSpotHeader(final BuildContext context) {
+  Widget _buildMobileHeader(final BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSpotHeaderBadge(),
+        _buildHeaderBadge(),
         const SizedBox(height: 20),
         const Text('Kaçırılmayacak\nFırsatlar',
             style: TextStyle(
                 color: Colors.white,
-                fontSize: 36,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
-                height: 1.1)),
-        const SizedBox(height: 32),
-        _buildCountdownTimer(context),
+                height: 1.1,
+                shadows: [
+                  Shadow(
+                      color: Colors.black26,
+                      offset: Offset(1, 2),
+                      blurRadius: 8)
+                ])),
+        const SizedBox(height: 24),
+        _buildCountdownTimer(),
       ],
     );
   }
 
-  Widget _buildDesktopSpotHeader(final BuildContext context) {
+  Widget _buildDesktopHeader(final BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSpotHeaderBadge(),
+              _buildHeaderBadge(),
               const SizedBox(height: 20),
               const Text('Kaçırılmayacak\nFırsatlar',
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 56,
+                      fontSize: 48,
                       fontWeight: FontWeight.bold,
-                      height: 1.1)),
+                      height: 1.1,
+                      shadows: [
+                        Shadow(
+                            color: Colors.black26,
+                            offset: Offset(1, 2),
+                            blurRadius: 8)
+                      ])),
               const SizedBox(height: 32),
-              _buildCountdownTimer(context),
+              _buildCountdownTimer(),
             ],
           ),
         ),
-        const Icon(Icons.percent_outlined, color: Colors.white24, size: 200),
+        Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 40,
+                    offset: const Offset(0, 15))
+              ]),
+          child: const Icon(Icons.percent_outlined,
+              color: Colors.white24, size: 120),
+        ),
       ],
     );
   }
 
-  // --- YARDIMCI BİLEŞENLER ---
-  Widget _buildSpotHeaderBadge() {
+  Widget _buildHeaderBadge() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-          color: Colors.white30, borderRadius: BorderRadius.circular(20)),
+          color: Colors.white24,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4))
+          ]),
       child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -187,7 +208,126 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  Widget _buildCountdownTimer(final BuildContext context) {
+  // --- SORT BAR ---
+  SliverToBoxAdapter _buildSortBar(
+      final BuildContext context, final int count) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8))
+            ]),
+        child: Row(
+          children: [
+            const Icon(Icons.sort_rounded, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: _sortOptions
+                      .map((final opt) => Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ChoiceChip(
+                              label: Text(_getSortLabel(opt)),
+                              selected: _sortBy == opt,
+                              onSelected: (final _) =>
+                                  setState(() => _sortBy = opt),
+                              selectedColor:
+                                  AppColors.primary.withOpacity(0.85),
+                              backgroundColor: Colors.grey.shade100,
+                              labelStyle: TextStyle(
+                                  color: _sortBy == opt
+                                      ? Colors.white
+                                      : Colors.black87,
+                                  fontWeight: FontWeight.bold),
+                              elevation: 3,
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+            Text('$count Ürün',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- SPOTLIGHT BANNER ---
+  SliverToBoxAdapter _buildSpotlightBanner(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        decoration: BoxDecoration(
+            color: Colors.amber.shade50,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.amber.shade200),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.amber.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8))
+            ]),
+        child: const Row(
+          children: [
+            Icon(Icons.lightbulb_outline, color: Colors.amber),
+            SizedBox(width: 15),
+            Expanded(
+              child: Text(
+                "Spot ürünler hızla tükenir, beğendiğin ürünü kaçırma!",
+                style:
+                    TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- PRODUCT GRID ---
+  SliverPadding _buildProductsGrid(
+      final BuildContext context, final List<Product> products) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: context.gridColumns(4),
+          childAspectRatio: context.responsive(mobile: 0.7, desktop: 0.75),
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (final context, final index) => MouseRegion(
+            onEnter: (final _) => setState(() => _hoveredIndex = index),
+            onExit: (final _) => setState(() => _hoveredIndex = -1),
+            cursor: SystemMouseCursors.click,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              transform: Matrix4.identity()
+                ..scale(_hoveredIndex == index ? 1.05 : 1.0),
+              child: CustomProductCard(product: products[index]),
+            ),
+          ),
+          childCount: products.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCountdownTimer() {
     return StreamBuilder(
       stream: Stream.periodic(const Duration(seconds: 1)),
       builder: (final context, final snapshot) {
@@ -203,98 +343,21 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  SliverToBoxAdapter _buildSortBar(
-      final BuildContext context, final int count) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.black12)),
-        child: Row(
-          children: [
-            const Icon(Icons.sort_rounded, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _sortOptions
-                      .map((final opt) => Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ChoiceChip(
-                              label: Text(_getSortLabel(opt)),
-                              selected: _sortBy == opt,
-                              onSelected: (final val) =>
-                                  setState(() => _sortBy = opt),
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
-            ),
-            Text('$count Ürün',
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-
   String _getSortLabel(final String opt) {
-    if (opt == 'newest') return 'En Yeni';
-    if (opt == 'price_low') return 'En Ucuz';
-    if (opt == 'price_high') return 'En Pahalı';
-    return 'İndirim';
+    switch (opt) {
+      case 'newest':
+        return 'En Yeni';
+      case 'price_low':
+        return 'En Ucuz';
+      case 'price_high':
+        return 'En Pahalı';
+      case 'discount':
+        return 'İndirim';
+      default:
+        return '';
+    }
   }
 
-  SliverToBoxAdapter _buildSpotlightBanner(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: Colors.amber.shade50,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.amber.shade200)),
-        child: const Row(
-          children: [
-            Icon(Icons.lightbulb_outline, color: Colors.amber),
-            SizedBox(width: 15),
-            Expanded(
-                child: Text(
-                    "Spot ürünler hızla tükenir, beğendiğin ürünü kaçırma!",
-                    style: TextStyle(
-                        color: Colors.amber, fontWeight: FontWeight.bold))),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductsGrid(
-      final BuildContext context, final List<Product> products) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(4),
-          childAspectRatio: context.responsive(mobile: 0.72, desktop: 0.75),
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (final context, final index) =>
-              CustomProductCard(product: products[index]),
-          childCount: products.length,
-        ),
-      ),
-    );
-  }
-
-  // --- DURUM WIDGETLARI ---
   Widget _buildLoadingState(final BuildContext context) => const Center(
       child: Padding(
           padding: EdgeInsets.all(40), child: CircularProgressIndicator()));
