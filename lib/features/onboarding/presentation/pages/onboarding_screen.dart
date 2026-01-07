@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 
-import '../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/ad_sense_banner.dart';
 
 class WebOnboardingScreen extends StatelessWidget {
   const WebOnboardingScreen({super.key});
