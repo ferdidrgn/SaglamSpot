@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/providers/search/search_filters_notifier.dart';
-import '../../data/providers/search/search_providers.dart';
-import '../../data/providers/search/search_state.dart';
+import '../../features/search/presentation/providers/search_filters_notifier.dart';
+import '../../features/search/presentation/providers/search_providers.dart';
+import '../../features/search/presentation/providers/search_state.dart';
 
 /// Mobil cihazlar için filtreleme arayüzünü gösteren Modal Bottom Sheet.
 /// Bu widget, `search_page.dart` üzerindeki `_DesktopFilters` ile aynı

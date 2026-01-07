@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import '../../../core/common/base_state.dart';
-import '../../../domain/entities/product.dart';
+import '../../../../core/common/base_state.dart';
+import '../../../products/domain/entites/product.dart';
 
 /// Search state - Immutable ve type-safe
 /// Equatable ile performance optimization

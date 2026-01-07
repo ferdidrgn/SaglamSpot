@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../data/providers/product/product_provider.dart';
-import '../../core/widgets/ad_sense_banner.dart';
-import '../../core/widgets/custom_image_selector.dart';
-import '../../domain/entities/product.dart';
+import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/custom_image_selector.dart';
+import '../../domain/entites/product.dart';
+import '../providers/product_provider.dart';
 
 class AddProductPage extends ConsumerStatefulWidget {
   const AddProductPage({super.key});

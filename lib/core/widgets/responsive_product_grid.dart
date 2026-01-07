@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/product.dart';
+import '../../features/products/domain/entites/product.dart';
 import '../util/responsive_utils.dart'; // Extension'lar için import
 import 'custom_product_card.dart';
 

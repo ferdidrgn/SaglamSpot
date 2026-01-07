@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
-import 'package:saglamspot/data/providers/product/product_provider.dart';
-import 'package:saglamspot/domain/entities/product.dart';
-import '../../core/widgets/ad_sense_banner.dart';
-import '../../core/widgets/gallery_section.dart';
+import 'package:saglamspot/features/products/domain/entites/product.dart';
+
+import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/gallery_section.dart';
+import '../providers/product_provider.dart';
 
 class WebProductDetailPage extends ConsumerStatefulWidget {
   final String productId;

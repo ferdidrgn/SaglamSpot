@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:saglamspot/core/common/base_notifier.dart';
-import '../../../domain/repositories/product_repository.dart';
-import '../../../domain/repositories/product_repository_provider.dart';
-import '../product/product_provider.dart';
+import '../../../products/domain/repositories/product_repository.dart';
+import '../../../products/domain/repositories/product_repository_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
 import 'search_state.dart';
 
 /// Search ve filter işlemlerini yöneten notifier

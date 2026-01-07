@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
-import '../../presentation/navigation/navigation.dart';
-import '../../presentation/pages/add_product_page.dart';
-import '../../presentation/pages/main_pages/home/home_page.dart';
-import '../../presentation/pages/main_pages/info_page.dart';
-import '../../presentation/pages/main_pages/sss_page.dart';
-import '../../presentation/pages/main_pages/new_products_page.dart';
-import '../../presentation/pages/main_pages/spot_products_page.dart';
-import '../../presentation/pages/product_detail_page.dart';
-import '../../presentation/pages/search_page.dart';
+import '../../features/products/presentation/pages/product_detail_page.dart';
+import '../../features/products/presentation/pages/spot_products_page.dart';
+import '../../features/search/presentation/pages/search_page.dart';
+import '../../features/home/presentation/page/home_page.dart';
+import '../../features/info/presentation/pages/info_page.dart';
+import '../../features/sss/presentation/pages/sss_page.dart';
+import '../../features/products/presentation/pages/new_products_page.dart';
+import '../../shared/navigation/navigation.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -101,16 +100,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           //id yi pasladık
           return WebProductDetailPage(productId: productId ?? '');
         },
-      ),
-
-      /// ➕ ADD PRODUCT (SHELL DIŞI)
-      GoRoute(
-        path: '/add-product',
-        name: '/add-product',
-        parentNavigatorKey: _rootNavigatorKey,
-        pageBuilder: (final _, final __) => const MaterialPage(
-          child: AddProductPage(),
-        ),
       ),
 
       // 🔍 SEARCH

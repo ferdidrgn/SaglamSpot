@@ -2,14 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/util/responsive_utils.dart'; // Extension'lar için import
-import '../../core/widgets/ad_sense_banner.dart';
-import '../../core/widgets/filter_sheet.dart';
-import '../../core/widgets/responsive_product_grid.dart';
-import '../../data/providers/search/search_filters_notifier.dart';
-import '../../data/providers/search/search_providers.dart';
-import '../../data/providers/search/search_state.dart';
-import '../../domain/entities/product.dart';
+
+import '../../../../core/util/responsive_utils.dart';
+import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/filter_sheet.dart';
+import '../../../../core/widgets/responsive_product_grid.dart';
+import '../../../products/domain/entites/product.dart';
+import '../providers/search_filters_notifier.dart';
+import '../providers/search_providers.dart';
+import '../providers/search_state.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
