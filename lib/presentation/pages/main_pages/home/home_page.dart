@@ -276,43 +276,79 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // ================= HEADER =================
+  // ================= HEADER (LOGO GÜNCELLEMESİ) =================
   SliverToBoxAdapter _buildDiscoveryHeader(final bool isMobile) {
     return SliverToBoxAdapter(
       child: Padding(
         padding:
             EdgeInsets.fromLTRB(isMobile ? 24 : 60, 40, isMobile ? 24 : 60, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF103E35).withOpacity(0.08),
-                borderRadius: BorderRadius.circular(8),
+            // --- SOL TARAFTAKİ METİN ALANI ---
+            Expanded(
+              flex: 3, // Metin alanına daha fazla yer ayır
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF103E35).withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text("HOŞ GELDİNİZ",
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                            color: Color(0xFF103E35))),
+                  ),
+                  const SizedBox(height: 20),
+                  Text("Hayalinizdeki Sahneyi\nBurada Kurun.",
+                      style: TextStyle(
+                          fontSize: isMobile ? 38 : 68,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -2,
+                          height: 1.0,
+                          color: const Color(0xFF1E293B))),
+                  const SizedBox(height: 20),
+                  const Text(
+                      "En özel mobilyalarla evinizde unutulmaz bir atmosfer yaratın.",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black45,
+                          fontWeight: FontWeight.w300)),
+                ],
               ),
-              child: const Text("HOŞ GELDİNİZ",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
-                      color: Color(0xFF103E35))),
             ),
-            const SizedBox(height: 20),
-            Text("Hayalinizdeki Sahneyi\nBurada Kurun.",
-                style: TextStyle(
-                    fontSize: isMobile ? 38 : 68,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -2,
-                    height: 1.0,
-                    color: const Color(0xFF1E293B))),
-            const SizedBox(height: 20),
-            const Text(
-                "En özel mobilyalarla evinizde unutulmaz bir atmosfer yaratın.",
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black45,
-                    fontWeight: FontWeight.w300)),
+
+            // --- SAĞ TARAFTAKİ LOGO ALANI ---
+            // Sadece Mobile değilse (Geniş ekransa) göster
+            if (!isMobile) ...[
+              const Spacer(flex: 1), // Metin ile logo arası boşluk
+              Container(
+                width: 250, // Logonun büyüklüğü
+                height: 250,
+                decoration: BoxDecoration(
+                  color: Colors.white, // Logonun arkasına temiz bir zemin
+                  shape: BoxShape.circle, // Yuvarlak tasarım (tema ile uyumlu)
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF103E35).withOpacity(0.1),
+                      blurRadius: 30,
+                      offset: const Offset(0, 10),
+                    )
+                  ],
+                  // BURAYA KENDİ LOGO YOLUNUZU YAZIN
+                  image: const DecorationImage(
+                    image: AssetImage("assets/images/logo.png"),
+                    fit: BoxFit.contain, // Logo kesilmesin diye contain
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -677,7 +713,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 0,
         ),
-        child: const Text("RANDEVU AL",
+        child: const Text("MUTALAKA GEL",
             style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1)),
       ),
     ];
