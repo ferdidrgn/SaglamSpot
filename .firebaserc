@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "saglamspotflutter-2a1a8"
-  }
+  },
+  "targets": {
+    "saglamspotflutter-2a1a8": {
+      "hosting": {
+        "app": [
+          "saglamspotcu"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
