@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../presentation/pages/search_page.dart';
 import '../theme/app_colors.dart';
 import '../util/responsive_utils.dart';
 
@@ -35,11 +33,9 @@ class CustomAppHeader extends StatelessWidget {
         bottom: false,
         child: Padding(
           padding: EdgeInsets.symmetric(
-            // Düzeltme: 'getValueForDevice' yerine 'context.responsive'
             horizontal: context.responsive(mobile: 16.0, desktop: 24.0),
             vertical: context.responsive(mobile: 12.0, desktop: 16.0),
           ),
-          // Düzeltme: 'ResponsiveUtils.isMobile' yerine 'context.isMobile'
           child: context.isMobile
               ? _buildMobileLayout(context) // Mobil düzen
               : _buildDesktopLayout(context), // Desktop düzen
@@ -64,7 +60,6 @@ class CustomAppHeader extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(10),
       onTap: () {
-        // 🔥 BURASI ÖNEMLİ
         context.push('/search');
       },
       child: Container(

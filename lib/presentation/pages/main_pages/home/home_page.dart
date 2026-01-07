@@ -343,7 +343,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                   // BURAYA KENDİ LOGO YOLUNUZU YAZIN
                   image: const DecorationImage(
-                    image: AssetImage("assets/images/logo.png"),
+                    image: AssetImage("assets/images/saglam_spot_logo.png"),
                     fit: BoxFit.contain, // Logo kesilmesin diye contain
                   ),
                 ),
@@ -626,8 +626,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         // 3D Hissi Veren İkon Tasarımı
         Container(
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: const Color(0xFFE8F1EF), // Yumuşak fıstık yeşili zemin
+          decoration: const BoxDecoration(
+            color: Color(0xFFE8F1EF), // Yumuşak fıstık yeşili zemin
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: const Color(0xFF103E35), size: 32),

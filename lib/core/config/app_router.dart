@@ -6,9 +6,9 @@ import '../../presentation/navigation/navigation.dart';
 import '../../presentation/pages/add_product_page.dart';
 import '../../presentation/pages/main_pages/home/home_page.dart';
 import '../../presentation/pages/main_pages/info_page.dart';
+import '../../presentation/pages/main_pages/sss_page.dart';
 import '../../presentation/pages/main_pages/new_products_page.dart';
 import '../../presentation/pages/main_pages/spot_products_page.dart';
-import '../../presentation/pages/main_pages/sss_page.dart';
 import '../../presentation/pages/product_detail_page.dart';
 import '../../presentation/pages/search_page.dart';
 
@@ -26,9 +26,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
       /// 🔹 MAIN SHELL (BOTTOM / TOP NAV)
       StatefulShellRoute.indexedStack(
         builder: (final context, final state, final navigationShell) {
-          return NavigationScreen(
-            navigationShell: navigationShell,
-          );
+          return NavigationScreen(navigationShell: navigationShell);
         },
         branches: [
           // 🏠 HOME
@@ -68,7 +66,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           ),
 
           // ℹ️ ABOUT
-          StatefulShellBranch(
+          /*StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/about',
@@ -80,7 +78,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           ),
 
           // ❓ FAQ / SSS
-          StatefulShellBranch(
+         StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/sss',
@@ -89,7 +87,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
                     const NoTransitionPage(child: SSSPage()),
               ),
             ],
-          ),
+          ),*/
         ],
       ),
 
