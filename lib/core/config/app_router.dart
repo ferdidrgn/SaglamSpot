@@ -18,9 +18,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
-    observers: [
-      SeoRouteObserver(),
-    ],
+    observers: [SeoRouteObserver()],
     routes: [
       /// 🔹 MAIN SHELL (BOTTOM / TOP NAV)
       StatefulShellRoute.indexedStack(
