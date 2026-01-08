@@ -5,7 +5,7 @@ import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
 import '../../features/products/presentation/pages/product_detail_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
-import '../../features/home/presentation/page/home_page.dart';
+import '../../features/home/presentation/page/home_page_web.dart';
 import '../../features/info/presentation/pages/info_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
