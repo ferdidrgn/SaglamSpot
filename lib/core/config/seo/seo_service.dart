@@ -16,13 +16,11 @@ final class SeoService {
 
     if (description == null) return;
 
-    final meta = html.document.querySelector(
-      'meta[name="description"]',
-    );
+    final meta = html.document.querySelector('meta[name="description"]');
 
-    if (meta != null) {
+    if (meta != null)
       meta.setAttribute('content', description);
-    } else {
+    else {
       final newMeta = html.MetaElement()
         ..name = 'description'
         ..content = description;
