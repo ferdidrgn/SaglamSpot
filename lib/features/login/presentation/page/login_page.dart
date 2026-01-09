@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
-class AdminLoginPage extends ConsumerWidget {
+class LoginPage extends ConsumerWidget {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
 
-  AdminLoginPage({super.key});
+  LoginPage({super.key});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {

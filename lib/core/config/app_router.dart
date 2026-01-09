@@ -1,23 +1,39 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
+import '../../features/home/presentation/page/home_page_web.dart';
+import '../../features/info/presentation/pages/info_page.dart';
+import '../../features/login/presentation/page/login_page.dart';
+import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/product_detail_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
-import '../../features/home/presentation/page/home_page_web.dart';
-import '../../features/info/presentation/pages/info_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
-import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../shared/navigation/providers/navigation_keys.dart';
 import '../../shared/navigation/widgets/navigation.dart';
+import 'page_transitions.dart';
 
-/// 🧭 Global App Router Provider
 final appRouterProvider = Provider<GoRouter>((final ref) {
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
-    initialLocation: '/',
+    // MOBİLDE isen '/login' sayfasından başla, WEB'de isen '/' ana sayfadan.
+    initialLocation: kIsWeb ? '/' : '/login',
     observers: [SeoRouteObserver()],
     routes: [
+      /// 🚪 LOGIN PAGE (Mobil için zorunlu başlangıç)
+      GoRoute(
+        path: '/login',
+        name: 'login',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: LoginPage(),
+          transitionsBuilder: focalTransition, // Rüya gibi netleşme efekti
+          transitionDuration: const Duration(milliseconds: 800),
+        ),
+      ),
+
       /// 🔹 MAIN SHELL (BOTTOM / TOP NAV)
       StatefulShellRoute.indexedStack(
         builder: (final context, final state, final navigationShell) {
@@ -26,42 +42,90 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         branches: [
           // 🏠 HOME
           StatefulShellBranch(
+            navigatorKey: NavigationKeys.homeShellKey,
             routes: [
               GoRoute(
                 path: '/',
                 name: '/',
-                pageBuilder: (final _, final __) =>
-                    const NoTransitionPage(child: HomePage()),
+                pageBuilder: (final context, final state) =>
+                    CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const HomePage(),
+                  transitionsBuilder: curtainTransition,
+                  // Sahne açılış efekti
+                  transitionDuration: const Duration(milliseconds: 600),
+                ),
               ),
             ],
           ),
 
           // 🆕 NEW PRODUCTS
           StatefulShellBranch(
+            navigatorKey: NavigationKeys.newProductsShellKey,
             routes: [
               GoRoute(
                 path: '/new',
                 name: '/new',
-                pageBuilder: (final _, final __) =>
-                    const NoTransitionPage(child: NewProductsPage()),
+                pageBuilder: (final context, final state) =>
+                    CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const NewProductsPage(),
+                  transitionsBuilder: scrollSlideTransition, // Parşömen kayması
+                ),
               ),
             ],
           ),
 
           // 🔥 SPOT PRODUCTS
           StatefulShellBranch(
+            navigatorKey: NavigationKeys.spotProductsShellKey,
             routes: [
               GoRoute(
                 path: '/spot',
                 name: '/spot',
-                pageBuilder: (final _, final __) =>
-                    const NoTransitionPage(child: SpotProductsPage()),
+                pageBuilder: (final context, final state) =>
+                    CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const SpotProductsPage(),
+                  transitionsBuilder: spiralTransition, // Mistik sarmal
+                ),
               ),
             ],
           ),
+        ],
+      ),
 
-          // ℹ️ ABOUT
-          /*StatefulShellBranch(
+      /// 🏷️ PRODUCT DETAIL PAGE
+      GoRoute(
+        path: '/product/:productId',
+        name: 'product-detail',
+        pageBuilder: (final context, final state) {
+          final productId = state.pathParameters['productId'] ?? '';
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: WebProductDetailPage(productId: productId),
+            transitionsBuilder: slideTransition, // Klasik sağdan sola kayma
+            transitionDuration: const Duration(milliseconds: 400),
+          );
+        },
+      ),
+
+      /// 🔍 SEARCH
+      GoRoute(
+        path: '/search',
+        name: '/search',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SearchPage(),
+          transitionsBuilder: shimmerSlideTransition, // Işık süzmesi efekti
+        ),
+      ),
+    ],
+  );
+});
+
+// ℹ️ ABOUT
+/*StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/about',
@@ -83,28 +147,3 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
               ),
             ],
           ),*/
-        ],
-      ),
-
-      /// 🏷️ PRODUCT DETAIL PAGE (Parametrik Rota)
-      GoRoute(
-        path: '/product/:productId',
-        name: 'product-detail',
-        builder: (final context, final state) {
-          // URL'den productId'yi yakalıyoruz
-          final productId = state.pathParameters['productId'];
-          //id yi pasladık
-          return WebProductDetailPage(productId: productId ?? '');
-        },
-      ),
-
-      // 🔍 SEARCH
-      GoRoute(
-        path: '/search',
-        name: '/search',
-        pageBuilder: (final _, final __) =>
-            const NoTransitionPage(child: SearchPage()),
-      ),
-    ],
-  );
-});
