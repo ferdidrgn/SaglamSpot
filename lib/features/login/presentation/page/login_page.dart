@@ -1,17 +1,46 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
-class LoginPage extends ConsumerWidget {
-  final _emailController = TextEditingController();
-  final _passController = TextEditingController();
-
-  LoginPage({super.key});
+class LoginPage extends ConsumerStatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
+  ConsumerState<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends ConsumerState<LoginPage> {
+  late final TextEditingController _emailController;
+  late final TextEditingController _passController;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
     final authState = ref.watch(authProvider);
+
+    // Giriş başarılı olduğunda otomatik yönlendirme yapıyoruz
+    ref.listen<AsyncValue<User?>>(authProvider, (final previous, final next) {
+      next.whenOrNull(
+        data: (final user) {
+          if (user != null) context.go('/');
+        },
+      );
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
@@ -19,6 +48,7 @@ class LoginPage extends ConsumerWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.lock_person_rounded,
                   size: 80, color: Color(0xFF6366F1)),
@@ -32,51 +62,21 @@ class LoginPage extends ConsumerWidget {
                   style: TextStyle(color: Colors.white60, fontSize: 16)),
               const SizedBox(height: 48),
               _buildInput(
-                  controller: _emailController,
-                  label: "E-posta",
-                  icon: Icons.alternate_email_rounded),
+                controller: _emailController,
+                label: "E-posta",
+                icon: Icons.alternate_email_rounded,
+                keyboardType: TextInputType.emailAddress,
+              ),
               const SizedBox(height: 16),
               _buildInput(
-                  controller: _passController,
-                  label: "Şifre",
-                  icon: Icons.password_rounded,
-                  isObscure: true),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: authState.isLoading
-                      ? null
-                      : () => ref
-                          .read(authProvider.notifier)
-                          .signIn(_emailController.text, _passController.text),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                  ),
-                  child: authState.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Giriş Yap",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white)),
-                ),
+                controller: _passController,
+                label: "Şifre",
+                icon: Icons.password_rounded,
+                isObscure: true,
               ),
-              if (authState.hasError) ...[
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Text(authState.error.toString(),
-                      style: const TextStyle(color: Colors.redAccent),
-                      textAlign: TextAlign.center),
-                ),
-              ]
+              const SizedBox(height: 32),
+              _buildSubmitButton(authState),
+              _buildErrorMessage(authState),
             ],
           ),
         ),
@@ -84,15 +84,72 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  // Yardımcı Input Widget'ı
-  Widget _buildInput(
-          {required final TextEditingController controller,
-          required final String label,
-          required final IconData icon,
-          final bool isObscure = false}) =>
+  Widget _buildSubmitButton(final AsyncValue<User?> authState) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: authState.isLoading
+            ? null
+            : () {
+                FocusScope.of(context).unfocus(); // Klavyeyi kapat
+                ref.read(authProvider.notifier).signIn(
+                      _emailController.text,
+                      _passController.text,
+                    );
+              },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF6366F1),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        child: authState.isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                    color: Colors.white, strokeWidth: 2),
+              )
+            : const Text("Giriş Yap",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white)),
+      ),
+    );
+  }
+
+  Widget _buildErrorMessage(final AsyncValue<User?> authState) {
+    if (!authState.hasError) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Colors.redAccent.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8)),
+        child: Text(
+          authState.error.toString(),
+          style: const TextStyle(color: Colors.redAccent),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInput({
+    required final TextEditingController controller,
+    required final String label,
+    required final IconData icon,
+    final bool isObscure = false,
+    final TextInputType? keyboardType,
+  }) =>
       TextField(
         controller: controller,
         obscureText: isObscure,
+        keyboardType: keyboardType,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: const Color(0xFF6366F1)),
@@ -100,12 +157,13 @@ class LoginPage extends ConsumerWidget {
           labelStyle: const TextStyle(color: Colors.white60),
           filled: true,
           fillColor: Colors.white.withOpacity(0.05),
-          enabledBorder: OutlineInputBorder(
+          border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none),
           focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Color(0xFF6366F1))),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFF6366F1)),
+          ),
         ),
       );
 }
