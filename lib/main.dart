@@ -1,34 +1,34 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:flutter_web_plugins/url_strategy.dart'
+    if (dart.library.io) 'dart:ui';
 import 'core/config/app_router.dart';
-import 'core/config/web_config.dart';
+import 'core/config/web_config.dart'; // Sadece Firebase map'ini alıyoruz
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'core/util/platform_checker.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🌐 Web URL stratejisi (# kaldırır)
-  if (PlatformChecker.isWeb) usePathUrlStrategy();
+  // 🌐 Web URL stratejisi (# işaretini kaldırır)
+  // kIsWeb kontrolü ile sadece tarayıcıda çalışmasını sağlıyoruz
+  if (kIsWeb) usePathUrlStrategy();
 
   await _initializeFirebase();
   runApp(const ProviderScope(child: MyApp()));
 }
 
-Future<void> _initializeFirebase() async {
-  await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: firebaseConfig['apiKey']!,
-      appId: firebaseConfig['appId']!,
-      messagingSenderId: firebaseConfig['messagingSenderId']!,
-      projectId: firebaseConfig['projectId']!,
-      storageBucket: firebaseConfig['storageBucket'],
-    ),
-  );
-}
+Future<void> _initializeFirebase() => Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: firebaseConfig['apiKey']!,
+        appId: firebaseConfig['appId']!,
+        messagingSenderId: firebaseConfig['messagingSenderId']!,
+        projectId: firebaseConfig['projectId']!,
+        storageBucket: firebaseConfig['storageBucket'],
+      ),
+    );
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -42,9 +42,7 @@ class MyApp extends ConsumerWidget {
       title: AppConstants.appName,
       theme: AppTheme.lightTheme,
       themeMode: ThemeMode.system,
-
-      // 🔥 ROUTER ENTEGRASYONU
-      routerConfig: router,
+      routerConfig: router, // ROUTER ENTEGRASYONU
     );
   }
 }

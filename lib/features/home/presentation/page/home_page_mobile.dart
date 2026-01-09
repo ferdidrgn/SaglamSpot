@@ -141,11 +141,12 @@ class HomePage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.edit, color: Colors.blue),
-                title: const Text("Ürünü Düzenle"),
+                leading: const Icon(Icons.delete_forever, color: Colors.red),
+                title: const Text("Sistemden Sil",
+                    style: TextStyle(color: Colors.red)),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push('/edit-product', extra: product);
+                  _confirmDelete(context, ref, product);
                 },
               ),
               ListTile(
@@ -167,7 +168,7 @@ class HomePage extends ConsumerWidget {
                     style: TextStyle(color: Colors.red)),
                 onTap: () {
                   Navigator.pop(context);
-                  _confirmDelete(context, ref, product.id);
+                  _confirmDelete(context, ref, product);
                 },
               ),
             ],
@@ -175,8 +176,8 @@ class HomePage extends ConsumerWidget {
         ),
       );
 
-  void _confirmDelete(
-          final BuildContext context, final WidgetRef ref, final String id) =>
+  void _confirmDelete(final BuildContext context, final WidgetRef ref,
+          final Product product) =>
       showDialog(
         context: context,
         builder: (final context) => AlertDialog(
@@ -189,7 +190,8 @@ class HomePage extends ConsumerWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () {
-                ref.read(productProvider.notifier).deleteProduct(id);
+                // Artık notifier tüm product nesnesini bekliyor
+                ref.read(productProvider.notifier).deleteProduct(product);
                 Navigator.pop(context);
               },
               child: const Text("Sil", style: TextStyle(color: Colors.white)),

@@ -1,5 +1,6 @@
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/common/base_notifier.dart';
+import '../../../../core/services/storage_provider.dart';
 import '../../domain/entites/product.dart';
 import 'product_state.dart';
 
@@ -20,13 +21,30 @@ class ProductNotifier extends BaseNotifier<ProductState> {
   // Listeyi yeniden çekmek yerine state'i invalidate edip
   // providers'ın kendini refresh etmesini sağlamak Riverpod 3 tarzıdır.
 
-  Future<void> updateProduct(final Product product) =>
-      execute(() => ref.read(updateProductUseCaseProvider).call(product),
-          onSuccess: (final _) => ref.invalidateSelf());
+  // Ürünü silerken hem Firestore'dan hem Storage'dan temizlik yapar
+  Future<void> deleteProduct(final Product product) => execute(() async {
+        // 1. Storage Temizliği: O ürüne ait tüm resim klasörünü siler
+        final storageRef =
+            ref.read(storageProvider).ref().child('products/${product.id}');
+        final listResult = await storageRef.listAll();
+        for (final item in listResult.items) await item.delete();
 
-  Future<void> deleteProduct(final String productId) =>
-      execute(() => ref.read(deleteProductUseCaseProvider).call(productId),
-          onSuccess: (final _) => ref.invalidateSelf());
+        // 2. Veritabanı Silme
+        return ref.read(deleteProductUseCaseProvider).call(product.id);
+      }, onSuccess: (final _) => ref.invalidateSelf());
+
+  // Güncelleme sırasında yeni görseller gelirse otomatik yükler
+  Future<void> updateProduct(final Product product,
+          {final List<dynamic>? newImages}) =>
+      execute(() async {
+        if (newImages != null && newImages.isNotEmpty) {
+          // Yeni görselleri yükler (ProductService içindeki mantıkla)
+          await ref
+              .read(productServiceProvider)
+              .uploadProduct(product, newImages);
+        }
+        return ref.read(updateProductUseCaseProvider).call(product);
+      }, onSuccess: (final _) => ref.invalidateSelf());
 
   Future<void> filterProducts({
     final String? condition,
