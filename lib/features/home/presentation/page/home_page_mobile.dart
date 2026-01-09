@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../auth/presentation/provider/auth_provider.dart';
+import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_notifier.dart';
 import '../../../products/presentation/providers/product_provider.dart';
