@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/widgets/custom_app_header.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/custom_app_header.dart';
 
 class NavigationScreen extends ConsumerWidget {
   NavigationScreen({super.key, required this.navigationShell});

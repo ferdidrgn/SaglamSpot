@@ -58,7 +58,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   void _filterByCategory(final String category) {
     if (category == 'Tümü') {
-      // Artık sadece provider'ı değil, arama çubuğu dahil her şeyi sıfırlar.
+      // Artık sadece providers'ı değil, arama çubuğu dahil her şeyi sıfırlar.
       _resetFilters();
     } else {
       ref.read(searchProvider.notifier).filterByCategory(category);

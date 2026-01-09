@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
@@ -9,14 +8,13 @@ import '../../features/home/presentation/page/home_page_web.dart';
 import '../../features/info/presentation/pages/info_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
-import '../../shared/navigation/navigation.dart';
-
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+import '../../shared/navigation/providers/navigation_keys.dart';
+import '../../shared/navigation/widgets/navigation.dart';
 
 /// 🧭 Global App Router Provider
 final appRouterProvider = Provider<GoRouter>((final ref) {
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: NavigationKeys.rootNavigatorKey,
     initialLocation: '/',
     observers: [SeoRouteObserver()],
     routes: [

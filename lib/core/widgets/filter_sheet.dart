@@ -6,7 +6,7 @@ import '../../features/search/presentation/providers/search_state.dart';
 
 /// Mobil cihazlar için filtreleme arayüzünü gösteren Modal Bottom Sheet.
 /// Bu widget, `search_page.dart` üzerindeki `_DesktopFilters` ile aynı
-/// provider'ları ve fonksiyonları kullanarak tutarlı bir deneyim sağlar.
+/// providers'ları ve fonksiyonları kullanarak tutarlı bir deneyim sağlar.
 class FilterSheet extends ConsumerWidget {
   /// search_page.dart'tan gelen ana filtre uygulama fonksiyonu
   final VoidCallback onApplyFilters;

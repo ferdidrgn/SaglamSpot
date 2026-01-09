@@ -18,7 +18,7 @@ class ProductNotifier extends BaseNotifier<ProductState> {
           onSuccess: (final _) => ref.invalidateSelf());
 
   // Listeyi yeniden çekmek yerine state'i invalidate edip
-  // provider'ın kendini refresh etmesini sağlamak Riverpod 3 tarzıdır.
+  // providers'ın kendini refresh etmesini sağlamak Riverpod 3 tarzıdır.
 
   Future<void> updateProduct(final Product product) =>
       execute(() => ref.read(updateProductUseCaseProvider).call(product),
