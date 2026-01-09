@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -19,7 +20,9 @@ Future<void> main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-Future<void> _initializeFirebase() => Firebase.initializeApp(
+Future<void> _initializeFirebase() async {
+  if (kIsWeb)
+    await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: firebaseConfig['apiKey']!,
         appId: firebaseConfig['appId']!,
@@ -28,6 +31,11 @@ Future<void> _initializeFirebase() => Firebase.initializeApp(
         storageBucket: firebaseConfig['storageBucket'],
       ),
     );
+  else
+    // Mobil platformlarda (Android/iOS) varsayılan yapılandırmayı kullanır.
+    // Bu, android/app/ içindeki google-services.json dosyasını baz alır.
+    await Firebase.initializeApp();
+}
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});

@@ -1,16 +1,13 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
-import '../../features/home/presentation/page/home_page_web.dart';
-import '../../features/info/presentation/pages/info_page.dart';
+import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/product_detail_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
-import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../shared/navigation/providers/navigation_keys.dart';
 import '../../shared/navigation/widgets/navigation.dart';
 import 'page_transitions.dart';
@@ -50,7 +47,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
                 pageBuilder: (final context, final state) =>
                     CustomTransitionPage(
                   key: state.pageKey,
-                  child: const HomePage(),
+                  child: const AppHomePage(),
                   transitionsBuilder: curtainTransition,
                   // Sahne açılış efekti
                   transitionDuration: const Duration(milliseconds: 600),
