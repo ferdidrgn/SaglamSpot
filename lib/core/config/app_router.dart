@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
+import 'package:saglamspot/features/products/presentation/pages/add_product_page.dart';
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
@@ -114,6 +115,17 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SearchPage(),
+          transitionsBuilder: shimmerSlideTransition, // Işık süzmesi efekti
+        ),
+      ),
+
+      /// 🔍 SEARCH
+      GoRoute(
+        path: '/add-product',
+        name: '/addProduct',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const AddProductPage(),
           transitionsBuilder: shimmerSlideTransition, // Işık süzmesi efekti
         ),
       ),
