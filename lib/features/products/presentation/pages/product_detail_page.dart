@@ -3,11 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
-
 import '../../../../core/widgets/ad_sense_banner.dart';
-import '../../../../core/widgets/gallery_section.dart';
-import '../providers/product_notifier.dart'; //
-import '../providers/product_provider.dart'; //
+import '../providers/product_notifier.dart';
 
 class WebProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
@@ -25,7 +22,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
 
   @override
   Widget build(final BuildContext context) {
-    final productState = ref.watch(productProvider); //
+    final productState = ref.watch(productProvider);
     final product = productState.dataList?.firstWhere(
       (final p) => p.id == widget.productId,
       orElse: () => throw Exception("Ürün bulunamadı"),
@@ -36,15 +33,15 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD), // Daha temiz bir beyaz
+      backgroundColor: const Color(0xFFFDFDFD),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           _buildAppBar(context, product),
           _buildResponsiveLayout(context, product),
-          const SliverToBoxAdapter(child: SizedBox(height: 40)),
+          SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge)),
           const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
-          const SliverToBoxAdapter(child: SizedBox(height: 80)),
+          SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 2)),
         ],
       ),
     );
@@ -85,29 +82,32 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
 
   Widget _buildResponsiveLayout(
       final BuildContext context, final Product product) {
-    if (context.isDesktop) {
-      return _buildDesktopLayout(context, product);
-    } else {
-      return _buildMobileLayout(context, product);
-    }
+    return context.responsive(
+      mobile: _buildMobileLayout(context, product),
+      desktop: _buildDesktopLayout(context, product),
+    );
   }
 
   SliverToBoxAdapter _buildDesktopLayout(
       final BuildContext context, final Product product) {
     return SliverToBoxAdapter(
       child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1400),
-          padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 40),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
+        child: context.maxWidth(
+          width: 1400,
+          child: Padding(
+            padding: context.sectionPadding,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
                   flex: 7,
-                  child: _buildShowroomGallery(context, product, height: 700)),
-              const SizedBox(width: 80),
-              Expanded(flex: 4, child: _buildShowroomInfo(context, product)),
-            ],
+                  child: _buildShowroomGallery(context, product,
+                      height: context.hp(60)),
+                ),
+                SizedBox(width: context.spacingLarge),
+                Expanded(flex: 4, child: _buildShowroomInfo(context, product)),
+              ],
+            ),
           ),
         ),
       ),
@@ -117,11 +117,16 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   SliverToBoxAdapter _buildMobileLayout(
       final BuildContext context, final Product product) {
     return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          _buildShowroomGallery(context, product, height: 450, isMobile: true),
-          _buildShowroomInfo(context, product, isMobile: true),
-        ],
+      child: Padding(
+        padding: context.pagePadding,
+        child: Column(
+          children: [
+            _buildShowroomGallery(context, product,
+                height: context.hp(50), isMobile: true),
+            SizedBox(height: context.spacingLarge),
+            _buildShowroomInfo(context, product, isMobile: true),
+          ],
+        ),
       ),
     );
   }
@@ -136,14 +141,13 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: const Color(0xFFF5F5F5),
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(context.borderRadius()),
           ),
           child: Stack(
             children: [
-              // Showroom Tasarım Elemanı
               Positioned(
-                top: 40,
-                left: 40,
+                top: context.spacing,
+                left: context.spacing,
                 child: RotatedBox(
                   quarterTurns: 1,
                   child: Text(
@@ -163,7 +167,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
                     duration: const Duration(milliseconds: 600),
                     child: Padding(
                       key: ValueKey(_selectedImageIndex),
-                      padding: const EdgeInsets.all(60.0),
+                      padding: EdgeInsets.all(context.spacingLarge),
                       child: Image.network(
                         product.imagesUrl[_selectedImageIndex],
                         fit: BoxFit.contain,
@@ -175,7 +179,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: context.spacing),
         _buildMinimalThumbnails(product),
       ],
     );
@@ -183,28 +187,28 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
 
   Widget _buildMinimalThumbnails(final Product product) {
     return SizedBox(
-      height: 80,
+      height: context.hp(10),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: product.imagesUrl.length,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 12),
-        itemBuilder: (final context, final index) {
+        separatorBuilder: (_, __) => SizedBox(width: context.spacing),
+        itemBuilder: (context, index) {
           final isSelected = _selectedImageIndex == index;
           return GestureDetector(
             onTap: () => setState(() => _selectedImageIndex = index),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              width: 80,
+              width: context.wp(10),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(context.borderRadius(0.8)),
                 border: Border.all(
                   color: isSelected ? Colors.black : Colors.transparent,
                   width: 1.5,
                 ),
               ),
-              padding: const EdgeInsets.all(4),
+              padding: EdgeInsets.all(context.spacing / 3),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(context.borderRadius(0.6)),
                 child:
                     Image.network(product.imagesUrl[index], fit: BoxFit.cover),
               ),
@@ -218,56 +222,60 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   Widget _buildShowroomInfo(final BuildContext context, final Product product,
       {final bool isMobile = false}) {
     return Padding(
-      padding: EdgeInsets.all(isMobile ? 24 : 0),
+      padding: EdgeInsets.all(isMobile ? context.spacing : 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("ÖZEL TASARIM",
+          Text("ÖZEL TASARIM",
               style: TextStyle(
                   letterSpacing: 2,
-                  fontSize: 12,
+                  fontSize: context.captionSize,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary)),
-          const SizedBox(height: 12),
+          SizedBox(height: context.spacing),
           Text(
             product.name,
-            style: const TextStyle(
-                fontSize: 48,
+            style: TextStyle(
+                fontSize: context.h1Size,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -2,
                 height: 1),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: context.spacingLarge),
           Text(
             "EST. VALUE",
             style: TextStyle(
-                fontSize: 12,
+                fontSize: context.captionSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey[400]),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: context.spacing / 2),
           Text(
             "₺${product.price.toStringAsFixed(0)}",
-            style: const TextStyle(
-                fontSize: 32, fontWeight: FontWeight.w300, color: Colors.black),
+            style: TextStyle(
+                fontSize: context.priceSize,
+                fontWeight: FontWeight.w300,
+                color: Colors.black),
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: context.spacingLarge),
           const Divider(),
-          const SizedBox(height: 40),
-          const Text("ÜRÜN HİKAYESİ",
+          SizedBox(height: context.spacingLarge),
+          Text("ÜRÜN HİKAYESİ",
               style: TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 1)),
-          const SizedBox(height: 16),
+                  fontSize: context.h3Size,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1)),
+          SizedBox(height: context.spacing),
           Text(
             product.desc,
             style: TextStyle(
                 color: Colors.grey[700],
                 height: 1.8,
-                fontSize: 16,
+                fontSize: context.bodySize,
                 fontWeight: FontWeight.w300,
                 fontStyle: FontStyle.italic),
           ),
-          const SizedBox(height: 60),
+          SizedBox(height: context.spacingLarge * 2),
           _buildShowroomActions(),
         ],
       ),
@@ -283,7 +291,7 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
           Colors.white,
           Icons.location_on_outlined,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: context.spacing),
         _buildLargeButton(
           "UZMANA DANIŞ",
           Colors.white,
@@ -300,10 +308,10 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
       {final bool hasBorder = false}) {
     return Container(
       width: double.infinity,
-      height: 70,
+      height: context.hp(7),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(context.borderRadius()),
         border:
             hasBorder ? Border.all(color: Colors.black.withOpacity(0.1)) : null,
       ),
@@ -311,18 +319,18 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {},
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(context.borderRadius()),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: fg, size: 20),
-              const SizedBox(width: 12),
+              Icon(icon, color: fg, size: context.iconMedium),
+              SizedBox(width: context.spacing),
               Text(
                 text,
                 style: TextStyle(
                     color: fg,
                     fontWeight: FontWeight.w900,
-                    fontSize: 14,
+                    fontSize: context.bodySize,
                     letterSpacing: 1),
               ),
             ],

@@ -9,7 +9,7 @@ import '../../../../core/widgets/filter_sheet.dart';
 import '../../../../core/widgets/responsive_product_grid.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_filters_notifier.dart';
-import '../providers/search_providers.dart';
+import '../providers/search_notifier.dart';
 import '../providers/search_state.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
@@ -20,11 +20,8 @@ class SearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
-  // --- STATE & CONTROLLERS ---
   final TextEditingController _searchController = TextEditingController();
-  Timer? _debounce;
-  bool _showFilters = false;
-  String _selectedCategory = 'Tümü';
+  final ScrollController _scrollController = ScrollController();
   final List<String> _categories = [
     'Tümü',
     'Elektronik',
@@ -33,448 +30,227 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     'Kitap',
     'Spor'
   ];
-  bool _isInitialLoad = true;
-
-  // --- LIFECYCLE ---
-  @override
-  void initState() {
-    super.initState();
-    // Alternatif -- Microtask ile build tamamlandıktan sonra çalıştır
-    //Future.microtask(() {ref.read(searchProvider.notifier).loadProducts();});
-  }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _debounce?.cancel();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  // --- LOGIC METHODS (CONTROLLER) ---
-  void _loadInitialProducts() =>
-      WidgetsBinding.instance.addPostFrameCallback((final _) {
-        if (mounted) ref.read(searchProvider.notifier).loadProducts();
-      });
+  // --- LOGIC ---
+  void _onSearch(final String val) =>
+      ref.read(searchProvider.notifier).onQueryChanged(val);
 
-  void _filterByCategory(final String category) {
-    if (category == 'Tümü') {
-      // Artık sadece providers'ı değil, arama çubuğu dahil her şeyi sıfırlar.
-      _resetFilters();
-    } else {
-      ref.read(searchProvider.notifier).filterByCategory(category);
-      setState(() {
-        _selectedCategory = category;
-        _showFilters = category != 'Tümü' ||
-            ref.read(searchProvider).condition != null ||
-            ref.read(searchProvider).minPrice > 0 ||
-            ref.read(searchProvider).maxPrice < 50000;
-      });
-    }
-  }
-
-  void _applyFiltersFromDialog() {
-    final filters = ref.read(searchFiltersProvider);
-    ref.read(searchProvider.notifier).setCondition(filters.condition);
-    ref
-        .read(searchProvider.notifier)
-        .setPriceRange(filters.minPrice, filters.maxPrice);
-
-    // Filtrelerin uygulanıp uygulanmadığını kontrol et
-    setState(() {
-      _showFilters = _selectedCategory != 'Tümü' ||
-          filters.condition != null ||
-          filters.minPrice > 0 ||
-          filters.maxPrice < 50000;
-    });
-  }
-
-  void _resetFilters() {
+  void _resetAll() {
+    _searchController.clear();
     ref.read(searchProvider.notifier).resetFilters();
     ref.read(searchFiltersProvider.notifier).reset();
-    setState(() {
-      _selectedCategory = 'Tümü';
-      _showFilters = false;
-      _searchController.clear();
-    });
   }
 
-  void _onSearchChanged(final String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (mounted) ref.read(searchProvider.notifier).onQueryChanged(query);
+  @override
+  Widget build(final BuildContext context) {
+    // Reaktif Dinleme: Hata durumunda Snackbar göster (Industrial logic)
+    ref.listen<String?>(searchProvider.select((final s) => s.errorMessage),
+        (final prev, final next) {
+      if (next != null)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(next)));
     });
+
+    final searchState = ref.watch(searchProvider);
+    final isMobile = context.isMobile;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF1F5F9),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // 1. SHOWROOM APPBAR (Creative Layout)
+              _buildShowroomAppBar(context),
+
+              // 2. STICKY SEARCH BAR
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _StickySearchDelegate(
+                  child: _SearchAndFilterSection(
+                    isMobile: isMobile,
+                    searchController: _searchController,
+                    onSearchChanged: _onSearch,
+                    categories: _categories,
+                    selectedCategory: searchState.selectedCategory ?? 'Tümü',
+                    onCategorySelected: (final cat) =>
+                        ref.read(searchProvider.notifier).filterByCategory(cat),
+                  ),
+                ),
+              ),
+
+              // 3. AKTİF FİLTRELER BLOĞU
+              if (searchState.isFiltered)
+                SliverToBoxAdapter(
+                    child: _ActiveFiltersSection(onReset: _resetAll)),
+
+              // 4. NATIVE AD SENSE (Üst reklam)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: AdsenseBanner(height: 120, isNative: true),
+                ),
+              ),
+
+              // 5. ÜRÜN GRIDLERİ
+              if (searchState.isLoading && searchState.products.isEmpty)
+                _buildLoadingSliver()
+              else if (searchState.filteredProducts.isEmpty)
+                _buildEmptyStateSliver()
+              else
+                ..._buildProductGrids(context, searchState.filteredProducts),
+
+              // 6. BOTTOM BANNER AD
+              const SliverToBoxAdapter(child: AdsenseBanner(height: 250)),
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            ],
+          ),
+        ],
+      ),
+      floatingActionButton: isMobile
+          ? _FilterFAB(onPressed: () => _showFilterSheet(context))
+          : null,
+    );
   }
 
-  void _showFilterDialog() {
+  // --- WIDGETS ---
+
+  Widget _buildShowroomAppBar(final BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: context.responsive(mobile: 200.0, desktop: 350.0),
+      pinned: true,
+      stretch: true,
+      backgroundColor: const Color(0xFF0F172A),
+      flexibleSpace: FlexibleSpaceBar(
+        title: const Text('KOLEKSİYONU KEŞFET',
+            style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w900)),
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+                'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace',
+                fit: BoxFit.cover),
+            Container(
+                decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        colors: [Colors.black87, Colors.transparent]))),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildProductGrids(
+      final BuildContext context, final List<Product> products) {
+    final available = products.where((final p) => !p.isSold).toList();
+    final sold = products.where((final p) => p.isSold).toList();
+
+    return [
+      if (available.isNotEmpty) ...[
+        _buildSectionHeader(
+            'Mevcut Ürünler', available.length, const Color(0xFF10B981)),
+        ResponsiveProductSliverGrid(
+            products: available,
+            onProductTap: (final p) => context.push('/product/${p.id}')),
+      ],
+      if (sold.isNotEmpty) ...[
+        _buildSectionHeader('Satılmış Ürünler', sold.length, Colors.blueGrey),
+        ResponsiveProductSliverGrid(
+            products: sold,
+            onProductTap: (final p) => context.push('/product/${p.id}')),
+      ],
+    ];
+  }
+
+  Widget _buildSectionHeader(
+      final String title, final int count, final Color color) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
+        child: Row(
+          children: [
+            Container(
+                width: 4,
+                height: 20,
+                decoration: BoxDecoration(
+                    color: color, borderRadius: BorderRadius.circular(2))),
+            const SizedBox(width: 12),
+            Text(title,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Spacer(),
+            Chip(
+                label: Text('$count',
+                    style: const TextStyle(color: Colors.white, fontSize: 10)),
+                backgroundColor: color),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingSliver() => const SliverFillRemaining(
+      child: Center(child: CircularProgressIndicator()));
+
+  Widget _buildEmptyStateSliver() =>
+      const SliverFillRemaining(child: Center(child: Text('Sonuç Bulunamadı')));
+
+  void _showFilterSheet(final BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
       builder: (final context) => FilterSheet(
-        onApplyFilters: _applyFiltersFromDialog,
-        onResetFilters: _resetFilters,
+        onApplyFilters: () {
+          final f = ref.read(searchFiltersProvider);
+          ref.read(searchProvider.notifier).setCondition(f.condition);
+          ref
+              .read(searchProvider.notifier)
+              .setPriceRange(f.minPrice, f.maxPrice);
+        },
+        onResetFilters: _resetAll,
       ),
     );
   }
+}
 
-  // --- MAIN BUILD METHOD ---
+// --- SUB-WIDGETS & DELEGATES ---
+
+class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _StickySearchDelegate({required this.child});
+
   @override
-  Widget build(final BuildContext context) {
-    final searchState = ref.watch(searchProvider);
-    final isMobile = context.isMobile; // Extension kullanımı
+  Widget build(final context, final shrinkOffset, final overlapsContent) =>
+      Container(color: Colors.white, child: child);
 
-    final query = GoRouterState.of(context).uri.queryParameters['q'];
-    if (query != null && _isInitialLoad) {
-      _searchController.text = query;
-      // Widget build bittikten sonra aramayı başlat
-      WidgetsBinding.instance.addPostFrameCallback((final _) {
-        ref.read(searchProvider.notifier).onQueryChanged(query);
-      });
-    }
+  @override
+  double get maxExtent => 160;
 
-    // İlk build'de ürünleri yükle
-    if (_isInitialLoad && !searchState.isLoading) {
-      _isInitialLoad = false;
-      _loadInitialProducts();
-    }
+  @override
+  double get minExtent => 160;
 
-    // Yüklenecek ürün listesini belirle
-    final products = searchState.filteredProducts.isNotEmpty
-        ? searchState.filteredProducts
-        : searchState.products;
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      body: CustomScrollView(
-        slivers: [
-          // --- DÜZELTME: YARATICI VE ANİMASYONLU APPBAR ---
-          const _CreativeAppBar(),
-          // --- DÜZELTME SONU ---
-
-          // 2. Arama ve Filtreler
-          SliverToBoxAdapter(
-            child: _SearchAndFilterSection(
-              isMobile: isMobile,
-              searchController: _searchController,
-              onSearchChanged: _onSearchChanged,
-              categories: _categories,
-              selectedCategory: _selectedCategory,
-              onCategorySelected: _filterByCategory,
-              onFiltersReset: _resetFilters,
-              onApplyFilters: _applyFiltersFromDialog,
-            ),
-          ),
-
-          // 3. Aktif Filtreler
-          if (_showFilters)
-            SliverToBoxAdapter(
-              child: _ActiveFiltersSection(
-                selectedCategory: _selectedCategory,
-                categories: _categories,
-                onCategoryFilterRemoved: () => _filterByCategory('Tümü'),
-                onFilterRemoved: (final String label) {
-                  if (label == searchState.condition) {
-                    ref.read(searchProvider.notifier).setCondition(null);
-                  } else if (label.startsWith('Min:')) {
-                    ref
-                        .read(searchProvider.notifier)
-                        .setPriceRange(0, searchState.maxPrice);
-                  } else if (label.startsWith('Max:')) {
-                    ref
-                        .read(searchProvider.notifier)
-                        .setPriceRange(searchState.minPrice, 50000);
-                  }
-                },
-              ),
-            ),
-
-          // --- 4. ÜRÜN GRID ---
-          if (searchState.isLoading)
-            _buildLoadingSliver(context)
-          else if (searchState.errorMessage != null)
-            _buildErrorSliver(context, searchState.errorMessage!)
-          else if (products.isEmpty)
-            _buildEmptyStateSliver(context, _resetFilters)
-          else
-            ..._buildProductGrids(context, products),
-
-          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
-        ],
-      ),
-
-      // 5. FAB
-      floatingActionButton:
-          isMobile ? _FilterFAB(onPressed: _showFilterDialog) : null,
-    );
-  }
-
-  Widget _buildLoadingSliver(final BuildContext context) {
-    return SliverFillRemaining(
-      hasScrollBody: false,
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const CircularProgressIndicator(
-            color: Colors.white,
-            strokeWidth: 3,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorSliver(final BuildContext context, final String message) {
-    return SliverFillRemaining(
-      hasScrollBody: false,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEF4444).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.error_outline_rounded,
-                  size: 64,
-                  color: Color(0xFFEF4444),
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Bir Hata Oluştu',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF64748B),
-                ),
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton.icon(
-                onPressed: _loadInitialProducts,
-                icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Tekrar Dene'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEF4444),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyStateSliver(
-      final BuildContext context, final VoidCallback onResetFilters) {
-    return SliverFillRemaining(
-      hasScrollBody: false,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF6366F1).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.search_off_rounded,
-                  size: 64,
-                  color: const Color(0xFF6366F1).withOpacity(0.5),
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Sonuç Bulunamadı',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Arama kriterlerinizi değiştirerek\ntekrar deneyebilirsiniz.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: const Color(0xFF64748B).withOpacity(0.8),
-                ),
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton.icon(
-                onPressed: onResetFilters,
-                icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Tüm Ürünleri Göster'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6366F1),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // --- _buildProductGrids Metodu ---
-  List<Widget> _buildProductGrids(
-      final BuildContext context, final List<Product> products) {
-    final availableProducts = products.where((final p) => !p.isSold).toList();
-    final soldProducts = products.where((final p) => p.isSold).toList();
-
-    final screenPadding = context.responsive(
-        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
-
-    final List<Widget> slivers = [];
-
-    // --- _buildProductGrids Metodu İçindeki Güncel Yapı ---
-
-// 1. MEVCUT ÜRÜNLER BLOĞU
-    if (availableProducts.isNotEmpty) {
-      slivers.add(
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: screenPadding.copyWith(bottom: 0, top: 0),
-            child: _buildSectionHeader('Mevcut Ürünler',
-                availableProducts.length, const Color(0xFF10B981)),
-          ),
-        ),
-      );
-      slivers.add(
-        ResponsiveProductSliverGrid(
-          products: availableProducts,
-          onProductTap: (final product) {
-            // ✅ BURAYI DEĞİŞTİRDİK: Mevcut ürüne tıklandığında detay sayfasına git
-            context.push('/product/${product.id}');
-          },
-        ),
-      );
-    }
-
-// 2. SATILMIŞ ÜRÜNLER BLOĞU
-    if (soldProducts.isNotEmpty) {
-      slivers.add(
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: screenPadding.copyWith(bottom: 0, top: 25.0),
-            child: _buildSectionHeader('Satılmış Ürünler', soldProducts.length,
-                const Color(0xFF64748B)),
-          ),
-        ),
-      );
-      slivers.add(
-        ResponsiveProductSliverGrid(
-          products: soldProducts,
-          onProductTap: (final product) {
-            // ✅ BURAYI DA DEĞİŞTİRDİK: Satılmış olsa bile detaylarını görsün
-            context.push('/product/${product.id}');
-          },
-        ),
-      );
-    }
-
-    // Alttaki boşluk
-    slivers
-        .add(SliverToBoxAdapter(child: SizedBox(height: screenPadding.bottom)));
-
-    return slivers;
-  }
-
-  // --- İç Helper Metot (_buildProductGrids'e ait) ---
-  Widget _buildSectionHeader(
-      final String title, final int count, final Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 4,
-          height: 24,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1E293B),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            count.toString(),
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-} // _SearchPageState sonu
-
-// ===================================================================
-// --- YENİ EKLENEN WIDGET ---
-// ===================================================================
+  @override
+  bool shouldRebuild(
+          covariant final SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
+}
 
 class _CreativeAppBar extends StatelessWidget {
   const _CreativeAppBar();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return SliverAppBar(
       expandedHeight: context.responsive(mobile: 180.0, desktop: 230.0),
       pinned: true,
@@ -590,7 +366,7 @@ class _SearchBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       height: isMobile ? 54 : 60,
       decoration: BoxDecoration(
@@ -658,14 +434,14 @@ class _CategoryChips extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return SizedBox(
       height: 42,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
+        separatorBuilder: (final _, final __) => const SizedBox(width: 8),
+        itemBuilder: (final context, final index) {
           final category = categories[index];
           final isSelected = selectedCategory == category;
 

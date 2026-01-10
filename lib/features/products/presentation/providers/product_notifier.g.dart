@@ -41,7 +41,7 @@ final class ProductNotifierProvider
   }
 }
 
-String _$productNotifierHash() => r'09031c34fe3e4c11a440f3de74585cd9ce234b88';
+String _$productNotifierHash() => r'c86929e4f79128138316f26535d1cf4dbf9c475f';
 
 abstract class _$ProductNotifier extends $Notifier<ProductState> {
   ProductState build();

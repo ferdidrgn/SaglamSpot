@@ -1,73 +1,58 @@
 import 'dart:async';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:saglamspot/core/common/base_notifier.dart';
-import '../../../products/domain/repositories/product_repository.dart';
-import '../../../products/domain/repositories/product_repository_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import 'search_state.dart';
 
-/// Search ve filter işlemlerini yöneten notifier
-/// Clean Architecture ve SOLID prensipleriyle tasarlanmış
-/// Performance optimized with debouncing
-class SearchNotifier extends BaseNotifier<SearchState> {
+part 'search_notifier.g.dart';
+
+@riverpod
+class SearchNotifier extends _$SearchNotifier with BaseResultHandler {
   Timer? _debounce;
-  late final ProductRepository _repository;
-
-  @override
-  SearchState initialState() => const SearchState();
-
-  @override
-  void reloadData() => loadProducts();
 
   @override
   SearchState build() {
-    _repository = ref.read(productRepositoryProvider);
-    loadProducts(); // Initial load
+    // Industrial: Build döngüsünü bozmadan ilk yüklemeyi başlat
+    Future.microtask(() => loadProducts());
     return const SearchState();
   }
 
   /// İlk ürün yükleme - filtresiz
   Future<void> loadProducts() async {
-    state = state.copyWith(isLoading: true);
-
-    await execute(
+    // execute metodu artık doğrudan veriyi döndürür
+    final products = await handleResult(
       () => ref.read(getProductsUseCaseProvider).call(),
-      onSuccess: (final products) {
-        state = state.copyWith(
-          products: products,
-          filteredProducts: products,
-          isLoading: false,
-          errorMessage: null,
-        );
-      },
+      operationTag: 'LoadSearchProducts',
     );
+
+    if (products != null)
+      state = state.copyWith(
+        products: products,
+        filteredProducts: products,
+        isLoading: false,
+        errorMessage: null,
+      );
   }
 
   /// Search query değiştiğinde - debounced
   void onQueryChanged(final String query) {
-    // Önceki timer'ı iptal et
     _debounce?.cancel();
-
-    // Yeni timer başlat
-    _debounce = Timer(
-      const Duration(milliseconds: 300),
-      () {
-        state = state.copyWith(query: query);
-        _applyFilters();
-      },
-    );
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      state = state.copyWith(query: query);
+      _applyFilters();
+    });
   }
 
   /// Kategori filtreleme
   void filterByCategory(final String category) {
-    state = state.copyWith(selectedCategory: category);
+    state =
+        state.copyWith(selectedCategory: category == 'Tümü' ? null : category);
     _applyFilters();
   }
 
   /// Durum filtreleme (Sıfır/İkinci El)
   void setCondition(final String? condition) {
-    // "Hepsi" seçilirse null yap
-    final normalizedCondition = condition == 'Hepsi' ? null : condition;
-    state = state.copyWith(condition: normalizedCondition);
+    state = state.copyWith(condition: condition == 'Hepsi' ? null : condition);
     _applyFilters();
   }
 
@@ -77,117 +62,60 @@ class SearchNotifier extends BaseNotifier<SearchState> {
     _applyFilters();
   }
 
-  /// Tüm filtreleri temizle ve initial state'e dön
+  /// Tüm filtreleri temizle
   Future<void> resetFilters() async {
-    // Debounce timer'ı iptal et
     _debounce?.cancel();
-
     state = const SearchState();
     await loadProducts();
   }
 
-  /// Tüm filtreleri uygula - CORE FILTER LOGIC
+  /// CORE FILTER LOGIC
   void _applyFilters() {
-    // Eğer hiç ürün yoksa filtreleme yapma
     if (state.products.isEmpty) {
       state = state.copyWith(filteredProducts: []);
       return;
     }
 
-    // Filtreleme işlemi
     final filtered = state.products.where((final product) {
-      // 1. Query filtreleme (isim, açıklama, kategori)
       final matchesQuery = _matchesQuery(product);
-
-      // 2. Kategori filtreleme
       final matchesCategory = _matchesCategory(product);
-
-      // 3. Durum filtreleme (Sıfır/İkinci El - Spot)
       final matchesCondition = _matchesCondition(product);
-
-      // 4. Fiyat aralığı filtreleme
       final matchesPrice = _matchesPrice(product);
 
-      // Tüm filtreler match etmeli
       return matchesQuery &&
           matchesCategory &&
           matchesCondition &&
           matchesPrice;
     }).toList();
 
-    // Sonuçları sırala (önce stokta olanlar, sonra fiyata göre)
+    // Endüstriyel Sıralama: Önce Stok, Sonra Fiyat
     filtered.sort((final a, final b) {
-      // Önce satılmış olanları en sona gönder
-      if (a.isSold != b.isSold) {
-        return a.isSold ? 1 : -1;
-      }
-      // Sonra fiyata göre sırala
+      if (a.isSold != b.isSold) return a.isSold ? 1 : -1;
       return a.price.compareTo(b.price);
     });
 
     state = state.copyWith(filteredProducts: filtered);
   }
 
-  /// Query match kontrolü
   bool _matchesQuery(final dynamic product) {
     if (state.query.isEmpty) return true;
-
-    final query = state.query.toLowerCase().trim();
-    final name = product.name.toLowerCase();
-    final desc = product.desc.toLowerCase();
-    final category = product.category.toLowerCase();
-
-    return name.contains(query) ||
-        desc.contains(query) ||
-        category.contains(query);
+    final q = state.query.toLowerCase().trim();
+    return product.name.toLowerCase().contains(q) ||
+        product.desc.toLowerCase().contains(q);
   }
 
-  /// Kategori match kontrolü
   bool _matchesCategory(final dynamic product) {
-    if (state.selectedCategory == null || state.selectedCategory == 'Tümü') {
-      return true;
-    }
+    if (state.selectedCategory == null) return true;
     return product.category == state.selectedCategory;
   }
 
-  /// Durum match kontrolü (Sıfır/İkinci El)
   bool _matchesCondition(final dynamic product) {
     if (state.condition == null) return true;
-
-    // "Sıfır" -> spot olmayan ürünler
-    if (state.condition == 'Sıfır') {
-      return !product.isSpotProduct;
-    }
-
-    // "İkinci El" -> spot ürünler
-    if (state.condition == 'İkinci El') {
-      return product.isSpotProduct;
-    }
-
-    return true;
+    return state.condition == 'Sıfır'
+        ? !product.isSpotProduct
+        : product.isSpotProduct;
   }
 
-  /// Fiyat aralığı match kontrolü
-  bool _matchesPrice(final dynamic product) {
-    return product.price >= state.minPrice && product.price <= state.maxPrice;
-  }
-
-  /// Aktif filter sayısını döndür
-  int getActiveFilterCount() {
-    int count = 0;
-
-    if (state.query.isNotEmpty) count++;
-    if (state.selectedCategory != null && state.selectedCategory != 'Tümü')
-      count++;
-    if (state.condition != null) count++;
-    if (state.minPrice > 0 || state.maxPrice < 50000) count++;
-
-    return count;
-  }
-
-  /// Sonuç sayısını döndür
-  int get resultCount => state.filteredProducts.length;
-
-  /// Filtre aktif mi?
-  bool get hasActiveFilters => getActiveFilterCount() > 0;
+  bool _matchesPrice(final dynamic product) =>
+      product.price >= state.minPrice && product.price <= state.maxPrice;
 }

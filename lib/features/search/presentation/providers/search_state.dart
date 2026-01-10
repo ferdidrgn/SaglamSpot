@@ -1,93 +1,70 @@
-import 'package:equatable/equatable.dart';
-import '../../../../core/common/base_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../products/domain/entites/product.dart';
 
-/// Search state - Immutable ve type-safe
-/// Equatable ile performance optimization
-class SearchState extends BaseState with EquatableMixin {
-  final List<Product> products;
-  final List<Product> filteredProducts;
-  final String query;
-  final String? selectedCategory;
-  final String? condition;
-  final double minPrice;
-  final double maxPrice;
+part 'search_state.freezed.dart';
 
-  const SearchState({
-    this.products = const [],
-    this.filteredProducts = const [],
-    this.query = '',
-    this.selectedCategory,
-    this.condition,
-    this.minPrice = 0,
-    this.maxPrice = 50000,
-    super.isLoading = false,
-    super.errorMessage,
-  });
-
-  @override
-  SearchState copyWith({
-    final List<Product>? products,
-    final List<Product>? filteredProducts,
-    final String? query,
+@freezed
+class SearchState with _$SearchState {
+  // 1. Tüm alanlar burada tanımlanır. Freezed bunları otomatik üretir.
+  const factory SearchState({
+    @Default([]) final List<Product> products,
+    @Default([]) final List<Product> filteredProducts,
+    @Default('') final String query,
     final String? selectedCategory,
     final String? condition,
-    final double? minPrice,
-    final double? maxPrice,
-    final bool? isLoading,
+    @Default(0.0) final double minPrice,
+    @Default(100000.0) final double maxPrice,
+    @Default(false) final bool isLoading,
     final String? errorMessage,
-  }) {
-    return SearchState(
-      products: products ?? this.products,
-      filteredProducts: filteredProducts ?? this.filteredProducts,
-      query: query ?? this.query,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
-      condition: condition ?? this.condition,
-      minPrice: minPrice ?? this.minPrice,
-      maxPrice: maxPrice ?? this.maxPrice,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-  }
+  }) = _SearchState;
 
-  /// Equatable props for performance
-  @override
-  List<Object?> get props => [
-        products,
-        filteredProducts,
-        query,
-        selectedCategory,
-        condition,
-        minPrice,
-        maxPrice,
-        isLoading,
-        errorMessage,
-      ];
+  // 2. KRİTİK: Bu satır varken yukarıdaki her şeyi manuel yazmana GEREK YOKTUR.
+  // Bu satır, factory içindeki alanların somut (concrete) karşılığını sağlar.
+  const SearchState._();
 
-  /// Computed properties
-  bool get hasResults => filteredProducts.isNotEmpty;
-
-  bool get isEmpty => filteredProducts.isEmpty && !isLoading;
-
-  bool get hasQuery => query.isNotEmpty;
-
-  bool get hasFilters =>
+  // 3. Yardımcı Metodlar (Bunlar hata vermez)
+  bool get isFiltered =>
+      query.isNotEmpty ||
       selectedCategory != null ||
       condition != null ||
       minPrice > 0 ||
-      maxPrice < 50000;
+      maxPrice < 100000;
 
   int get resultCount => filteredProducts.length;
 
-  int get totalCount => products.length;
+  @override
+  // TODO: implement condition
+  String? get condition => throw UnimplementedError();
 
-  /// Helper methods
-  bool get isFiltered => hasQuery || hasFilters;
+  @override
+  // TODO: implement errorMessage
+  String? get errorMessage => throw UnimplementedError();
 
-  String get statusMessage {
-    if (isLoading) return 'Yükleniyor...';
-    if (isEmpty && isFiltered) return 'Sonuç bulunamadı';
-    if (isEmpty) return 'Henüz ürün yok';
-    return '$resultCount ürün bulundu';
-  }
+  @override
+  // TODO: implement filteredProducts
+  List<Product> get filteredProducts => throw UnimplementedError();
+
+  @override
+  // TODO: implement isLoading
+  bool get isLoading => throw UnimplementedError();
+
+  @override
+  // TODO: implement maxPrice
+  double get maxPrice => throw UnimplementedError();
+
+  @override
+  // TODO: implement minPrice
+  double get minPrice => throw UnimplementedError();
+
+  @override
+  // TODO: implement products
+  List<Product> get products => throw UnimplementedError();
+
+  @override
+  // TODO: implement query
+  String get query => throw UnimplementedError();
+
+  @override
+  // TODO: implement selectedCategory
+  String? get selectedCategory => throw UnimplementedError();
 }

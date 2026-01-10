@@ -5,8 +5,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../domain/entites/product.dart';
-import '../providers/product_notifier.dart'; // .g.dart'tan gelen productProvider için
-import '../providers/product_provider.dart'; // .g.dart'tan gelen spotProductsProvider için
+import '../providers/product_notifier.dart';
+import '../providers/product_provider.dart';
 
 class SpotProductsPage extends ConsumerStatefulWidget {
   const SpotProductsPage({super.key});
@@ -15,9 +15,11 @@ class SpotProductsPage extends ConsumerStatefulWidget {
   ConsumerState<SpotProductsPage> createState() => _SpotProductsPageState();
 }
 
-class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
+class _SpotProductsPageState extends ConsumerState<SpotProductsPage>
+    with SingleTickerProviderStateMixin {
   String _sortBy = 'newest';
   int _hoveredIndex = -1;
+  late AnimationController _fadeController;
 
   final List<String> _sortOptions = [
     'newest',
@@ -28,11 +30,19 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   @override
   void initState() {
     super.initState();
-    // Riverpod 3.0.3'te loadProducts build içinde microtask ile tetikleniyorsa
-    // buradaki çağrıya gerek kalmayabilir, ancak manuel tetikleme garantidir.
+    _fadeController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+    _fadeController.forward();
+
     Future.microtask(() {
       ref.read(productProvider.notifier).loadProducts();
     });
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
   }
 
   List<Product> _sortProducts(final List<Product> products) {
@@ -52,39 +62,37 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
   @override
   Widget build(final BuildContext context) {
-    // Generator tarafından üretilen fonksiyonel provider'ları izle
     final spotProducts = ref.watch(spotProductsProvider);
     final productState = ref.watch(productProvider);
     final sortedProducts = _sortProducts(spotProducts);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          _buildHeader(context),
-          _buildSortBar(context, sortedProducts.length),
-          _buildSpotlightBanner(context),
-
-          // Durum Yönetimi (Loading, Error, Empty)
-          if (productState.isLoading && sortedProducts.isEmpty)
-            const SliverToBoxAdapter(child: _LoadingWidget())
-          else if (productState.errorMessage != null)
-            SliverToBoxAdapter(
-                child: _ErrorWidget(message: productState.errorMessage!))
-          else if (sortedProducts.isEmpty)
-            const SliverToBoxAdapter(child: _EmptyWidget())
-          else
-            _buildProductsGrid(context, sortedProducts),
-
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
-        ],
+    return FadeTransition(
+      opacity: _fadeController,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            _buildHeader(context),
+            _buildSortBar(context, sortedProducts.length),
+            _buildSpotlightBanner(context),
+            if (productState.isLoading && sortedProducts.isEmpty)
+              const SliverToBoxAdapter(child: _LoadingWidget())
+            else if (productState.errorMessage != null)
+              SliverToBoxAdapter(
+                  child: _ErrorWidget(message: productState.errorMessage!))
+            else if (sortedProducts.isEmpty)
+              const SliverToBoxAdapter(child: _EmptyWidget())
+            else
+              _buildProductsGrid(context, sortedProducts),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
+          ],
+        ),
       ),
     );
   }
 
-  // --- HEADER (ResponsiveUtils Kullanımı) ---
   SliverToBoxAdapter _buildHeader(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -116,56 +124,51 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  Widget _buildMobileHeaderContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildHeaderBadge(),
-        const SizedBox(height: 20),
-        const _HeaderText(fontSize: 32),
-        const SizedBox(height: 24),
-        const _CountdownTimer(),
-      ],
-    );
-  }
+  Widget _buildMobileHeaderContent() => const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _HeaderBadge(),
+          SizedBox(height: 20),
+          _HeaderText(fontSize: 32),
+          SizedBox(height: 24),
+          _CountdownTimer(),
+        ],
+      );
 
-  Widget _buildDesktopHeaderContent() {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeaderBadge(),
-              const SizedBox(height: 20),
-              const _HeaderText(fontSize: 48),
-              const SizedBox(height: 32),
-              const _CountdownTimer(),
-            ],
+  Widget _buildDesktopHeaderContent() => const Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _HeaderBadge(),
+                SizedBox(height: 20),
+                _HeaderText(fontSize: 48),
+                SizedBox(height: 32),
+                _CountdownTimer(),
+              ],
+            ),
           ),
-        ),
-        const _HeaderIcon(),
-      ],
-    );
-  }
+          _HeaderIcon(),
+        ],
+      );
 
-  // --- PRODUCT GRID ---
   SliverPadding _buildProductsGrid(
       final BuildContext context, final List<Product> products) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(4), // ResponsiveUtils'den geliyor
+          crossAxisCount: context.gridColumns(4),
           childAspectRatio: context.responsive(mobile: 0.7, desktop: 0.75),
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
         ),
         delegate: SliverChildBuilderDelegate(
-          (final context, final index) => MouseRegion(
-            onEnter: (final _) => setState(() => _hoveredIndex = index),
-            onExit: (final _) => setState(() => _hoveredIndex = -1),
-            cursor: SystemMouseCursors.click,
+          (final context, final index) => GestureDetector(
+            onTapDown: (final _) => setState(() => _hoveredIndex = index),
+            onTapUp: (final _) => setState(() => _hoveredIndex = -1),
+            onTapCancel: () => setState(() => _hoveredIndex = -1),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
@@ -176,25 +179,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           ),
           childCount: products.length,
         ),
-      ),
-    );
-  }
-
-  // Yardımcı Widget'lar
-  Widget _buildHeaderBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-          color: Colors.white24, borderRadius: BorderRadius.circular(20)),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.local_fire_department, color: Colors.white, size: 20),
-          SizedBox(width: 8),
-          Text('SPOT ÜRÜNLER',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ],
       ),
     );
   }
@@ -260,9 +244,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             Icon(Icons.lightbulb_outline, color: Colors.amber),
             SizedBox(width: 15),
             Expanded(
-                child: Text("Spot ürünler hızla tükenir, fırsatı kaçırma!",
-                    style: TextStyle(
-                        color: Colors.amber, fontWeight: FontWeight.bold))),
+              child: Text(
+                "Spot ürünler hızla tükenir, fırsatı kaçırma!",
+                style:
+                    TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+              ),
+            ),
           ],
         ),
       ),
@@ -270,13 +257,39 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   String _getSortLabel(final String opt) {
-    if (opt == 'price_low') return 'En Ucuz';
-    if (opt == 'price_high') return 'En Pahalı';
-    return 'En Yeni';
+    switch (opt) {
+      case 'price_low':
+        return 'En Ucuz';
+      case 'price_high':
+        return 'En Pahalı';
+      default:
+        return 'En Yeni';
+    }
   }
 }
 
-// --- Alt Bileşenler (Okunabilirlik için) ---
+class _HeaderBadge extends StatelessWidget {
+  const _HeaderBadge();
+
+  @override
+  Widget build(final BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+          color: Colors.white24, borderRadius: BorderRadius.circular(20)),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.local_fire_department, color: Colors.white, size: 20),
+          SizedBox(width: 8),
+          Text('SPOT ÜRÜNLER',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
 
 class _HeaderText extends StatelessWidget {
   final double fontSize;
@@ -284,12 +297,14 @@ class _HeaderText extends StatelessWidget {
   const _HeaderText({required this.fontSize});
 
   @override
-  Widget build(final BuildContext context) => Text('Kaçırılmayacak\nFırsatlar',
-      style: TextStyle(
-          color: Colors.white,
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-          height: 1.1));
+  Widget build(final BuildContext context) => Text(
+        'Kaçırılmayacak\nFırsatlar',
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            height: 1.1),
+      );
 }
 
 class _CountdownTimer extends StatelessWidget {
@@ -318,11 +333,12 @@ class _HeaderIcon extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Container(
-      width: 150,
-      height: 150,
-      decoration:
-          const BoxDecoration(color: Colors.white10, shape: BoxShape.circle),
-      child: const Icon(Icons.percent, color: Colors.white24, size: 80));
+        width: 150,
+        height: 150,
+        decoration:
+            const BoxDecoration(color: Colors.white10, shape: BoxShape.circle),
+        child: const Icon(Icons.percent, color: Colors.white24, size: 80),
+      );
 }
 
 class _LoadingWidget extends StatelessWidget {
@@ -342,7 +358,8 @@ class _ErrorWidget extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Center(
-      child: Padding(padding: const EdgeInsets.all(50), child: Text(message)));
+        child: Padding(padding: const EdgeInsets.all(50), child: Text(message)),
+      );
 }
 
 class _EmptyWidget extends StatelessWidget {
