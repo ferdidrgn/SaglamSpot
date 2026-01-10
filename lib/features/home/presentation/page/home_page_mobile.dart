@@ -1,202 +1,328 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/util/responsive_utils.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_notifier.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  // Slate rengi için modern bir gri tonu tanımlıyoruz
+  static const Color slateColor = Color(0xFF64748B);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((final _) {
+      ref.read(productProvider.notifier).loadProducts();
+    });
+  }
+
+  @override
+  Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
     final products = productState.dataList ?? [];
 
-    // Extension getter'larını kullanarak listeleri ayırıyoruz
-    final available = products.available;
-    final sold = products.sold;
+    final available = products.where((final p) => !p.isSold).toList();
+    final sold = products.where((final p) => p.isSold).toList();
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Ürün Yönetimi",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            tabs: [Tab(text: "Stokta"), Tab(text: "Satılanlar")],
-          ),
-          actions: [
-            IconButton(
-                onPressed: () => ref.read(authProvider.notifier).signOut(),
-                icon: const Icon(Icons.logout))
-          ],
-        ),
-        body: productState.isLoading && products.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : Builder(builder: (final context) {
-                if (productState.errorMessage != null && products.isEmpty) {
-                  return Center(child: Text(productState.errorMessage!));
-                }
-                return TabBarView(
-                  children: [
-                    _buildList(context, ref, available),
-                    _buildList(context, ref, sold),
-                  ],
-                );
-              }),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push('/add-product'),
-          icon: const Icon(Icons.add_a_photo_rounded),
-          label: const Text("Yeni Ürün Ekle"),
-          backgroundColor: const Color(0xFF6366F1),
-        ),
+        backgroundColor: const Color(0xFFF8FAFC),
+        // Değişkenleri metodlara parametre olarak gönderiyoruz
+        appBar: _buildAppBar(context, ref, available.length, sold.length),
+        body: productState.isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFF6366F1)))
+            : TabBarView(
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  _buildModernGrid(available, "Stokta ürün bulunmuyor"),
+                  _buildModernGrid(sold, "Satılmış ürün bulunmuyor"),
+                ],
+              ),
+        floatingActionButton: _buildFAB(context),
       ),
     );
   }
 
-  Widget _buildList(final BuildContext context, final WidgetRef ref,
-      final List<Product> products) {
-    if (products.isEmpty) {
-      return const Center(child: Text("Görüntülenecek ürün bulunamadı."));
-    }
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: products.length,
-      separatorBuilder: (final _, final __) => const SizedBox(height: 12),
-      itemBuilder: (final context, final index) {
-        final product = products[index];
-        return Card(
-          elevation: 2,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(8),
-            leading: _buildProductImage(product),
-            title: Text(product.name,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text("${product.price} TL",
-                style: const TextStyle(
-                    color: Colors.green, fontWeight: FontWeight.w600)),
-            trailing: const Icon(Icons.more_vert),
-            onTap: () => _showAdminActions(context, ref, product),
-          ),
-        );
-      },
-    );
-  }
-
-  // Çoklu görsel desteği için önizleme kutusu
-  Widget _buildProductImage(final Product product) {
-    final hasImage = product.imagesUrl.isNotEmpty;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Stack(
+  PreferredSizeWidget _buildAppBar(final BuildContext context,
+      final WidgetRef ref, final int availableCount, final int soldCount) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.white,
+      title: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 60,
-            height: 60,
-            color: Colors.grey[200],
-            child: hasImage
-                ? Image.network(
-                    product.imagesUrl.first, // Listenin ilk elemanını alıyoruz
-                    fit: BoxFit.cover,
-                    errorBuilder:
-                        (final context, final error, final stackTrace) =>
-                            const Icon(Icons.broken_image),
-                  )
-                : const Icon(Icons.image_not_supported),
+          Text("Yönetici Paneli",
+              style: TextStyle(
+                  color: Color(0xFF1E293B),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 24)),
+          Text("Sağlam Spot Stok Yönetimi",
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400)),
+        ],
+      ),
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 16),
+          decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.1), shape: BoxShape.circle),
+          child: IconButton(
+            onPressed: () => _showLogoutDialog(context, ref),
+            icon: const Icon(Icons.power_settings_new_rounded,
+                color: Colors.redAccent),
           ),
-          if (product.imagesUrl.length > 1)
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: const BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(4)),
-                ),
-                child: Text(
-                  "+${product.imagesUrl.length - 1}",
-                  style: const TextStyle(color: Colors.white, fontSize: 10),
-                ),
-              ),
-            ),
+        )
+      ],
+      bottom: TabBar(
+        labelColor: const Color(0xFF6366F1),
+        unselectedLabelColor: slateColor, // Hata giderildi
+        indicator: const UnderlineTabIndicator(
+          borderSide: BorderSide(width: 3, color: Color(0xFF6366F1)),
+          insets: EdgeInsets.symmetric(horizontal: 40),
+        ),
+        tabs: [
+          Tab(child: _buildTabLabel("Aktif Stok", availableCount)),
+          Tab(child: _buildTabLabel("Satılanlar", soldCount)),
         ],
       ),
     );
   }
 
-  void _showAdminActions(final BuildContext context, final WidgetRef ref,
-          final Product product) =>
-      showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-        builder: (final context) => SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.delete_forever, color: Colors.red),
-                title: const Text("Sistemden Sil",
-                    style: TextStyle(color: Colors.red)),
-                onTap: () {
-                  Navigator.pop(context);
-                  _confirmDelete(context, ref, product);
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                    product.isSold ? Icons.undo : Icons.check_circle_outline,
-                    color: Colors.orange),
-                title:
-                    Text(product.isSold ? "Stoka Geri Al" : "Satıldı İşaretle"),
-                onTap: () {
-                  final updated = product.copyWith(isSold: !product.isSold);
-                  ref.read(productProvider.notifier).updateProduct(updated);
-                  Navigator.pop(context);
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.delete_forever, color: Colors.red),
-                title: const Text("Sistemden Sil",
-                    style: TextStyle(color: Colors.red)),
-                onTap: () {
-                  Navigator.pop(context);
-                  _confirmDelete(context, ref, product);
-                },
-              ),
-            ],
-          ),
-        ),
-      );
+  Widget _buildTabLabel(final String label, final int count) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+              color: slateColor.withOpacity(0.1), // Hata giderildi
+              borderRadius: BorderRadius.circular(10)),
+          child: Text(count.toString(), style: const TextStyle(fontSize: 10)),
+        )
+      ],
+    );
+  }
 
-  void _confirmDelete(final BuildContext context, final WidgetRef ref,
-          final Product product) =>
-      showDialog(
-        context: context,
-        builder: (final context) => AlertDialog(
-          title: const Text("Ürünü Sil"),
-          content: const Text("Bu işlem geri alınamaz. Emin misiniz?"),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Vazgeç")),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: () {
-                // Artık notifier tüm product nesnesini bekliyor
-                ref.read(productProvider.notifier).deleteProduct(product);
-                Navigator.pop(context);
-              },
-              child: const Text("Sil", style: TextStyle(color: Colors.white)),
-            ),
+  Widget _buildModernGrid(final List<Product> products, final String emptyMsg) {
+    if (products.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.inventory_2_outlined,
+                size: 64, color: slateColor.withOpacity(0.2)),
+            // Hata giderildi
+            const SizedBox(height: 16),
+            Text(emptyMsg,
+                style: const TextStyle(
+                    color: slateColor, fontWeight: FontWeight.w500)),
+            // Hata giderildi
           ],
         ),
       );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(20),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: context.gridColumns(2),
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: products.length,
+      itemBuilder: (final context, final index) =>
+          _AdminProductCard(product: products[index]),
+    );
+  }
+
+  Widget _buildFAB(final BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () => context.push('/add-product'),
+      backgroundColor: const Color(0xFF6366F1),
+      elevation: 4,
+      icon: const Icon(Icons.add_photo_alternate_outlined, color: Colors.white),
+      label: const Text("Yeni Ürün Ekle",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+    );
+  }
+
+  void _showLogoutDialog(final BuildContext context, final WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (final context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text("Çıkış Yap"),
+        content: const Text("Oturumu kapatmak istediğinize emin misiniz?"),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Vazgeç")),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10))),
+            onPressed: () {
+              ref.read(authProvider.notifier).signOut();
+              context.go('/login');
+            },
+            child: const Text("Çıkış", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AdminProductCard extends ConsumerWidget {
+  final Product product;
+
+  const _AdminProductCard({required this.product});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 20,
+              offset: const Offset(0, 10))
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(24)),
+                    image: DecorationImage(
+                      image: NetworkImage(product.imagesUrl.isNotEmpty
+                          ? product.imagesUrl.first
+                          : "https://via.placeholder.com/300"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: product.isSold ? Colors.orange : Colors.green,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(product.isSold ? "SATILDI" : "STOKTA",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF1E293B))),
+                const SizedBox(height: 4),
+                Text("${product.price} TL",
+                    style: const TextStyle(
+                        color: Color(0xFF6366F1),
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16)),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _actionBtn(Icons.edit_note_rounded, Colors.blue, () {}),
+                _actionBtn(
+                    product.isSold
+                        ? Icons.replay_circle_filled_rounded
+                        : Icons.check_circle_rounded,
+                    product.isSold ? Colors.orange : Colors.green, () {
+                  final updated = product.copyWith(isSold: !product.isSold);
+                  ref.read(productProvider.notifier).updateProduct(updated);
+                }),
+                _actionBtn(Icons.delete_forever_rounded, Colors.redAccent, () {
+                  _showDeleteConfirm(context, ref);
+                }),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _actionBtn(
+      final IconData icon, final Color color, final VoidCallback onTap) {
+    return IconButton(
+      onPressed: onTap,
+      icon: Icon(icon, color: color, size: 22),
+      visualDensity: VisualDensity.compact,
+    );
+  }
+
+  void _showDeleteConfirm(final BuildContext context, final WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (final context) => AlertDialog(
+        title: const Text("Ürünü Sil"),
+        content:
+            Text("${product.name} sistemden tamamen silinecek. Emin misiniz?"),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Vazgeç")),
+          TextButton(
+              onPressed: () {
+                ref.read(productProvider.notifier).deleteProduct(product);
+                Navigator.pop(context);
+              },
+              child:
+                  const Text("Evet, Sil", style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+  }
 }

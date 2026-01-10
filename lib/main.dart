@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/config/app_router.dart';
 import 'core/config/web_config.dart';
 import 'core/constants/app_constants.dart';
@@ -16,6 +17,7 @@ Future<void> main() async {
   // 🌐 Web URL stratejisi (# işaretini kaldırır)
   if (PlatformChecker.isWeb) usePathUrlStrategy();
 
+  await MobileAds.instance.initialize();
   await _initializeFirebase();
   runApp(const ProviderScope(child: MyApp()));
 }
