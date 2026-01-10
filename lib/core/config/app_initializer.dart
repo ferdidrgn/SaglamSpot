@@ -8,18 +8,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../services/app_check_service.dart';
-import '../services/fcm_manager_service.dart';
 import '../util/platform_checker.dart';
 import 'firebase_options.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(
-        final RemoteMessage message) async =>
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    final RemoteMessage message) async {
+  // Arka plan bildirimleri için Firebase'i başlat
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 
 abstract final class AppInitializer {
   static Future<void> init() async {
-    // 1. Flutter bindings başlatılması (En önce bu gelmeli)
+    // 1. Flutter bindings başlatılması
     WidgetsFlutterBinding.ensureInitialized();
 
     // 🌐 Web URL stratejisi (# işaretini kaldırır)
@@ -30,38 +31,42 @@ abstract final class AppInitializer {
     // ama Secure Storage'da bu satırı siliyoruz veya sadece log basıyoruz.
     debugPrint('🔐 Güvenli depolama hazır.');
 
-    // 🔥 Firebase Temel Kurulum
+    // 🔥 Firebase Temel Kurulum (Artık her platform için ortak)
     await _initFirebase();
+
+    // 📢 Google Mobile Ads Başlatma
     await MobileAds.instance.initialize();
 
     // 🛡️ Güvenlik ve Hata Takibi (Firebase bağımlı servisler)
     if (Firebase.apps.isNotEmpty) {
-      await AppCheckService.init();
-      _setupCrashlytics();
+      await AppCheckService.init(); // App Check (Hacker koruması)
+      // Crashlytics (Hata raporlama - Sadece Mobil)
+      if (!kIsWeb) _setupCrashlytics();
     }
 
     // ☁️ Bildirim Yönetimi
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    if (!PlatformChecker.isWeb) await FCMManager.instance.init();
+    //FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    //if (!PlatformChecker.isWeb) await FCMManager.instance.init();
 
-    // 📱 Sistem Arayüzü (StatusBar vb.)
+    // 📱 Sistem Arayüzü Ayarları
     _configureSystemUI();
+    debugPrint('🚀 Sağlam Spot Sistemleri Hazır.');
   }
 
   static Future<void> _initFirebase() async {
     try {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
-      ).timeout(const Duration(seconds: 8));
+      ).timeout(const Duration(seconds: 10));
+      debugPrint('🔥 Firebase başarıyla bağlandı.');
     } catch (e) {
-      debugPrint('🔥 Firebase init hatası: $e');
+      debugPrint('🔥 Firebase başlatma hatası: $e');
     }
   }
 
   static void _setupCrashlytics() {
-    if (kIsWeb) return;
-
-    FlutterError.onError = (errorDetails) {
+    // Web'de Crashlytics desteklenmez, bu yüzden kontrol ekliyoruz
+    FlutterError.onError = (final errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
 
@@ -75,8 +80,10 @@ abstract final class AppInitializer {
     if (!PlatformChecker.isWeb) {
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        // Koyu ikonlar daha okunaklıdır
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ));
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
