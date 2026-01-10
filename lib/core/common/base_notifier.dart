@@ -1,70 +1,66 @@
+import 'dart:developer' as dev;
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../errors/failures.dart';
 import 'base_state.dart';
 
-/// Sayfa kapansa bile state tutulur (cache gibi)
-/// Riverpod 3+ Notifier sınıfını kullanır
-abstract class BaseNotifier<T extends BaseState> extends Notifier<T> {
-  @override
-  T build() {
-    ref.onDispose(onDispose);
-    return initialState();
-  }
-
-  T initialState();
-
-  // Alt sınıfların temizlik yapması için opsiyonel metod
-  void onDispose() {}
-
-  /// API çağrılarını wrap eden ana metod
-  Future<void> execute<R>(
+/// [BaseNotifierActionHandler], Notifier sınıflarına asenkron operasyon yönetimi yeteneği kazandırır.
+/// 'on Notifier<T>' kısıtlaması, Riverpod 3 lifecycle metodlarına erişim sağlar.
+mixin BaseNotifierActionHandler<T extends BaseState> on Notifier<T> {
+  /// [execute], verilen [operation]'ı güvenli bir şekilde yürütür.
+  /// Industrial: 'operationTag' ile loglama ve hata takibi kolaylaştırılır.
+  Future<R?> execute<R>(
     final Future<Either<Failure, R>> Function() operation, {
-    final Function(R)? onSuccess,
+    final String? operationTag,
     final String? customErrorMessage,
   }) async {
+    final tag = operationTag ?? 'Operation';
+
     try {
       state = state.copyWith(isLoading: true, errorMessage: null) as T;
 
+      dev.log('Executing $tag...', name: 'BaseActionHandler');
       final result = await operation();
-      result.fold(
+
+      return result.fold(
         (final failure) {
-          final message = _mapFailureToMessage(failure, customErrorMessage);
-          setErrorState(message);
+          final error = _mapFailureToMessage(failure, customErrorMessage);
+
+          dev.log('Error in $tag: $error',
+              name: 'BaseActionHandler', error: failure);
+
+          state = state.copyWith(isLoading: false, errorMessage: error) as T;
+          return null;
         },
         (final success) {
-          try {
-            onSuccess?.call(success);
-            state = state.copyWith(isLoading: false, errorMessage: null) as T;
-          } catch (e, s) {
-            setErrorState("Veri işlenirken hata oluştu: $e");
-          }
+          dev.log('$tag completed successfully.', name: 'BaseActionHandler');
+          state = state.copyWith(isLoading: false, errorMessage: null) as T;
+          return success;
         },
       );
-    } catch (e, s) {
-      setErrorState('Beklenmeyen bir hata oluştu: ${e.toString()}');
+    } catch (e, stackTrace) {
+      dev.log('Unexpected Error in $tag',
+          name: 'BaseActionHandler', error: e, stackTrace: stackTrace);
+
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Kritik bir hata oluştu. Lütfen teknik ekibe bildirin.',
+      ) as T;
+      return null;
     }
   }
 
+  /// Failure nesnesini kullanıcı dostu metinlere dönüştürür.
   String _mapFailureToMessage(final Failure failure, final String? custom) {
     if (custom != null) return custom;
 
+    // RuntimeType kontrolü ile endüstriyel hata eşleştirme
     return switch (failure.runtimeType.toString()) {
       'NetworkFailure' => 'Bağlantı hatası. Lütfen internetinizi kontrol edin.',
       'ServerFailure' => 'Sunucu hatası. Lütfen daha sonra tekrar deneyin.',
       'CacheFailure' => 'Önbellek hatası.',
-      _ => failure.message ?? 'Bir hata oluştu',
+      _ => failure.message,
     };
-  }
-
-  void setLoadingState(final bool loading) =>
-      state = state.copyWith(isLoading: loading) as T;
-
-  void setErrorState(final String message) =>
-      state = state.copyWith(errorMessage: message, isLoading: false) as T;
-
-  void clearErrorState() {
-    if (state.errorMessage != null)
-      state = state.copyWith(errorMessage: null) as T;
   }
 }
