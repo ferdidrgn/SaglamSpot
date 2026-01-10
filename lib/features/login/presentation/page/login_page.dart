@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/ad_mobile_banner.dart'; // Senin oluşturduğun Banner Widget
+import '../../../../core/widgets/ad_native_widget.dart'; // Senin oluşturduğun Native Widget
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -33,7 +35,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(final BuildContext context) {
     final authState = ref.watch(authProvider);
 
-    // Giriş başarılı olduğunda otomatik yönlendirme yapıyoruz
     ref.listen<AsyncValue<User?>>(authProvider, (final previous, final next) {
       next.whenOrNull(
         data: (final user) {
@@ -44,42 +45,63 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.lock_person_rounded,
-                  size: 80, color: Color(0xFF6366F1)),
-              const SizedBox(height: 24),
-              const Text("Sağlam Spotçu",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900)),
-              const Text("Yönetici Paneli Girişi",
-                  style: TextStyle(color: Colors.white60, fontSize: 16)),
-              const SizedBox(height: 48),
-              _buildInput(
-                controller: _emailController,
-                label: "E-posta",
-                icon: Icons.alternate_email_rounded,
-                keyboardType: TextInputType.emailAddress,
+      body: Column(
+        children: [
+          // --- SAYFA BAŞI REKLAM (BANNER) ---
+          const SafeArea(child: AdBannerWidget()),
+
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.lock_person_rounded,
+                        size: 80, color: Color(0xFF6366F1)),
+                    const SizedBox(height: 24),
+                    const Text("Sağlam Spotçu",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900)),
+                    const Text("Yönetici Paneli Girişi",
+                        style: TextStyle(color: Colors.white60, fontSize: 16)),
+                    const SizedBox(height: 32),
+
+                    // Giriş alanları
+                    _buildInput(
+                      controller: _emailController,
+                      label: "E-posta",
+                      icon: Icons.alternate_email_rounded,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildInput(
+                      controller: _passController,
+                      label: "Şifre",
+                      icon: Icons.password_rounded,
+                      isObscure: true,
+                    ),
+
+                    // --- FORM ORTASI REKLAM (NATIVE) ---
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: AdNativeWidget(), // Şık bir yerel reklam
+                    ),
+
+                    _buildSubmitButton(authState),
+                    _buildErrorMessage(authState),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              _buildInput(
-                controller: _passController,
-                label: "Şifre",
-                icon: Icons.password_rounded,
-                isObscure: true,
-              ),
-              const SizedBox(height: 32),
-              _buildSubmitButton(authState),
-              _buildErrorMessage(authState),
-            ],
+            ),
           ),
-        ),
+
+          // --- SAYFA SONU REKLAM (BANNER) ---
+          const AdBannerWidget(),
+        ],
       ),
     );
   }
@@ -92,7 +114,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         onPressed: authState.isLoading
             ? null
             : () {
-                FocusScope.of(context).unfocus(); // Klavyeyi kapat
+                FocusScope.of(context).unfocus();
                 ref.read(authProvider.notifier).signIn(
                       _emailController.text,
                       _passController.text,
