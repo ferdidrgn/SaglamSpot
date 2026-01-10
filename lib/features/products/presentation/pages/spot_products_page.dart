@@ -5,7 +5,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../domain/entites/product.dart';
-import '../providers/product_provider.dart';
+import '../providers/product_notifier.dart'; // .g.dart'tan gelen productProvider için
+import '../providers/product_provider.dart'; // .g.dart'tan gelen spotProductsProvider için
 
 class SpotProductsPage extends ConsumerStatefulWidget {
   const SpotProductsPage({super.key});
@@ -17,17 +18,19 @@ class SpotProductsPage extends ConsumerStatefulWidget {
 class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   String _sortBy = 'newest';
   int _hoveredIndex = -1;
+
   final List<String> _sortOptions = [
     'newest',
     'price_low',
     'price_high',
-    'discount'
   ];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((final _) {
+    // Riverpod 3.0.3'te loadProducts build içinde microtask ile tetikleniyorsa
+    // buradaki çağrıya gerek kalmayabilir, ancak manuel tetikleme garantidir.
+    Future.microtask(() {
       ref.read(productProvider.notifier).loadProducts();
     });
   }
@@ -41,9 +44,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       case 'price_high':
         list.sort((final a, final b) => b.price.compareTo(a.price));
         break;
-      /*case 'discount':
-        list.sort((a, b) => (b.discount ?? 0).compareTo(a.discount ?? 0));
-        break;*/
       default:
         list.sort((final a, final b) => b.createdAt.compareTo(a.createdAt));
     }
@@ -52,6 +52,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
   @override
   Widget build(final BuildContext context) {
+    // Generator tarafından üretilen fonksiyonel provider'ları izle
     final spotProducts = ref.watch(spotProductsProvider);
     final productState = ref.watch(productProvider);
     final sortedProducts = _sortProducts(spotProducts);
@@ -64,15 +65,18 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           _buildHeader(context),
           _buildSortBar(context, sortedProducts.length),
           _buildSpotlightBanner(context),
-          if (productState.isLoading)
-            SliverToBoxAdapter(child: _buildLoadingState(context))
+
+          // Durum Yönetimi (Loading, Error, Empty)
+          if (productState.isLoading && sortedProducts.isEmpty)
+            const SliverToBoxAdapter(child: _LoadingWidget())
           else if (productState.errorMessage != null)
             SliverToBoxAdapter(
-                child: _buildErrorState(context, productState.errorMessage!))
+                child: _ErrorWidget(message: productState.errorMessage!))
           else if (sortedProducts.isEmpty)
-            SliverToBoxAdapter(child: _buildEmptyState(context))
+            const SliverToBoxAdapter(child: _EmptyWidget())
           else
             _buildProductsGrid(context, sortedProducts),
+
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
           const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
         ],
@@ -80,7 +84,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  // --- HEADER ---
+  // --- HEADER (ResponsiveUtils Kullanımı) ---
   SliverToBoxAdapter _buildHeader(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -106,37 +110,26 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           ],
         ),
         child: context.isMobile
-            ? _buildMobileHeader(context)
-            : _buildDesktopHeader(context),
+            ? _buildMobileHeaderContent()
+            : _buildDesktopHeaderContent(),
       ),
     );
   }
 
-  Widget _buildMobileHeader(final BuildContext context) {
+  Widget _buildMobileHeaderContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildHeaderBadge(),
         const SizedBox(height: 20),
-        const Text('Kaçırılmayacak\nFırsatlar',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                height: 1.1,
-                shadows: [
-                  Shadow(
-                      color: Colors.black26,
-                      offset: Offset(1, 2),
-                      blurRadius: 8)
-                ])),
+        const _HeaderText(fontSize: 32),
         const SizedBox(height: 24),
-        _buildCountdownTimer(),
+        const _CountdownTimer(),
       ],
     );
   }
 
-  Widget _buildDesktopHeader(final BuildContext context) {
+  Widget _buildDesktopHeaderContent() {
     return Row(
       children: [
         Expanded(
@@ -145,152 +138,14 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             children: [
               _buildHeaderBadge(),
               const SizedBox(height: 20),
-              const Text('Kaçırılmayacak\nFırsatlar',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      height: 1.1,
-                      shadows: [
-                        Shadow(
-                            color: Colors.black26,
-                            offset: Offset(1, 2),
-                            blurRadius: 8)
-                      ])),
+              const _HeaderText(fontSize: 48),
               const SizedBox(height: 32),
-              _buildCountdownTimer(),
+              const _CountdownTimer(),
             ],
           ),
         ),
-        Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 40,
-                    offset: const Offset(0, 15))
-              ]),
-          child: const Icon(Icons.percent_outlined,
-              color: Colors.white24, size: 120),
-        ),
+        const _HeaderIcon(),
       ],
-    );
-  }
-
-  Widget _buildHeaderBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-          color: Colors.white24,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4))
-          ]),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.local_fire_department, color: Colors.white, size: 20),
-          SizedBox(width: 8),
-          Text('SPOT ÜRÜNLER',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
-  // --- SORT BAR ---
-  SliverToBoxAdapter _buildSortBar(
-      final BuildContext context, final int count) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8))
-            ]),
-        child: Row(
-          children: [
-            const Icon(Icons.sort_rounded, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _sortOptions
-                      .map((final opt) => Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: ChoiceChip(
-                              label: Text(_getSortLabel(opt)),
-                              selected: _sortBy == opt,
-                              onSelected: (final _) =>
-                                  setState(() => _sortBy = opt),
-                              selectedColor:
-                                  AppColors.primary.withOpacity(0.85),
-                              backgroundColor: Colors.grey.shade100,
-                              labelStyle: TextStyle(
-                                  color: _sortBy == opt
-                                      ? Colors.white
-                                      : Colors.black87,
-                                  fontWeight: FontWeight.bold),
-                              elevation: 3,
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
-            ),
-            Text('$count Ürün',
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // --- SPOTLIGHT BANNER ---
-  SliverToBoxAdapter _buildSpotlightBanner(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        decoration: BoxDecoration(
-            color: Colors.amber.shade50,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.amber.shade200),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.amber.withOpacity(0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8))
-            ]),
-        child: const Row(
-          children: [
-            Icon(Icons.lightbulb_outline, color: Colors.amber),
-            SizedBox(width: 15),
-            Expanded(
-              child: Text(
-                "Spot ürünler hızla tükenir, beğendiğin ürünü kaçırma!",
-                style:
-                    TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -301,7 +156,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(4),
+          crossAxisCount: context.gridColumns(4), // ResponsiveUtils'den geliyor
           childAspectRatio: context.responsive(mobile: 0.7, desktop: 0.75),
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
@@ -325,7 +180,123 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  Widget _buildCountdownTimer() {
+  // Yardımcı Widget'lar
+  Widget _buildHeaderBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+          color: Colors.white24, borderRadius: BorderRadius.circular(20)),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.local_fire_department, color: Colors.white, size: 20),
+          SizedBox(width: 8),
+          Text('SPOT ÜRÜNLER',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildSortBar(
+      final BuildContext context, final int count) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20)
+            ]),
+        child: Row(
+          children: [
+            const Icon(Icons.sort_rounded, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: _sortOptions
+                      .map((final opt) => Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ChoiceChip(
+                              label: Text(_getSortLabel(opt)),
+                              selected: _sortBy == opt,
+                              onSelected: (final _) =>
+                                  setState(() => _sortBy = opt),
+                              selectedColor: AppColors.primary,
+                              labelStyle: TextStyle(
+                                  color: _sortBy == opt
+                                      ? Colors.white
+                                      : Colors.black87),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+            Text('$count Ürün',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildSpotlightBanner(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            color: Colors.amber.shade50,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.amber.shade200)),
+        child: const Row(
+          children: [
+            Icon(Icons.lightbulb_outline, color: Colors.amber),
+            SizedBox(width: 15),
+            Expanded(
+                child: Text("Spot ürünler hızla tükenir, fırsatı kaçırma!",
+                    style: TextStyle(
+                        color: Colors.amber, fontWeight: FontWeight.bold))),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getSortLabel(final String opt) {
+    if (opt == 'price_low') return 'En Ucuz';
+    if (opt == 'price_high') return 'En Pahalı';
+    return 'En Yeni';
+  }
+}
+
+// --- Alt Bileşenler (Okunabilirlik için) ---
+
+class _HeaderText extends StatelessWidget {
+  final double fontSize;
+
+  const _HeaderText({required this.fontSize});
+
+  @override
+  Widget build(final BuildContext context) => Text('Kaçırılmayacak\nFırsatlar',
+      style: TextStyle(
+          color: Colors.white,
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          height: 1.1));
+}
+
+class _CountdownTimer extends StatelessWidget {
+  const _CountdownTimer();
+
+  @override
+  Widget build(final BuildContext context) {
     return StreamBuilder(
       stream: Stream.periodic(const Duration(seconds: 1)),
       builder: (final context, final snapshot) {
@@ -333,38 +304,54 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
         final remaining = endOfDay.difference(now);
         return Text(
-          'Günün Fırsatı Bitişine: ${remaining.inHours}:${(remaining.inMinutes % 60).toString().padLeft(2, '0')}:${(remaining.inSeconds % 60).toString().padLeft(2, '0')}',
+          'Kalan Süre: ${remaining.inHours}:${(remaining.inMinutes % 60).toString().padLeft(2, '0')}:${(remaining.inSeconds % 60).toString().padLeft(2, '0')}',
           style: const TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         );
       },
     );
   }
+}
 
-  String _getSortLabel(final String opt) {
-    switch (opt) {
-      case 'newest':
-        return 'En Yeni';
-      case 'price_low':
-        return 'En Ucuz';
-      case 'price_high':
-        return 'En Pahalı';
-      case 'discount':
-        return 'İndirim';
-      default:
-        return '';
-    }
-  }
+class _HeaderIcon extends StatelessWidget {
+  const _HeaderIcon();
 
-  Widget _buildLoadingState(final BuildContext context) => const Center(
-      child: Padding(
-          padding: EdgeInsets.all(40), child: CircularProgressIndicator()));
+  @override
+  Widget build(final BuildContext context) => Container(
+      width: 150,
+      height: 150,
+      decoration:
+          const BoxDecoration(color: Colors.white10, shape: BoxShape.circle),
+      child: const Icon(Icons.percent, color: Colors.white24, size: 80));
+}
 
-  Widget _buildErrorState(final BuildContext context, final String msg) =>
-      Center(child: Text(msg));
+class _LoadingWidget extends StatelessWidget {
+  const _LoadingWidget();
 
-  Widget _buildEmptyState(final BuildContext context) => const Center(
-      child: Padding(
-          padding: EdgeInsets.all(40),
-          child: Text("Henüz spot ürün bulunamadı.")));
+  @override
+  Widget build(final BuildContext context) => const Center(
+        child: Padding(
+            padding: EdgeInsets.all(50), child: CircularProgressIndicator()),
+      );
+}
+
+class _ErrorWidget extends StatelessWidget {
+  final String message;
+
+  const _ErrorWidget({required this.message});
+
+  @override
+  Widget build(final BuildContext context) => Center(
+      child: Padding(padding: const EdgeInsets.all(50), child: Text(message)));
+}
+
+class _EmptyWidget extends StatelessWidget {
+  const _EmptyWidget();
+
+  @override
+  Widget build(final BuildContext context) => const Center(
+        child: Padding(
+            padding: EdgeInsets.all(50),
+            child: Text("Henüz spot ürün bulunamadı.")),
+      );
 }

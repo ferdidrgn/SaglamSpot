@@ -1,69 +1,57 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_notifier.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_service.dart';
 import '../../domain/entites/product.dart';
 import '../../domain/repositories/product_repository_provider.dart';
 import '../../domain/usecases/add_product_usecase.dart';
 import '../../domain/usecases/delete_product_usecase.dart';
-import '../../domain/usecases/filter_product_usecase.dart';
 import '../../domain/usecases/get_products_usecase.dart';
 import '../../domain/usecases/update_product_usecase.dart';
-import 'product_state.dart';
 
-final productServiceProvider =
-    Provider<ProductService>((final ref) => ProductService());
+part 'product_provider.g.dart';
 
-final productProvider =
-    NotifierProvider<ProductNotifier, ProductState>(ProductNotifier.new);
+@riverpod
+ProductService productService(final Ref ref) => ProductService();
 
-// --- ProductsUseCase providers (Mevcut olanlar) ---
-final getProductsUseCaseProvider = Provider<GetProductsUseCase>((final ref) =>
-    GetProductsUseCaseImpl(ref.watch(productRepositoryProvider)));
+@riverpod
+GetProductsUseCase getProductsUseCase(final Ref ref) =>
+    GetProductsUseCaseImpl(ref.watch(productRepositoryProvider));
 
-final addProductUseCaseProvider = Provider<AddProductUseCase>(
-    (final ref) => AddProductUseCaseImpl(ref.watch(productRepositoryProvider)));
+@riverpod
+AddProductUseCase addProductUseCase(final Ref ref) =>
+    AddProductUseCaseImpl(ref.watch(productRepositoryProvider));
 
-final updateProductUseCaseProvider = Provider<UpdateProductUseCase>(
-    (final ref) =>
-        UpdateProductUseCaseImpl(ref.watch(productRepositoryProvider)));
+@riverpod
+UpdateProductUseCase updateProductUseCase(final Ref ref) =>
+    UpdateProductUseCaseImpl(ref.watch(productRepositoryProvider));
 
-final deleteProductUseCaseProvider = Provider<DeleteProductUseCase>(
-    (final ref) =>
-        DeleteProductUseCaseImpl(ref.watch(productRepositoryProvider)));
+@riverpod
+DeleteProductUseCase deleteProductUseCase(final Ref ref) =>
+    DeleteProductUseCaseImpl(ref.watch(productRepositoryProvider));
 
-final filterProductUseCaseProvider = Provider<FilterProductUseCase>(
-    (final ref) =>
-        FilterProductUseCaseImpl(ref.watch(productRepositoryProvider)));
+// --- FİLTRELEYİCİ PROVIDER'LAR ---
 
-// ===================================================================
-// --- YENİ EKLENEN FİLTRELEYİCİ PROVIDER'LAR ---
-// ===================================================================
+@riverpod
+List<Product> availableProducts(final Ref ref) {
+  // Not: productNotifierProvider isminin çıkması için product_notifier.g.dart oluşmuş olmalı
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).available;
+}
 
-/// Sadece aktif (satılmamış) stok listesini döner
-final availableProductsProvider = Provider<List<Product>>((final ref) {
-  final allProducts = ref.watch(productProvider).dataList ?? [];
-  return allProducts.available; // Extension'dan geliyor
-});
+@riverpod
+List<Product> newArrivals(final Ref ref) {
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).newest;
+}
 
-/// Sadece son 7 günde eklenen yeni ürünleri (New Collection) döner
-final newArrivalsProvider = Provider<List<Product>>((final ref) {
-  final allProducts = ref.watch(productProvider).dataList ?? [];
-  return allProducts.newest; // Extension'dan geliyor
-});
+@riverpod
+List<Product> spotProducts(final Ref ref) {
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).spotDeals;
+}
 
-/// Sadece spot fırsat ürünlerini döner
-final spotProductsProvider = Provider<List<Product>>((final ref) {
-  final allProducts = ref.watch(productProvider).dataList ?? [];
-  return allProducts.spotDeals; // Extension'dan geliyor
-});
-
-final newProductsProvider = Provider<List<Product>>((final ref) {
-  final allProducts = ref.watch(productProvider).dataList ?? [];
-  return allProducts.newDeals; // Extension'dan geliyor
-});
-
-/// Satılmış ürünlerin geçmişini döner
-final soldProductsProvider = Provider<List<Product>>((final ref) {
-  final allProducts = ref.watch(productProvider).dataList ?? [];
-  return allProducts.sold; // Extension'dan geliyor
-});
+@riverpod
+List<Product> soldProducts(final Ref ref) {
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).sold;
+}

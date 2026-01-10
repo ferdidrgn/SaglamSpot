@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../domain/entites/product.dart';
-import '../providers/product_provider.dart';
+import '../providers/product_notifier.dart'; // .g.dart'tan gelen productProvider için
 
 class EditProductPage extends ConsumerStatefulWidget {
   final String productId;
@@ -25,7 +26,16 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   @override
   void initState() {
     super.initState();
-    // 1. Veriyi belirle: extra'dan mı geldi yoksa listeden mi bulalım?
+
+    // 1. Auth Kontrolü: Giriş yapılmamışsa yönlendir
+    Future.microtask(() {
+      final auth = ref.read(authProvider);
+      if (auth.value?.uid == null) {
+        context.go('/login');
+      }
+    });
+
+    // 2. Veriyi belirle
     _currentProduct = widget.product ??
         ref.read(productProvider).dataList?.firstWhere(
               (final e) => e.id == widget.productId,
@@ -40,11 +50,11 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                 isSold: false,
                 isSpotProduct: false,
                 createdAt: '',
-                imagesUrl: [],
+                imagesUrl: const [],
               ),
             );
 
-    // 2. Controller'ları güvenli bir şekilde başlat
+    // 3. Controller'ları başlat
     _nameController = TextEditingController(text: _currentProduct?.name);
     _priceController =
         TextEditingController(text: _currentProduct?.price.toString());
@@ -60,7 +70,6 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   @override
   Widget build(final BuildContext context) {
-    // Eğer ürün bulunamazsa (geçersiz ID) kullanıcıya hata göster
     if (_currentProduct == null || _currentProduct!.id.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: const Text("Hata")),
@@ -78,7 +87,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       ),
       body: Column(
         children: [
-          const AdBannerWidget(), // SAYFA BAŞI REKLAM
+          const AdBannerWidget(),
           Expanded(
             child: productState.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -87,52 +96,53 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                     children: [
                       _buildSectionTitle("Genel Bilgiler"),
                       const SizedBox(height: 16),
-                      TextField(
-                        controller: _nameController,
-                        decoration: InputDecoration(
-                          labelText: "Ürün Adı",
-                          prefixIcon:
-                              const Icon(Icons.edit, color: Color(0xFF6366F1)),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
+                      _buildTextField(_nameController, "Ürün Adı", Icons.edit),
                       const SizedBox(height: 16),
-                      TextField(
-                        controller: _priceController,
-                        decoration: InputDecoration(
-                          labelText: "Fiyat (TL)",
-                          prefixIcon: const Icon(Icons.attach_money,
-                              color: Color(0xFF6366F1)),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
+                      _buildTextField(
+                          _priceController, "Fiyat (TL)", Icons.attach_money,
+                          isNumeric: true),
                       const SizedBox(height: 24),
-
-                      const AdNativeWidget(), // FORM ORTASI NATIVE REKLAM
-
+                      const AdNativeWidget(),
                       const SizedBox(height: 24),
                       _buildSectionTitle("Durum Yönetimi"),
-                      SwitchListTile(
-                        title: const Text("Ürün Satıldı mı?",
-                            style: TextStyle(fontWeight: FontWeight.w500)),
-                        subtitle: const Text(
-                            "İşaretlendiğinde 'Satılanlar' sekmesine taşınır."),
-                        value: _isSold,
-                        activeColor: const Color(0xFF6366F1),
-                        onChanged: (final v) => setState(() => _isSold = v),
-                      ),
+                      _buildSoldSwitch(),
                       const SizedBox(height: 40),
-
-                      _buildUpdateButton(),
+                      _buildSubmitButton(),
                     ],
                   ),
           ),
-          const AdBannerWidget(), // SAYFA SONU REKLAM
+          const AdBannerWidget(),
         ],
       ),
+    );
+  }
+
+  // --- Widget Parçaları ---
+
+  Widget _buildTextField(
+      TextEditingController controller, String label, IconData icon,
+      {bool isNumeric = false}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: const Color(0xFF6366F1)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      keyboardType: isNumeric
+          ? const TextInputType.numberWithOptions(decimal: true)
+          : TextInputType.text,
+    );
+  }
+
+  Widget _buildSoldSwitch() {
+    return SwitchListTile(
+      title: const Text("Ürün Satıldı mı?",
+          style: TextStyle(fontWeight: FontWeight.w500)),
+      subtitle: const Text("İşaretlendiğinde 'Satılanlar' sekmesine taşınır."),
+      value: _isSold,
+      activeColor: const Color(0xFF6366F1),
+      onChanged: (final v) => setState(() => _isSold = v),
     );
   }
 
@@ -144,7 +154,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     );
   }
 
-  Widget _buildUpdateButton() {
+  Widget _buildSubmitButton() {
     return SizedBox(
       width: double.infinity,
       height: 55,
@@ -155,20 +165,21 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onPressed: _handleUpdate,
-        child: const Text(
-          "Değişiklikleri Kaydet",
-          style: TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        child: const Text("Değişiklikleri Kaydet",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold)),
       ),
     );
   }
 
+  // --- Mantıksal Metodlar ---
+
   Future<void> _handleUpdate() async {
-    // 1. Basit validasyon ve parse işlemi
     final double? price =
         double.tryParse(_priceController.text.replaceAll(',', '.'));
-    if (price == null || _nameController.text.isEmpty) {
+    if (price == null || _nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text("Lütfen geçerli bir isim ve fiyat girin.")),
@@ -176,7 +187,6 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       return;
     }
 
-    // 2. Güncel nesneyi oluştur
     final updated = _currentProduct!.copyWith(
       name: _nameController.text.trim(),
       price: price,
@@ -184,10 +194,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       updatedAt: DateTime.now().toIso8601String(),
     );
 
-    // 3. Notifier'ı tetikle
+    // Generator provider ismi: productProvider
     await ref.read(productProvider.notifier).updateProduct(updated);
 
-    // 4. Geri bildirim ver ve dön
     if (mounted) {
       final state = ref.read(productProvider);
       if (state.errorMessage == null) {

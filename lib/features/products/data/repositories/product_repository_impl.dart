@@ -33,10 +33,9 @@ class ProductRepositoryImpl extends BaseRepository
 
   Future<Either<Failure, List<Product>>> _getProducts(
           final Future<List<ProductModel>> Function() getProductsFromSource) =>
-      execute(() {
-        final products = getProductsFromSource();
-        return products.then(
-            (final value) => value.map((final e) => e.toEntity()).toList());
+      execute(() async {
+        final models = await getProductsFromSource();
+        return models.map((e) => e.toEntity()).toList();
       });
 
   @override
