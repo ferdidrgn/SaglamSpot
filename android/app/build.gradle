@@ -1,8 +1,9 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id 'com.google.gms.google-services'
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id 'com.google.firebase.crashlytics'
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -44,6 +45,11 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             debuggable false
+            // Crashlytics'in hata raporlarını okunabilir kılması için mapping dosyasını ister
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+                nativeSymbolUploadEnabled true
+            }
         }
     }
 
@@ -73,6 +79,7 @@ dependencies {
     // Firebase Bill of Materials (BoM) - Versiyon karmaşasını önler
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
 
     // Kotlin stdlib artık çoğu zaman otomatik eklenir, manuel yazmaya gerek yok.
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20"
