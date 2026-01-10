@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -21,7 +22,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Sayfa açıldığında verileri tetikle
+    // Sayfa açıldığında ürünleri çek
     WidgetsBinding.instance.addPostFrameCallback((final _) {
       ref.read(productProvider.notifier).loadProducts();
     });
@@ -32,6 +33,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final productState = ref.watch(productProvider);
     final products = productState.dataList ?? [];
 
+    // Ürünleri isSold durumuna göre filtrele
     final available = products.where((final p) => !p.isSold).toList();
     final sold = products.where((final p) => p.isSold).toList();
 
@@ -42,7 +44,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         appBar: _buildAppBar(available.length, sold.length),
         body: Column(
           children: [
-            const AdBannerWidget(), // ÜST SABİT REKLAM
+            const AdBannerWidget(), // Üst Reklam
             Expanded(
               child: productState.isLoading
                   ? const Center(
@@ -50,29 +52,47 @@ class _HomePageState extends ConsumerState<HomePage> {
                   : TabBarView(
                       physics: const BouncingScrollPhysics(),
                       children: [
-                        _buildProductList(available, "Stokta ürün bulunmuyor"),
-                        _buildProductList(sold, "Satılmış ürün bulunmuyor"),
+                        _buildProductGrid(available, "Stokta ürün bulunmuyor"),
+                        _buildProductGrid(sold, "Henüz satılmış ürün yok"),
                       ],
                     ),
             ),
-            const AdBannerWidget(), // ALT SABİT REKLAM
+            const AdBannerWidget(), // Alt Reklam
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push('/add-product'),
-          backgroundColor: primaryColor,
-          elevation: 4,
-          icon: const Icon(Icons.add_photo_alternate_outlined,
-              color: Colors.white),
-          label: const Text("Yeni Ürün Ekle",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ),
+        floatingActionButton: _buildFAB(),
       ),
     );
   }
 
-  // --- Yardımcı Widgetlar ---
+  // --- Ürün Izgarası (Grid) ---
+  Widget _buildProductGrid(final List<Product> list, final String emptyMsg) {
+    if (list.isEmpty) return _buildEmptyState(emptyMsg);
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: context.gridColumns(2), // Responsive 2 kolon
+        childAspectRatio: 0.75, // Kartların boy/en oranı
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      // Her 7 slotta bir reklam gelecek şekilde adet artırımı
+      itemCount: list.length + (list.length ~/ 6),
+      itemBuilder: (final context, final index) {
+        // Her 7. eleman reklam olsun
+        if (index > 0 && (index + 1) % 7 == 0) {
+          return const AdNativeWidget();
+        }
+
+        // Reklamları atlayarak doğru ürünü bul
+        final productIndex = index - (index ~/ 7);
+        if (productIndex >= list.length) return const SizedBox.shrink();
+
+        return _AdminProductCard(product: list[productIndex]);
+      },
+    );
+  }
 
   PreferredSizeWidget _buildAppBar(
       final int availableCount, final int soldCount) {
@@ -80,10 +100,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       elevation: 0,
       backgroundColor: Colors.white,
       title: const Text("Yönetici Paneli",
-          style: TextStyle(
-              color: Color(0xFF1E293B),
-              fontWeight: FontWeight.w900,
-              fontSize: 22)),
+          style:
+              TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.w900)),
       actions: [
         IconButton(
           onPressed: () => _showLogoutDialog(),
@@ -96,31 +114,12 @@ class _HomePageState extends ConsumerState<HomePage> {
         unselectedLabelColor: slateColor,
         indicator: const UnderlineTabIndicator(
           borderSide: BorderSide(width: 3, color: primaryColor),
-          insets: EdgeInsets.symmetric(horizontal: 40),
         ),
         tabs: [
-          Tab(text: "Aktif Stok ($availableCount)"),
+          Tab(text: "Stok ($availableCount)"),
           Tab(text: "Satılanlar ($soldCount)"),
         ],
       ),
-    );
-  }
-
-  Widget _buildProductList(final List<Product> list, final String emptyMsg) {
-    if (list.isEmpty) return _buildEmptyState(emptyMsg);
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: list.length + (list.length ~/ 5), // Her 5 üründe bir reklam
-      itemBuilder: (final context, final index) {
-        if (index > 0 && index % 5 == 0) {
-          return const AdNativeWidget(); // LİSTE İÇİ NATIVE REKLAM
-        }
-        final productIndex = index - (index ~/ 5);
-        if (productIndex >= list.length) return const SizedBox();
-
-        return _AdminProductCard(product: list[productIndex]);
-      },
     );
   }
 
@@ -130,13 +129,20 @@ class _HomePageState extends ConsumerState<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.inventory_2_outlined,
-              size: 64, color: slateColor.withOpacity(0.2)),
-          const SizedBox(height: 16),
-          Text(msg,
-              style: const TextStyle(
-                  color: slateColor, fontWeight: FontWeight.w500)),
+              size: 60, color: slateColor.withOpacity(0.2)),
+          const SizedBox(height: 10),
+          Text(msg, style: const TextStyle(color: slateColor)),
         ],
       ),
+    );
+  }
+
+  Widget _buildFAB() {
+    return FloatingActionButton.extended(
+      onPressed: () => context.push('/add-product'),
+      backgroundColor: primaryColor,
+      icon: const Icon(Icons.add_photo_alternate_outlined, color: Colors.white),
+      label: const Text("Ürün Ekle", style: TextStyle(color: Colors.white)),
     );
   }
 
@@ -144,21 +150,18 @@ class _HomePageState extends ConsumerState<HomePage> {
     showDialog(
       context: context,
       builder: (final context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text("Çıkış Yap"),
-        content: const Text("Oturumu kapatmak istediğinize emin misiniz?"),
+        title: const Text("Çıkış"),
+        content: const Text("Çıkış yapmak istediğinize emin misiniz?"),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Vazgeç")),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            onPressed: () {
-              ref.read(authProvider.notifier).signOut();
-              context.go('/login');
-            },
-            child: const Text("Çıkış", style: TextStyle(color: Colors.white)),
-          ),
+              child: const Text("Hayır")),
+          TextButton(
+              onPressed: () {
+                ref.read(authProvider.notifier).signOut();
+                context.go('/login');
+              },
+              child: const Text("Evet")),
         ],
       ),
     );

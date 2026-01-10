@@ -17,8 +17,8 @@ Future<void> main() async {
   // 🌐 Web URL stratejisi (# işaretini kaldırır)
   if (PlatformChecker.isWeb) usePathUrlStrategy();
 
-  await MobileAds.instance.initialize();
   await _initializeFirebase();
+  await MobileAds.instance.initialize();
   runApp(const ProviderScope(child: MyApp()));
 }
 

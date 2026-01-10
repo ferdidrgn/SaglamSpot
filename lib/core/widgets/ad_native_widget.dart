@@ -22,20 +22,14 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
     _nativeAd = NativeAd(
       adUnitId: 'ca-app-pub-5779807348211992/2655077678',
       // Test Native ID
-      factoryId: 'adFactoryExample',
+      //factoryId: 'adFactoryExample',
       // Not: Platform tarafında tanımlı olmalıdır
       request: const AdRequest(),
       listener: NativeAdListener(
-        onAdLoaded: (final ad) {
-          setState(() {
-            _isLoaded = true;
-          });
-        },
-        onAdFailedToLoad: (final ad, final error) {
-          ad.dispose();
-        },
+        onAdLoaded: (final ad) => setState(() => _isLoaded = true),
+        onAdFailedToLoad: (final ad, final error) => ad.dispose(),
       ),
-      // Basit şablon kullanımı
+      // Hazır şablon stili (FactoryId gerektirmez)
       nativeTemplateStyle: NativeTemplateStyle(
         templateType: TemplateType.small,
         mainBackgroundColor: Colors.white,
