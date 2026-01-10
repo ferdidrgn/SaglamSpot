@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/config/app_initializer.dart'; // Yeni oluşturduğumuz dosya
+import 'core/config/app_initializer.dart';
 import 'core/config/app_router.dart';
 import 'core/theme/app_theme.dart';
 
 void main() async {
-  // 1. Her şeyi tek bir yerden başlat
-  await AppInitializer.init();
-
-  // 2. Uygulamayı çalıştır
+  await AppInitializer.init(); //Her şeyi tek bir yerden başlat
   runApp(const ProviderScope(child: MyApp()));
 }
 
