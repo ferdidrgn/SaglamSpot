@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:universal_html/html.dart' as html;
 
 /// 🔍 Global SEO Service
 /// Web dışında otomatik devre dışı kalır

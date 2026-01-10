@@ -1,11 +1,8 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
-import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_image_selector.dart';
 import '../../domain/entites/product.dart';
 import '../providers/product_provider.dart';
@@ -29,6 +26,15 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   bool _isSecondHand = false;
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _descController.dispose();
+    _priceController.dispose();
+    _categoryController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
 
@@ -37,10 +43,11 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       appBar: AppBar(title: const Text('Yeni Ürün Ekle')),
       body: Column(
         children: [
-          const AdBannerWidget(), // Sayfa Başı Reklam
+          const AdBannerWidget(),
           Expanded(
             child: productState.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF6366F1)))
                 : SingleChildScrollView(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -59,7 +66,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                             _priceController, 'Fiyat (TL)', Icons.attach_money,
                             isNumeric: true),
                         const SizedBox(height: 16),
-                        const AdNativeWidget(), // Formun ortasına şık reklam
+                        const AdNativeWidget(),
                         const SizedBox(height: 16),
                         _buildSwitchTile('Satıldı Olarak İşaretle', _isSold,
                             (final v) => setState(() => _isSold = v)),
@@ -74,13 +81,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                     ),
                   ),
           ),
-          const AdBannerWidget(), // Sayfa Sonu Reklam
+          const AdBannerWidget(),
         ],
       ),
     );
   }
 
-  // --- AddProduct Özel Parçaları ---
+  // --- Widget Parçaları ---
 
   Widget _buildHeader() {
     return Column(
@@ -186,36 +193,60 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     );
   }
 
-  // --- Logic Metodları ---
+  // --- Mantıksal Metodlar ---
+
+  Future<void> _pickImages() async {
+    final images = await _imageSelector.pickImages();
+    if (images.isNotEmpty) {
+      setState(() => _selectedImages.addAll(images));
+    }
+  }
 
   Future<void> _addProductAction() async {
-    if (_nameController.text.isEmpty || _priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Lütfen gerekli alanları doldurun.')));
+    // 1. Validasyon
+    if (_nameController.text.isEmpty ||
+        _priceController.text.isEmpty ||
+        _selectedImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content:
+              Text('Lütfen ürün adı, fiyat ve en az bir görsel ekleyin!')));
       return;
     }
+
+    // 2. Ürün Nesnesini Hazırla
     final product = Product(
       id: '',
-      // ID'yi uygun bir şekilde ayarlayın
+      // Notifier içinde benzersiz ID atanacak
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: '',
       soldAt: '',
-      name: _nameController.text,
-      desc: _descController.text,
-      category: _categoryController.text,
-      price: double.tryParse(_priceController.text) ?? 0.0,
+      name: _nameController.text.trim(),
+      desc: _descController.text.trim(),
+      category: _categoryController.text.trim(),
+      price: double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0.0,
       isSold: _isSold,
       isSpotProduct: _isSecondHand,
       imagesUrl: const [],
     );
+
+    // 3. İşlemi Başlat
     await ref
         .read(productProvider.notifier)
         .addProduct(product, _selectedImages);
-    if (mounted) context.pop(); // İşlem bitince geri dön
-  }
 
-  Future<void> _pickImages() async {
-    final images = await _imageSelector.pickImages();
-    setState(() => _selectedImages.addAll(images));
+    // 4. Sonucu Kontrol Et ve Geri Bildirim Ver
+    if (mounted) {
+      final state = ref.read(productProvider);
+      if (state.errorMessage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Ürün Başarıyla Eklendi!')));
+        context.pop(); // Başarılıysa Home'a dön
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('Hata oluştu: ${state.errorMessage}')));
+      }
+    }
   }
 }
