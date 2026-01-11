@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Görseldeki ana arka plan rengi (Soft Mint/Grey)
-  static const Color background = Color(0xFFF3F7F5);
-  static const Color surface = Colors.white;
+  static const Color background = Color(0xFFF1F7F6);
+  static const Color surface = Color(0xFFF9FDFB);
 
-  // Aksan Renkler (Siyah Butonlar)
-  static const Color primary =
-      Color(0xFF1A1A1A); // Tam siyah yerine çok koyu gri
-  static const Color secondary =
-      Color(0xFFE8F1ED); // Kart içlerindeki hafif gölge alanı
+// Aksanlar ve Butonlar
+  static const Color primary = Color(0xFF1A1A1A); // Modern siyah/antrasit
+  static const Color secondary = Color(0xFFE8F1ED); // Sage Green (Kart içleri)
 
-  // Yazı Renkleri
-  static const Color textPrimary = Color(0xFF1A1A1A);
-  static const Color textSecondary = Color(0xFF707070);
+  // Yazı ve Kenarlık
+  static const Color textPrimary =
+      Color(0xFF103E35); // Çok koyu yeşil bazlı siyah
+  static const Color textSecondary = Color(0xFF5A7D76); // Orta tonlu mint gri
+  static const Color border = Color(0xFFDDECE8);
   static const Color textTertiary = Color(0xFFA0A0A0);
 
 // Status Colors
@@ -36,13 +35,12 @@ class AppColors {
   static const Color secondaryLight = Color(0xFFF472B6);
 
   // Accent Colors (Emerald based)
-  static const Color accent = Color(0xFF10B981);
-  static const Color accentDark = Color(0xFF059669);
-  static const Color accentLight = Color(0xFF34D399);
+  static const Color accent = Color(0xFFD4A373); // Toprak/Bakır tonu (CTA için)
+  static const Color accentDark = Color(0xFFBC8A5F);
+  static const Color accentLight = Color(0xFFE7C8A9);
 
   // Neutral Colors
   static const Color card = Color(0xFFFFFFFF);
-  static const Color border = Color(0xFFE2E8F0);
   static const Color divider = Color(0xFFF1F5F9);
 
   // Semantic Colors

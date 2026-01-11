@@ -19,7 +19,6 @@ mixin AppTheme {
           onSecondaryContainer: AppColors.secondaryDark,
           surface: AppColors.surface,
           onSurface: AppColors.textPrimary,
-          surfaceVariant: AppColors.background,
           onSurfaceVariant: AppColors.textSecondary,
           background: AppColors.background,
           onBackground: AppColors.textPrimary,
@@ -125,7 +124,8 @@ mixin AppTheme {
   static ElevatedButtonThemeData _elevatedButtonTheme() =>
       ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.accent,
+          // Ana CTA rengi
           foregroundColor: Colors.white,
           elevation: 0,
           textStyle: AppTextStyles.lightTextTheme.labelLarge,
@@ -138,10 +138,11 @@ mixin AppTheme {
   static OutlinedButtonThemeData _outlinedButtonTheme() =>
       OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
+          foregroundColor: AppColors.accent,
           textStyle: AppTextStyles.lightTextTheme.labelLarge,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          side: const BorderSide(color: AppColors.primary),
+          side: const BorderSide(color: AppColors.accent),
+          // Bakır çerçeve          shape:
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
