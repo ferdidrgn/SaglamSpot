@@ -80,7 +80,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 _buildSoldShowroomGrid(context, soldProducts),
               ],
 
-              const SliverToBoxAdapter(child: InteractiveMagicSpotlight()),
+              const SliverToBoxAdapter(child: InsaneMagicShowcase()),
 
               // 7. REKLAM ALANI (AdSense)
               const SliverToBoxAdapter(child: SizedBox(height: 60)),
