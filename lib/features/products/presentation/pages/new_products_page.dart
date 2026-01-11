@@ -82,9 +82,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
               const SliverToBoxAdapter(
                 child: InsaneMagicShowcase(
-                  imageUrl:
-                      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-                ),
+                    imageUrl:
+                        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"),
               ),
 
               // 7. REKLAM ALANI (AdSense)
@@ -185,12 +184,12 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(Icons.verified_outlined,
+                Icon(Icons.verified_outlined,
                     color: AppColors.primary, size: 20),
-                const SizedBox(width: 8),
-                const Text("SHOWROOM",
+                SizedBox(width: 8),
+                Text("SHOWROOM",
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -215,7 +214,10 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       final BuildContext context, final List<Product> soldItems) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(
-          horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
+          horizontal:
+              context.responsive(mobile: 24.0, tablet: 40.0, desktop: 60.0),
+          vertical:
+              context.responsive(mobile: 20.0, tablet: 30.0, desktop: 40.0)),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: context.gridColumns(4),
