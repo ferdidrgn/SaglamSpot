@@ -54,7 +54,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final productState = ref.watch(productProvider);
     const bgMint = Color(0xFFE8F1EF);
 
@@ -118,7 +118,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // ================= HEADER (RESPONSIVE) =================
-  SliverToBoxAdapter _buildDiscoveryHeader(BuildContext context) {
+  SliverToBoxAdapter _buildDiscoveryHeader(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.pagePadding, // Responsive padding
@@ -200,7 +200,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // ================= DYNAMIC CATEGORY =================
-  SliverToBoxAdapter _buildDynamicCategorySection(BuildContext context) {
+  SliverToBoxAdapter _buildDynamicCategorySection(final BuildContext context) {
     final categories = [
       {"name": "Tümü", "icon": Icons.grid_view_rounded},
       {"name": "Masalar", "icon": Icons.table_restaurant_outlined},
@@ -258,7 +258,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // ================= HERO SECTION =================
-  SliverToBoxAdapter _buildHeroSection(BuildContext context) {
+  SliverToBoxAdapter _buildHeroSection(final BuildContext context) {
     // Mobilde daha yüksek, desktopta daha yatay bir oran
     final height =
         context.responsive(mobile: 450.0, tablet: 400.0, desktop: 380.0);
@@ -323,7 +323,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _heroSlide({
-    required BuildContext context,
+    required final BuildContext context,
     required final Color color,
     required final String badge,
     required final String title,
@@ -438,7 +438,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   // ================= SECTION HEADER =================
   SliverToBoxAdapter _buildSectionHeader(
-      BuildContext context, final String title, final String subtitle) {
+      final BuildContext context, final String title, final String subtitle) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
@@ -462,7 +462,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== PRODUCT GRID (FIXED RESPONSIVE) ===================
-  SliverPadding _buildProductGrid(BuildContext context, final dynamic state) {
+  SliverPadding _buildProductGrid(
+      final BuildContext context, final dynamic state) {
     final products = state.dataList ?? [];
     return SliverPadding(
       padding: context.pagePadding, // Tutarlı padding
@@ -485,7 +486,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== SHOP BY ROOM ===================
-  SliverToBoxAdapter _buildShopByRoomSection(BuildContext context) {
+  SliverToBoxAdapter _buildShopByRoomSection(final BuildContext context) {
     final rooms = [
       {
         "name": "Oturma Odası",
@@ -561,7 +562,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== BUSINESS INTRO ===================
-  SliverToBoxAdapter _buildBusinessIntroduction(BuildContext context) {
+  SliverToBoxAdapter _buildBusinessIntroduction(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: context.sectionPadding,
@@ -581,7 +582,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== TESTIMONIALS ===================
-  SliverToBoxAdapter _buildTestimonialsSection(BuildContext context) {
+  SliverToBoxAdapter _buildTestimonialsSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: SizedBox(
         height: 240, // Yüksekliği biraz artırdık
@@ -630,7 +631,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== STATS SECTION (REFACTORED) ===================
-  SliverToBoxAdapter _buildStatsSection(BuildContext context) {
+  SliverToBoxAdapter _buildStatsSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: context.sectionPadding,
@@ -653,7 +654,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           direction: context.isMobile ? Axis.vertical : Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: _buildStatItems(context)
-              .map((item) => Padding(
+              .map((final item) => Padding(
                     padding: EdgeInsets.only(bottom: context.isMobile ? 40 : 0),
                     child: item,
                   ))
@@ -663,7 +664,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  List<Widget> _buildStatItems(BuildContext context) {
+  List<Widget> _buildStatItems(final BuildContext context) {
     return [
       _statItem(
           context, "2.5K", "Mutlu Müşteri", Icons.face_retouching_natural),
@@ -672,8 +673,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     ];
   }
 
-  Widget _statItem(BuildContext context, final String val, final String label,
-      final IconData icon) {
+  Widget _statItem(final BuildContext context, final String val,
+      final String label, final IconData icon) {
     return Column(
       children: [
         Container(
@@ -703,7 +704,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== CALL TO ACTION ===================
-  SliverToBoxAdapter _buildCTASection(BuildContext context) {
+  SliverToBoxAdapter _buildCTASection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: context.sectionPadding,
@@ -765,7 +766,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // =================== MODERN FOOTER ===================
-  SliverToBoxAdapter _buildModernFooter(BuildContext context) {
+  SliverToBoxAdapter _buildModernFooter(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: EdgeInsets.fromLTRB(24, 60, 24, 40),
