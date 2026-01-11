@@ -62,9 +62,10 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage>
 
   @override
   Widget build(final BuildContext context) {
-    final spotProducts = ref.watch(spotProductsProvider);
+    final spotDealsProducts = ref.watch(spotDealsProductsProvider);
+    final spotSoldProducts = ref.watch(spotSoldProductsProvider);
     final productState = ref.watch(productProvider);
-    final sortedProducts = _sortProducts(spotProducts);
+    final sortedProducts = _sortProducts(spotDealsProducts);
 
     return FadeTransition(
       opacity: _fadeController,
