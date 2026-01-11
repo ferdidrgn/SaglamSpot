@@ -38,7 +38,6 @@ class ShimmerLoading extends StatelessWidget {
 
 // --- 2. TEKİL ÜRÜN KARTI SHIMMER (Grid öğeleri için) ---
 class ShimmerCard extends StatelessWidget {
-  final double width;
   final double height;
   final int itemCount;
   final int? crossAxisCount;
@@ -46,7 +45,6 @@ class ShimmerCard extends StatelessWidget {
 
   const ShimmerCard({
     super.key,
-    this.width = double.infinity,
     this.height = 300,
     this.itemCount = 5,
     this.crossAxisCount,
@@ -55,20 +53,23 @@ class ShimmerCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final effectiveCrossAxisCount = crossAxisCount ??
+    final int effectiveCrossAxisCount = crossAxisCount ??
         context.responsive<int>(mobile: 3, tablet: 6, desktop: 10);
+
+    // Kolon sayısı arttıkça (web'de 10 olunca) boşluğu azaltıyoruz ki kartlar nefes alabilsin
+    final double effectiveSpacing = effectiveCrossAxisCount > 6 ? 12.0 : 20.0;
 
     return SliverGrid.builder(
       itemCount: itemCount,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: effectiveCrossAxisCount,
         mainAxisSpacing: 15,
-        crossAxisSpacing: 20,
-        childAspectRatio: 0.75,
+        crossAxisSpacing: effectiveSpacing,
+        // Kartın boy/en oranını korumak için height parametreni burada kullanabilirsin
+        childAspectRatio:
+            (context.screenWidth / effectiveCrossAxisCount) / height,
       ),
       itemBuilder: (final context, final index) => Container(
-        width: width,
-        height: height,
         decoration: BoxDecoration(
           color: context.colors.surface,
           borderRadius: BorderRadius.circular(20),
