@@ -4,6 +4,7 @@ import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/interactive_magic_spotlight.dart';
 import '../../domain/entites/product.dart';
 import '../providers/product_notifier.dart';
 
@@ -22,7 +23,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   @override
   void initState() {
     super.initState();
-    // İlk veri çekme işlemini microtask ile başlatıyoruz
     Future.microtask(() => ref.read(productProvider.notifier).loadProducts());
   }
 
@@ -31,53 +31,66 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     final productState = ref.watch(productProvider);
     final allProducts = productState.dataList ?? [];
 
-    // Mevcut ve Satılmış ürün ayrımı
+    // Veri ayrıştırma
     final availableProducts =
         allProducts.where((final p) => !p.isSold).toList();
     final soldProducts = allProducts.where((final p) => p.isSold).toList();
 
-    // Sort işlemi sadece mevcut ürünlere
-    _applySort(availableProducts);
-    // Satılmış ürünleri en yeniden eskiye sırala (Yakında Satılanlar)
+    // Filtreleme ve Sıralama
+    final filteredAvailable = _applyLocalCategory(availableProducts);
+    _applySort(filteredAvailable);
+
+    // Satılmışları tarihe göre sırala
     soldProducts.sort((final a, final b) => b.createdAt.compareTo(a.createdAt));
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
+          // Arka plan dekoratif öğeleri
           _buildFloatingTypography(),
           _buildGradientBackgroundShape(),
+
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              // Üst kısımlar (Dokunulmadı)
-              _buildHeader(context, availableProducts.length),
-              _buildCategories(context),
-              _buildSortBar(context, availableProducts.length),
+              // 1. ÜST BAŞLIK (Header)
+              _buildHeader(context, filteredAvailable.length),
 
-              // 🛍 MEVCUT KOLEKSİYON
-              if (productState.isLoading && availableProducts.isEmpty)
+              // 2. MODERN KATEGORİ SEÇİCİ
+              _buildCategories(context),
+
+              // 3. SORT BAR (Sıralama)
+              _buildSortBar(context, filteredAvailable.length),
+
+              // 4. ANA ÜRÜN GRİDİ
+              if (productState.isLoading && filteredAvailable.isEmpty)
                 _buildShimmerLoading(context)
-              else if (availableProducts.isEmpty)
+              else if (filteredAvailable.isEmpty)
                 _buildEmpty()
               else
-                _buildProductGrid(context, availableProducts),
+                _buildProductGrid(context, filteredAvailable),
 
-              // ✨ ZENGİNLEŞTİRME: ARA SHOWROOM BANNER
+              // 5. LIFESTYLE INTERMEZZO (Ara Geçiş Bannerı)
               _buildIntermezzoBanner(context),
 
-              // 🏆 YAKINDA SATILANLAR (Showroom Vitrini)
+              // 6. SHOWROOM: YAKINDA SATILANLAR
               if (soldProducts.isNotEmpty) ...[
                 _buildSoldSectionHeader(context),
                 _buildSoldShowroomGrid(context, soldProducts),
               ],
 
-              // 📢 REKLAM VE CTA
-              const SliverToBoxAdapter(child: SizedBox(height: 80)),
-              _buildAdBanner(context), // Sliver uyumlu hale getirildi
+              const SliverToBoxAdapter(child: InteractiveMagicSpotlight()),
+
+              // 7. REKLAM ALANI (AdSense)
+              const SliverToBoxAdapter(child: SizedBox(height: 60)),
+              _buildAdBanner(context),
+
+              // 8. CTA & FOOTER BANNER
               const SliverToBoxAdapter(child: SizedBox(height: 40)),
               _buildCTABanner(context),
-              const SliverToBoxAdapter(child: SizedBox(height: 120)),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
           ),
         ],
@@ -85,16 +98,39 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // ZENGİNLEŞTİRİCİ SECTION WIDGETLARI
+  // ═══════════════════════════════════════════════════════════
+
+  Widget _buildFloatingTypography() => Positioned(
+        top: 150,
+        right: -100,
+        child: Opacity(
+          opacity: 0.03,
+          child: Text(
+            "STYLISH\nMODERN",
+            style: TextStyle(
+              fontSize: 200,
+              fontWeight: FontWeight.w900,
+              height: 0.8,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+      );
+
   Widget _buildIntermezzoBanner(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 60, horizontal: 24),
-        height: 200,
+        margin: EdgeInsets.symmetric(
+            vertical: 80,
+            horizontal: context.responsive(mobile: 24, desktop: 60)),
+        height: 350,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           image: const DecorationImage(
             image: NetworkImage(
-                'https://images.unsplash.com/photo-1555041469-a586c61ea9bc'),
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2000'),
             fit: BoxFit.cover,
           ),
         ),
@@ -102,20 +138,32 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             gradient: LinearGradient(
-                colors: [Colors.black.withOpacity(0.6), Colors.transparent]),
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+            ),
           ),
-          padding: const EdgeInsets.all(40),
-          child: const Column(
+          padding: const EdgeInsets.all(60),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("YAŞAM ALANINIZI",
-                  style: TextStyle(color: Colors.white70, letterSpacing: 2)),
-              Text("Yeniden Tanımlayın",
+              const Text("İntermezzo",
+                  style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 4)),
+              const SizedBox(height: 10),
+              Text("Yaşam Alanınıza\nDeğer Katıyoruz",
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold)),
+                      fontSize: context.responsive(mobile: 28, desktop: 42),
+                      fontWeight: FontWeight.w900,
+                      height: 1.1)),
+              const SizedBox(height: 20),
+              const Text(
+                  "En kaliteli ikinci el ve spot ürünler,\nuzman ekibimiz tarafından incelenerek listelenir.",
+                  style: TextStyle(color: Colors.white70, fontSize: 16)),
             ],
           ),
         ),
@@ -126,21 +174,32 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   Widget _buildSoldSectionHeader(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 24.0, desktop: 60.0),
+            vertical: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("YAKINDA SAHİPLERİNİ BULDULAR",
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 4,
-                    color: AppColors.primary)),
+            Row(
+              children: [
+                const Icon(Icons.verified_outlined,
+                    color: AppColors.primary, size: 20),
+                const SizedBox(width: 8),
+                const Text("SHOWROOM",
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 4,
+                        color: AppColors.primary)),
+              ],
+            ),
             const SizedBox(height: 10),
-            Text("Mutlu Evlerin Yeni Üyeleri",
+            Text("Yakında Sahiplerini Bulanlar",
                 style: TextStyle(
                     fontSize: context.responsive(mobile: 28, desktop: 36),
                     fontWeight: FontWeight.w900)),
+            const Text("Bu ürünler artık yeni evlerinde mutluluk saçıyor.",
+                style: TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       ),
@@ -150,56 +209,67 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   Widget _buildSoldShowroomGrid(
       final BuildContext context, final List<Product> soldItems) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(
+          horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(3), // Mobilde 1, Webde 3 gibi
+          crossAxisCount: context.gridColumns(4),
           mainAxisSpacing: 20,
           crossAxisSpacing: 20,
-          childAspectRatio: 1.2,
+          childAspectRatio: 0.8,
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
             final item = soldItems[index];
-            return Opacity(
-              opacity: 0.8,
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
-                  CustomProductCard(product: item),
+                  Opacity(
+                    opacity: 0.5,
+                    child: CustomProductCard(product: item),
+                  ),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.6),
+                          Colors.transparent
+                        ],
+                      ),
                     ),
-                    child: const Center(
-                      child: Text("SATILDI",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2)),
+                  ),
+                  Center(
+                    child: RotationTransition(
+                      turns: const AlwaysStoppedAnimation(-15 / 360),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
+                        decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: const Text("SATILDI",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                                fontSize: 12)),
+                      ),
                     ),
                   ),
                 ],
               ),
             );
           },
-          childCount: soldItems.length > 6
-              ? 6
-              : soldItems.length, // Sadece son 6 satılanı göster
+          childCount: soldItems.length > 4 ? 4 : soldItems.length,
         ),
       ),
     );
   }
 
-  Widget _buildAdBanner(final BuildContext context) => SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
-          child: const AdsenseBanner(height: 120),
-        ),
-      );
-
-  // ---------------- LOGIC ----------------
+  // ---------------- LOGIC & REFACTORING ----------------
 
   List<Product> _applyLocalCategory(final List<Product> list) {
     if (_selectedLocalCategory == "Tümü") return list;
@@ -221,42 +291,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     }
   }
 
-  // ---------------- WIDGETS ----------------
-
-  Widget _buildFloatingTypography() => Positioned(
-        top: 100,
-        right: -50,
-        child: Opacity(
-          opacity: 0.05,
-          child: Text(
-            "Stylish",
-            style: TextStyle(
-              fontSize: 180,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textSecondary.withOpacity(0.15),
-            ),
-          ),
-        ),
-      );
+  // ---------------- UI COMPONENTS ----------------
 
   Widget _buildGradientBackgroundShape() => Positioned(
-        top: 250,
-        left: -50,
-        child: Transform.rotate(
-          angle: -0.2,
-          child: Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withOpacity(0.3),
-                  Colors.transparent
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(25),
+        top: 400,
+        left: -100,
+        child: Container(
+          width: 400,
+          height: 400,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [AppColors.primary.withOpacity(0.05), Colors.transparent],
             ),
           ),
         ),
@@ -270,59 +316,29 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             context.responsive(mobile: 24.0, desktop: 60.0),
             80,
             context.responsive(mobile: 24.0, desktop: 60.0),
-            40,
+            20,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Container(width: 40, height: 2, color: AppColors.primary),
+                  Container(width: 30, height: 2, color: AppColors.primary),
                   const SizedBox(width: 10),
-                  const Text("NEW ARRIVALS",
+                  const Text("YENİ KOLEKSİYON",
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 3)),
                 ],
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text("Kusursuzluğun\nYeni Adresi",
-                        style: TextStyle(
-                            fontSize:
-                                context.responsive(mobile: 40.0, desktop: 64.0),
-                            fontWeight: FontWeight.w900,
-                            height: 1.1,
-                            letterSpacing: -2)),
-                  ),
-                  _buildCountBadge(count),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildCountBadge(final int count) => Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-            color: AppColors.primary, shape: BoxShape.circle),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("$count",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold)),
-              const Text("PIECES",
-                  style: TextStyle(color: Colors.white54, fontSize: 10)),
+              const SizedBox(height: 15),
+              Text("Kusursuzluğun\nYeni Adresi",
+                  style: TextStyle(
+                      fontSize: context.responsive(mobile: 36.0, desktop: 56.0),
+                      fontWeight: FontWeight.w900,
+                      height: 1.05,
+                      letterSpacing: -1.5)),
             ],
           ),
         ),
@@ -330,15 +346,16 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   SliverToBoxAdapter _buildCategories(final BuildContext context) {
     final cats = {
-      "Tümü": Icons.auto_awesome_mosaic_rounded,
+      "Tümü": Icons.grid_view_rounded,
       "Koltuk": Icons.chair_rounded,
       "Masa": Icons.table_restaurant_rounded,
       "Yatak": Icons.bed_rounded,
       "Dolap": Icons.door_sliding_rounded,
     };
     return SliverToBoxAdapter(
-      child: SizedBox(
-        height: 80,
+      child: Container(
+        height: 60,
+        margin: const EdgeInsets.only(top: 20),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.only(
@@ -347,29 +364,24 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           itemBuilder: (final context, final i) {
             final key = cats.keys.elementAt(i);
             final isActive = _selectedLocalCategory == key;
-            return GestureDetector(
-              onTap: () => setState(() => _selectedLocalCategory = key),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                margin: const EdgeInsets.only(right: 12, bottom: 10),
-                decoration: BoxDecoration(
-                  color: isActive ? AppColors.primary : AppColors.surface,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  children: [
-                    Icon(cats[key],
-                        color: isActive ? Colors.white : AppColors.textPrimary,
-                        size: 18),
-                    const SizedBox(width: 8),
-                    Text(key,
-                        style: TextStyle(
-                            color:
-                                isActive ? Colors.white : AppColors.textPrimary,
-                            fontWeight: FontWeight.bold)),
-                  ],
-                ),
+            return Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: FilterChip(
+                showCheckmark: false,
+                avatar: Icon(cats[key],
+                    size: 16,
+                    color: isActive ? Colors.white : AppColors.primary),
+                label: Text(key),
+                selected: isActive,
+                onSelected: (val) =>
+                    setState(() => _selectedLocalCategory = key),
+                backgroundColor: AppColors.surface,
+                selectedColor: AppColors.primary,
+                labelStyle: TextStyle(
+                    color: isActive ? Colors.white : AppColors.textPrimary,
+                    fontWeight: FontWeight.bold),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
             );
           },
@@ -380,42 +392,29 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   SliverToBoxAdapter _buildSortBar(
       final BuildContext context, final int count) {
-    final options = ['newest', 'price_low', 'price_high'];
     return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 24, desktop: 60),
+            vertical: 20),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Icon(Icons.sort_rounded, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: options
-                      .map((final opt) => Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: ChoiceChip(
-                              label: Text(_getSortLabel(opt)),
-                              selected: _selectedSort == opt,
-                              onSelected: (final _) =>
-                                  setState(() => _selectedSort = opt),
-                              selectedColor: AppColors.primary,
-                              labelStyle: TextStyle(
-                                  color: _selectedSort == opt
-                                      ? Colors.white
-                                      : Colors.black87),
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
+            Text('$count Ürün Listeleniyor',
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary)),
+            DropdownButton<String>(
+              value: _selectedSort,
+              underline: const SizedBox(),
+              icon: const Icon(Icons.sort_rounded, size: 20),
+              items: const [
+                DropdownMenuItem(value: 'newest', child: Text("En Yeni")),
+                DropdownMenuItem(value: 'price_low', child: Text("En Ucuz")),
+                DropdownMenuItem(value: 'price_high', child: Text("En Pahalı")),
+              ],
+              onChanged: (val) => setState(() => _selectedSort = val!),
             ),
-            Text('$count Ürün',
-                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -429,18 +428,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(),
-          childAspectRatio: context.responsive(mobile: 0.7, desktop: 0.75),
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
+          crossAxisCount: context.gridColumns(4),
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 25,
+          mainAxisSpacing: 25,
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) => MouseRegion(
             onEnter: (final _) => setState(() => _hoveredIndex = index),
             onExit: (final _) => setState(() => _hoveredIndex = -1),
             child: AnimatedScale(
-              scale: _hoveredIndex == index ? 1.03 : 1.0,
-              duration: const Duration(milliseconds: 200),
+              scale: _hoveredIndex == index ? 1.02 : 1.0,
+              duration: const Duration(milliseconds: 250),
               child: CustomProductCard(product: products[index]),
             ),
           ),
@@ -450,59 +449,68 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  SliverToBoxAdapter _buildShimmerLoading(final BuildContext context) =>
-      const SliverToBoxAdapter(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(50),
-            child: CircularProgressIndicator(),
-          ),
+  Widget _buildAdBanner(final BuildContext context) => SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
+          child: const AdsenseBanner(height: 100),
         ),
       );
 
-  SliverToBoxAdapter _buildEmpty() => const SliverToBoxAdapter(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(100),
-            child: Text("Henüz yeni ürün eklenmedi."),
-          ),
-        ),
-      );
-
-  SliverToBoxAdapter _buildCTABanner(final BuildContext context) =>
-      SliverToBoxAdapter(
+  Widget _buildCTABanner(final BuildContext context) => SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
           child: Container(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(40),
             decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(25)),
+                color: AppColors.textPrimary,
+                borderRadius: BorderRadius.circular(30)),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Expanded(
-                    child: Text("Yeni koleksiyonu keşfet!",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold))),
-                ElevatedButton(onPressed: () {}, child: const Text("İncele")),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Aradığınızı bulamadınız mı?",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold)),
+                      Text(
+                          "Bizimle iletişime geçin, size özel stok araştıralım.",
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.6))),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15))),
+                    child: const Text("WhatsApp Destek")),
               ],
             ),
           ),
         ),
       );
 
-  String _getSortLabel(final String opt) {
-    switch (opt) {
-      case 'price_low':
-        return 'En Ucuz';
-      case 'price_high':
-        return 'En Pahalı';
-      default:
-        return 'En Yeni';
-    }
-  }
+  SliverToBoxAdapter _buildShimmerLoading(final BuildContext context) =>
+      const SliverToBoxAdapter(
+          child: Center(
+              child: Padding(
+                  padding: EdgeInsets.all(100),
+                  child: CircularProgressIndicator())));
+
+  SliverToBoxAdapter _buildEmpty() => const SliverToBoxAdapter(
+      child: Center(
+          child: Padding(
+              padding: EdgeInsets.all(100),
+              child: Text("Henüz uygun ürün bulunmuyor."))));
 }
