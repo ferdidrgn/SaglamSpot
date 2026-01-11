@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
+import 'package:saglamspot/core/widgets/shimmer_card.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/interactive_magic_spotlight.dart';
+import '../../../../core/widgets/shimmer_components.dart';
 import '../../domain/entites/product.dart';
 import '../providers/product_notifier.dart';
 
@@ -29,6 +31,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   @override
   Widget build(final BuildContext context) {
+    final productState = ref.watch(productProvider);
     final List<Product> newDealsProducts = ref.watch(newDealsProductsProvider);
     final List<Product> soldProducts = ref.watch(newSoldProductsProvider);
 
@@ -60,8 +63,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               _buildSortBar(context, filteredAvailable.length),
 
               // 4. ANA ÜRÜN GRİDİ
-              if (newDealsProducts.isLoading && filteredAvailable.isEmpty)
-                _buildShimmerLoading(context)
+              if (productState.isLoading && filteredAvailable.isEmpty)
+                const ShimmerCard()
               else if (filteredAvailable.isEmpty)
                 _buildEmpty()
               else
@@ -503,13 +506,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           ),
         ),
       );
-
-  SliverToBoxAdapter _buildShimmerLoading(final BuildContext context) =>
-      const SliverToBoxAdapter(
-          child: Center(
-              child: Padding(
-                  padding: EdgeInsets.all(100),
-                  child: CircularProgressIndicator())));
 
   SliverToBoxAdapter _buildEmpty() => const SliverToBoxAdapter(
       child: Center(
