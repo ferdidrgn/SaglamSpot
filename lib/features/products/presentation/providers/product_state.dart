@@ -1,33 +1,30 @@
-import '../../../../core/common/base_loadable_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../domain/entites/product.dart';
 
-class ProductState extends LoadableState<Product, List<Product>> {
-  const ProductState({
-    super.dataList,
-    super.dataSingle,
-    super.isLoading = false,
-    super.errorMessage,
-  });
+part 'product_state.freezed.dart';
 
-  @override
-  ProductState copyWith({
+@freezed
+class ProductState with _$ProductState {
+  const factory ProductState({
     final List<Product>? dataList,
     final Product? dataSingle,
-    final bool? isLoading,
+    @Default(false) final bool isLoading,
     final String? errorMessage,
-  }) =>
-      ProductState(
-        dataList: dataList ?? this.dataList,
-        dataSingle: dataSingle ?? this.dataSingle,
-        isLoading: isLoading ?? this.isLoading,
-        errorMessage: errorMessage,
-      );
+  }) = _ProductState;
 
   @override
-  List<Object?> get props => [
-        dataList,
-        dataSingle,
-        isLoading,
-        errorMessage,
-      ];
+  // TODO: implement dataList
+  List<Product>? get dataList => throw UnimplementedError();
+
+  @override
+  // TODO: implement dataSingle
+  Product? get dataSingle => throw UnimplementedError();
+
+  @override
+  // TODO: implement errorMessage
+  String? get errorMessage => throw UnimplementedError();
+
+  @override
+  // TODO: implement isLoading
+  bool get isLoading => throw UnimplementedError();
 }

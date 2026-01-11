@@ -2,13 +2,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_state.dart';
 import '../../../../core/common/base_notifier.dart';
+import '../../../../core/common/base_result.dart';
 import '../../domain/entites/product.dart';
 
 part 'product_notifier.g.dart';
 
 @riverpod
-class ProductNotifier extends _$ProductNotifier
-    with BaseNotifierActionHandler<ProductState> {
+class ProductNotifier extends _$ProductNotifier with BaseResultHandler {
   @override
   ProductState build() {
     // Build döngüsünü bozmadan ilk yüklemeyi başlat
@@ -18,7 +18,7 @@ class ProductNotifier extends _$ProductNotifier
 
   /// Merkezi veri çekme fonksiyonu
   Future<List<Product>?> _fetchRawProducts(final String tag) =>
-      execute(() => ref.read(getProductsUseCaseProvider).call(),
+      handleResult(() => ref.read(getProductsUseCaseProvider).call(),
           operationTag: tag);
 
   Future<void> loadProducts() async {
@@ -53,20 +53,20 @@ class ProductNotifier extends _$ProductNotifier
 
   Future<void> addProduct(
       final Product product, final List<dynamic> images) async {
-    await execute(
+    await handleResult(
         () => ref.read(addProductUseCaseProvider).call(product, images),
         operationTag: 'AddProduct');
     ref.invalidateSelf();
   }
 
   Future<void> updateProduct(final Product product) async {
-    await execute(() => ref.read(updateProductUseCaseProvider).call(product),
+    await handleResult(() => ref.read(updateProductUseCaseProvider).call(product),
         operationTag: 'UpdateProduct');
     ref.invalidateSelf();
   }
 
   Future<void> deleteProduct(final String productId) async {
-    await execute(() => ref.read(deleteProductUseCaseProvider).call(productId),
+    await handleResult(() => ref.read(deleteProductUseCaseProvider).call(productId),
         operationTag: 'DeleteProduct');
     ref.invalidateSelf();
   }
