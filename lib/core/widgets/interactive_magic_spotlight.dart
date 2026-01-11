@@ -120,15 +120,18 @@ class _InsaneMagicShowcaseState extends State<InsaneMagicShowcase>
                   Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.identity()
+                      //perspektif kamera yakınlığı
                       ..setEntry(3, 2, 0.001)
-                      ..rotateX(-_smooth.dy * 0.08)
-                      ..rotateY(_smooth.dx * 0.1)
+                      //hareket
+                      ..rotateX(-_smooth.dy * 0.2)
+                      ..rotateY(-_smooth.dx * 0.1)
+                      //gezinme - kaydırma
                       ..translate(
-                        _smooth.dx * 20,
-                        _smooth.dy * 14,
+                        _smooth.dx * 22,
+                        _smooth.dy * 16,
                       )
-                      ..scale(widget.imageScale.clamp(1.05, 1.15)),
-                    child: Image.network(
+                      //takip hızı
+                      ..scale(widget.imageScale.clamp(1.08, 1.18)),                    child: Image.network(
                       widget.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,

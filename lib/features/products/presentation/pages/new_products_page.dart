@@ -107,7 +107,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ZENGİNLEŞTİRİCİ SECTION WIDGETLARI
   // ═══════════════════════════════════════════════════════════
 
-  Widget _buildFloatingTypography() => Positioned(
+  Widget _buildFloatingTypography() => const Positioned(
         top: 150,
         right: -100,
         child: Opacity(
