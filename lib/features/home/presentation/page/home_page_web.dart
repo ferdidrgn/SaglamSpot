@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/widgets/custom_search_bar.dart';
+import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_notifier.dart';
 import '../widgets/furniture_tips_section.dart';
 
@@ -55,7 +57,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(final BuildContext context) {
-    final productState = ref.watch(productProvider);
+    final productState = ref.watch(availableProductsProvider);
     const bgMint = Color(0xFFE8F1EF);
 
     // ResponsiveUtils: MaxWidthContainer ile web'de içeriğin çok yayılmasını önlüyoruz
@@ -463,8 +465,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   // =================== PRODUCT GRID (FIXED RESPONSIVE) ===================
   SliverPadding _buildProductGrid(
-      final BuildContext context, final dynamic state) {
-    final products = state.dataList ?? [];
+      final BuildContext context, final List<Product> productState) {
+    final products = productState;
     return SliverPadding(
       padding: context.pagePadding, // Tutarlı padding
       sliver: SliverGrid(
