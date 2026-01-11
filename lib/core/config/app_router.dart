@@ -2,16 +2,10 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:saglamspot/core/config/page_transitions.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
-
-// ÖNEMLİ: Wrapper üzerinden çekiyoruz
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
-import '../../features/products/domain/entites/product.dart';
-import '../../features/products/presentation/pages/add_product_page.dart';
-import '../../features/products/presentation/pages/edit_product_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/product_detail_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
