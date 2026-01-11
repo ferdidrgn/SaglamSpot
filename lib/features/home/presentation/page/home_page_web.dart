@@ -63,7 +63,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(final BuildContext context) {
-    final state = ref.watch(productProvider) as ProductState;
+    final state = ref.watch(productProvider);
     final allProducts = state.dataList ?? [];
     final availableProducts =
         allProducts.where((final p) => !p.isSold).take(10).toList();
