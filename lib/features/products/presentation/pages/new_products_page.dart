@@ -28,13 +28,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   @override
   Widget build(final BuildContext context) {
-    // g.dart provider tarafından üretilmiş provider'ları izle
     final productState = ref.watch(productProvider);
+    final allProducts = productState.dataList ?? [];
 
-    // Listeyi filtreleme ve sort işlemi
-    List<Product> filteredProducts = productState.dataList ?? [];
-    filteredProducts = _applyLocalCategory(filteredProducts);
-    _applySort(filteredProducts);
+    // Mevcut ve Satılmış ürün ayrımı
+    final availableProducts =
+        allProducts.where((final p) => !p.isSold).toList();
+    final soldProducts = allProducts.where((final p) => p.isSold).toList();
+
+    // Sort işlemi sadece mevcut ürünlere
+    _applySort(availableProducts);
+    // Satılmış ürünleri en yeniden eskiye sırala (Yakında Satılanlar)
+    soldProducts.sort((final a, final b) => b.createdAt.compareTo(a.createdAt));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -45,17 +50,31 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              _buildHeader(context, filteredProducts.length),
+              // Üst kısımlar (Dokunulmadı)
+              _buildHeader(context, availableProducts.length),
               _buildCategories(context),
-              _buildSortBar(context, filteredProducts.length),
-              if (productState.isLoading && filteredProducts.isEmpty)
+              _buildSortBar(context, availableProducts.length),
+
+              // 🛍 MEVCUT KOLEKSİYON
+              if (productState.isLoading && availableProducts.isEmpty)
                 _buildShimmerLoading(context)
-              else if (filteredProducts.isEmpty)
+              else if (availableProducts.isEmpty)
                 _buildEmpty()
               else
-                _buildProductGrid(context, filteredProducts),
-              const SliverToBoxAdapter(child: SizedBox(height: 40)),
-              _buildAdBanner(context),
+                _buildProductGrid(context, availableProducts),
+
+              // ✨ ZENGİNLEŞTİRME: ARA SHOWROOM BANNER
+              _buildIntermezzoBanner(context),
+
+              // 🏆 YAKINDA SATILANLAR (Showroom Vitrini)
+              if (soldProducts.isNotEmpty) ...[
+                _buildSoldSectionHeader(context),
+                _buildSoldShowroomGrid(context, soldProducts),
+              ],
+
+              // 📢 REKLAM VE CTA
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
+              _buildAdBanner(context), // Sliver uyumlu hale getirildi
               const SliverToBoxAdapter(child: SizedBox(height: 40)),
               _buildCTABanner(context),
               const SliverToBoxAdapter(child: SizedBox(height: 120)),
@@ -65,6 +84,120 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       ),
     );
   }
+
+  Widget _buildIntermezzoBanner(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 60, horizontal: 24),
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          image: const DecorationImage(
+            image: NetworkImage(
+                'https://images.unsplash.com/photo-1555041469-a586c61ea9bc'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            gradient: LinearGradient(
+                colors: [Colors.black.withOpacity(0.6), Colors.transparent]),
+          ),
+          padding: const EdgeInsets.all(40),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("YAŞAM ALANINIZI",
+                  style: TextStyle(color: Colors.white70, letterSpacing: 2)),
+              Text("Yeniden Tanımlayın",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSoldSectionHeader(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("YAKINDA SAHİPLERİNİ BULDULAR",
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 4,
+                    color: AppColors.primary)),
+            const SizedBox(height: 10),
+            Text("Mutlu Evlerin Yeni Üyeleri",
+                style: TextStyle(
+                    fontSize: context.responsive(mobile: 28, desktop: 36),
+                    fontWeight: FontWeight.w900)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSoldShowroomGrid(
+      final BuildContext context, final List<Product> soldItems) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: context.gridColumns(3), // Mobilde 1, Webde 3 gibi
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: 1.2,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (final context, final index) {
+            final item = soldItems[index];
+            return Opacity(
+              opacity: 0.8,
+              child: Stack(
+                children: [
+                  CustomProductCard(product: item),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Center(
+                      child: Text("SATILDI",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          childCount: soldItems.length > 6
+              ? 6
+              : soldItems.length, // Sadece son 6 satılanı göster
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdBanner(final BuildContext context) => SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
+          child: const AdsenseBanner(height: 120),
+        ),
+      );
 
   // ---------------- LOGIC ----------------
 
@@ -177,8 +310,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   Widget _buildCountBadge(final int count) => Container(
         width: 100,
         height: 100,
-        decoration:
-            const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+            color: AppColors.primary, shape: BoxShape.circle),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -316,12 +449,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       ),
     );
   }
-
-  Widget _buildAdBanner(final BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: context.responsive(mobile: 24.0, desktop: 60.0)),
-        child: const AdsenseBanner(height: 90),
-      );
 
   SliverToBoxAdapter _buildShimmerLoading(final BuildContext context) =>
       const SliverToBoxAdapter(
