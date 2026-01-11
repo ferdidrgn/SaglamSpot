@@ -6,6 +6,8 @@ import 'app_text_styles.dart';
 mixin AppTheme {
   static ThemeData get lightTheme => ThemeData(
         useMaterial3: true,
+        fontFamily: 'Inter',
+        // Eğer Inter yüklü değilse varsayılan sans-serif olur
         brightness: Brightness.light,
         scaffoldBackgroundColor: AppColors.background,
         colorScheme: const ColorScheme.light(
@@ -46,6 +48,8 @@ mixin AppTheme {
 
   static ThemeData get darkTheme => ThemeData(
         useMaterial3: true,
+        fontFamily: 'Inter',
+        // Eğer Inter yüklü değilse varsayılan sans-serif olur
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: AppColors.primary,
