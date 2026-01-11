@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/widgets/custom_search_bar.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_notifier.dart';
+import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_state.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
@@ -63,10 +64,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(final BuildContext context) {
-    final state = ref.watch(productProvider);
-    final allProducts = state.dataList ?? [];
-    final availableProducts =
-        allProducts.where((final p) => !p.isSold).take(10).toList();
+    final availableProducts = ref.watch(availableProductsProvider);
 
     return Scaffold(
       backgroundColor: _bgMint,
