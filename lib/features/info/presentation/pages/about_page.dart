@@ -4,14 +4,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 
-class InfoPage extends StatefulWidget {
-  const InfoPage({super.key});
+class AboutPage extends StatefulWidget {
+  const AboutPage({super.key});
 
   @override
-  State<InfoPage> createState() => _InfoPageState();
+  State<AboutPage> createState() => _AboutPageState();
 }
 
-class _InfoPageState extends State<InfoPage> {
+class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(final BuildContext context) {
     return CustomScrollView(
