@@ -12,6 +12,20 @@ import '../providers/search_filters_notifier.dart';
 import '../providers/search_notifier.dart';
 import '../providers/search_state.dart';
 
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/util/responsive_utils.dart';
+import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/filter_sheet.dart';
+import '../../../../core/widgets/responsive_product_grid.dart';
+import '../../../products/domain/entites/product.dart';
+import '../providers/search_filters_notifier.dart';
+import '../providers/search_notifier.dart';
+import '../providers/search_state.dart';
+
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
 
@@ -32,6 +46,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     'Spor',
   ];
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _resetAll() {
     _searchController.clear();
     ref.read(searchProvider.notifier).resetFilters();
@@ -44,13 +65,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final isMobile = context.isMobile;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         controller: _scrollController,
+        physics: const BouncingScrollPhysics(),
         slivers: [
-          _buildShowroomAppBar(context),
+          // --- SHOWROOM APPBAR ---
+          const _ShowroomAppBar(),
 
-          /// 🔍 SEARCH + FILTER BAR
+          // --- STICKY SEARCH & FILTER ---
           SliverPersistentHeader(
             pinned: true,
             delegate: _StickySearchDelegate(
@@ -75,7 +98,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
           ),
 
-          /// 🧩 ACTIVE FILTERS
+          // --- ACTIVE FILTERS WRAP ---
           if (state.isFiltered)
             SliverToBoxAdapter(
               child: _ActiveFiltersSection(
@@ -87,30 +110,17 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               ),
             ),
 
-          /// 📢 NATIVE AD
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: AdsenseBanner(height: 120),
-            ),
-          ),
-
-          /// 🛍 PRODUCTS
+          // --- PRODUCT SHOWCASE ---
           if (state.isLoading)
             const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(
+                  child: CircularProgressIndicator(color: Color(0xFF6366F1))),
             )
           else if (state.filteredProducts.isEmpty)
-            const SliverFillRemaining(
-              child: Center(child: Text('Sonuç bulunamadı')),
-            )
+            _buildEmptyState()
           else
-            ResponsiveProductSliverGrid(
-              products: state.filteredProducts,
-              onProductTap: (final p) => context.push('/product/${p.id}'),
-            ),
+            ..._buildProductGrids(context, state.filteredProducts),
 
-          /// 📢 FOOTER AD
           const SliverToBoxAdapter(child: AdsenseBanner(height: 250)),
           const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
@@ -118,16 +128,87 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       floatingActionButton: isMobile
           ? FloatingActionButton.extended(
               onPressed: () => _showFilterSheet(context),
-              icon: const Icon(Icons.tune),
-              label: const Text('Filtrele'),
+              backgroundColor: const Color(0xFF0F172A),
+              icon: const Icon(Icons.tune, color: Colors.white),
+              label:
+                  const Text('Filtrele', style: TextStyle(color: Colors.white)),
             )
           : null,
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return SliverFillRemaining(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off_rounded,
+                size: 80, color: Colors.grey.shade300),
+            const SizedBox(height: 16),
+            Text('Aradığınız kriterde ürün bulunamadı',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
+            TextButton(
+                onPressed: _resetAll, child: const Text('Filtreleri Temizle')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildProductGrids(
+      final BuildContext context, final List<Product> products) {
+    final available = products.where((final p) => !p.isSold).toList();
+    final sold = products.where((final p) => p.isSold).toList();
+
+    return [
+      if (available.isNotEmpty) ...[
+        _buildSectionHeader(
+            'MEVCUT KOLEKSİYON', available.length, const Color(0xFF10B981)),
+        ResponsiveProductSliverGrid(
+          products: available,
+          onProductTap: (final p) => context.push('/product/${p.id}'),
+        ),
+      ],
+      if (sold.isNotEmpty) ...[
+        _buildSectionHeader(
+            'GEÇMİŞ SEÇKİLER (SATILDI)', sold.length, const Color(0xFF64748B)),
+        ResponsiveProductSliverGrid(
+          products: sold,
+          onProductTap: (final p) => context.push('/product/${p.id}'),
+        ),
+      ],
+    ];
+  }
+
+  Widget _buildSectionHeader(
+      final String title, final int count, final Color accentColor) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
+        child: Row(
+          children: [
+            Container(width: 4, height: 24, color: accentColor),
+            const SizedBox(width: 12),
+            Text(title,
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2)),
+            const Spacer(),
+            Text('$count Parça',
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
+          ],
+        ),
+      ),
     );
   }
 
   void _showFilterSheet(final BuildContext context) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (final _) => FilterSheet(
         onApplyFilters: () {
           final f = ref.read(searchFiltersProvider);
@@ -203,6 +284,60 @@ class _CreativeAppBar extends StatelessWidget {
                     Colors.black.withOpacity(0.25),
                     Colors.transparent,
                   ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShowroomAppBar extends StatelessWidget {
+  const _ShowroomAppBar();
+
+  @override
+  Widget build(final BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 280,
+      pinned: true,
+      stretch: true,
+      backgroundColor: const Color(0xFF0F172A),
+      flexibleSpace: FlexibleSpaceBar(
+        stretchModes: const [
+          StretchMode.zoomBackground,
+          StretchMode.blurBackground
+        ],
+        titlePadding: const EdgeInsets.only(left: 24, bottom: 20),
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('SHOWROOM',
+                style: TextStyle(
+                    fontSize: 10, letterSpacing: 4, color: Colors.white70)),
+            Text('Koleksiyonu Keşfet',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white)),
+          ],
+        ),
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
+              // Kaliteli mobilya görseli
+              fit: BoxFit.cover,
+            ),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.center,
+                  colors: [Color(0xFF0F172A), Colors.transparent],
                 ),
               ),
             ),
