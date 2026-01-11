@@ -5,7 +5,8 @@ part 'search_state.freezed.dart';
 
 @freezed
 class SearchState with _$SearchState {
-  // 1. Tüm alanlar burada tanımlanır. Freezed bunları otomatik üretir.
+  const SearchState._(); // Bu satır üretilen kodun metodlarını kullanmanı sağlar
+
   const factory SearchState({
     @Default([]) final List<Product> products,
     @Default([]) final List<Product> filteredProducts,
@@ -18,11 +19,34 @@ class SearchState with _$SearchState {
     final String? errorMessage,
   }) = _SearchState;
 
-  // 2. KRİTİK: Bu satır varken yukarıdaki her şeyi manuel yazmana GEREK YOKTUR.
-  // Bu satır, factory içindeki alanların somut (concrete) karşılığını sağlar.
-  const SearchState._();
+  // IDE'nin "Missing implementation" hatasını bu yönlendirmelerle susturuyoruz:
+  @override
+  List<Product> get products => (this as _SearchState).products;
 
-  // 3. Yardımcı Metodlar (Bunlar hata vermez)
+  @override
+  List<Product> get filteredProducts => (this as _SearchState).filteredProducts;
+
+  @override
+  String get query => (this as _SearchState).query;
+
+  @override
+  String? get selectedCategory => (this as _SearchState).selectedCategory;
+
+  @override
+  String? get condition => (this as _SearchState).condition;
+
+  @override
+  double get minPrice => (this as _SearchState).minPrice;
+
+  @override
+  double get maxPrice => (this as _SearchState).maxPrice;
+
+  @override
+  bool get isLoading => (this as _SearchState).isLoading;
+
+  @override
+  String? get errorMessage => (this as _SearchState).errorMessage;
+
   bool get isFiltered =>
       query.isNotEmpty ||
       selectedCategory != null ||
@@ -31,40 +55,4 @@ class SearchState with _$SearchState {
       maxPrice < 100000;
 
   int get resultCount => filteredProducts.length;
-
-  @override
-  // TODO: implement condition
-  String? get condition => throw UnimplementedError();
-
-  @override
-  // TODO: implement errorMessage
-  String? get errorMessage => throw UnimplementedError();
-
-  @override
-  // TODO: implement filteredProducts
-  List<Product> get filteredProducts => throw UnimplementedError();
-
-  @override
-  // TODO: implement isLoading
-  bool get isLoading => throw UnimplementedError();
-
-  @override
-  // TODO: implement maxPrice
-  double get maxPrice => throw UnimplementedError();
-
-  @override
-  // TODO: implement minPrice
-  double get minPrice => throw UnimplementedError();
-
-  @override
-  // TODO: implement products
-  List<Product> get products => throw UnimplementedError();
-
-  @override
-  // TODO: implement query
-  String get query => throw UnimplementedError();
-
-  @override
-  // TODO: implement selectedCategory
-  String? get selectedCategory => throw UnimplementedError();
 }

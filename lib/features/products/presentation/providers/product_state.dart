@@ -5,6 +5,8 @@ part 'product_state.freezed.dart';
 
 @freezed
 class ProductState with _$ProductState {
+  const ProductState._(); // Eklendi
+
   const factory ProductState({
     final List<Product>? dataList,
     final Product? dataSingle,
@@ -12,19 +14,16 @@ class ProductState with _$ProductState {
     final String? errorMessage,
   }) = _ProductState;
 
+  // Hataları gidermek için yönlendirmeler:
   @override
-  // TODO: implement dataList
-  List<Product>? get dataList => throw UnimplementedError();
+  List<Product>? get dataList => (this as _ProductState).dataList;
 
   @override
-  // TODO: implement dataSingle
-  Product? get dataSingle => throw UnimplementedError();
+  Product? get dataSingle => (this as _ProductState).dataSingle;
 
   @override
-  // TODO: implement errorMessage
-  String? get errorMessage => throw UnimplementedError();
+  bool get isLoading => (this as _ProductState).isLoading;
 
   @override
-  // TODO: implement isLoading
-  bool get isLoading => throw UnimplementedError();
+  String? get errorMessage => (this as _ProductState).errorMessage;
 }
