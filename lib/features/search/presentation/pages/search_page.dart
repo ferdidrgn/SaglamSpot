@@ -20,27 +20,17 @@ class SearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
-  final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final List<String> _categories = [
+  final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  final _categories = const [
     'Tümü',
     'Elektronik',
     'Mobilya',
     'Giyim',
     'Kitap',
-    'Spor'
+    'Spor',
   ];
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  // --- LOGIC ---
-  void _onSearch(final String val) =>
-      ref.read(searchProvider.notifier).onQueryChanged(val);
 
   void _resetAll() {
     _searchController.clear();
@@ -50,166 +40,95 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   @override
   Widget build(final BuildContext context) {
-    // Reaktif Dinleme: Hata durumunda Snackbar göster (Industrial logic)
-    ref.listen<String?>(searchProvider.select((final s) => s.errorMessage),
-        (final prev, final next) {
-      if (next != null)
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(next)));
-    });
-
-    final searchState = ref.watch(searchProvider);
+    final state = ref.watch(searchProvider);
     final isMobile = context.isMobile;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9),
-      body: Stack(
-        children: [
-          CustomScrollView(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // 1. SHOWROOM APPBAR (Creative Layout)
-              _buildShowroomAppBar(context),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          _buildShowroomAppBar(context),
 
-              // 2. STICKY SEARCH BAR
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _StickySearchDelegate(
-                  child: _SearchAndFilterSection(
-                    isMobile: isMobile,
-                    searchController: _searchController,
-                    onSearchChanged: _onSearch,
-                    categories: _categories,
-                    selectedCategory: searchState.selectedCategory ?? 'Tümü',
-                    onCategorySelected: (final cat) =>
-                        ref.read(searchProvider.notifier).filterByCategory(cat),
-                  ),
-                ),
+          /// 🔍 SEARCH + FILTER BAR
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _StickySearchDelegate(
+              child: _SearchAndFilterSection(
+                isMobile: isMobile,
+                searchController: _searchController,
+                onSearchChanged:
+                    ref.read(searchProvider.notifier).onQueryChanged,
+                categories: _categories,
+                selectedCategory: state.selectedCategory ?? 'Tümü',
+                onCategorySelected:
+                    ref.read(searchProvider.notifier).filterByCategory,
+                onFiltersReset: _resetAll,
+                onApplyFilters: () {
+                  final f = ref.read(searchFiltersProvider);
+                  ref.read(searchProvider.notifier).setCondition(f.condition);
+                  ref
+                      .read(searchProvider.notifier)
+                      .setPriceRange(f.minPrice, f.maxPrice);
+                },
               ),
-
-              // 3. AKTİF FİLTRELER BLOĞU
-              if (searchState.isFiltered)
-                SliverToBoxAdapter(
-                    child: _ActiveFiltersSection(onReset: _resetAll)),
-
-              // 4. NATIVE AD SENSE (Üst reklam)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: AdsenseBanner(height: 120, isNative: true),
-                ),
-              ),
-
-              // 5. ÜRÜN GRIDLERİ
-              if (searchState.isLoading && searchState.products.isEmpty)
-                _buildLoadingSliver()
-              else if (searchState.filteredProducts.isEmpty)
-                _buildEmptyStateSliver()
-              else
-                ..._buildProductGrids(context, searchState.filteredProducts),
-
-              // 6. BOTTOM BANNER AD
-              const SliverToBoxAdapter(child: AdsenseBanner(height: 250)),
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
-            ],
+            ),
           ),
+
+          /// 🧩 ACTIVE FILTERS
+          if (state.isFiltered)
+            SliverToBoxAdapter(
+              child: _ActiveFiltersSection(
+                selectedCategory: state.selectedCategory ?? 'Tümü',
+                categories: _categories,
+                onCategoryFilterRemoved: () =>
+                    ref.read(searchProvider.notifier).filterByCategory('Tümü'),
+                onFilterRemoved: (final _) => _resetAll(),
+              ),
+            ),
+
+          /// 📢 NATIVE AD
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: AdsenseBanner(height: 120),
+            ),
+          ),
+
+          /// 🛍 PRODUCTS
+          if (state.isLoading)
+            const SliverFillRemaining(
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (state.filteredProducts.isEmpty)
+            const SliverFillRemaining(
+              child: Center(child: Text('Sonuç bulunamadı')),
+            )
+          else
+            ResponsiveProductSliverGrid(
+              products: state.filteredProducts,
+              onProductTap: (final p) => context.push('/product/${p.id}'),
+            ),
+
+          /// 📢 FOOTER AD
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 250)),
+          const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
       ),
       floatingActionButton: isMobile
-          ? _FilterFAB(onPressed: () => _showFilterSheet(context))
+          ? FloatingActionButton.extended(
+              onPressed: () => _showFilterSheet(context),
+              icon: const Icon(Icons.tune),
+              label: const Text('Filtrele'),
+            )
           : null,
     );
   }
 
-  // --- WIDGETS ---
-
-  Widget _buildShowroomAppBar(final BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: context.responsive(mobile: 200.0, desktop: 350.0),
-      pinned: true,
-      stretch: true,
-      backgroundColor: const Color(0xFF0F172A),
-      flexibleSpace: FlexibleSpaceBar(
-        title: const Text('KOLEKSİYONU KEŞFET',
-            style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w900)),
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.network(
-                'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace',
-                fit: BoxFit.cover),
-            Container(
-                decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        colors: [Colors.black87, Colors.transparent]))),
-          ],
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildProductGrids(
-      final BuildContext context, final List<Product> products) {
-    final available = products.where((final p) => !p.isSold).toList();
-    final sold = products.where((final p) => p.isSold).toList();
-
-    return [
-      if (available.isNotEmpty) ...[
-        _buildSectionHeader(
-            'Mevcut Ürünler', available.length, const Color(0xFF10B981)),
-        ResponsiveProductSliverGrid(
-            products: available,
-            onProductTap: (final p) => context.push('/product/${p.id}')),
-      ],
-      if (sold.isNotEmpty) ...[
-        _buildSectionHeader('Satılmış Ürünler', sold.length, Colors.blueGrey),
-        ResponsiveProductSliverGrid(
-            products: sold,
-            onProductTap: (final p) => context.push('/product/${p.id}')),
-      ],
-    ];
-  }
-
-  Widget _buildSectionHeader(
-      final String title, final int count, final Color color) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
-        child: Row(
-          children: [
-            Container(
-                width: 4,
-                height: 20,
-                decoration: BoxDecoration(
-                    color: color, borderRadius: BorderRadius.circular(2))),
-            const SizedBox(width: 12),
-            Text(title,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const Spacer(),
-            Chip(
-                label: Text('$count',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                backgroundColor: color),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingSliver() => const SliverFillRemaining(
-      child: Center(child: CircularProgressIndicator()));
-
-  Widget _buildEmptyStateSliver() =>
-      const SliverFillRemaining(child: Center(child: Text('Sonuç Bulunamadı')));
-
   void _showFilterSheet(final BuildContext context) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (final context) => FilterSheet(
+      builder: (final _) => FilterSheet(
         onApplyFilters: () {
           final f = ref.read(searchFiltersProvider);
           ref.read(searchProvider.notifier).setCondition(f.condition);

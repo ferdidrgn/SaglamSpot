@@ -6,7 +6,7 @@ import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
-import '../../../products/presentation/providers/product_provider.dart';
+import '../../../products/presentation/providers/product_notifier.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -293,7 +293,7 @@ class _AdminProductCard extends ConsumerWidget {
               child: const Text("Vazgeç")),
           TextButton(
               onPressed: () {
-                ref.read(productProvider.notifier).deleteProduct(product);
+                ref.read(productProvider.notifier).deleteProduct(product.id);
                 Navigator.pop(context);
               },
               child:

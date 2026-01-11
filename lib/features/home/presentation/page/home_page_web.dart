@@ -7,7 +7,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-import '../../../products/presentation/providers/product_provider.dart';
+import '../../../products/presentation/providers/product_notifier.dart';
 import '../widgets/furniture_tips_section.dart';
 
 class HomePage extends ConsumerStatefulWidget {

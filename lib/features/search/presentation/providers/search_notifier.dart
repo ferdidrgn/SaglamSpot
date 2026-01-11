@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:saglamspot/core/common/base_notifier.dart';
+import '../../../../core/common/base_result.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import 'search_state.dart';
 
