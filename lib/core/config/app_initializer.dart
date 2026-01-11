@@ -35,7 +35,10 @@ abstract final class AppInitializer {
     await _initFirebase();
 
     // 📢 Google Mobile Ads Başlatma
-    await MobileAds.instance.initialize();
+    if (kIsWeb) // Web'de bunları await etme, arka planda başlasınlar
+      MobileAds.instance.initialize();
+    else
+      await MobileAds.instance.initialize();
 
     // 🛡️ Güvenlik ve Hata Takibi (Firebase bağımlı servisler)
     if (Firebase.apps.isNotEmpty) {

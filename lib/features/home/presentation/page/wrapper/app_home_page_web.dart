@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../shared/navigation/providers/navigation_keys.dart';
+import '../../../../../shared/navigation/widgets/navigation.dart';
 import '../home_page_web.dart';
 
 class AppHomePage extends StatelessWidget {
@@ -7,5 +8,5 @@ class AppHomePage extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) =>
-      HomePage(key: NavigationKeys.webNavKey);
+      NavigationScreen(key: NavigationKeys.webNavKey, navigationShell: null,);
 }
