@@ -16,6 +16,7 @@ import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/product_detail_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
+import '../../shared/navigation/widgets/navigation.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
