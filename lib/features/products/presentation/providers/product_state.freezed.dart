@@ -274,13 +274,14 @@ extension ProductStatePatterns on ProductState {
 
 /// @nodoc
 
-class _ProductState implements ProductState {
+class _ProductState extends ProductState {
   const _ProductState(
       {final List<Product>? dataList,
       this.dataSingle,
       this.isLoading = false,
       this.errorMessage})
-      : _dataList = dataList;
+      : _dataList = dataList,
+        super._();
 
   final List<Product>? _dataList;
   @override

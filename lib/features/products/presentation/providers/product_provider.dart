@@ -31,6 +31,7 @@ DeleteProductUseCase deleteProductUseCase(final Ref ref) =>
 
 // --- FİLTRELEYİCİ PROVIDER'LAR ---
 
+///mixed
 @riverpod
 List<Product> availableProducts(final Ref ref) {
   // Not: productNotifierProvider isminin çıkması için product_notifier.g.dart oluşmuş olmalı
@@ -39,19 +40,40 @@ List<Product> availableProducts(final Ref ref) {
 }
 
 @riverpod
+List<Product> soldProducts(final Ref ref) {
+  // Not: productNotifierProvider isminin çıkması için product_notifier.g.dart oluşmuş olmalı
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).sold;
+}
+
+///sell
+@riverpod
 List<Product> newArrivals(final Ref ref) {
   final state = ref.watch(productProvider);
   return (state.dataList ?? []).newest;
 }
 
 @riverpod
-List<Product> spotProducts(final Ref ref) {
+List<Product> spotDealsProducts(final Ref ref) {
   final state = ref.watch(productProvider);
   return (state.dataList ?? []).spotDeals;
 }
 
 @riverpod
-List<Product> soldProducts(final Ref ref) {
+List<Product> newDealsProducts(final Ref ref) {
   final state = ref.watch(productProvider);
-  return (state.dataList ?? []).sold;
+  return (state.dataList ?? []).newDeals;
+}
+
+///sold
+@riverpod
+List<Product> spotSoldProducts(final Ref ref) {
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).spotSold;
+}
+
+@riverpod
+List<Product> newSoldProducts(final Ref ref) {
+  final state = ref.watch(productProvider);
+  return (state.dataList ?? []).newSold;
 }

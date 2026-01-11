@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/core/widgets/custom_product_card.dart';
+import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/interactive_magic_spotlight.dart';
@@ -28,16 +29,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   @override
   Widget build(final BuildContext context) {
-    final productState = ref.watch(productProvider);
-    final allProducts = productState.dataList ?? [];
-
-    // Veri ayrıştırma
-    final availableProducts =
-        allProducts.where((final p) => !p.isSold).toList();
-    final soldProducts = allProducts.where((final p) => p.isSold).toList();
+    final List<Product> newDealsProducts = ref.watch(newDealsProductsProvider);
+    final List<Product> soldProducts = ref.watch(newSoldProductsProvider);
 
     // Filtreleme ve Sıralama
-    final filteredAvailable = _applyLocalCategory(availableProducts);
+    final filteredAvailable = _applyLocalCategory(newDealsProducts);
     _applySort(filteredAvailable);
 
     // Satılmışları tarihe göre sırala
@@ -64,7 +60,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               _buildSortBar(context, filteredAvailable.length),
 
               // 4. ANA ÜRÜN GRİDİ
-              if (productState.isLoading && filteredAvailable.isEmpty)
+              if (newDealsProducts.isLoading && filteredAvailable.isEmpty)
                 _buildShimmerLoading(context)
               else if (filteredAvailable.isEmpty)
                 _buildEmpty()

@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_state.dart';
-import '../../../../core/common/base_notifier.dart';
 import '../../../../core/common/base_result.dart';
 import '../../domain/entites/product.dart';
 
@@ -60,13 +59,15 @@ class ProductNotifier extends _$ProductNotifier with BaseResultHandler {
   }
 
   Future<void> updateProduct(final Product product) async {
-    await handleResult(() => ref.read(updateProductUseCaseProvider).call(product),
+    await handleResult(
+        () => ref.read(updateProductUseCaseProvider).call(product),
         operationTag: 'UpdateProduct');
     ref.invalidateSelf();
   }
 
   Future<void> deleteProduct(final String productId) async {
-    await handleResult(() => ref.read(deleteProductUseCaseProvider).call(productId),
+    await handleResult(
+        () => ref.read(deleteProductUseCaseProvider).call(productId),
         operationTag: 'DeleteProduct');
     ref.invalidateSelf();
   }
@@ -93,10 +94,11 @@ class ProductNotifier extends _$ProductNotifier with BaseResultHandler {
 
 /// Performans odaklı Extension filtreler
 extension ProductFilters on List<Product> {
+  ///mixed
   List<Product> get available => where((final e) => !e.isSold).toList();
-
   List<Product> get sold => where((final e) => e.isSold).toList();
 
+  ///sell
   List<Product> get spotDeals =>
       where((final e) => e.isSpotProduct && !e.isSold).toList();
 
@@ -111,4 +113,11 @@ extension ProductFilters on List<Product> {
       return createdDate.isAfter(tenDaysAgo);
     }).toList();
   }
+
+  ///sold
+  List<Product> get spotSold =>
+      where((final e) => e.isSpotProduct && e.isSold).toList();
+
+  List<Product> get newSold =>
+      where((final e) => !e.isSpotProduct && e.isSold).toList();
 }

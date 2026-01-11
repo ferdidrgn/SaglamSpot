@@ -225,12 +225,17 @@ final class DeleteProductUseCaseProvider extends $FunctionalProvider<
 String _$deleteProductUseCaseHash() =>
     r'56dbec5d4cc513cae4602b2e2d816bc0a9fa724d';
 
+///mixed
+
 @ProviderFor(availableProducts)
 const availableProductsProvider = AvailableProductsProvider._();
+
+///mixed
 
 final class AvailableProductsProvider
     extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
     with $Provider<List<Product>> {
+  ///mixed
   const AvailableProductsProvider._()
       : super(
           from: null,
@@ -265,88 +270,6 @@ final class AvailableProductsProvider
 }
 
 String _$availableProductsHash() => r'a65b3ea10d715e2b51dbe3e39257e672116903c4';
-
-@ProviderFor(newArrivals)
-const newArrivalsProvider = NewArrivalsProvider._();
-
-final class NewArrivalsProvider
-    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
-    with $Provider<List<Product>> {
-  const NewArrivalsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'newArrivalsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$newArrivalsHash();
-
-  @$internal
-  @override
-  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  List<Product> create(Ref ref) {
-    return newArrivals(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Product> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<Product>>(value),
-    );
-  }
-}
-
-String _$newArrivalsHash() => r'7a59e54c011ed142695adaaabbb7acdc6270e949';
-
-@ProviderFor(spotProducts)
-const spotProductsProvider = SpotProductsProvider._();
-
-final class SpotProductsProvider
-    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
-    with $Provider<List<Product>> {
-  const SpotProductsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'spotProductsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$spotProductsHash();
-
-  @$internal
-  @override
-  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  List<Product> create(Ref ref) {
-    return spotProducts(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Product> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<Product>>(value),
-    );
-  }
-}
-
-String _$spotProductsHash() => r'2436dd3c7fd845f4d97deb47dbe30c1291d8632c';
 
 @ProviderFor(soldProducts)
 const soldProductsProvider = SoldProductsProvider._();
@@ -388,3 +311,218 @@ final class SoldProductsProvider
 }
 
 String _$soldProductsHash() => r'02e718af62252af0fa81e760a622045e489bcbd5';
+
+///sell
+
+@ProviderFor(newArrivals)
+const newArrivalsProvider = NewArrivalsProvider._();
+
+///sell
+
+final class NewArrivalsProvider
+    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
+    with $Provider<List<Product>> {
+  ///sell
+  const NewArrivalsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'newArrivalsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$newArrivalsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Product> create(Ref ref) {
+    return newArrivals(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Product>>(value),
+    );
+  }
+}
+
+String _$newArrivalsHash() => r'7a59e54c011ed142695adaaabbb7acdc6270e949';
+
+@ProviderFor(spotDealsProducts)
+const spotDealsProductsProvider = SpotDealsProductsProvider._();
+
+final class SpotDealsProductsProvider
+    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
+    with $Provider<List<Product>> {
+  const SpotDealsProductsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'spotDealsProductsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$spotDealsProductsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Product> create(Ref ref) {
+    return spotDealsProducts(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Product>>(value),
+    );
+  }
+}
+
+String _$spotDealsProductsHash() => r'41de41fe049736144ca9e60ddbf4f16933531c62';
+
+@ProviderFor(newDealsProducts)
+const newDealsProductsProvider = NewDealsProductsProvider._();
+
+final class NewDealsProductsProvider
+    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
+    with $Provider<List<Product>> {
+  const NewDealsProductsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'newDealsProductsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$newDealsProductsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Product> create(Ref ref) {
+    return newDealsProducts(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Product>>(value),
+    );
+  }
+}
+
+String _$newDealsProductsHash() => r'f712dd572999d929cc1ac26564bb96ffa729e153';
+
+///sold
+
+@ProviderFor(spotSoldProducts)
+const spotSoldProductsProvider = SpotSoldProductsProvider._();
+
+///sold
+
+final class SpotSoldProductsProvider
+    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
+    with $Provider<List<Product>> {
+  ///sold
+  const SpotSoldProductsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'spotSoldProductsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$spotSoldProductsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Product> create(Ref ref) {
+    return spotSoldProducts(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Product>>(value),
+    );
+  }
+}
+
+String _$spotSoldProductsHash() => r'238225c8d980f2e4a78fe12d4b854790001a8bad';
+
+@ProviderFor(newSoldProducts)
+const newSoldProductsProvider = NewSoldProductsProvider._();
+
+final class NewSoldProductsProvider
+    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
+    with $Provider<List<Product>> {
+  const NewSoldProductsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'newSoldProductsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$newSoldProductsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Product> create(Ref ref) {
+    return newSoldProducts(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Product>>(value),
+    );
+  }
+}
+
+String _$newSoldProductsHash() => r'505cb3ecbb512fbd3e827878e784ae5d7ae7bda1';
