@@ -1,16 +1,14 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
-
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
-import '../widgets/filter_sheet.dart';
 import '../../../../core/widgets/responsive_product_grid.dart';
 import '../../../../core/widgets/shimmer_components.dart'; // Senin shimmer kitin
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart'; // Yeni yazdığımız merkezi providerlar
+import '../widgets/filter_sheet.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});

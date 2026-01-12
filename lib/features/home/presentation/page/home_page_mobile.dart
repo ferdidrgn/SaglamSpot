@@ -25,15 +25,20 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(final BuildContext context) {
+    ref.listen<AsyncValue<void>>(
+      productMutationProvider,
+      (final previous, final next) {
+        if (next is AsyncData) ref.invalidate(productsProvider);
+      },
+    );
+
     final productsAsync = ref.watch(productsProvider);
-    final available = ref.watch(availableProductsProvider);
-    final sold = ref.watch(soldProductsProvider);
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
-        appBar: _buildAppBar(available.length, sold.length),
+        appBar: _buildAppBar(productsAsync),
         body: Column(
           children: [
             const AdBannerWidget(),
@@ -42,13 +47,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                 loading: () => const FullPageShimmer(),
                 error: (final err, final _) =>
                     Center(child: Text("Hata: $err")),
-                data: (final _) => TabBarView(
-                  physics: const BouncingScrollPhysics(),
-                  children: [
-                    _buildProductGrid(available, "Stokta ürün bulunmuyor"),
-                    _buildProductGrid(sold, "Henüz satılmış ürün yok"),
-                  ],
-                ),
+                data: (final products) {
+                  final available =
+                      products.where((final e) => !e.isSold).toList();
+                  final sold = products.where((final e) => e.isSold).toList();
+
+                  return TabBarView(
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      _buildProductGrid(available, "Stokta ürün bulunmuyor"),
+                      _buildProductGrid(sold, "Henüz satılmış ürün yok"),
+                    ],
+                  );
+                },
               ),
             ),
             const AdBannerWidget(),
@@ -59,42 +70,33 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // --- Ürün Izgarası ---
-  Widget _buildProductGrid(final List<Product> list, final String emptyMsg) {
-    if (list.isEmpty) return _buildEmptyState(emptyMsg);
-
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: context.gridColumns(2),
-        childAspectRatio: 0.75,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: list.length + (list.length ~/ 6),
-      itemBuilder: (final context, final index) {
-        if (index > 0 && (index + 1) % 7 == 0) return const AdNativeWidget();
-        final productIndex = index - (index ~/ 7);
-        if (productIndex >= list.length) return const SizedBox.shrink();
-        return _AdminProductCard(product: list[productIndex]);
-      },
-    );
-  }
+  // ---------------- APP BAR ----------------
 
   PreferredSizeWidget _buildAppBar(
-      final int availableCount, final int soldCount) {
+      final AsyncValue<List<Product>> productsAsync) {
+    final products = productsAsync.value ?? [];
+
+    final availableCount = products.where((final e) => !e.isSold).length;
+    final soldCount = products.where((final e) => e.isSold).length;
+
     return AppBar(
       elevation: 0,
       backgroundColor: Colors.white,
-      title: const Text("Yönetici Paneli",
-          style:
-              TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.w900)),
+      title: const Text(
+        "Yönetici Paneli",
+        style: TextStyle(
+          color: Color(0xFF1E293B),
+          fontWeight: FontWeight.w900,
+        ),
+      ),
       actions: [
         IconButton(
-          onPressed: () => _showLogoutDialog(),
-          icon: const Icon(Icons.power_settings_new_rounded,
-              color: Colors.redAccent),
-        )
+          onPressed: _showLogoutDialog,
+          icon: const Icon(
+            Icons.power_settings_new_rounded,
+            color: Colors.redAccent,
+          ),
+        ),
       ],
       bottom: TabBar(
         isScrollable: true,
@@ -111,13 +113,45 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  // ---------------- GRID ----------------
+
+  Widget _buildProductGrid(final List<Product> list, final String emptyMsg) {
+    if (list.isEmpty) return _buildEmptyState(emptyMsg);
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: context.gridColumns(2),
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: list.length + (list.length ~/ 6),
+      itemBuilder: (final context, final index) {
+        if (index > 0 && (index + 1) % 7 == 0) {
+          return const AdNativeWidget();
+        }
+
+        final productIndex = index - (index ~/ 7);
+        if (productIndex >= list.length) {
+          return const SizedBox.shrink();
+        }
+
+        return _AdminProductCard(product: list[productIndex]);
+      },
+    );
+  }
+
   Widget _buildEmptyState(final String msg) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inventory_2_outlined,
-              size: 60, color: slateColor.withOpacity(0.2)),
+          Icon(
+            Icons.inventory_2_outlined,
+            size: 60,
+            color: slateColor.withOpacity(0.2),
+          ),
           const SizedBox(height: 10),
           Text(msg, style: const TextStyle(color: slateColor)),
         ],
@@ -125,39 +159,50 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // GÜNCELLEME: MaterialPageRoute ile AddProductPage geçişi
+  // ---------------- FAB ----------------
+
   Widget _buildFAB(final BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (final context) => const AddProductPage()),
+          MaterialPageRoute(
+            builder: (final _) => const AddProductPage(),
+          ),
         );
       },
       backgroundColor: primaryColor,
-      icon: const Icon(Icons.add_photo_alternate_outlined, color: Colors.white),
+      icon: const Icon(
+        Icons.add_photo_alternate_outlined,
+        color: Colors.white,
+      ),
       label: const Text("Ürün Ekle", style: TextStyle(color: Colors.white)),
     );
   }
 
+  // ---------------- LOGOUT ----------------
+
   void _showLogoutDialog() {
     showDialog(
       context: context,
-      builder: (final context) => AlertDialog(
+      builder: (final _) => AlertDialog(
         title: const Text("Çıkış"),
         content: const Text("Çıkış yapmak istediğinize emin misiniz?"),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Hayır")),
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Hayır"),
+          ),
           TextButton(
-              onPressed: () {
-                ref.read(authProvider.notifier).signOut();
-                // Material Navigator ile login'e dönüş
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/login', (final route) => false);
-              },
-              child: const Text("Evet")),
+            onPressed: () {
+              ref.read(authProvider.notifier).signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login',
+                (final _) => false,
+              );
+            },
+            child: const Text("Evet"),
+          ),
         ],
       ),
     );

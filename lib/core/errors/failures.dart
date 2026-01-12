@@ -27,7 +27,7 @@ extension FutureEitherX<T> on Future<Either<Failure, T>> {
   Future<T> getOrThrow() async {
     final result = await this;
     return result.fold(
-      (final failure) => throw Exception(failure.message ?? 'Bir hata oluştu'),
+      (final failure) => throw Exception(failure.message),
       (final success) => success,
     );
   }

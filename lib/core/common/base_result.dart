@@ -43,7 +43,7 @@ mixin BaseResultHandler {
     return switch (failure.runtimeType.toString()) {
       'NetworkFailure' => 'İnternet bağlantınızı kontrol edin.',
       'ServerFailure' => 'Sunucu şu an yanıt vermiyor.',
-      _ => failure.message ?? 'Bir hata oluştu',
+      _ => failure.message,
     };
   }
 }

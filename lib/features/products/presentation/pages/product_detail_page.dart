@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';

@@ -9,32 +9,41 @@ class ProductMutation extends _$ProductMutation {
   @override
   FutureOr<void> build() {}
 
-  // ÜRÜN EKLEME
-  Future<void> add(final Product product, final List<dynamic> images) async {
+  Future<void> add(
+    final Product product,
+    final List<dynamic> images,
+  ) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      // UseCase çağrısı ve otomatik hata fırlatma
+
+    final result = await AsyncValue.guard(() async {
       await ref.read(addProductUseCaseProvider).call(product, images);
-      ref.invalidate(productsProvider);
     });
+
+    if (!ref.mounted) return;
+
+    state = result;
+    ref.invalidate(productsProvider);
   }
 
-  // ÜRÜN GÜNCELLEME
   Future<void> updateProduct(
-      final Product product, final List<dynamic>? newImages) async {
+    final Product product,
+    final List<dynamic>? newImages,
+  ) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+
+    final result = await AsyncValue.guard(() async {
       await ref.read(updateProductUseCaseProvider).call(product, newImages);
-      ref.invalidate(productsProvider);
     });
+
+    if (!ref.mounted) return;
+
+    state = result;
+    ref.invalidate(productsProvider);
   }
 
-  // ÜRÜN SİLME
   Future<void> delete(final String id) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await ref.read(deleteProductUseCaseProvider).call(id);
-      ref.invalidate(productsProvider);
-    });
+    state = await AsyncValue.guard(
+        () => ref.read(deleteProductUseCaseProvider).call(id));
   }
 }

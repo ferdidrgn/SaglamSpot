@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +9,6 @@ import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../domain/entites/product.dart';
 import '../providers/product_mutation_provider.dart';
-import '../providers/product_provider.dart';
-import 'dart:developer' as dev;
 
 class AddProductPage extends ConsumerStatefulWidget {
   const AddProductPage({super.key});
