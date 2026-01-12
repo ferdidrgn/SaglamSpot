@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -11,12 +10,12 @@ import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
 import '../../../products/presentation/pages/edit_product_page.dart';
 import '../../../products/presentation/providers/gallery_provider.dart';
+import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_mutation_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
-import '../../../products/presentation/providers/product_filters_provider.dart';
 
 // --- ENUMLAR ---
-enum ProductStatus { stokta, satildi }
+enum ProductStatus { available, sold }
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -97,26 +96,23 @@ class HomePage extends ConsumerWidget {
 
 class _ProductGrid extends StatelessWidget {
   final List<Product> products;
-
   const _ProductGrid({required this.products});
 
   @override
   Widget build(final BuildContext context) {
-    if (products.isEmpty)
-      return const Center(
-          child: Text('Ürün bulunamadı',
-              style: TextStyle(color: AppColors.textSecondary)));
+    if (products.isEmpty) return const Center(child: Text('Ürün bulunamadı'));
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: context.gridColumns(2),
-        childAspectRatio: 0.65, // Taşmayı engelleyen ideal oran
+        // Görsel büyüdüğü için oranı 0.65'ten 0.58'e çektik (Daha uzun kartlar)
+        childAspectRatio: 0.58,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
       itemCount: products.length + (products.length ~/ 5),
-      itemBuilder: (final context, final index) {
+      itemBuilder: (context, index) {
         if (index > 0 && (index + 1) % 6 == 0) return const AdNativeWidget();
         final realIndex = index - (index ~/ 6);
         if (realIndex >= products.length) return const SizedBox.shrink();
@@ -128,11 +124,10 @@ class _ProductGrid extends StatelessWidget {
 
 class LuxuryProductCard extends ConsumerWidget {
   final Product product;
-
   const LuxuryProductCard({super.key, required this.product});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -142,21 +137,22 @@ class LuxuryProductCard extends ConsumerWidget {
           BoxShadow(
               color: AppColors.accent.withOpacity(0.15),
               blurRadius: 20,
-              offset: const Offset(0, 10))
+              offset: const Offset(0, 10)
+          )
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // GÖRSEL ALANI
+          // GÖRSEL ALANI: AspectRatio 1.1'den 0.9'a çekildi (Daha Büyük Görsel)
           AspectRatio(
-            aspectRatio: 1.1, // Sabit görsel oranı taşmayı engeller
+            aspectRatio: 0.9,
             child: _ImageArea(product: product),
           ),
           // BİLGİ VE AKSİYON ALANI
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
