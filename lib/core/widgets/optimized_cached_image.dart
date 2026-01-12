@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:saglamspot/core/widgets/shimmer_card.dart';
+import 'package:saglamspot/core/widgets/shimmer_components.dart';
 
 class OptimizedCachedImage extends StatelessWidget {
   final String imageUrl;
@@ -28,11 +28,12 @@ class OptimizedCachedImage extends StatelessWidget {
     required final BuildContext context,
     final double? width,
     final double? height,
-  }) => CachedNetworkImageProvider(
-      imageUrl,
-      maxWidth: _calculateCacheSize(context, width),
-      maxHeight: _calculateCacheSize(context, height),
-    );
+  }) =>
+      CachedNetworkImageProvider(
+        imageUrl,
+        maxWidth: _calculateCacheSize(context, width),
+        maxHeight: _calculateCacheSize(context, height),
+      );
 
   @override
   Widget build(final BuildContext context) {

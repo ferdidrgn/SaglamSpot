@@ -2,29 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/theme/app_colors.dart';
 
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
-import '../../../../core/widgets/filter_sheet.dart';
+import '../widgets/filter_sheet.dart';
 import '../../../../core/widgets/responsive_product_grid.dart';
+import '../../../../core/widgets/shimmer_components.dart'; // Senin shimmer kitin
 import '../../../products/domain/entites/product.dart';
-import '../providers/search_filters_notifier.dart';
-import '../providers/search_notifier.dart';
-import '../providers/search_state.dart';
-
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../../../core/util/responsive_utils.dart';
-import '../../../../core/widgets/ad_sense_banner.dart';
-import '../../../../core/widgets/filter_sheet.dart';
-import '../../../../core/widgets/responsive_product_grid.dart';
-import '../../../products/domain/entites/product.dart';
-import '../providers/search_filters_notifier.dart';
-import '../providers/search_notifier.dart';
-import '../providers/search_state.dart';
+import '../providers/search_providers.dart'; // Yeni yazdığımız merkezi providerlar
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -55,13 +41,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   void _resetAll() {
     _searchController.clear();
-    ref.read(searchProvider.notifier).resetFilters();
+    ref.read(searchQueryProvider.notifier).update('');
     ref.read(searchFiltersProvider.notifier).reset();
   }
 
   @override
   Widget build(final BuildContext context) {
-    final state = ref.watch(searchProvider);
+    // 1. REAKTİF VERİLERİ İZLE
+    final searchResultsAsync = ref.watch(searchedProductsProvider);
+    final currentFilters = ref.watch(searchFiltersProvider);
     final isMobile = context.isMobile;
 
     return Scaffold(
@@ -80,46 +68,37 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: _SearchAndFilterSection(
                 isMobile: isMobile,
                 searchController: _searchController,
-                onSearchChanged:
-                    ref.read(searchProvider.notifier).onQueryChanged,
+                onSearchChanged: (val) =>
+                    ref.read(searchQueryProvider.notifier).update(val),
                 categories: _categories,
-                selectedCategory: state.selectedCategory ?? 'Tümü',
-                onCategorySelected:
-                    ref.read(searchProvider.notifier).filterByCategory,
+                selectedCategory: currentFilters.category ?? 'Tümü',
+                onCategorySelected: (cat) =>
+                    ref.read(searchFiltersProvider.notifier).setCategory(cat),
                 onFiltersReset: _resetAll,
-                onApplyFilters: () {
-                  final f = ref.read(searchFiltersProvider);
-                  ref.read(searchProvider.notifier).setCondition(f.condition);
-                  ref
-                      .read(searchProvider.notifier)
-                      .setPriceRange(f.minPrice, f.maxPrice);
-                },
+                onApplyFilters: () {}, // Reactive yapıda otomatik tetiklenir
               ),
             ),
           ),
 
           // --- ACTIVE FILTERS WRAP ---
-          if (state.isFiltered)
-            SliverToBoxAdapter(
-              child: _ActiveFiltersSection(
-                selectedCategory: state.selectedCategory ?? 'Tümü',
-                categories: _categories,
-                onCategoryFilterRemoved: () =>
-                    ref.read(searchProvider.notifier).filterByCategory('Tümü'),
-                onFilterRemoved: (final _) => _resetAll(),
-              ),
-            ),
+          _buildActiveFiltersSliver(currentFilters),
 
-          // --- PRODUCT SHOWCASE ---
-          if (state.isLoading)
-            const SliverFillRemaining(
-              child: Center(
-                  child: CircularProgressIndicator(color: Color(0xFF6366F1))),
-            )
-          else if (state.filteredProducts.isEmpty)
-            _buildEmptyState()
-          else
-            ..._buildProductGrids(context, state.filteredProducts),
+          // --- PRODUCT SHOWCASE (ASYNCVALUE.WHEN) ---
+          searchResultsAsync.when(
+            loading: () => const SliverFillRemaining(child: FullPageShimmer()),
+            error: (err, _) => SliverFillRemaining(
+              child: Center(child: Text('Hata oluştu: $err')),
+            ),
+            data: (products) {
+              if (products.isEmpty) return _buildEmptyState();
+              return SliverPadding(
+                padding: const EdgeInsets.only(bottom: 50),
+                sliver: SliverMainAxisGroup(
+                  slivers: _buildProductGrids(context, products),
+                ),
+              );
+            },
+          ),
 
           const SliverToBoxAdapter(child: AdsenseBanner(height: 250)),
           const SliverToBoxAdapter(child: SizedBox(height: 120)),
@@ -134,6 +113,22 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   const Text('Filtrele', style: TextStyle(color: Colors.white)),
             )
           : null,
+    );
+  }
+
+  Widget _buildActiveFiltersSliver(final dynamic filters) {
+    final bool hasFilters = filters.category != null ||
+        filters.condition != null ||
+        filters.minPrice > 0 ||
+        filters.maxPrice < 100000;
+
+    if (!hasFilters) return const SliverToBoxAdapter(child: SizedBox.shrink());
+
+    return SliverToBoxAdapter(
+      child: _ActiveFiltersSection(
+        filters: filters,
+        onReset: _resetAll,
+      ),
     );
   }
 
@@ -210,20 +205,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (final _) => FilterSheet(
-        onApplyFilters: () {
-          final f = ref.read(searchFiltersProvider);
-          ref.read(searchProvider.notifier).setCondition(f.condition);
-          ref
-              .read(searchProvider.notifier)
-              .setPriceRange(f.minPrice, f.maxPrice);
-        },
+        // FilterSheet artık doğrudan searchFiltersProvider'ı manipüle edecek
+        onApplyFilters: () => Navigator.pop(context),
         onResetFilters: _resetAll,
       ),
     );
   }
 }
 
-// --- SUB-WIDGETS & DELEGATES ---
+// --- SUB-WIDGETS ---
 
 class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
@@ -232,66 +222,16 @@ class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(final context, final shrinkOffset, final overlapsContent) =>
-      Container(color: Colors.white, child: child);
+      Material(elevation: shrinkOffset > 0 ? 4 : 0, child: child);
 
   @override
-  double get maxExtent => 160;
+  double get maxExtent => 180;
 
   @override
-  double get minExtent => 160;
+  double get minExtent => 180;
 
   @override
-  bool shouldRebuild(
-          covariant final SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
-}
-
-class _CreativeAppBar extends StatelessWidget {
-  const _CreativeAppBar();
-
-  @override
-  Widget build(final BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: context.responsive(mobile: 180.0, desktop: 230.0),
-      pinned: true,
-      elevation: 0,
-      backgroundColor: const Color(0xFF0F172A),
-      iconTheme: const IconThemeData(color: Colors.white),
-      flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
-        title: Text(
-          'Aradığını Keşfet',
-          style: TextStyle(
-            fontSize: context.responsive(mobile: 16, desktop: 18),
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.network(
-              'https://images.unsplash.com/photo-1519710164239-da123dc03ef4',
-              fit: BoxFit.cover,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.85),
-                    Colors.black.withOpacity(0.25),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  bool shouldRebuild(covariant final _StickySearchDelegate oldDelegate) => true;
 }
 
 class _ShowroomAppBar extends StatelessWidget {
@@ -329,7 +269,6 @@ class _ShowroomAppBar extends StatelessWidget {
           children: [
             Image.network(
               'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
-              // Kaliteli mobilya görseli
               fit: BoxFit.cover,
             ),
             const DecoratedBox(
@@ -348,11 +287,6 @@ class _ShowroomAppBar extends StatelessWidget {
   }
 }
 
-// ===================================================================
-// --- DİĞER WIDGET'LAR (DEĞİŞİKLİK YOK) ---
-// ===================================================================
-
-// --- 2. ARAMA VE FİLTRE BÖLÜMÜ ---
 class _SearchAndFilterSection extends StatelessWidget {
   final bool isMobile;
   final TextEditingController searchController;
@@ -377,19 +311,17 @@ class _SearchAndFilterSection extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Container(
-      // context.responsive kullanımı
-      margin: EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
+      color: Colors.white,
+      padding: EdgeInsets.all(context.responsive(mobile: 16.0, desktop: 24.0)),
       child: Column(
         children: [
           _SearchBar(
-            // Ayıklanmış alt widget
             controller: searchController,
             onChanged: onSearchChanged,
             isMobile: isMobile,
           ),
           const SizedBox(height: 16),
           _CategoryChips(
-            // Ayıklanmış alt widget
             categories: categories,
             selectedCategory: selectedCategory,
             onSelected: onCategorySelected,
@@ -397,7 +329,6 @@ class _SearchAndFilterSection extends StatelessWidget {
           if (!isMobile) ...[
             const SizedBox(height: 16),
             _DesktopFilters(
-              // Ayıklanmış alt widget
               onFiltersReset: onFiltersReset,
               onApplyFilters: onApplyFilters,
             ),
@@ -424,43 +355,19 @@ class _SearchBar extends StatelessWidget {
     return Container(
       height: isMobile ? 54 : 60,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFF1F5F9),
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, 12),
-          ),
-        ],
-        border: Border.all(
-          color: Colors.black.withOpacity(0.04),
-        ),
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
         decoration: InputDecoration(
           hintText: 'Ürün, kategori veya marka ara…',
-          hintStyle: TextStyle(
-            color: Colors.grey.shade500,
-            fontSize: 15,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Icon(
-              Icons.search_rounded,
-              size: 24,
-              color: Colors.grey.shade600,
-            ),
-          ),
+          prefixIcon:
+              const Icon(Icons.search_rounded, color: AppColors.surface),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 20),
+                  icon: const Icon(Icons.close_rounded),
                   onPressed: () {
                     controller.clear();
                     onChanged('');
@@ -475,7 +382,6 @@ class _SearchBar extends StatelessWidget {
   }
 }
 
-// --- 2b. KATEGORİ ÇİPLERİ ---
 class _CategoryChips extends StatelessWidget {
   final List<String> categories;
   final String selectedCategory;
@@ -494,55 +400,17 @@ class _CategoryChips extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 8),
-        itemBuilder: (final context, final index) {
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = selectedCategory == category;
-
-          return InkWell(
-            borderRadius: BorderRadius.circular(22),
-            onTap: () => onSelected(category),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              decoration: BoxDecoration(
-                gradient: isSelected
-                    ? const LinearGradient(
-                        colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-                      )
-                    : null,
-                color: isSelected ? null : Colors.white,
-                borderRadius: BorderRadius.circular(22),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: const Color(0xFF6366F1).withOpacity(0.35),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
-                    : [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                border: Border.all(
-                  color: isSelected
-                      ? Colors.transparent
-                      : Colors.black.withOpacity(0.06),
-                ),
-              ),
-              child: Text(
-                category,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : const Color(0xFF475569),
-                ),
-              ),
-            ),
+          return FilterChip(
+            label: Text(category),
+            selected: isSelected,
+            onSelected: (_) => onSelected(category),
+            selectedColor: const Color(0xFF6366F1),
+            labelStyle:
+                TextStyle(color: isSelected ? Colors.white : Colors.black87),
           );
         },
       ),
@@ -550,320 +418,55 @@ class _CategoryChips extends StatelessWidget {
   }
 }
 
-// --- 2c. DESKTOP FİLTRELERİ (ConsumerWidget) ---
 class _DesktopFilters extends ConsumerWidget {
   final VoidCallback onFiltersReset;
   final VoidCallback onApplyFilters;
 
-  const _DesktopFilters({
-    required this.onFiltersReset,
-    required this.onApplyFilters,
-  });
+  const _DesktopFilters(
+      {required this.onFiltersReset, required this.onApplyFilters});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    // _buildDesktopFilters'ın içeriği
     final filters = ref.watch(searchFiltersProvider);
-    final filtersNotifier = ref.read(searchFiltersProvider.notifier);
+    final notifier = ref.read(searchFiltersProvider.notifier);
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildFilterDropdown(
-              // İç metot
-              'Durum',
-              filters.condition ?? 'Hepsi',
-              const ['Hepsi', 'Sıfır', 'İkinci El'],
-              (final value) {
-                filtersNotifier.setCondition(value == 'Hepsi' ? null : value);
-                onApplyFilters(); // Ana sayfaya haber ver
-              },
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: _buildPriceRangeFilter(filters, filtersNotifier), // İç metot
-          ),
-          const SizedBox(width: 16),
-          ElevatedButton.icon(
-            onPressed: onFiltersReset, // Ana sayfadan gelen fonksiyon
-            icon: const Icon(Icons.refresh_rounded, size: 18),
-            label: const Text('Temizle'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEC4899),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // _buildFilterDropdown metodunu _DesktopFilters'ın içine taşıdık
-  Widget _buildFilterDropdown(
-    final String label,
-    final String value,
-    final List<String> items,
-    final Function(String?) onChanged,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
+        Expanded(
+          child: DropdownButtonFormField<String>(
+            value: filters.condition ?? 'Hepsi',
+            items: ['Hepsi', 'Sıfır', 'İkinci El']
+                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                .toList(),
+            onChanged: (val) => notifier.setCondition(val),
+            decoration: const InputDecoration(
+                labelText: 'Durum', border: OutlineInputBorder()),
           ),
         ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              items: items.map((final item) {
-                return DropdownMenuItem(
-                  value: item,
-                  child: Text(item),
-                );
-              }).toList(),
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // _buildPriceRangeFilter metodunu _DesktopFilters'ın içine taşıdık
-  Widget _buildPriceRangeFilter(
-      final SearchState filters, final SearchFiltersNotifier notifier) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Fiyat Aralığı',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Min',
-                  filled: true,
-                  fillColor: const Color(0xFFF8FAFC),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (final value) {
-                  notifier.setPriceRange(
-                      double.tryParse(value) ?? 0, filters.maxPrice);
-                },
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text('-', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            Expanded(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Max',
-                  filled: true,
-                  fillColor: const Color(0xFFF8FAFC),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (final value) {
-                  notifier.setPriceRange(
-                      filters.minPrice, double.tryParse(value) ?? 50000);
-                },
-              ),
-            ),
-          ],
-        ),
+        const SizedBox(width: 12),
+        ElevatedButton(onPressed: onFiltersReset, child: const Text('Temizle')),
       ],
     );
   }
 }
 
-// --- 3. AKTİF FİLTRELER BÖLÜMÜ (ConsumerWidget) ---
-class _ActiveFiltersSection extends ConsumerWidget {
-  final String selectedCategory;
-  final List<String> categories;
-  final VoidCallback onCategoryFilterRemoved;
-  final Function(String) onFilterRemoved;
+class _ActiveFiltersSection extends StatelessWidget {
+  final dynamic filters;
+  final VoidCallback onReset;
 
-  const _ActiveFiltersSection({
-    required this.selectedCategory,
-    required this.categories,
-    required this.onCategoryFilterRemoved,
-    required this.onFilterRemoved,
-  });
-
-  @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    // _buildActiveFiltersSection'ın içeriği
-    final searchState = ref.watch(searchProvider);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6366F1).withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          const Text(
-            'Aktif Filtreler:',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF1E293B),
-              fontSize: 13,
-            ),
-          ),
-          if (searchState.condition != null)
-            _buildFilterChip(context, searchState.condition!), // İç metot
-          if (searchState.minPrice > 0)
-            _buildFilterChip(context,
-                'Min: ₺${searchState.minPrice.toStringAsFixed(0)}'), // İç metot
-          if (searchState.maxPrice < 50000)
-            _buildFilterChip(context,
-                'Max: ₺${searchState.maxPrice.toStringAsFixed(0)}'), // İç metot
-          if (selectedCategory != 'Tümü')
-            _buildFilterChip(context, selectedCategory), // İç metot
-        ],
-      ),
-    );
-  }
-
-  // _buildFilterChip metodunu _ActiveFiltersSection'ın içine taşıdık
-  Widget _buildFilterChip(final BuildContext context, final String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF6366F1), Color(0xFF8B87EA)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 4),
-          InkWell(
-            onTap: () {
-              // Ana sayfaya (controller'a) haber ver
-              if (categories.contains(label))
-                onCategoryFilterRemoved();
-              else
-                onFilterRemoved(label);
-            },
-            child: const Icon(
-              Icons.close_rounded,
-              color: Colors.white,
-              size: 16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// --- 5. YÜZEN FİLTRE BUTONU (FAB) ---
-class _FilterFAB extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const _FilterFAB({required this.onPressed});
+  const _ActiveFiltersSection({required this.filters, required this.onReset});
 
   @override
   Widget build(final BuildContext context) {
-    // _buildFloatingFilterButton'ın içeriği
-    return FloatingActionButton.extended(
-      onPressed: onPressed,
-      backgroundColor: const Color(0xFF6366F1),
-      elevation: 4,
-      icon: const Icon(Icons.tune_rounded, color: Colors.white),
-      label: const Text(
-        'Filtrele',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: Wrap(
+        spacing: 8,
+        children: [
+          if (filters.category != null) Chip(label: Text(filters.category!)),
+          if (filters.condition != null) Chip(label: Text(filters.condition!)),
+          ActionChip(label: const Text('Tümünü Temizle'), onPressed: onReset),
+        ],
       ),
     );
   }

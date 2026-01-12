@@ -53,23 +53,44 @@ class ShimmerCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final int effectiveCrossAxisCount = crossAxisCount ??
-        context.responsive<int>(mobile: 3, tablet: 6, desktop: 10);
+    if (itemCount == 1 || itemCount == 2)
+      return _buildShimmerItem(context);
+    else {
+      final int effectiveCrossAxisCount = crossAxisCount ??
+          context.responsive<int>(mobile: 3, tablet: 6, desktop: 10);
 
-    // Kolon sayısı arttıkça (web'de 10 olunca) boşluğu azaltıyoruz ki kartlar nefes alabilsin
-    final double effectiveSpacing = effectiveCrossAxisCount > 6 ? 12.0 : 20.0;
+      final double effectiveSpacing = effectiveCrossAxisCount > 6 ? 12.0 : 20.0;
 
-    return SliverGrid.builder(
-      itemCount: itemCount,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: effectiveCrossAxisCount,
-        mainAxisSpacing: 15,
-        crossAxisSpacing: effectiveSpacing,
-        // Kartın boy/en oranını korumak için height parametreni burada kullanabilirsin
-        childAspectRatio:
-            (context.screenWidth / effectiveCrossAxisCount) / height,
-      ),
-      itemBuilder: (final context, final index) => Container(
+      // 1. Ekran genişliğinden kenar paddinglerini çıkar (Örn: responsive_utils'den gelen değer)
+      final double horizontalPadding =
+          context.responsive<double>(mobile: 48, desktop: 120);
+      final double availableWidth = context.screenWidth - horizontalPadding;
+
+      // 2. Kartlar arasındaki toplam boşluğu çıkar (N-1 tane boşluk vardır)
+      final double totalCrossSpacing =
+          (effectiveCrossAxisCount - 1) * effectiveSpacing;
+
+      // 3. Tek bir kartın NET GENİŞLİĞİ
+      final double itemWidth =
+          (availableWidth - totalCrossSpacing) / effectiveCrossAxisCount;
+
+      return GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: itemCount,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: effectiveCrossAxisCount,
+          mainAxisSpacing: 15,
+          crossAxisSpacing: effectiveSpacing,
+          childAspectRatio: itemWidth / height,
+        ),
+        itemBuilder: (final context, final index) => _buildShimmerItem(context),
+      );
+
+    }
+  }
+
+  Widget _buildShimmerItem(final BuildContext context) => Container(
         decoration: BoxDecoration(
           color: context.colors.surface,
           borderRadius: BorderRadius.circular(20),
@@ -98,9 +119,7 @@ class ShimmerCard extends StatelessWidget {
               ),
           ],
         ),
-      ),
-    );
-  }
+      );
 }
 
 // --- 3. KOMPLE SAYFA İSKELETİ (Skeleton Screen) ---

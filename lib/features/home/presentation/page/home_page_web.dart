@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/widgets/custom_search_bar.dart';
-import 'package:saglamspot/features/products/presentation/providers/product_notifier.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
-import 'package:saglamspot/features/products/presentation/providers/product_state.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/interactive_magic_spotlight.dart';
+import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
+import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../widgets/furniture_tips_section.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -37,10 +37,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     _heroController = PageController();
     _startHeroTimer();
-    // Build sonrası veri çekme (Assertion error fix)
-    WidgetsBinding.instance.addPostFrameCallback((final _) {
-      ref.read(productProvider.notifier).loadProducts();
-    });
   }
 
   void _startHeroTimer() {
@@ -64,77 +60,82 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(final BuildContext context) {
+    final productsAsync = ref.watch(productsProvider);
     final availableProducts = ref.watch(availableProductsProvider);
 
     return Scaffold(
       backgroundColor: _bgMint,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1920),
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // 1. HEADER (LOGO SAĞDA)
-              _buildDiscoveryHeaderWithLogo(context),
+      body: productsAsync.when(
+        loading: () => const FullPageShimmer(),
+        error: (final err, final _) => Center(child: Text("Hata: $err")),
+        data: (final _) => Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1920),
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // 1. HEADER (LOGO SAĞDA)
+                _buildDiscoveryHeaderWithLogo(context),
 
-              // 2. SEARCH & QUICK FEATURES
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: context.paddingHorizontal,
-                  child: Column(
-                    children: [
-                      CustomSearchBar(
-                        controller: _searchController,
-                        onSearch: (final query) => context
-                            .push('/search?q=${Uri.encodeComponent(query)}'),
-                      ),
-                      const SizedBox(height: 40),
-                      _buildQuickFeatures(context),
-                    ],
+                // 2. SEARCH & QUICK FEATURES
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: context.paddingHorizontal,
+                    child: Column(
+                      children: [
+                        CustomSearchBar(
+                          controller: _searchController,
+                          onSearch: (final query) => context
+                              .push('/search?q=${Uri.encodeComponent(query)}'),
+                        ),
+                        const SizedBox(height: 40),
+                        _buildQuickFeatures(context),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // 3. CATEGORY CHIPS (BÜYÜTÜLMÜŞ)
-              _buildLargeCategoryChips(context),
+                // 3. CATEGORY CHIPS (BÜYÜTÜLMÜŞ)
+                _buildLargeCategoryChips(context),
 
-              // 4. LUXY HERO SLIDER
-              _buildHeroSection(context),
+                // 4. LUXY HERO SLIDER
+                _buildHeroSection(context),
 
-              // 5. INVERSE SHOWCASE (FERAH GÖRSEL)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: context.sectionPadding,
-                  child: const InsaneMagicShowcase(
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?q=80&w=1600",
-                    imageScale: 1.12,
+                // 5. INVERSE SHOWCASE (FERAH GÖRSEL)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: context.sectionPadding,
+                    child: const InsaneMagicShowcase(
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?q=80&w=1600",
+                      imageScale: 1.12,
+                    ),
                   ),
                 ),
-              ),
 
-              // 6. YENİ KOLEKSİYON GRID
-              _buildSectionHeader(context, "Yeni Koleksiyon",
-                  "Evinizin ferahlığına şık bir dokunuş"),
-              _buildProductGrid(context, availableProducts),
-              _buildSeeAllButton(context),
+                // 6. YENİ KOLEKSİYON GRID
+                _buildSectionHeader(context, "Yeni Koleksiyon",
+                    "Evinizin ferahlığına şık bir dokunuş"),
+                _buildProductGrid(context, availableProducts),
+                _buildSeeAllButton(context),
 
-              // 8. ODAYA GÖRE KEŞFET (TAM EKRAN)
-              _buildSectionHeader(context, "Yaşam Alanına Göre",
-                  "Evinizin her köşesi için bir hikayemiz var"),
-              _buildFullWidthRoomSection(context),
+                // 8. ODAYA GÖRE KEŞFET (TAM EKRAN)
+                _buildSectionHeader(context, "Yaşam Alanına Göre",
+                    "Evinizin her köşesi için bir hikayemiz var"),
+                _buildFullWidthRoomSection(context),
 
-              const SliverToBoxAdapter(child: AdsenseBanner(height: 120)),
+                const SliverToBoxAdapter(child: AdsenseBanner(height: 120)),
 
-              // 9. ENHANCED STATS & TIPS
-              _buildEnhancedStats(context),
-              const FurnitureTipsSection(),
+                // 9. ENHANCED STATS & TIPS
+                _buildEnhancedStats(context),
+                const FurnitureTipsSection(),
 
-              // 10. CTA & PROFESYONEL FOOTER
-              _buildCTASection(context),
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
-              _buildModernFooter(context),
-            ],
+                // 10. CTA & PROFESYONEL FOOTER
+                _buildCTASection(context),
+                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                _buildModernFooter(context),
+              ],
+            ),
           ),
         ),
       ),

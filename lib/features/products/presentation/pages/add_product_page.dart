@@ -7,7 +7,7 @@ import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../domain/entites/product.dart';
-import '../providers/product_notifier.dart';
+import '../providers/product_provider.dart';
 
 class AddProductPage extends ConsumerStatefulWidget {
   const AddProductPage({super.key});
@@ -16,51 +16,42 @@ class AddProductPage extends ConsumerStatefulWidget {
   ConsumerState<AddProductPage> createState() => _AddProductPageState();
 }
 
-class _AddProductPageState extends ConsumerState<AddProductPage>
-    with SingleTickerProviderStateMixin {
-  final _nameController = TextEditingController();
-  final _descController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final List<XFile> _selectedImages = [];
-  bool _isSecondHand = false;
+class _AddProductPageState extends ConsumerState<AddProductPage> {
+  final _name = TextEditingController();
+  final _desc = TextEditingController();
+  final _price = TextEditingController();
+  final _category = TextEditingController();
 
-  late final AnimationController _animController;
+  final List<XFile> _images = [];
+  bool _isSecondHand = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
 
-    _animController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-
-    // Login kontrolü
     Future.microtask(() {
-      final auth = ref.read(authProvider);
-      if (auth.value?.uid == null) context.go('/login');
+      final auth = ref.read(authProvider).value;
+      if (auth?.uid == null) context.go('/login');
     });
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _descController.dispose();
-    _priceController.dispose();
-    _categoryController.dispose();
-    _animController.dispose();
+    _name.dispose();
+    _desc.dispose();
+    _price.dispose();
+    _category.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final productState = ref.watch(productProvider);
-
+  Widget build(final BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: const Text('Yeni Ürün Ekle'),
         backgroundColor: const Color(0xFF6366F1),
-        elevation: 0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -68,44 +59,34 @@ class _AddProductPageState extends ConsumerState<AddProductPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              _header(),
               const SizedBox(height: 24),
-              _buildImageSection(),
+              _imageSection(),
               const SizedBox(height: 24),
-              _buildTextField(_nameController, 'Ürün Adı', Icons.shopping_bag),
-              _buildTextField(_priceController, 'Fiyat', Icons.attach_money,
-                  isNumeric: true),
-              _buildTextField(_categoryController, 'Kategori', Icons.category),
-              _buildTextField(_descController, 'Açıklama', Icons.description,
-                  maxLines: 3),
-              const SizedBox(height: 8),
-              _buildSwitchTile('Spot/İkinci El Ürün', _isSecondHand,
-                  (v) => setState(() => _isSecondHand = v)),
+              _field(_name, 'Ürün Adı', Icons.shopping_bag),
+              _field(_price, 'Fiyat', Icons.attach_money, numeric: true),
+              _field(_category, 'Kategori', Icons.category),
+              _field(_desc, 'Açıklama', Icons.description, lines: 3),
+              SwitchListTile(
+                title: const Text('Spot / İkinci El'),
+                value: _isSecondHand,
+                onChanged: (final v) => setState(() => _isSecondHand = v),
+                contentPadding: EdgeInsets.zero,
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                height: 55,
+                height: 52,
                 child: ElevatedButton(
-                  onPressed: productState.isLoading ? null : _addProductAction,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: productState.isLoading
+                  onPressed: _isLoading ? null : _submit,
+                  child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Ürünü Sisteme Kaydet',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                      : const Text('Kaydet'),
                 ),
               ),
               const SizedBox(height: 24),
-              // Native Ad Örneği
               const AdNativeWidget(),
               const SizedBox(height: 16),
-              // AdSense Banner Örneği
               const AdsenseBanner(height: 100),
             ],
           ),
@@ -114,171 +95,136 @@ class _AddProductPageState extends ConsumerState<AddProductPage>
     );
   }
 
-  Widget _buildHeader() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Ürün Detayları',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          Text('Mağazanıza yeni bir ürün tanımlayın.',
-              style: TextStyle(color: Colors.grey.shade600)),
-        ],
-      );
+  // ---------------- ACTIONS ----------------
 
-  Widget _buildTextField(
-          TextEditingController controller, String label, IconData icon,
-          {bool isNumeric = false, int maxLines = 1}) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: TextField(
-          controller: controller,
-          maxLines: maxLines,
-          keyboardType: isNumeric
-              ? const TextInputType.numberWithOptions(decimal: true)
-              : TextInputType.text,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: const Color(0xFF6366F1)),
-            labelText: label,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-        ),
-      );
-
-  Widget _buildSwitchTile(
-          String title, bool value, ValueChanged<bool> onChanged) =>
-      SwitchListTile(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        value: value,
-        activeColor: const Color(0xFF6366F1),
-        onChanged: onChanged,
-        contentPadding: EdgeInsets.zero,
-      );
-
-  Widget _buildImageSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Ürün Görselleri',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            TextButton.icon(
-              onPressed: _pickImagesAction,
-              icon: const Icon(Icons.add_a_photo),
-              label: const Text("Görsel Seç"),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        if (_selectedImages.isNotEmpty)
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _selectedImages.length,
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      transform: Matrix4.identity()..scale(1.0),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(File(_selectedImages[index].path),
-                                width: 100, height: 100, fit: BoxFit.cover),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () => setState(
-                                  () => _selectedImages.removeAt(index)),
-                              child: Container(
-                                color: Colors.black54,
-                                child: const Icon(Icons.close,
-                                    color: Colors.white, size: 20),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-        else
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: const Center(child: Text('Henüz görsel seçilmedi.')),
-          ),
-      ],
-    );
-  }
-
-  Future<void> _pickImagesAction() async {
-    final ImagePicker picker = ImagePicker();
-    final images = await picker.pickMultiImage();
-    if (images != null && images.isNotEmpty) {
-      setState(() => _selectedImages.addAll(images));
-    }
-  }
-
-  Future<void> _addProductAction() async {
-    if (_nameController.text.trim().isEmpty ||
-        _priceController.text.trim().isEmpty ||
-        _selectedImages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content:
-              Text('Lütfen ürün adı, fiyat ve en az bir görsel ekleyin!')));
+  Future<void> _submit() async {
+    if (_name.text.trim().isEmpty ||
+        _price.text.trim().isEmpty ||
+        _images.isEmpty) {
+      _snack('Zorunlu alanlar eksik');
       return;
     }
+
+    setState(() => _isLoading = true);
 
     final product = Product(
       id: '',
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
       soldAt: '',
-      name: _nameController.text.trim(),
-      desc: _descController.text.trim(),
-      category: _categoryController.text.trim(),
-      price: double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0.0,
+      name: _name.text.trim(),
+      desc: _desc.text.trim(),
+      category: _category.text.trim(),
+      price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
       isSold: false,
       isSpotProduct: _isSecondHand,
       imagesUrl: const [],
     );
 
-    await ref
-        .read(productProvider.notifier)
-        .addProduct(product, _selectedImages);
+    final useCase = ref.read(addProductUseCaseProvider);
+    final result = await useCase(
+      product,
+      _images.map((final e) => File(e.path)).toList(),
+    );
 
-    if (!mounted) return;
-    final state = ref.read(productProvider);
-    if (state.errorMessage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Ürün Başarıyla Eklendi!')));
-      context.pop();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Hata: ${state.errorMessage}')));
+    result.fold(
+          (final f) => _snack(f.message ?? 'Ürün eklenemedi', error: true),
+          (final _) {
+        ref.invalidate(productsProvider); // 👈 eski mutant refresh
+        _snack('Ürün eklendi', success: true);
+        context.pop();
+      },
+    );
+
+    if (mounted) setState(() => _isLoading = false);
+  }
+
+  // ---------------- UI HELPERS ----------------
+
+  Widget _header() => const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('Ürün Detayları',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+      Text('Mağazanıza yeni ürün ekleyin'),
+    ],
+  );
+
+  Widget _field(
+      final TextEditingController c,
+      final String label,
+      final IconData icon, {
+        final bool numeric = false,
+        final int lines = 1,
+      }) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: TextField(
+          controller: c,
+          maxLines: lines,
+          keyboardType:
+          numeric ? const TextInputType.numberWithOptions(decimal: true) : null,
+          decoration: InputDecoration(
+            labelText: label,
+            prefixIcon: Icon(icon),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+      );
+
+  Widget _imageSection() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Görseller',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          TextButton.icon(
+            onPressed: _pickImages,
+            icon: const Icon(Icons.add_a_photo),
+            label: const Text('Ekle'),
+          ),
+        ],
+      ),
+      const SizedBox(height: 12),
+      _images.isEmpty
+          ? const Text('Görsel yok')
+          : SizedBox(
+        height: 100,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: _images.length,
+          itemBuilder: (final _, final i) => Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Image.file(
+              File(_images[i].path),
+              width: 100,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+
+  Future<void> _pickImages() async {
+    final images = await ImagePicker().pickMultiImage();
+    if (images.isNotEmpty) {
+      setState(() => _images.addAll(images));
     }
+  }
+
+  void _snack(final String msg, {final bool success = false, final bool error = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: success
+            ? Colors.green
+            : error
+            ? Colors.red
+            : null,
+        content: Text(msg),
+      ),
+    );
   }
 }
