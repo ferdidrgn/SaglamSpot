@@ -5,10 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
-import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../domain/entites/product.dart';
+import '../providers/product_mutation_provider.dart';
 import '../providers/product_provider.dart';
+import 'dart:developer' as dev;
 
 class AddProductPage extends ConsumerStatefulWidget {
   const AddProductPage({super.key});
@@ -100,17 +101,27 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   // ---------------- ACTIONS ----------------
 
   Future<void> _submit() async {
+    // 1. Zorunlu Alan Kontrolü
     if (_name.text.trim().isEmpty ||
         _price.text.trim().isEmpty ||
         _images.isEmpty) {
-      _snack('Zorunlu alanlar eksik');
+      _snack('Lütfen ürün adı, fiyat ve en az bir görsel ekleyin!',
+          error: true);
       return;
     }
 
-    setState(() => _isLoading = true);
+    // 2. Auth Debug (Neden "Unauthorized" aldığını anlamak için)
+    final auth = ref.read(authProvider).value;
+    dev.log("Ürün Ekleme Denemesi - UID: ${auth?.uid}");
+
+    if (auth?.uid == null) {
+      _snack('Oturum kapalı. Lütfen tekrar giriş yapın.', error: true);
+      return;
+    }
 
     final product = Product(
       id: '',
+      // Firestore içerisinde otomatik oluşturulacak
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
       soldAt: '',
@@ -123,49 +134,51 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       imagesUrl: const [],
     );
 
-    final useCase = ref.read(addProductUseCaseProvider);
-    final result = await useCase(
-      product,
-      _images.map((final e) => File(e.path)).toList(),
-    );
+    // 3. Reaktif Mutation Çağrısı
+    // Bu işlem ProductRemoteDataSourceImpl içindeki addProduct metodunu tetikler
+    await ref.read(productMutationProvider.notifier).add(
+          product,
+          _images.map((final e) => File(e.path)).toList(),
+        );
 
-    result.fold(
-          (final f) => _snack(f.message ?? 'Ürün eklenemedi', error: true),
-          (final _) {
-        ref.invalidate(productsProvider); // 👈 eski mutant refresh
-        _snack('Ürün eklendi', success: true);
-        context.pop();
-      },
-    );
-
-    if (mounted) setState(() => _isLoading = false);
+    // 4. Sonuç Kontrolü
+    final mutationState = ref.read(productMutationProvider);
+    if (!mutationState.hasError) {
+      _snack('Ürün başarıyla eklendi', success: true);
+      if (mounted) context.pop();
+    } else {
+      // Firebase Security Rules hatası buraya düşer
+      dev.log("Ekleme Hatası: ${mutationState.error}");
+      _snack('Yetki Hatası: Firebase kurallarını kontrol edin.', error: true);
+    }
   }
 
   // ---------------- UI HELPERS ----------------
 
   Widget _header() => const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('Ürün Detayları',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-      Text('Mağazanıza yeni ürün ekleyin'),
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Ürün Detayları',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          Text('Mağazanıza yeni ürün ekleyin'),
+        ],
+      );
 
   Widget _field(
-      final TextEditingController c,
-      final String label,
-      final IconData icon, {
-        final bool numeric = false,
-        final int lines = 1,
-      }) =>
+    final TextEditingController c,
+    final String label,
+    final IconData icon, {
+    final bool numeric = false,
+    final int lines = 1,
+  }) =>
       Padding(
         padding: const EdgeInsets.only(bottom: 16),
         child: TextField(
           controller: c,
           maxLines: lines,
-          keyboardType:
-          numeric ? const TextInputType.numberWithOptions(decimal: true) : null,
+          keyboardType: numeric
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : null,
           decoration: InputDecoration(
             labelText: label,
             prefixIcon: Icon(icon),
@@ -175,40 +188,40 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       );
 
   Widget _imageSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Görseller',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          TextButton.icon(
-            onPressed: _pickImages,
-            icon: const Icon(Icons.add_a_photo),
-            label: const Text('Ekle'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Görseller',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              TextButton.icon(
+                onPressed: _pickImages,
+                icon: const Icon(Icons.add_a_photo),
+                label: const Text('Ekle'),
+              ),
+            ],
           ),
+          const SizedBox(height: 12),
+          _images.isEmpty
+              ? const Text('Görsel yok')
+              : SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _images.length,
+                    itemBuilder: (final _, final i) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Image.file(
+                        File(_images[i].path),
+                        width: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
         ],
-      ),
-      const SizedBox(height: 12),
-      _images.isEmpty
-          ? const Text('Görsel yok')
-          : SizedBox(
-        height: 100,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: _images.length,
-          itemBuilder: (final _, final i) => Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Image.file(
-              File(_images[i].path),
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-    ],
-  );
+      );
 
   Future<void> _pickImages() async {
     final images = await ImagePicker().pickMultiImage();
@@ -217,14 +230,15 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     }
   }
 
-  void _snack(final String msg, {final bool success = false, final bool error = false}) {
+  void _snack(final String msg,
+      {final bool success = false, final bool error = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: success
             ? Colors.green
             : error
-            ? Colors.red
-            : null,
+                ? Colors.red
+                : null,
         content: Text(msg),
       ),
     );

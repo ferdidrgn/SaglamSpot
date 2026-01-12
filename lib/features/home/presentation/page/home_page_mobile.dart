@@ -97,14 +97,15 @@ class _HomePageState extends ConsumerState<HomePage> {
         )
       ],
       bottom: TabBar(
+        isScrollable: true,
         labelColor: primaryColor,
         unselectedLabelColor: slateColor,
         indicator: const UnderlineTabIndicator(
           borderSide: BorderSide(width: 3, color: primaryColor),
         ),
         tabs: [
-          Tab(text: "Stok ($availableCount)"),
-          Tab(text: "Satılanlar ($soldCount)"),
+          Tab(text: "Stok\n($availableCount)"),
+          Tab(text: "Satılan\n($soldCount)"),
         ],
       ),
     );
