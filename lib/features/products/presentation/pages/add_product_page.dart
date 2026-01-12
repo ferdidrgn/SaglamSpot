@@ -25,7 +25,6 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   final List<XFile> _images = [];
   bool _isSecondHand = false;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -48,6 +47,21 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   @override
   Widget build(final BuildContext context) {
+    ref.listen<AsyncValue<void>>(
+      productMutationProvider,
+      (final previous, final next) {
+        if (next is AsyncData) {
+          _snack('Ürün başarıyla eklendi', success: true);
+          if (mounted) context.pop();
+        }
+
+        if (next is AsyncError)
+          _snack('Yetki veya bağlantı hatası oluştu', error: true);
+      },
+    );
+
+    final mutationState = ref.watch(productMutationProvider);
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
@@ -80,9 +94,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _submit,
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
+                  onPressed: mutationState.isLoading ? null : _submit,
+                  child: mutationState.isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
                       : const Text('Kaydet'),
                 ),
               ),
@@ -100,7 +118,6 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   // ---------------- ACTIONS ----------------
 
   Future<void> _submit() async {
-    // 1. Zorunlu Alan Kontrolü
     if (_name.text.trim().isEmpty ||
         _price.text.trim().isEmpty ||
         _images.isEmpty) {
@@ -109,47 +126,32 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       return;
     }
 
-    // 2. Auth Debug (Neden "Unauthorized" aldığını anlamak için)
     final auth = ref.read(authProvider).value;
-    dev.log("Ürün Ekleme Denemesi - UID: ${auth?.uid}");
-
     if (auth?.uid == null) {
-      _snack('Oturum kapalı. Lütfen tekrar giriş yapın.', error: true);
+      _snack('Oturum kapalı', error: true);
       return;
     }
 
     final product = Product(
       id: '',
-      // Firestore içerisinde otomatik oluşturulacak
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
       soldAt: '',
       name: _name.text.trim(),
       desc: _desc.text.trim(),
       category: _category.text.trim(),
-      price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
+      price: double.tryParse(
+            _price.text.replaceAll(',', '.'),
+          ) ??
+          0,
       isSold: false,
       isSpotProduct: _isSecondHand,
       imagesUrl: const [],
     );
 
-    // 3. Reaktif Mutation Çağrısı
-    // Bu işlem ProductRemoteDataSourceImpl içindeki addProduct metodunu tetikler
-    await ref.read(productMutationProvider.notifier).add(
-          product,
-          _images.map((final e) => File(e.path)).toList(),
-        );
-
-    // 4. Sonuç Kontrolü
-    final mutationState = ref.read(productMutationProvider);
-    if (!mutationState.hasError) {
-      _snack('Ürün başarıyla eklendi', success: true);
-      if (mounted) context.pop();
-    } else {
-      // Firebase Security Rules hatası buraya düşer
-      dev.log("Ekleme Hatası: ${mutationState.error}");
-      _snack('Yetki Hatası: Firebase kurallarını kontrol edin.', error: true);
-    }
+    await ref
+        .read(productMutationProvider.notifier)
+        .add(product, _images.map((final e) => File(e.path)).toList());
   }
 
   // ---------------- UI HELPERS ----------------
@@ -224,9 +226,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   Future<void> _pickImages() async {
     final images = await ImagePicker().pickMultiImage();
-    if (images.isNotEmpty) {
-      setState(() => _images.addAll(images));
-    }
+    if (images.isNotEmpty) setState(() => _images.addAll(images));
   }
 
   void _snack(final String msg,
