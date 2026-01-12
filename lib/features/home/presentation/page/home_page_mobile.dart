@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:saglamspot/core/util/responsive_utils.dart';
-import 'package:saglamspot/core/widgets/shimmer_components.dart'; // Senin shimmer kitin
+import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
+import '../../../../core/widgets/shimmer_components.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
-import '../../../products/presentation/providers/product_provider.dart'; // Ana provider
-import '../../../products/presentation/providers/product_filters_provider.dart'; // Filtreler
-import '../../../products/presentation/providers/product_mutation_provider.dart'; // Ekle/Sil/Güncelle
+import '../../../products/presentation/pages/add_product_page.dart';
+import '../../../products/presentation/pages/edit_product_page.dart';
+import '../../../products/presentation/providers/product_filters_provider.dart';
+import '../../../products/presentation/providers/product_mutation_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -24,7 +25,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(final BuildContext context) {
-    // 1. REAKTİF VERİLERİ İZLE (Artık initState'de veri çekmeye gerek yok)
     final productsAsync = ref.watch(productsProvider);
     final available = ref.watch(availableProductsProvider);
     final sold = ref.watch(soldProductsProvider);
@@ -38,9 +38,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           children: [
             const AdBannerWidget(),
             Expanded(
-              // 2. ASYNCVALUE.WHEN İLE DURUM YÖNETİMİ
               child: productsAsync.when(
-                loading: () => const FullPageShimmer(), // Senin shimmer kitin
+                loading: () => const FullPageShimmer(),
                 error: (final err, final _) =>
                     Center(child: Text("Hata: $err")),
                 data: (final _) => TabBarView(
@@ -55,11 +54,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             const AdBannerWidget(),
           ],
         ),
-        floatingActionButton: _buildFAB(),
+        floatingActionButton: _buildFAB(context),
       ),
     );
   }
 
+  // --- Ürün Izgarası ---
   Widget _buildProductGrid(final List<Product> list, final String emptyMsg) {
     if (list.isEmpty) return _buildEmptyState(emptyMsg);
 
@@ -74,10 +74,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       itemCount: list.length + (list.length ~/ 6),
       itemBuilder: (final context, final index) {
         if (index > 0 && (index + 1) % 7 == 0) return const AdNativeWidget();
-
         final productIndex = index - (index ~/ 7);
         if (productIndex >= list.length) return const SizedBox.shrink();
-
         return _AdminProductCard(product: list[productIndex]);
       },
     );
@@ -126,9 +124,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _buildFAB() {
+  // GÜNCELLEME: MaterialPageRoute ile AddProductPage geçişi
+  Widget _buildFAB(final BuildContext context) {
     return FloatingActionButton.extended(
-      onPressed: () => context.push('/add-product'),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (final context) => const AddProductPage()),
+        );
+      },
       backgroundColor: primaryColor,
       icon: const Icon(Icons.add_photo_alternate_outlined, color: Colors.white),
       label: const Text("Ürün Ekle", style: TextStyle(color: Colors.white)),
@@ -148,7 +152,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           TextButton(
               onPressed: () {
                 ref.read(authProvider.notifier).signOut();
-                context.go('/login');
+                // Material Navigator ile login'e dönüş
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/login', (final route) => false);
               },
               child: const Text("Evet")),
         ],
@@ -178,9 +184,7 @@ class _AdminProductCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: _buildImageStack(),
-          ),
+          Expanded(child: _buildImageStack()),
           _buildInfoSection(),
           const Divider(height: 1),
           _buildActionButtons(context, ref),
@@ -229,19 +233,25 @@ class _AdminProductCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(product.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Color(0xFF1E293B))),
+          Text(
+            product.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 4),
-          Text("${product.price} TL",
-              style: const TextStyle(
-                  color: Color(0xFF6366F1),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16)),
+          Text(
+            "${product.price} TL",
+            style: const TextStyle(
+              color: Color(0xFF6366F1),
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
+            ),
+          ),
         ],
       ),
     );
@@ -253,21 +263,29 @@ class _AdminProductCard extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _actionBtn(Icons.edit_note_rounded, Colors.blue, () {
-            context.push('/edit-product', extra: product);
-          }),
-          _actionBtn(
-              product.isSold
-                  ? Icons.replay_circle_filled_rounded
-                  : Icons.check_circle_rounded,
-              product.isSold ? Colors.orange : Colors.green, () {
-            // REAKTİF GÜNCELLEME: Mutation provider kullanımı
-            final updated = product.copyWith(isSold: !product.isSold);
-            ref.read(productMutationProvider.notifier).updateProduct(updated);
-          }),
-          _actionBtn(Icons.delete_forever_rounded, Colors.redAccent, () {
-            _showDeleteConfirm(context, ref);
-          }),
+          // EDIT → sayfaya yönlendir
+          Flexible(
+            child: _actionBtn(Icons.edit_note_rounded, Colors.blue, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (final context) => EditProductPage(
+                    productId: product.id,
+                    product: product,
+                  ),
+                ),
+              );
+            }),
+          ),
+
+          // DELETE → mutation burada KALIR
+          Flexible(
+            child: _actionBtn(
+              Icons.delete_forever_rounded,
+              Colors.redAccent,
+              () => _showDeleteConfirm(context, ref),
+            ),
+          ),
         ],
       ),
     );
@@ -295,7 +313,6 @@ class _AdminProductCard extends ConsumerWidget {
               child: const Text("Vazgeç")),
           TextButton(
               onPressed: () {
-                // REAKTİF SİLME: Mutation provider kullanımı
                 ref.read(productMutationProvider.notifier).delete(product.id);
                 Navigator.pop(context);
               },

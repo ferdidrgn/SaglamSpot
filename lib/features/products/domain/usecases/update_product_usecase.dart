@@ -4,7 +4,8 @@ import '../entites/product.dart';
 import '../repositories/product_repository.dart';
 
 abstract class UpdateProductUseCase {
-  Future<Either<Failure, void>> call(final Product product);
+  Future<Either<Failure, void>> call(
+      final Product product, final List<dynamic>? newImages);
 }
 
 class UpdateProductUseCaseImpl implements UpdateProductUseCase {
@@ -13,7 +14,9 @@ class UpdateProductUseCaseImpl implements UpdateProductUseCase {
   UpdateProductUseCaseImpl(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(final Product product) async {
-    return repository.updateProduct(product);
-  }
+  Future<Either<Failure, void>> call(
+    final Product product,
+    final List<dynamic>? newImages,
+  ) =>
+      repository.updateProduct(product, newImages);
 }

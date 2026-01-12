@@ -13,7 +13,7 @@ abstract class ProductRemoteDataSource {
 
   Future<List<ProductModel>> searchProducts(final String productId);
 
-  Future<void> updateProduct(final ProductModel product);
+  Future<void> updateProduct(final ProductModel product, final List<dynamic>? newImages);
 
   Future<void> deleteProduct(final String productId);
 }

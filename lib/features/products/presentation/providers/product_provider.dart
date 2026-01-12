@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../domain/entites/product.dart'; // Klasör isminiz 'entites' ise böyle kalsın
+import '../../../../core/errors/failures.dart';
+import '../../domain/entites/product.dart';
 import '../../domain/repositories/product_repository_provider.dart';
 import '../../domain/usecases/add_product_usecase.dart';
 import '../../domain/usecases/delete_product_usecase.dart';
@@ -31,9 +32,5 @@ Future<List<Product>> products(final Ref ref) async {
   final useCase = ref.watch(getProductsUseCaseProvider);
   final result = await useCase.call();
 
-  return result.fold(
-    (final failure) =>
-        throw Exception(failure.message ?? 'Ürünler yüklenemedi'),
-    (final products) => products,
-  );
+  return ref.watch(getProductsUseCaseProvider).call().getOrThrow();
 }

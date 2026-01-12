@@ -11,7 +11,8 @@ abstract class ProductRepository {
   Future<Either<Failure, void>> addProduct(
       final Product product, final List<dynamic> images);
 
-  Future<Either<Failure, void>> updateProduct(final Product product);
+  Future<Either<Failure, void>> updateProduct(
+      final Product product, final List<dynamic>? newImages);
 
   Future<Either<Failure, void>> deleteProduct(final String productId);
 

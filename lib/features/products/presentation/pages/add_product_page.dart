@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -59,6 +60,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const AdBannerWidget(),
               _header(),
               const SizedBox(height: 24),
               _imageSection(),
@@ -87,7 +89,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               const SizedBox(height: 24),
               const AdNativeWidget(),
               const SizedBox(height: 16),
-              const AdsenseBanner(height: 100),
+              const AdBannerWidget(),
             ],
           ),
         ),

@@ -35,7 +35,7 @@ class ProductRepositoryImpl extends BaseRepository
           final Future<List<ProductModel>> Function() getProductsFromSource) =>
       execute(() async {
         final models = await getProductsFromSource();
-        return models.map((e) => e.toEntity()).toList();
+        return models.map((final e) => e.toEntity()).toList();
       });
 
   @override
@@ -51,8 +51,10 @@ class ProductRepositoryImpl extends BaseRepository
           ProductModel.fromEntity(product), images));
 
   @override
-  Future<Either<Failure, void>> updateProduct(final Product product) => execute(
-      () => remoteDataSource.updateProduct(ProductModel.fromEntity(product)));
+  Future<Either<Failure, void>> updateProduct(
+          final Product product, final List<dynamic>? newImages) =>
+      execute(() => remoteDataSource.updateProduct(
+          ProductModel.fromEntity(product), newImages));
 
   @override
   Future<Either<Failure, void>> deleteProduct(final String productId) =>

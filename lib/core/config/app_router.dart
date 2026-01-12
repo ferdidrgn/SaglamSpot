@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/page_transitions.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
-import 'package:saglamspot/features/info/presentation/pages/about_page.dart';
-import 'package:saglamspot/features/sss/presentation/pages/sss_page.dart';
+import 'package:saglamspot/features/products/presentation/pages/product_detail_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
@@ -144,6 +143,20 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           child: SearchPage(),
           transitionsBuilder: shimmerSlideTransition,
         ),
+      ),
+
+      GoRoute(
+        path: '/product/:id',
+        name: 'product',
+        pageBuilder: (final context, final state) {
+          final String productId = state.pathParameters['id'] ?? '';
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: WebProductDetailPage(productId: productId),
+            transitionsBuilder: shimmerSlideTransition,
+          );
+        },
       ),
     ],
   );
