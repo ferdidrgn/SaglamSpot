@@ -65,18 +65,98 @@ class HomePage extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar(final int stock, final int sold) {
     return AppBar(
+      backgroundColor: AppColors.background,
       elevation: 0,
-      backgroundColor: Colors.white,
-      title: const Text('Yönetici Paneli',
-          style:
-              TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF1E293B))),
-      bottom: TabBar(
-        indicatorColor: AppColors.accent,
-        labelColor: AppColors.accent,
-        unselectedLabelColor: Colors.grey,
-        tabs: [
-          Tab(text: "STOKTA ($stock)"),
-          Tab(text: "SATILDI ($sold)"),
+      centerTitle: false,
+      // Daha modern bir sol hizalama
+      title: const Padding(
+        padding: EdgeInsets.only(left: 4),
+        child: Text(
+          'Yönetici Paneli',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w900,
+            fontSize: 26, // Daha iddialı bir başlık
+            letterSpacing: -0.5,
+          ),
+        ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: Column(
+          children: [
+            // TabBar'ı taşıyan ana yapı
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.white, // Kart rengiyle uyumlu
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: TabBar(
+                  // Gösterge (Seçili Alan) Ayarları
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicator: BoxDecoration(
+                    gradient: AppColors.accentGradient, // Premium degrade
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  // Yazı Stilleri
+                  labelColor: Colors.white,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  labelStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  // Çizgileri kaldır
+                  dividerColor: Colors.transparent,
+                  tabs: [
+                    _buildTab('STOKTA', stock),
+                    _buildTab('SATILDI', sold),
+                  ],
+                ),
+              ),
+            ),
+            // Reklam alanı (Opsiyonel: Eğer hala buradaysa)
+            // const AdBannerWidget(),
+          ],
+        ),
+      ),
+    );
+  }
+
+// Tab içeriği için yardımcı fonksiyon (Sayıyı şık bir baloncuk içinde gösterir)
+  Widget _buildTab(String label, int count) {
+    return Tab(
+      height: 44,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(label),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              count.toString(),
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -96,6 +176,7 @@ class HomePage extends ConsumerWidget {
 
 class _ProductGrid extends StatelessWidget {
   final List<Product> products;
+
   const _ProductGrid({required this.products});
 
   @override
@@ -124,6 +205,7 @@ class _ProductGrid extends StatelessWidget {
 
 class LuxuryProductCard extends ConsumerWidget {
   final Product product;
+
   const LuxuryProductCard({super.key, required this.product});
 
   @override
@@ -137,8 +219,7 @@ class LuxuryProductCard extends ConsumerWidget {
           BoxShadow(
               color: AppColors.accent.withOpacity(0.15),
               blurRadius: 20,
-              offset: const Offset(0, 10)
-          )
+              offset: const Offset(0, 10))
         ],
       ),
       child: Column(
