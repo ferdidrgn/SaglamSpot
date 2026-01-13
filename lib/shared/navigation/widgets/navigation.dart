@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:saglamspot/shared/navigation/providers/navigation_service.dart';
 import '../../../core/theme/app_colors.dart';
+
+class SearchIntent extends Intent {
+  const SearchIntent();
+}
 
 class NavigationScreen extends ConsumerStatefulWidget {
   const NavigationScreen({super.key, required this.navigationShell});
@@ -16,7 +20,6 @@ class NavigationScreen extends ConsumerStatefulWidget {
 class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  // Mobilya odaklı navigasyon elemanları
   late final List<NavigationItem> _navItems = [
     NavigationItem(label: 'Ana Sayfa', icon: Icons.home_rounded, index: 0),
     NavigationItem(label: 'Sıfır Mobilya', icon: Icons.chair_rounded, index: 1),
@@ -26,30 +29,33 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   ];
 
   void _onItemTapped(final int index) {
-    if (MediaQuery.sizeOf(context).width < 1024) {
+    if (MediaQuery.sizeOf(context).width < 1024)
       _scaffoldKey.currentState?.closeDrawer();
-    }
+
     widget.navigationShell.goBranch(
       index,
       initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
-  // --- UI Bileşenleri ---
-
   Widget _buildLogo() {
-    return const Row(
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.chair_alt_rounded, color: AppColors.primary, size: 28),
-        SizedBox(width: 8),
-        Text(
+        Image.asset(
+          'assets/images/saglam_spot_logo.png',
+          width: 50,
+          height: 50,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(width: 8),
+        const Text(
           "SAĞLAM SPOT",
           style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w900,
             fontSize: 20,
-            letterSpacing: 1,
+            letterSpacing: 2,
           ),
         ),
       ],
@@ -85,33 +91,10 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
                 style: TextStyle(
                     color: AppColors.primary, fontWeight: FontWeight.w500)),
             SizedBox(width: 16),
-            _KbdShortcut(),
+            _KbdShortcut(), // 🔑 Senin widget'ın burada
           ],
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final isMobile = width < 1024;
-    final currentIndex = widget.navigationShell.currentIndex;
-
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: AppColors.background,
-      appBar:
-      isMobile ? _buildMobileAppBar() : _buildDesktopAppBar(currentIndex),
-      drawer: isMobile
-          ? _MobileDrawer(
-        navItems: _navItems,
-        currentIndex: currentIndex,
-        onItemTapped: _onItemTapped,
-        logo: _buildLogo(),
-      )
-          : null,
-      body: widget.navigationShell,
     );
   }
 
@@ -135,19 +118,62 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       title: InkWell(onTap: () => _onItemTapped(0), child: _buildLogo()),
       actions: [
         ..._navItems.map((final item) => _DesktopNavItem(
-          item: item,
-          isActive: currentIndex == item.index,
-          onTap: () => _onItemTapped(item.index),
-        )),
+              item: item,
+              isActive: currentIndex == item.index,
+              onTap: () => _onItemTapped(item.index),
+            )),
         const SizedBox(width: 24),
         _buildSearchButton(false),
         const SizedBox(width: 24),
       ],
     );
   }
-}
 
-// --- Alt Bileşenler (Refactored to separate classes for clarity) ---
+  @override
+  Widget build(final BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isMobile = width < 1024;
+    final currentIndex = widget.navigationShell.currentIndex;
+
+    // 🔑 Ctrl+K Dinlemesi için senin UI'ını sarmaladık
+    return Shortcuts(
+      shortcuts: <ShortcutActivator, Intent>{
+        // Windows/Linux için Ctrl + K
+        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
+            const SearchIntent(),
+        // macOS için Cmd + K
+        LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
+            const SearchIntent(),
+      },
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          SearchIntent: CallbackAction<SearchIntent>(
+            onInvoke: (final intent) => context.go("/search"),
+          ),
+        },
+        child: Focus(
+          autofocus: true, // 🔑 Klavye odağını yakalamak için şart
+          child: Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: AppColors.background,
+            appBar: isMobile
+                ? _buildMobileAppBar()
+                : _buildDesktopAppBar(currentIndex),
+            drawer: isMobile
+                ? _MobileDrawer(
+                    navItems: _navItems,
+                    currentIndex: currentIndex,
+                    onItemTapped: _onItemTapped,
+                    logo: _buildLogo(),
+                  )
+                : null,
+            body: widget.navigationShell,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _DesktopNavItem extends StatelessWidget {
   final NavigationItem item;
@@ -167,7 +193,7 @@ class _DesktopNavItem extends StatelessWidget {
         decoration: BoxDecoration(
           border: isActive
               ? const Border(
-              bottom: BorderSide(color: AppColors.primary, width: 3))
+                  bottom: BorderSide(color: AppColors.primary, width: 3))
               : null,
         ),
         child: Row(
@@ -196,12 +222,11 @@ class _MobileDrawer extends StatelessWidget {
   final Function(int) onItemTapped;
   final Widget logo;
 
-  const _MobileDrawer({
-    required this.navItems,
-    required this.currentIndex,
-    required this.onItemTapped,
-    required this.logo,
-  });
+  const _MobileDrawer(
+      {required this.navItems,
+      required this.currentIndex,
+      required this.onItemTapped,
+      required this.logo});
 
   @override
   Widget build(final BuildContext context) {
@@ -221,21 +246,21 @@ class _MobileDrawer extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               children: navItems
                   .map((final item) => ListTile(
-                leading: Icon(item.icon,
-                    color: currentIndex == item.index
-                        ? AppColors.primary
-                        : null),
-                title: Text(item.label),
-                selected: currentIndex == item.index,
-                selectedTileColor: AppColors.primary.withOpacity(0.1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                onTap: () => onItemTapped(item.index),
-              ))
+                        leading: Icon(item.icon,
+                            color: currentIndex == item.index
+                                ? AppColors.primary
+                                : null),
+                        title: Text(item.label),
+                        selected: currentIndex == item.index,
+                        selectedTileColor: AppColors.primary.withOpacity(0.1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        onTap: () => onItemTapped(item.index),
+                      ))
                   .toList(),
             ),
           ),
-          _DrawerFooter(),
+          const _DrawerFooter(),
         ],
       ),
     );
@@ -243,6 +268,8 @@ class _MobileDrawer extends StatelessWidget {
 }
 
 class _DrawerFooter extends StatelessWidget {
+  const _DrawerFooter();
+
   @override
   Widget build(final BuildContext context) {
     return Padding(
