@@ -5,6 +5,9 @@ import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/product_provider.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+
 
 class WebProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
@@ -65,101 +68,34 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
   // ----------------------------------------------------------------
 
   SliverAppBar _buildHeroAppBar(
-      final BuildContext context, final Product product) {
+      BuildContext context, Product product) {
     return SliverAppBar(
-      expandedHeight: context.responsive(mobile: 200, desktop: 280),
+      pinned: true,
+      toolbarHeight: 64,
+      collapsedHeight: 64,
+      expandedHeight: context.responsive(mobile: 160, desktop: 240),
       backgroundColor: AppColors.background,
       elevation: 0,
-      pinned: true,
-      leading: Container(
-        margin: const EdgeInsets.only(left: 16),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.surface.withOpacity(0.9),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_rounded,
-              color: AppColors.textPrimary),
-        ),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+        onPressed: () => Navigator.pop(context),
       ),
-      actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.surface.withOpacity(0.9),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: IconButton(
-            onPressed: () => setState(() => _isFavorite = !_isFavorite),
-            icon: Icon(
-              _isFavorite
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_border_rounded,
-              color: _isFavorite ? Colors.red : AppColors.textPrimary,
-            ),
-          ),
-        ),
-      ],
       flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppColors.background.withOpacity(0.8),
-                AppColors.background.withOpacity(0.4),
-                AppColors.background,
-              ],
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                width: 100,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ],
-          ),
-        ),
-        titlePadding: const EdgeInsets.only(bottom: 16),
         centerTitle: true,
-        title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          decoration: BoxDecoration(
-            color: AppColors.surface.withOpacity(0.95),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.border),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.05),
-                blurRadius: 20,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Text(
-            product.category.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textSecondary,
-              letterSpacing: 3,
-            ),
+        titlePadding: const EdgeInsets.only(bottom: 8),
+        title: Text(
+          product.category.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            letterSpacing: 2,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
     );
   }
+
 
   Widget _buildResponsiveLayout(
       final BuildContext context, final Product product) {
