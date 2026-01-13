@@ -28,9 +28,5 @@ DeleteProductUseCase deleteProductUseCase(final Ref ref) =>
 
 // --- Ana Veri Kaynağı ---
 @riverpod
-Future<List<Product>> products(final Ref ref) async {
-  final useCase = ref.watch(getProductsUseCaseProvider);
-  final result = await useCase.call();
-
-  return ref.watch(getProductsUseCaseProvider).call().getOrThrow();
-}
+Future<List<Product>> products(final Ref ref) =>
+    ref.watch(getProductsUseCaseProvider).call().getOrThrow();
