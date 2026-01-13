@@ -1,39 +1,35 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../services/ad_manager.dart';
 
-/// Web'de AdSense göstermek için placeholder.
-/// Mobil ve Desktop'ta boş gösterir.
 class AdsenseBanner extends StatelessWidget {
-  final String? adSlot;
-  final double? width;
+  final double width;
   final double height;
 
   const AdsenseBanner({
     super.key,
-    this.adSlot,
-    this.width = 90,
-    this.height = 90,
+    this.width = 320,
+    this.height = 50,
   });
 
   @override
   Widget build(final BuildContext context) {
-    if (kIsWeb)
-      // Web için placeholder
+    if (kIsWeb) {
+      final adSlot = AdManager().adsenseId();
       return Container(
         width: width,
         height: height,
         color: Colors.grey.shade300,
         alignment: Alignment.center,
         child: Text(
-          "AdSense Banner ${adSlot ?? ''}",
+          "AdSense Banner $adSlot",
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
       );
-
-    // Mobil ve Desktop boş
-    return const SizedBox.shrink();
+    }
+    return const SizedBox.shrink(); // Mobil ve Desktop
   }
 }

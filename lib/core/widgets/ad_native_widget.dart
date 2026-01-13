@@ -1,5 +1,7 @@
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../services/ad_manager.dart';
 
 class AdNativeWidget extends StatefulWidget {
   const AdNativeWidget({super.key});
@@ -15,21 +17,17 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   @override
   void initState() {
     super.initState();
-    _loadAd();
+    if (!kIsWeb) _loadAd(); // Web’de native reklam yok
   }
 
   void _loadAd() {
     _nativeAd = NativeAd(
-      adUnitId: 'ca-app-pub-5779807348211992/2655077678',
-      // Test Native ID
-      //factoryId: 'adFactoryExample',
-      // Not: Platform tarafında tanımlı olmalıdır
+      adUnitId: AdManager().nativeId(), // ID artık AdManager’dan
       request: const AdRequest(),
       listener: NativeAdListener(
         onAdLoaded: (final ad) => setState(() => _isLoaded = true),
         onAdFailedToLoad: (final ad, final error) => ad.dispose(),
       ),
-      // Hazır şablon stili (FactoryId gerektirmez)
       nativeTemplateStyle: NativeTemplateStyle(
         templateType: TemplateType.small,
         mainBackgroundColor: Colors.white,
@@ -42,7 +40,7 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   Widget build(final BuildContext context) {
     if (_isLoaded && _nativeAd != null) {
       return Container(
-        height: 100, // Küçük şablon için ideal yükseklik
+        height: 100,
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: AdWidget(ad: _nativeAd!),
       );
