@@ -216,4 +216,4 @@ final class ProductsProvider extends $FunctionalProvider<
   }
 }
 
-String _$productsHash() => r'c0c28c37536e62f3d33e57abf47b524214918223';
+String _$productsHash() => r'e890b2361e73575935ab5ec397871d5993de7fc6';

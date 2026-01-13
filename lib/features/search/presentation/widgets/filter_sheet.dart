@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/util/responsive_utils.dart';
 import '../providers/search_providers.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
@@ -49,7 +50,6 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
 
     _animController.forward();
 
-    // Initialize controllers with current filter values
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final filters = ref.read(searchFiltersProvider);
       if (filters.minPrice > 0) {
@@ -84,7 +84,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
       child: Container(
         color: Colors.black.withOpacity(0.5),
         child: GestureDetector(
-          onTap: () {}, // Prevent closing when tapping inside
+          onTap: () {},
           child: SlideTransition(
             position: _slideAnimation,
             child: FadeTransition(
@@ -112,45 +112,56 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Handle Bar
                       _buildHandleBar(),
-
-                      // Header
                       _buildHeader(),
-
-                      // Scrollable Content
                       Flexible(
                         child: SingleChildScrollView(
-                          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+                          padding: EdgeInsets.fromLTRB(
+                            context.responsive(
+                                mobile: 20.0, tablet: 24.0, desktop: 28.0),
+                            8,
+                            context.responsive(
+                                mobile: 20.0, tablet: 24.0, desktop: 28.0),
+                            context.responsive(
+                                mobile: 20.0, tablet: 24.0, desktop: 28.0),
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Condition Filter
                               _buildSectionTitle('Ürün Durumu'),
-                              const SizedBox(height: 12),
+                              SizedBox(
+                                  height: context.responsive(
+                                      mobile: 12.0, desktop: 14.0)),
                               _buildConditionSelector(filters, filtersNotifier),
-
-                              const SizedBox(height: 32),
-
-                              // Price Range Filter
+                              SizedBox(
+                                  height: context.responsive(
+                                      mobile: 28.0,
+                                      tablet: 32.0,
+                                      desktop: 36.0)),
                               _buildSectionTitle('Fiyat Aralığı'),
-                              const SizedBox(height: 12),
+                              SizedBox(
+                                  height: context.responsive(
+                                      mobile: 12.0, desktop: 14.0)),
                               _buildPriceRangeInputs(filters, filtersNotifier),
-
-                              const SizedBox(height: 32),
-
-                              // Quick Price Presets
+                              SizedBox(
+                                  height: context.responsive(
+                                      mobile: 28.0,
+                                      tablet: 32.0,
+                                      desktop: 36.0)),
                               _buildSectionTitle('Hızlı Seçenekler'),
-                              const SizedBox(height: 12),
+                              SizedBox(
+                                  height: context.responsive(
+                                      mobile: 12.0, desktop: 14.0)),
                               _buildPricePresets(filtersNotifier),
-
-                              const SizedBox(height: 40),
+                              SizedBox(
+                                  height: context.responsive(
+                                      mobile: 32.0,
+                                      tablet: 36.0,
+                                      desktop: 40.0)),
                             ],
                           ),
                         ),
                       ),
-
-                      // Action Buttons
                       _buildActionButtons(),
                     ],
                   ),
@@ -177,29 +188,39 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 20, 16, 16),
+      padding: EdgeInsets.fromLTRB(
+        context.responsive(mobile: 20.0, tablet: 24.0, desktop: 28.0),
+        20,
+        16,
+        context.responsive(mobile: 14.0, tablet: 16.0, desktop: 18.0),
+      ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(
+                context.responsive(mobile: 9.0, tablet: 10.0, desktop: 11.0)),
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.1),
+              color: AppColors.textSecondary.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               Icons.tune_rounded,
-              color: AppColors.accent,
-              size: 24,
+              color: AppColors.textSecondary,
+              size:
+                  context.responsive(mobile: 22.0, tablet: 23.0, desktop: 24.0),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(
+              width: context.responsive(
+                  mobile: 14.0, tablet: 16.0, desktop: 18.0)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Filtreleme',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: context.responsive(
+                      mobile: 22.0, tablet: 23.0, desktop: 24.0),
                   fontWeight: FontWeight.w800,
                   color: AppColors.textPrimary,
                   letterSpacing: -0.5,
@@ -208,7 +229,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
               Text(
                 'Aradığınız ürünü kolayca bulun',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: context.responsive(
+                      mobile: 12.5, tablet: 13.0, desktop: 13.5),
                   color: AppColors.textSecondary,
                   fontWeight: FontWeight.w400,
                 ),
@@ -218,15 +240,11 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
           const Spacer(),
           IconButton(
             onPressed: _closeSheet,
-            icon: Icon(
-              Icons.close_rounded,
-              color: AppColors.textSecondary,
-            ),
+            icon: Icon(Icons.close_rounded, color: AppColors.textSecondary),
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.background,
+              backgroundColor: AppColors.secondary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+                  borderRadius: BorderRadius.circular(12)),
             ),
           ),
         ],
@@ -241,7 +259,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
           width: 3,
           height: 18,
           decoration: BoxDecoration(
-            color: AppColors.accent,
+            color: AppColors.textSecondary,
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -249,7 +267,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
         Text(
           title,
           style: TextStyle(
-            fontSize: 16,
+            fontSize:
+                context.responsive(mobile: 15.0, tablet: 15.5, desktop: 16.0),
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
             letterSpacing: -0.2,
@@ -262,13 +281,13 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
   Widget _buildConditionSelector(dynamic filters, dynamic notifier) {
     final conditions = [
       ('Tümü', Icons.grid_view_rounded, 'Hepsi'),
-      ('Sıfır', Icons.new_releases_rounded, 'Yeni Ürünler'),
+      ('Sıfır', Icons.new_releases_rounded, 'Yeni'),
       ('İkinci El', Icons.recycling_rounded, 'Kullanılmış'),
     ];
 
     return Wrap(
-      spacing: 12,
-      runSpacing: 12,
+      spacing: context.responsive(mobile: 10.0, tablet: 12.0, desktop: 14.0),
+      runSpacing: context.responsive(mobile: 10.0, tablet: 12.0, desktop: 14.0),
       children: conditions.map((condition) {
         final isSelected = (filters.condition ?? 'Tümü') == condition.$1;
         return _buildConditionCard(
@@ -289,22 +308,29 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
     required bool isSelected,
     required VoidCallback onTap,
   }) {
+    final cardWidth = (MediaQuery.of(context).size.width -
+            context.responsive(mobile: 60.0, tablet: 72.0, desktop: 84.0)) /
+        3;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: (MediaQuery.of(context).size.width - 72) / 3,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        width: cardWidth,
+        padding: EdgeInsets.symmetric(
+          vertical:
+              context.responsive(mobile: 14.0, tablet: 16.0, desktop: 18.0),
+          horizontal:
+              context.responsive(mobile: 10.0, tablet: 12.0, desktop: 14.0),
+        ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.accent.withOpacity(0.1)
-              : AppColors.background,
+              ? AppColors.textSecondary.withOpacity(0.12)
+              : AppColors.secondary,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected
-                ? AppColors.accent
-                : AppColors.border,
+            color: isSelected ? AppColors.textSecondary : AppColors.border,
             width: 2,
           ),
         ),
@@ -313,18 +339,22 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
             Icon(
               icon,
               color: isSelected
-                  ? AppColors.accent
-                  : AppColors.textSecondary,
-              size: 28,
+                  ? AppColors.textSecondary
+                  : AppColors.textSecondary.withOpacity(0.5),
+              size:
+                  context.responsive(mobile: 26.0, tablet: 28.0, desktop: 30.0),
             ),
-            const SizedBox(height: 8),
+            SizedBox(
+                height:
+                    context.responsive(mobile: 7.0, tablet: 8.0, desktop: 9.0)),
             Text(
               label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: context.responsive(
+                    mobile: 13.5, tablet: 14.0, desktop: 14.5),
                 fontWeight: FontWeight.w700,
                 color: isSelected
-                    ? AppColors.accent
+                    ? AppColors.textSecondary
                     : AppColors.textPrimary,
               ),
             ),
@@ -333,8 +363,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
               subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 11,
-                color: AppColors.textSecondary,
+                fontSize: context.responsive(
+                    mobile: 10.5, tablet: 11.0, desktop: 11.5),
+                color: AppColors.textSecondary.withOpacity(0.7),
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -361,11 +392,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Container(
-            width: 24,
-            height: 2,
-            color: AppColors.border,
-          ),
+          child: Container(width: 24, height: 2, color: AppColors.border),
         ),
         Expanded(
           child: _buildPriceInput(
@@ -396,15 +423,17 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize:
+                context.responsive(mobile: 11.5, tablet: 12.0, desktop: 12.5),
             fontWeight: FontWeight.w600,
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(
+            height: context.responsive(mobile: 7.0, tablet: 8.0, desktop: 9.0)),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: AppColors.secondary,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: AppColors.border),
           ),
@@ -413,7 +442,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
             keyboardType: TextInputType.number,
             onChanged: onChanged,
             style: TextStyle(
-              fontSize: 16,
+              fontSize:
+                  context.responsive(mobile: 15.0, tablet: 15.5, desktop: 16.0),
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -423,22 +453,17 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                 color: AppColors.textSecondary.withOpacity(0.4),
                 fontWeight: FontWeight.w500,
               ),
-              prefixIcon: Icon(
-                icon,
-                color: AppColors.accent,
-                size: 18,
-              ),
+              prefixIcon: Icon(icon, color: AppColors.textSecondary, size: 18),
               suffixText: '₺',
               suffixStyle: TextStyle(
-                fontSize: 14,
+                fontSize: context.responsive(
+                    mobile: 13.5, tablet: 14.0, desktop: 14.5),
                 fontWeight: FontWeight.w600,
                 color: AppColors.textSecondary,
               ),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 16,
-              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
           ),
         ),
@@ -455,38 +480,40 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
     ];
 
     return Wrap(
-      spacing: 10,
-      runSpacing: 10,
+      spacing: context.responsive(mobile: 9.0, tablet: 10.0, desktop: 11.0),
+      runSpacing: context.responsive(mobile: 9.0, tablet: 10.0, desktop: 11.0),
       children: presets.map((preset) {
         return InkWell(
           onTap: () {
             _minPriceController.text = preset.$1.toInt().toString();
-            _maxPriceController.text = preset.$2 < 100000
-                ? preset.$2.toInt().toString()
-                : '';
+            _maxPriceController.text =
+                preset.$2 < 100000 ? preset.$2.toInt().toString() : '';
             notifier.setPriceRange(preset.$1, preset.$2);
           },
           borderRadius: BorderRadius.circular(24),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: EdgeInsets.symmetric(
+              horizontal:
+                  context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+              vertical:
+                  context.responsive(mobile: 11.0, tablet: 12.0, desktop: 13.0),
+            ),
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: AppColors.secondary,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.border),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.payments_rounded,
-                  size: 18,
-                  color: AppColors.accent,
-                ),
+                Icon(Icons.payments_rounded,
+                    size: 18, color: AppColors.textSecondary),
                 const SizedBox(width: 8),
                 Text(
                   preset.$3,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: context.responsive(
+                        mobile: 13.5, tablet: 14.0, desktop: 14.5),
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
@@ -501,18 +528,16 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
 
   Widget _buildActionButtons() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(
+          context.responsive(mobile: 20.0, tablet: 24.0, desktop: 28.0)),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.border, width: 1),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
       ),
       child: SafeArea(
         top: false,
         child: Row(
           children: [
-            // Reset Button
             Expanded(
               flex: 2,
               child: OutlinedButton.icon(
@@ -522,21 +547,25 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   _maxPriceController.clear();
                   _closeSheet();
                 },
-                icon: Icon(Icons.refresh_rounded, size: 20),
-                label: const Text('Temizle'),
+                icon: Icon(Icons.refresh_rounded,
+                    size: context.responsive(
+                        mobile: 19.0, tablet: 20.0, desktop: 21.0)),
+                label: Text('Temizle',
+                    style: TextStyle(
+                        fontSize: context.responsive(
+                            mobile: 14.5, tablet: 15.0, desktop: 15.5))),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.textSecondary,
                   side: BorderSide(color: AppColors.border, width: 1.5),
-                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  padding: EdgeInsets.symmetric(
+                      vertical: context.responsive(
+                          mobile: 16.0, tablet: 17.0, desktop: 18.0)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                      borderRadius: BorderRadius.circular(16)),
                 ),
               ),
             ),
             const SizedBox(width: 12),
-
-            // Apply Button
             Expanded(
               flex: 3,
               child: ElevatedButton.icon(
@@ -544,17 +573,22 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   widget.onApplyFilters();
                   _closeSheet();
                 },
-                icon: const Icon(Icons.check_rounded, size: 20),
-                label: const Text('Uygula'),
+                icon: Icon(Icons.check_rounded,
+                    size: context.responsive(
+                        mobile: 19.0, tablet: 20.0, desktop: 21.0)),
+                label: Text('Uygula',
+                    style: TextStyle(
+                        fontSize: context.responsive(
+                            mobile: 14.5, tablet: 15.0, desktop: 15.5))),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent,
+                  backgroundColor: AppColors.textSecondary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  padding: EdgeInsets.symmetric(
+                      vertical: context.responsive(
+                          mobile: 16.0, tablet: 17.0, desktop: 18.0)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                      borderRadius: BorderRadius.circular(16)),
                   elevation: 0,
-                  shadowColor: AppColors.accent.withOpacity(0.4),
                 ),
               ),
             ),

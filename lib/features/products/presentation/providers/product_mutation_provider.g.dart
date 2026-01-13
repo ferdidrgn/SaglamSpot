@@ -33,7 +33,7 @@ final class ProductMutationProvider
   ProductMutation create() => ProductMutation();
 }
 
-String _$productMutationHash() => r'fc4e503ab148a23ff4c06884458b3ac3e873ebee';
+String _$productMutationHash() => r'ded10bc9fb2722d63aa62fd6d973b5811ece8d9e';
 
 abstract class _$ProductMutation extends $AsyncNotifier<void> {
   FutureOr<void> build();

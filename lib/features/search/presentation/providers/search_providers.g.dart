@@ -114,7 +114,7 @@ final class SearchFiltersProvider extends $NotifierProvider<
   }
 }
 
-String _$searchFiltersHash() => r'65e39fab798e5353f4569978fb79dfd7428ec193';
+String _$searchFiltersHash() => r'2993cb8a4961133725d777b5ed2275885abe2e21';
 
 /// Sadece aktif filtreleri tutar (Record kullanarak state sınıfı yazmaktan kurtulduk)
 
@@ -215,4 +215,4 @@ final class SearchedProductsProvider extends $FunctionalProvider<
   }
 }
 
-String _$searchedProductsHash() => r'0857a876cfdc85ecbc46e6165b7320495b90f148';
+String _$searchedProductsHash() => r'95d56c94162f583408ab44545639ecefce2096be';

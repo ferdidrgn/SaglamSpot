@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
-import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/responsive_product_grid.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
@@ -69,60 +69,63 @@ class _SearchPageState extends ConsumerState<SearchPage>
     final currentFilters = ref.watch(searchFiltersProvider);
     final isMobile = context.isMobile;
     final searchQuery = ref.watch(searchQueryProvider);
-
+    final getSearchSectionHeight =
+        context.responsive(mobile: 180.0, tablet: 220.0, desktop: 240.0);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // Minimalist Hero Header
+          // Fresh Hero Header
           _buildHeroHeader(context, isMobile),
 
-          // Elegant Search Bar
           SliverPersistentHeader(
             pinned: true,
             delegate: _StickySearchDelegate(
+              minHeight: getSearchSectionHeight,
+              maxHeight: getSearchSectionHeight,
               child: _buildSearchSection(context, isMobile, searchQuery),
             ),
           ),
 
-          // Refined Category Pills
+          // Fresh Category Pills
           _buildCategorySection(currentFilters, isMobile),
 
           // Active Filters
           if (_hasActiveFilters(currentFilters))
             _buildActiveFiltersSliver(currentFilters),
 
-          // Results Header with Count
+          // Results Header
           searchResultsAsync.when(
             loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-            error: (_, __) => const SliverToBoxAdapter(child: SizedBox.shrink()),
-            data: (products) => _buildResultsHeader(context, products.length, searchQuery),
+            error: (final _, final __) =>
+                const SliverToBoxAdapter(child: SizedBox.shrink()),
+            data: (final products) =>
+                _buildResultsHeader(context, products.length, searchQuery),
           ),
 
-          // Product Showcase
+          // Product Showcase with Ads
           searchResultsAsync.when(
             loading: () => const SliverFillRemaining(child: FullPageShimmer()),
-            error: (err, _) => SliverFillRemaining(
+            error: (final err, final _) => SliverFillRemaining(
               child: _buildErrorState(err.toString()),
             ),
-            data: (products) {
+            data: (final products) {
               if (products.isEmpty) return _buildEmptyState();
               return SliverPadding(
                 padding: EdgeInsets.only(
                   bottom: isMobile ? 100 : 60,
-                  left: isMobile ? 0 : 20,
-                  right: isMobile ? 0 : 20,
+                  left: context.responsive(mobile: 0.0, desktop: 20.0),
+                  right: context.responsive(mobile: 0.0, desktop: 20.0),
                 ),
                 sliver: SliverMainAxisGroup(
-                  slivers: _buildProductGrids(context, products),
+                  slivers: _buildProductGridsWithAds(context, products),
                 ),
               );
             },
           ),
 
-          const SliverToBoxAdapter(child: AdsenseBanner(height: 250)),
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
@@ -130,9 +133,10 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildHeroHeader(BuildContext context, bool isMobile) {
+  Widget _buildHeroHeader(final BuildContext context, final bool isMobile) {
     return SliverAppBar(
-      expandedHeight: isMobile ? 200 : 280,
+      expandedHeight:
+          context.responsive(mobile: 200.0, tablet: 240.0, desktop: 280.0),
       pinned: false,
       stretch: true,
       backgroundColor: AppColors.textPrimary,
@@ -144,8 +148,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
         ],
         centerTitle: false,
         titlePadding: EdgeInsets.only(
-          left: isMobile ? 20 : 40,
-          bottom: isMobile ? 16 : 24,
+          left: context.responsive(mobile: 20.0, tablet: 32.0, desktop: 40.0),
+          bottom: context.responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0),
         ),
         title: FadeTransition(
           opacity: _fadeAnimation,
@@ -156,17 +160,19 @@ class _SearchPageState extends ConsumerState<SearchPage>
               Text(
                 'KOLEKSİYON',
                 style: TextStyle(
-                  fontSize: isMobile ? 9 : 11,
+                  fontSize: context.responsive(
+                      mobile: 9.0, tablet: 10.0, desktop: 11.0),
                   letterSpacing: 3,
                   fontWeight: FontWeight.w300,
-                  color: AppColors.accent.withOpacity(0.9),
+                  color: AppColors.textSecondary.withOpacity(0.7),
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
               Text(
                 'Zarafet & Konfor',
                 style: TextStyle(
-                  fontSize: isMobile ? 22 : 32,
+                  fontSize: context.responsive(
+                      mobile: 22.0, tablet: 28.0, desktop: 32.0),
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                   letterSpacing: -0.5,
@@ -181,9 +187,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
             Image.network(
               'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: AppColors.textPrimary,
-              ),
+              errorBuilder: (final _, final __, final ___) =>
+                  Container(color: AppColors.textPrimary),
             ),
             DecoratedBox(
               decoration: BoxDecoration(
@@ -205,87 +210,87 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildSearchSection(BuildContext context, bool isMobile, String query) {
+  Widget _buildSearchSection(
+      final BuildContext context, final bool isMobile, final String query) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.06),
+            color: AppColors.textSecondary.withOpacity(0.08),
             blurRadius: 12,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 16 : 32,
-        vertical: isMobile ? 16 : 20,
+      padding: context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        tablet: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        desktop: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
       ),
       child: Column(
         children: [
           // Premium Search Input
           Container(
-            height: isMobile ? 56 : 64,
+            height:
+                context.responsive(mobile: 56.0, tablet: 60.0, desktop: 64.0),
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: AppColors.secondary,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: _showSearchFocus
-                    ? AppColors.accent
+                    ? AppColors.textSecondary
                     : AppColors.border,
                 width: 1.5,
               ),
             ),
             child: TextField(
               controller: _searchController,
-              onChanged: (val) {
-                ref.read(searchQueryProvider.notifier).update(val);
-              },
+              onChanged: (final val) =>
+                  ref.read(searchQueryProvider.notifier).update(val),
               onTap: () => setState(() => _showSearchFocus = true),
-              onTapOutside: (_) => setState(() => _showSearchFocus = false),
+              onTapOutside: (final _) =>
+                  setState(() => _showSearchFocus = false),
               style: TextStyle(
-                fontSize: isMobile ? 15 : 16,
+                fontSize: context.responsive(
+                    mobile: 15.0, tablet: 15.5, desktop: 16.0),
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
                 hintText: 'Ürün, kategori veya stil arayın...',
                 hintStyle: TextStyle(
-                  color: AppColors.textSecondary.withOpacity(0.6),
+                  color: AppColors.textSecondary.withOpacity(0.5),
                   fontWeight: FontWeight.w400,
                 ),
                 prefixIcon: Icon(
                   Icons.search_rounded,
                   color: _showSearchFocus
-                      ? AppColors.accent
-                      : AppColors.textSecondary,
-                  size: isMobile ? 22 : 24,
+                      ? AppColors.textSecondary
+                      : AppColors.textSecondary.withOpacity(0.6),
+                  size: context.responsive(
+                      mobile: 22.0, tablet: 23.0, desktop: 24.0),
                 ),
                 suffixIcon: query.isNotEmpty
                     ? IconButton(
-                  icon: Icon(
-                    Icons.close_rounded,
-                    color: AppColors.textSecondary,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    _searchController.clear();
-                    ref.read(searchQueryProvider.notifier).update('');
-                  },
-                )
+                        icon: const Icon(Icons.close_rounded,
+                            color: AppColors.textSecondary, size: 20),
+                        onPressed: () {
+                          _searchController.clear();
+                          ref.read(searchQueryProvider.notifier).update('');
+                        },
+                      )
                     : null,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 18,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               ),
             ),
           ),
 
           // Desktop Filters Row
           if (!isMobile) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _buildDesktopQuickFilters(),
           ],
         ],
@@ -295,7 +300,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
   Widget _buildDesktopQuickFilters() {
     return Consumer(
-      builder: (context, ref, _) {
+      builder: (final context, final ref, final _) {
         final filters = ref.watch(searchFiltersProvider);
         final notifier = ref.read(searchFiltersProvider.notifier);
 
@@ -306,13 +311,11 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 'Durum',
                 filters.condition ?? 'Tümü',
                 ['Tümü', 'Sıfır', 'İkinci El'],
-                    (val) => notifier.setCondition(val),
+                (final val) => notifier.setCondition(val),
               ),
             ),
             const SizedBox(width: 12),
-            Expanded(
-              child: _buildPriceRangeButton(context),
-            ),
+            Expanded(child: _buildPriceRangeButton(context)),
             const SizedBox(width: 12),
             _buildResetButton(),
           ],
@@ -322,16 +325,16 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   Widget _buildQuickFilterDropdown(
-      String label,
-      String value,
-      List<String> items,
-      Function(String?) onChanged,
-      ) {
+    final String label,
+    final String value,
+    final List<String> items,
+    final Function(String?) onChanged,
+  ) {
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.secondary,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -339,26 +342,23 @@ class _SearchPageState extends ConsumerState<SearchPage>
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded,
+          icon: const Icon(Icons.keyboard_arrow_down_rounded,
               color: AppColors.textSecondary, size: 20),
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w500,
-          ),
-          items: items.map((item) {
-            return DropdownMenuItem(
-              value: item,
-              child: Text(item),
-            );
-          }).toList(),
+          style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w500),
+          items: items
+              .map((final item) =>
+                  DropdownMenuItem(value: item, child: Text(item)))
+              .toList(),
           onChanged: onChanged,
         ),
       ),
     );
   }
 
-  Widget _buildPriceRangeButton(BuildContext context) {
+  Widget _buildPriceRangeButton(final BuildContext context) {
     return InkWell(
       onTap: () => _showPriceRangeDialog(context),
       borderRadius: BorderRadius.circular(12),
@@ -366,23 +366,19 @@ class _SearchPageState extends ConsumerState<SearchPage>
         height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.secondary,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.border),
         ),
-        child: Row(
+        child: const Row(
           children: [
-            Text(
-              'Fiyat Aralığı',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            Icon(Icons.tune_rounded,
-                color: AppColors.textSecondary, size: 20),
+            Text('Fiyat Aralığı',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w500)),
+            Spacer(),
+            Icon(Icons.tune_rounded, color: AppColors.textSecondary, size: 20),
           ],
         ),
       ),
@@ -397,50 +393,50 @@ class _SearchPageState extends ConsumerState<SearchPage>
         height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
-          color: AppColors.accent.withOpacity(0.1),
+          color: AppColors.textSecondary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+          border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
         ),
-        child: Row(
+        child: const Row(
           children: [
             Icon(Icons.refresh_rounded,
-                color: AppColors.accent, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              'Temizle',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.accent,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+                color: AppColors.textSecondary, size: 18),
+            SizedBox(width: 8),
+            Text('Temizle',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategorySection(dynamic filters, bool isMobile) {
+  Widget _buildCategorySection(final dynamic filters, final bool isMobile) {
     return SliverToBoxAdapter(
       child: Container(
-        height: isMobile ? 60 : 70,
+        height: context.responsive(mobile: 60.0, tablet: 65.0, desktop: 70.0),
         color: AppColors.surface,
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 12 : 32,
-          vertical: isMobile ? 8 : 12,
+          horizontal:
+              context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
+          vertical:
+              context.responsive(mobile: 8.0, tablet: 10.0, desktop: 12.0),
         ),
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: _categories.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 10),
-          itemBuilder: (context, index) {
+          separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+          itemBuilder: (final context, final index) {
             final category = _categories[index];
             final isSelected = (filters.category ?? 'Tümü') == category;
-
             return _buildCategoryPill(
               category,
               isSelected,
-                  () => ref.read(searchFiltersProvider.notifier).setCategory(category),
+              () => ref
+                  .read(searchFiltersProvider.notifier)
+                  .setCategory(category),
             );
           },
         ),
@@ -448,41 +444,44 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildCategoryPill(String label, bool isSelected, VoidCallback onTap) {
+  Widget _buildCategoryPill(
+      final String label, final bool isSelected, final VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(
+          horizontal:
+              context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+          vertical:
+              context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
+        ),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.accent
-              : AppColors.background,
+          color: isSelected ? AppColors.textSecondary : AppColors.secondary,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected
-                ? AppColors.accent
-                : AppColors.border,
+            color: isSelected ? AppColors.textSecondary : AppColors.border,
             width: 1.5,
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: AppColors.accent.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.textSecondary.withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 14,
+              fontSize:
+                  context.responsive(mobile: 13.0, tablet: 13.5, desktop: 14.0),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-              color: isSelected
-                  ? Colors.white
-                  : AppColors.textPrimary,
+              color: isSelected ? Colors.white : AppColors.textPrimary,
               letterSpacing: 0.3,
             ),
           ),
@@ -491,17 +490,21 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  bool _hasActiveFilters(dynamic filters) {
-    return filters.category != null ||
-        filters.condition != null ||
+  bool _hasActiveFilters(final dynamic filters) {
+    return (filters.category != null && filters.category != 'Tümü') ||
+        (filters.condition != null && filters.condition != 'Tümü') ||
         filters.minPrice > 0 ||
         filters.maxPrice < 100000;
   }
 
-  Widget _buildActiveFiltersSliver(dynamic filters) {
+  Widget _buildActiveFiltersSliver(final dynamic filters) {
     return SliverToBoxAdapter(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.symmetric(
+          horizontal:
+              context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+          vertical: 16,
+        ),
         child: Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -521,47 +524,49 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildFilterChip(String label, IconData icon) {
+  Widget _buildFilterChip(final String label, final IconData icon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.secondary,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.accent.withOpacity(0.2)),
+        border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.textPrimary),
+          Icon(icon, size: 16, color: AppColors.textSecondary),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary)),
         ],
       ),
     );
   }
 
-  Widget _buildResultsHeader(BuildContext context, int count, String query) {
-    if (count == 0 || query.isEmpty) {
+  Widget _buildResultsHeader(
+      final BuildContext context, final int count, final String query) {
+    if (count == 0 || query.isEmpty)
       return const SliverToBoxAdapter(child: SizedBox.shrink());
-    }
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+        padding: EdgeInsets.fromLTRB(
+          context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
+          context.responsive(mobile: 20.0, tablet: 24.0, desktop: 28.0),
+          context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
+          context.responsive(mobile: 14.0, tablet: 16.0, desktop: 18.0),
+        ),
         child: Row(
           children: [
             Container(
               width: 4,
               height: 28,
               decoration: BoxDecoration(
-                color: AppColors.accent,
+                color: AppColors.textSecondary,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -572,7 +577,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 Text(
                   '$count Ürün Bulundu',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: context.responsive(
+                        mobile: 17.0, tablet: 18.0, desktop: 19.0),
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                     letterSpacing: -0.3,
@@ -581,7 +587,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 Text(
                   '"$query" için sonuçlar',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: context.responsive(
+                        mobile: 12.5, tablet: 13.0, desktop: 13.5),
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w400,
                   ),
@@ -598,59 +605,76 @@ class _SearchPageState extends ConsumerState<SearchPage>
     return SliverFillRemaining(
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: context.pagePadding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
+                width: context.responsive(
+                    mobile: 110.0, tablet: 120.0, desktop: 130.0),
+                height: context.responsive(
+                    mobile: 110.0, tablet: 120.0, desktop: 130.0),
+                decoration: const BoxDecoration(
                   color: AppColors.secondary,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.search_off_rounded,
-                  size: 56,
-                  color: AppColors.textSecondary.withOpacity(0.5),
+                  size: context.responsive(
+                      mobile: 52.0, tablet: 56.0, desktop: 60.0),
+                  color: AppColors.textSecondary.withOpacity(0.4),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(
+                  height: context.responsive(
+                      mobile: 20.0, tablet: 24.0, desktop: 28.0)),
               Text(
                 'Aradığınız Kriterde\nÜrün Bulunamadı',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: context.responsive(
+                      mobile: 19.0, tablet: 20.0, desktop: 21.0),
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                   height: 1.3,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(
+                  height: context.responsive(
+                      mobile: 10.0, tablet: 12.0, desktop: 14.0)),
               Text(
                 'Farklı filtreler deneyebilir veya\narama teriminizi değiştirebilirsiniz',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: context.responsive(
+                      mobile: 14.0, tablet: 15.0, desktop: 16.0),
                   color: AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(
+                  height: context.responsive(
+                      mobile: 28.0, tablet: 32.0, desktop: 36.0)),
               ElevatedButton.icon(
                 onPressed: _resetAll,
-                icon: const Icon(Icons.refresh_rounded, size: 20),
-                label: const Text('Filtreleri Temizle'),
+                icon: Icon(Icons.refresh_rounded,
+                    size: context.responsive(
+                        mobile: 19.0, tablet: 20.0, desktop: 21.0)),
+                label: Text('Filtreleri Temizle',
+                    style: TextStyle(
+                        fontSize:
+                            context.responsive(mobile: 15.0, desktop: 16.0))),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent,
+                  backgroundColor: AppColors.textSecondary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.responsive(
+                        mobile: 28.0, tablet: 32.0, desktop: 36.0),
+                    vertical: context.responsive(
+                        mobile: 14.0, tablet: 16.0, desktop: 18.0),
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   elevation: 0,
                 ),
               ),
@@ -661,78 +685,115 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildErrorState(String error) {
+  Widget _buildErrorState(final String error) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: context.pagePadding,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline_rounded,
-              size: 80,
-              color: AppColors.error.withOpacity(0.7),
-            ),
+            Icon(Icons.error_outline_rounded,
+                size: 80, color: AppColors.error.withOpacity(0.7)),
             const SizedBox(height: 20),
-            Text(
-              'Bir Hata Oluştu',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
+            const Text('Bir Hata Oluştu',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary)),
             const SizedBox(height: 8),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
-            ),
+            Text(error,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 14, color: AppColors.textSecondary)),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildProductGrids(BuildContext context, List<Product> products) {
-    final available = products.where((p) => !p.isSold).toList();
-    final sold = products.where((p) => p.isSold).toList();
+  List<Widget> _buildProductGridsWithAds(
+      final BuildContext context, final List<Product> products) {
+    final available = products.where((final p) => !p.isSold).toList();
+    final sold = products.where((final p) => p.isSold).toList();
 
-    return [
-      if (available.isNotEmpty) ...[
-        _buildSectionDivider('MEVCUT KOLEKSİYON', available.length, AppColors.success),
-        ResponsiveProductSliverGrid(
-          products: available,
-          onProductTap: (p) => context.push('/product/${p.id}'),
-        ),
-      ],
-      if (sold.isNotEmpty) ...[
-        const SliverToBoxAdapter(child: SizedBox(height: 40)),
-        _buildSectionDivider('SATILMIŞ ÜRÜNLER', sold.length, AppColors.textTertiary),
-        ResponsiveProductSliverGrid(
-          products: sold,
-          onProductTap: (p) => context.push('/product/${p.id}'),
-        ),
-      ],
-    ];
+    final List<Widget> slivers = [];
+
+    if (available.isNotEmpty) {
+      slivers.add(_buildSectionDivider(
+          'MEVCUT KOLEKSİYON', available.length, AppColors.success));
+      slivers.addAll(_buildProductsWithAds(context, available));
+    }
+
+    if (sold.isNotEmpty) {
+      slivers.add(const SliverToBoxAdapter(child: SizedBox(height: 40)));
+      slivers.add(_buildSectionDivider(
+          'SATILMIŞ ÜRÜNLER', sold.length, AppColors.textTertiary));
+      slivers.addAll(_buildProductsWithAds(context, sold));
+    }
+
+    return slivers;
   }
 
-  Widget _buildSectionDivider(String title, int count, Color color) {
+  List<Widget> _buildProductsWithAds(
+      final BuildContext context, final List<Product> products) {
+    final List<Widget> slivers = [];
+    final crossAxisCount = context.gridColumns();
+    final adFrequency = context.responsive(
+        mobile: 6, tablet: 9, desktop: 12); // Her N üründe bir reklam
+
+    int productIndex = 0;
+    while (productIndex < products.length) {
+      final endIndex = (productIndex + adFrequency).clamp(0, products.length);
+      final chunk = products.sublist(productIndex, endIndex);
+
+      // Ürün chunklarını ekle
+      slivers.add(
+        ResponsiveProductSliverGrid(
+          products: chunk,
+          onProductTap: (final p) => context.push('/product/${p.id}'),
+        ),
+      );
+
+      // Chunk sonunda ve daha ürün varsa reklam ekle
+      if (endIndex < products.length) {
+        slivers.add(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsive(
+                    mobile: 16.0, tablet: 20.0, desktop: 24.0),
+                vertical: context.responsive(
+                    mobile: 16.0, tablet: 20.0, desktop: 24.0),
+              ),
+              child: const AdNativeWidget(),
+            ),
+          ),
+        );
+      }
+
+      productIndex = endIndex;
+    }
+
+    return slivers;
+  }
+
+  Widget _buildSectionDivider(
+      final String title, final int count, final Color color) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 20),
+        padding: EdgeInsets.fromLTRB(
+          context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
+          context.responsive(mobile: 28.0, tablet: 32.0, desktop: 36.0),
+          context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
+          context.responsive(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+        ),
         child: Row(
           children: [
             Container(
               width: 4,
               height: 32,
               decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(2),
-              ),
+                  color: color, borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(width: 12),
             Column(
@@ -741,7 +802,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: context.responsive(
+                        mobile: 11.0, tablet: 11.5, desktop: 12.0),
                     fontWeight: FontWeight.w700,
                     letterSpacing: 2,
                     color: AppColors.textPrimary,
@@ -751,7 +813,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 Text(
                   '$count Parça',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: context.responsive(
+                        mobile: 12.5, tablet: 13.0, desktop: 13.5),
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
@@ -764,7 +827,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildFloatingFilter(BuildContext context) {
+  Widget _buildFloatingFilter(final BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -778,72 +841,91 @@ class _SearchPageState extends ConsumerState<SearchPage>
       ),
       child: FloatingActionButton.extended(
         onPressed: () => _showFilterSheet(context),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.textSecondary,
         elevation: 0,
         icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 22),
-        label: const Text(
-          'Filtrele',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
-          ),
-        ),
+        label: const Text('Filtrele',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 15)),
       ),
     );
   }
 
-  void _showFilterSheet(BuildContext context) {
+  void _showFilterSheet(final BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => FilterSheet(
+      builder: (final _) => FilterSheet(
         onApplyFilters: () => Navigator.pop(context),
         onResetFilters: _resetAll,
       ),
     );
   }
 
-  void _showPriceRangeDialog(BuildContext context) {
+  void _showPriceRangeDialog(final BuildContext context) {
     final filters = ref.read(searchFiltersProvider);
     final minController = TextEditingController(
       text: filters.minPrice > 0 ? filters.minPrice.toInt().toString() : '',
     );
     final maxController = TextEditingController(
-      text: filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
+      text:
+          filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
     );
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (final context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Fiyat Aralığı'),
+        backgroundColor: AppColors.surface,
+        title: const Text('Fiyat Aralığı',
+            style: TextStyle(color: AppColors.textPrimary)),
         content: Row(
           children: [
             Expanded(
               child: TextField(
                 controller: minController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: AppColors.textPrimary),
+                decoration: InputDecoration(
                   labelText: 'Min',
+                  labelStyle: const TextStyle(color: AppColors.textSecondary),
                   suffixText: '₺',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        const BorderSide(color: AppColors.textSecondary),
+                  ),
                 ),
               ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text('-', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('-',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
             ),
             Expanded(
               child: TextField(
                 controller: maxController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: AppColors.textPrimary),
+                decoration: InputDecoration(
                   labelText: 'Max',
+                  labelStyle: const TextStyle(color: AppColors.textSecondary),
                   suffixText: '₺',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        const BorderSide(color: AppColors.textSecondary),
+                  ),
                 ),
               ),
             ),
@@ -852,7 +934,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('İptal'),
+            child: const Text('İptal',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -862,8 +945,10 @@ class _SearchPageState extends ConsumerState<SearchPage>
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent,
+              backgroundColor: AppColors.textSecondary,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
             ),
             child: const Text('Uygula'),
           ),
@@ -875,23 +960,27 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
 class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
+  final double minHeight;
+  final double maxHeight;
 
-  _StickySearchDelegate({required this.child});
+  _StickySearchDelegate({
+    required this.child,
+    required this.minHeight,
+    required this.maxHeight,
+  });
 
   @override
-  Widget build(context, shrinkOffset, overlapsContent) {
-    return Material(
-      elevation: shrinkOffset > 0 ? 4 : 0,
-      child: child,
-    );
+  Widget build(final context, final shrinkOffset, final overlapsContent) {
+    return Material(elevation: shrinkOffset > 0 ? 4 : 0, child: child);
   }
 
   @override
-  double get maxExtent => 200;
+  double get maxExtent => maxHeight;
 
   @override
-  double get minExtent => 200;
+  double get minExtent => minHeight;
 
   @override
-  bool shouldRebuild(covariant _StickySearchDelegate oldDelegate) => true;
+  bool shouldRebuild(covariant final _StickySearchDelegate oldDelegate) =>
+      oldDelegate.minHeight != minHeight || oldDelegate.maxHeight != maxHeight;
 }
