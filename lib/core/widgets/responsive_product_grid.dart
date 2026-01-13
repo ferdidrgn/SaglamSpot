@@ -118,9 +118,7 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     if (products.isEmpty)
-      return SliverFillRemaining(
-        child: _buildEmptyState(context),
-      );
+      return SliverFillRemaining(child: _buildEmptyState(context));
 
     final crossAxisCount = context.gridColumns();
     final spacing = context.gridSpacing;
