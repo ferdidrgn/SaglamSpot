@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/custom_image_selector.dart';
@@ -51,7 +52,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
         ref
             .read(productsProvider)
             .value
-            ?.where((e) => e.id == widget.productId)
+            ?.where((final e) => e.id == widget.productId)
             .firstOrNull;
 
     if (_currentProduct != null) {
@@ -88,7 +89,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: const Text("Ürünü Düzenle"),
-        backgroundColor: const Color(0xFF6366F1),
+        backgroundColor: AppColors.accentDark,
       ),
       body: Column(
         children: [
@@ -119,9 +120,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   const SizedBox(height: 16),
                   _section("Durum ve Kategori"),
                   _buildSwitchTile("Ürün Satıldı", _isSold,
-                      (v) => setState(() => _isSold = v)),
+                      (final v) => setState(() => _isSold = v)),
                   _buildSwitchTile("Spot / İkinci El", _isSpotProduct,
-                      (v) => setState(() => _isSpotProduct = v)),
+                      (final v) => setState(() => _isSpotProduct = v)),
                   const SizedBox(height: 32),
                   _submitButton(mutationState),
                   const SizedBox(height: 24),
@@ -149,7 +150,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
               scrollDirection: Axis.horizontal,
               itemCount: _newSelectedImages.length,
               padding: const EdgeInsets.all(8),
-              itemBuilder: (context, index) => Padding(
+              itemBuilder: (final context, final index) => Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
@@ -163,7 +164,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: _currentProduct!.imagesUrl.length,
                   padding: const EdgeInsets.all(8),
-                  itemBuilder: (context, index) => Padding(
+                  itemBuilder: (final context, final index) => Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -196,9 +197,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     );
   }
 
-  Widget _buildTextField(
-      TextEditingController controller, String label, IconData icon,
-      {bool isNumeric = false, int maxLines = 1}) {
+  Widget _buildTextField(final TextEditingController controller,
+      final String label, final IconData icon,
+      {final bool isNumeric = false, final int maxLines = 1}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextField(
@@ -218,8 +219,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     );
   }
 
-  Widget _buildSwitchTile(
-      String title, bool value, ValueChanged<bool> onChanged) {
+  Widget _buildSwitchTile(final String title, final bool value,
+      final ValueChanged<bool> onChanged) {
     return SwitchListTile(
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       value: value,
@@ -229,7 +230,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     );
   }
 
-  Widget _section(String title) => Text(
+  Widget _section(final String title) => Text(
         title,
         style: const TextStyle(
             fontSize: 18,
@@ -237,7 +238,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
             color: Color(0xFF1E293B)),
       );
 
-  Widget _submitButton(AsyncValue<void> state) {
+  Widget _submitButton(final AsyncValue<void> state) {
     return SizedBox(
       height: 55,
       width: double.infinity,

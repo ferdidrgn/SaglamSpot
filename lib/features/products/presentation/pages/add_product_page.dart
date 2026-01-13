@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -65,7 +66,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: const Text('Yeni Ürün Ekle'),
-        backgroundColor: const Color(0xFF6366F1),
+        backgroundColor: AppColors.accentDark,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
