@@ -19,7 +19,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Sağlam Spotçu',
-      theme: AppTheme.lightTheme,
+      theme: AppTheme().lightTheme,
       routerConfig: router,
     );
   }

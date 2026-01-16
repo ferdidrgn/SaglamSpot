@@ -1,17 +1,14 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:saglamspot/core/widgets/custom_search_bar.dart';
-import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
+
+// Kendi dosya yollarını projenin yapısına göre güncelle
 import '../../../../core/util/responsive_utils.dart';
-import '../../../../core/widgets/ad_sense_banner.dart';
-import '../../../../core/widgets/custom_product_card.dart';
-import '../../../../core/widgets/interactive_magic_spotlight.dart';
-import '../../../../core/widgets/shimmer_components.dart';
-import '../../../products/domain/entites/product.dart';
-import '../../../products/presentation/providers/product_filters_provider.dart';
-import '../widgets/furniture_tips_section.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/theme_context_extension.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -20,120 +17,171 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
-  late PageController _heroController;
-  int _currentHeroPage = 0;
-  Timer? _timer;
-  final TextEditingController _searchController = TextEditingController();
-  String _activeCategory = "Tümü";
+class _HomePageState extends ConsumerState<HomePage>
+    with TickerProviderStateMixin, ResponsiveUtils {
+  // --- ANIMASYON KONTROLLERİ (Senin sistemin) ---
+  late AnimationController _heroController;
+  late AnimationController _floatingController;
+  late AnimationController _pulseController;
 
-  // Kurumsal Mint Renk Paleti
-  final Color _bgMint = const Color(0xFFF1F7F6);
-  final Color _darkMint = const Color(0xFF103E35);
+  // --- KONTROLLER VE STATE (Ortak yapı) ---
+  int _currentHeroPage = 0;
+  Timer? _heroTimer;
+  String _activeCategory = 'Tümü';
+  final PageController _heroPageController = PageController();
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _heroController = PageController();
+    // Arkaplan Orb Animasyonu
+    _heroController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 15),
+    )..repeat();
+
+    // Butonlar için süzülme efekti
+    _floatingController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+
+    // İkonlar ve bildirimler için nabız efekti
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+
     _startHeroTimer();
   }
 
   void _startHeroTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 7), (final _) {
-      if (_heroController.hasClients) {
-        final int nextPage = (_currentHeroPage + 1) % 3;
-        _heroController.animateToPage(nextPage,
-            duration: const Duration(milliseconds: 900),
-            curve: Curves.easeInOutCubic);
+    _heroTimer = Timer.periodic(const Duration(seconds: 6), (final timer) {
+      if (mounted && _heroPageController.hasClients) {
+        _currentHeroPage = (_currentHeroPage + 1) % 3;
+        _heroPageController.animateToPage(
+          _currentHeroPage,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeInOutQuint,
+        );
       }
     });
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _heroTimer?.cancel();
     _heroController.dispose();
+    _floatingController.dispose();
+    _pulseController.dispose();
+    _heroPageController.dispose();
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(final BuildContext context) {
-    final productsAsync = ref.watch(productsProvider);
-    final availableProducts = ref.watch(availableProductsProvider);
-
     return Scaffold(
-      backgroundColor: _bgMint,
-      body: productsAsync.when(
-        loading: () => const FullPageShimmer(),
-        error: (final err, final _) => Center(child: Text("Hata: $err")),
-        data: (final _) => Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1920),
+      backgroundColor: context.scaffoldBackgroundColor,
+      body: Stack(
+        children: [
+          // 1. DİNAMİK ARKA PLAN (Senin Painter'ın lüks renklerle)
+          _buildAnimatedBackground(),
+
+          // 2. ANA İÇERİK (Responsive Max Width)
+          ResponsiveUtils.maxWidthContainer(
             child: CustomScrollView(
+              controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
-                // 1. HEADER (LOGO SAĞDA)
-                _buildDiscoveryHeaderWithLogo(context),
+                // GLASSMORPHIC APP BAR
+                _buildGlassmorphicAppBar(),
 
-                // 2. SEARCH & QUICK FEATURES
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: context.paddingHorizontal,
-                    child: Column(
-                      children: [
-                        CustomSearchBar(
-                          controller: _searchController,
-                          onSearch: (final query) => context
-                              .push('/search?q=${Uri.encodeComponent(query)}'),
-                        ),
-                        const SizedBox(height: 40),
-                        _buildQuickFeatures(context),
-                      ],
-                    ),
-                  ),
-                ),
+                // HERO SLIDER
+                _buildHeroSliderSection(),
 
-                // 3. CATEGORY CHIPS (BÜYÜTÜLMÜŞ)
-                _buildLargeCategoryChips(context),
+                // QUICK FEATURES (Hızlı İkonlar)
+                _buildQuickFeatures(),
 
-                // 4. LUXY HERO SLIDER
-                _buildHeroSection(context),
+                // KATEGORİ SEÇİCİ
+                _buildCategoriesSection(),
 
-                // 5. INVERSE SHOWCASE (FERAH GÖRSEL)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: context.sectionPadding,
-                    child: const InsaneMagicShowcase(
-                      imageUrl:
-                          "https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?q=80&w=1600",
-                      imageScale: 1.12,
-                    ),
-                  ),
-                ),
+                // ÖNE ÇIKANLAR (Bento Grid Mantığı)
+                _buildFeaturedGrid(),
 
-                // 6. YENİ KOLEKSİYON GRID
-                _buildSectionHeader(context, "Yeni Koleksiyon",
-                    "Evinizin ferahlığına şık bir dokunuş"),
-                _buildProductGrid(context, availableProducts),
-                _buildSeeAllButton(context),
+                // MEKANA GÖRE KEŞFET (Scroll Oyunlu)
+                _buildRoomsSection(),
 
-                // 8. ODAYA GÖRE KEŞFET (TAM EKRAN)
-                _buildSectionHeader(context, "Yaşam Alanına Göre",
-                    "Evinizin her köşesi için bir hikayemiz var"),
-                _buildFullWidthRoomSection(context),
+                // İSTATİSTİKLER
+                _buildStatsSection(),
 
-                const SliverToBoxAdapter(child: AdsenseBanner(height: 120)),
-
-                // 9. ENHANCED STATS & TIPS
-                _buildEnhancedStats(context),
-                const FurnitureTipsSection(),
-
-                // 10. CTA & PROFESYONEL FOOTER
-                _buildCTASection(context),
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
-                _buildModernFooter(context),
+                // FOOTER
+                _buildFooter(),
               ],
+            ),
+          ),
+
+          // 3. FLOATING ACTIONS (Senin animasyonlarınla)
+          _buildAnimatedFloatingButtons(),
+        ],
+      ),
+    );
+  }
+
+  // --- COMPONENTLER ---
+
+  Widget _buildAnimatedBackground() {
+    return AnimatedBuilder(
+      animation: _heroController,
+      builder: (final context, final child) => CustomPaint(
+        painter: _OrbPainter(
+          animation: _heroController.value,
+          color1: context.primaryColor.withOpacity(0.05),
+          color2: context.secondaryColor.withOpacity(0.03),
+        ),
+        child: const SizedBox.expand(),
+      ),
+    );
+  }
+
+  Widget _buildGlassmorphicAppBar() {
+    return SliverAppBar(
+      floating: true,
+      pinned: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      expandedHeight: context.responsive(mobile: 80, tablet: 100, desktop: 110),
+      flexibleSpace: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.scaffoldBackgroundColor.withOpacity(0.7),
+              border: Border(
+                  bottom: BorderSide(
+                      color: context.primaryColor.withOpacity(0.05))),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: context.pagePadding,
+                child: Row(
+                  children: [
+                    Text("SAĞLAM SPOT",
+                        style: AppTextStyles.h3.copyWith(
+                            color: context.primaryColor, letterSpacing: 2)),
+                    const Spacer(),
+                    if (!context.isMobile) ...[
+                      _navItem('Koleksiyon'),
+                      _navItem('Hakkımızda'),
+                      _navItem('İletişim'),
+                      SizedBox(width: context.spacingLarge),
+                    ],
+                    _buildActionIcons(),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -141,509 +189,439 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  // =================== COMPONENT BUILDERS ===================
+  Widget _navItem(final String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Text(title,
+          style: AppTextStyles.bodyText2.copyWith(fontWeight: FontWeight.w600)),
+    );
+  }
 
-  Widget _buildDiscoveryHeaderWithLogo(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.pagePadding.copyWith(top: 60, bottom: 40),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("SAĞLAM SPOT",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 4,
-                          color: _darkMint)),
-                  const SizedBox(height: 10),
-                  Text("Evinizi Yeniden\nKeşfetme Zamanı.",
-                      style: TextStyle(
-                          fontSize: context.heroSize,
-                          fontWeight: FontWeight.w900,
-                          height: 1.0,
-                          letterSpacing: -2,
-                          color: _darkMint)),
-                ],
-              ),
-            ),
-            if (!context.isMobile)
-              Container(
-                width: 140,
-                height: 140,
+  Widget _buildActionIcons() {
+    return Row(
+      children: [
+        _buildAnimatedIcon(Icons.favorite_border),
+        const SizedBox(width: 15),
+        _buildAnimatedIcon(Icons.shopping_bag_outlined, hasBadge: true),
+      ],
+    );
+  }
+
+  Widget _buildAnimatedIcon(final IconData icon,
+      {final bool hasBadge = false}) {
+    return AnimatedBuilder(
+      animation: _pulseController,
+      builder: (final context, final child) => Stack(
+        children: [
+          Icon(icon, color: context.primaryColor, size: 28),
+          if (hasBadge)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                width: 10,
+                height: 10,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.secondaryColor,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                        color: _darkMint.withOpacity(0.1),
-                        blurRadius: 30,
-                        offset: const Offset(0, 10))
-                  ],
-                  image: const DecorationImage(
-                      image: AssetImage("assets/images/saglam_spot_logo.png"),
-                      fit: BoxFit.contain),
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
               ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroSliderSection() {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: context.hp(65),
+        margin: context.pagePadding,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+          child: PageView.builder(
+            controller: _heroPageController,
+            itemCount: 3,
+            itemBuilder: (final context, final index) => _heroSlide(index),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _heroSlide(final int index) {
+    final List<String> images = [
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
+      "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600"
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: NetworkImage(images[index]), fit: BoxFit.cover),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(60),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [context.primaryColor.withOpacity(0.8), Colors.transparent],
+            begin: Alignment.centerLeft,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("YENİ SEZON",
+                style: TextStyle(
+                    color: context.secondaryColor,
+                    letterSpacing: 4,
+                    fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            Text("Minimalist\nKonforun Zirvesi",
+                style: AppTextStyles.h1.copyWith(
+                    color: Colors.white,
+                    fontSize: context.heroSize,
+                    height: 1.1)),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: context.secondaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20)),
+              child: const Text("KOLEKSİYONU GÖR"),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildQuickFeatures(final BuildContext context) {
-    return Flex(
-      direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _featureItem(
-            context, Icons.volunteer_activism_rounded, "Samimi Esnaflık"),
-        _featureItem(context, Icons.verified_user_rounded, "Güvenli Teslimat"),
-        _featureItem(context, Icons.sentiment_very_satisfied_rounded,
-            "Güler Yüzlü Hizmet"),
-        _featureItem(context, Icons.local_shipping_rounded, "Hızlı Nakliye"),
-      ],
-    );
-  }
-
-  Widget _featureItem(
-      final BuildContext context, final IconData icon, final String text) {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: _darkMint, size: context.iconMedium),
-          const SizedBox(width: 12),
-          Text(text,
-              style: TextStyle(
-                  color: _darkMint, fontWeight: FontWeight.w700, fontSize: 16)),
-        ],
+  Widget _buildQuickFeatures() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.sectionPadding,
+        child: Center(
+          child: Wrap(
+            // Satır sığmazsa aşağı kayması için Wrap daha güvenlidir
+            alignment: WrapAlignment.center,
+            spacing: context.responsive(mobile: 20, desktop: 60),
+            runSpacing: 20,
+            children: [
+              _featureItem(Icons.volunteer_activism_rounded, "Samimi Esnaflık"),
+              _featureItem(Icons.verified_user_rounded, "Güvenli Teslimat"),
+              _featureItem(
+                  Icons.sentiment_very_satisfied_rounded, "Güler Yüzlü Hizmet"),
+              _featureItem(Icons.local_shipping_rounded, "Hızlı Nakliye"),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildLargeCategoryChips(final BuildContext context) {
-    final cats = [
+  Widget _featureItem(final IconData icon, final String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: context.primaryColor, size: context.iconMedium),
+        const SizedBox(width: 12),
+        Text(
+          text,
+          style: TextStyle(
+            color: context.primaryColor,
+            fontWeight: FontWeight.w700,
+            fontSize:
+                context.bodySize, // Senin extension'ından gelen dinamik font
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoriesSection() {
+    final List<String> cats = [
       "Tümü",
       "Masalar",
-      "Sandalyeler",
+      "Dolaplar",
       "Koltuklar",
       "Yataklar",
       "Mutfak",
-      "Aydınlatma"
+      "Sandalyeler"
     ];
+
     return SliverToBoxAdapter(
       child: Container(
-        height: 70,
+        height: context.responsive(mobile: 60, tablet: 70, desktop: 80),
         margin: const EdgeInsets.symmetric(vertical: 20),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding:
-              EdgeInsets.symmetric(horizontal: context.paddingHorizontal.left),
+          padding: context.paddingHorizontal,
           itemCount: cats.length,
-          itemBuilder: (final context, final i) => Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: ChoiceChip(
-              label: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Text(cats[i],
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-              ),
-              selected: _activeCategory == cats[i],
-              onSelected: (final val) =>
-                  setState(() => _activeCategory = cats[i]),
-              selectedColor: _darkMint,
-              labelStyle: TextStyle(
-                  color: _activeCategory == cats[i] ? Colors.white : _darkMint),
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              side: BorderSide(color: _darkMint.withOpacity(0.1)),
-              showCheckmark: false,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter _buildHeroSection(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 450,
-        margin: const EdgeInsets.symmetric(vertical: 20),
-        child: Stack(
-          children: [
-            PageView(
-              controller: _heroController,
-              onPageChanged: (final i) => setState(() => _currentHeroPage = i),
-              children: [
-                _heroSlide(
-                    context,
-                    const Color(0xFFCDE2DE),
-                    "Sizin İçin Buradayız",
-                    "Samimiyetle Seçilen\nModern Parçalar",
-                    "Mağazamızın sıcaklığını evinize taşıyan mobilyalar."),
-                _heroSlide(
-                    context,
-                    const Color(0xFFD9E2D5),
-                    "Fırsat Köşesi",
-                    "Bütçe Dostu\nKaliteli Yaşam",
-                    "Sağlam Spot güvencesiyle bütçenizi yormadan yenilenin."),
-                _heroSlide(
-                    context,
-                    const Color(0xFFE2DDD9),
-                    "Kadim Tecrübe",
-                    "20 Yıllık\nGüven Hikayesi",
-                    "İstanbul'un her noktasına mutluluk taşıyoruz."),
-              ],
-            ),
-            Positioned(
-              right: 80,
-              bottom: 40,
-              child: Row(
-                children: List.generate(
-                    3,
-                    (final index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          height: 10,
-                          width: _currentHeroPage == index ? 40 : 10,
-                          decoration: BoxDecoration(
-                              color: _darkMint.withOpacity(
-                                  _currentHeroPage == index ? 1 : 0.2),
-                              borderRadius: BorderRadius.circular(10)),
-                        )),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _heroSlide(final BuildContext context, final Color color,
-      final String badge, final String title, final String sub) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 40),
-      padding: const EdgeInsets.all(60),
-      decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(40)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(badge,
-              style: TextStyle(
-                  color: _darkMint,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 2)),
-          const SizedBox(height: 15),
-          Text(title,
-              style: TextStyle(
-                  color: _darkMint,
-                  fontSize: context.h1Size,
-                  fontWeight: FontWeight.w900,
-                  height: 1.1)),
-          const SizedBox(height: 15),
-          SizedBox(
-              width: 600,
-              child: Text(sub,
-                  style: TextStyle(
-                      color: _darkMint.withOpacity(0.7), fontSize: 18))),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFullWidthRoomSection(final BuildContext context) {
-    final rooms = [
-      {
-        "name": "Konforlu Salonlar",
-        "img":
-            "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=1200"
-      },
-      {
-        "name": "Huzurlu Uykular",
-        "img":
-            "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=1200"
-      },
-      {
-        "name": "Keyifli Mutfaklar",
-        "img":
-            "https://images.unsplash.com/photo-1556912178-8f4df6d97a33?q=80&w=1200"
-      },
-    ];
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 500,
-        margin: const EdgeInsets.symmetric(vertical: 20),
-        child: Flex(
-          direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-          children: rooms
-              .map((final room) => Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        image: DecorationImage(
-                            image: NetworkImage(room["img"]!),
-                            fit: BoxFit.cover),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40),
-                          gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.7),
-                                Colors.transparent
-                              ]),
-                        ),
-                        padding: const EdgeInsets.all(40),
-                        alignment: Alignment.bottomLeft,
-                        child: Text(room["name"]!,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold)),
+          itemBuilder: (final context, final i) {
+            final isSelected = _activeCategory == cats[i];
+            return Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: InkWell(
+                onTap: () => setState(() => _activeCategory = cats[i]),
+                borderRadius: BorderRadius.circular(context.borderRadius(2)),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 350),
+                  padding: EdgeInsets.symmetric(
+                    horizontal:
+                        context.responsive(mobile: 25, tablet: 35, desktop: 45),
+                  ),
+                  decoration: BoxDecoration(
+                    // Gradyan efekti: Seçiliyse senin Primary renklerin, değilse hafif beyaz/mint geçişi
+                    gradient: isSelected
+                        ? LinearGradient(
+                            colors: [
+                              context.primaryColor,
+                              context.primaryColor.withOpacity(0.8)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : LinearGradient(
+                            colors: [
+                              context.surfaceColor,
+                              context.surfaceColor.withOpacity(0.5)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                    borderRadius:
+                        BorderRadius.circular(context.borderRadius(2)),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: context.primaryColor.withOpacity(0.2),
+                              blurRadius: 15,
+                              offset: const Offset(0, 8),
+                            )
+                          ]
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            )
+                          ],
+                    border: Border.all(
+                      color: isSelected
+                          ? context.primaryColor
+                          : context.primaryColor.withOpacity(0.1),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      cats[i],
+                      style: TextStyle(
+                        // SENİN CONTEXT KODLARIN: Mobil/Tablet/Desktop'a göre yazı büyür/küçülür
+                        fontSize: context.responsive(
+                            mobile: 14,
+                            tablet: 16,
+                            desktop: 18,
+                            largeDesktop: 20),
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected ? Colors.white : context.primaryColor,
+                        letterSpacing: 0.5,
                       ),
                     ),
-                  ))
-              .toList(),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildEnhancedStats(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: context.sectionPadding,
-        padding: const EdgeInsets.all(60),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(
-                color: _darkMint.withOpacity(0.06),
-                blurRadius: 60,
-                offset: const Offset(0, 20))
-          ],
-        ),
-        child: Wrap(
-          alignment: WrapAlignment.spaceAround,
-          runSpacing: 40,
-          children: [
-            _statItem("2.5K+", "Mutlu Yuva", Icons.maps_home_work_outlined),
-            _statItem("20+ Yıl", "Kadim Tecrübe", Icons.history_edu_rounded),
-            _statItem("15K+", "Tam Zamanında", Icons.timer_rounded),
-            _statItem("%100", "Memnuniyet", Icons.verified_rounded),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statItem(final String val, final String label, final IconData icon) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(color: _bgMint, shape: BoxShape.circle),
-          child: Icon(icon, color: _darkMint, size: 44),
-        ),
-        const SizedBox(height: 15),
-        Text(val,
-            style: TextStyle(
-                fontSize: 34, fontWeight: FontWeight.w900, color: _darkMint)),
-        Text(label,
-            style: const TextStyle(
-                color: Colors.black45, fontWeight: FontWeight.w600)),
-      ],
-    );
-  }
-
-  SliverToBoxAdapter _buildModernFooter(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(100, 80, 100, 40),
-        color: _darkMint,
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("SAĞLAM SPOT",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900)),
-                        const SizedBox(height: 20),
-                        Text(
-                            "İstanbul genelinde 20 yılı aşkın süredir ikinci el ve spot eşyada kaliteyi samimiyetle buluşturuyoruz. Her adımda aile sıcaklığını hissedeceksiniz.",
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.6),
-                                height: 1.8,
-                                fontSize: 15)),
-                      ],
-                    )),
-                if (!context.isMobile) const Spacer(),
-                if (!context.isMobile)
-                  _footerColumn("Hızlı Keşif", [
-                    "Yeni Koleksiyon",
-                    "Popüler Ürünler",
-                    "Mutfak Ürünleri",
-                    "Mağaza Konumu"
-                  ]),
-                if (!context.isMobile) const SizedBox(width: 80),
-                if (!context.isMobile)
-                  _footerColumn("Kurumsal", [
-                    "Hizmet Şartlarımız",
-                    "Güvenlik Politikası",
-                    "Nasıl Satın Alırım?",
-                    "Bize Ulaşın"
-                  ]),
-              ],
-            ),
-            const SizedBox(height: 80),
-            const Divider(color: Colors.white10),
-            const SizedBox(height: 30),
-            const Text(
-                "© 2026 Sağlam Spot Ticaret - Samimiyet ve Güvenin İstanbul'daki Adresi.",
-                style: TextStyle(
-                    color: Colors.white24, fontSize: 13, letterSpacing: 1)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _footerColumn(final String title, final List<String> links) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16)),
-        const SizedBox(height: 25),
-        ...links
-            .map((final link) => Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: Text(link,
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.5), fontSize: 14)),
-                ))
-            .toList(),
-      ],
-    );
-  }
-
-  // Yardımcı Sliver Yapıları
-  SliverPadding _buildProductGrid(
-      final BuildContext context, final List<Product> products) {
+  Widget _buildFeaturedGrid() {
     return SliverPadding(
       padding: context.pagePadding,
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: context.gridColumns(4),
-          mainAxisSpacing: 25,
-          crossAxisSpacing: 25,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
           childAspectRatio: context.cardAspectRatio(),
         ),
         delegate: SliverChildBuilderDelegate(
-            (final _, final i) => CustomProductCard(product: products[i]),
-            childCount: products.length),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter _buildSectionHeader(
-      final BuildContext context, final String t, final String s) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.pagePadding.copyWith(top: 60, bottom: 20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(t,
-              style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: _darkMint,
-                  letterSpacing: -1)),
-          Text(s, style: const TextStyle(color: Colors.black45, fontSize: 16)),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildSeeAllButton(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: Center(
-          child: OutlinedButton(
-            onPressed: () => context.push('/search'),
-            style: OutlinedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 25),
-                side: BorderSide(color: _darkMint.withOpacity(0.2)),
-                foregroundColor: _darkMint,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20))),
-            child: const Text("TÜM KOLEKSİYONU GÖR",
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-          ),
+          (final context, final index) => _productCard(index),
+          childCount: 8,
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter _buildCTASection(final BuildContext context) {
+  Widget _productCard(final int index) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(context.borderRadius()),
+        border: Border.all(color: context.primaryColor.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: context.sageGreen.withOpacity(0.2),
+                      borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(context.borderRadius()))))),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Modern Koltuk $index", style: AppTextStyles.subtitle1),
+                Text("₺12.450",
+                    style: AppTextStyles.bodyText1.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: context.primaryColor)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoomsSection() {
     return SliverToBoxAdapter(
       child: Container(
+        height: 400,
         margin: context.sectionPadding,
-        padding: const EdgeInsets.all(80),
-        decoration: BoxDecoration(
-            color: _bgMint,
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: _darkMint.withOpacity(0.08))),
-        child: Row(
+        child: ListView(
+          scrollDirection: Axis.horizontal,
           children: [
-            Expanded(
-                child: Text("Hemen Mağazamıza Gelin,\nSıcak Bir Çayımızı İçin!",
-                    style: TextStyle(
-                        color: _darkMint,
-                        fontSize: 38,
-                        fontWeight: FontWeight.w900,
-                        height: 1.1))),
-            ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: _darkMint,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.all(28),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
-                child: const Text("YOL TARİFİ AL",
-                    style: TextStyle(fontWeight: FontWeight.bold)))
+            _roomCard("Salon",
+                "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=800"),
+            _roomCard("Yatak Odası",
+                "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=800"),
           ],
         ),
       ),
     );
   }
+
+  Widget _roomCard(final String title, final String img) {
+    return Container(
+      width: 300,
+      margin: const EdgeInsets.only(right: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
+      ),
+      alignment: Alignment.bottomLeft,
+      padding: const EdgeInsets.all(30),
+      child: Text(title, style: AppTextStyles.h2.copyWith(color: Colors.white)),
+    );
+  }
+
+  Widget _buildStatsSection() {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.all(60),
+        margin: context.pagePadding,
+        decoration: BoxDecoration(
+            color: context.primaryColor,
+            borderRadius: BorderRadius.circular(40)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _statItem("2500+", "Müşteri"),
+            _statItem("20+", "Yıl"),
+            _statItem("%100", "Güven"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _statItem(final String val, final String label) {
+    return Column(
+      children: [
+        Text(val, style: AppTextStyles.h2.copyWith(color: Colors.white)),
+        Text(label, style: TextStyle(color: Colors.white.withOpacity(0.6))),
+      ],
+    );
+  }
+
+  Widget _buildFooter() {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.all(80),
+        color: context.primaryColor,
+        child: Column(
+          children: [
+            Text("SAĞLAM SPOT",
+                style: AppTextStyles.h1
+                    .copyWith(color: Colors.white, fontSize: 32)),
+            const SizedBox(height: 20),
+            Text("© 2026 Tüm Hakları Saklıdır.",
+                style: TextStyle(color: Colors.white.withOpacity(0.3))),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedFloatingButtons() {
+    return Positioned(
+      bottom: 30,
+      right: 30,
+      child: AnimatedBuilder(
+        animation: _floatingController,
+        builder: (final context, final child) => Transform.translate(
+          offset: Offset(0, -10 * _floatingController.value),
+          child: FloatingActionButton(
+            onPressed: () {},
+            backgroundColor: context.secondaryColor,
+            child: const Icon(Icons.chat_bubble_outline),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ARKAPLAN PAINTER (Senin Kodun)
+class _OrbPainter extends CustomPainter {
+  final double animation;
+  final Color color1;
+  final Color color2;
+
+  _OrbPainter(
+      {required this.animation, required this.color1, required this.color2});
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final paint1 = Paint()
+      ..color = color1
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 80);
+    final paint2 = Paint()
+      ..color = color2
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 100);
+
+    canvas.drawCircle(
+        Offset(size.width * 0.2 + animation * 40, size.height * 0.3),
+        size.width * 0.2,
+        paint1);
+    canvas.drawCircle(
+        Offset(size.width * 0.8 - animation * 30, size.height * 0.7),
+        size.width * 0.25,
+        paint2);
+  }
+
+  @override
+  bool shouldRepaint(final _OrbPainter oldDelegate) => true;
 }
