@@ -96,9 +96,6 @@ class _HomePageState extends ConsumerState<HomePage>
               controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
-                // GLASSMORPHIC APP BAR
-                _buildGlassmorphicAppBar(),
-
                 // HERO SLIDER
                 _buildHeroSliderSection(),
 
@@ -142,93 +139,6 @@ class _HomePageState extends ConsumerState<HomePage>
           color2: context.secondaryColor.withOpacity(0.03),
         ),
         child: const SizedBox.expand(),
-      ),
-    );
-  }
-
-  Widget _buildGlassmorphicAppBar() {
-    return SliverAppBar(
-      floating: true,
-      pinned: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      expandedHeight: context.responsive(mobile: 80, tablet: 100, desktop: 110),
-      flexibleSpace: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.scaffoldBackgroundColor.withOpacity(0.7),
-              border: Border(
-                  bottom: BorderSide(
-                      color: context.primaryColor.withOpacity(0.05))),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: context.pagePadding,
-                child: Row(
-                  children: [
-                    Text("SAĞLAM SPOT",
-                        style: AppTextStyles.h3.copyWith(
-                            color: context.primaryColor, letterSpacing: 2)),
-                    const Spacer(),
-                    if (!context.isMobile) ...[
-                      _navItem('Koleksiyon'),
-                      _navItem('Hakkımızda'),
-                      _navItem('İletişim'),
-                      SizedBox(width: context.spacingLarge),
-                    ],
-                    _buildActionIcons(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _navItem(final String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Text(title,
-          style: AppTextStyles.bodyText2.copyWith(fontWeight: FontWeight.w600)),
-    );
-  }
-
-  Widget _buildActionIcons() {
-    return Row(
-      children: [
-        _buildAnimatedIcon(Icons.favorite_border),
-        const SizedBox(width: 15),
-        _buildAnimatedIcon(Icons.shopping_bag_outlined, hasBadge: true),
-      ],
-    );
-  }
-
-  Widget _buildAnimatedIcon(final IconData icon,
-      {final bool hasBadge = false}) {
-    return AnimatedBuilder(
-      animation: _pulseController,
-      builder: (final context, final child) => Stack(
-        children: [
-          Icon(icon, color: context.primaryColor, size: 28),
-          if (hasBadge)
-            Positioned(
-              right: 0,
-              top: 0,
-              child: Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: context.secondaryColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-              ),
-            ),
-        ],
       ),
     );
   }
