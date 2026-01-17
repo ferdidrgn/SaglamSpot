@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
@@ -22,7 +24,6 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   final ScrollController _scrollController = ScrollController();
   String _selectedCategory = 'Tümü';
   String _selectedSort = 'Yeniler';
-  bool _showFilters = false;
   late AnimationController _filterAnimController;
 
   @override
@@ -69,7 +70,6 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                       child: SizedBox(height: context.spacingLarge)),
                   _buildProductGrid(context, filtered),
                   _buildAdBanner(context, 120),
-                  _buildNewsletterSection(context),
                   SliverToBoxAdapter(
                       child: SizedBox(height: context.spacingLarge * 3)),
                 ],
@@ -86,417 +86,438 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // HERO HEADER WITH ANIMATED GRADIENT
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildHeroHeader(final BuildContext context, final int totalProducts) {
-    return SliverAppBar(
-      pinned: true,
-      expandedHeight: context.responsive(
-        mobile: 280,
-        tablet: 360,
-        desktop: 420,
-      ),
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Animated Gradient Background
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.secondary,
-                    AppColors.background,
-                    AppColors.secondary.withOpacity(0.3),
-                  ],
+  Widget _buildHeroHeader(
+          final BuildContext context, final int totalProducts) =>
+      SliverAppBar(
+        pinned: true,
+        expandedHeight: context.responsive(
+          mobile: 280,
+          tablet: 360,
+          desktop: 420,
+        ),
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        flexibleSpace: FlexibleSpaceBar(
+          background: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Animated Gradient Background
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.secondary,
+                      AppColors.background,
+                      AppColors.secondary.withOpacity(0.3),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // Geometric Pattern Overlay
-            CustomPaint(
-              painter: _GeometricPatternPainter(
-                color: AppColors.primary.withOpacity(0.03),
+              // Geometric Pattern Overlay
+              CustomPaint(
+                painter: _GeometricPatternPainter(
+                  color: AppColors.primary.withOpacity(0.03),
+                ),
               ),
-            ),
 
-            // Content
-            SafeArea(
-              child: Padding(
-                padding: context.pagePadding,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Breadcrumb
-                    _buildBreadcrumb(context),
-                    SizedBox(height: context.spacingLarge),
+              // Content
+              SafeArea(
+                child: Padding(
+                  padding: context.pagePadding,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Breadcrumb
+                      _buildBreadcrumb(context),
+                      SizedBox(height: context.spacingLarge),
 
-                    // Main Title
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'NEW COLLECTION',
-                                style: TextStyle(
-                                  fontSize: context.captionSize,
-                                  letterSpacing: 4,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.accent,
-                                ),
-                              ),
-                              SizedBox(height: context.spacing),
-                              Text(
-                                'Yeni\nKoleksiyon',
-                                style: TextStyle(
-                                  fontSize: context.responsive(
-                                    mobile: 42,
-                                    tablet: 56,
-                                    desktop: 72,
-                                  ),
-                                  fontWeight: FontWeight.w900,
-                                  height: 0.95,
-                                  color: AppColors.textPrimary,
-                                  letterSpacing: -1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Featured Badge (Desktop only)
-                        if (context.isDesktop)
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(100),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.3),
-                                  blurRadius: 30,
-                                  spreadRadius: 5,
-                                ),
-                              ],
-                            ),
+                      // Main Title
+                      Row(
+                        children: [
+                          Expanded(
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '$totalProducts+',
-                                  style: const TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
+                                  'NEW COLLECTION',
+                                  style: TextStyle(
+                                    fontSize: context.captionSize,
+                                    letterSpacing: 4,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.accent,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'ÜRÜN',
+                                SizedBox(height: context.spacing),
+                                Text(
+                                  'Yeni\nKoleksiyon',
                                   style: TextStyle(
-                                    fontSize: 10,
-                                    letterSpacing: 2,
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.w600,
+                                    fontSize: context.responsive(
+                                      mobile: 42,
+                                      tablet: 56,
+                                      desktop: 72,
+                                    ),
+                                    fontWeight: FontWeight.w900,
+                                    height: 0.95,
+                                    color: AppColors.textPrimary,
+                                    letterSpacing: -1,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                      ],
-                    ),
 
-                    SizedBox(height: context.spacingLarge),
+                          // Featured Badge (Desktop only)
+                          if (context.isDesktop)
+                            Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withOpacity(0.3),
+                                    blurRadius: 30,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '$totalProducts+',
+                                    style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    'ÜRÜN',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
 
-                    // Decorative Line
-                    Row(
-                      children: [
-                        Container(
-                          width: context.responsive(mobile: 60, desktop: 120),
-                          height: 4,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(2),
+                      SizedBox(height: context.spacingLarge),
+
+                      // Decorative Line
+                      Row(
+                        children: [
+                          Container(
+                            width: context.responsive(mobile: 60, desktop: 120),
+                            height: 4,
+                            decoration: BoxDecoration(
+                              gradient: AppColors.primaryGradient,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 4,
-                          height: 4,
-                          decoration: const BoxDecoration(
-                            color: AppColors.accent,
-                            shape: BoxShape.circle,
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 4,
+                            height: 4,
+                            decoration: const BoxDecoration(
+                              color: AppColors.accent,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                    SizedBox(height: context.spacing),
-                  ],
+                      SizedBox(height: context.spacing),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildBreadcrumb(final BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.home_outlined,
-            size: 14, color: AppColors.textSecondary),
-        const SizedBox(width: 8),
-        Text(
-          'Ana Sayfa',
-          style: TextStyle(
-            fontSize: context.captionSize,
-            color: AppColors.textSecondary,
+  Widget _buildBreadcrumb(final BuildContext context) => Row(
+        children: [
+          const Icon(Icons.home_outlined,
+              size: 14, color: AppColors.textSecondary),
+          const SizedBox(width: 8),
+          Text(
+            'Ana Sayfa',
+            style: TextStyle(
+              fontSize: context.captionSize,
+              color: AppColors.textSecondary,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        const Icon(Icons.chevron_right,
-            size: 14, color: AppColors.textSecondary),
-        const SizedBox(width: 8),
-        Text(
-          'Yeni Koleksiyon',
-          style: TextStyle(
-            fontSize: context.captionSize,
-            color: AppColors.primary,
-            fontWeight: FontWeight.w600,
+          const SizedBox(width: 8),
+          const Icon(Icons.chevron_right,
+              size: 14, color: AppColors.textSecondary),
+          const SizedBox(width: 8),
+          Text(
+            'Yeni Koleksiyon',
+            style: TextStyle(
+              fontSize: context.captionSize,
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 
   // ════════════════════════════════════════════════════════════════
   // STATS BAR
   // ════════════════════════════════════════════════════════════════
 
   Widget _buildStatsBar(
-      final BuildContext context, final List<Product> products) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: context.sectionPadding.copyWith(top: 0, bottom: 0),
-        padding: EdgeInsets.symmetric(
-          vertical: context.spacing,
-          horizontal: context.responsive(mobile: 16, desktop: 32),
+          final BuildContext context, final List<Product> products) =>
+      SliverToBoxAdapter(
+        child: Container(
+          margin: context.sectionPadding.copyWith(top: 0, bottom: 0),
+          padding: EdgeInsets.symmetric(
+            vertical: context.spacing,
+            horizontal: context.responsive(mobile: 16, desktop: 32),
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(
+                context.responsive(mobile: 16, desktop: 24)),
+            border: Border.all(color: AppColors.border, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.textPrimary.withOpacity(0.03),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: context.responsive(
+            mobile: _buildStatsColumn(context, products),
+            desktop: _buildStatsRow(context, products),
+          ),
         ),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(
-              context.responsive(mobile: 16, desktop: 24)),
-          border: Border.all(color: AppColors.border, width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.03),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: context.responsive(
-          mobile: _buildStatsColumn(context, products),
-          desktop: _buildStatsRow(context, products),
-        ),
-      ),
-    );
-  }
+      );
 
   Widget _buildStatsRow(
-      final BuildContext context, final List<Product> products) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
-            Icons.inventory_2_outlined),
-        _buildDivider(context),
-        _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
-        _buildDivider(context),
-        _buildStatItem(context, 'YENİ', 'DURUM', Icons.fiber_new_outlined),
-        _buildDivider(context),
-        _buildStatItem(context, '⭐ 4.8', 'PUAN', Icons.star_outline),
-      ],
-    );
-  }
+          final BuildContext context, final List<Product> products) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
+              Icons.inventory_2_outlined),
+          _buildDivider(context),
+          _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
+          _buildDivider(context),
+          _buildStatItem(context, 'YENİ', 'DURUM', Icons.fiber_new_outlined),
+          _buildDivider(context),
+          _buildStatItem(context, '⭐ 4.8', 'PUAN', Icons.star_outline),
+        ],
+      );
 
   Widget _buildStatsColumn(
-      final BuildContext context, final List<Product> products) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
-                Icons.inventory_2_outlined),
-            _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildStatItem(context, 'YENİ', 'DURUM', Icons.fiber_new_outlined),
-            _buildStatItem(context, '⭐ 4.8', 'PUAN', Icons.star_outline),
-          ],
-        ),
-      ],
-    );
-  }
+          final BuildContext context, final List<Product> products) =>
+      Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
+                  Icons.inventory_2_outlined),
+              _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildStatItem(
+                  context, 'YENİ', 'DURUM', Icons.fiber_new_outlined),
+              _buildStatItem(context, '⭐ 4.8', 'PUAN', Icons.star_outline),
+            ],
+          ),
+        ],
+      );
 
   Widget _buildStatItem(final BuildContext context, final String value,
-      final String label, final IconData icon) {
-    return Column(
-      children: [
-        Icon(icon,
-            size: context.responsive(mobile: 20, desktop: 24),
-            color: AppColors.accent),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: context.responsive(mobile: 18, desktop: 24),
-            fontWeight: FontWeight.w900,
-            color: AppColors.textPrimary,
+          final String label, final IconData icon) =>
+      Column(
+        children: [
+          Icon(icon,
+              size: context.responsive(mobile: 20, desktop: 24),
+              color: AppColors.accent),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: context.responsive(mobile: 18, desktop: 24),
+              fontWeight: FontWeight.w900,
+              color: AppColors.textPrimary,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: context.captionSize,
-            letterSpacing: 1.5,
-            color: AppColors.textSecondary,
-            fontWeight: FontWeight.w600,
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: context.captionSize,
+              letterSpacing: 1.5,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 
-  Widget _buildDivider(final BuildContext context) {
-    return Container(
-      height: 50,
-      width: 1,
-      color: AppColors.border,
-    );
-  }
+  Widget _buildDivider(final BuildContext context) => Container(
+        height: 50,
+        width: 1,
+        color: AppColors.border,
+      );
 
   // ════════════════════════════════════════════════════════════════
   // FILTER SECTION
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildFilterSection(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
+  Widget _buildFilterSection(final BuildContext context) => SliverToBoxAdapter(
+        child: Padding(
+          padding: context.sectionPadding,
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildSearchBar(context),
+              ),
+              SizedBox(width: context.spacing),
+              _buildSortDropdown(context),
+              if (context.isTablet || context.isDesktop) ...[
+                SizedBox(width: context.spacing),
+                _buildViewToggle(context),
+              ],
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildSearchBar(final BuildContext context) => GestureDetector(
+        onTap: () => context.go('/search'),
+        child: Container(
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border, width: 1.5),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.search, color: AppColors.textSecondary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: context.bodySize,
+                      color: AppColors.textSecondary,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: 'Detaylı ürün araması için ',
+                      ),
+                      const TextSpan(
+                        text: 'Ctrl + K',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' yapın ya da ',
+                      ),
+                      TextSpan(
+                        text: 'BURADAKİ',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => context.go('/search'),
+                      ),
+                      const TextSpan(
+                        text: ' yazıya tıklayın.',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildSortDropdown(final BuildContext context) => Container(
+        height: 56,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 1.5),
+        ),
+        child: DropdownButton<String>(
+          value: _selectedSort,
+          underline: const SizedBox(),
+          icon: const Icon(Icons.keyboard_arrow_down,
+              color: AppColors.textPrimary),
+          items: [
+            'Yeniler',
+            'Fiyat: Düşük-Yüksek',
+            'Fiyat: Yüksek-Düşük',
+            'En Popüler'
+          ]
+              .map((final e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (final val) => setState(() => _selectedSort = val!),
+        ),
+      );
+
+  Widget _buildViewToggle(final BuildContext context) => Container(
+        height: 56,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 1.5),
+        ),
         child: Row(
           children: [
-            Expanded(
-              child: _buildSearchBar(context),
-            ),
-            SizedBox(width: context.spacing),
-            _buildSortDropdown(context),
-            if (context.isTablet || context.isDesktop) ...[
-              SizedBox(width: context.spacing),
-              _buildViewToggle(context),
-            ],
+            _buildToggleButton(Icons.grid_view, true),
+            const SizedBox(width: 4),
+            _buildToggleButton(Icons.view_list, false),
           ],
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildSearchBar(final BuildContext context) {
-    return Container(
-      height: 56,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Ürün ara...',
-          hintStyle: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: context.bodySize,
-          ),
-          prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+  Widget _buildToggleButton(final IconData icon, final bool isActive) =>
+      Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: isActive ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSortDropdown(final BuildContext context) {
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-      ),
-      child: DropdownButton<String>(
-        value: _selectedSort,
-        underline: const SizedBox(),
-        icon:
-            const Icon(Icons.keyboard_arrow_down, color: AppColors.textPrimary),
-        items: [
-          'Yeniler',
-          'Fiyat: Düşük-Yüksek',
-          'Fiyat: Yüksek-Düşük',
-          'En Popüler'
-        ].map((final e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-        onChanged: (final val) => setState(() => _selectedSort = val!),
-      ),
-    );
-  }
-
-  Widget _buildViewToggle(final BuildContext context) {
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-      ),
-      child: Row(
-        children: [
-          _buildToggleButton(Icons.grid_view, true),
-          const SizedBox(width: 4),
-          _buildToggleButton(Icons.view_list, false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToggleButton(final IconData icon, final bool isActive) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Icon(
-        icon,
-        color: isActive ? Colors.white : AppColors.textSecondary,
-        size: 20,
-      ),
-    );
-  }
+        child: Icon(
+          icon,
+          color: isActive ? Colors.white : AppColors.textSecondary,
+          size: 20,
+        ),
+      );
 
   // ════════════════════════════════════════════════════════════════
   // CATEGORY TABS
@@ -582,7 +603,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
 
   Widget _buildProductGrid(
       final BuildContext context, final List<Product> products) {
-    if (products.isEmpty) {
+    if (products.isEmpty)
       return SliverToBoxAdapter(
         child: Container(
           height: 400,
@@ -613,7 +634,6 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           ),
         ),
       );
-    }
 
     return SliverPadding(
       padding: context.sectionPadding,
@@ -643,167 +663,50 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   }
 
   Widget _buildEnhancedProductCard(
-      final BuildContext context, final Product product) {
-    return CustomProductCard(product: product);
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // NEWSLETTER SECTION
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildNewsletterSection(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: context.sectionPadding,
-        padding: context.responsive(
-          mobile: const EdgeInsets.all(32),
-          desktop: const EdgeInsets.all(64),
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary,
-              AppColors.primary.withOpacity(0.8),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Text(
-              'ÖZEL FIRSATLARDAN HABERDAR OLUN',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: context.captionSize,
-                letterSpacing: 3,
-                color: Colors.white70,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            SizedBox(height: context.spacing),
-            Text(
-              'Kampanyalardan İlk Siz Haberdar Olun',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: context.responsive(mobile: 24, desktop: 36),
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: context.spacingLarge),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const TextField(
-                        decoration: InputDecoration(
-                          hintText: 'E-posta adresiniz',
-                          hintStyle: TextStyle(color: AppColors.textSecondary),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    height: 56,
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    decoration: BoxDecoration(
-                      color: AppColors.accent,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'ABONE OL',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: context.bodySize,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+          final BuildContext context, final Product product) =>
+      CustomProductCard(product: product);
 
   // ════════════════════════════════════════════════════════════════
   // FLOATING ACTIONS
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildFloatingQuickActions(final BuildContext context) {
-    return Positioned(
-      right: 32,
-      bottom: 32,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildFloatingActionButton(
-            icon: Icons.filter_list,
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildFloatingActionButton(
-            icon: Icons.arrow_upward,
-            onTap: () {
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeOut,
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildFloatingQuickActions(final BuildContext context) => Positioned(
+        right: 32,
+        bottom: 32,
+        child: _buildFloatingActionButton(
+          icon: Icons.arrow_upward,
+          onTap: () {
+            _scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+            );
+          },
+        ),
+      );
 
   Widget _buildFloatingActionButton({
     required final IconData icon,
     required final VoidCallback onTap,
-  }) {
-    return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 4,
-      child: InkWell(
-        onTap: onTap,
+  }) =>
+      Material(
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border),
+        elevation: 4,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Icon(icon, color: AppColors.textPrimary),
           ),
-          child: Icon(icon, color: AppColors.textPrimary),
         ),
-      ),
-    );
-  }
+      );
 
   // ════════════════════════════════════════════════════════════════
   // HELPER METHODS
@@ -830,46 +733,42 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     return filtered;
   }
 
-  Widget _buildBackgroundPattern(final BuildContext context) {
-    return Positioned.fill(
-      child: CustomPaint(
-        painter: _BackgroundPatternPainter(
-          color: AppColors.primary.withOpacity(0.02),
+  Widget _buildBackgroundPattern(final BuildContext context) => Positioned.fill(
+        child: CustomPaint(
+          painter: _BackgroundPatternPainter(
+            color: AppColors.primary.withOpacity(0.02),
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildAdBanner(final BuildContext context, final double height) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
-        child: AdsenseBanner(height: height),
-      ),
-    );
-  }
+  Widget _buildAdBanner(final BuildContext context, final double height) =>
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: context.sectionPadding,
+          child: AdsenseBanner(height: height),
+        ),
+      );
 
-  Widget _buildErrorState(final BuildContext context, final String error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 80, color: AppColors.error),
-          const SizedBox(height: 16),
-          Text(
-            'Bir hata oluştu',
-            style: TextStyle(
-                fontSize: context.h4Size, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: const TextStyle(color: AppColors.textSecondary),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildErrorState(final BuildContext context, final String error) =>
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 80, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text(
+              'Bir hata oluştu',
+              style: TextStyle(
+                  fontSize: context.h4Size, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+          ],
+        ),
+      );
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -888,12 +787,11 @@ class _GeometricPatternPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
-    for (double i = 0; i < size.width; i += 80) {
+    for (double i = 0; i < size.width; i += 80)
       for (double j = 0; j < size.height; j += 80) {
         canvas.drawCircle(Offset(i, j), 30, paint);
         canvas.drawRect(Rect.fromLTWH(i - 15, j - 15, 30, 30), paint);
       }
-    }
   }
 
   @override
