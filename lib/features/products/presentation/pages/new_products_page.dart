@@ -250,7 +250,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   Widget _buildBreadcrumb(final BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.home_outlined, size: 14, color: AppColors.textSecondary),
+        const Icon(Icons.home_outlined,
+            size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           'Ana Sayfa',
@@ -260,7 +261,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           ),
         ),
         const SizedBox(width: 8),
-        Icon(Icons.chevron_right, size: 14, color: AppColors.textSecondary),
+        const Icon(Icons.chevron_right,
+            size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           'Yeni Koleksiyon',
@@ -709,13 +711,12 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: TextField(
+                      child: const TextField(
                         decoration: InputDecoration(
                           hintText: 'E-posta adresiniz',
                           hintStyle: TextStyle(color: AppColors.textSecondary),
                           border: InputBorder.none,
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 20),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
                         ),
                       ),
                     ),
@@ -853,7 +854,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 80, color: AppColors.error),
+          const Icon(Icons.error_outline, size: 80, color: AppColors.error),
           const SizedBox(height: 16),
           Text(
             'Bir hata oluştu',
@@ -863,7 +864,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           const SizedBox(height: 8),
           Text(
             error,
-            style: TextStyle(color: AppColors.textSecondary),
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),
