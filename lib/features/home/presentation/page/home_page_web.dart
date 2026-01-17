@@ -10,7 +10,8 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-import '../../../products/presentation/providers/product_filters_provider.dart'; // Kendi ürün kartı bileşenin
+import '../../../products/presentation/providers/product_filters_provider.dart';
+import '../widgets/furniture_tips_section.dart'; // Kendi ürün kartı bileşenin
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -75,12 +76,11 @@ class _HomePageState extends ConsumerState<HomePage>
 
     return Scaffold(
       backgroundColor: context.scaffoldBackgroundColor,
-      // productsAsync durumuna göre tüm sayfayı veya gridi sarmala
       body: productsAsync.when(
         loading: () => const FullPageShimmer(), // Senin özel Shimmer class'ın
-        error: (err, stack) =>
+        error: (final err, final stack) =>
             Center(child: Text('Ürünler yüklenirken hata oluştu: $err')),
-        data: (_) => Stack(
+        data: (final _) => Stack(
           children: [
             _buildAnimatedBackground(),
             ResponsiveUtils.maxWidthContainer(
@@ -91,15 +91,14 @@ class _HomePageState extends ConsumerState<HomePage>
                   _buildHeroSliderSection(),
                   _buildQuickFeatures(),
                   _buildCategoriesSection(),
-
-                  // DİNAMİK ÜRÜN GRIDİ
-                  _buildSectionHeader(
-                      "Yeni Koleksiyon", "Sizin için seçilen en yeni 10 parça"),
+                  SliverToBoxAdapter(
+                      child: _buildSectionHeader(
+                          "Yeni Koleksiyon", "En yeni ürünler")),
                   _buildDynamicFeaturedGrid(availableProducts),
-
                   _buildRoomsSection(),
                   _buildArtisanInfo(),
                   _buildStatsSection(),
+                  const FurnitureTipsSection(),
                   _buildFooter(),
                 ],
               ),
@@ -566,7 +565,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         ? CrossAxisAlignment.center
                         : CrossAxisAlignment.start,
                     children: [
-                      Text("SAĞLAM SPOT",
+                      const Text("SAĞLAM SPOT",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
@@ -630,41 +629,36 @@ class _HomePageState extends ConsumerState<HomePage>
                   fontWeight: FontWeight.bold,
                   fontSize: 13)),
           const SizedBox(height: 25),
-          ...items
-              .map((final item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(item,
-                        style: TextStyle(
-                            color: Colors.white.withOpacity(0.3),
-                            fontSize: 13)),
-                  ))
-              .toList(),
+          ...items.map((final item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text(item,
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.3), fontSize: 13)),
+              )),
         ],
       ),
     );
   }
 
   Widget _buildSectionHeader(final String title, final String sub) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.pagePadding.copyWith(bottom: 20, top: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(
-                    fontSize: context.h2Size,
-                    fontWeight: FontWeight.w900,
-                    color: context.primaryColor)),
-            const SizedBox(height: 4),
-            Container(height: 3, width: 40, color: context.secondaryColor),
-            const SizedBox(height: 8),
-            Text(sub,
-                style: TextStyle(
-                    color: context.primaryColor.withOpacity(0.5),
-                    fontSize: context.captionSize)),
-          ],
-        ),
+    return Padding(
+      padding: context.pagePadding.copyWith(bottom: 20, top: 40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: TextStyle(
+                  fontSize: context.h2Size,
+                  fontWeight: FontWeight.w900,
+                  color: context.primaryColor)),
+          const SizedBox(height: 4),
+          Container(height: 3, width: 40, color: context.secondaryColor),
+          const SizedBox(height: 8),
+          Text(sub,
+              style: TextStyle(
+                  color: context.primaryColor.withOpacity(0.5),
+                  fontSize: context.captionSize)),
+        ],
       ),
     );
   }
