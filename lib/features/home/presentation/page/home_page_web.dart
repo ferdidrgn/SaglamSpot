@@ -105,9 +105,6 @@ class _HomePageState extends ConsumerState<HomePage>
             ),
             // 🔥 GLOBAL SCROLL UP
             ScrollUpButton(scrollController: _scrollController),
-
-            // 🔥 SAYFAYA ÖZEL CHAT FAB
-            _buildAnimatedFloatingButtons(),
           ],
         ),
       ),
@@ -666,25 +663,6 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
     );
   }
-
-  Widget _buildAnimatedFloatingButtons() => Positioned(
-        bottom: 20,
-        right: 20,
-        child: AnimatedBuilder(
-          animation: _floatingController,
-          builder: (final context, final child) => Transform.translate(
-            offset: Offset(0, -10 * _floatingController.value),
-            child: FloatingActionButton(
-              heroTag: 'chat',
-              onPressed: () => CommunicationActions.launchWhatsApp(
-                message: "Sağlam Spot için web sitenizden yazıyorum...",
-              ),
-              backgroundColor: context.secondaryColor,
-              child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
-            ),
-          ),
-        ),
-      );
 }
 
 // ... Painter kodun aynı kalacak
