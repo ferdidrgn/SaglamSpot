@@ -9,6 +9,106 @@ part of 'product_filters_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(similarProducts)
+const similarProductsProvider = SimilarProductsFamily._();
+
+final class SimilarProductsProvider
+    extends $FunctionalProvider<List<Product>, List<Product>, List<Product>>
+    with $Provider<List<Product>> {
+  const SimilarProductsProvider._(
+      {required SimilarProductsFamily super.from,
+      required ({
+        String category,
+        String currentProductId,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'similarProductsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$similarProductsHash();
+
+  @override
+  String toString() {
+    return r'similarProductsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<List<Product>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Product> create(Ref ref) {
+    final argument = this.argument as ({
+      String category,
+      String currentProductId,
+    });
+    return similarProducts(
+      ref,
+      category: argument.category,
+      currentProductId: argument.currentProductId,
+    );
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Product> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Product>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SimilarProductsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$similarProductsHash() => r'ba9a1b9bfec151cbef421258e2e380c27c8f1ba0';
+
+final class SimilarProductsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            List<Product>,
+            ({
+              String category,
+              String currentProductId,
+            })> {
+  const SimilarProductsFamily._()
+      : super(
+          retry: null,
+          name: r'similarProductsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  SimilarProductsProvider call({
+    required String category,
+    required String currentProductId,
+  }) =>
+      SimilarProductsProvider._(argument: (
+        category: category,
+        currentProductId: currentProductId,
+      ), from: this);
+
+  @override
+  String toString() => r'similarProductsProvider';
+}
+
 @ProviderFor(availableProducts)
 const availableProductsProvider = AvailableProductsProvider._();
 
@@ -135,7 +235,7 @@ final class SpotDealsProductsProvider
   }
 }
 
-String _$spotDealsProductsHash() => r'9ca4f2a60f688a6c938927cc6bd663d1928e7878';
+String _$spotDealsProductsHash() => r'4590c5e7de3816ccf47da7e9cdb86b605df78abb';
 
 /// Stoktaki SIFIR ürünler
 
@@ -181,7 +281,7 @@ final class NewDealsProductsProvider
   }
 }
 
-String _$newDealsProductsHash() => r'7b187ba646d7082e8cd38a1ef1c6de18dc04809b';
+String _$newDealsProductsHash() => r'a02e66f6481752a1a5b58f2d854773de44d144d0';
 
 /// Stoktaki YENİ GELENLER (Son 10 gün)
 
@@ -274,7 +374,7 @@ final class SpotSoldProductsProvider
   }
 }
 
-String _$spotSoldProductsHash() => r'bb039ddd106da124a890dc11546e9ed7f962cecb';
+String _$spotSoldProductsHash() => r'5dd54e5d0cb1b770b308e240b768428dc905d6f0';
 
 /// Satılmış SIFIR ürünler
 
@@ -320,4 +420,4 @@ final class NewSoldProductsProvider
   }
 }
 
-String _$newSoldProductsHash() => r'24826ea963c243a4774f234984c8f2dffb6fd602';
+String _$newSoldProductsHash() => r'495f25a748642c9b9e257c9f86391c6aab57d3d5';
