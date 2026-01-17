@@ -8,26 +8,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 
-    <!-- ================= SEO ================= -->
+    <!-- ================= BASIC SEO ================= -->
     <title>Sağlam Spot – Spot & Sıfır Mobilya</title>
 
     <meta name="description"
           content="Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot, 20 yıllık esnaf güvencesiyle hizmetinizde.">
 
     <meta name="application-name" content="Sağlam Spot">
+    <meta name="robots" content="index, follow">
 
     <link rel="canonical" href="https://saglamspotcu.web.app/"/>
 
-    <!-- ================= OPEN GRAPH ================= -->
+    <!-- ================= OPEN GRAPH (DEFAULT) ================= -->
     <meta property="og:site_name" content="Sağlam Spot">
     <meta property="og:title" content="Sağlam Spot – Spot & Sıfır Mobilya">
     <meta property="og:description"
           content="Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot 20 yıllık esnaf güvencesiyle.">
+    <meta property="og:image" content="https://saglamspotcu.web.app/assets/og_default.png">
     <meta property="og:url" content="https://saglamspotcu.web.app">
     <meta property="og:type" content="website">
 
-    <!-- ================= STRUCTURED DATA (SITE NAME + NICKNAME) ================= -->
+    <!-- ================= TWITTER CARD ================= -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sağlam Spot – Spot & Sıfır Mobilya">
+    <meta name="twitter:description"
+          content="Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot.">
+    <meta name="twitter:image" content="https://saglamspotcu.web.app/assets/og_default.png">
 
+    <!-- ================= STRUCTURED DATA ================= -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -63,11 +71,27 @@
 
     <!-- ================= MANIFEST ================= -->
     <link rel="manifest" href="manifest.json">
+
+    <!-- ================= DYNAMIC META HANDLER ================= -->
+    <script>
+        function setMeta(title, description, image, url) {
+            document.title = title;
+
+            document.querySelector('meta[property="og:title"]').setAttribute("content", title);
+            document.querySelector('meta[property="og:description"]').setAttribute("content", description);
+            document.querySelector('meta[property="og:image"]').setAttribute("content", image);
+            document.querySelector('meta[property="og:url"]').setAttribute("content", url);
+
+            document.querySelector('meta[name="twitter:title"]').setAttribute("content", title);
+            document.querySelector('meta[name="twitter:description"]').setAttribute("content", description);
+            document.querySelector('meta[name="twitter:image"]').setAttribute("content", image);
+        }
+    </script>
 </head>
 
 <body>
 
-<!-- ================= BOTLAR İÇİN STATİK SEO İÇERİK ================= -->
+<!-- ================= STATIC SEO CONTENT (CRAWLERS) ================= -->
 <noscript>
     <header>
         <h1>Sağlam Spot – Spot & Sıfır Mobilya</h1>
@@ -85,9 +109,7 @@
 
     <section>
         <h2>Kurumsal</h2>
-        <p>
-            Sağlam Spot, 20 yılı aşkın tecrübesiyle güvenli ve ekonomik alışveriş sunar.
-        </p>
+        <p>Sağlam Spot, 20 yılı aşkın tecrübesiyle güvenli ve ekonomik alışveriş sunar.</p>
     </section>
 
     <footer>
