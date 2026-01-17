@@ -1,18 +1,27 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 import '../../../../../../core/util/date_formatter.dart';
+import '../datasources/product_remote_data_source.dart';
 import '../models/product_model.dart';
-import 'product_remote_data_source.dart';
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
-  final FirebaseFirestore firestore;
-  final FirebaseStorage storage;
+  final FirebaseFirestore _firestore;
+  final FirebaseStorage _storage;
 
-  ProductRemoteDataSourceImpl({required this.firestore, required this.storage});
+  ProductRemoteDataSourceImpl({
+    required final FirebaseFirestore firestore,
+    required final FirebaseStorage storage,
+  })  : _firestore = firestore,
+        _storage = storage;
+
+  // ---------------------------------------------------------------------------
+  // COLLECTION REF
+  // ---------------------------------------------------------------------------
+
+  CollectionReference<Map<String, dynamic>> get _productRef =>
+      _firestore.collection('Product');
 
   // ---------------------------------------------------------------------------
   // GET
@@ -21,10 +30,23 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<List<ProductModel>> getProducts() async {
     try {
-      final snapshot = await firestore.collection('Product').get();
-      return _mapQuerySnapshotToProducts(snapshot);
+      final snapshot = await _productRef.get();
+      return _mapSnapshot(snapshot);
     } catch (e) {
-      throw Exception('Ürünler yüklenirken hata oluştu: $e');
+      _throwError('Ürünler yüklenirken hata oluştu', e);
+    }
+  }
+
+  @override
+  Future<ProductModel> getProductById(final String id) async {
+    try {
+      final doc = await _productRef.doc(id).get();
+
+      if (!doc.exists) throw Exception('Ürün bulunamadı');
+
+      return ProductModel.fromFirestore(doc.data()!);
+    } catch (e) {
+      _throwError('Ürün getirilirken hata oluştu', e);
     }
   }
 
@@ -38,9 +60,9 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final double? minPrice,
     final double? maxPrice,
   }) async {
-    Query<Map<String, dynamic>> query = firestore.collection('Product');
-
     try {
+      Query<Map<String, dynamic>> query = _productRef;
+
       if (condition != null)
         query =
             query.where('isSpotProduct', isEqualTo: condition == 'İkinci El');
@@ -52,9 +74,9 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         query = query.where('price', isLessThanOrEqualTo: maxPrice);
 
       final snapshot = await query.get();
-      return _mapQuerySnapshotToProducts(snapshot);
+      return _mapSnapshot(snapshot);
     } catch (e) {
-      throw Exception('Ürünler filtrelenirken hata oluştu: $e');
+      _throwError('Ürünler filtrelenirken hata oluştu', e);
     }
   }
 
@@ -63,18 +85,16 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   // ---------------------------------------------------------------------------
 
   @override
-  Future<List<ProductModel>> searchProducts(
-      final String searchQueryText) async {
+  Future<List<ProductModel>> searchProducts(final String queryText) async {
     try {
-      final snapshot = await firestore
-          .collection('Product')
-          .where('name', isGreaterThanOrEqualTo: searchQueryText)
-          .where('name', isLessThan: '$searchQueryText\uf8ff')
+      final snapshot = await _productRef
+          .where('name', isGreaterThanOrEqualTo: queryText)
+          .where('name', isLessThan: '$queryText\uf8ff')
           .get();
 
-      return _mapQuerySnapshotToProducts(snapshot);
+      return _mapSnapshot(snapshot);
     } catch (e) {
-      throw Exception('Ürünler arama sırasında hata oluştu: $e');
+      _throwError('Ürün araması sırasında hata oluştu', e);
     }
   }
 
@@ -87,64 +107,44 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final ProductModel product,
     final List<dynamic> images,
   ) async {
-    if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı.');
+    if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı');
 
     try {
-      // 1️⃣ ID üret
-      final productId = firestore.collection('Product').doc().id;
-
-      // 2️⃣ Görselleri yükle
+      final productId = _productRef.doc().id;
       final imageUrls = await _uploadImages(images, productId);
+      final now = _formattedNow();
 
-      // 3️⃣ Tarih
-      final now = DateFormatter.parseFormattedDateTime(
-          DateFormatter.nowFormatDateTime(),
-          formatWithMonthName: false);
-
-      // 4️⃣ Model
       final newProduct = product.copyWith(
         id: productId,
         imagesUrl: imageUrls,
-        createdAt: now['date'].toString(),
-        updatedAt: now['date'].toString(),
+        createdAt: now,
+        updatedAt: now,
         soldAt: '',
       );
 
-      // 5️⃣ Firestore
-      await firestore
-          .collection('Product')
-          .doc(productId)
-          .set(newProduct.toFirestore());
+      await _productRef.doc(productId).set(newProduct.toFirestore());
     } catch (e) {
-      throw Exception('Ürün eklenirken hata oluştu: $e');
+      _throwError('Ürün eklenirken hata oluştu', e);
     }
   }
 
   // ---------------------------------------------------------------------------
   // UPDATE
   // ---------------------------------------------------------------------------
+
   @override
   Future<void> updateProduct(
     final ProductModel product,
     final List<dynamic>? newImages,
   ) async {
     try {
-      List<String> imageUrls = product.imagesUrl;
+      final updatedImages = await _handleImageUpdate(product, newImages);
 
-      if (newImages != null && newImages.isNotEmpty) {
-        await _deleteImagesFromStorage(product.imagesUrl);
-        imageUrls = await _uploadImages(newImages, product.id);
-      }
-
-      await firestore.collection('Product').doc(product.id).update(
-            product
-                .copyWith(
-                    imagesUrl: imageUrls,
-                    updatedAt: DateFormatter.nowFormatDateTime())
-                .toFirestore(),
-          );
+      await _productRef.doc(product.id).update(product
+          .copyWith(imagesUrl: updatedImages, updatedAt: _formattedNow())
+          .toFirestore());
     } catch (e) {
-      throw Exception('Ürün güncellenirken hata oluştu: $e');
+      _throwError('Ürün güncellenirken hata oluştu', e);
     }
   }
 
@@ -155,15 +155,25 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<void> deleteProduct(final String productId) async {
     try {
-      await firestore.collection('Product').doc(productId).delete();
+      await _productRef.doc(productId).delete();
     } catch (e) {
-      throw Exception('Ürün silinirken hata oluştu: $e');
+      _throwError('Ürün silinirken hata oluştu', e);
     }
   }
 
   // ---------------------------------------------------------------------------
-  // STORAGE
+  // IMAGE HELPERS
   // ---------------------------------------------------------------------------
+
+  Future<List<String>> _handleImageUpdate(
+    final ProductModel product,
+    final List<dynamic>? newImages,
+  ) async {
+    if (newImages == null || newImages.isEmpty) return product.imagesUrl;
+
+    await _deleteImages(product.imagesUrl);
+    return _uploadImages(newImages, product.id);
+  }
 
   Future<List<String>> _uploadImages(
     final List<dynamic> images,
@@ -172,17 +182,16 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final List<String> urls = [];
 
     for (int i = 0; i < images.length; i++) {
-      final ref = storage.ref().child('product_images/$productId/$i.jpg');
+      final ref = _storage.ref('product_images/$productId/$i.jpg');
 
       final image = images[i];
 
-      if (image is File) {
+      if (image is File)
         await ref.putFile(image);
-      } else if (image is Uint8List) {
+      else if (image is Uint8List)
         await ref.putData(image);
-      } else {
-        throw Exception('Geçersiz görsel türü: ${image.runtimeType}');
-      }
+      else
+        throw Exception('Geçersiz görsel türü');
 
       urls.add(await ref.getDownloadURL());
     }
@@ -190,23 +199,28 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     return urls;
   }
 
-  Future<void> _deleteImagesFromStorage(final List<String> imageUrls) async {
-    for (final url in imageUrls) {
+  Future<void> _deleteImages(final List<String> imageUrls) async {
+    for (final url in imageUrls)
       try {
-        await storage.refFromURL(url).delete();
+        await _storage.refFromURL(url).delete();
       } catch (_) {}
-    }
   }
 
   // ---------------------------------------------------------------------------
-  // MAPPER
+  // UTIL
   // ---------------------------------------------------------------------------
 
-  List<ProductModel> _mapQuerySnapshotToProducts(
-    final QuerySnapshot<Map<String, dynamic>> snapshot,
-  ) {
-    return snapshot.docs
-        .map((final doc) => ProductModel.fromFirestore(doc.data()))
-        .toList();
-  }
+  List<ProductModel> _mapSnapshot(
+          final QuerySnapshot<Map<String, dynamic>> snapshot) =>
+      snapshot.docs
+          .map((final doc) => ProductModel.fromFirestore(doc.data()))
+          .toList();
+
+  String _formattedNow() =>
+      DateFormatter.parseFormattedDateTime(DateFormatter.nowFormatDateTime(),
+              formatWithMonthName: false)['date']
+          .toString();
+
+  Never _throwError(final String message, final Object error) =>
+      throw Exception('$message: $error');
 }

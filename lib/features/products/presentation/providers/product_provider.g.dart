@@ -53,6 +53,50 @@ final class GetProductsUseCaseProvider extends $FunctionalProvider<
 String _$getProductsUseCaseHash() =>
     r'f06417a1b9ee367e6f0f8eca4dc2ffe47756e226';
 
+@ProviderFor(getProductByIdUseCase)
+const getProductByIdUseCaseProvider = GetProductByIdUseCaseProvider._();
+
+final class GetProductByIdUseCaseProvider extends $FunctionalProvider<
+    GetProductByIdUseCase,
+    GetProductByIdUseCase,
+    GetProductByIdUseCase> with $Provider<GetProductByIdUseCase> {
+  const GetProductByIdUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'getProductByIdUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$getProductByIdUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetProductByIdUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GetProductByIdUseCase create(Ref ref) {
+    return getProductByIdUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetProductByIdUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetProductByIdUseCase>(value),
+    );
+  }
+}
+
+String _$getProductByIdUseCaseHash() =>
+    r'0bb16007e2546cdbc0eb23fbbaf7faefabed7413';
+
 @ProviderFor(addProductUseCase)
 const addProductUseCaseProvider = AddProductUseCaseProvider._();
 
@@ -217,3 +261,76 @@ final class ProductsProvider extends $FunctionalProvider<
 }
 
 String _$productsHash() => r'e890b2361e73575935ab5ec397871d5993de7fc6';
+
+@ProviderFor(productById)
+const productByIdProvider = ProductByIdFamily._();
+
+final class ProductByIdProvider
+    extends $FunctionalProvider<AsyncValue<Product>, Product, FutureOr<Product>>
+    with $FutureModifier<Product>, $FutureProvider<Product> {
+  const ProductByIdProvider._(
+      {required ProductByIdFamily super.from, required String super.argument})
+      : super(
+          retry: null,
+          name: r'productByIdProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$productByIdHash();
+
+  @override
+  String toString() {
+    return r'productByIdProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<Product> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Product> create(Ref ref) {
+    final argument = this.argument as String;
+    return productById(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProductByIdProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$productByIdHash() => r'4fa2e5933329397d0faa9b30bf682e154192ecf7';
+
+final class ProductByIdFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<Product>, String> {
+  const ProductByIdFamily._()
+      : super(
+          retry: null,
+          name: r'productByIdProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ProductByIdProvider call(
+    String id,
+  ) =>
+      ProductByIdProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'productByIdProvider';
+}

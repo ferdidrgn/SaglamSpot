@@ -5,6 +5,8 @@ import '../entites/product.dart';
 abstract class ProductRepository {
   Future<Either<Failure, List<Product>>> getProducts();
 
+  Future<Either<Failure, Product>> getProductById(final String id);
+
   Future<Either<Failure, List<Product>>> searchProducts(
       {final String? searchQueryText});
 

@@ -4,6 +4,7 @@ import '../../domain/entites/product.dart';
 import '../../domain/repositories/product_repository_provider.dart';
 import '../../domain/usecases/add_product_usecase.dart';
 import '../../domain/usecases/delete_product_usecase.dart';
+import '../../domain/usecases/get_product_by_id_usecase.dart';
 import '../../domain/usecases/get_products_usecase.dart';
 import '../../domain/usecases/update_product_usecase.dart';
 
@@ -13,6 +14,10 @@ part 'product_provider.g.dart';
 @riverpod
 GetProductsUseCase getProductsUseCase(final Ref ref) =>
     GetProductsUseCaseImpl(ref.watch(productRepositoryProvider));
+
+@riverpod
+GetProductByIdUseCase getProductByIdUseCase(final Ref ref) =>
+    GetProductByIdUseCaseImpl(ref.watch(productRepositoryProvider));
 
 @riverpod
 AddProductUseCase addProductUseCase(final Ref ref) =>
@@ -30,3 +35,7 @@ DeleteProductUseCase deleteProductUseCase(final Ref ref) =>
 @riverpod
 Future<List<Product>> products(final Ref ref) =>
     ref.watch(getProductsUseCaseProvider).call().getOrThrow();
+
+@riverpod
+Future<Product> productById(final Ref ref, final String id) =>
+    ref.watch(getProductByIdUseCaseProvider).call(id).getOrThrow();

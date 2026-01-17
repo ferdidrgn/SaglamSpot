@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../../../../../../core/errors/failures.dart';
 import '../../../../core/common/base_repo.dart';
+import '../../../../core/errors/failures.dart';
 import '../../domain/entites/product.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../datasources/product_remote_data_source.dart';
@@ -10,39 +10,52 @@ class ProductRepositoryImpl extends BaseRepository
     implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
 
-  ProductRepositoryImpl({
-    required this.remoteDataSource,
-    //required this.internetService,
-  });
+  ProductRepositoryImpl({required this.remoteDataSource});
+
+  // ---------------------------------------------------------------------------
+  // GET ALL
+  // ---------------------------------------------------------------------------
 
   @override
   Future<Either<Failure, List<Product>>> getProducts() =>
-      _getProducts(() => remoteDataSource.getProducts());
+      _executeProductList(remoteDataSource.getProducts);
+
+  // ---------------------------------------------------------------------------
+  // GET BY ID
+  // ---------------------------------------------------------------------------
 
   @override
-  Future<Either<Failure, List<Product>>> filterProducts({
-    final String? condition,
-    final double? minPrice,
-    final double? maxPrice,
-  }) =>
-      _getProducts(() => remoteDataSource.filterProducts(
-            condition: condition,
-            minPrice: minPrice,
-            maxPrice: maxPrice,
-          ));
-
-  Future<Either<Failure, List<Product>>> _getProducts(
-          final Future<List<ProductModel>> Function() getProductsFromSource) =>
+  Future<Either<Failure, Product>> getProductById(final String id) =>
       execute(() async {
-        final models = await getProductsFromSource();
-        return models.map((final e) => e.toEntity()).toList();
+        final model = await remoteDataSource.getProductById(id);
+        return model.toEntity();
       });
+
+  // ---------------------------------------------------------------------------
+  // FILTER
+  // ---------------------------------------------------------------------------
+
+  @override
+  Future<Either<Failure, List<Product>>> filterProducts(
+          {final String? condition,
+          final double? minPrice,
+          final double? maxPrice}) =>
+      _executeProductList(() => remoteDataSource.filterProducts(
+          condition: condition, minPrice: minPrice, maxPrice: maxPrice));
+
+  // ---------------------------------------------------------------------------
+  // SEARCH
+  // ---------------------------------------------------------------------------
 
   @override
   Future<Either<Failure, List<Product>>> searchProducts(
           {final String? searchQueryText}) =>
-      _getProducts(
+      _executeProductList(
           () => remoteDataSource.searchProducts(searchQueryText ?? ''));
+
+  // ---------------------------------------------------------------------------
+  // ADD
+  // ---------------------------------------------------------------------------
 
   @override
   Future<Either<Failure, void>> addProduct(
@@ -50,13 +63,32 @@ class ProductRepositoryImpl extends BaseRepository
       execute(() => remoteDataSource.addProduct(
           ProductModel.fromEntity(product), images));
 
+  // ---------------------------------------------------------------------------
+  // UPDATE
+  // ---------------------------------------------------------------------------
+
   @override
   Future<Either<Failure, void>> updateProduct(
           final Product product, final List<dynamic>? newImages) =>
       execute(() => remoteDataSource.updateProduct(
           ProductModel.fromEntity(product), newImages));
 
+  // ---------------------------------------------------------------------------
+  // DELETE
+  // ---------------------------------------------------------------------------
+
   @override
   Future<Either<Failure, void>> deleteProduct(final String productId) =>
       execute(() => remoteDataSource.deleteProduct(productId));
+
+  // ---------------------------------------------------------------------------
+  // PRIVATE HELPERS
+  // ---------------------------------------------------------------------------
+
+  Future<Either<Failure, List<Product>>> _executeProductList(
+          final Future<List<ProductModel>> Function() source) =>
+      execute(() async {
+        final models = await source();
+        return models.map((final e) => e.toEntity()).toList();
+      });
 }

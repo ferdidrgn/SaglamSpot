@@ -6,7 +6,6 @@ import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/theme_context_extension.dart';
-import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
