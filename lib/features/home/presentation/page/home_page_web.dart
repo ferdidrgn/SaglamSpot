@@ -1,10 +1,16 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import 'package:saglamspot/core/widgets/shimmer_components.dart'; // FullPageShimmer'ın olduğu yer
+import 'package:saglamspot/features/products/presentation/providers/product_provider.dart'; // productsProvider ve availableProductsProvider'ın olduğu yer
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/util/responsive_utils.dart';
+import '../../../../core/widgets/custom_product_card.dart';
+import '../../../products/presentation/providers/product_filters_provider.dart'; // Kendi ürün kartı bileşenin
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -64,49 +70,74 @@ class _HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(final BuildContext context) {
+    final productsAsync = ref.watch(productsProvider);
+    final availableProducts = ref.watch(availableProductsProvider);
+
     return Scaffold(
       backgroundColor: context.scaffoldBackgroundColor,
-      body: Stack(
-        children: [
-          _buildAnimatedBackground(),
-          ResponsiveUtils.maxWidthContainer(
-            child: CustomScrollView(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                // 1. HERO SLIDER (Yükseklik HP ile responsive)
-                _buildHeroSliderSection(),
+      // productsAsync durumuna göre tüm sayfayı veya gridi sarmala
+      body: productsAsync.when(
+        loading: () => const FullPageShimmer(), // Senin özel Shimmer class'ın
+        error: (err, stack) =>
+            Center(child: Text('Ürünler yüklenirken hata oluştu: $err')),
+        data: (_) => Stack(
+          children: [
+            _buildAnimatedBackground(),
+            ResponsiveUtils.maxWidthContainer(
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  _buildHeroSliderSection(),
+                  _buildQuickFeatures(),
+                  _buildCategoriesSection(),
 
-                // 2. QUICK FEATURES (Wrap ile mobilde alta kayar)
-                _buildQuickFeatures(),
+                  // DİNAMİK ÜRÜN GRIDİ
+                  _buildSectionHeader(
+                      "Yeni Koleksiyon", "Sizin için seçilen en yeni 10 parça"),
+                  _buildDynamicFeaturedGrid(availableProducts),
 
-                // 3. CATEGORIES (Hizalı ve şık)
-                _buildCategoriesSection(),
-
-                // 4. FEATURED GRID (Dinamik sütun sayısı)
-                _buildFeaturedGrid(),
-
-                // 5. ROOMS SECTION (Yatay Scroll)
-                _buildRoomsSection(),
-
-                // 6. ARTISAN INFO (Esnaf Bilgileri)
-                _buildArtisanInfo(),
-
-                // 7. STATS (Premium Dark)
-                _buildStatsSection(),
-
-                // 8. FOOTER
-                _buildFooter(),
-              ],
+                  _buildRoomsSection(),
+                  _buildArtisanInfo(),
+                  _buildStatsSection(),
+                  _buildFooter(),
+                ],
+              ),
             ),
-          ),
-          _buildAnimatedFloatingButtons(),
-        ],
+            _buildAnimatedFloatingButtons(),
+          ],
+        ),
       ),
     );
   }
 
-  // --- RESPONSIVE BİLEŞENLER ---
+  // --- DİNAMİK ÜRÜN GRID BİLEŞENİ ---
+  Widget _buildDynamicFeaturedGrid(final List availableProducts) {
+    // Sadece ilk 10 ürünü al
+    final latestTenProducts = availableProducts.take(10).toList();
+
+    return SliverPadding(
+      padding: context.pagePadding,
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: context.gridColumns(4),
+          mainAxisSpacing: context.gridSpacing,
+          crossAxisSpacing: context.gridSpacing,
+          childAspectRatio: context.cardAspectRatio(),
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (final context, final index) {
+            final product = latestTenProducts[index];
+            // Kendi CustomProductCard bileşenini kullan
+            return CustomProductCard(product: product);
+          },
+          childCount: latestTenProducts.length,
+        ),
+      ),
+    );
+  }
+
+  // ... (Diğer _build metotları (_heroSlider, _footer vb.) mevcut kodunla aynı kalacak)
 
   Widget _buildAnimatedBackground() {
     return AnimatedBuilder(
@@ -125,7 +156,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _buildHeroSliderSection() {
     return SliverToBoxAdapter(
       child: Container(
-        height: context.hp(context.isMobile ? 50 : 65), // Mobilde daha kısa
+        height: context.hp(context.isMobile ? 50 : 65),
         margin: context.pagePadding,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
@@ -174,7 +205,6 @@ class _HomePageState extends ConsumerState<HomePage>
                 style: AppTextStyles.h1.copyWith(
                     color: Colors.white,
                     fontSize: context.heroSize * 0.8,
-                    // Context heroSize'ı biraz dengeledik
                     height: 1.1)),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -248,7 +278,6 @@ class _HomePageState extends ConsumerState<HomePage>
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-          // Sayfa paddingi ile hizalandı
           itemCount: cats.length,
           itemBuilder: (final context, final i) {
             final isSelected = _activeCategory == cats[i];
@@ -294,69 +323,6 @@ class _HomePageState extends ConsumerState<HomePage>
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildFeaturedGrid() {
-    return SliverPadding(
-      padding: context.pagePadding,
-      sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(4),
-          // ResponsiveUtils: Mobile 2, Tablet 3, Desktop 4
-          mainAxisSpacing: context.gridSpacing,
-          crossAxisSpacing: context.gridSpacing,
-          childAspectRatio: context.cardAspectRatio(),
-        ),
-        delegate: SliverChildBuilderDelegate(
-            (final context, final index) => _productCard(index),
-            childCount: 8),
-      ),
-    );
-  }
-
-  Widget _productCard(final int index) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(context.borderRadius()),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: context.sageGreen.withOpacity(0.1),
-                borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(context.borderRadius())),
-              ),
-              child: const Center(child: Icon(Icons.chair_outlined)),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(context.spacing),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Ürün Başlığı $index",
-                    style: TextStyle(
-                        fontSize: context.bodySize,
-                        fontWeight: FontWeight.bold),
-                    maxLines: 1),
-                Text("₺12.450",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: context.primaryColor,
-                        fontSize: context.priceSize)),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -416,7 +382,6 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _roomCard(final String title, final String img, final String sub) {
     return Container(
       width: context.wp(context.isMobile ? 70 : 25),
-      // Mobilde ekranın %70'i kadar, desktopta %25
       margin: const EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.borderRadius(2)),
@@ -533,7 +498,6 @@ class _HomePageState extends ConsumerState<HomePage>
       child: Container(
         padding: EdgeInsets.symmetric(vertical: context.hp(8)),
         decoration: const BoxDecoration(color: AppColors.backgroundDark),
-        // Mat lüks siyah
         child: Center(
           child: Wrap(
             alignment: WrapAlignment.center,
@@ -589,13 +553,11 @@ class _HomePageState extends ConsumerState<HomePage>
         color: AppColors.backgroundDark,
         child: Column(
           children: [
-            // Ana Footer İçeriği
             Wrap(
               alignment: WrapAlignment.spaceBetween,
               spacing: 40,
               runSpacing: 50,
               children: [
-                // 1. Marka Tanımı
                 SizedBox(
                   width:
                       context.responsive(mobile: double.infinity, desktop: 300),
@@ -612,32 +574,18 @@ class _HomePageState extends ConsumerState<HomePage>
                               fontWeight: FontWeight.w900)),
                       const SizedBox(height: 20),
                       Text(
-                        "20 yılı aşkın tecrübemizle İstanbul'un her noktasına kaliteyi ve güveni taşıyoruz. Evinizin her köşesinde bir hikayemiz var.",
+                        "20 yılı aşkın tecrübemizle İstanbul'un her noktasına kaliteyi ve güveni taşıyoruz.",
                         textAlign: context.isMobile
                             ? TextAlign.center
                             : TextAlign.start,
                         style: TextStyle(
-                            color: Colors.white.withOpacity(0.4),
-                            fontSize: 14,
-                            height: 1.6),
+                            color: Colors.white.withOpacity(0.4), fontSize: 14),
                       ),
                     ],
                   ),
                 ),
-
-                // 2. Hızlı Keşfet (Mobilde de görünür)
-                _footerColumn("KEŞFET", [
-                  "Koleksiyonlar",
-                  "Oturma Grupları",
-                  "Yatak Odası",
-                  "Mutfak"
-                ]),
-
-                // 3. Kurumsal Bilgiler (Mobilde de görünür)
-                _footerColumn("KURUMSAL",
-                    ["Hakkımızda", "Mağazamız", "İletişim", "Kariyer"]),
-
-                // 4. İletişim & Sosyal
+                _footerColumn("KEŞFET", ["Koleksiyonlar", "Spot Ürünler"]),
+                _footerColumn("KURUMSAL", ["Hakkımızda", "İletişim"]),
                 SizedBox(
                   width:
                       context.responsive(mobile: double.infinity, desktop: 250),
@@ -650,52 +598,26 @@ class _HomePageState extends ConsumerState<HomePage>
                           style: TextStyle(
                               color: context.secondaryColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              letterSpacing: 2)),
-                      const SizedBox(height: 20),
+                              fontSize: 12)),
+                      const SizedBox(height: 10),
                       Text("info@saglamspot.com",
                           style:
                               TextStyle(color: Colors.white.withOpacity(0.6))),
-                      const SizedBox(height: 10),
-                      Text("+90 212 000 00 00",
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.6))),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _socialCircle(Icons.facebook),
-                          const SizedBox(width: 12),
-                          _socialCircle(Icons.camera_alt_outlined),
-                          const SizedBox(width: 12),
-                          _socialCircle(Icons.location_on_outlined),
-                        ],
-                      ),
                     ],
                   ),
                 ),
               ],
             ),
-
             const SizedBox(height: 80),
-            Divider(color: Colors.white.withOpacity(0.03)),
-            const SizedBox(height: 30),
-
-            // Alt Bilgi
-            Text(
-              "© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.",
-              style: TextStyle(
-                  color: Colors.white.withOpacity(0.15),
-                  fontSize: 10,
-                  letterSpacing: 1),
-            ),
+            Text("© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.",
+                style: TextStyle(
+                    color: Colors.white.withOpacity(0.15), fontSize: 10)),
           ],
         ),
       ),
     );
   }
 
-// Yardımcı Kolon Yapısı (Responsive)
   Widget _footerColumn(final String title, final List<String> items) {
     return SizedBox(
       width: context.responsive(mobile: context.wp(40), desktop: 150),
@@ -706,8 +628,7 @@ class _HomePageState extends ConsumerState<HomePage>
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  letterSpacing: 1)),
+                  fontSize: 13)),
           const SizedBox(height: 25),
           ...items
               .map((final item) => Padding(
@@ -723,36 +644,27 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _socialCircle(final IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Icon(icon, color: Colors.white.withOpacity(0.5), size: 18),
-    );
-  }
-
   Widget _buildSectionHeader(final String title, final String sub) {
-    return Padding(
-      padding: context.pagePadding.copyWith(bottom: 20, top: 40),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: TextStyle(
-                  fontSize: context.h2Size,
-                  fontWeight: FontWeight.w900,
-                  color: context.primaryColor)),
-          const SizedBox(height: 4),
-          Container(height: 3, width: 40, color: context.secondaryColor),
-          const SizedBox(height: 8),
-          Text(sub,
-              style: TextStyle(
-                  color: context.primaryColor.withOpacity(0.5),
-                  fontSize: context.captionSize)),
-        ],
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.pagePadding.copyWith(bottom: 20, top: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: TextStyle(
+                    fontSize: context.h2Size,
+                    fontWeight: FontWeight.w900,
+                    color: context.primaryColor)),
+            const SizedBox(height: 4),
+            Container(height: 3, width: 40, color: context.secondaryColor),
+            const SizedBox(height: 8),
+            Text(sub,
+                style: TextStyle(
+                    color: context.primaryColor.withOpacity(0.5),
+                    fontSize: context.captionSize)),
+          ],
+        ),
       ),
     );
   }
@@ -776,6 +688,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 }
 
+// ... Painter kodun aynı kalacak
 class _OrbPainter extends CustomPainter {
   final double animation;
   final Color color1;
