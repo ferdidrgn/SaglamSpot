@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
-import '../../../../core/widgets/responsive_product_grid.dart';
+import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/products/domain/entites/product.dart';
-import '../util/responsive_utils.dart'; // Extension'lar için import
-import 'custom_product_card.dart';
+import 'responsive_utils.dart'; // Extension'lar için import
+import '../widgets/custom_product_card.dart';
 
 /// Responsive product grid with optimal performance
 /// Uses SliverGrid for better performance with large lists
