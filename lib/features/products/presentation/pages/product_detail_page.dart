@@ -2,27 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
-import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/product_provider.dart';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 
-
-class WebProductDetailPage extends ConsumerStatefulWidget {
+class ProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
 
-  const WebProductDetailPage({super.key, required this.productId});
+  const ProductDetailPage({super.key, required this.productId});
 
   @override
-  ConsumerState<WebProductDetailPage> createState() =>
-      _WebProductDetailPageState();
+  ConsumerState<ProductDetailPage> createState() =>
+      _EnhancedProductDetailPageState();
 }
 
-class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
+class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
+    with SingleTickerProviderStateMixin {
   int _selectedImageIndex = 0;
   bool _isFavorite = false;
   bool _showMoreDescription = false;
+  late TabController _tabController;
+  final ScrollController _scrollController = ScrollController();
+  bool _isScrolled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 100 && !_isScrolled) {
+      setState(() => _isScrolled = true);
+    } else if (_scrollController.offset <= 100 && _isScrolled) {
+      setState(() => _isScrolled = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(final BuildContext context) {
@@ -37,8 +59,11 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
       error: (final e, final _) => Scaffold(
         backgroundColor: AppColors.background,
         body: Center(
-            child: Text(e.toString(),
-                style: const TextStyle(color: AppColors.textPrimary))),
+          child: Text(
+            e.toString(),
+            style: const TextStyle(color: AppColors.textPrimary),
+          ),
+        ),
       ),
       data: (final products) {
         final product = products.firstWhere(
@@ -48,56 +73,137 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
 
         return Scaffold(
           backgroundColor: AppColors.background,
-          body: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              _buildHeroAppBar(context, product),
-              _buildResponsiveLayout(context, product),
-              _buildAdditionalInfo(context, product),
-              _buildSimilarProducts(context),
-              SliverToBoxAdapter(
-                  child: SizedBox(height: context.spacingLarge * 3)),
+          body: Stack(
+            children: [
+              CustomScrollView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  _buildSliverAppBar(context, product),
+                  _buildResponsiveProductLayout(context, product),
+                  _buildTabSection(context, product),
+                  _buildFeatures(context),
+                  _buildReviews(context),
+                  _buildSimilarProducts(context, products),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: context.spacingLarge * 3),
+                  ),
+                ],
+              ),
+              _buildFloatingHeader(context, product),
             ],
           ),
-          floatingActionButton: _buildFloatingActions(context, product),
+          bottomNavigationBar:
+              context.isMobile ? _buildMobileBottomBar(context, product) : null,
         );
       },
     );
   }
 
-  // ----------------------------------------------------------------
+  // ════════════════════════════════════════════════════════════════
+  // FLOATING HEADER (for scroll effect)
+  // ════════════════════════════════════════════════════════════════
 
-  SliverAppBar _buildHeroAppBar(
-      BuildContext context, Product product) {
-    return SliverAppBar(
-      pinned: true,
-      toolbarHeight: 64,
-      collapsedHeight: 64,
-      expandedHeight: context.responsive(mobile: 160, desktop: 240),
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-        onPressed: () => Navigator.pop(context),
+  Widget _buildFloatingHeader(
+      final BuildContext context, final Product product) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      height: _isScrolled ? 70 : 0,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.border,
+            width: _isScrolled ? 1 : 0,
+          ),
+        ),
+        boxShadow: _isScrolled
+            ? [
+                BoxShadow(
+                  color: AppColors.textPrimary.withOpacity(0.05),
+                  blurRadius: 10,
+                ),
+              ]
+            : null,
       ),
-      flexibleSpace: FlexibleSpaceBar(
-        centerTitle: true,
-        titlePadding: const EdgeInsets.only(bottom: 8),
-        title: Text(
-          product.category.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 12,
-            letterSpacing: 2,
-            color: AppColors.textSecondary,
-            fontWeight: FontWeight.bold,
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.spacing),
+          child: Row(
+            children: [
+              IconButton(
+                icon:
+                    const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                onPressed: () => Navigator.pop(context),
+              ),
+              const SizedBox(width: 12),
+              if (_isScrolled)
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: TextStyle(
+                          fontSize: context.bodySize,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '₺${product.price.toStringAsFixed(0)}',
+                        style: TextStyle(
+                          fontSize: context.captionSize,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (_isScrolled) ...[
+                IconButton(
+                  icon: Icon(
+                    _isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color:
+                        _isFavorite ? AppColors.error : AppColors.textPrimary,
+                  ),
+                  onPressed: () => setState(() => _isFavorite = !_isFavorite),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.share, color: AppColors.textPrimary),
+                  onPressed: () {},
+                ),
+              ],
+            ],
           ),
         ),
       ),
     );
   }
 
+  // ════════════════════════════════════════════════════════════════
+  // SLIVER APP BAR
+  // ════════════════════════════════════════════════════════════════
 
-  Widget _buildResponsiveLayout(
+  SliverAppBar _buildSliverAppBar(
+      final BuildContext context, final Product product) {
+    return SliverAppBar(
+      expandedHeight: 0,
+      pinned: false,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: const SizedBox(),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // RESPONSIVE PRODUCT LAYOUT
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildResponsiveProductLayout(
       final BuildContext context, final Product product) {
     return context.responsive(
       mobile: _buildMobileLayout(context, product),
@@ -110,20 +216,26 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.sectionPadding,
-        child: Container(
+        child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1600),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Gallery Section - 55%
               Expanded(
-                flex: 6,
-                child: _buildGallerySection(context, product,
-                    height: context.hp(65)),
+                flex: 55,
+                child: _buildGallerySection(
+                  context,
+                  product,
+                  height: context.hp(75),
+                ),
               ),
               SizedBox(width: context.spacingLarge * 2),
+
+              // Info Section - 45%
               Expanded(
-                flex: 4,
-                child: _buildInfoSection(context, product),
+                flex: 45,
+                child: _buildStickyInfoSection(context, product),
               ),
             ],
           ),
@@ -132,92 +244,186 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  SliverToBoxAdapter _buildMobileLayout(
+  SliverList _buildMobileLayout(
       final BuildContext context, final Product product) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.pagePadding,
-        child: Column(
-          children: [
-            _buildGallerySection(context, product,
-                height: context.hp(45), isMobile: true),
-            SizedBox(height: context.spacingLarge * 2),
-            _buildInfoSection(context, product, isMobile: true),
-          ],
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Padding(
+          padding: context.pagePadding,
+          child: Column(
+            children: [
+              _buildGallerySection(
+                context,
+                product,
+                height: context.hp(50),
+                isMobile: true,
+              ),
+              SizedBox(height: context.spacingLarge),
+              _buildProductInfo(context, product, isMobile: true),
+            ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 
-  // ----------------- GALLERY SECTION -----------------
+  // ════════════════════════════════════════════════════════════════
+  // GALLERY SECTION
+  // ════════════════════════════════════════════════════════════════
 
-  Widget _buildGallerySection(final BuildContext context, final Product product,
-      {required final double height, final bool isMobile = false}) {
+  Widget _buildGallerySection(
+    final BuildContext context,
+    final Product product, {
+    required final double height,
+    final bool isMobile = false,
+  }) {
     return Column(
       children: [
-        // Main Image with Decorative Frame
+        // Main Image Container
         Container(
           height: height,
           decoration: BoxDecoration(
-            color: AppColors.secondary,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.border, width: 1.5),
+            border: Border.all(color: AppColors.border, width: 2),
             boxShadow: [
               BoxShadow(
-                color: AppColors.textPrimary.withOpacity(0.05),
-                blurRadius: 40,
+                color: AppColors.textPrimary.withOpacity(0.08),
+                blurRadius: 50,
                 spreadRadius: 5,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
           child: Stack(
             children: [
-              // Mozaik Pattern Background
-              _buildMosaicPattern(),
+              // Background Pattern
+              _buildBackgroundPattern(),
+
               // Main Image
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      product.imagesUrl[_selectedImageIndex],
-                      fit: BoxFit.contain,
-                      width: double.infinity,
-                      height: double.infinity,
+                  padding: EdgeInsets.all(
+                      context.responsive(mobile: 24, desktop: 48)),
+                  child: Hero(
+                    tag: 'product-${product.id}',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.network(
+                        product.imagesUrl[_selectedImageIndex],
+                        fit: BoxFit.contain,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
                     ),
                   ),
                 ),
               ),
+
               // Navigation Arrows
               if (product.imagesUrl.length > 1)
                 Positioned.fill(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildNavigationArrow(context, isLeft: true),
-                      _buildNavigationArrow(context, isLeft: false),
+                      _buildImageNavigationButton(
+                        icon: Icons.chevron_left_rounded,
+                        onTap: () {
+                          setState(() {
+                            _selectedImageIndex = (_selectedImageIndex -
+                                    1 +
+                                    product.imagesUrl.length) %
+                                product.imagesUrl.length;
+                          });
+                        },
+                      ),
+                      _buildImageNavigationButton(
+                        icon: Icons.chevron_right_rounded,
+                        onTap: () {
+                          setState(() {
+                            _selectedImageIndex = (_selectedImageIndex + 1) %
+                                product.imagesUrl.length;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
+
+              // Top Actions
+              Positioned(
+                top: 20,
+                right: 20,
+                child: Row(
+                  children: [
+                    _buildActionIcon(
+                      icon:
+                          _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: _isFavorite ? AppColors.error : null,
+                      onTap: () => setState(() => _isFavorite = !_isFavorite),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildActionIcon(
+                      icon: Icons.share_outlined,
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+
               // Image Counter
               Positioned(
                 bottom: 20,
                 right: 20,
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.border),
+                    color: AppColors.surface.withOpacity(0.95),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: AppColors.border, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.textPrimary.withOpacity(0.1),
+                        blurRadius: 10,
+                      ),
+                    ],
                   ),
                   child: Text(
-                    '${_selectedImageIndex + 1}/${product.imagesUrl.length}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                    '${_selectedImageIndex + 1} / ${product.imagesUrl.length}',
+                    style: TextStyle(
+                      fontSize: context.captionSize,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Special Badge
+              Positioned(
+                top: 20,
+                left: 20,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: const Text(
+                    'ÖZEL',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: 2,
                     ),
                   ),
                 ),
@@ -225,67 +431,127 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
             ],
           ),
         ),
+
         SizedBox(height: context.spacingLarge),
+
         // Thumbnail Gallery
-        Container(
-          height: context.hp(12),
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: product.imagesUrl.length,
-            separatorBuilder: (final _, final __) =>
-                SizedBox(width: context.spacing),
-            itemBuilder: (final _, final i) => GestureDetector(
-              onTap: () => setState(() => _selectedImageIndex = i),
-              child: Container(
-                width: context.wp(15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: i == _selectedImageIndex
-                        ? AppColors.primary
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                  boxShadow: i == _selectedImageIndex
-                      ? [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.2),
-                            blurRadius: 8,
-                            spreadRadius: 1,
-                          ),
-                        ]
-                      : null,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    product.imagesUrl[i],
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        _buildThumbnailGallery(context, product),
       ],
     );
   }
 
-  Widget _buildMosaicPattern() {
+  Widget _buildThumbnailGallery(
+      final BuildContext context, final Product product) {
+    return Container(
+      height: context.responsive(mobile: 80, desktop: 100),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border, width: 1.5),
+      ),
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        itemCount: product.imagesUrl.length,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 12),
+        itemBuilder: (final _, final i) => GestureDetector(
+          onTap: () => setState(() => _selectedImageIndex = i),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: context.responsive(mobile: 70, desktop: 80),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: i == _selectedImageIndex
+                    ? AppColors.primary
+                    : AppColors.border,
+                width: i == _selectedImageIndex ? 3 : 1.5,
+              ),
+              boxShadow: i == _selectedImageIndex
+                  ? [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                product.imagesUrl[i],
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageNavigationButton({
+    required final IconData icon,
+    required final VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Material(
+        color: AppColors.surface.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        elevation: 4,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Icon(icon, color: AppColors.textPrimary, size: 32),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionIcon({
+    required final IconData icon,
+    final Color? color,
+    required final VoidCallback onTap,
+  }) {
+    return Material(
+      color: AppColors.surface.withOpacity(0.95),
+      borderRadius: BorderRadius.circular(16),
+      elevation: 2,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Icon(icon, color: color ?? AppColors.textPrimary, size: 24),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackgroundPattern() {
     return Opacity(
-      opacity: 0.03,
+      opacity: 0.02,
       child: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-                'https://images.unsplash.com/photo-1550686041-366ad85a1355?auto=format&fit=crop&w=1600&q=80'),
+              'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80',
+            ),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               AppColors.textPrimary,
@@ -297,342 +563,506 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  Widget _buildNavigationArrow(final BuildContext context,
-      {required final bool isLeft}) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.surface.withOpacity(0.9),
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
-        child: Icon(
-          isLeft ? Icons.chevron_left_rounded : Icons.chevron_right_rounded,
-          color: AppColors.textPrimary,
-          size: 28,
-        ),
-      ),
+  // ════════════════════════════════════════════════════════════════
+  // INFO SECTION (STICKY ON DESKTOP)
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildStickyInfoSection(
+      final BuildContext context, final Product product) {
+    return SingleChildScrollView(
+      child: _buildProductInfo(context, product),
     );
   }
 
-  // ----------------- INFO SECTION -----------------
-
-  Widget _buildInfoSection(final BuildContext context, final Product product,
+  Widget _buildProductInfo(final BuildContext context, final Product product,
       {final bool isMobile = false}) {
-    final shortDesc = product.desc.length > 150
-        ? '${product.desc.substring(0, 150)}...'
-        : product.desc;
-
     return Container(
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.all(context.responsive(mobile: 24, desktop: 40)),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border, width: 1.5),
+        border: Border.all(color: AppColors.border, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.03),
-            blurRadius: 30,
+            color: AppColors.textPrimary.withOpacity(0.05),
+            blurRadius: 40,
             spreadRadius: 5,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Product Title with Badge
+          // Category Badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              product.category.toUpperCase(),
+              style: TextStyle(
+                fontSize: context.captionSize,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
+                letterSpacing: 1.5,
+              ),
+            ),
+          ),
+
+          SizedBox(height: context.spacing),
+
+          // Product Title
+          Text(
+            product.name,
+            style: TextStyle(
+              fontSize: context.responsive(mobile: 28, desktop: 42),
+              fontWeight: FontWeight.w900,
+              color: AppColors.textPrimary,
+              height: 1.1,
+              letterSpacing: -0.5,
+            ),
+          ),
+
+          SizedBox(height: context.spacing),
+
+          // Rating & Reviews
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  product.name,
-                  style: TextStyle(
-                    fontSize: isMobile ? 28 : 36,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.textPrimary,
-                    height: 1.2,
-                  ),
+              ...List.generate(
+                5,
+                (final i) => Icon(
+                  i < 4 ? Icons.star : Icons.star_border,
+                  color: AppColors.accent,
+                  size: 20,
                 ),
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(20),
+              const SizedBox(width: 12),
+              Text(
+                '4.8',
+                style: TextStyle(
+                  fontSize: context.bodySize,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
                 ),
-                child: const Text(
-                  'ÖZEL',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    letterSpacing: 2,
-                  ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '(127 değerlendirme)',
+                style: TextStyle(
+                  fontSize: context.captionSize,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
           ),
-          SizedBox(height: context.spacing),
 
-          // Price with Elegant Design
+          SizedBox(height: context.spacingLarge),
+
+          // Price Section
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: AppColors.border),
-                top: BorderSide(color: AppColors.border),
+            padding: EdgeInsets.symmetric(
+              vertical: context.spacing,
+              horizontal: context.spacingLarge,
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.secondary.withOpacity(0.3),
+                  AppColors.secondary.withOpacity(0.1),
+                ],
               ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border, width: 1.5),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '₺',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w300,
-                    color: AppColors.textSecondary,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'FİYAT',
+                      style: TextStyle(
+                        fontSize: context.captionSize,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textSecondary,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '₺',
+                          style: TextStyle(
+                            fontSize:
+                                context.responsive(mobile: 20, desktop: 24),
+                            fontWeight: FontWeight.w300,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          product.price.toStringAsFixed(0),
+                          style: TextStyle(
+                            fontSize:
+                                context.responsive(mobile: 48, desktop: 64),
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.textPrimary,
+                            height: 0.9,
+                            letterSpacing: -2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  product.price.toStringAsFixed(0),
-                  style: TextStyle(
-                    fontSize: isMobile ? 48 : 56,
-                    fontWeight: FontWeight.w300,
-                    color: AppColors.textPrimary,
-                    height: 0.9,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border:
+                        Border.all(color: AppColors.success.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.trending_down,
+                        color: AppColors.success,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '%15',
+                        style: TextStyle(
+                          fontSize: context.bodySize,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.success,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
+
           SizedBox(height: context.spacingLarge * 1.5),
 
-          // Description with Expand/Collapse
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'AÇIKLAMA',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textSecondary,
-                  letterSpacing: 2,
-                ),
-              ),
-              const SizedBox(height: 12),
-              AnimatedCrossFade(
-                firstChild: Text(
-                  shortDesc,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.7,
-                    color: AppColors.textPrimary.withOpacity(0.9),
-                  ),
-                ),
-                secondChild: Text(
-                  product.desc,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.7,
-                    color: AppColors.textPrimary.withOpacity(0.9),
-                  ),
-                ),
-                crossFadeState: _showMoreDescription
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 300),
-              ),
-              if (product.desc.length > 150)
-                TextButton(
-                  onPressed: () => setState(
-                      () => _showMoreDescription = !_showMoreDescription),
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _showMoreDescription
-                            ? 'DAHA AZ GÖSTER'
-                            : 'DEVAMINI OKU',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        _showMoreDescription
-                            ? Icons.expand_less_rounded
-                            : Icons.expand_more_rounded,
-                        size: 20,
-                        color: AppColors.primary,
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
+          // Description
+          _buildDescriptionSection(context, product),
+
           SizedBox(height: context.spacingLarge * 2),
 
           // Action Buttons
-          Column(
-            children: [
-              _buildActionButton(
-                context,
-                label: 'ŞİMDİ SATIN AL',
-                icon: Icons.shopping_bag_rounded,
-                isPrimary: true,
-                onTap: () {},
-              ),
-              SizedBox(height: context.spacing),
-              _buildActionButton(
-                context,
-                label: 'KOLEKSİYONDA İNCELE',
-                icon: Icons.remove_red_eye_rounded,
-                isPrimary: false,
-                onTap: () {},
-              ),
-              if (isMobile) SizedBox(height: context.spacingLarge * 2),
-            ],
-          ),
+          _buildActionButtons(context, isMobile),
 
-          // Details Grid
-          if (!isMobile) ...[
-            SizedBox(height: context.spacingLarge * 2),
-            _buildDetailsGrid(product),
-          ],
+          SizedBox(height: context.spacingLarge * 2),
+
+          // Product Details Grid
+          _buildDetailsGrid(context, product),
+
+          SizedBox(height: context.spacingLarge * 2),
+
+          // Seller Info
+          _buildSellerInfo(context),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(
+  Widget _buildDescriptionSection(
+      final BuildContext context, final Product product) {
+    final shortDesc = product.desc.length > 200
+        ? '${product.desc.substring(0, 200)}...'
+        : product.desc;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 24,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'AÇIKLAMA',
+              style: TextStyle(
+                fontSize: context.bodySize,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary,
+                letterSpacing: 2,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        AnimatedCrossFade(
+          firstChild: Text(
+            shortDesc,
+            style: TextStyle(
+              fontSize: context.bodySize,
+              height: 1.8,
+              color: AppColors.textPrimary.withOpacity(0.8),
+            ),
+          ),
+          secondChild: Text(
+            product.desc,
+            style: TextStyle(
+              fontSize: context.bodySize,
+              height: 1.8,
+              color: AppColors.textPrimary.withOpacity(0.8),
+            ),
+          ),
+          crossFadeState: _showMoreDescription
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 300),
+        ),
+        if (product.desc.length > 200) ...[
+          const SizedBox(height: 12),
+          TextButton.icon(
+            onPressed: () =>
+                setState(() => _showMoreDescription = !_showMoreDescription),
+            icon: Icon(
+              _showMoreDescription ? Icons.expand_less : Icons.expand_more,
+              color: AppColors.primary,
+              size: 20,
+            ),
+            label: Text(
+              _showMoreDescription ? 'DAHA AZ GÖSTER' : 'DEVAMINI OKU',
+              style: TextStyle(
+                fontSize: context.captionSize,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(final BuildContext context, final bool isMobile) {
+    return Column(
+      children: [
+        _buildPrimaryButton(
+          context,
+          label: 'ŞİMDİ SATIN AL',
+          icon: Icons.shopping_bag_rounded,
+          onTap: () {},
+        ),
+        SizedBox(height: context.spacing),
+        Row(
+          children: [
+            Expanded(
+              child: _buildSecondaryButton(
+                context,
+                label: 'SEPETE EKLE',
+                icon: Icons.add_shopping_cart_rounded,
+                onTap: () {},
+              ),
+            ),
+            SizedBox(width: context.spacing),
+            Expanded(
+              child: _buildSecondaryButton(
+                context,
+                label: 'MESAJ GÖNDER',
+                icon: Icons.message_rounded,
+                onTap: () {},
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrimaryButton(
     final BuildContext context, {
     required final String label,
     required final IconData icon,
-    required final bool isPrimary,
     required final VoidCallback onTap,
   }) {
     return Container(
-      height: 60,
+      height: 64,
       decoration: BoxDecoration(
-        gradient: isPrimary ? AppColors.primaryGradient : null,
-        color: isPrimary ? null : Colors.transparent,
+        gradient: AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(16),
-        border:
-            isPrimary ? null : Border.all(color: AppColors.border, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon,
-                    color: isPrimary ? Colors.white : AppColors.textPrimary,
-                    size: 20),
-                const SizedBox(width: 12),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: isPrimary ? Colors.white : AppColors.textPrimary,
-                  ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.white, size: 24),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: context.bodySize,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: 1,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildDetailsGrid(final Product product) {
+  Widget _buildSecondaryButton(
+    final BuildContext context, {
+    required final String label,
+    required final IconData icon,
+    required final VoidCallback onTap,
+  }) {
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 2),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: AppColors.textPrimary, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: context.captionSize,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsGrid(final BuildContext context, final Product product) {
     final details = [
       {
         'icon': Icons.category_rounded,
         'label': 'Kategori',
-        'value': product.category
+        'value': product.category,
+        'color': AppColors.primary,
       },
       {
-        'icon': Icons.flag_rounded,
+        'icon': Icons.verified_outlined,
         'label': 'Durum',
-        'value': (product.isSpotProduct ? "İkinci El" : "Sıfır")
+        'value': product.isSpotProduct ? 'İkinci El' : 'Sıfır',
+        'color': AppColors.success,
       },
-      {'icon': Icons.calendar_today_rounded, 'label': 'Yıl', 'value': '2023'},
       {
-        'icon': Icons.location_on_rounded,
+        'icon': Icons.local_shipping_outlined,
+        'label': 'Teslimat',
+        'value': '2-5 Gün',
+        'color': AppColors.info,
+      },
+      {
+        'icon': Icons.location_on_outlined,
         'label': 'Konum',
-        'value': 'İstanbul'
+        'value': 'İstanbul',
+        'color': AppColors.accent,
       },
     ];
 
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 3,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 2.5,
       ),
       itemCount: details.length,
       itemBuilder: (final context, final index) {
         final detail = details[index];
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.5),
+            color: AppColors.secondary.withOpacity(0.3),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
             children: [
-              Icon(detail['icon'] as IconData,
-                  size: 18, color: AppColors.textSecondary),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: (detail['color'] as Color).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  detail['icon'] as IconData,
+                  size: 18,
+                  color: detail['color'] as Color,
+                ),
+              ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    detail['label'] as String,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      detail['label'] as String,
+                      style: TextStyle(
+                        fontSize: context.captionSize,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  Text(
-                    detail['value'] as String,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                    const SizedBox(height: 2),
+                    Text(
+                      detail['value'] as String,
+                      style: TextStyle(
+                        fontSize: context.bodySize,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -641,150 +1071,633 @@ class _WebProductDetailPageState extends ConsumerState<WebProductDetailPage> {
     );
   }
 
-  // ----------------- ADDITIONAL SECTIONS -----------------
+  Widget _buildSellerInfo(final BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(context.spacing),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(
+              child: Icon(Icons.store, color: Colors.white, size: 28),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sağlam Spot',
+                  style: TextStyle(
+                    fontSize: context.bodySize,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.verified,
+                        size: 14, color: AppColors.success),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Onaylı Satıcı',
+                      style: TextStyle(
+                        fontSize: context.captionSize,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.chevron_right),
+            color: AppColors.textPrimary,
+          ),
+        ],
+      ),
+    );
+  }
 
-  SliverToBoxAdapter _buildAdditionalInfo(
-      final BuildContext context, final Product product) {
+  // ════════════════════════════════════════════════════════════════
+  // TAB SECTION (Details, Shipping, Reviews)
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildTabSection(final BuildContext context, final Product product) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.sectionPadding,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1600),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          children: [
+            TabBar(
+              controller: _tabController,
+              labelColor: AppColors.textPrimary,
+              unselectedLabelColor: AppColors.textSecondary,
+              indicatorColor: AppColors.primary,
+              indicatorWeight: 3,
+              labelStyle: TextStyle(
+                fontSize: context.bodySize,
+                fontWeight: FontWeight.w700,
+              ),
+              tabs: const [
+                Tab(text: 'DETAYLAR'),
+                Tab(text: 'TESLİMAT'),
+                Tab(text: 'DEĞERLENDİRMELER'),
+              ],
+            ),
+            SizedBox(
+              height: 300,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildDetailsTab(context, product),
+                  _buildShippingTab(context),
+                  _buildReviewsTab(context),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsTab(final BuildContext context, final Product product) {
+    return Container(
+      margin: const EdgeInsets.only(top: 24),
+      padding: EdgeInsets.all(context.spacingLarge),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: SingleChildScrollView(
+        child: Text(
+          product.desc,
+          style: TextStyle(
+            fontSize: context.bodySize,
+            height: 1.8,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShippingTab(final BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 24),
+      child: ListView(
+        children: [
+          _buildInfoTile(
+            icon: Icons.local_shipping_outlined,
+            title: 'Ücretsiz Kargo',
+            subtitle: '500₺ ve üzeri alışverişlerde',
+          ),
+          _buildInfoTile(
+            icon: Icons.access_time,
+            title: 'Hızlı Teslimat',
+            subtitle: '2-5 iş günü içinde',
+          ),
+          _buildInfoTile(
+            icon: Icons.shield_outlined,
+            title: 'Güvenli Paketleme',
+            subtitle: 'Ürünleriniz özenle paketlenir',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewsTab(final BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 24),
+      child: Center(
+        child: Text(
+          'Henüz değerlendirme yok',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: context.bodySize,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoTile({
+    required final IconData icon,
+    required final String title,
+    required final String subtitle,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: AppColors.primary),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // FEATURES SECTION
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildFeatures(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'ÖZELLİKLER',
+              style: TextStyle(
+                fontSize: context.h3Size,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary,
+                letterSpacing: 1,
+              ),
+            ),
+            SizedBox(height: context.spacingLarge),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: context.responsive(mobile: 2, desktop: 4),
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.2,
+              children: [
+                _buildFeatureCard(
+                  icon: Icons.verified_user_outlined,
+                  title: 'Garantili',
+                  subtitle: '2 Yıl',
+                ),
+                _buildFeatureCard(
+                  icon: Icons.settings_outlined,
+                  title: 'Montaj',
+                  subtitle: 'Ücretsiz',
+                ),
+                _buildFeatureCard(
+                  icon: Icons.swap_horiz_outlined,
+                  title: 'İade',
+                  subtitle: '14 Gün',
+                ),
+                _buildFeatureCard(
+                  icon: Icons.support_agent_outlined,
+                  title: 'Destek',
+                  subtitle: '7/24',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard({
+    required final IconData icon,
+    required final String title,
+    required final String subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // REVIEWS SECTION
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildReviews(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'MÜŞTERİ GÖRÜŞLERİ',
+                  style: TextStyle(
+                    fontSize: context.h3Size,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('Tümünü Gör →'),
+                ),
+              ],
+            ),
+            SizedBox(height: context.spacingLarge),
+            SizedBox(
+              height: 200,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 3,
+                itemBuilder: (final context, final index) =>
+                    _buildReviewCard(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviewCard(final BuildContext context) {
+    return Container(
+      width: context.responsive(mobile: 280, desktop: 350),
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              const Text(
-                'DETAYLAR',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.textPrimary,
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Center(
+                  child: Text(
+                    'AY',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(height: context.spacingLarge),
-              Container(
-                width: context.screenWidth,
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Expanded(
-                    child: Text(
-                      product.desc,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Ayşe Y.',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Row(
+                      children: List.generate(
+                        5,
+                        (final i) => const Icon(
+                          Icons.star,
+                          color: AppColors.accent,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Ürün çok kaliteli ve tam beklemde gibi geldi. Montajı da çok kolay oldu. Teşekkürler!',
+            style: TextStyle(
+              fontSize: context.captionSize,
+              height: 1.6,
+              color: AppColors.textPrimary.withOpacity(0.8),
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const Spacer(),
+          Text(
+            '2 gün önce',
+            style: TextStyle(
+              fontSize: context.captionSize,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // SIMILAR PRODUCTS
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildSimilarProducts(
+      final BuildContext context, final List<Product> allProducts) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'BENZER ÜRÜNLER',
+                  style: TextStyle(
+                    fontSize: context.h3Size,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Text('Tümünü Gör'),
+                  label: const Icon(Icons.arrow_forward, size: 16),
+                ),
+              ],
+            ),
+            SizedBox(height: context.spacingLarge),
+            SizedBox(
+              height: 300,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5,
+                separatorBuilder: (final _, final __) =>
+                    const SizedBox(width: 16),
+                itemBuilder: (final context, final index) =>
+                    _buildSimilarProductCard(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimilarProductCard(final BuildContext context) {
+    return Container(
+      width: context.responsive(mobile: 180, desktop: 220),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 180,
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.image_outlined,
+                size: 60,
+                color: AppColors.textSecondary.withOpacity(0.3),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Benzer Ürün',
+                  style: TextStyle(
+                    fontSize: context.bodySize,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '₺1,299',
+                  style: TextStyle(
+                    fontSize: context.bodySize,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // MOBILE BOTTOM BAR
+  // ════════════════════════════════════════════════════════════════
+
+  Widget _buildMobileBottomBar(
+      final BuildContext context, final Product product) {
+    return Container(
+      padding: EdgeInsets.all(context.spacing),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.textPrimary.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Toplam Fiyat',
+                    style: TextStyle(
+                      fontSize: context.captionSize,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Text(
+                    '₺${product.price.toStringAsFixed(0)}',
+                    style: TextStyle(
+                      fontSize: context.h4Size,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Container(
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(16),
+                    child: const Center(
+                      child: Text(
+                        'SATIN AL',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: 1,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter _buildSimilarProducts(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1600),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'BENZER ÜRÜNLER',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Row(
-                      children: [
-                        Text(
-                          'TÜMÜNÜ GÖR',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward_rounded,
-                            size: 16, color: AppColors.primary),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: context.spacingLarge),
-              Container(
-                height: 400,
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Benzer ürünler burada gösterilecek',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFloatingActions(
-      final BuildContext context, final Product product) {
-    if (MediaQuery.sizeOf(context).width < 768) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 32, right: 32),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton.extended(
-            onPressed: () {},
-            backgroundColor: AppColors.surface,
-            foregroundColor: AppColors.textPrimary,
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: const BorderSide(color: AppColors.border),
             ),
-            icon: const Icon(Icons.share_rounded),
-            label: const Text('PAYLAŞ'),
-          ),
-          const SizedBox(width: 16),
-          FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            elevation: 4,
-            child: const Icon(Icons.message_rounded),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

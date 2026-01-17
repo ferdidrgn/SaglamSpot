@@ -153,7 +153,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
 
           return CustomTransitionPage(
             key: state.pageKey,
-            child: WebProductDetailPage(productId: productId),
+            child: ProductDetailPage(productId: productId),
             transitionsBuilder: shimmerSlideTransition,
           );
         },

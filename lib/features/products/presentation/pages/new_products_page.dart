@@ -1,16 +1,12 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../core/util/responsive_utils.dart';
-import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
-import '../../../../core/widgets/shimmer_components.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-
-import '../../../products/presentation/providers/product_provider.dart';
+import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
 class NewProductsPage extends ConsumerStatefulWidget {
