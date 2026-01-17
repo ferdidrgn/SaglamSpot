@@ -32,7 +32,9 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   ];
 
   void _onItemTapped(final int index) {
-    if (MediaQuery.sizeOf(context).width < 1024)
+    if (MediaQuery
+        .sizeOf(context)
+        .width < 1024)
       _scaffoldKey.currentState?.closeDrawer();
 
     widget.navigationShell.goBranch(
@@ -118,23 +120,38 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
     return AppBar(
       backgroundColor: AppColors.background,
       elevation: 1,
-      title: InkWell(onTap: () => _onItemTapped(0), child: _buildLogo()),
-      actions: [
-        ..._navItems.map((final item) => _DesktopNavItem(
-              item: item,
-              isActive: currentIndex == item.index,
-              onTap: () => _onItemTapped(item.index),
-            )),
-        const SizedBox(width: 24),
-        _buildSearchButton(false),
-        const SizedBox(width: 24),
-      ],
+      title: SizedBox(
+        width: double.infinity,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Logo - En solda
+            InkWell(onTap: () => _onItemTapped(0), child: _buildLogo()),
+
+            // Nav items ve arama - En sağda
+            Row(
+              children: [
+                ..._navItems.map((final item) =>
+                    _DesktopNavItem(
+                      item: item,
+                      isActive: currentIndex == item.index,
+                      onTap: () => _onItemTapped(item.index),
+                    )),
+                const SizedBox(width: 24),
+                _buildSearchButton(false),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   @override
   Widget build(final BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
+    final width = MediaQuery
+        .sizeOf(context)
+        .width;
     final isMobile = width < 1024;
     final currentIndex = widget.navigationShell.currentIndex;
 
@@ -143,10 +160,10 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       shortcuts: <ShortcutActivator, Intent>{
         // Windows/Linux için Ctrl + K
         LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
-            const SearchIntent(),
+        const SearchIntent(),
         // macOS için Cmd + K
         LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
-            const SearchIntent(),
+        const SearchIntent(),
       },
       child: Actions(
         actions: <Type, Action<Intent>>{
@@ -164,11 +181,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
                 : _buildDesktopAppBar(currentIndex),
             drawer: isMobile
                 ? _MobileDrawer(
-                    navItems: _navItems,
-                    currentIndex: currentIndex,
-                    onItemTapped: _onItemTapped,
-                    logo: _buildLogo(),
-                  )
+              navItems: _navItems,
+              currentIndex: currentIndex,
+              onItemTapped: _onItemTapped,
+              logo: _buildLogo(),
+            )
                 : null,
             body: widget.navigationShell,
           ),
@@ -196,7 +213,7 @@ class _DesktopNavItem extends StatelessWidget {
         decoration: BoxDecoration(
           border: isActive
               ? const Border(
-                  bottom: BorderSide(color: AppColors.primary, width: 3))
+              bottom: BorderSide(color: AppColors.primary, width: 3))
               : null,
         ),
         child: Row(
@@ -225,11 +242,10 @@ class _MobileDrawer extends StatelessWidget {
   final Function(int) onItemTapped;
   final Widget logo;
 
-  const _MobileDrawer(
-      {required this.navItems,
-      required this.currentIndex,
-      required this.onItemTapped,
-      required this.logo});
+  const _MobileDrawer({required this.navItems,
+    required this.currentIndex,
+    required this.onItemTapped,
+    required this.logo});
 
   @override
   Widget build(final BuildContext context) {
@@ -248,18 +264,19 @@ class _MobileDrawer extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(12),
               children: navItems
-                  .map((final item) => ListTile(
-                        leading: Icon(item.icon,
-                            color: currentIndex == item.index
-                                ? AppColors.primary
-                                : null),
-                        title: Text(item.label),
-                        selected: currentIndex == item.index,
-                        selectedTileColor: AppColors.primary.withOpacity(0.1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        onTap: () => onItemTapped(item.index),
-                      ))
+                  .map((final item) =>
+                  ListTile(
+                    leading: Icon(item.icon,
+                        color: currentIndex == item.index
+                            ? AppColors.primary
+                            : null),
+                    title: Text(item.label),
+                    selected: currentIndex == item.index,
+                    selectedTileColor: AppColors.primary.withOpacity(0.1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    onTap: () => onItemTapped(item.index),
+                  ))
                   .toList(),
             ),
           ),
