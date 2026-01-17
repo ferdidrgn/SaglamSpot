@@ -967,7 +967,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       {
         'icon': Icons.local_shipping_outlined,
         'label': 'Teslimat',
-        'value': '2-5 Gün',
+        'value': '1-2 Gün',
         'color': AppColors.info,
       },
       {
@@ -1056,16 +1056,13 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
         child: Row(
           children: [
             Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Center(
-                child: Icon(Icons.store, color: Colors.white, size: 28),
-              ),
-            ),
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Image.asset('assets/images/saglam_spot_logo.png')),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -1176,17 +1173,17 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
             _buildInfoTile(
               icon: Icons.local_shipping_outlined,
               title: 'Ücretsiz Kargo',
-              subtitle: '500₺ ve üzeri alışverişlerde',
+              subtitle: 'Maalesef Yakın Çevrelerimize',
             ),
             _buildInfoTile(
               icon: Icons.access_time,
               title: 'Hızlı Teslimat',
-              subtitle: '2-5 iş günü içinde',
+              subtitle: '1-2 iş günü içinde',
             ),
             _buildInfoTile(
               icon: Icons.shield_outlined,
-              title: 'Güvenli Paketleme',
-              subtitle: 'Ürünleriniz özenle paketlenir',
+              title: '',
+              subtitle: '',
             ),
           ],
         ),
@@ -1284,8 +1281,8 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                 children: [
                   _buildFeatureCard(
                     icon: Icons.verified_user_outlined,
-                    title: 'Garantili',
-                    subtitle: '2 Yıl',
+                    title: 'Garantimiz Yoktur',
+                    subtitle: 'X',
                   ),
                   _buildFeatureCard(
                     icon: Icons.settings_outlined,
@@ -1294,13 +1291,13 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                   _buildFeatureCard(
                     icon: Icons.swap_horiz_outlined,
-                    title: 'İade',
-                    subtitle: '14 Gün',
+                    title: 'İade Yoktur',
+                    subtitle: 'X',
                   ),
                   _buildFeatureCard(
                     icon: Icons.support_agent_outlined,
                     title: 'Destek',
-                    subtitle: '7/24',
+                    subtitle: '16/6',
                   ),
                 ],
               ),
@@ -1532,8 +1529,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ProductDetailPage(productId: product.id),
-            ),
+                builder: (final _) => ProductDetailPage(productId: product.id)),
           );
         },
         child: Container(
@@ -1549,11 +1545,10 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
               // IMAGE
               Container(
                 height: 180,
-                decoration: BoxDecoration(
-                  color: AppColors.secondary,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                ),
+                decoration: const BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(16))),
                 child: product.imagesUrl.isNotEmpty
                     ? ClipRRect(
                         borderRadius: const BorderRadius.vertical(
