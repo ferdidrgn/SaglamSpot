@@ -1511,11 +1511,11 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                 height: 300,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 5,
+                  itemCount: allProducts.length,
                   separatorBuilder: (final _, final __) =>
                       const SizedBox(width: 16),
                   itemBuilder: (final context, final index) =>
-                      _buildSimilarProductCard(context),
+                      _buildSimilarProductCard(context, allProducts[index]),
                 ),
               ),
             ],
@@ -1523,58 +1523,79 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
       );
 
-  Widget _buildSimilarProductCard(final BuildContext context) => Container(
-        width: context.responsive(mobile: 180, desktop: 220),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 180,
-              decoration: const BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+  Widget _buildSimilarProductCard(
+    final BuildContext context,
+    final Product product,
+  ) =>
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProductDetailPage(productId: product.id),
+            ),
+          );
+        },
+        child: Container(
+          width: context.responsive(mobile: 180, desktop: 220),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // IMAGE
+              Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  color: AppColors.secondary,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: product.imagesUrl.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16)),
+                        child: Image.network(
+                          product.imagesUrl.first,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      )
+                    : const Icon(Icons.image_not_supported),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.image_outlined,
-                  size: 60,
-                  color: AppColors.textSecondary.withOpacity(0.3),
+
+              // INFO
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: context.bodySize,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '₺${product.price.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        fontSize: context.bodySize,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Benzer Ürün',
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '₺1,299',
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
