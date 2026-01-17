@@ -542,11 +542,10 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
       child: InkWell(
         onTap: () {
           setState(() => _showFilters = !_showFilters);
-          if (_showFilters) {
+          if (_showFilters)
             _filterAnimController.forward();
-          } else {
+          else
             _filterAnimController.reverse();
-          }
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(
