@@ -24,20 +24,20 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   String _selectedCategory = 'Tümü';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
 
     return Scaffold(
       backgroundColor: context.scaffoldBackgroundColor,
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
-        error: (e, _) => Center(child: Text('Hata: $e')),
-        data: (_) {
+        error: (final e, final _) => Center(child: Text('Hata: $e')),
+        data: (final _) {
           final products = ref.watch(newDealsProductsProvider);
           final filtered = products
-              .where((p) =>
-          _selectedCategory == 'Tümü' ||
-              p.category == _selectedCategory)
+              .where((final p) =>
+                  _selectedCategory == 'Tümü' ||
+                  p.category == _selectedCategory)
               .toList();
 
           return Stack(
@@ -48,7 +48,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   _buildHeader(context),
-                  _buildStatsBar(context),
                   _buildCategoryBar(context),
                   _buildAd(context, 90),
                   _buildProductGrid(context, filtered),
@@ -65,7 +64,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   // ───────────────── HEADER ─────────────────
 
-  SliverAppBar _buildHeader(BuildContext context) {
+  SliverAppBar _buildHeader(final BuildContext context) {
     return SliverAppBar(
       pinned: true,
       expandedHeight: context.responsive(
@@ -138,37 +137,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  // ───────────────── STATS ─────────────────
-
-  SliverToBoxAdapter _buildStatsBar(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
-        child: Container(
-          padding: context.cardPadding,
-          decoration: BoxDecoration(
-            color: context.primaryColor.withOpacity(0.04),
-            borderRadius: BorderRadius.circular(context.borderRadius()),
-            border: Border.all(
-              color: context.primaryColor.withOpacity(0.08),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              _StatItem(title: '100%', subtitle: 'Orijinal'),
-              _StatItem(title: '24h', subtitle: 'Hızlı Kargo'),
-              _StatItem(title: 'Premium', subtitle: 'Tasarım'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   // ───────────────── CATEGORY BAR ─────────────────
 
-  SliverToBoxAdapter _buildCategoryBar(BuildContext context) {
+  SliverToBoxAdapter _buildCategoryBar(final BuildContext context) {
     final categories = ['Tümü', 'Koltuk', 'Masa', 'Dekor', 'Ofis', 'Yatak'];
 
     return SliverToBoxAdapter(
@@ -180,8 +151,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           ),
           scrollDirection: Axis.horizontal,
           itemCount: categories.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 12),
-          itemBuilder: (context, index) {
+          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
+          itemBuilder: (final context, final index) {
             final active = _selectedCategory == categories[index];
 
             return OutlinedButton(
@@ -189,12 +160,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   setState(() => _selectedCategory = categories[index]),
               style: OutlinedButton.styleFrom(
                 backgroundColor:
-                active ? context.primaryColor : Colors.transparent,
+                    active ? context.primaryColor : Colors.transparent,
                 side: BorderSide(
                   color: context.primaryColor.withOpacity(0.3),
                 ),
-                padding:
-                EdgeInsets.symmetric(horizontal: context.spacingLarge),
+                padding: EdgeInsets.symmetric(horizontal: context.spacingLarge),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero,
                 ),
@@ -216,7 +186,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ───────────────── PRODUCT GRID (MOZAİK) ─────────────────
 
   SliverPadding _buildProductGrid(
-      BuildContext context, List<Product> products) {
+      final BuildContext context, final List<Product> products) {
     return SliverPadding(
       padding: context.pagePadding,
       sliver: SliverGrid(
@@ -227,7 +197,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           childAspectRatio: context.cardAspectRatio(),
         ),
         delegate: SliverChildBuilderDelegate(
-              (context, index) =>
+          (final context, final index) =>
               CustomProductCard(product: products[index]),
           childCount: products.length,
         ),
@@ -237,7 +207,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
   // ───────────────── ADS ─────────────────
 
-  SliverToBoxAdapter _buildAd(BuildContext context, double height) {
+  SliverToBoxAdapter _buildAd(final BuildContext context, final double height) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.sectionPadding,
@@ -251,10 +221,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
 class _BackgroundLayer extends StatelessWidget {
   final BuildContext context;
+
   const _BackgroundLayer(this.context);
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(final BuildContext _) {
     return Positioned.fill(
       child: CustomPaint(
         painter: _GraffitiPainter(
@@ -275,7 +246,7 @@ class _StatItem extends StatelessWidget {
   const _StatItem({required this.title, required this.subtitle});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Column(
       children: [
         Text(
@@ -311,7 +282,7 @@ class _GraffitiPainter extends CustomPainter {
   });
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(final Canvas canvas, final Size size) {
     final linePaint = Paint()
       ..color = lineColor
       ..strokeWidth = 0.5;
@@ -336,7 +307,7 @@ class _GraffitiPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_) => false;
+  bool shouldRepaint(final _) => false;
 }
 
 class _HeaderPatternPainter extends CustomPainter {
@@ -345,7 +316,7 @@ class _HeaderPatternPainter extends CustomPainter {
   _HeaderPatternPainter({required this.color});
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(final Canvas canvas, final Size size) {
     final paint = Paint()
       ..color = color
       ..strokeWidth = 2;
@@ -360,5 +331,5 @@ class _HeaderPatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_) => false;
+  bool shouldRepaint(final _) => false;
 }
