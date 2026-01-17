@@ -1,9 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
@@ -17,10 +20,10 @@ class SpotProductsPage extends ConsumerStatefulWidget {
       _EnhancedSpotProductsPageState();
 }
 
-class _EnhancedSpotProductsPageState
-    extends ConsumerState<SpotProductsPage>
+class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
+
   String _selectedCategory = 'Tümü';
   String _selectedCondition = 'Tümü';
   String _selectedSort = 'En Yeni';
@@ -36,15 +39,6 @@ class _EnhancedSpotProductsPageState
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    // Auto-hide filters on scroll
-    if (_scrollController.offset > 100 && _showFilters) {
-      setState(() => _showFilters = false);
-      _filterAnimController.reverse();
-    }
   }
 
   @override
@@ -75,7 +69,6 @@ class _EnhancedSpotProductsPageState
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   _buildDynamicHeader(context, products.length),
-                  _buildDealsBanner(context),
                   _buildStatsAndFilters(context, products),
                   _buildCategoryFilter(context),
                   SliverToBoxAdapter(
@@ -88,7 +81,7 @@ class _EnhancedSpotProductsPageState
                       child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),
-              if (context.isDesktop) _buildFloatingActions(context),
+              ScrollUpButton(scrollController: _scrollController),
               if (_showFilters) _buildFilterPanel(context),
             ],
           );
@@ -248,7 +241,7 @@ class _EnhancedSpotProductsPageState
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '%70',
+                                  '%30',
                                   style: TextStyle(
                                     fontSize: 36,
                                     fontWeight: FontWeight.w900,
@@ -318,7 +311,8 @@ class _EnhancedSpotProductsPageState
   Widget _buildBreadcrumb(final BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.home_outlined, size: 14, color: AppColors.textSecondary),
+        const Icon(Icons.home_outlined,
+            size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           'Ana Sayfa',
@@ -328,7 +322,8 @@ class _EnhancedSpotProductsPageState
           ),
         ),
         const SizedBox(width: 8),
-        const Icon(Icons.chevron_right, size: 14, color: AppColors.textSecondary),
+        const Icon(Icons.chevron_right,
+            size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           'Spot Ürünler',
@@ -339,129 +334,6 @@ class _EnhancedSpotProductsPageState
           ),
         ),
       ],
-    );
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // DEALS BANNER (Limited Time Offers)
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildDealsBanner(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: context.sectionPadding.copyWith(top: 0, bottom: 0),
-        padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 32)),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.error.withOpacity(0.9),
-              AppColors.error,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.error.withOpacity(0.3),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.access_time, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        'SINIRLΙ SÜRE!',
-                        style: TextStyle(
-                          fontSize: context.captionSize,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: context.spacing),
-                  Text(
-                    'Bu Hafta Özel İndirimler',
-                    style: TextStyle(
-                      fontSize: context.responsive(mobile: 20, desktop: 28),
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: context.spacing / 2),
-                  Text(
-                    'Seçili ürünlerde %70\'e varan indirim',
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (context.isDesktop) ...[
-              const SizedBox(width: 32),
-              _buildCountdownTimer(context),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCountdownTimer(final BuildContext context) {
-    return Row(
-      children: [
-        _buildTimerBox('23', 'SAAT'),
-        const SizedBox(width: 8),
-        _buildTimerBox('45', 'DAKİKA'),
-        const SizedBox(width: 8),
-        _buildTimerBox('12', 'SANİYE'),
-      ],
-    );
-  }
-
-  Widget _buildTimerBox(final String value, final String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Colors.white70,
-              letterSpacing: 1,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -511,16 +383,20 @@ class _EnhancedSpotProductsPageState
                 Icons.inventory_2_outlined, AppColors.error)),
         SizedBox(width: context.spacing),
         Expanded(
-            child: _buildStatCard(context, '%70', 'İndirim',
+            child: _buildStatCard(context, '%30', 'İndirim',
                 Icons.local_offer_outlined, AppColors.success)),
         SizedBox(width: context.spacing),
         Expanded(
-            child: _buildStatCard(context, '24/7', 'Destek',
+            child: _buildStatCard(context, '16/6', 'Destek',
                 Icons.support_agent_outlined, AppColors.info)),
         SizedBox(width: context.spacing),
         Expanded(
-            child: _buildStatCard(context, 'Ücretsiz', 'Kargo',
-                Icons.local_shipping_outlined, AppColors.accent)),
+            child: _buildStatCard(
+                context,
+                'Ücretsiz',
+                'Maalesef Yakın Çevrelerimize, Kargo',
+                Icons.local_shipping_outlined,
+                AppColors.accent)),
       ],
     );
   }
@@ -536,7 +412,7 @@ class _EnhancedSpotProductsPageState
                     'Spot Ürün', Icons.inventory_2_outlined, AppColors.error)),
             SizedBox(width: context.spacing),
             Expanded(
-                child: _buildStatCard(context, '%70', 'İndirim',
+                child: _buildStatCard(context, '%30', 'İndirim',
                     Icons.local_offer_outlined, AppColors.success)),
           ],
         ),
@@ -544,7 +420,7 @@ class _EnhancedSpotProductsPageState
         Row(
           children: [
             Expanded(
-                child: _buildStatCard(context, '24/7', 'Destek',
+                child: _buildStatCard(context, '16/6', 'Destek',
                     Icons.support_agent_outlined, AppColors.info)),
             SizedBox(width: context.spacing),
             Expanded(
@@ -557,77 +433,110 @@ class _EnhancedSpotProductsPageState
   }
 
   Widget _buildStatCard(final BuildContext context, final String value,
-      final String label, final IconData icon, final Color color) {
-    return Container(
-      padding: EdgeInsets.all(context.responsive(mobile: 16, desktop: 24)),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
+          final String label, final IconData icon, final Color color) =>
+      Container(
+        padding: EdgeInsets.all(context.responsive(mobile: 16, desktop: 24)),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 1.5),
+          boxShadow: [
+            BoxShadow(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
             ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          SizedBox(height: context.spacing),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: context.responsive(mobile: 20, desktop: 28),
-              fontWeight: FontWeight.w900,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: context.captionSize,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar(final BuildContext context) {
-    return Container(
-      height: 56,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Fırsat ürünlerinde ara...',
-          hintStyle: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: context.bodySize,
-          ),
-          prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          ],
         ),
-      ),
-    );
-  }
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            SizedBox(height: context.spacing),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: context.responsive(mobile: 20, desktop: 28),
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: context.captionSize,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildSearchBar(final BuildContext context) => GestureDetector(
+        onTap: () => context.go('/search'),
+        child: Container(
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border, width: 1.5),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.search, color: AppColors.textSecondary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: context.bodySize,
+                      color: AppColors.textSecondary,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: 'Detaylı ürün araması için ',
+                      ),
+                      const TextSpan(
+                        text: 'Ctrl + K',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.accentDark,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' yapın ya da ',
+                      ),
+                      TextSpan(
+                        text: 'BURADAKİ',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.accentDark,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => context.go('/search'),
+                      ),
+                      const TextSpan(
+                        text: ' yazıya tıklayın.',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 
   Widget _buildFilterButton(final BuildContext context) {
     return Material(
@@ -1344,75 +1253,6 @@ class _EnhancedSpotProductsPageState
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // HELPER WIDGETS
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildFloatingActions(final BuildContext context) {
-    return Positioned(
-      right: 32,
-      bottom: 32,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildFloatingButton(
-            icon: Icons.filter_list,
-            color: AppColors.error,
-            onTap: () {
-              setState(() => _showFilters = !_showFilters);
-              if (_showFilters) {
-                _filterAnimController.forward();
-              } else {
-                _filterAnimController.reverse();
-              }
-            },
-          ),
-          const SizedBox(height: 12),
-          _buildFloatingButton(
-            icon: Icons.arrow_upward,
-            onTap: () {
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeOut,
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFloatingButton({
-    required final IconData icon,
-    final Color? color,
-    required final VoidCallback onTap,
-  }) {
-    return Material(
-      color: color ?? AppColors.surface,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 4,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: color != null ? Colors.transparent : AppColors.border,
-            ),
-          ),
-          child: Icon(
-            icon,
-            color: color != null ? Colors.white : AppColors.textPrimary,
-          ),
-        ),
       ),
     );
   }

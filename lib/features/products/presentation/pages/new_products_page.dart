@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
@@ -74,7 +75,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                       child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),
-              if (context.isDesktop) _buildFloatingQuickActions(context),
+              ScrollUpButton(scrollController: _scrollController),
             ],
           );
         },
@@ -668,58 +669,15 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
       CustomProductCard(product: product);
 
   // ════════════════════════════════════════════════════════════════
-  // FLOATING ACTIONS
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildFloatingQuickActions(final BuildContext context) => Positioned(
-        right: 32,
-        bottom: 32,
-        child: _buildFloatingActionButton(
-          icon: Icons.arrow_upward,
-          onTap: () {
-            _scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeOut,
-            );
-          },
-        ),
-      );
-
-  Widget _buildFloatingActionButton({
-    required final IconData icon,
-    required final VoidCallback onTap,
-  }) =>
-      Material(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        elevation: 4,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Icon(icon, color: AppColors.textPrimary),
-          ),
-        ),
-      );
-
-  // ════════════════════════════════════════════════════════════════
   // HELPER METHODS
   // ════════════════════════════════════════════════════════════════
 
   List<Product> _filterProducts(final List<Product> products) {
     var filtered = products;
 
-    if (_selectedCategory != 'Tümü') {
+    if (_selectedCategory != 'Tümü')
       filtered =
           filtered.where((final p) => p.category == _selectedCategory).toList();
-    }
 
     // Sort logic
     switch (_selectedSort) {
