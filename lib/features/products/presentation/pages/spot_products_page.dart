@@ -36,9 +36,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
   void initState() {
     super.initState();
     _filterAnimController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
+        vsync: this, duration: const Duration(milliseconds: 300));
   }
 
   @override
