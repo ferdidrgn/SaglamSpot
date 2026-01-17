@@ -1,17 +1,15 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
-import 'package:saglamspot/core/widgets/shimmer_components.dart'; // FullPageShimmer'ın olduğu yer
-import 'package:saglamspot/features/products/presentation/providers/product_provider.dart'; // productsProvider ve availableProductsProvider'ın olduğu yer
+import 'package:saglamspot/core/widgets/shimmer_components.dart';
+import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
-import '../widgets/furniture_tips_section.dart'; // Kendi ürün kartı bileşenin
+import '../widgets/furniture_tips_section.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
