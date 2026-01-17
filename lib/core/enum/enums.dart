@@ -4,7 +4,6 @@ enum ProductCategory {
   table,
   bed,
   wardrobe,
-  tvUnit,
-  desk,
+  white,
   other,
 }
