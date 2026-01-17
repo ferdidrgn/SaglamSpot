@@ -14,12 +14,15 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
+    final appTheme = ref.watch(appThemeProvider);
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Sağlam Spotçu',
-      theme: AppTheme().lightTheme,
+      theme: appTheme.lightTheme,
+      darkTheme: appTheme.darkTheme,
+      themeMode: ThemeMode.light,
       routerConfig: router,
     );
   }
