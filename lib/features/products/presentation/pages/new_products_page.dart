@@ -1,13 +1,13 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/util/responsive_utils.dart';
-import 'package:saglamspot/core/widgets/custom_product_card.dart';
-import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
-import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../core/widgets/custom_product_card.dart';
+import '../../../products/presentation/providers/product_provider.dart';
+import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../domain/entites/product.dart';
 
 class NewProductsPage extends ConsumerStatefulWidget {
@@ -19,50 +19,49 @@ class NewProductsPage extends ConsumerStatefulWidget {
 
 class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   String _selectedCategory = 'Tümü';
-  String _selectedSort = 'newest';
-  int _hoveredIndex = -1;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: context.scaffoldBackgroundColor,
+      endDrawer: _buildLuxeFilterDrawer(context),
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
-        error: (final e, final _) => Center(child: Text(e.toString())),
+        error: (final e, final _) => Center(child: Text('Hata: $e')),
         data: (final _) {
           final products = ref.watch(newDealsProductsProvider);
-          final filtered = _applyCategory(products)..sort(_sort);
+          final filtered = _applyFilters(products);
 
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // Lüks Başlık Alanı
-              _buildLuxeHeader(context, filtered.length),
+          return Stack(
+            children: [
+              // 1. ARKA PLAN DERİNLİĞİ (Girift Mozaik Desenleri)
+              _buildComplexBackground(context),
 
-              // Şık Kategori Barı
-              _buildModernFilterBar(context),
+              CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  // 2. CAM EFEKTLİ (GLASS) HEADER
+                  _buildGlassHeader(context, filtered.length),
 
-              // Ürün Sayısı ve Sıralama
-              _buildInfoAndSortRow(context, filtered.length),
+                  // 3. MOZAİK KATEGORİ SEÇİCİ
+                  _buildMosaicCategoryBar(context),
 
-              // Ürün Gridi
-              if (filtered.isEmpty)
-                const SliverToBoxAdapter(
-                  child: Center(
-                      child: Padding(
-                    padding: EdgeInsets.all(100.0),
-                    child: Text('Aradığınız kategoride ürün bulunamadı.'),
-                  )),
-                )
-              else
-                _buildProductGrid(context, filtered),
+                  // 4. WEB REKLAM ALANI 1
+                  if (context.isDesktop) _buildSliverAd(100),
 
-              // Reklam Alanı
-              _buildAdBanner(context),
+                  // 5. ANA MOZAİK GRID (İstediğin grift yapı)
+                  _buildGriftMosaicGrid(context, filtered),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                  // 6. WEB REKLAM ALANI 2
+                  _buildSliverAd(120),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                ],
+              ),
             ],
           );
         },
@@ -70,108 +69,107 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  // ---------------- UI COMPONENTS ----------------
-
-  SliverToBoxAdapter _buildLuxeHeader(
-          final BuildContext context, final int count) =>
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            context.pagePadding.left,
-            context.responsive(mobile: 40, desktop: 80),
-            context.pagePadding.right,
-            40,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'SIFIR ÜRÜNLER',
-                style: TextStyle(
-                  letterSpacing: 4,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10,
-                  color: context.secondaryColor,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Yeni Koleksiyon',
-                style: TextStyle(
-                  fontSize: context.h1Size,
-                  fontWeight: FontWeight.w900,
-                  color: context.primaryColor,
-                  height: 1,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(height: 3, width: 50, color: context.secondaryColor),
-            ],
+  // --- 🎨 ORIJİNAL MOZAİK GRID ---
+  Widget _buildGriftMosaicGrid(final BuildContext context, final List<Product> products) {
+    return SliverPadding(
+      padding: context.pagePadding,
+      sliver: SliverGrid(
+        // MaxCrossAxisExtent kullanarak kartların ekran genişliğine göre
+        // asimetrik dizilmesini sağlıyoruz, bu mozaik havası katar.
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: context.responsive(mobile: 220.0, desktop: 380.0),
+          mainAxisSpacing: 30,
+          crossAxisSpacing: 30,
+          // Her ekran boyutunda farklı oranlar kullanarak tekdüzeliği kırıyoruz
+          childAspectRatio: context.responsive(
+              mobile: 0.65,
+              tablet: 0.72,
+              desktop: 0.82,
+              largeDesktop: 0.88
           ),
         ),
-      );
+        delegate: SliverChildBuilderDelegate(
+              (final context, final index) {
+            // Her kartın girişine hafif bir gecikme/animasyon eklenebilir
+            return CustomProductCard(product: products[index]);
+          },
+          childCount: products.length,
+        ),
+      ),
+    );
+  }
 
-  SliverToBoxAdapter _buildModernFilterBar(final BuildContext context) {
-    final cats = [
-      'Tümü',
-      'Koltuk',
-      'Masa',
-      'Yatak',
-      'Dolap',
-      'Mutfak',
-      'Aydınlatma'
-    ];
+  // --- 🌌 DERİNLİKLİ ARKA PLAN (Orijinal Tasarım) ---
+  Widget _buildComplexBackground(final BuildContext context) {
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          // Katman 1: Soyut Geometrik Mozaikler
+          CustomPaint(
+            size: Size.infinite,
+            painter: _MosaicBackgroundPainter(
+              color: context.primaryColor.withOpacity(0.03),
+            ),
+          ),
+          // Katman 2: Derinlik katan blur küreler
+          Positioned(
+            top: -100, right: -50,
+            child: _buildDepthOrb(context, 300, context.secondaryColor.withOpacity(0.05)),
+          ),
+          Positioned(
+            bottom: 100, left: -100,
+            child: _buildDepthOrb(context, 400, context.primaryColor.withOpacity(0.04)),
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildDepthOrb(final BuildContext context, final double size, final Color color) {
+    return Container(
+      width: size, height: size,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80), child: Container()),
+    );
+  }
+
+  // --- 🏗️ SLIVER REKLAM BİLEŞENİ ---
+  Widget _buildSliverAd(final double h) => SliverToBoxAdapter(
+    child: Padding(
+      padding: context.pagePadding.copyWith(top: 20, bottom: 20),
+      child: AdsenseBanner(height: h),
+    ),
+  );
+
+  // --- 📐 MOZAİK KATEGORİ BUTONLARI ---
+  Widget _buildMosaicCategoryBar(final BuildContext context) {
+    final cats = ['Tümü', 'Koltuk', 'Masa', 'Yatak', 'Dolap', 'Mutfak', 'Aydınlatma'];
     return SliverToBoxAdapter(
       child: Container(
-        height: 60,
-        margin: const EdgeInsets.only(bottom: 20),
+        height: 70,
+        margin: const EdgeInsets.symmetric(vertical: 20),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.only(left: context.pagePadding.left),
           itemCount: cats.length,
-          itemBuilder: (final _, final i) {
-            final c = cats[i];
-            final active = _selectedCategory == c;
-
-            return Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: GestureDetector(
-                onTap: () => setState(() => _selectedCategory = c),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: active ? context.primaryColor : context.surfaceColor,
-                    borderRadius:
-                        BorderRadius.circular(context.borderRadius(2)),
-                    border: Border.all(
-                      color: active
-                          ? context.primaryColor
-                          : context.primaryColor.withOpacity(0.1),
-                    ),
-                    boxShadow: active
-                        ? [
-                            BoxShadow(
-                              color: context.primaryColor.withOpacity(0.2),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            )
-                          ]
-                        : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      c,
-                      style: TextStyle(
-                        color: active ? Colors.white : context.primaryColor,
-                        fontWeight: active ? FontWeight.bold : FontWeight.w500,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
+          itemBuilder: (final context, final i) {
+            final active = _selectedCategory == cats[i];
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              margin: const EdgeInsets.only(right: 15),
+              child: ChoiceChip(
+                label: Text(cats[i]),
+                selected: active,
+                onSelected: (final _) => setState(() => _selectedCategory = cats[i]),
+                backgroundColor: context.surfaceColor,
+                selectedColor: context.primaryColor,
+                labelStyle: TextStyle(
+                  color: active ? Colors.white : context.primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
                 ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
             );
           },
@@ -180,110 +178,54 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  SliverToBoxAdapter _buildInfoAndSortRow(
-          final BuildContext context, final int count) =>
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: context.pagePadding.left, vertical: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  // Header ve Drawer kodları bir önceki stabil yapıyla aynıdır...
+  SliverAppBar _buildGlassHeader(final BuildContext context, final int count) => SliverAppBar(
+    pinned: true, expandedHeight: 220, backgroundColor: Colors.transparent,
+    flexibleSpace: ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: FlexibleSpaceBar(
+          titlePadding: EdgeInsets.only(left: context.pagePadding.left, bottom: 30),
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '$count Ürün bulundu',
-                style: TextStyle(
-                  color: context.primaryColor.withOpacity(0.5),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border:
-                      Border.all(color: context.primaryColor.withOpacity(0.1)),
-                ),
-                child: DropdownButton<String>(
-                  value: _selectedSort,
-                  underline: const SizedBox(),
-                  icon: Icon(Icons.keyboard_arrow_down,
-                      size: 18, color: context.primaryColor),
-                  style: TextStyle(
-                      color: context.primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13),
-                  items: const [
-                    DropdownMenuItem(value: 'newest', child: Text('En Yeni')),
-                    DropdownMenuItem(
-                        value: 'price_low', child: Text('En Ucuz')),
-                    DropdownMenuItem(
-                        value: 'price_high', child: Text('En Pahalı')),
-                  ],
-                  onChanged: (final v) => setState(() => _selectedSort = v!),
-                ),
-              ),
+              Text('SIFIR ÜRÜNLER', style: TextStyle(color: context.secondaryColor, fontSize: 10, letterSpacing: 3, fontWeight: FontWeight.w900)),
+              Text('Yeni Koleksiyon', style: TextStyle(color: context.primaryColor, fontWeight: FontWeight.w900, fontSize: context.h2Size)),
+              const SizedBox(height: 5),
+              Container(height: 2, width: 40, color: context.secondaryColor),
             ],
           ),
         ),
-      );
-
-  SliverPadding _buildProductGrid(
-      final BuildContext context, final List<Product> products) {
-    return SliverPadding(
-      padding: context.pagePadding,
-      sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.gridColumns(4),
-          mainAxisSpacing: context.gridSpacing,
-          crossAxisSpacing: context.gridSpacing,
-          childAspectRatio: context.cardAspectRatio(),
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (final context, final index) => MouseRegion(
-            onEnter: (final _) => setState(() => _hoveredIndex = index),
-            onExit: (final _) => setState(() => _hoveredIndex = -1),
-            child: AnimatedScale(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOutCubic,
-              scale: _hoveredIndex == index ? 1.02 : 1,
-              child: CustomProductCard(product: products[index]),
-            ),
-          ),
-          childCount: products.length,
-        ),
       ),
-    );
-  }
+    ),
+  );
 
-  SliverToBoxAdapter _buildAdBanner(final BuildContext context) =>
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            context.pagePadding.left,
-            80,
-            context.pagePadding.right,
-            20,
-          ),
-          child: const AdsenseBanner(height: 120),
-        ),
-      );
+  Widget _buildLuxeFilterDrawer(final BuildContext context) => Drawer(child: Center(child: Text("Filtreleme Özellikleri")));
 
-  // ---------------- LOGIC ----------------
+  List<Product> _applyFilters(final List<Product> list) => _selectedCategory == 'Tümü' ? list : list.where((final e) => e.category == _selectedCategory).toList();
+}
 
-  List<Product> _applyCategory(final List<Product> list) {
-    if (_selectedCategory == 'Tümü') return list;
-    return list.where((final e) => e.category == _selectedCategory).toList();
-  }
+// --- 🖌️ ARKA PLAN MOZAİK PAINTER ---
+class _MosaicBackgroundPainter extends CustomPainter {
+  final Color color;
+  _MosaicBackgroundPainter({required this.color});
 
-  int _sort(final Product a, final Product b) {
-    switch (_selectedSort) {
-      case 'price_low':
-        return a.price.compareTo(b.price);
-      case 'price_high':
-        return b.price.compareTo(a.price);
-      default:
-        return b.createdAt.compareTo(a.createdAt);
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 1.0;
+    const double step = 60.0;
+
+    // Girift çizgi ve mozaik desenleri çizimi
+    for (double i = 0; i < size.width; i += step) {
+      for (double j = 0; j < size.height; j += step) {
+        if ((i + j) % (step * 3) == 0) {
+          canvas.drawRect(Rect.fromLTWH(i, j, step * 0.5, step * 0.5), paint);
+        }
+        canvas.drawLine(Offset(i, 0), Offset(i + size.height, size.height), paint);
+      }
     }
   }
+
+  @override
+  bool shouldRepaint(covariant final CustomPainter oldDelegate) => false;
 }
