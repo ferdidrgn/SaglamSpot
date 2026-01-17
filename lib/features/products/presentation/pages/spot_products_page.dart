@@ -127,8 +127,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
             // Animated Diagonal Lines Pattern
             CustomPaint(
               painter: _DiagonalLinesPainter(
-                color: AppColors.primary.withOpacity(0.04),
-              ),
+                  color: AppColors.primary.withOpacity(0.04)),
             ),
 
             // Content
