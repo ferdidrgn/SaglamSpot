@@ -434,7 +434,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                         text: 'Ctrl + K',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: AppColors.accentDark,
+                          decoration: TextDecoration.underline,
                         ),
                       ),
                       const TextSpan(
@@ -444,7 +445,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                         text: 'BURADAKİ',
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+                          color: AppColors.accentDark,
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()
