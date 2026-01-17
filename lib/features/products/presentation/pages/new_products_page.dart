@@ -13,7 +13,8 @@ class NewProductsPage extends ConsumerStatefulWidget {
   const NewProductsPage({super.key});
 
   @override
-  ConsumerState<NewProductsPage> createState() => _EnhancedNewProductsPageState();
+  ConsumerState<NewProductsPage> createState() =>
+      _EnhancedNewProductsPageState();
 }
 
 class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
@@ -64,11 +65,13 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                   _buildStatsBar(context, products),
                   _buildFilterSection(context),
                   _buildCategoryTabs(context),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge)),
+                  SliverToBoxAdapter(
+                      child: SizedBox(height: context.spacingLarge)),
                   _buildProductGrid(context, filtered),
                   _buildAdBanner(context, 120),
                   _buildNewsletterSection(context),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 3)),
+                  SliverToBoxAdapter(
+                      child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),
               if (context.isDesktop) _buildFloatingQuickActions(context),
@@ -83,7 +86,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // HERO HEADER WITH ANIMATED GRADIENT
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildHeroHeader(BuildContext context, int totalProducts) {
+  Widget _buildHeroHeader(final BuildContext context, final int totalProducts) {
     return SliverAppBar(
       pinned: true,
       expandedHeight: context.responsive(
@@ -244,7 +247,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildBreadcrumb(BuildContext context) {
+  Widget _buildBreadcrumb(final BuildContext context) {
     return Row(
       children: [
         Icon(Icons.home_outlined, size: 14, color: AppColors.textSecondary),
@@ -275,7 +278,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // STATS BAR
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildStatsBar(BuildContext context, List<Product> products) {
+  Widget _buildStatsBar(
+      final BuildContext context, final List<Product> products) {
     return SliverToBoxAdapter(
       child: Container(
         margin: context.sectionPadding.copyWith(top: 0, bottom: 0),
@@ -285,7 +289,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
         ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(context.responsive(mobile: 16, desktop: 24)),
+          borderRadius: BorderRadius.circular(
+              context.responsive(mobile: 16, desktop: 24)),
           border: Border.all(color: AppColors.border, width: 1.5),
           boxShadow: [
             BoxShadow(
@@ -303,11 +308,13 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, List<Product> products) {
+  Widget _buildStatsRow(
+      final BuildContext context, final List<Product> products) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN', Icons.inventory_2_outlined),
+        _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
+            Icons.inventory_2_outlined),
         _buildDivider(context),
         _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
         _buildDivider(context),
@@ -318,13 +325,15 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildStatsColumn(BuildContext context, List<Product> products) {
+  Widget _buildStatsColumn(
+      final BuildContext context, final List<Product> products) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN', Icons.inventory_2_outlined),
+            _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
+                Icons.inventory_2_outlined),
             _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
           ],
         ),
@@ -340,10 +349,13 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildStatItem(BuildContext context, String value, String label, IconData icon) {
+  Widget _buildStatItem(final BuildContext context, final String value,
+      final String label, final IconData icon) {
     return Column(
       children: [
-        Icon(icon, size: context.responsive(mobile: 20, desktop: 24), color: AppColors.accent),
+        Icon(icon,
+            size: context.responsive(mobile: 20, desktop: 24),
+            color: AppColors.accent),
         const SizedBox(height: 8),
         Text(
           value,
@@ -367,7 +379,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildDivider(BuildContext context) {
+  Widget _buildDivider(final BuildContext context) {
     return Container(
       height: 50,
       width: 1,
@@ -379,7 +391,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // FILTER SECTION
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildFilterSection(BuildContext context) {
+  Widget _buildFilterSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.sectionPadding,
@@ -400,7 +412,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
+  Widget _buildSearchBar(final BuildContext context) {
     return Container(
       height: 56,
       decoration: BoxDecoration(
@@ -417,13 +429,14 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           ),
           prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
     );
   }
 
-  Widget _buildSortDropdown(BuildContext context) {
+  Widget _buildSortDropdown(final BuildContext context) {
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -435,16 +448,20 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
       child: DropdownButton<String>(
         value: _selectedSort,
         underline: const SizedBox(),
-        icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textPrimary),
-        items: ['Yeniler', 'Fiyat: Düşük-Yüksek', 'Fiyat: Yüksek-Düşük', 'En Popüler']
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList(),
-        onChanged: (val) => setState(() => _selectedSort = val!),
+        icon:
+            const Icon(Icons.keyboard_arrow_down, color: AppColors.textPrimary),
+        items: [
+          'Yeniler',
+          'Fiyat: Düşük-Yüksek',
+          'Fiyat: Yüksek-Düşük',
+          'En Popüler'
+        ].map((final e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+        onChanged: (final val) => setState(() => _selectedSort = val!),
       ),
     );
   }
 
-  Widget _buildViewToggle(BuildContext context) {
+  Widget _buildViewToggle(final BuildContext context) {
     return Container(
       height: 56,
       padding: const EdgeInsets.all(4),
@@ -463,7 +480,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildToggleButton(IconData icon, bool isActive) {
+  Widget _buildToggleButton(final IconData icon, final bool isActive) {
     return Container(
       width: 44,
       height: 44,
@@ -483,8 +500,16 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // CATEGORY TABS
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildCategoryTabs(BuildContext context) {
-    final categories = ['Tümü', 'Koltuk', 'Masa', 'Dekor', 'Ofis', 'Yatak', 'Aydınlatma'];
+  Widget _buildCategoryTabs(final BuildContext context) {
+    final categories = [
+      'Tümü',
+      'Koltuk',
+      'Masa',
+      'Dekor',
+      'Ofis',
+      'Yatak',
+      'Aydınlatma'
+    ];
 
     return SliverToBoxAdapter(
       child: SizedBox(
@@ -493,8 +518,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
           scrollDirection: Axis.horizontal,
           itemCount: categories.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 12),
-          itemBuilder: (context, index) {
+          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
+          itemBuilder: (final context, final index) {
             final isActive = _selectedCategory == categories[index];
 
             return AnimatedContainer(
@@ -502,7 +527,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => setState(() => _selectedCategory = categories[index]),
+                  onTap: () =>
+                      setState(() => _selectedCategory = categories[index]),
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
                     padding: EdgeInsets.symmetric(
@@ -518,19 +544,20 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                       ),
                       boxShadow: isActive
                           ? [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
+                              BoxShadow(
+                                color: AppColors.primary.withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
                           : null,
                     ),
                     child: Center(
                       child: Text(
                         categories[index],
                         style: TextStyle(
-                          color: isActive ? Colors.white : AppColors.textPrimary,
+                          color:
+                              isActive ? Colors.white : AppColors.textPrimary,
                           fontWeight: FontWeight.w700,
                           fontSize: context.bodySize,
                           letterSpacing: 0.5,
@@ -551,7 +578,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // PRODUCT GRID
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildProductGrid(BuildContext context, List<Product> products) {
+  Widget _buildProductGrid(
+      final BuildContext context, final List<Product> products) {
     if (products.isEmpty) {
       return SliverToBoxAdapter(
         child: Container(
@@ -604,14 +632,16 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           ),
         ),
         delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildEnhancedProductCard(context, products[index]),
+          (final context, final index) =>
+              _buildEnhancedProductCard(context, products[index]),
           childCount: products.length,
         ),
       ),
     );
   }
 
-  Widget _buildEnhancedProductCard(BuildContext context, Product product) {
+  Widget _buildEnhancedProductCard(
+      final BuildContext context, final Product product) {
     return CustomProductCard(product: product);
   }
 
@@ -619,7 +649,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // NEWSLETTER SECTION
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildNewsletterSection(BuildContext context) {
+  Widget _buildNewsletterSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: context.sectionPadding,
@@ -684,7 +714,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                           hintText: 'E-posta adresiniz',
                           hintStyle: TextStyle(color: AppColors.textSecondary),
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 20),
                         ),
                       ),
                     ),
@@ -722,7 +753,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // FLOATING ACTIONS
   // ════════════════════════════════════════════════════════════════
 
-  Widget _buildFloatingQuickActions(BuildContext context) {
+  Widget _buildFloatingQuickActions(final BuildContext context) {
     return Positioned(
       right: 32,
       bottom: 32,
@@ -750,8 +781,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   }
 
   Widget _buildFloatingActionButton({
-    required IconData icon,
-    required VoidCallback onTap,
+    required final IconData icon,
+    required final VoidCallback onTap,
   }) {
     return Material(
       color: AppColors.surface,
@@ -777,27 +808,28 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // HELPER METHODS
   // ════════════════════════════════════════════════════════════════
 
-  List<Product> _filterProducts(List<Product> products) {
+  List<Product> _filterProducts(final List<Product> products) {
     var filtered = products;
 
     if (_selectedCategory != 'Tümü') {
-      filtered = filtered.where((p) => p.category == _selectedCategory).toList();
+      filtered =
+          filtered.where((final p) => p.category == _selectedCategory).toList();
     }
 
     // Sort logic
     switch (_selectedSort) {
       case 'Fiyat: Düşük-Yüksek':
-        filtered.sort((a, b) => a.price.compareTo(b.price));
+        filtered.sort((final a, final b) => a.price.compareTo(b.price));
         break;
       case 'Fiyat: Yüksek-Düşük':
-        filtered.sort((a, b) => b.price.compareTo(a.price));
+        filtered.sort((final a, final b) => b.price.compareTo(a.price));
         break;
     }
 
     return filtered;
   }
 
-  Widget _buildBackgroundPattern(BuildContext context) {
+  Widget _buildBackgroundPattern(final BuildContext context) {
     return Positioned.fill(
       child: CustomPaint(
         painter: _BackgroundPatternPainter(
@@ -807,7 +839,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildAdBanner(BuildContext context, double height) {
+  Widget _buildAdBanner(final BuildContext context, final double height) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.sectionPadding,
@@ -816,7 +848,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     );
   }
 
-  Widget _buildErrorState(BuildContext context, String error) {
+  Widget _buildErrorState(final BuildContext context, final String error) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -825,7 +857,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           const SizedBox(height: 16),
           Text(
             'Bir hata oluştu',
-            style: TextStyle(fontSize: context.h4Size, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: context.h4Size, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
@@ -848,7 +881,7 @@ class _GeometricPatternPainter extends CustomPainter {
   _GeometricPatternPainter({required this.color});
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(final Canvas canvas, final Size size) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -863,7 +896,7 @@ class _GeometricPatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_) => false;
+  bool shouldRepaint(final _) => false;
 }
 
 class _BackgroundPatternPainter extends CustomPainter {
@@ -872,7 +905,7 @@ class _BackgroundPatternPainter extends CustomPainter {
   _BackgroundPatternPainter({required this.color});
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(final Canvas canvas, final Size size) {
     final paint = Paint()
       ..color = color
       ..strokeWidth = 0.8;
@@ -887,5 +920,5 @@ class _BackgroundPatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_) => false;
+  bool shouldRepaint(final _) => false;
 }
