@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-// Kendi dosya yollarını projenin yapısına göre güncelle
-import '../../../../core/util/responsive_utils.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/theme_context_extension.dart';
+import '../../../../core/util/responsive_utils.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -406,8 +402,10 @@ class _HomePageState extends ConsumerState<HomePage>
               padding:
                   EdgeInsets.symmetric(horizontal: context.pagePadding.left),
               itemCount: rooms.length,
-              itemBuilder: (context, index) => _roomCard(rooms[index]["title"]!,
-                  rooms[index]["img"]!, rooms[index]["sub"]!),
+              itemBuilder: (final context, final index) => _roomCard(
+                  rooms[index]["title"]!,
+                  rooms[index]["img"]!,
+                  rooms[index]["sub"]!),
             ),
           ),
         ],
@@ -415,7 +413,7 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _roomCard(String title, String img, String sub) {
+  Widget _roomCard(final String title, final String img, final String sub) {
     return Container(
       width: context.wp(context.isMobile ? 70 : 25),
       // Mobilde ekranın %70'i kadar, desktopta %25
@@ -492,7 +490,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: context.primaryColor),
+                        backgroundColor: AppColors.accentDark),
                     child: const Text("BİZİ ZİYARET EDİN"),
                   )
                 ],
@@ -516,92 +514,227 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Widget _buildStatsSection() {
+    final stats = [
+      {"val": "2.5K+", "label": "Mutlu Müşteri", "icon": Icons.people_outline},
+      {
+        "val": "20+ Yıl",
+        "label": "Tecrübe",
+        "icon": Icons.workspace_premium_outlined
+      },
+      {
+        "val": "15K+",
+        "label": "Teslimat",
+        "icon": Icons.local_shipping_outlined
+      },
+      {"val": "%100", "label": "Güven", "icon": Icons.verified_user_outlined},
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: context.hp(8)),
-        decoration: const BoxDecoration(color: Color(0xFF1A1D1C)),
-        child: Flex(
-          direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _statItem("2.5K+", "Mutlu Müşteri"),
-            if (context.isMobile) const SizedBox(height: 40),
-            _statItem("20+ Yıl", "Tecrübe"),
-            if (context.isMobile) const SizedBox(height: 40),
-            _statItem("%100", "Güven"),
-          ],
+        decoration: const BoxDecoration(color: AppColors.backgroundDark),
+        // Mat lüks siyah
+        child: Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 20,
+            runSpacing: 20,
+            children: stats
+                .map((final s) => _buildStatCard(s["val"] as String,
+                    s["label"] as String, s["icon"] as IconData))
+                .toList(),
+          ),
         ),
       ),
     );
   }
 
-  Widget _statItem(String val, String label) {
-    return Column(
-      children: [
-        Text(val,
-            style: TextStyle(
-                color: context.secondaryColor,
-                fontSize: context.h1Size,
-                fontWeight: FontWeight.w900)),
-        Text(label,
-            style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
-                fontSize: context.bodySize)),
-      ],
+  Widget _buildStatCard(
+      final String val, final String label, final IconData icon) {
+    return Container(
+      width:
+          context.responsive(mobile: context.wp(42), tablet: 200, desktop: 250),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(context.borderRadius()),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: context.secondaryColor, size: 30),
+          const SizedBox(height: 15),
+          Text(val,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.h3Size,
+                  fontWeight: FontWeight.w900)),
+          const SizedBox(height: 5),
+          Text(label.toUpperCase(),
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.4),
+                  fontSize: 10,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 
   Widget _buildFooter() {
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.all(context.responsive(mobile: 30, desktop: 80)),
-        color: const Color(0xFF101211),
+        padding: EdgeInsets.fromLTRB(
+            context.pagePadding.left, 80, context.pagePadding.right, 40),
+        color: AppColors.backgroundDark,
         child: Column(
           children: [
-            Flex(
-              direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Ana Footer İçeriği
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: 40,
+              runSpacing: 50,
               children: [
-                Column(
-                  crossAxisAlignment: context.isMobile
-                      ? CrossAxisAlignment.center
-                      : CrossAxisAlignment.start,
-                  children: [
-                    Text("SAĞLAM SPOT",
+                // 1. Marka Tanımı
+                SizedBox(
+                  width:
+                      context.responsive(mobile: double.infinity, desktop: 300),
+                  child: Column(
+                    crossAxisAlignment: context.isMobile
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
+                    children: [
+                      Text("SAĞLAM SPOT",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              letterSpacing: 4,
+                              fontWeight: FontWeight.w900)),
+                      const SizedBox(height: 20),
+                      Text(
+                        "20 yılı aşkın tecrübemizle İstanbul'un her noktasına kaliteyi ve güveni taşıyoruz. Evinizin her köşesinde bir hikayemiz var.",
+                        textAlign: context.isMobile
+                            ? TextAlign.center
+                            : TextAlign.start,
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.h3Size,
-                            letterSpacing: 4,
-                            fontWeight: FontWeight.w900)),
-                    const SizedBox(height: 10),
-                    Text("İstanbul'un en köklü mobilya noktası.",
-                        style: TextStyle(color: Colors.white.withOpacity(0.3))),
-                  ],
+                            color: Colors.white.withOpacity(0.4),
+                            fontSize: 14,
+                            height: 1.6),
+                      ),
+                    ],
+                  ),
                 ),
-                if (context.isMobile) const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.facebook, color: Colors.white24),
-                    SizedBox(width: 20),
-                    Icon(Icons.camera_alt, color: Colors.white24),
-                    SizedBox(width: 20),
-                    Icon(Icons.location_on, color: Colors.white24),
-                  ],
-                )
+
+                // 2. Hızlı Keşfet (Mobilde de görünür)
+                _footerColumn("KEŞFET", [
+                  "Koleksiyonlar",
+                  "Oturma Grupları",
+                  "Yatak Odası",
+                  "Mutfak"
+                ]),
+
+                // 3. Kurumsal Bilgiler (Mobilde de görünür)
+                _footerColumn("KURUMSAL",
+                    ["Hakkımızda", "Mağazamız", "İletişim", "Kariyer"]),
+
+                // 4. İletişim & Sosyal
+                SizedBox(
+                  width:
+                      context.responsive(mobile: double.infinity, desktop: 250),
+                  child: Column(
+                    crossAxisAlignment: context.isMobile
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.end,
+                    children: [
+                      Text("BİZE ULAŞIN",
+                          style: TextStyle(
+                              color: context.secondaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              letterSpacing: 2)),
+                      const SizedBox(height: 20),
+                      Text("info@saglamspot.com",
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.6))),
+                      const SizedBox(height: 10),
+                      Text("+90 212 000 00 00",
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.6))),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _socialCircle(Icons.facebook),
+                          const SizedBox(width: 12),
+                          _socialCircle(Icons.camera_alt_outlined),
+                          const SizedBox(width: 12),
+                          _socialCircle(Icons.location_on_outlined),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 40),
-            Text("© 2026 Sağlam Spot Ticaret. Tüm hakları saklıdır.",
-                style: TextStyle(
-                    color: Colors.white.withOpacity(0.1), fontSize: 10)),
+
+            const SizedBox(height: 80),
+            Divider(color: Colors.white.withOpacity(0.03)),
+            const SizedBox(height: 30),
+
+            // Alt Bilgi
+            Text(
+              "© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.",
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.15),
+                  fontSize: 10,
+                  letterSpacing: 1),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title, String sub) {
+// Yardımcı Kolon Yapısı (Responsive)
+  Widget _footerColumn(final String title, final List<String> items) {
+    return SizedBox(
+      width: context.responsive(mobile: context.wp(40), desktop: 150),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  letterSpacing: 1)),
+          const SizedBox(height: 25),
+          ...items
+              .map((final item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(item,
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.3),
+                            fontSize: 13)),
+                  ))
+              .toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _socialCircle(final IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: Icon(icon, color: Colors.white.withOpacity(0.5), size: 18),
+    );
+  }
+
+  Widget _buildSectionHeader(final String title, final String sub) {
     return Padding(
       padding: context.pagePadding.copyWith(bottom: 20, top: 40),
       child: Column(
