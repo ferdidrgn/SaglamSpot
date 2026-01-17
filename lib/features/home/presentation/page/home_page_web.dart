@@ -9,6 +9,7 @@ import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../widgets/furniture_tips_section.dart';
 
@@ -30,7 +31,6 @@ class _HomePageState extends ConsumerState<HomePage>
   String _activeCategory = 'Tümü';
   final PageController _heroPageController = PageController();
   final ScrollController _scrollController = ScrollController();
-  bool _showBackToTop = false;
 
   @override
   void initState() {
@@ -44,12 +44,6 @@ class _HomePageState extends ConsumerState<HomePage>
     _pulseController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000))
       ..repeat(reverse: true);
-    _scrollController.addListener(() {
-      setState(() {
-        // 400 piksel aşağı inilince butonu göster
-        _showBackToTop = _scrollController.offset > 400;
-      });
-    });
     _startHeroTimer();
   }
 
@@ -62,14 +56,6 @@ class _HomePageState extends ConsumerState<HomePage>
             curve: Curves.easeInOutQuint);
       }
     });
-  }
-
-  void _scrollToTop() {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 800),
-      curve: Curves.easeInOutQuint,
-    );
   }
 
   @override
@@ -117,6 +103,10 @@ class _HomePageState extends ConsumerState<HomePage>
                 ],
               ),
             ),
+            // 🔥 GLOBAL SCROLL UP
+            ScrollUpButton(scrollController: _scrollController),
+
+            // 🔥 SAYFAYA ÖZEL CHAT FAB
             _buildAnimatedFloatingButtons(),
           ],
         ),
@@ -677,53 +667,24 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildAnimatedFloatingButtons() {
-    return Positioned(
-      bottom: 20,
-      right: 20,
-      child: Column(
-        // Butonları alt alta dizmek için Column
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // --- YUKARI ÇIK BUTONU ---
-          AnimatedScale(
-            scale: _showBackToTop ? 1.0 : 0.0, // Scroll edilmediyse gizle
-            duration: const Duration(milliseconds: 300),
-            child: AnimatedOpacity(
-              opacity: _showBackToTop ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: FloatingActionButton.small(
-                  // Daha küçük bir buton
-                  heroTag: 'scrollTop',
-                  onPressed: _scrollToTop,
-                  backgroundColor: context.primaryColor,
-                  child: const Icon(Icons.arrow_upward, color: Colors.white),
-                ),
+  Widget _buildAnimatedFloatingButtons() => Positioned(
+        bottom: 20,
+        right: 20,
+        child: AnimatedBuilder(
+          animation: _floatingController,
+          builder: (final context, final child) => Transform.translate(
+            offset: Offset(0, -10 * _floatingController.value),
+            child: FloatingActionButton(
+              heroTag: 'chat',
+              onPressed: () => CommunicationActions.launchWhatsApp(
+                message: "Sağlam Spot için web sitenizden yazıyorum...",
               ),
+              backgroundColor: context.secondaryColor,
+              child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
             ),
           ),
-
-          // --- WHATSAPP / CHAT BUTONU (Mevcut olan) ---
-          AnimatedBuilder(
-            animation: _floatingController,
-            builder: (final context, final child) => Transform.translate(
-              offset: Offset(0, -10 * _floatingController.value),
-              child: FloatingActionButton(
-                heroTag: 'chat',
-                onPressed: () => CommunicationActions.launchWhatsApp(
-                    message: "Sağlam Spot için web sitenizden yazıyorum..."),
-                backgroundColor: context.secondaryColor,
-                child:
-                    const Icon(Icons.chat_bubble_outline, color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      );
 }
 
 // ... Painter kodun aynı kalacak
