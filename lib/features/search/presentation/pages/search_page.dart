@@ -53,7 +53,6 @@ class _SearchPageState extends ConsumerState<SearchPage>
   void _resetAll() {
     _searchController.clear();
     ref.read(searchQueryProvider.notifier).update('');
-    // String 'Tümü' yerine Enum gönderiyoruz:
     ref.read(searchFiltersProvider.notifier).setCategory(ProductCategory.other);
     ref.read(searchFiltersProvider.notifier).reset();
   }
@@ -75,14 +74,16 @@ class _SearchPageState extends ConsumerState<SearchPage>
           // Fresh Hero Header
           _buildHeroHeader(context, isMobile),
 
-          SliverPersistentHeader(
+          /*SliverPersistentHeader(
             pinned: true,
             delegate: _StickySearchDelegate(
-              minHeight: getSearchSectionHeight,
-              maxHeight: getSearchSectionHeight,
-              child: _buildSearchSection(context, isMobile, searchQuery),
-            ),
-          ),
+                minHeight: getSearchSectionHeight,
+                maxHeight: getSearchSectionHeight,
+                child: _buildSearchSection(context, isMobile, searchQuery)),
+          ),*/
+
+          SliverToBoxAdapter(
+              child: _buildSearchSection(context, isMobile, searchQuery)),
 
           // Fresh Category Pills
           _buildCategorySection(currentFilters, isMobile),
@@ -298,7 +299,6 @@ class _SearchPageState extends ConsumerState<SearchPage>
       ),
       child: Column(
         children: [
-          // Premium Search Input
           Container(
             height:
                 context.responsive(mobile: 56.0, tablet: 60.0, desktop: 64.0),
@@ -328,9 +328,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
               decoration: InputDecoration(
                 hintText: context.l10n.searchHint,
                 hintStyle: TextStyle(
-                  color: AppColors.textSecondary.withOpacity(0.5),
-                  fontWeight: FontWeight.w400,
-                ),
+                    color: AppColors.textSecondary.withOpacity(0.5),
+                    fontWeight: FontWeight.w400),
                 prefixIcon: Icon(
                   Icons.search_rounded,
                   color: _showSearchFocus
@@ -511,8 +510,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
             return _buildCategoryPill(
               category == null
-                  ? 'Tümü'
-                  : ProductCategoryExtension(category!).label(context),
+                  ? context.l10n.conditionAll
+                  : ProductCategoryExtension(category).label(context),
               isSelected,
               () => ref
                   .read(searchFiltersProvider.notifier)
@@ -882,10 +881,10 @@ class _SearchPageState extends ConsumerState<SearchPage>
         child: Row(
           children: [
             Container(
-              width: 4,
-              height: 32,
+              width: 5,
+              height: 50,
               decoration: BoxDecoration(
-                  color: color, borderRadius: BorderRadius.circular(2)),
+                  color: color, borderRadius: BorderRadius.circular(4)),
             ),
             const SizedBox(width: 12),
             Column(
@@ -895,18 +894,18 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   title,
                   style: TextStyle(
                     fontSize: context.responsive(
-                        mobile: 11.0, tablet: 11.5, desktop: 12.0),
+                        mobile: 15.0, tablet: 17, desktop: 20),
                     fontWeight: FontWeight.w700,
                     letterSpacing: 2,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   context.l10n.pieces(count),
                   style: TextStyle(
-                    fontSize: context.responsive(
-                        mobile: 12.5, tablet: 13.0, desktop: 13.5),
+                    fontSize:
+                        context.responsive(mobile: 14, tablet: 16, desktop: 18),
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
