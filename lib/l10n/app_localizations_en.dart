@@ -19,6 +19,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String productsFound(int count) {
-    return '$count Products Found';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Products Found',
+      one: '1 Product Found',
+      zero: 'No products found',
+    );
+    return '$_temp0';
   }
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get categorySofa => 'Sofa Sets';
+
+  @override
+  String get categoryChair => 'Chairs';
+
+  @override
+  String get categoryTable => 'Dining Room';
+
+  @override
+  String get categoryBed => 'Bedroom';
+
+  @override
+  String get categoryWardrobe => 'Wardrobe';
+
+  @override
+  String get categoryWhite => 'White Goods';
+
+  @override
+  String get categoryOther => 'Other';
+
+  @override
+  String get addProduct => 'Add New Product';
+
+  @override
+  String get productName => 'Product Name';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get filter => 'Filter';
 }

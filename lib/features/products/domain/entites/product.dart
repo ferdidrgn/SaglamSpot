@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/enum/enums.dart';
+import '../../../../core/extentions/product_category_ex.dart';
 
 class Product extends Equatable {
   final String id;
@@ -79,7 +80,7 @@ class Product extends Equatable {
         soldAt: data['soldAt'] ?? '',
         name: data['name'] ?? '',
         desc: data['desc'] ?? '',
-        category: data['category'] ?? '',
+        category: (data['category'] as String).toProductCategory(),
         price: (data['price'] as num?)?.toDouble() ?? 0.0,
         isSold: data['isSold'] ?? false,
         isSpotProduct: data['isSpotProduct'] ?? false,
@@ -93,7 +94,7 @@ class Product extends Equatable {
         'soldAt': soldAt,
         'name': name,
         'desc': desc,
-        'category': category,
+        'category': category.name,
         'price': price,
         'isSold': isSold,
         'isSpotProduct': isSpotProduct,

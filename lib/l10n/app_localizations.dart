@@ -119,8 +119,92 @@ abstract class AppLocalizations {
   /// No description provided for @productsFound.
   ///
   /// In tr, this message translates to:
-  /// **'{count} Ürün Bulundu'**
+  /// **'{count, plural, =0{Ürün bulunamadı} =1{1 Ürün Bulundu} other{{count} Ürün Bulundu}}'**
   String productsFound(int count);
+
+  /// No description provided for @category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori'**
+  String get category;
+
+  /// No description provided for @categorySofa.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oturma Grupları'**
+  String get categorySofa;
+
+  /// No description provided for @categoryChair.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sandalye'**
+  String get categoryChair;
+
+  /// No description provided for @categoryTable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yemek Odası'**
+  String get categoryTable;
+
+  /// No description provided for @categoryBed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatak Odası'**
+  String get categoryBed;
+
+  /// No description provided for @categoryWardrobe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardırop'**
+  String get categoryWardrobe;
+
+  /// No description provided for @categoryWhite.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beyaz Eşya'**
+  String get categoryWhite;
+
+  /// No description provided for @categoryOther.
+  ///
+  /// In tr, this message translates to:
+  /// **'Diğer'**
+  String get categoryOther;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Ürün Ekle'**
+  String get addProduct;
+
+  /// No description provided for @productName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Adı'**
+  String get productName;
+
+  /// No description provided for @price.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat'**
+  String get price;
+
+  /// No description provided for @description.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get description;
+
+  /// No description provided for @save.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet'**
+  String get save;
+
+  /// No description provided for @filter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtrele'**
+  String get filter;
 }
 
 class _AppLocalizationsDelegate

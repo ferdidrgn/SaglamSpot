@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/enum/enums.dart';
+import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/extentions/product_category_ex.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
@@ -141,10 +142,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       name: _name.text.trim(),
       desc: _desc.text.trim(),
       category: _selectedCategory ?? ProductCategory.other,
-      price: double.tryParse(
-            _price.text.replaceAll(',', '.'),
-          ) ??
-          0,
+      price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
       isSold: false,
       isSpotProduct: _isSecondHand,
       imagesUrl: const [],
@@ -169,20 +167,19 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   Widget _categoryDropdown() => Padding(
         padding: const EdgeInsets.only(bottom: 16),
         child: DropdownButtonFormField<ProductCategory>(
-          initialValue: _selectedCategory,
+          value: _selectedCategory, // initialValue yerine value daha stabildir
           decoration: InputDecoration(
-            labelText: 'Kategori',
+            labelText: context.l10n.category,
+            // 'Kategori' metnini de ARB'den alabilirsin
             prefixIcon: const Icon(Icons.category),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           items: ProductCategory.values
-              .where((final e) => e != ProductCategory.other)
               .map(
-                (final e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(e.label(context)),
+                (final category) => DropdownMenuItem(
+                  value: category,
+                  child:
+                      Text(category.label(context)), // Extension burada çalışır
                 ),
               )
               .toList(),

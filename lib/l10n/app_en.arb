@@ -3,12 +3,24 @@
   "searchHint": "Search for products, styles...",
   "collection": "COLLECTION",
   "eleganceAndComfort": "Elegance & Comfort",
-  "productsFound": "{count} Products Found",
+  "productsFound": "{count, plural, =0{No products found} =1{1 Product Found} other{{count} Products Found}}",
   "@productsFound": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
-  }
+  },
+  "category": "Category",
+  "categorySofa": "Sofa Sets",
+  "categoryChair": "Chairs",
+  "categoryTable": "Dining Room",
+  "categoryBed": "Bedroom",
+  "categoryWardrobe": "Wardrobe",
+  "categoryWhite": "White Goods",
+  "categoryOther": "Other",
+  "addProduct": "Add New Product",
+  "productName": "Product Name",
+  "price": "Price",
+  "description": "Description",
+  "save": "Save",
+  "filter": "Filter"
 }

@@ -9,10 +9,7 @@ class ProductMutation extends _$ProductMutation {
   @override
   FutureOr<void> build() {}
 
-  Future<void> add(
-    final Product product,
-    final List<dynamic> images,
-  ) async {
+  Future<void> add(final Product product, final List<dynamic> images) async {
     state = const AsyncLoading();
 
     final result = await AsyncValue.guard(() async {
@@ -26,9 +23,7 @@ class ProductMutation extends _$ProductMutation {
   }
 
   Future<void> updateProduct(
-    final Product product,
-    final List<dynamic>? newImages,
-  ) async {
+      final Product product, final List<dynamic>? newImages) async {
     state = const AsyncLoading();
 
     final result = await AsyncValue.guard(() async {

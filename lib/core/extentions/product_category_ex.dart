@@ -1,66 +1,37 @@
 import 'package:flutter/material.dart';
 import '../enum/enums.dart';
+import 'app_context_ui_extension.dart';
 
-/// =======================
-/// CATEGORY METADATA
-/// =======================
-extension ProductCategoryMeta on ProductCategory {
-  /// Firestore + Search key
-  String get key => name;
-
-  /// Arama için sabit kelimeler (dil bağımsız)
-  List<String> get searchKeywords {
-    switch (this) {
-      case ProductCategory.sofa:
-        return ['sofa', 'koltuk'];
-      case ProductCategory.chair:
-        return ['chair', 'sandalye'];
-      case ProductCategory.table:
-        return ['table', 'masa'];
-      case ProductCategory.bed:
-        return ['bed', 'yatak'];
-      case ProductCategory.wardrobe:
-        return ['wardrobe', 'dolap'];
-      case ProductCategory.white:
-        return ['white appliances', 'beyaz eşya'];
-      case ProductCategory.other:
-        return ['other', 'diğer'];
-    }
-  }
-
-  /// UI label (Localization-aware)
+extension ProductCategoryExtension on ProductCategory {
   String label(final BuildContext context) {
-    final lang = Localizations.localeOf(context).languageCode;
-
     switch (this) {
       case ProductCategory.sofa:
-        return lang == 'tr' ? 'Koltuk / Kanepe' : 'Sofa';
+        return context.l10n.categorySofa;
       case ProductCategory.chair:
-        return lang == 'tr' ? 'Sandalye / Tabure' : 'Chair';
+        return context.l10n.categoryChair;
       case ProductCategory.table:
-        return lang == 'tr' ? 'Masa' : 'Table';
+        return context.l10n.categoryTable;
       case ProductCategory.bed:
-        return lang == 'tr' ? 'Yatak / Baza' : 'Bed';
+        return context.l10n.categoryBed;
       case ProductCategory.wardrobe:
-        return lang == 'tr' ? 'Dolap' : 'Wardrobe';
+        return context.l10n.categoryWardrobe;
       case ProductCategory.white:
-        return lang == 'tr' ? 'Beyaz Eşya' : 'White Appliances';
+        return context.l10n.categoryWhite;
       case ProductCategory.other:
-        return lang == 'tr' ? 'Diğer' : 'Other';
+        return context.l10n.categoryOther;
     }
   }
 }
 
 extension ProductCategoryMapper on String {
-  ProductCategory toProductCategory() {
-    try {
-      return ProductCategory.values.byName(this);
-    } catch (_) {
-      return ProductCategory.other;
-    }
-  }
+  // byName yerine firstWhere kullanmak, küçük/büyük harf veya eksik veri hatalarında
+  // uygulamanın çökmesini engeller ve 'other' döndürür.
+  ProductCategory toProductCategory() =>
+      ProductCategory.values.firstWhere((final e) => e.name == this,
+          orElse: () => ProductCategory.other);
 }
 
+// Firestore'a her zaman Enum'un kod adını (sofa, chair vb.) gönderir.
 extension ProductCategoryToString on ProductCategory {
   String toFirestore() => name;
 }

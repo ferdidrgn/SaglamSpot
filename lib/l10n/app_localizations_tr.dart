@@ -19,6 +19,55 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String productsFound(int count) {
-    return '$count Ürün Bulundu';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Ürün Bulundu',
+      one: '1 Ürün Bulundu',
+      zero: 'Ürün bulunamadı',
+    );
+    return '$_temp0';
   }
+
+  @override
+  String get category => 'Kategori';
+
+  @override
+  String get categorySofa => 'Oturma Grupları';
+
+  @override
+  String get categoryChair => 'Sandalye';
+
+  @override
+  String get categoryTable => 'Yemek Odası';
+
+  @override
+  String get categoryBed => 'Yatak Odası';
+
+  @override
+  String get categoryWardrobe => 'Gardırop';
+
+  @override
+  String get categoryWhite => 'Beyaz Eşya';
+
+  @override
+  String get categoryOther => 'Diğer';
+
+  @override
+  String get addProduct => 'Yeni Ürün Ekle';
+
+  @override
+  String get productName => 'Ürün Adı';
+
+  @override
+  String get price => 'Fiyat';
+
+  @override
+  String get description => 'Açıklama';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String get filter => 'Filtrele';
 }
