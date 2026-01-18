@@ -106,39 +106,43 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildFloatingHeader(
       final BuildContext context, final Product product) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      height: _isScrolled ? 70 : 0,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.border,
-            width: _isScrolled ? 1 : 0,
+    return SafeArea(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: _isScrolled ? 70 : 0,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.border,
+              width: _isScrolled ? 1 : 0,
+            ),
           ),
+          boxShadow: _isScrolled
+              ? [
+                  BoxShadow(
+                    color: AppColors.textPrimary.withOpacity(0.05),
+                    blurRadius: 10,
+                  ),
+                ]
+              : null,
         ),
-        boxShadow: _isScrolled
-            ? [
-                BoxShadow(
-                  color: AppColors.textPrimary.withOpacity(0.05),
-                  blurRadius: 10,
-                ),
-              ]
-            : null,
-      ),
-      child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: context.spacing),
           child: Row(
             children: [
               IconButton(
-                icon:
-                    const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                icon: CircleAvatar(
+                  backgroundColor:
+                      _isScrolled ? Colors.transparent : Colors.black26,
+                  child: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
                 onPressed: () {
+                  // Eğer canPop true ise yığından atar, değilse ana sayfaya gider
                   if (context.canPop())
                     context.pop();
                   else
-                    context.go('/');
+                    context.goNamed('home');
                 },
               ),
               const SizedBox(width: 12),
@@ -1530,9 +1534,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       );
 
   Widget _buildSimilarProductCard(
-    final BuildContext context,
-    final Product product,
-  ) =>
+          final BuildContext context, final Product product) =>
       GestureDetector(
         onTap: () {
           final String slug = product.name.toSlug();
