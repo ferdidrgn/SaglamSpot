@@ -98,6 +98,18 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @brand.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağlam Spot'**
+  String get brand;
+
+  /// No description provided for @home.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana Sayfa'**
+  String get home;
+
   /// No description provided for @searchHint.
   ///
   /// In tr, this message translates to:

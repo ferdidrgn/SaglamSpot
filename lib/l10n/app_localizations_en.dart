@@ -9,6 +9,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get brand => 'Sağlam Spot';
+
+  @override
+  String get home => 'Home';
+
+  @override
   String get searchHint => 'Search for products, styles...';
 
   @override

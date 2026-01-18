@@ -9,6 +9,12 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get brand => 'Sağlam Spot';
+
+  @override
+  String get home => 'Ana Sayfa';
+
+  @override
   String get searchHint => 'Ürün, kategori veya stil arayın...';
 
   @override

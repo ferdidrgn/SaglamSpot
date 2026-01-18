@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:saglamspot/core/extentions/app_context_ui_extension.dart';
 import 'core/config/app_initializer.dart';
 import 'core/config/app_router.dart';
 import 'core/localization/locale_provider.dart';
@@ -22,7 +23,7 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Sağlam Spotçu',
+      title: context.l10n.brand,
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,
       themeMode: ThemeMode.light,
