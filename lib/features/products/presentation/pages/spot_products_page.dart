@@ -984,19 +984,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     // Use CustomProductCard with special Spot styling overlay
     return Stack(
       children: [
-        ElevatedButton(
-            onPressed: () {
-              // slug yapısını daha önce konuştuğumuz toSlug() ile oluşturuyoruz
-              final String slug = product.name.toSlug();
-              // Örnek: /product/istikbal-koltuk-takimi-AB123
-              context.goNamed(
-                'productDetail',
-                pathParameters: {
-                  'slugWithId': '$slug-${product.id}',
-                },
-              );
-            },
-            child: CustomProductCard(product: product)),
+        CustomProductCard(product: product),
 
         // Spot Badge Overlay
         Positioned(
