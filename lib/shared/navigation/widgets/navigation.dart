@@ -49,16 +49,8 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       children: [
         Image.asset(
           'assets/images/saglam_spot_logo.png',
-          width: context.responsive(
-            mobile: 40,
-            tablet: 45,
-            desktop: 50,
-          ),
-          height: context.responsive(
-            mobile: 40,
-            tablet: 45,
-            desktop: 50,
-          ),
+          width: 90,
+          height: 90,
           fit: BoxFit.contain,
         ),
         SizedBox(width: context.responsive(mobile: 4, tablet: 6, desktop: 8)),
@@ -155,13 +147,9 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       actions: [
         const LanguageSelector(),
         _buildSearchButton(true),
-        const SizedBox(width: 8)
+        const SizedBox(width: 8),
       ],
-      toolbarHeight: context.responsive(
-        mobile: 60,
-        tablet: 70,
-        desktop: 80,
-      ),
+      toolbarHeight: context.responsive(mobile: 60, tablet: 70, desktop: 80),
     );
   }
 
@@ -182,8 +170,6 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
               width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
           const LanguageSelector(),
           _buildSearchButton(false),
-          SizedBox(
-              width: context.responsive(mobile: 12, tablet: 16, desktop: 20)),
           SizedBox(
               width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
         ],
@@ -278,8 +264,8 @@ class _DesktopNavItem extends StatelessWidget {
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
                 fontSize: context.responsive(
                   mobile: 12,
-                  tablet: 14,
-                  desktop: 16,
+                  tablet: 13,
+                  desktop: 15,
                 ),
               ),
             ),
@@ -305,75 +291,56 @@ class _MobileDrawer extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.background,
-      child: Column(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(context.responsive(
-                mobile: 16,
-                tablet: 20,
-                desktop: 24,
-              )),
-              child: Row(children: [
-                logo,
-                const Spacer(),
-                const LanguageSelector(isDrawer: true),
-                IconButton(
-                  icon: Icon(
-                    Icons.close,
-                    size:
-                        context.responsive(mobile: 24, tablet: 28, desktop: 32),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                )
-              ]),
+      backgroundColor: AppColors.surface,
+      shadowColor: AppColors.accentDark,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 16),
+              child: Row(
+                children: [
+                  logo, const SizedBox(width: 8),
+                  const Spacer(),
+                  // Kapatma butonu
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(context.responsive(
-                mobile: 8,
-                tablet: 12,
-                desktop: 16,
-              )),
-              children: navItems
-                  .map((final item) => ListTile(
-                        leading: Icon(
-                          item.icon,
-                          size: context.responsive(
-                              mobile: 22, tablet: 24, desktop: 26),
-                          color: currentIndex == item.index
-                              ? AppColors.primary
-                              : null,
-                        ),
-                        title: Text(
-                          item.label,
-                          style: TextStyle(
-                            fontSize: context.responsive(
-                              mobile: 16,
-                              tablet: 18,
-                              desktop: 20,
-                            ),
-                          ),
-                        ),
-                        selected: currentIndex == item.index,
-                        selectedTileColor: AppColors.primary.withOpacity(0.1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(context.borderRadius())),
-                        onTap: () => onItemTapped(item.index),
-                      ))
-                  .toList(),
+            const Divider(),
+            // Dil Seçiciyi Drawer içine de ekliyoruz (Senin istediğin şık tasarım)
+            const LanguageSelector(isDrawer: true),
+            const Divider(),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: navItems.length,
+                itemBuilder: (final context, final index) {
+                  final item = navItems[index];
+                  return ListTile(
+                    leading: Icon(item.icon,
+                        color: currentIndex == item.index
+                            ? AppColors.primary
+                            : null),
+                    title: Text(item.label),
+                    selected: currentIndex == item.index,
+                    onTap: () => onItemTapped(item.index),
+                  );
+                },
+              ),
             ),
-          ),
-          if (PlatformChecker.isMobile)
-            const AdBannerWidget()
-          else
-            const AdsenseBanner(height: 250),
-          _DrawerFooter(),
-        ],
+            // Reklam alanlarını geçici olarak yorum satırına alıp test et,
+            // eğer açılıyorsa sorun reklam widget'larındadır.
+            if (PlatformChecker.isMobile)
+              const AdBannerWidget()
+            else
+              const AdsenseBanner(height: 100),
+            _DrawerFooter(),
+          ],
+        ),
       ),
     );
   }
@@ -439,7 +406,7 @@ class _KbdShortcut extends StatelessWidget {
   const _KbdShortcut();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: context.responsive(mobile: 4, tablet: 5, desktop: 6),
