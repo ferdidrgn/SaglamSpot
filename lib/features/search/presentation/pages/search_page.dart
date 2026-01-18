@@ -148,89 +148,128 @@ class _SearchPageState extends ConsumerState<SearchPage>
   Widget _buildHeroHeader(final BuildContext context, final bool isMobile) {
     return SliverAppBar(
       expandedHeight:
-          context.responsive(mobile: 200.0, tablet: 240.0, desktop: 280.0),
+          context.responsive(mobile: 240.0, tablet: 280.0, desktop: 320.0),
       pinned: true,
-      // Marka adının her zaman görünmesi için true yaptık
       stretch: true,
       backgroundColor: AppColors.textPrimary,
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset('assets/images/saglam_spot_logo.png',
-            fit: BoxFit.contain),
-      ),
+      // Default leading yerine custom bir alan kullanacağımız için burayı temizliyoruz
+      leading: const SizedBox.shrink(),
+      leadingWidth: 0,
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const [
           StretchMode.zoomBackground,
-          StretchMode.fadeTitle,
           StretchMode.blurBackground,
         ],
-        centerTitle: false,
-        titlePadding: EdgeInsets.only(
-          left: context.responsive(mobile: 20.0, tablet: 32.0, desktop: 40.0),
-          bottom: context.responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0),
-        ),
-        title: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // MARKA ADI
-              const Text(
-                'SAĞLAM SPOT',
-                style: TextStyle(
-                  fontSize: 10,
-                  letterSpacing: 4,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white54,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                context.l10n.collection,
-                style: TextStyle(
-                  fontSize: context.responsive(
-                      mobile: 9.0, tablet: 10.0, desktop: 11.0),
-                  letterSpacing: 3,
-                  fontWeight: FontWeight.w300,
-                  color: AppColors.textSecondary.withOpacity(0.7),
-                ),
-              ),
-              SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
-              Text(
-                context.l10n.eleganceAndComfort,
-                style: TextStyle(
-                  fontSize: context.responsive(
-                      mobile: 22.0, tablet: 28.0, desktop: 32.0),
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
-          ),
-        ),
         background: Stack(
           fit: StackFit.expand,
           children: [
+            // Arka plan görseli - Yumuşak bir overlay ile
             Image.network(
               'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
               fit: BoxFit.cover,
-              errorBuilder: (final _, final __, final ___) =>
-                  Container(color: AppColors.textPrimary),
             ),
-            DecoratedBox(
+            // Premium Gradient Layer
+            const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.3),
-                    AppColors.textPrimary.withOpacity(0.85),
-                    AppColors.textPrimary,
+                    Colors.black26,
+                    Colors.black87,
                   ],
-                  stops: const [0.0, 0.6, 1.0],
                 ),
+              ),
+            ),
+            // İçerik Alanı (Logo ve Metinler)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsive(
+                    mobile: 20.0, tablet: 32.0, desktop: 48.0),
+                vertical: context.responsive(
+                    mobile: 24.0, tablet: 32.0, desktop: 40.0),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Logo ve Marka Adı Grubu
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Büyütülmüş Logo
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              const BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4))
+                            ],
+                          ),
+                          child: Image.asset(
+                            'assets/images/saglam_spot_logo.png',
+                            height: context.responsive(
+                                mobile: 50.0, tablet: 60.0, desktop: 70.0),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Marka Metni
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "SAĞLAM SPOT",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 2,
+                                fontSize: context.responsive(
+                                    mobile: 18.0, tablet: 22.0, desktop: 26.0),
+                              ),
+                            ),
+                            Text(
+                              "Eskiyi Yeniler, Yeniyi Değerlendirir",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: context.responsive(
+                                    mobile: 10.0, tablet: 12.0, desktop: 14.0),
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Sayfa Başlığı
+                  Text(
+                    context.l10n.collection,
+                    style: const TextStyle(
+                      color: AppColors.onPrimary,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 4,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    context.l10n.eleganceAndComfort,
+                    style: TextStyle(
+                      fontSize: context.responsive(
+                          mobile: 28.0, tablet: 36.0, desktop: 44.0),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -1016,7 +1055,22 @@ class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(final context, final shrinkOffset, final overlapsContent) {
-    return Material(elevation: shrinkOffset > 0 ? 4 : 0, child: child);
+    // Scroll miktarına göre opaklık ve gölge hesaplama
+    final progress = shrinkOffset / maxExtent;
+
+    return Container(
+      height: maxHeight,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(progress * 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
+        ],
+      ),
+      child: child,
+    );
   }
 
   @override
