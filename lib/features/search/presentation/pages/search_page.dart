@@ -65,7 +65,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
     final isMobile = context.isMobile;
     final searchQuery = ref.watch(searchQueryProvider);
     final getSearchSectionHeight =
-    context.responsive(mobile: 180.0, tablet: 220.0, desktop: 240.0);
+        context.responsive(mobile: 180.0, tablet: 220.0, desktop: 240.0);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
@@ -95,7 +95,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
           searchResultsAsync.when(
             loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
             error: (final _, final __) =>
-            const SliverToBoxAdapter(child: SizedBox.shrink()),
+                const SliverToBoxAdapter(child: SizedBox.shrink()),
             data: (final products) =>
                 _buildResultsHeader(context, products.length, searchQuery),
           ),
@@ -148,7 +148,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
   Widget _buildHeroHeader(final BuildContext context, final bool isMobile) {
     return SliverAppBar(
       expandedHeight:
-      context.responsive(mobile: 240.0, tablet: 280.0, desktop: 320.0),
+          context.responsive(mobile: 240.0, tablet: 280.0, desktop: 320.0),
       pinned: true,
       stretch: true,
       backgroundColor: AppColors.textPrimary,
@@ -301,7 +301,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
           // Premium Search Input
           Container(
             height:
-            context.responsive(mobile: 56.0, tablet: 60.0, desktop: 64.0),
+                context.responsive(mobile: 56.0, tablet: 60.0, desktop: 64.0),
             decoration: BoxDecoration(
               color: AppColors.secondary,
               borderRadius: BorderRadius.circular(16),
@@ -341,17 +341,17 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
                 suffixIcon: query.isNotEmpty
                     ? IconButton(
-                  icon: const Icon(Icons.close_rounded,
-                      color: AppColors.textSecondary, size: 20),
-                  onPressed: () {
-                    _searchController.clear();
-                    ref.read(searchQueryProvider.notifier).update('');
-                  },
-                )
+                        icon: const Icon(Icons.close_rounded,
+                            color: AppColors.textSecondary, size: 20),
+                        onPressed: () {
+                          _searchController.clear();
+                          ref.read(searchQueryProvider.notifier).update('');
+                        },
+                      )
                     : null,
                 border: InputBorder.none,
                 contentPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               ),
             ),
           ),
@@ -379,7 +379,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 context.l10n.condition,
                 filters.condition ?? ProductCondition.all,
                 ProductCondition.values,
-                    (final val) => notifier.setCondition(val),
+                (final val) => notifier.setCondition(val),
               ),
             ),
             const SizedBox(width: 12),
@@ -393,13 +393,13 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   Widget _buildQuickFilterDropdown(
-      final String label,
-      final ProductCondition value, // String? yerine ProductCondition
-      final List<ProductCondition> items,
-      // List<String> yerine List<ProductCondition>
-      final Function(ProductCondition?) onChanged,
-      // Callback tipini de güncelle
-      ) {
+    final String label,
+    final ProductCondition value, // String? yerine ProductCondition
+    final List<ProductCondition> items,
+    // List<String> yerine List<ProductCondition>
+    final Function(ProductCondition?) onChanged,
+    // Callback tipini de güncelle
+  ) {
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -422,9 +422,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
           // Otomatik Enum-to-L10n dönüşümü burada yapılıyor:
           items: items
               .map((final item) => DropdownMenuItem<ProductCondition>(
-            value: item,
-            child: Text(item.label(context)), // Extension metodu
-          ))
+                    value: item,
+                    child: Text(item.label(context)), // Extension metodu
+                  ))
               .toList(),
           onChanged: onChanged,
         ),
@@ -488,29 +488,33 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   Widget _buildCategorySection(final dynamic filters, final bool isMobile) {
+    final categories = [null, ...ProductCategory.values];
+
     return SliverToBoxAdapter(
       child: Container(
         height: context.responsive(mobile: 60.0, tablet: 65.0, desktop: 70.0),
         color: AppColors.surface,
         padding: EdgeInsets.symmetric(
           horizontal:
-          context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
+              context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
           vertical:
-          context.responsive(mobile: 8.0, tablet: 10.0, desktop: 12.0),
+              context.responsive(mobile: 8.0, tablet: 10.0, desktop: 12.0),
         ),
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemCount: ProductCategory.values.length,
+          itemCount: categories.length,
           separatorBuilder: (final _, final __) => const SizedBox(width: 10),
           itemBuilder: (final context, final index) {
-            final category = ProductCategory.values[index];
-            final isSelected =
-                (filters.category ?? ProductCategory.other) == category;
+            final category = categories[index];
+
+            final isSelected = filters.category == category;
 
             return _buildCategoryPill(
-              ProductCategoryExtension(category).label(context),
+              category == null
+                  ? 'Tümü'
+                  : ProductCategoryExtension(category!).label(context),
               isSelected,
-                  () => ref
+              () => ref
                   .read(searchFiltersProvider.notifier)
                   .setCategory(category),
             );
@@ -529,9 +533,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(
           horizontal:
-          context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+              context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
           vertical:
-          context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
+              context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
         ),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.textSecondary : AppColors.secondary,
@@ -542,12 +546,12 @@ class _SearchPageState extends ConsumerState<SearchPage>
           ),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: AppColors.textSecondary.withOpacity(0.15),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ]
+                  BoxShadow(
+                    color: AppColors.textSecondary.withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
               : null,
         ),
         child: Center(
@@ -555,7 +559,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
             label,
             style: TextStyle(
               fontSize:
-              context.responsive(mobile: 13.0, tablet: 13.5, desktop: 14.0),
+                  context.responsive(mobile: 13.0, tablet: 13.5, desktop: 14.0),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               color: isSelected ? Colors.white : AppColors.textPrimary,
               letterSpacing: 0.3,
@@ -568,7 +572,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
   bool _hasActiveFilters(final dynamic filters) {
     return (filters.category != null &&
-        filters.category != ProductCategory.other) ||
+            filters.category != ProductCategory.other) ||
         // Eski: filters.condition != 'Tümü'
         (filters.condition != null &&
             filters.condition != ProductCondition.all) ||
@@ -581,7 +585,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal:
-          context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+              context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
           vertical: 16,
         ),
         child: Wrap(
@@ -596,7 +600,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
             if (filters.condition != null &&
                 filters.condition != ProductCondition.all)
               _buildFilterChip(
-                // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
+                  // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
                   filters.condition!.label(context),
                   Icons.verified_rounded),
             if (filters.minPrice > 0 || filters.maxPrice < 100000)
@@ -751,7 +755,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 label: Text('Filtreleri Temizle',
                     style: TextStyle(
                         fontSize:
-                        context.responsive(mobile: 15.0, desktop: 16.0))),
+                            context.responsive(mobile: 15.0, desktop: 16.0))),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.textSecondary,
                   foregroundColor: Colors.white,
@@ -960,7 +964,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
     final maxController = TextEditingController(
       text:
-      filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
+          filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
     );
 
     showDialog(
@@ -986,7 +990,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide:
-                    const BorderSide(color: AppColors.textSecondary),
+                        const BorderSide(color: AppColors.textSecondary),
                   ),
                 ),
               ),
@@ -1012,7 +1016,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide:
-                    const BorderSide(color: AppColors.textSecondary),
+                        const BorderSide(color: AppColors.textSecondary),
                   ),
                 ),
               ),
