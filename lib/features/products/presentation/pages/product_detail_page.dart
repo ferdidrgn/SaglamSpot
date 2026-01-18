@@ -113,7 +113,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       child: _isScrolled
           ? GlassmorphismAppBar(
               title: product.name,
-              subtitle: '₺${product.price.toStringAsFixed(0)}',
+              subtitle: product.isSold
+                  ? 'BU ÜRÜN SATILDI'
+                  : '₺${product.price.toStringAsFixed(0)}',
               showBackButton: true,
               actions: [
                 GlassmorphismIconButton(
@@ -397,6 +399,43 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     ),
                   ),
                 ),
+
+                if (product.isSold)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.2), // Hafif karartma
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Center(
+                        child: Transform.rotate(
+                          angle: -0.2, // Hafif yan yatırılmış
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: AppColors.error,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    blurRadius: 20)
+                              ],
+                            ),
+                            child: const Text(
+                              'SATILDI',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 4,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -695,7 +734,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             SizedBox(height: context.spacingLarge * 2),
 
             // Action Buttons
-            _buildActionButtons(context, isMobile),
+            _buildActionButtons(context, product.isSold, isMobile),
 
             SizedBox(height: context.spacingLarge * 2),
 
@@ -789,39 +828,76 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     );
   }
 
-  Widget _buildActionButtons(final BuildContext context, final bool isMobile) =>
-      Column(
-        children: [
-          _buildPrimaryButton(
-            context,
-            label: 'ŞİMDİ SATIN AL',
-            icon: Icons.shopping_bag_rounded,
-            onTap: () {},
-          ),
-          SizedBox(height: context.spacing),
-          Row(
-            children: [
-              Expanded(
-                child: _buildSecondaryButton(
-                  context,
-                  label: 'SEPETE EKLE',
-                  icon: Icons.add_shopping_cart_rounded,
-                  onTap: () {},
-                ),
+  Widget _buildActionButtons(
+      final BuildContext context, final bool isSold, final bool isMobile) {
+    if (isSold)
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color: AppColors.error.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.error.withOpacity(0.3)),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.not_interested_rounded,
+                color: AppColors.error, size: 32),
+            const SizedBox(height: 8),
+            const Text(
+              'ÜZGÜNÜZ, BU ÜRÜN SATILDI',
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
               ),
-              SizedBox(width: context.spacing),
-              Expanded(
-                child: _buildSecondaryButton(
-                  context,
-                  label: 'MESAJ GÖNDER',
-                  icon: Icons.message_rounded,
-                  onTap: () {},
-                ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Benzer ürünlere aşağıdan göz atabilirsiniz.',
+              style: TextStyle(
+                color: AppColors.error.withOpacity(0.7),
+                fontSize: 12,
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       );
+
+    // Eğer satılmadıysa eski butonları göster:
+    return Column(
+      children: [
+        _buildPrimaryButton(
+          context,
+          label: 'ŞİMDİ SATIN AL',
+          icon: Icons.shopping_bag_rounded,
+          onTap: () {},
+        ),
+        SizedBox(height: context.spacing),
+        Row(
+          children: [
+            Expanded(
+              child: _buildSecondaryButton(
+                context,
+                label: 'SEPETE EKLE',
+                icon: Icons.add_shopping_cart_rounded,
+                onTap: () {},
+              ),
+            ),
+            SizedBox(width: context.spacing),
+            Expanded(
+              child: _buildSecondaryButton(
+                context,
+                label: 'MESAJ GÖNDER',
+                icon: Icons.message_rounded,
+                onTap: () {},
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _buildPrimaryButton(
     final BuildContext context, {
@@ -1554,60 +1630,75 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           ],
         ),
         child: SafeArea(
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: product.isSold
+              ? _buildSoldBottomNotification(context) // Satıldı uyarısı
+              : Row(
                   children: [
-                    Text(
-                      'Toplam Fiyat',
-                      style: TextStyle(
-                        fontSize: context.captionSize,
-                        color: AppColors.textSecondary,
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Toplam Fiyat',
+                            style: TextStyle(
+                                fontSize: context.captionSize,
+                                color: AppColors.textSecondary),
+                          ),
+                          Text(
+                            '₺${product.price.toStringAsFixed(0)}',
+                            style: TextStyle(
+                                fontSize: context.h4Size,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.textPrimary),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      '₺${product.price.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontSize: context.h4Size,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Container(
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(16),
-                      child: const Center(
-                        child: Text(
-                          'SATIN AL',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            letterSpacing: 1,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Container(
+                        height: 56,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            borderRadius: BorderRadius.circular(16),
+                            child: const Center(
+                              child: Text(
+                                'SATIN AL',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            ],
+        ),
+      );
+
+  Widget _buildSoldBottomNotification(final BuildContext context) => Container(
+        height: 56,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: AppColors.textSecondary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16)),
+        child: const Center(
+          child: Text(
+            'ÜRÜN STOKTA YOK (SATILDI)',
+            style: TextStyle(
+                fontWeight: FontWeight.w900, color: AppColors.textSecondary),
           ),
         ),
       );
