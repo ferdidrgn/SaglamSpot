@@ -6,6 +6,8 @@ import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/util/nav_handler.dart';
+import '../../../../core/widgets/glassmorphism_back_button.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
 
@@ -106,90 +108,31 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildFloatingHeader(
       final BuildContext context, final Product product) {
-    return SafeArea(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: _isScrolled ? 70 : 0,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border(
-            bottom: BorderSide(
-              color: AppColors.border,
-              width: _isScrolled ? 1 : 0,
-            ),
-          ),
-          boxShadow: _isScrolled
-              ? [
-                  BoxShadow(
-                    color: AppColors.textPrimary.withOpacity(0.05),
-                    blurRadius: 10,
-                  ),
-                ]
-              : null,
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: context.spacing),
-          child: Row(
-            children: [
-              IconButton(
-                icon: CircleAvatar(
-                  backgroundColor:
-                      _isScrolled ? Colors.transparent : Colors.black26,
-                  child: const Icon(Icons.arrow_back, color: Colors.white),
-                ),
-                onPressed: () {
-                  // Eğer canPop true ise yığından atar, değilse ana sayfaya gider
-                  if (context.canPop())
-                    context.pop();
-                  else
-                    context.goNamed('home');
-                },
-              ),
-              const SizedBox(width: 12),
-              if (_isScrolled)
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        style: TextStyle(
-                          fontSize: context.bodySize,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        '₺${product.price.toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontSize: context.captionSize,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              if (_isScrolled) ...[
-                IconButton(
-                  icon: Icon(
-                    _isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color:
-                        _isFavorite ? AppColors.error : AppColors.textPrimary,
-                  ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      height: _isScrolled ? 70 : 0,
+      child: _isScrolled
+          ? GlassmorphismAppBar(
+              title: product.name,
+              subtitle: '₺${product.price.toStringAsFixed(0)}',
+              showBackButton: true,
+              actions: [
+                GlassmorphismIconButton(
+                  icon: _isFavorite ? Icons.favorite : Icons.favorite_border,
                   onPressed: () => setState(() => _isFavorite = !_isFavorite),
+                  backgroundColor:
+                      _isFavorite ? AppColors.error : AppColors.primary,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.share, color: AppColors.textPrimary),
+                const SizedBox(width: 12),
+                GlassmorphismIconButton(
+                  icon: Icons.share_outlined,
                   onPressed: () {},
+                  backgroundColor: AppColors.primary,
                 ),
+                const SizedBox(width: 4),
               ],
-            ],
-          ),
-        ),
-      ),
+            )
+          : const SizedBox(),
     );
   }
 
@@ -357,20 +300,35 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                 // Top Actions
                 Positioned(
                   top: 20,
+                  left: 20,
                   right: 20,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildActionIcon(
-                        icon: _isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: _isFavorite ? AppColors.error : null,
-                        onTap: () => setState(() => _isFavorite = !_isFavorite),
-                      ),
-                      const SizedBox(width: 12),
-                      _buildActionIcon(
-                        icon: Icons.share_outlined,
-                        onTap: () {},
+                      // ✅ YENİ: Glassmorphism Back Button
+                      const GlassmorphismBackButton(
+                          backgroundColor: AppColors.primary),
+
+                      // ✅ YENİ: Glassmorphism Actions
+                      Row(
+                        children: [
+                          GlassmorphismIconButton(
+                            icon: _isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            onPressed: () =>
+                                setState(() => _isFavorite = !_isFavorite),
+                            backgroundColor: _isFavorite
+                                ? AppColors.error
+                                : AppColors.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          GlassmorphismIconButton(
+                            icon: Icons.share_outlined,
+                            onPressed: () {},
+                            backgroundColor: AppColors.primary,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -514,30 +472,6 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
               ),
               child: Icon(icon, color: AppColors.textPrimary, size: 32),
             ),
-          ),
-        ),
-      );
-
-  Widget _buildActionIcon({
-    required final IconData icon,
-    final Color? color,
-    required final VoidCallback onTap,
-  }) =>
-      Material(
-        color: AppColors.surface.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(16),
-        elevation: 2,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Icon(icon, color: color ?? AppColors.textPrimary, size: 24),
           ),
         ),
       );
@@ -1534,74 +1468,76 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       );
 
   Widget _buildSimilarProductCard(
-          final BuildContext context, final Product product) =>
-      GestureDetector(
-        onTap: () {
-          final String slug = product.name.toSlug();
-          // Mevcut sayfanın üzerine yeni ürünü push ediyoruz
-          context.push('/product/$slug-${product.id}');
-        },
-        child: Container(
-          width: context.responsive(mobile: 180, desktop: 220),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // IMAGE
-              Container(
-                height: 180,
-                decoration: const BoxDecoration(
-                    color: AppColors.secondary,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16))),
-                child: product.imagesUrl.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                        child: Image.network(
-                          product.imagesUrl.first,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      )
-                    : const Icon(Icons.image_not_supported),
-              ),
+      final BuildContext context, final Product product) {
+    return GestureDetector(
+      onTap: () {
+        final String slug = product.name.toSlug();
 
-              // INFO
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: context.bodySize,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '₺${product.price.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontSize: context.bodySize,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        NavigationHandler.goToProduct(
+          context: context,
+          productId: product.id,
+          productSlug: slug,
+        );
+      },
+      child: Container(
+        width: context.responsive(mobile: 180, desktop: 220),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
         ),
-      );
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 180,
+              decoration: const BoxDecoration(
+                  color: AppColors.secondary,
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(16))),
+              child: product.imagesUrl.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
+                      child: Image.network(
+                        product.imagesUrl.first,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    )
+                  : const Icon(Icons.image_not_supported),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: context.bodySize,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '₺${product.price.toStringAsFixed(0)}',
+                    style: TextStyle(
+                      fontSize: context.bodySize,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   // ════════════════════════════════════════════════════════════════
   // MOBILE BOTTOM BAR
