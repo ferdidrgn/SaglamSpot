@@ -134,8 +134,7 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildAnimatedBackground() {
-    return AnimatedBuilder(
+  Widget _buildAnimatedBackground()=> AnimatedBuilder(
       animation: _heroController,
       builder: (final context, final child) => CustomPaint(
         painter: _OrbPainter(
@@ -146,10 +145,9 @@ class _HomePageState extends ConsumerState<HomePage>
         child: const SizedBox.expand(),
       ),
     );
-  }
 
-  Widget _buildHeroSliderSection() {
-    return SliverToBoxAdapter(
+
+  Widget _buildHeroSliderSection() => SliverToBoxAdapter(
       child: Container(
         height: context.hp(context.isMobile ? 50 : 65),
         margin: context.pagePadding,
@@ -163,7 +161,7 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       ),
     );
-  }
+
 
   Widget _heroSlide(final int index) {
     final List<String> images = [
@@ -218,8 +216,7 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildQuickFeatures() {
-    return SliverToBoxAdapter(
+  Widget _buildQuickFeatures() => SliverToBoxAdapter(
       child: Padding(
         padding: context.sectionPadding,
         child: Center(
@@ -241,10 +238,9 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       ),
     );
-  }
 
-  Widget _featureItem(final IconData icon, final String text) {
-    return Row(
+
+  Widget _featureItem(final IconData icon, final String text) => Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, color: context.primaryColor, size: context.iconMedium),
@@ -256,7 +252,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 fontSize: context.bodySize)),
       ],
     );
-  }
+
 
   Widget _buildCategoriesSection() {
     final List<ProductCategory?> categories = [null, ...ProductCategory.values];
@@ -372,8 +368,7 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _roomCard(final String title, final String img, final String sub) {
-    return Container(
+  Widget _roomCard(final String title, final String img, final String sub) =>Container(
       width: context.wp(context.isMobile ? 70 : 25),
       margin: const EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
@@ -407,10 +402,9 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       ),
     );
-  }
 
-  Widget _buildArtisanInfo() {
-    return SliverToBoxAdapter(
+
+  Widget _buildArtisanInfo() =>SliverToBoxAdapter(
       child: Container(
         margin: context.sectionPadding,
         padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
@@ -468,7 +462,7 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       ),
     );
-  }
+
 
   Widget _buildStatsSection() {
     final stats = [
@@ -514,8 +508,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Widget _buildStatCard(
-      final String val, final String label, final IconData icon) {
-    return Container(
+      final String val, final String label, final IconData icon) => Container(
       width:
           context.responsive(mobile: context.wp(42), tablet: 200, desktop: 250),
       padding: const EdgeInsets.all(24),
@@ -543,10 +536,9 @@ class _HomePageState extends ConsumerState<HomePage>
         ],
       ),
     );
-  }
 
-  Widget _buildFooter() {
-    return SliverToBoxAdapter(
+
+  Widget _buildFooter() => SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.fromLTRB(
             context.pagePadding.left, 80, context.pagePadding.right, 40),
@@ -618,10 +610,9 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       ),
     );
-  }
 
-  Widget _footerColumn(final String title, final List<String> items) {
-    return SizedBox(
+
+  Widget _footerColumn(final String title, final List<String> items) =>SizedBox(
       width: context.responsive(mobile: context.wp(40), desktop: 150),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -641,10 +632,9 @@ class _HomePageState extends ConsumerState<HomePage>
         ],
       ),
     );
-  }
 
-  Widget _buildSectionHeader(final String title, final String sub) {
-    return Padding(
+
+  Widget _buildSectionHeader(final String title, final String sub)=> Padding(
       padding: context.pagePadding.copyWith(bottom: 20, top: 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -665,7 +655,6 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
     );
   }
-}
 
 class _OrbPainter extends CustomPainter {
   final double animation;
