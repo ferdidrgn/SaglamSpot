@@ -89,4 +89,103 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get conditionUsed => 'İkinci El';
+
+  @override
+  String get newSeason => 'YENİ SEZON';
+
+  @override
+  String get heroTitle => 'Minimalist\nKonforun Zirvesi';
+
+  @override
+  String get viewCollection => 'KOLEKSİYONU GÖR';
+
+  @override
+  String get featureArtisan => 'Samimi Esnaflık';
+
+  @override
+  String get featureDelivery => 'Güvenli Teslimat';
+
+  @override
+  String get featureService => 'Güler Yüzlü Hizmet';
+
+  @override
+  String get featureShipping => 'Hızlı Nakliye';
+
+  @override
+  String get newCollection => 'Yeni Koleksiyon';
+
+  @override
+  String get newCollectionSub => 'En yeni ürünler';
+
+  @override
+  String get byRoom => 'Yaşam Alanına Göre';
+
+  @override
+  String get byRoomSub => 'Evinizin her köşesi için özel seçimler';
+
+  @override
+  String get roomLivingRoom => 'Salon';
+
+  @override
+  String get roomLivingRoomSub => 'Konforun Merkezi';
+
+  @override
+  String get roomBedroom => 'Yatak';
+
+  @override
+  String get roomBedroomSub => 'Huzurlu Uykular';
+
+  @override
+  String get roomKitchen => 'Mutfak';
+
+  @override
+  String get roomKitchenSub => 'Pratik Çözümler';
+
+  @override
+  String get roomOffice => 'Ofis';
+
+  @override
+  String get roomOfficeSub => 'Verimli Çalışma';
+
+  @override
+  String get whoWeAre => 'BİZ KİMİZ?';
+
+  @override
+  String get artisanTitle => '20 Yıllık Samimi Esnaflık,\nModern Hizmet.';
+
+  @override
+  String get artisanDesc =>
+      'Mağazamıza gelin, bir çayımızı için; size en uygun mobilyayı birlikte seçelim.';
+
+  @override
+  String get visitUs => 'BİZİ ZİYARET EDİN';
+
+  @override
+  String get statHappyCustomer => 'Mutlu Müşteri';
+
+  @override
+  String get statExperience => 'Tecrübe';
+
+  @override
+  String get statDelivery => 'Teslimat';
+
+  @override
+  String get statTrust => 'Güven';
+
+  @override
+  String get explore => 'KEŞFET';
+
+  @override
+  String get corporate => 'KURUMSAL';
+
+  @override
+  String get contactUs => 'BİZE ULAŞIN';
+
+  @override
+  String get footerDesc =>
+      '20 yılı aşkın tecrübemizle İstanbul\'un her noktasına kaliteyi ve güveni taşıyoruz.';
+
+  @override
+  String get allRightsReserved =>
+      '© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.';
 }

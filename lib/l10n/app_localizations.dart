@@ -235,6 +235,198 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'İkinci El'**
   String get conditionUsed;
+
+  /// No description provided for @newSeason.
+  ///
+  /// In tr, this message translates to:
+  /// **'YENİ SEZON'**
+  String get newSeason;
+
+  /// No description provided for @heroTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Minimalist\nKonforun Zirvesi'**
+  String get heroTitle;
+
+  /// No description provided for @viewCollection.
+  ///
+  /// In tr, this message translates to:
+  /// **'KOLEKSİYONU GÖR'**
+  String get viewCollection;
+
+  /// No description provided for @featureArtisan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Samimi Esnaflık'**
+  String get featureArtisan;
+
+  /// No description provided for @featureDelivery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güvenli Teslimat'**
+  String get featureDelivery;
+
+  /// No description provided for @featureService.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güler Yüzlü Hizmet'**
+  String get featureService;
+
+  /// No description provided for @featureShipping.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hızlı Nakliye'**
+  String get featureShipping;
+
+  /// No description provided for @newCollection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Koleksiyon'**
+  String get newCollection;
+
+  /// No description provided for @newCollectionSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'En yeni ürünler'**
+  String get newCollectionSub;
+
+  /// No description provided for @byRoom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yaşam Alanına Göre'**
+  String get byRoom;
+
+  /// No description provided for @byRoomSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Evinizin her köşesi için özel seçimler'**
+  String get byRoomSub;
+
+  /// No description provided for @roomLivingRoom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Salon'**
+  String get roomLivingRoom;
+
+  /// No description provided for @roomLivingRoomSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konforun Merkezi'**
+  String get roomLivingRoomSub;
+
+  /// No description provided for @roomBedroom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatak'**
+  String get roomBedroom;
+
+  /// No description provided for @roomBedroomSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huzurlu Uykular'**
+  String get roomBedroomSub;
+
+  /// No description provided for @roomKitchen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mutfak'**
+  String get roomKitchen;
+
+  /// No description provided for @roomKitchenSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pratik Çözümler'**
+  String get roomKitchenSub;
+
+  /// No description provided for @roomOffice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ofis'**
+  String get roomOffice;
+
+  /// No description provided for @roomOfficeSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Verimli Çalışma'**
+  String get roomOfficeSub;
+
+  /// No description provided for @whoWeAre.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİZ KİMİZ?'**
+  String get whoWeAre;
+
+  /// No description provided for @artisanTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 Yıllık Samimi Esnaflık,\nModern Hizmet.'**
+  String get artisanTitle;
+
+  /// No description provided for @artisanDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mağazamıza gelin, bir çayımızı için; size en uygun mobilyayı birlikte seçelim.'**
+  String get artisanDesc;
+
+  /// No description provided for @visitUs.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİZİ ZİYARET EDİN'**
+  String get visitUs;
+
+  /// No description provided for @statHappyCustomer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mutlu Müşteri'**
+  String get statHappyCustomer;
+
+  /// No description provided for @statExperience.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tecrübe'**
+  String get statExperience;
+
+  /// No description provided for @statDelivery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Teslimat'**
+  String get statDelivery;
+
+  /// No description provided for @statTrust.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güven'**
+  String get statTrust;
+
+  /// No description provided for @explore.
+  ///
+  /// In tr, this message translates to:
+  /// **'KEŞFET'**
+  String get explore;
+
+  /// No description provided for @corporate.
+  ///
+  /// In tr, this message translates to:
+  /// **'KURUMSAL'**
+  String get corporate;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİZE ULAŞIN'**
+  String get contactUs;
+
+  /// No description provided for @footerDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 yılı aşkın tecrübemizle İstanbul\'un her noktasına kaliteyi ve güveni taşıyoruz.'**
+  String get footerDesc;
+
+  /// No description provided for @allRightsReserved.
+  ///
+  /// In tr, this message translates to:
+  /// **'© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.'**
+  String get allRightsReserved;
 }
 
 class _AppLocalizationsDelegate
