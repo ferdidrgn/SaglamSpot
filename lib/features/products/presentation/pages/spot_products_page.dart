@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
+import '../../../../core/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/custom_product_card.dart';
@@ -983,7 +984,19 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     // Use CustomProductCard with special Spot styling overlay
     return Stack(
       children: [
-        CustomProductCard(product: product),
+        ElevatedButton(
+            onPressed: () {
+              // slug yapısını daha önce konuştuğumuz toSlug() ile oluşturuyoruz
+              final String slug = product.name.toSlug();
+              // Örnek: /product/istikbal-koltuk-takimi-AB123
+              context.goNamed(
+                'productDetail',
+                pathParameters: {
+                  'slugWithId': '$slug-${product.id}',
+                },
+              );
+            },
+            child: CustomProductCard(product: product)),
 
         // Spot Badge Overlay
         Positioned(

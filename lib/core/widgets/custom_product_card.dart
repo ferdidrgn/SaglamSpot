@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../extentions/reg_exp_extentions.dart';
+import '../util/nav_handler.dart';
 import 'gallery_section.dart';
 
 class CustomProductCard extends StatefulWidget {
@@ -40,11 +40,9 @@ class _CustomProductCardState extends State<CustomProductCard> {
           borderRadius: BorderRadius.circular(28),
           child: Stack(
             children: [
-              // 1. GÖRSEL VE GALERİ TETİKLEYİCİ
               Positioned.fill(
                 child: GestureDetector(
                   onTap: () => _openGallery(context),
-                  // Görsele tıklayınca galeri açılır
                   child: Hero(
                     tag: 'prod_img_${widget.product.id}',
                     child: Image.network(
@@ -57,11 +55,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   ),
                 ),
               ),
-
-              // 2. GRADIENT OVERLAY (Yazıların okunması için)
               Positioned.fill(
                 child: IgnorePointer(
-                  // Tıklamanın arkadaki görsele geçmesi için
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -77,8 +72,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   ),
                 ),
               ),
-
-              // 3. ÜSTTEKİ GALERİ İKONU (Alternatif tıklama alanı)
               Positioned(
                 top: 15,
                 right: 15,
@@ -89,22 +82,15 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   onPressed: () => _openGallery(context),
                 ),
               ),
-
-              // 4. ALT BİLGİ VE DETAY SAYFASI TETİKLEYİCİ
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () {
-                    final String slug = widget.product.name.toSlug();
-                    // Örnek: /product/istikbal-koltuk-takimi-AB123
-                    context.push('/product/$slug-${widget.product.id}');
-                  },
+                  onTap: () => _navigateToProductDetail(context),
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
                     decoration: const BoxDecoration(
-                      // Yazı alanına özel hafif karartma
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
@@ -141,7 +127,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
                             ],
                           ),
                         ),
-                        // Detay sayfasına gidiş oku
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -163,6 +148,17 @@ class _CustomProductCardState extends State<CustomProductCard> {
           ),
         ),
       ),
+    );
+  }
+
+  // ✅ NavigationHandler kullanıyor
+  void _navigateToProductDetail(final BuildContext context) {
+    final String slug = widget.product.name.toSlug();
+
+    NavigationHandler.goToProduct(
+      context: context,
+      productId: widget.product.id,
+      productSlug: slug,
     );
   }
 

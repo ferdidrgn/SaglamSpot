@@ -20,48 +20,38 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    // Web için '/' başlangıç noktası, mobil için '/login'
     initialLocation: kIsWeb ? '/' : '/login',
     observers: [SeoRouteObserver()],
-
-    /// 🛡️ SENİN ORİJİNAL REDIRECT MANTIĞIN (Aynen korundu)
     redirect: (final context, final state) {
       final isLoggedIn = authState.value != null;
       final isLoggingIn = state.matchedLocation == '/login';
 
-      // Admin sayfaları koruması
       final adminRoutes = ['/add-product', '/edit-product'];
       final isAdminPage =
           adminRoutes.any((final r) => state.matchedLocation.startsWith(r));
 
-      // 1. Web'de herkes gezebilir, sadece admin sayfaları için login gerekir
       if (kIsWeb) {
         if (!isLoggedIn && isAdminPage) return '/login';
         return null;
       }
 
-      // 2. Mobil için katı kurallar
       if (!isLoggedIn && !isLoggingIn) return '/login';
       if (isLoggedIn && isLoggingIn) return '/';
 
       return null;
     },
-
     routes: [
-      // LOGIN SAYFASI
       GoRoute(
         path: '/login',
         name: 'login',
         builder: (final context, final state) => const LoginPage(),
       ),
 
-      /// 🔹 MAIN SHELL (NAVIGATION SCREEN)
       StatefulShellRoute.indexedStack(
         builder: (final context, final state, final navigationShell) {
           return NavigationScreen(navigationShell: navigationShell);
         },
         branches: [
-          // 0: ANASAYFA (Focal Transition)
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -76,7 +66,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
               ),
             ],
           ),
-          // 1: SIFIR ÜRÜNLER (Curtain Transition)
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -90,7 +79,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
               ),
             ],
           ),
-          // 2: İKİNCİ EL (Scroll Slide Transition)
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -104,38 +92,9 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
               ),
             ],
           ),
-          /*// 3: HAKKINDA (Cinematic Fade)
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/about',
-                name: 'about',
-                pageBuilder: (final context, final state) =>
-                    const CustomTransitionPage(
-                  child: AboutPage(),
-                  transitionsBuilder: cinematicFadeTransition,
-                ),
-              ),
-            ],
-          ),
-          // 4: SSS (Spiral Transition)
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/sss',
-                name: 'sss',
-                pageBuilder: (final context, final state) =>
-                    const CustomTransitionPage(
-                  child: SSSPage(),
-                  transitionsBuilder: spiralTransition,
-                ),
-              ),
-            ],
-          ),*/
         ],
       ),
 
-      /// 🔍 ARAMA (Shimmer Slide Transition)
       GoRoute(
         path: '/search',
         name: 'search',
@@ -145,8 +104,10 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         ),
       ),
 
+      // ✅ DEĞİŞTİ: name eklendi
       GoRoute(
         path: '/product/:slugWithId',
+        name: 'productDetail',
         pageBuilder: (final context, final state) {
           final String fullParam = state.pathParameters['slugWithId']!;
           final String productId = fullParam.split('-').last;
