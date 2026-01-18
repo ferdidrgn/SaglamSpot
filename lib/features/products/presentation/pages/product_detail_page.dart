@@ -1430,23 +1430,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'BENZER ÜRÜNLER',
-                    style: TextStyle(
-                      fontSize: context.h3Size,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Text('Tümünü Gör'),
-                    label: const Icon(Icons.arrow_forward, size: 16),
-                  ),
-                ],
+              Text(
+                'BENZER ÜRÜNLER',
+                style: TextStyle(
+                  fontSize: context.h3Size,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textPrimary,
+                ),
               ),
               SizedBox(height: context.spacingLarge),
               SizedBox(
