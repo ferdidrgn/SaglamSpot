@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
-
-import '../../../../core/enum/enums.dart';
-import '../../../../core/extentions/product_category_ex.dart';
+import '../../../../core/common/enum/enums.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
 
 class Product extends Equatable {
   final String id;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../extentions/app_context_ui_extension.dart';
+import '../common/extentions/app_context_ui_extension.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final TextEditingController controller;

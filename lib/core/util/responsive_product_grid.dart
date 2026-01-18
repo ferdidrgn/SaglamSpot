@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/products/domain/entites/product.dart';
-import '../extentions/app_context_ui_extension.dart';
+import '../common/extentions/app_context_ui_extension.dart';
 import '../widgets/custom_product_card.dart';
 
 /// Responsive product grid with optimal performance

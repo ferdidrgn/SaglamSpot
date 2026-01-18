@@ -1,4 +1,4 @@
-import '../../../../core/extentions/product_category_ex.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../domain/entites/product.dart';
 
 class ProductModel {

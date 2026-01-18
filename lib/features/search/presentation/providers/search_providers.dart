@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../../../core/enum/enums.dart';
+import '../../../../core/common/enum/enums.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 

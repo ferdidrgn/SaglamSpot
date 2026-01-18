@@ -1,5 +1,5 @@
 import 'package:share_plus/share_plus.dart';
-import '../../../../core/extentions/reg_exp_extentions.dart';
+import '../common/extentions/reg_exp_extentions.dart';
 
 class DeepLinkService {
   static const String _baseUrl = "https://www.saglamspotcu.web.app";

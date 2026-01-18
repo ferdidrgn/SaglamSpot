@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/extentions/product_category_ex.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
-import '../../../../core/extentions/app_context_ui_extension.dart';
-import '../../../../core/extentions/reg_exp_extentions.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
+import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';

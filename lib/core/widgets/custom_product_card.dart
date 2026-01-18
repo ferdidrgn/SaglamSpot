@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
-import '../extentions/reg_exp_extentions.dart';
 import '../../shared/navigation/widgets/nav_handler.dart';
+import '../common/extentions/reg_exp_extentions.dart';
 import 'gallery_section.dart';
 
 class CustomProductCard extends StatefulWidget {

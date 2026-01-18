@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../extentions/app_context_ui_extension.dart';
+import '../common/extentions/app_context_ui_extension.dart';
 import '../theme/app_colors.dart';
 
 class SectionHeader extends StatelessWidget {

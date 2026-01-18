@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:saglamspot/core/extentions/app_context_ui_extension.dart';
+
+import '../common/extentions/app_context_ui_extension.dart';
 
 class ScrollUpButton extends StatelessWidget {
   final ScrollController scrollController;

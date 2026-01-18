@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
-import '../../../../core/enum/enums.dart';
-import '../../../../core/extentions/app_context_ui_extension.dart';
-import '../../../../core/extentions/product_category_ex.dart'; // label extension için
+import '../../../../core/common/enum/enums.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
