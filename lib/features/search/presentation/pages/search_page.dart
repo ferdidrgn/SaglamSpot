@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/extentions/product_category_ex.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/enum/enums.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
-import '../../../../core/extentions/product_category_ex.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
@@ -508,8 +508,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 (filters.category ?? ProductCategory.other) == category;
 
             return _buildCategoryPill(
-              // Extension sayesinde otomatik TR/EN gelir:
-              category.label(context),
+              ProductCategoryExtension(category).label(context),
               isSelected,
               () => ref
                   .read(searchFiltersProvider.notifier)
@@ -589,8 +588,11 @@ class _SearchPageState extends ConsumerState<SearchPage>
           spacing: 8,
           runSpacing: 8,
           children: [
-            if (filters.category != null && filters.category != 'Tümü')
-              _buildFilterChip(filters.category!, Icons.category_rounded),
+            if (filters.category != null &&
+                filters.category != ProductCategory.other)
+              _buildFilterChip(
+                  ProductCategoryExtension(filters.category).label(context),
+                  Icons.category_rounded),
             if (filters.condition != null &&
                 filters.condition != ProductCondition.all)
               _buildFilterChip(
@@ -688,10 +690,11 @@ class _SearchPageState extends ConsumerState<SearchPage>
   Widget _buildEmptyState() {
     return SliverFillRemaining(
       hasScrollBody: false, // Ekranın taşmasını önlemek için kritik ayar
-      child: Center(
-        child: Padding(
-          padding: context.pagePadding,
+      child: Padding(
+        padding: context.pagePadding,
+        child: Center(
           child: Column(
+            mainAxisSize: MainAxisSize.min, // İçeriği sıkıştırır
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(

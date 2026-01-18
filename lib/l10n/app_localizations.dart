@@ -173,7 +173,7 @@ abstract class AppLocalizations {
   /// No description provided for @categoryWardrobe.
   ///
   /// In tr, this message translates to:
-  /// **'Gardırop'**
+  /// **'Dolap'**
   String get categoryWardrobe;
 
   /// No description provided for @categoryWhite.

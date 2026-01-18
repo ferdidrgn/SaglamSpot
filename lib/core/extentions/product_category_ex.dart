@@ -4,17 +4,17 @@ import 'app_context_ui_extension.dart';
 
 extension ProductCategoryExtension on ProductCategory? {
   String label(final BuildContext context) {
-    if (this == null) return context.l10n.conditionAll;
-    final label = switch (this!) {
-      ProductCategory.sofa => context.l10n.categorySofa,
-      ProductCategory.chair => context.l10n.categoryChair,
-      ProductCategory.table => context.l10n.categoryTable,
-      ProductCategory.bed => context.l10n.categoryBed,
-      ProductCategory.wardrobe => context.l10n.categoryWardrobe,
-      ProductCategory.white => context.l10n.categoryWhite,
-      ProductCategory.other => context.l10n.categoryOther
+    final l10n = context.l10n;
+    if (this == null) return l10n.conditionAll;
+    return switch (this!) {
+      ProductCategory.sofa => l10n.categorySofa,
+      ProductCategory.chair => l10n.categoryChair,
+      ProductCategory.table => l10n.categoryTable,
+      ProductCategory.bed => l10n.categoryBed,
+      ProductCategory.wardrobe => l10n.categoryWardrobe,
+      ProductCategory.white => l10n.categoryWhite,
+      ProductCategory.other => l10n.categoryOther,
     };
-    return label; // Eğer l10n anahtarı null ise boş string dön
   }
 }
 

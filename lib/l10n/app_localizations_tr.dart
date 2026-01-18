@@ -56,7 +56,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryBed => 'Yatak Odası';
 
   @override
-  String get categoryWardrobe => 'Gardırop';
+  String get categoryWardrobe => 'Dolap';
 
   @override
   String get categoryWhite => 'Beyaz Eşya';
