@@ -687,6 +687,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
   Widget _buildEmptyState() {
     return SliverFillRemaining(
+      hasScrollBody: false, // Ekranın taşmasını önlemek için kritik ayar
       child: Center(
         child: Padding(
           padding: context.pagePadding,
