@@ -4,7 +4,7 @@ class FurnitureTipsSection extends StatelessWidget {
   const FurnitureTipsSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SliverPadding(
@@ -26,7 +26,7 @@ class FurnitureTipsSection extends StatelessWidget {
                 mainAxisExtent: 200,
               ),
               itemCount: _furnitureTips.length,
-              itemBuilder: (context, index) =>
+              itemBuilder: (final context, final index) =>
                   _build3DTipCard(_furnitureTips[index], index + 1),
             ),
           ],
@@ -35,7 +35,7 @@ class FurnitureTipsSection extends StatelessWidget {
     );
   }
 
-  Widget _build3DTipCard(FurnitureTip tip, int number) {
+  Widget _build3DTipCard(final FurnitureTip tip, final int number) {
     final color = _getCategoryColor(tip.category);
     return Container(
       decoration: BoxDecoration(
@@ -111,7 +111,7 @@ class FurnitureTipsSection extends StatelessWidget {
     );
   }
 
-  Color _getCategoryColor(String category) {
+  Color _getCategoryColor(final String category) {
     switch (category) {
       case 'Yerleştirme':
         return Colors.green;

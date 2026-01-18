@@ -317,7 +317,7 @@ class _SSSPageState extends State<SSSPage> {
           runSpacing: 12,
           children: _categories.map((final category) {
             final isSelected = _selectedCategory == category;
-            final count = category == 'Tümü'
+            final count = category == context.l10n.conditionAll
                 ? _faqs.length
                 : _faqs.where((final f) => f['category'] == category).length;
 
@@ -657,7 +657,7 @@ class _SSSPageState extends State<SSSPage> {
           children: [
             const Icon(Icons.phone),
             const SizedBox(width: 12),
-            Text('Bizi Arayın', style: buttonTextStyle),
+            Text(context.l10n.contactUs, style: buttonTextStyle),
           ],
         ),
       ),

@@ -134,7 +134,7 @@ class HomePage extends ConsumerWidget {
   }
 
 // Tab içeriği için yardımcı fonksiyon (Sayıyı şık bir baloncuk içinde gösterir)
-  Widget _buildTab(String label, int count) {
+  Widget _buildTab(final String label, final int count) {
     return Tab(
       height: 44,
       child: Row(
@@ -189,7 +189,7 @@ class _ProductGrid extends StatelessWidget {
         mainAxisSpacing: 16,
       ),
       itemCount: products.length + (products.length ~/ 5),
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         if (index > 0 && (index + 1) % 6 == 0) return const AdNativeWidget();
         final realIndex = index - (index ~/ 6);
         if (realIndex >= products.length) return const SizedBox.shrink();
@@ -205,7 +205,7 @@ class LuxuryProductCard extends ConsumerWidget {
   const LuxuryProductCard({super.key, required this.product});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
