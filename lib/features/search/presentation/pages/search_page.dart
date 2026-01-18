@@ -152,27 +152,39 @@ class _SearchPageState extends ConsumerState<SearchPage>
       expandedHeight:
           context.responsive(mobile: 240.0, tablet: 280.0, desktop: 320.0),
       pinned: true,
+      // Scroll yapınca AppBar'ın üstte kalmasını sağlar
       stretch: true,
       backgroundColor: AppColors.textPrimary,
 
-      // 🆕 BUTONU BURAYA TAŞIYORUZ (Sabit kalması için)
+      // 1. ADIM: Butonu AppBar'ın leading kısmına taşıyarak sabitliyoruz
+      automaticallyImplyLeading: false,
+      // Varsayılan butonu kapat
       leadingWidth: 80,
-      // Butonun sığması için genişlik
-      leading: const Padding(
-        padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
-        child: GlassmorphismBackButton(
-          backgroundColor: AppColors.primary,
+      // Butonun rahat sığması için geniş alan
+      leading: const Center(
+        child: Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: GlassmorphismBackButton(
+            backgroundColor: AppColors.primary,
+          ),
         ),
       ),
 
       flexibleSpace: FlexibleSpaceBar(
-        // Buradaki background scroll ile beraber kaybolur
+        stretchModes: const [
+          StretchMode.zoomBackground,
+          StretchMode.blurBackground,
+        ],
         background: Stack(
           fit: StackFit.expand,
           children: [
+            // Arka plan görseli
             Image.network(
-                'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
-                fit: BoxFit.cover),
+              'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
+              fit: BoxFit.cover,
+            ),
+
+            // Premium Gradient Layer
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -182,8 +194,43 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
               ),
             ),
-            // Artık buton burada (background içinde) değil!
-            _buildBrandLogo(context),
+
+            // 2. ADIM: Marka logosu ve metinler (Buton artık burada değil)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsive(
+                    mobile: 20.0, tablet: 32.0, desktop: 48.0),
+                vertical: context.responsive(
+                    mobile: 24.0, tablet: 32.0, desktop: 40.0),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildBrandLogo(context),
+                  const SizedBox(height: 20),
+                  Text(
+                    context.l10n.collection,
+                    style: const TextStyle(
+                      color: AppColors.onPrimary,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 4,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    context.l10n.eleganceAndComfort,
+                    style: TextStyle(
+                      fontSize: context.responsive(
+                          mobile: 28.0, tablet: 36.0, desktop: 44.0),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
