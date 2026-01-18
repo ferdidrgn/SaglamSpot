@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/extentions/product_category_ex.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
+import '../../../../core/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
@@ -67,7 +69,8 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       ),
       data: (final product) {
         final similarProducts = ref.watch(similarProductsProvider(
-            category: product.category.label(context), currentProductId: product.id));
+            category: product.category.label(context),
+            currentProductId: product.id));
         return Scaffold(
           backgroundColor: AppColors.background,
           body: Stack(
@@ -131,7 +134,12 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
               IconButton(
                 icon:
                     const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  if (context.canPop())
+                    context.pop();
+                  else
+                    context.go('/');
+                },
               ),
               const SizedBox(width: 12),
               if (_isScrolled)
@@ -1527,11 +1535,9 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
   ) =>
       GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (final _) => ProductDetailPage(productId: product.id)),
-          );
+          final String slug = product.name.toSlug();
+          // Mevcut sayfanın üzerine yeni ürünü push ediyoruz
+          context.push('/product/$slug-${product.id}');
         },
         child: Container(
           width: context.responsive(mobile: 180, desktop: 220),
