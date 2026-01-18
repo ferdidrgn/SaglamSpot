@@ -2,24 +2,19 @@ import 'package:flutter/material.dart';
 import '../enum/enums.dart';
 import 'app_context_ui_extension.dart';
 
-extension ProductCategoryExtension on ProductCategory {
+extension ProductCategoryExtension on ProductCategory? {
   String label(final BuildContext context) {
-    switch (this) {
-      case ProductCategory.sofa:
-        return context.l10n.categorySofa;
-      case ProductCategory.chair:
-        return context.l10n.categoryChair;
-      case ProductCategory.table:
-        return context.l10n.categoryTable;
-      case ProductCategory.bed:
-        return context.l10n.categoryBed;
-      case ProductCategory.wardrobe:
-        return context.l10n.categoryWardrobe;
-      case ProductCategory.white:
-        return context.l10n.categoryWhite;
-      case ProductCategory.other:
-        return context.l10n.categoryOther;
-    }
+    if (this == null) return context.l10n.conditionAll;
+    final label = switch (this!) {
+      ProductCategory.sofa => context.l10n.categorySofa,
+      ProductCategory.chair => context.l10n.categoryChair,
+      ProductCategory.table => context.l10n.categoryTable,
+      ProductCategory.bed => context.l10n.categoryBed,
+      ProductCategory.wardrobe => context.l10n.categoryWardrobe,
+      ProductCategory.white => context.l10n.categoryWhite,
+      ProductCategory.other => context.l10n.categoryOther
+    };
+    return label; // Eğer l10n anahtarı null ise boş string dön
   }
 }
 
