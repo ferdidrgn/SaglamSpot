@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
-import '../../../../core/util/responsive_utils.dart';
-import '../../../../core/widgets/ad_native_widget.dart';
+import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/util/responsive_product_grid.dart';
+import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
@@ -65,6 +66,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
   @override
   Widget build(final BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final searchResultsAsync = ref.watch(searchedProductsProvider);
     final currentFilters = ref.watch(searchFiltersProvider);
     final isMobile = context.isMobile;
@@ -258,7 +260,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
-                hintText: 'Ürün, kategori veya stil arayın...',
+                hintText: l10n.searchHint,
                 hintStyle: TextStyle(
                   color: AppColors.textSecondary.withOpacity(0.5),
                   fontWeight: FontWeight.w400,
@@ -575,7 +577,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$count Ürün Bulundu',
+                  l10n.productsFound(count),
                   style: TextStyle(
                     fontSize: context.responsive(
                         mobile: 17.0, tablet: 18.0, desktop: 19.0),

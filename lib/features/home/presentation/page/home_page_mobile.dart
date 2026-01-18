@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/gallery_section.dart';
@@ -15,8 +14,6 @@ import '../../../products/presentation/providers/product_mutation_provider.dart'
 import '../../../products/presentation/providers/product_provider.dart';
 
 // --- ENUMLAR ---
-enum ProductStatus { available, sold }
-
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
@@ -24,9 +21,7 @@ class HomePage extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     // İşlem başarılı olduğunda listeyi otomatik yenile
     ref.listen(productMutationProvider, (final _, final next) {
-      if (next is AsyncData) {
-        ref.invalidate(productsProvider);
-      }
+      if (next is AsyncData) ref.invalidate(productsProvider);
     });
 
     final productsAsync = ref.watch(productsProvider);

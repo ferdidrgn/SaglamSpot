@@ -19,8 +19,7 @@ class AppTheme {
           // Dark Mint
           secondary: AppColors.accent,
           // Gold
-          surface: AppColors.white,
-          background: AppColors.background,
+          surface: AppColors.background,
           onPrimary: AppColors.white,
           onSecondary: AppColors.primary,
         ),

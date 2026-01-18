@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import '../util/responsive_utils.dart';
+import '../extentions/app_context_ui_extension.dart';
 
 class InsaneMagicShowcase extends StatefulWidget {
   final double? height;

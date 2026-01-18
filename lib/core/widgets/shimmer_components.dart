@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:saglamspot/core/util/responsive_utils.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../theme/theme_context_extension.dart';
+import '../extentions/app_context_ui_extension.dart';
 
 // --- 1. TEMEL PARLAMA EFEKTİ (Shimmer Box) ---
 class ShimmerLoading extends StatelessWidget {

@@ -1,3 +1,4 @@
+import '../../../../core/extentions/product_category_ex.dart';
 import '../../domain/entites/product.dart';
 
 class ProductModel {
@@ -99,7 +100,7 @@ class ProductModel {
       soldAt: soldAt,
       name: name,
       desc: desc,
-      category: category,
+      category: category.toProductCategory(),
       price: price,
       imagesUrl: imagesUrl,
       isSold: isSold,
@@ -116,7 +117,7 @@ class ProductModel {
       soldAt: product.soldAt,
       name: product.name,
       desc: product.desc,
-      category: product.category,
+      category: product.category.toFirestore(),
       price: product.price,
       imagesUrl: product.imagesUrl,
       isSold: product.isSold,

@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/util/responsive_utils.dart';
 import '../../features/products/presentation/providers/gallery_provider.dart';
 import '../constants/app_constants.dart';
+import '../extentions/app_context_ui_extension.dart';
 import 'empty_state_message_web.dart';
 import 'optimized_cached_image.dart';
 

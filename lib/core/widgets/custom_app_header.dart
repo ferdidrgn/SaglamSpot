@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../extentions/app_context_ui_extension.dart';
 import '../theme/app_colors.dart';
-import '../util/responsive_utils.dart';
 
 class CustomAppHeader extends StatelessWidget {
   final int currentIndex;

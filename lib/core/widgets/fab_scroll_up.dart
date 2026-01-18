@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../theme/theme_context_extension.dart';
+import 'package:saglamspot/core/extentions/app_context_ui_extension.dart';
 
 class ScrollUpButton extends StatelessWidget {
   final ScrollController scrollController;
@@ -27,7 +26,7 @@ class ScrollUpButton extends StatelessWidget {
           bottom: visible ? 24 : -80,
           child: FloatingActionButton(
             elevation: 6,
-            backgroundColor: context.secondaryColor,
+            backgroundColor: context.colors.secondary,
             onPressed: () {
               scrollController.animateTo(
                 0,

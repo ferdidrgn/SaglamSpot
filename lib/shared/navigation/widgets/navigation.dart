@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/util/platform_checker.dart';
 import 'package:saglamspot/core/widgets/ad_mobile_banner.dart';
+import '../../../core/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/util/responsive_utils.dart';
 import '../../../core/widgets/ad_sense_banner.dart';
 
 class SearchIntent extends Intent {

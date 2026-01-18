@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
+import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/theme/theme_context_extension.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
@@ -74,9 +74,9 @@ class _HomePageState extends ConsumerState<HomePage>
     final availableProducts = ref.watch(availableProductsProvider);
 
     return Scaffold(
-      backgroundColor: context.scaffoldBackgroundColor,
+      backgroundColor: context.colors.surface,
       body: productsAsync.when(
-        loading: () => const FullPageShimmer(), // Senin özel Shimmer class'ın
+        loading: () => const FullPageShimmer(),
         error: (final err, final stack) =>
             Center(child: Text('Ürünler yüklenirken hata oluştu: $err')),
         data: (final _) => Stack(
@@ -145,7 +145,7 @@ class _HomePageState extends ConsumerState<HomePage>
         painter: _OrbPainter(
           animation: _heroController.value,
           color1: context.primaryColor.withOpacity(0.05),
-          color2: context.secondaryColor.withOpacity(0.03),
+          color2: context.colors.secondary.withOpacity(0.03),
         ),
         child: const SizedBox.expand(),
       ),
@@ -195,7 +195,7 @@ class _HomePageState extends ConsumerState<HomePage>
           children: [
             Text("YENİ SEZON",
                 style: TextStyle(
-                    color: context.secondaryColor,
+                    color: context.colors.secondary,
                     letterSpacing: context.isMobile ? 2 : 4,
                     fontWeight: FontWeight.bold,
                     fontSize: context.responsive(mobile: 10, desktop: 14))),
@@ -209,7 +209,7 @@ class _HomePageState extends ConsumerState<HomePage>
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                  backgroundColor: context.secondaryColor,
+                  backgroundColor: context.colors.secondary,
                   padding: EdgeInsets.symmetric(
                       horizontal: context.responsive(mobile: 20, desktop: 40),
                       vertical: context.responsive(mobile: 12, desktop: 20))),
@@ -296,8 +296,8 @@ class _HomePageState extends ConsumerState<HomePage>
                             context.primaryColor.withOpacity(0.8)
                           ])
                         : LinearGradient(colors: [
-                            context.surfaceColor,
-                            context.surfaceColor.withOpacity(0.5)
+                            context.colors.surface,
+                            context.colors.surface.withOpacity(0.5)
                           ]),
                     borderRadius:
                         BorderRadius.circular(context.borderRadius(2)),
@@ -401,7 +401,7 @@ class _HomePageState extends ConsumerState<HomePage>
           children: [
             Text(sub,
                 style: TextStyle(
-                    color: context.secondaryColor,
+                    color: context.colors.secondary,
                     fontSize: 10,
                     fontWeight: FontWeight.bold)),
             Text(title,
@@ -421,7 +421,7 @@ class _HomePageState extends ConsumerState<HomePage>
         margin: context.sectionPadding,
         padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
         decoration: BoxDecoration(
-          color: context.surfaceColor,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(context.borderRadius(2)),
           border: Border.all(color: context.primaryColor.withOpacity(0.05)),
         ),
@@ -435,7 +435,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 children: [
                   Text("BİZ KİMİZ?",
                       style: TextStyle(
-                          color: context.secondaryColor,
+                          color: context.colors.secondary,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2)),
                   const SizedBox(height: 15),
@@ -525,7 +525,7 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
       child: Column(
         children: [
-          Icon(icon, color: context.secondaryColor, size: 30),
+          Icon(icon, color: context.colors.secondary, size: 30),
           const SizedBox(height: 15),
           Text(val,
               style: TextStyle(
@@ -595,7 +595,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     children: [
                       Text("BİZE ULAŞIN",
                           style: TextStyle(
-                              color: context.secondaryColor,
+                              color: context.colors.secondary,
                               fontWeight: FontWeight.bold,
                               fontSize: 12)),
                       const SizedBox(height: 10),
@@ -652,7 +652,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   fontWeight: FontWeight.w900,
                   color: context.primaryColor)),
           const SizedBox(height: 4),
-          Container(height: 3, width: 40, color: context.secondaryColor),
+          Container(height: 3, width: 40, color: context.colors.secondary),
           const SizedBox(height: 8),
           Text(sub,
               style: TextStyle(

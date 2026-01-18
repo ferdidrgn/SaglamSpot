@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saglamspot/core/util/responsive_utils.dart';
+import 'package:saglamspot/core/extentions/product_category_ex.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
+import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
@@ -66,7 +67,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       ),
       data: (final product) {
         final similarProducts = ref.watch(similarProductsProvider(
-            category: product.category, currentProductId: product.id));
+            category: product.category.label(context), currentProductId: product.id));
         return Scaffold(
           backgroundColor: AppColors.background,
           body: Stack(
@@ -583,7 +584,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                product.category.toUpperCase(),
+                product.category,
                 style: TextStyle(
                   fontSize: context.captionSize,
                   fontWeight: FontWeight.w800,

@@ -1,29 +1,66 @@
 import 'package:flutter/material.dart';
 import '../enum/enums.dart';
 
-extension ProductCategoryX on ProductCategory {
-  /// Firebase / API için (ING)
-  String get value => name;
+/// =======================
+/// CATEGORY METADATA
+/// =======================
+extension ProductCategoryMeta on ProductCategory {
+  /// Firestore + Search key
+  String get key => name;
 
-  /// UI için locale bazlı isim
+  /// Arama için sabit kelimeler (dil bağımsız)
+  List<String> get searchKeywords {
+    switch (this) {
+      case ProductCategory.sofa:
+        return ['sofa', 'koltuk'];
+      case ProductCategory.chair:
+        return ['chair', 'sandalye'];
+      case ProductCategory.table:
+        return ['table', 'masa'];
+      case ProductCategory.bed:
+        return ['bed', 'yatak'];
+      case ProductCategory.wardrobe:
+        return ['wardrobe', 'dolap'];
+      case ProductCategory.white:
+        return ['white appliances', 'beyaz eşya'];
+      case ProductCategory.other:
+        return ['other', 'diğer'];
+    }
+  }
+
+  /// UI label (Localization-aware)
   String label(final BuildContext context) {
-    final locale = Localizations.localeOf(context).languageCode;
+    final lang = Localizations.localeOf(context).languageCode;
 
     switch (this) {
       case ProductCategory.sofa:
-        return locale == 'tr' ? 'Koltuklar' : 'Sofas';
+        return lang == 'tr' ? 'Koltuk / Kanepe' : 'Sofa';
       case ProductCategory.chair:
-        return locale == 'tr' ? 'Sandalyeler' : 'Chairs';
+        return lang == 'tr' ? 'Sandalye / Tabure' : 'Chair';
       case ProductCategory.table:
-        return locale == 'tr' ? 'Masalar' : 'Tables';
+        return lang == 'tr' ? 'Masa' : 'Table';
       case ProductCategory.bed:
-        return locale == 'tr' ? 'Yatak Baza' : 'Beds';
+        return lang == 'tr' ? 'Yatak / Baza' : 'Bed';
       case ProductCategory.wardrobe:
-        return locale == 'tr' ? 'Dolaplar' : 'Wardrobes';
+        return lang == 'tr' ? 'Dolap' : 'Wardrobe';
       case ProductCategory.white:
-        return locale == 'tr' ? 'Beyaz Eşyalar' : 'White Utensils';
+        return lang == 'tr' ? 'Beyaz Eşya' : 'White Appliances';
       case ProductCategory.other:
-        return locale == 'tr' ? 'Diğer' : 'Other';
+        return lang == 'tr' ? 'Diğer' : 'Other';
     }
   }
+}
+
+extension ProductCategoryMapper on String {
+  ProductCategory toProductCategory() {
+    try {
+      return ProductCategory.values.byName(this);
+    } catch (_) {
+      return ProductCategory.other;
+    }
+  }
+}
+
+extension ProductCategoryToString on ProductCategory {
+  String toFirestore() => name;
 }

@@ -69,7 +69,7 @@ const searchFiltersProvider = SearchFiltersProvider._();
 final class SearchFiltersProvider extends $NotifierProvider<
     SearchFilters,
     ({
-      String? category,
+      ProductCategory? category,
       String? condition,
       double maxPrice,
       double minPrice,
@@ -96,7 +96,7 @@ final class SearchFiltersProvider extends $NotifierProvider<
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(
       ({
-        String? category,
+        ProductCategory? category,
         String? condition,
         double maxPrice,
         double minPrice,
@@ -105,7 +105,7 @@ final class SearchFiltersProvider extends $NotifierProvider<
       origin: this,
       providerOverride: $SyncValueProvider<
           ({
-            String? category,
+            ProductCategory? category,
             String? condition,
             double maxPrice,
             double minPrice,
@@ -114,19 +114,19 @@ final class SearchFiltersProvider extends $NotifierProvider<
   }
 }
 
-String _$searchFiltersHash() => r'2993cb8a4961133725d777b5ed2275885abe2e21';
+String _$searchFiltersHash() => r'e2a8d4acc5a40f3f562d039f224607d581c4aaff';
 
 /// Sadece aktif filtreleri tutar (Record kullanarak state sınıfı yazmaktan kurtulduk)
 
 abstract class _$SearchFilters extends $Notifier<
     ({
-      String? category,
+      ProductCategory? category,
       String? condition,
       double maxPrice,
       double minPrice,
     })> {
   ({
-    String? category,
+    ProductCategory? category,
     String? condition,
     double maxPrice,
     double minPrice,
@@ -137,13 +137,13 @@ abstract class _$SearchFilters extends $Notifier<
     final created = build();
     final ref = this.ref as $Ref<
         ({
-          String? category,
+          ProductCategory? category,
           String? condition,
           double maxPrice,
           double minPrice,
         }),
         ({
-          String? category,
+          ProductCategory? category,
           String? condition,
           double maxPrice,
           double minPrice,
@@ -151,19 +151,19 @@ abstract class _$SearchFilters extends $Notifier<
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<
             ({
-              String? category,
+              ProductCategory? category,
               String? condition,
               double maxPrice,
               double minPrice,
             }),
             ({
-              String? category,
+              ProductCategory? category,
               String? condition,
               double maxPrice,
               double minPrice,
             })>,
         ({
-          String? category,
+          ProductCategory? category,
           String? condition,
           double maxPrice,
           double minPrice,
@@ -215,4 +215,4 @@ final class SearchedProductsProvider extends $FunctionalProvider<
   }
 }
 
-String _$searchedProductsHash() => r'95d56c94162f583408ab44545639ecefce2096be';
+String _$searchedProductsHash() => r'9698244ef1de53e80f76bea9b4da6829a8c3fbc6';

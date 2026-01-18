@@ -1,0 +1,14 @@
+{
+  "@@locale": "tr",
+  "searchHint": "Ürün, kategori veya stil arayın...",
+  "collection": "KOLEKSİYON",
+  "eleganceAndComfort": "Zarafet & Konfor",
+  "productsFound": "{count} Ürün Bulundu",
+  "@productsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

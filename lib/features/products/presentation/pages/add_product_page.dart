@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import '../../../../core/enum/enums.dart';
+import '../../../../core/extentions/product_category_ex.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -21,7 +23,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   final _name = TextEditingController();
   final _desc = TextEditingController();
   final _price = TextEditingController();
-  final _category = TextEditingController();
+  ProductCategory? _selectedCategory;
 
   final List<XFile> _images = [];
   bool _isSecondHand = false;
@@ -41,7 +43,6 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     _name.dispose();
     _desc.dispose();
     _price.dispose();
-    _category.dispose();
     super.dispose();
   }
 
@@ -81,7 +82,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               const SizedBox(height: 24),
               _field(_name, 'Ürün Adı', Icons.shopping_bag),
               _field(_price, 'Fiyat', Icons.attach_money, numeric: true),
-              _field(_category, 'Kategori', Icons.category),
+              _categoryDropdown(),
               _field(_desc, 'Açıklama', Icons.description, lines: 3),
               SwitchListTile(
                 title: const Text('Spot / İkinci El'),
@@ -139,7 +140,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       soldAt: '',
       name: _name.text.trim(),
       desc: _desc.text.trim(),
-      category: _category.text.trim(),
+      category: _selectedCategory ?? ProductCategory.other,
       price: double.tryParse(
             _price.text.replaceAll(',', '.'),
           ) ??
@@ -163,6 +164,30 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
           Text('Mağazanıza yeni ürün ekleyin'),
         ],
+      );
+
+  Widget _categoryDropdown() => Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: DropdownButtonFormField<ProductCategory>(
+          initialValue: _selectedCategory,
+          decoration: InputDecoration(
+            labelText: 'Kategori',
+            prefixIcon: const Icon(Icons.category),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          items: ProductCategory.values
+              .where((final e) => e != ProductCategory.other)
+              .map(
+                (final e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e.label(context)),
+                ),
+              )
+              .toList(),
+          onChanged: (final v) => setState(() => _selectedCategory = v),
+        ),
       );
 
   Widget _field(

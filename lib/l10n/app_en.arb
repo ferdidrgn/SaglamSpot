@@ -1,0 +1,14 @@
+{
+  "@@locale": "en",
+  "searchHint": "Search for products, styles...",
+  "collection": "COLLECTION",
+  "eleganceAndComfort": "Elegance & Comfort",
+  "productsFound": "{count} Products Found",
+  "@productsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}
