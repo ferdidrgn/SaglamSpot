@@ -16,11 +16,10 @@ class ProductDetailPage extends ConsumerStatefulWidget {
   const ProductDetailPage({super.key, required this.productId});
 
   @override
-  ConsumerState<ProductDetailPage> createState() =>
-      _EnhancedProductDetailPageState();
+  ConsumerState<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
-class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
+class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     with SingleTickerProviderStateMixin {
   int _selectedImageIndex = 0;
   bool _isFavorite = false;
@@ -37,11 +36,10 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
   }
 
   void _onScroll() {
-    if (_scrollController.offset > 100 && !_isScrolled) {
+    if (_scrollController.offset > 100 && !_isScrolled)
       setState(() => _isScrolled = true);
-    } else if (_scrollController.offset <= 100 && _isScrolled) {
+    else if (_scrollController.offset <= 100 && _isScrolled)
       setState(() => _isScrolled = false);
-    }
   }
 
   @override
@@ -70,8 +68,10 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       ),
       data: (final product) {
         final similarProducts = ref.watch(similarProductsProvider(
-            category: product.category.label(context),
-            currentProductId: product.id));
+          category: product.category.name,
+          // Enum'ın kod adını gönderiyoruz (örn: sofa)
+          currentProductId: product.id,
+        ));
         return Scaffold(
           backgroundColor: AppColors.background,
           body: Stack(
@@ -83,12 +83,11 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                   _buildSliverAppBar(context, product),
                   _buildResponsiveProductLayout(context, product),
                   _buildTabSection(context, product),
+                  _buildSimilarProducts(context, similarProducts),
                   _buildFeatures(context),
                   _buildReviews(context),
-                  _buildSimilarProducts(context, similarProducts),
                   SliverToBoxAdapter(
-                    child: SizedBox(height: context.spacingLarge * 3),
-                  ),
+                      child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),
               _buildFloatingHeader(context, product),

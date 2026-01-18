@@ -77,7 +77,7 @@ final class SimilarProductsProvider
   }
 }
 
-String _$similarProductsHash() => r'ba9a1b9bfec151cbef421258e2e380c27c8f1ba0';
+String _$similarProductsHash() => r'97485b12f2331bda1d3443253e60a603df155023';
 
 final class SimilarProductsFamily extends $Family
     with

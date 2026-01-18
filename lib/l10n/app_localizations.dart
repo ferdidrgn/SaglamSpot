@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @categoryTable.
   ///
   /// In tr, this message translates to:
-  /// **'Yemek Odası'**
+  /// **'Masa'**
   String get categoryTable;
 
   /// No description provided for @categoryBed.

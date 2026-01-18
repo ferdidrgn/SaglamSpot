@@ -7,6 +7,7 @@ part 'product_filters_provider.g.dart';
 @riverpod
 List<Product> similarProducts(final Ref ref,
     {required final String category, required final String currentProductId}) {
+  final allProducts = ref.watch(productsProvider).value ?? [];
   final products = ref.watch(newDealsProductsProvider);
 
   return products

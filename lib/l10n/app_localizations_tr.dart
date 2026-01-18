@@ -50,7 +50,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryChair => 'Sandalye';
 
   @override
-  String get categoryTable => 'Yemek Odası';
+  String get categoryTable => 'Masa';
 
   @override
   String get categoryBed => 'Yatak Odası';
