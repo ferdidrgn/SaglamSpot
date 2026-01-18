@@ -4,6 +4,7 @@ import 'package:saglamspot/core/extentions/product_category_ex.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/extentions/reg_exp_extentions.dart';
+import '../../../../core/services/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/glassmorphism_back_button.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -124,7 +125,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 const SizedBox(width: 12),
                 GlassmorphismIconButton(
                   icon: Icons.share_outlined,
-                  onPressed: () {},
+                  onPressed: () {
+                    DeepLinkService.shareProduct(
+                        productId: product.id, productName: product.name);
+                  },
                   backgroundColor: AppColors.primary,
                 ),
                 const SizedBox(width: 4),
@@ -323,7 +327,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                           const SizedBox(width: 12),
                           GlassmorphismIconButton(
                             icon: Icons.share_outlined,
-                            onPressed: () {},
+                            onPressed: () {
+                              DeepLinkService.shareProduct(
+                                  productId: product.id,
+                                  productName: product.name);
+                            },
                             backgroundColor: AppColors.primary,
                           ),
                         ],
