@@ -811,7 +811,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
     if (available.isNotEmpty) {
       slivers.add(_buildSectionDivider(
-          context.l10n.currentCollection, available.length, AppColors.success));
+          context.l10n.currentCollection, available.length, AppColors.onPrimary));
       slivers.addAll(_buildProductsWithAds(context, available));
     }
 
