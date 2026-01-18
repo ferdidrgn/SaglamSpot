@@ -10,108 +10,141 @@ final appThemeProvider = Provider<AppTheme>((final ref) {
 });
 
 class AppTheme {
-  ThemeData get lightTheme => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: AppColors.background,
-        colorScheme: const ColorScheme.light(
-          primary: AppColors.primary,
-          onPrimary: AppColors.onPrimary,
-          primaryContainer: AppColors.primaryVariant,
-          secondary: AppColors.secondary,
-          onSecondary: AppColors.onSecondary,
-          secondaryContainer: AppColors.secondaryVariant,
-          surface: AppColors.surface,
-          onSurface: AppColors.onSurface,
-          onSurfaceVariant: AppColors.textSecondary,
-          error: AppColors.error,
-          onError: AppColors.onError,
-          // Material 3 yeni yüzey renkleri
-          surfaceContainerHighest: AppColors.surface,
-          outline: AppColors.border,
-          shadow: Colors.black12,
-        ),
-        textTheme: const TextTheme(
-          displayLarge: AppTextStyles.h1,
-          headlineMedium: AppTextStyles.h2,
-          bodyLarge: AppTextStyles.bodyText1,
-        ),
-        // AppBar ayarı
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-        ),
+  ThemeData get lightTheme {
+    const colorScheme = ColorScheme.light(
+      primary: AppColors.primary,
+      onPrimary: AppColors.textLight,
+      // Koyu yeşil üzerine beyaz metin
+      primaryContainer: AppColors.primaryVariant,
+      secondary: AppColors.secondary,
+      onSecondary: AppColors.onSecondary,
+      secondaryContainer: AppColors.secondaryVariant,
+      surface: AppColors.surface,
+      onSurface: AppColors.onSurface,
+      onSurfaceVariant: AppColors.textSecondary,
+      error: AppColors.error,
+      onError: AppColors.white,
+      // Material 3 yeni yüzey renkleri
+      surfaceContainerHighest: AppColors.surface,
+      outline: AppColors.border,
+      shadow: Colors.black,
+    );
+
+    final textTheme = _lightTextTheme;
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.background,
+      colorScheme: colorScheme,
+      textTheme: textTheme,
+      // --- Metotların Kullanımı ---
+      appBarTheme: _appBarTheme(
+        colors: colorScheme,
+        textTheme: textTheme,
+        bgColor: AppColors.background,
+      ),
+      cardTheme: _cardTheme(colors: colorScheme, bgColor: AppColors.background),
+      elevatedButtonTheme: _elevatedButtonTheme(
+        colors: colorScheme,
+        textStyle: AppTextStyles.button,
+      ),
+      outlinedButtonTheme: _outlinedButtonTheme(
+        colors: colorScheme,
+        textStyle: AppTextStyles.button,
+      ),
+      textButtonTheme: _textButtonTheme(
+        colors: colorScheme,
+        textStyle: AppTextStyles.button,
+      ),
+      inputDecorationTheme: _inputDecorationTheme(colors: colorScheme),
+      bottomNavigationBarTheme: _bottomNavigationBarTheme(colors: colorScheme),
+      navigationBarTheme: _navigationBarTheme(colors: colorScheme),
+    );
+  }
+
+  ThemeData get darkTheme {
+    const colorScheme = ColorScheme.dark(
+      primary: AppColors.onPrimary,
+      // Dark modda daha açık bir yeşil vurgu için
+      onPrimary: AppColors.primary,
+      primaryContainer: AppColors.primaryVariant,
+      secondary: AppColors.secondary,
+      onSecondary: AppColors.onSecondary,
+      secondaryContainer: AppColors.darkCard,
+      surface: AppColors.darkSurface,
+      onSurface: AppColors.darkTextPrimary,
+      onSurfaceVariant: AppColors.darkTextSecondary,
+      error: AppColors.error,
+      onError: AppColors.white,
+      // Material 3 yeni yüzey renkleri
+      surfaceContainerHighest: AppColors.darkSurface,
+      outline: AppColors.darkBorder,
+      shadow: Colors.black,
+    );
+
+    final textTheme = _darkTextTheme;
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      primaryColor: AppColors.darkBackground,
+      scaffoldBackgroundColor: AppColors.darkBackground,
+      colorScheme: colorScheme,
+      textTheme: textTheme,
+      // --- Metotların Kullanımı ---
+      appBarTheme: _appBarTheme(
+        colors: colorScheme,
+        textTheme: textTheme,
+        bgColor: AppColors.darkBackground,
+      ),
+      cardTheme:
+          _cardTheme(colors: colorScheme, bgColor: AppColors.darkBackground),
+      elevatedButtonTheme: _elevatedButtonTheme(
+        colors: colorScheme,
+        textStyle: AppTextStyles.button,
+      ),
+      outlinedButtonTheme: _outlinedButtonTheme(
+        colors: colorScheme,
+        textStyle: AppTextStyles.button,
+      ),
+      textButtonTheme: _textButtonTheme(
+        colors: colorScheme,
+        textStyle: AppTextStyles.button,
+      ),
+      inputDecorationTheme: _inputDecorationTheme(colors: colorScheme),
+      bottomNavigationBarTheme: _bottomNavigationBarTheme(colors: colorScheme),
+      navigationBarTheme: _navigationBarTheme(colors: colorScheme),
+    );
+  }
+
+  // --- Yardımcı TextTheme Tanımları ---
+  static TextTheme get _lightTextTheme => const TextTheme(
+        displayLarge: AppTextStyles.h1,
+        headlineMedium: AppTextStyles.h2,
+        titleLarge: AppTextStyles.subtitle1,
+        bodyLarge: AppTextStyles.bodyText1,
+        bodyMedium: AppTextStyles.bodyText2,
+        labelLarge: AppTextStyles.button,
       );
 
-  ThemeData get darkTheme => ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: AppColors.darkBackground,
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.darkSurface,
-          onPrimary: AppColors.onPrimary,
-          primaryContainer: AppColors.primaryVariant,
-          secondary: AppColors.secondary,
-          onSecondary: AppColors.onSecondary,
-          secondaryContainer: AppColors.secondaryVariant,
-          surface: AppColors.darkSurface,
-          onSurface: AppColors.onSurface,
-          error: AppColors.error,
-          onError: AppColors.onError,
-          surfaceContainerHighest: AppColors.surface,
-          outline: AppColors.border,
-          shadow: Colors.white12,
-        ),
-        scaffoldBackgroundColor: AppColors.backgroundDark,
-        appBarTheme: _appBarTheme(
-            colors: colors, textTheme: coloredTextTheme, bgColor: bgColor),
-        textTheme: TextTheme(
-          displayLarge: AppTextStyles.h1.copyWith(color: AppColors.white),
-          displayMedium: AppTextStyles.h2.copyWith(color: AppColors.white),
-          displaySmall: AppTextStyles.h3.copyWith(color: AppColors.white),
-          headlineMedium:
-              AppTextStyles.subtitle1.copyWith(color: AppColors.white),
-          headlineSmall:
-              AppTextStyles.subtitle2.copyWith(color: AppColors.white),
-          bodyLarge: AppTextStyles.bodyText1.copyWith(color: AppColors.white),
-          bodyMedium: AppTextStyles.bodyText2.copyWith(color: AppColors.white),
-          bodySmall: AppTextStyles.caption.copyWith(color: AppColors.white),
-          labelLarge: AppTextStyles.button.copyWith(color: AppColors.white),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.white,
-            textStyle: AppTextStyles.button,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-        // Dark tema için input dekorasyonları
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.mediumGrey),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.mediumGrey),
-          ),
-          labelStyle: AppTextStyles.bodyText2.copyWith(color: AppColors.white),
-          hintStyle:
-              AppTextStyles.bodyText2.copyWith(color: AppColors.mediumGrey),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
+  static TextTheme get _darkTextTheme => TextTheme(
+        displayLarge:
+            AppTextStyles.h1.copyWith(color: AppColors.darkTextPrimary),
+        headlineMedium:
+            AppTextStyles.h2.copyWith(color: AppColors.darkTextPrimary),
+        titleLarge:
+            AppTextStyles.subtitle1.copyWith(color: AppColors.darkTextPrimary),
+        bodyLarge:
+            AppTextStyles.bodyText1.copyWith(color: AppColors.darkTextPrimary),
+        bodyMedium:
+            AppTextStyles.bodyText2.copyWith(color: AppColors.darkTextPrimary),
+        labelLarge:
+            AppTextStyles.button.copyWith(color: AppColors.darkTextPrimary),
       );
 
+  // --- Statik Metotlar ---
   static AppBarTheme _appBarTheme({
     required final ColorScheme colors,
     required final TextTheme textTheme,
@@ -119,8 +152,6 @@ class AppTheme {
   }) =>
       AppBarTheme(
         backgroundColor: bgColor,
-        // Atmosferik modda Appbar da renkli olsun
-        //backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         iconTheme: IconThemeData(color: colors.onSurface, size: 28),
@@ -133,20 +164,18 @@ class AppTheme {
             : SystemUiOverlayStyle.light,
       );
 
-  static CardThemeData _cardTheme(
-      {required final ColorScheme colors, required final Color bgColor}) {
-    // Atmosferik modda kartlar, arka plandan biraz daha açık (aydınlık) olmalı
+  static CardThemeData _cardTheme({
+    required final ColorScheme colors,
+    required final Color bgColor,
+  }) {
     final cardColor = HSLColor.fromColor(bgColor)
         .withLightness(
             (HSLColor.fromColor(bgColor).lightness + 0.05).clamp(0.0, 1.0))
         .toColor();
     return CardThemeData(
-      // M3'te surfaceContainerHighest önerilir, yoksa surface kullanır
-      color: colors.brightness == Brightness.dark
-          ? cardColor
-          : colors.surfaceContainerHighest,
+      color: colors.brightness == Brightness.dark ? cardColor : colors.surface,
       elevation: 2,
-      shadowColor: colors.shadow.withOpacity(0.35),
+      shadowColor: colors.shadow.withOpacity(0.1),
       surfaceTintColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
@@ -178,7 +207,7 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: colors.primary,
           textStyle: textStyle,
-          side: BorderSide(color: colors.primary), // Outline rengi primary
+          side: BorderSide(color: colors.primary),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
@@ -200,8 +229,9 @@ class AppTheme {
           {required final ColorScheme colors}) =>
       InputDecorationTheme(
         filled: true,
-        // Hafif opaklık vererek arka plandan ayırıyoruz
-        fillColor: colors.surfaceContainerHighest.withOpacity(0.5),
+        fillColor: colors.brightness == Brightness.light
+            ? AppColors.lightGrey.withOpacity(0.5)
+            : AppColors.darkSurface,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
@@ -239,9 +269,9 @@ class AppTheme {
         backgroundColor: colors.surface,
         indicatorColor: colors.secondaryContainer,
         labelTextStyle:
-            MaterialStateProperty.resolveWith((final states) => TextStyle(
-                  color: states.contains(MaterialState.selected)
-                      ? colors.onSecondaryContainer
+            WidgetStateProperty.resolveWith((final states) => TextStyle(
+                  color: states.contains(WidgetState.selected)
+                      ? colors.primary
                       : colors.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 )),
