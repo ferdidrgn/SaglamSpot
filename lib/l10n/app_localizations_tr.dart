@@ -188,4 +188,16 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get allRightsReserved =>
       '© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.';
+
+  @override
+  String get collections => 'Koleksiyonlar';
+
+  @override
+  String get spotProducts => 'Spot Ürünler';
+
+  @override
+  String get aboutUs => 'Hakkımızda';
+
+  @override
+  String get contact => 'İletişim';
 }

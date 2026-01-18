@@ -6,11 +6,13 @@ import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/enum/enums.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
+import '../../../../core/extentions/product_category_ex.dart'; // label extension için
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
+import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -35,11 +37,11 @@ class _HomePageState extends ConsumerState<HomePage>
   void initState() {
     super.initState();
     _heroController =
-    AnimationController(vsync: this, duration: const Duration(seconds: 15))
-      ..repeat();
+        AnimationController(vsync: this, duration: const Duration(seconds: 15))
+          ..repeat();
     _floatingController =
-    AnimationController(vsync: this, duration: const Duration(seconds: 4))
-      ..repeat(reverse: true);
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
+          ..repeat(reverse: true);
     _pulseController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000))
       ..repeat(reverse: true);
@@ -79,41 +81,37 @@ class _HomePageState extends ConsumerState<HomePage>
         loading: () => const FullPageShimmer(),
         error: (final err, final stack) =>
             Center(child: Text('Ürünler yüklenirken hata oluştu: $err')),
-        data: (final _) =>
-            Stack(
-              children: [
-                _buildAnimatedBackground(),
-                ResponsiveUtils.maxWidthContainer(
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      _buildHeroSliderSection(),
-                      _buildQuickFeatures(),
-                      _buildCategoriesSection(),
-                      SliverToBoxAdapter(
-                          child: _buildSectionHeader(
-                              context.l10n.newCollection, context.l10n.newCollectionSub)),
-                      _buildDynamicFeaturedGrid(availableProducts),
-                      _buildRoomsSection(),
-                      _buildArtisanInfo(),
-                      _buildStatsSection(),
-                      const FurnitureTipsSection(),
-                      _buildFooter(),
-                    ],
-                  ),
-                ),
-                // 🔥 GLOBAL SCROLL UP
-                ScrollUpButton(scrollController: _scrollController),
-              ],
+        data: (final _) => Stack(
+          children: [
+            _buildAnimatedBackground(),
+            ResponsiveUtils.maxWidthContainer(
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  _buildHeroSliderSection(),
+                  _buildQuickFeatures(),
+                  _buildCategoriesSection(),
+                  SliverToBoxAdapter(
+                      child: _buildSectionHeader(context.l10n.newCollection,
+                          context.l10n.newCollectionSub)),
+                  _buildDynamicFeaturedGrid(availableProducts),
+                  _buildRoomsSection(),
+                  _buildArtisanInfo(),
+                  _buildStatsSection(),
+                  const FurnitureTipsSection(),
+                  _buildFooter(),
+                ],
+              ),
             ),
+            ScrollUpButton(scrollController: _scrollController),
+          ],
+        ),
       ),
     );
   }
 
-  // --- DİNAMİK ÜRÜN GRID BİLEŞENİ ---
   Widget _buildDynamicFeaturedGrid(final List availableProducts) {
-    // Sadece ilk 10 ürünü al
     final latestTenProducts = availableProducts.take(10).toList();
 
     return SliverPadding(
@@ -126,9 +124,8 @@ class _HomePageState extends ConsumerState<HomePage>
           childAspectRatio: context.cardAspectRatio(),
         ),
         delegate: SliverChildBuilderDelegate(
-              (final context, final index) {
+          (final context, final index) {
             final product = latestTenProducts[index];
-            // Kendi CustomProductCard bileşenini kullan
             return CustomProductCard(product: product);
           },
           childCount: latestTenProducts.length,
@@ -137,20 +134,17 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  // ... (Diğer _build metotları (_heroSlider, _footer vb.) mevcut kodunla aynı kalacak)
-
   Widget _buildAnimatedBackground() {
     return AnimatedBuilder(
       animation: _heroController,
-      builder: (final context, final child) =>
-          CustomPaint(
-            painter: _OrbPainter(
-              animation: _heroController.value,
-              color1: context.primaryColor.withOpacity(0.05),
-              color2: context.colors.secondary.withOpacity(0.03),
-            ),
-            child: const SizedBox.expand(),
-          ),
+      builder: (final context, final child) => CustomPaint(
+        painter: _OrbPainter(
+          animation: _heroController.value,
+          color1: context.primaryColor.withOpacity(0.05),
+          color2: context.colors.secondary.withOpacity(0.03),
+        ),
+        child: const SizedBox.expand(),
+      ),
     );
   }
 
@@ -234,11 +228,14 @@ class _HomePageState extends ConsumerState<HomePage>
             spacing: context.responsive(mobile: 20, tablet: 40, desktop: 60),
             runSpacing: 20,
             children: [
-              _featureItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan),
-              _featureItem(Icons.verified_user_rounded, context.l10n.featureDelivery),
+              _featureItem(Icons.volunteer_activism_rounded,
+                  context.l10n.featureArtisan),
               _featureItem(
-                  Icons.sentiment_very_satisfied_rounded, context.l10n.featureService),
-              _featureItem(Icons.local_shipping_rounded, context.l10n.featureShipping),
+                  Icons.verified_user_rounded, context.l10n.featureDelivery),
+              _featureItem(Icons.sentiment_very_satisfied_rounded,
+                  context.l10n.featureService),
+              _featureItem(
+                  Icons.local_shipping_rounded, context.l10n.featureShipping),
             ],
           ),
         ),
@@ -273,16 +270,14 @@ class _HomePageState extends ConsumerState<HomePage>
           itemCount: categories.length,
           itemBuilder: (final context, final i) {
             final category = categories[i];
-            // Seçili kategoriyi Provider üzerinden veya local state üzerinden kontrol et
-            final isSelected = ref
-                .watch(productFiltersProvider)
-                .category == category;
+            final isSelected =
+                ref.watch(searchFiltersProvider).category == category;
             return Padding(
               padding: const EdgeInsets.only(right: 12),
               child: InkWell(
-                onTap: () =>
-                    ref.read(productFiltersProvider.notifier).setCategory(
-                        category),
+                onTap: () => ref
+                    .read(searchFiltersProvider.notifier)
+                    .setCategory(category),
                 borderRadius: BorderRadius.circular(context.borderRadius(2)),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
@@ -291,30 +286,31 @@ class _HomePageState extends ConsumerState<HomePage>
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? LinearGradient(colors: [
-                      context.primaryColor,
-                      context.primaryColor.withOpacity(0.8)
-                    ])
+                            context.primaryColor,
+                            context.primaryColor.withOpacity(0.8)
+                          ])
                         : LinearGradient(colors: [
-                      context.colors.surface,
-                      context.colors.surface.withOpacity(0.5)
-                    ]),
+                            context.colors.surface,
+                            context.colors.surface.withOpacity(0.5)
+                          ]),
                     borderRadius:
-                    BorderRadius.circular(context.borderRadius(2)),
+                        BorderRadius.circular(context.borderRadius(2)),
                     border: Border.all(
                         color: isSelected
                             ? context.primaryColor
                             : context.primaryColor.withOpacity(0.1)),
                   ),
                   child: Center(
-                    child: Text(cats[i],
-                        style: TextStyle(
-                            fontSize: context.responsive(
-                                mobile: 12, tablet: 14, desktop: 16),
-                            fontWeight:
+                    child: Text(
+                      category!.label(context),
+                      style: TextStyle(
+                        fontSize: context.responsive(
+                            mobile: 12, tablet: 14, desktop: 16),
+                        fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.w500,
-                            color: isSelected
-                                ? Colors.white
-                                : context.primaryColor)),
+                        color: isSelected ? Colors.white : context.primaryColor,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -330,25 +326,25 @@ class _HomePageState extends ConsumerState<HomePage>
       {
         "title": context.l10n.roomLivingRoom,
         "img":
-        "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=800",
+            "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=800",
         "sub": context.l10n.roomLivingRoomSub
       },
       {
         "title": context.l10n.roomBedroom,
         "img":
-        "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=800",
+            "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=800",
         "sub": context.l10n.roomBedroomSub
       },
       {
-        "title":context.l10n.roomKitchen,
+        "title": context.l10n.roomKitchen,
         "img":
-        "https://images.unsplash.com/photo-1556912178-8f4df6d97a33?q=80&w=800",
+            "https://images.unsplash.com/photo-1556912178-8f4df6d97a33?q=80&w=800",
         "sub": context.l10n.roomKitchenSub
       },
       {
         "title": context.l10n.roomOffice,
         "img":
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800",
+            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800",
         "sub": context.l10n.roomOfficeSub
       },
     ];
@@ -363,13 +359,12 @@ class _HomePageState extends ConsumerState<HomePage>
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding:
-              EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+                  EdgeInsets.symmetric(horizontal: context.pagePadding.left),
               itemCount: rooms.length,
-              itemBuilder: (final context, final index) =>
-                  _roomCard(
-                      rooms[index]["title"]!,
-                      rooms[index]["img"]!,
-                      rooms[index]["sub"]!),
+              itemBuilder: (final context, final index) => _roomCard(
+                  rooms[index]["title"]!,
+                  rooms[index]["img"]!,
+                  rooms[index]["sub"]!),
             ),
           ),
         ],
@@ -417,63 +412,61 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _buildArtisanInfo() {
     return SliverToBoxAdapter(
       child: Container(
-          margin: context.sectionPadding,
-          padding: EdgeInsets.all(
-              context.responsive(mobile: 20, desktop: 60)),
-          decoration: BoxDecoration(
-            color: context.colors.surface,
-            borderRadius: BorderRadius.circular(context.borderRadius(2)),
-            border: Border.all(color: context.primaryColor.withOpacity(0.05)),
-          ),
-          child: Flex(
-              direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-              children: [
-          Expanded(
-          flex: context.isMobile ? 0 : 1,
+        margin: context.sectionPadding,
+        padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          borderRadius: BorderRadius.circular(context.borderRadius(2)),
+          border: Border.all(color: context.primaryColor.withOpacity(0.05)),
+        ),
+        child: Flex(
+          direction: context.isMobile ? Axis.vertical : Axis.horizontal,
+          children: [
+            Expanded(
+              flex: context.isMobile ? 0 : 1,
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(context.l10n.whoWeAre,
-                  style: TextStyle(
-                      color: context.colors.secondary,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2)),
-              const SizedBox(height: 15),
-              Text(context.l10n.artisanTitle,
-                  style: TextStyle(
-                      fontSize: context.h2Size,
-                      fontWeight: FontWeight.w900,
-                      height: 1.2)),
-              const SizedBox(height: 15),
-              Text(
-                  context.l10n.artisanDesc style: TextStyle(
-              color: context.primaryColor.withOpacity(0.6),
-              fontSize: context.bodySize)),
-      const SizedBox(height: 25),
-      ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.accentDark),
-        child: Text(context.l10n.visitUs),
-      )
-      ],
-    ),
-    ),
-    if (!context.isMobile) const SizedBox(width: 40),
-    if (context.isMobile) const SizedBox(height: 30),
-    Expanded(
-    flex: context.isMobile ? 0 : 1,
-    child: ClipRRect(
-    borderRadius: BorderRadius.circular(20),
-    child: Image.network(
-    "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
-    fit: BoxFit.cover),
-    ),
-    ),
-    ],
-    ),
-    )
-    ,
+                      style: TextStyle(
+                          color: context.colors.secondary,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2)),
+                  const SizedBox(height: 15),
+                  Text(context.l10n.artisanTitle,
+                      style: TextStyle(
+                          fontSize: context.h2Size,
+                          fontWeight: FontWeight.w900,
+                          height: 1.2)),
+                  const SizedBox(height: 15),
+                  Text(context.l10n.artisanDesc,
+                      style: TextStyle(
+                          color: context.primaryColor.withOpacity(0.6),
+                          fontSize: context.bodySize)),
+                  const SizedBox(height: 25),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.accentDark),
+                    child: Text(context.l10n.visitUs),
+                  )
+                ],
+              ),
+            ),
+            if (!context.isMobile) const SizedBox(width: 40),
+            if (context.isMobile) const SizedBox(height: 30),
+            Expanded(
+              flex: context.isMobile ? 0 : 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                    "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
+                    fit: BoxFit.cover),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -491,7 +484,7 @@ class _HomePageState extends ConsumerState<HomePage>
       },
       {
         "val": "15K+",
-        "label": context.l10n..statDelivery,
+        "label": context.l10n.statDelivery,
         "icon": Icons.local_shipping_outlined
       },
       {
@@ -511,8 +504,7 @@ class _HomePageState extends ConsumerState<HomePage>
             spacing: 20,
             runSpacing: 20,
             children: stats
-                .map((final s) =>
-                _buildStatCard(s["val"] as String,
+                .map((final s) => _buildStatCard(s["val"] as String,
                     s["label"] as String, s["icon"] as IconData))
                 .toList(),
           ),
@@ -521,11 +513,11 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildStatCard(final String val, final String label,
-      final IconData icon) {
+  Widget _buildStatCard(
+      final String val, final String label, final IconData icon) {
     return Container(
       width:
-      context.responsive(mobile: context.wp(42), tablet: 200, desktop: 250),
+          context.responsive(mobile: context.wp(42), tablet: 200, desktop: 250),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.03),
@@ -568,7 +560,7 @@ class _HomePageState extends ConsumerState<HomePage>
               children: [
                 SizedBox(
                   width:
-                  context.responsive(mobile: double.infinity, desktop: 300),
+                      context.responsive(mobile: double.infinity, desktop: 300),
                   child: Column(
                     crossAxisAlignment: context.isMobile
                         ? CrossAxisAlignment.center
@@ -581,7 +573,8 @@ class _HomePageState extends ConsumerState<HomePage>
                               letterSpacing: 4,
                               fontWeight: FontWeight.w900)),
                       const SizedBox(height: 20),
-                      Text(context.l10n.footerDesc,
+                      Text(
+                        context.l10n.footerDesc,
                         textAlign: context.isMobile
                             ? TextAlign.center
                             : TextAlign.start,
@@ -591,13 +584,13 @@ class _HomePageState extends ConsumerState<HomePage>
                     ],
                   ),
                 ),
-                _footerColumn(
-                    context.l10n.explore, ["Koleksiyonlar", "Spot Ürünler"]),
-                _footerColumn(
-                    context.l10n.corporate, ["Hakkımızda", "İletişim"]),
+                _footerColumn(context.l10n.explore,
+                    [context.l10n.collections, context.l10n.spotProducts]),
+                _footerColumn(context.l10n.corporate,
+                    [context.l10n.aboutUs, context.l10n.contact]),
                 SizedBox(
                   width:
-                  context.responsive(mobile: double.infinity, desktop: 250),
+                      context.responsive(mobile: double.infinity, desktop: 250),
                   child: Column(
                     crossAxisAlignment: context.isMobile
                         ? CrossAxisAlignment.center
@@ -611,7 +604,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       const SizedBox(height: 10),
                       Text("info@saglamspot.com",
                           style:
-                          TextStyle(color: Colors.white.withOpacity(0.6))),
+                              TextStyle(color: Colors.white.withOpacity(0.6))),
                     ],
                   ),
                 ),
@@ -639,8 +632,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   fontWeight: FontWeight.bold,
                   fontSize: 13)),
           const SizedBox(height: 25),
-          ...items.map((final item) =>
-              Padding(
+          ...items.map((final item) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Text(item,
                     style: TextStyle(
@@ -675,7 +667,6 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 }
 
-// ... Painter kodun aynı kalacak
 class _OrbPainter extends CustomPainter {
   final double animation;
   final Color color1;

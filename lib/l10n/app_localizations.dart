@@ -427,6 +427,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.'**
   String get allRightsReserved;
+
+  /// No description provided for @collections.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koleksiyonlar'**
+  String get collections;
+
+  /// No description provided for @spotProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot Ürünler'**
+  String get spotProducts;
+
+  /// No description provided for @aboutUs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hakkımızda'**
+  String get aboutUs;
+
+  /// No description provided for @contact.
+  ///
+  /// In tr, this message translates to:
+  /// **'İletişim'**
+  String get contact;
 }
 
 class _AppLocalizationsDelegate

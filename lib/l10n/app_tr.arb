@@ -1,5 +1,7 @@
 {
   "@@locale": "tr",
+  "brand": "Sağlam Spot",
+  "home": "Ana Sayfa",
   "searchHint": "Ürün, kategori veya stil arayın...",
   "collection": "KOLEKSİYON",
   "eleganceAndComfort": "Zarafet & Konfor",
@@ -75,5 +77,10 @@
   "corporate": "KURUMSAL",
   "contactUs": "BİZE ULAŞIN",
   "footerDesc": "20 yılı aşkın tecrübemizle İstanbul'un her noktasına kaliteyi ve güveni taşıyoruz.",
-  "allRightsReserved": "© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR."
+  "allRightsReserved": "© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.",
+  "collections": "Koleksiyonlar",
+  "spotProducts": "Spot Ürünler",
+  "aboutUs": "Hakkımızda",
+  "contact": "İletişim"
+
 }

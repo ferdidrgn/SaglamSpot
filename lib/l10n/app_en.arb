@@ -1,5 +1,7 @@
 {
   "@@locale": "en",
+  "brand": "Sağlam Spot",
+  "home": "Home",
   "searchHint": "Search for products, styles...",
   "collection": "COLLECTION",
   "eleganceAndComfort": "Elegance & Comfort",
@@ -75,5 +77,9 @@
   "corporate": "CORPORATE",
   "contactUs": "CONTACT US",
   "footerDesc": "With over 20 years of experience, we bring quality and trust to every point in Istanbul.",
-  "allRightsReserved": "© 2026 SAĞLAM SPOT TRADE. ALL RIGHTS RESERVED."
+  "allRightsReserved": "© 2026 SAĞLAM SPOT TRADE. ALL RIGHTS RESERVED.",
+  "collections": "Collections",
+  "spotProducts": "Spot Products",
+  "aboutUs": "About Us",
+  "contact": "Communication"
 }

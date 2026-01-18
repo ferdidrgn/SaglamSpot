@@ -188,4 +188,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get allRightsReserved =>
       '© 2026 SAĞLAM SPOT TRADE. ALL RIGHTS RESERVED.';
+
+  @override
+  String get collections => 'Collections';
+
+  @override
+  String get spotProducts => 'Spot Products';
+
+  @override
+  String get aboutUs => 'About Us';
+
+  @override
+  String get contact => 'Communication';
 }
