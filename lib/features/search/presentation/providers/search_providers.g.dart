@@ -58,14 +58,8 @@ abstract class _$SearchQuery extends $Notifier<String> {
 @ProviderFor(SearchFilters)
 const searchFiltersProvider = SearchFiltersProvider._();
 
-final class SearchFiltersProvider extends $NotifierProvider<
-    SearchFilters,
-    ({
-      ProductCategory? category,
-      ProductCondition? condition,
-      double maxPrice,
-      double minPrice,
-    })> {
+final class SearchFiltersProvider
+    extends $NotifierProvider<SearchFilters, SearchFiltersState> {
   const SearchFiltersProvider._()
       : super(
           from: null,
@@ -85,78 +79,26 @@ final class SearchFiltersProvider extends $NotifierProvider<
   SearchFilters create() => SearchFilters();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(
-      ({
-        ProductCategory? category,
-        ProductCondition? condition,
-        double maxPrice,
-        double minPrice,
-      }) value) {
+  Override overrideWithValue(SearchFiltersState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<
-          ({
-            ProductCategory? category,
-            ProductCondition? condition,
-            double maxPrice,
-            double minPrice,
-          })>(value),
+      providerOverride: $SyncValueProvider<SearchFiltersState>(value),
     );
   }
 }
 
-String _$searchFiltersHash() => r'e6c678ff93f8bbef66f323a0fb23149a92935d3b';
+String _$searchFiltersHash() => r'94af276f221fe4eb3a3fc7bf5f39c219d4a0fab3';
 
-abstract class _$SearchFilters extends $Notifier<
-    ({
-      ProductCategory? category,
-      ProductCondition? condition,
-      double maxPrice,
-      double minPrice,
-    })> {
-  ({
-    ProductCategory? category,
-    ProductCondition? condition,
-    double maxPrice,
-    double minPrice,
-  }) build();
+abstract class _$SearchFilters extends $Notifier<SearchFiltersState> {
+  SearchFiltersState build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<
-        ({
-          ProductCategory? category,
-          ProductCondition? condition,
-          double maxPrice,
-          double minPrice,
-        }),
-        ({
-          ProductCategory? category,
-          ProductCondition? condition,
-          double maxPrice,
-          double minPrice,
-        })>;
+    final ref = this.ref as $Ref<SearchFiltersState, SearchFiltersState>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<
-            ({
-              ProductCategory? category,
-              ProductCondition? condition,
-              double maxPrice,
-              double minPrice,
-            }),
-            ({
-              ProductCategory? category,
-              ProductCondition? condition,
-              double maxPrice,
-              double minPrice,
-            })>,
-        ({
-          ProductCategory? category,
-          ProductCondition? condition,
-          double maxPrice,
-          double minPrice,
-        }),
+        AnyNotifier<SearchFiltersState, SearchFiltersState>,
+        SearchFiltersState,
         Object?,
         Object?>;
     element.handleValue(ref, created);

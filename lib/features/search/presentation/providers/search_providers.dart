@@ -13,47 +13,49 @@ class SearchQuery extends _$SearchQuery {
   void update(final String query) => state = query;
 }
 
-@riverpod
-class SearchFilters extends _$SearchFilters {
-  @override
-  ({
+typedef SearchFiltersState = ({
   ProductCategory? category,
   ProductCondition? condition,
   double minPrice,
   double maxPrice
-  }) build() {
+});
+
+@riverpod
+class SearchFilters extends _$SearchFilters {
+  @override
+  SearchFiltersState build() {
     return (
-    category: null,
-    condition: ProductCondition.all,
-    minPrice: 0,
-    maxPrice: 100000
+      category: null, // null = Tümü
+      condition: ProductCondition.all,
+      minPrice: 0,
+      maxPrice: 100000
     );
   }
 
   void setCategory(final ProductCategory? cat) {
     state = (
-    category: cat,
-    condition: state.condition,
-    minPrice: state.minPrice,
-    maxPrice: state.maxPrice,
+      category: cat,
+      condition: state.condition,
+      minPrice: state.minPrice,
+      maxPrice: state.maxPrice,
     );
   }
 
   void setCondition(final ProductCondition? cond) {
     state = (
-    category: state.category,
-    condition: cond,
-    minPrice: state.minPrice,
-    maxPrice: state.maxPrice,
+      category: state.category,
+      condition: cond,
+      minPrice: state.minPrice,
+      maxPrice: state.maxPrice,
     );
   }
 
   void setPriceRange(final double min, final double max) {
     state = (
-    category: state.category,
-    condition: state.condition,
-    minPrice: min,
-    maxPrice: max
+      category: state.category,
+      condition: state.condition,
+      minPrice: min,
+      maxPrice: max
     );
   }
 

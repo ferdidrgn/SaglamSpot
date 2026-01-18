@@ -487,27 +487,34 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildCategorySection(final dynamic filters, final bool isMobile) {
+  Widget _buildCategorySection(
+      final SearchFiltersState filters, final bool isMobile) {
+    // dynamic yerine tipi yazdık
+
+    // Başına null (Tümü) eklenmiş liste
+    final List<ProductCategory?> categoriesWithAll = [
+      null,
+      ...ProductCategory.values
+    ];
+
     return SliverToBoxAdapter(
       child: Container(
         height: context.responsive(mobile: 60.0, tablet: 65.0, desktop: 70.0),
         color: AppColors.surface,
-        padding: EdgeInsets.symmetric(
-          horizontal:
-              context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
-          vertical:
-              context.responsive(mobile: 8.0, tablet: 10.0, desktop: 12.0),
-        ),
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemCount: ProductCategory.values.length,
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
+          ),
+          itemCount: categoriesWithAll.length,
           separatorBuilder: (final _, final __) => const SizedBox(width: 10),
           itemBuilder: (final context, final index) {
-            final category = ProductCategory.values[index];
-            final isSelected =
-                (filters.category ?? ProductCategory.other) == category;
+            final category = categoriesWithAll[index];
+            final isSelected = filters.category == category;
 
             return _buildCategoryPill(
+              // Extension sayesinde null gelince otomatik 'Tümü' yazar:
               ProductCategoryExtension(category).label(context),
               isSelected,
               () => ref
@@ -566,30 +573,24 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  bool _hasActiveFilters(final dynamic filters) {
-    return (filters.category != null &&
-            filters.category != ProductCategory.other) ||
-        // Eski: filters.condition != 'Tümü'
-        (filters.condition != null &&
-            filters.condition != ProductCondition.all) ||
-        filters.minPrice > 0 ||
-        filters.maxPrice < 100000;
-  }
+  bool _hasActiveFilters(final SearchFiltersState filters) =>
+      filters.category != null || // null değilse bir kategori seçilmiştir
+      (filters.condition != null &&
+          filters.condition != ProductCondition.all) ||
+      filters.minPrice > 0 ||
+      filters.maxPrice < 100000;
 
-  Widget _buildActiveFiltersSliver(final dynamic filters) {
+  // Aktif filtre chiplerini gösteren metot:
+  Widget _buildActiveFiltersSliver(final SearchFiltersState filters) {
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal:
-              context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
-          vertical: 16,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         child: Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            if (filters.category != null &&
-                filters.category != ProductCategory.other)
+            // Sadece bir kategori seçiliyse (null değilse) chip göster:
+            if (filters.category != null)
               _buildFilterChip(
                   ProductCategoryExtension(filters.category).label(context),
                   Icons.category_rounded),
