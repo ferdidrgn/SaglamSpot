@@ -154,22 +154,25 @@ class _SearchPageState extends ConsumerState<SearchPage>
       pinned: true,
       stretch: true,
       backgroundColor: AppColors.textPrimary,
-      // Varsayılan geri butonunu devre dışı bırakıyoruz çünkü Custom Glassmorphism kullanacağız
-      automaticallyImplyLeading: false,
+
+      // 🆕 BUTONU BURAYA TAŞIYORUZ (Sabit kalması için)
+      leadingWidth: 80,
+      // Butonun sığması için genişlik
+      leading: const Padding(
+        padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+        child: GlassmorphismBackButton(
+          backgroundColor: AppColors.primary,
+        ),
+      ),
+
       flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [
-          StretchMode.zoomBackground,
-          StretchMode.blurBackground,
-        ],
+        // Buradaki background scroll ile beraber kaybolur
         background: Stack(
           fit: StackFit.expand,
           children: [
-            // Arka plan görseli
             Image.network(
-              'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
-              fit: BoxFit.cover,
-            ),
-            // Karartma Katmanı
+                'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
+                fit: BoxFit.cover),
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -179,53 +182,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
               ),
             ),
-
-            // 🆕 GLASSMORPHISM BACK BUTTON
-            Positioned(
-                top: MediaQuery.of(context).padding.top + 10,
-                // Durum çubuğunun hemen altına
-                left: 16,
-                // onPressed null bırakılırsa otomatik NavigationHandler.smartGoBack çalışır
-                child: const GlassmorphismBackButton(
-                    backgroundColor: AppColors.primary)),
-
-            // İçerik Alanı (Logo ve Metinler)
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.responsive(
-                    mobile: 20.0, tablet: 32.0, desktop: 48.0),
-                vertical: context.responsive(
-                    mobile: 24.0, tablet: 32.0, desktop: 40.0),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildBrandLogo(context),
-                  // Logo kısmını temizlik için aşağıya taşıdık
-                  const SizedBox(height: 20),
-                  Text(
-                    context.l10n.collection,
-                    style: const TextStyle(
-                      color: AppColors.onPrimary,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 4,
-                      fontSize: 12,
-                    ),
-                  ),
-                  Text(
-                    context.l10n.eleganceAndComfort,
-                    style: TextStyle(
-                      fontSize: context.responsive(
-                          mobile: 28.0, tablet: 36.0, desktop: 44.0),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      height: 1.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Artık buton burada (background içinde) değil!
+            _buildBrandLogo(context),
           ],
         ),
       ),
