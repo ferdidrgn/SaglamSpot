@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/extentions/product_category_ex.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/widgets/glassmorphism_back_button.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
 

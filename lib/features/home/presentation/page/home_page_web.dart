@@ -134,34 +134,32 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildAnimatedBackground()=> AnimatedBuilder(
-      animation: _heroController,
-      builder: (final context, final child) => CustomPaint(
-        painter: _OrbPainter(
-          animation: _heroController.value,
-          color1: context.primaryColor.withOpacity(0.05),
-          color2: context.colors.secondary.withOpacity(0.03),
+  Widget _buildAnimatedBackground() => AnimatedBuilder(
+        animation: _heroController,
+        builder: (final context, final child) => CustomPaint(
+          painter: _OrbPainter(
+            animation: _heroController.value,
+            color1: context.primaryColor.withOpacity(0.05),
+            color2: context.colors.secondary.withOpacity(0.03),
+          ),
+          child: const SizedBox.expand(),
         ),
-        child: const SizedBox.expand(),
-      ),
-    );
-
+      );
 
   Widget _buildHeroSliderSection() => SliverToBoxAdapter(
-      child: Container(
-        height: context.hp(context.isMobile ? 50 : 65),
-        margin: context.pagePadding,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
-          child: PageView.builder(
-            controller: _heroPageController,
-            itemCount: 3,
-            itemBuilder: (final context, final index) => _heroSlide(index),
+        child: Container(
+          height: context.hp(context.isMobile ? 50 : 65),
+          margin: context.pagePadding,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+            child: PageView.builder(
+              controller: _heroPageController,
+              itemCount: 3,
+              itemBuilder: (final context, final index) => _heroSlide(index),
+            ),
           ),
         ),
-      ),
-    );
-
+      );
 
   Widget _heroSlide(final int index) {
     final List<String> images = [
@@ -217,45 +215,44 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Widget _buildQuickFeatures() => SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
-        child: Center(
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            spacing: context.responsive(mobile: 20, tablet: 40, desktop: 60),
-            runSpacing: 20,
-            children: [
-              _featureItem(Icons.volunteer_activism_rounded,
-                  context.l10n.featureArtisan),
-              _featureItem(
-                  Icons.verified_user_rounded, context.l10n.featureDelivery),
-              _featureItem(Icons.sentiment_very_satisfied_rounded,
-                  context.l10n.featureService),
-              _featureItem(
-                  Icons.local_shipping_rounded, context.l10n.featureShipping),
-            ],
+        child: Padding(
+          padding: context.sectionPadding,
+          child: Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: context.responsive(mobile: 20, tablet: 40, desktop: 60),
+              runSpacing: 20,
+              children: [
+                _featureItem(Icons.volunteer_activism_rounded,
+                    context.l10n.featureArtisan),
+                _featureItem(
+                    Icons.verified_user_rounded, context.l10n.featureDelivery),
+                _featureItem(Icons.sentiment_very_satisfied_rounded,
+                    context.l10n.featureService),
+                _featureItem(
+                    Icons.local_shipping_rounded, context.l10n.featureShipping),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-
+      );
 
   Widget _featureItem(final IconData icon, final String text) => Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: context.primaryColor, size: context.iconMedium),
-        const SizedBox(width: 8),
-        Text(text,
-            style: TextStyle(
-                color: context.primaryColor,
-                fontWeight: FontWeight.w700,
-                fontSize: context.bodySize)),
-      ],
-    );
-
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: context.primaryColor, size: context.iconMedium),
+          const SizedBox(width: 8),
+          Text(text,
+              style: TextStyle(
+                  color: context.primaryColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: context.bodySize)),
+        ],
+      );
 
   Widget _buildCategoriesSection() {
     final List<ProductCategory?> categories = [null, ...ProductCategory.values];
+
     return SliverToBoxAdapter(
       child: Container(
         height: context.responsive(mobile: 50, desktop: 70),
@@ -298,7 +295,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   ),
                   child: Center(
                     child: Text(
-                      category!.label(context),
+                      category?.label(context) ?? '',
                       style: TextStyle(
                         fontSize: context.responsive(
                             mobile: 12, tablet: 14, desktop: 16),
@@ -368,101 +365,100 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _roomCard(final String title, final String img, final String sub) =>Container(
-      width: context.wp(context.isMobile ? 70 : 25),
-      margin: const EdgeInsets.only(right: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.borderRadius(2)),
-        image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(20),
+  Widget _roomCard(final String title, final String img, final String sub) =>
+      Container(
+        width: context.wp(context.isMobile ? 70 : 25),
+        margin: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.borderRadius(2)),
-          gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              colors: [Colors.black.withOpacity(0.7), Colors.transparent]),
+          image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
         ),
-        alignment: Alignment.bottomLeft,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(sub,
-                style: TextStyle(
-                    color: context.colors.secondary,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold)),
-            Text(title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: context.h3Size,
-                    fontWeight: FontWeight.bold)),
-          ],
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+            gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                colors: [Colors.black.withOpacity(0.7), Colors.transparent]),
+          ),
+          alignment: Alignment.bottomLeft,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(sub,
+                  style: TextStyle(
+                      color: context.colors.secondary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold)),
+              Text(title,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.h3Size,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
-      ),
-    );
+      );
 
-
-  Widget _buildArtisanInfo() =>SliverToBoxAdapter(
-      child: Container(
-        margin: context.sectionPadding,
-        padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(context.borderRadius(2)),
-          border: Border.all(color: context.primaryColor.withOpacity(0.05)),
-        ),
-        child: Flex(
-          direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-          children: [
-            Expanded(
-              flex: context.isMobile ? 0 : 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(context.l10n.whoWeAre,
-                      style: TextStyle(
-                          color: context.colors.secondary,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2)),
-                  const SizedBox(height: 15),
-                  Text(context.l10n.artisanTitle,
-                      style: TextStyle(
-                          fontSize: context.h2Size,
-                          fontWeight: FontWeight.w900,
-                          height: 1.2)),
-                  const SizedBox(height: 15),
-                  Text(context.l10n.artisanDesc,
-                      style: TextStyle(
-                          color: context.primaryColor.withOpacity(0.6),
-                          fontSize: context.bodySize)),
-                  const SizedBox(height: 25),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.accentDark),
-                    child: Text(context.l10n.visitUsButton),
-                  )
-                ],
+  Widget _buildArtisanInfo() => SliverToBoxAdapter(
+        child: Container(
+          margin: context.sectionPadding,
+          padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+            border: Border.all(color: context.primaryColor.withOpacity(0.05)),
+          ),
+          child: Flex(
+            direction: context.isMobile ? Axis.vertical : Axis.horizontal,
+            children: [
+              Expanded(
+                flex: context.isMobile ? 0 : 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.whoWeAre,
+                        style: TextStyle(
+                            color: context.colors.secondary,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2)),
+                    const SizedBox(height: 15),
+                    Text(context.l10n.artisanTitle,
+                        style: TextStyle(
+                            fontSize: context.h2Size,
+                            fontWeight: FontWeight.w900,
+                            height: 1.2)),
+                    const SizedBox(height: 15),
+                    Text(context.l10n.artisanDesc,
+                        style: TextStyle(
+                            color: context.primaryColor.withOpacity(0.6),
+                            fontSize: context.bodySize)),
+                    const SizedBox(height: 25),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accentDark),
+                      child: Text(context.l10n.visitUsButton),
+                    )
+                  ],
+                ),
               ),
-            ),
-            if (!context.isMobile) const SizedBox(width: 40),
-            if (context.isMobile) const SizedBox(height: 30),
-            Expanded(
-              flex: context.isMobile ? 0 : 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                    "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
-                    fit: BoxFit.cover),
+              if (!context.isMobile) const SizedBox(width: 40),
+              if (context.isMobile) const SizedBox(height: 30),
+              Expanded(
+                flex: context.isMobile ? 0 : 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                      "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
+                      fit: BoxFit.cover),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-
+      );
 
   Widget _buildStatsSection() {
     final stats = [
@@ -508,153 +504,153 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   Widget _buildStatCard(
-      final String val, final String label, final IconData icon) => Container(
-      width:
-          context.responsive(mobile: context.wp(42), tablet: 200, desktop: 250),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(context.borderRadius()),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: context.colors.secondary, size: 30),
-          const SizedBox(height: 15),
-          Text(val,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: context.h3Size,
-                  fontWeight: FontWeight.w900)),
-          const SizedBox(height: 5),
-          Text(label.toUpperCase(),
-              style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
-                  fontSize: 10,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-
-
-  Widget _buildFooter() => SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.fromLTRB(
-            context.pagePadding.left, 80, context.pagePadding.right, 40),
-        color: AppColors.backgroundDark,
+          final String val, final String label, final IconData icon) =>
+      Container(
+        width: context.responsive(
+            mobile: context.wp(42), tablet: 200, desktop: 250),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(context.borderRadius()),
+          border: Border.all(color: Colors.white.withOpacity(0.05)),
+        ),
         child: Column(
           children: [
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              spacing: 40,
-              runSpacing: 50,
-              children: [
-                SizedBox(
-                  width:
-                      context.responsive(mobile: double.infinity, desktop: 300),
-                  child: Column(
-                    crossAxisAlignment: context.isMobile
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.start,
-                    children: [
-                      const Text("SAĞLAM SPOT",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              letterSpacing: 4,
-                              fontWeight: FontWeight.w900)),
-                      const SizedBox(height: 20),
-                      Text(
-                        context.l10n.footerDesc,
-                        textAlign: context.isMobile
-                            ? TextAlign.center
-                            : TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.white.withOpacity(0.4), fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
-                _footerColumn(context.l10n.explore,
-                    [context.l10n.collections, context.l10n.spotProducts]),
-                _footerColumn(context.l10n.corporate,
-                    [context.l10n.aboutUs, context.l10n.contact]),
-                SizedBox(
-                  width:
-                      context.responsive(mobile: double.infinity, desktop: 250),
-                  child: Column(
-                    crossAxisAlignment: context.isMobile
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.end,
-                    children: [
-                      Text(context.l10n.contactUs,
-                          style: TextStyle(
-                              color: context.colors.secondary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12)),
-                      const SizedBox(height: 10),
-                      Text("info@saglamspot.com",
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.6))),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 80),
-            Text(context.l10n.allRightsReserved,
+            Icon(icon, color: context.colors.secondary, size: 30),
+            const SizedBox(height: 15),
+            Text(val,
                 style: TextStyle(
-                    color: Colors.white.withOpacity(0.15), fontSize: 10)),
+                    color: Colors.white,
+                    fontSize: context.h3Size,
+                    fontWeight: FontWeight.w900)),
+            const SizedBox(height: 5),
+            Text(label.toUpperCase(),
+                style: TextStyle(
+                    color: Colors.white.withOpacity(0.4),
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.bold)),
           ],
         ),
-      ),
-    );
+      );
 
+  Widget _buildFooter() => SliverToBoxAdapter(
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
+              context.pagePadding.left, 80, context.pagePadding.right, 40),
+          color: AppColors.backgroundDark,
+          child: Column(
+            children: [
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 40,
+                runSpacing: 50,
+                children: [
+                  SizedBox(
+                    width: context.responsive(
+                        mobile: double.infinity, desktop: 300),
+                    child: Column(
+                      crossAxisAlignment: context.isMobile
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
+                      children: [
+                        const Text("SAĞLAM SPOT",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                letterSpacing: 4,
+                                fontWeight: FontWeight.w900)),
+                        const SizedBox(height: 20),
+                        Text(
+                          context.l10n.footerDesc,
+                          textAlign: context.isMobile
+                              ? TextAlign.center
+                              : TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.4),
+                              fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _footerColumn(context.l10n.explore,
+                      [context.l10n.collections, context.l10n.spotProducts]),
+                  _footerColumn(context.l10n.corporate,
+                      [context.l10n.aboutUs, context.l10n.contact]),
+                  SizedBox(
+                    width: context.responsive(
+                        mobile: double.infinity, desktop: 250),
+                    child: Column(
+                      crossAxisAlignment: context.isMobile
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.end,
+                      children: [
+                        Text(context.l10n.contactUs,
+                            style: TextStyle(
+                                color: context.colors.secondary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)),
+                        const SizedBox(height: 10),
+                        Text("info@saglamspot.com",
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.6))),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 80),
+              Text(context.l10n.allRightsReserved,
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.15), fontSize: 10)),
+            ],
+          ),
+        ),
+      );
 
-  Widget _footerColumn(final String title, final List<String> items) =>SizedBox(
-      width: context.responsive(mobile: context.wp(40), desktop: 150),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13)),
-          const SizedBox(height: 25),
-          ...items.map((final item) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Text(item,
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.3), fontSize: 13)),
-              )),
-        ],
-      ),
-    );
+  Widget _footerColumn(final String title, final List<String> items) =>
+      SizedBox(
+        width: context.responsive(mobile: context.wp(40), desktop: 150),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13)),
+            const SizedBox(height: 25),
+            ...items.map((final item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(item,
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.3), fontSize: 13)),
+                )),
+          ],
+        ),
+      );
 
-
-  Widget _buildSectionHeader(final String title, final String sub)=> Padding(
-      padding: context.pagePadding.copyWith(bottom: 20, top: 40),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: TextStyle(
-                  fontSize: context.h2Size,
-                  fontWeight: FontWeight.w900,
-                  color: context.primaryColor)),
-          const SizedBox(height: 4),
-          Container(height: 3, width: 40, color: context.colors.secondary),
-          const SizedBox(height: 8),
-          Text(sub,
-              style: TextStyle(
-                  color: context.primaryColor.withOpacity(0.5),
-                  fontSize: context.captionSize)),
-        ],
-      ),
-    );
-  }
+  Widget _buildSectionHeader(final String title, final String sub) => Padding(
+        padding: context.pagePadding.copyWith(bottom: 20, top: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: TextStyle(
+                    fontSize: context.h2Size,
+                    fontWeight: FontWeight.w900,
+                    color: context.primaryColor)),
+            const SizedBox(height: 4),
+            Container(height: 3, width: 40, color: context.colors.secondary),
+            const SizedBox(height: 8),
+            Text(sub,
+                style: TextStyle(
+                    color: context.primaryColor.withOpacity(0.5),
+                    fontSize: context.captionSize)),
+          ],
+        ),
+      );
+}
 
 class _OrbPainter extends CustomPainter {
   final double animation;
