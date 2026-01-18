@@ -218,6 +218,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get contactUs => 'BİZE ULAŞIN';
 
   @override
+  String get sss => 'SSS';
+
+  @override
   String get footerDesc =>
       '20 yılı aşkın tecrübemizle İstanbul\'un her noktasına kaliteyi ve güveni taşıyoruz.';
 

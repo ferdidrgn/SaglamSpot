@@ -488,6 +488,12 @@ abstract class AppLocalizations {
   /// **'BİZE ULAŞIN'**
   String get contactUs;
 
+  /// No description provided for @sss.
+  ///
+  /// In tr, this message translates to:
+  /// **'SSS'**
+  String get sss;
+
   /// No description provided for @footerDesc.
   ///
   /// In tr, this message translates to:

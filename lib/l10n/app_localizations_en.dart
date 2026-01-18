@@ -218,6 +218,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactUs => 'CONTACT US';
 
   @override
+  String get sss => 'SSS';
+
+  @override
   String get footerDesc =>
       'With over 20 years of experience, we bring quality and trust to every corner of Istanbul.';
 
