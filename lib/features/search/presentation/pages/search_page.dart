@@ -810,8 +810,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
     final List<Widget> slivers = [];
 
     if (available.isNotEmpty) {
-      slivers.add(_buildSectionDivider(
-          context.l10n.currentCollection, available.length, AppColors.onPrimary));
+      slivers.add(_buildSectionDivider(context.l10n.currentCollection,
+          available.length, AppColors.onPrimary));
       slivers.addAll(_buildProductsWithAds(context, available));
     }
 
@@ -869,54 +869,80 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   Widget _buildSectionDivider(
-      final String title, final int count, final Color color) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
-          context.responsive(mobile: 28.0, tablet: 32.0, desktop: 36.0),
-          context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
-          context.responsive(mobile: 16.0, tablet: 18.0, desktop: 20.0),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 5,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: color, borderRadius: BorderRadius.circular(4)),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: context.responsive(
-                        mobile: 15.0, tablet: 17, desktop: 20),
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 2,
-                    color: AppColors.textSecondary,
+          final String title, final int count, final Color color) =>
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
+            context.responsive(mobile: 40.0, tablet: 48.0, desktop: 56.0),
+            context.responsive(mobile: 20.0, tablet: 28.0, desktop: 36.0),
+            context.responsive(mobile: 16.0, tablet: 18.0, desktop: 20.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 20,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
+                  const SizedBox(width: 12),
+                  Text(
+                    title.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: context.responsive(
+                          mobile: 16.0, tablet: 18.0, desktop: 22.0),
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.5,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            color.withOpacity(0.5),
+                            color.withOpacity(0.0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(left: 52),
+                child: Text(
                   context.l10n.pieces(count),
                   style: TextStyle(
-                    fontSize:
-                        context.responsive(mobile: 14, tablet: 16, desktop: 18),
-                    color: AppColors.textSecondary,
+                    fontSize: context.responsive(
+                        mobile: 13.0, tablet: 14.0, desktop: 16.0),
+                    color: AppColors.textSecondary.withOpacity(0.7),
                     fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildFloatingFilter(final BuildContext context) {
     return Container(
@@ -950,21 +976,19 @@ class _SearchPageState extends ConsumerState<SearchPage>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (final _) => FilterSheet(
-        onApplyFilters: () => Navigator.pop(context),
-        onResetFilters: _resetAll,
-      ),
+          onApplyFilters: () => Navigator.pop(context),
+          onResetFilters: _resetAll),
     );
   }
 
   void _showPriceRangeDialog(final BuildContext context) {
     final filters = ref.read(searchFiltersProvider);
     final minController = TextEditingController(
-      text: filters.minPrice > 0 ? filters.minPrice.toInt().toString() : '',
-    );
+        text: filters.minPrice > 0 ? filters.minPrice.toInt().toString() : '');
     final maxController = TextEditingController(
-      text:
-          filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
-    );
+        text: filters.maxPrice < 100000
+            ? filters.maxPrice.toInt().toString()
+            : '');
 
     showDialog(
       context: context,
