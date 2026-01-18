@@ -549,4 +549,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tipCleaningDesc =>
       'Wipe with a slightly damp cloth and dry immediately. A soaking wet cloth causes wood to swell.';
+
+  @override
+  String get helpCenter => 'YARDIM MERKEZİ';
+
+  @override
+  String get faqTitle => 'Sıkça Sorulan Sorular';
+
+  @override
+  String get faqSub => 'Merak ettiğiniz her şeyin cevabı burada';
 }

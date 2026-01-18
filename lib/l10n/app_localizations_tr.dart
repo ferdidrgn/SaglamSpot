@@ -548,4 +548,13 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get tipCleaningDesc =>
       'Hafif nemli bezle silip kurulayın. Islak bez ahşabı şişirir.';
+
+  @override
+  String get helpCenter => 'YARDIM MERKEZİ';
+
+  @override
+  String get faqTitle => 'Sıkça Sorulan Sorular';
+
+  @override
+  String get faqSub => 'Merak ettiğiniz her şeyin cevabı burada';
 }

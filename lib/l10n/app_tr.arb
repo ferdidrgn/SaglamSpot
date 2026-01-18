@@ -189,5 +189,8 @@
   "addImages": "Görsel Ekle",
   "changeImages": "Görselleri Değiştir",
   "noImagesFound": "Görsel yok",
-  "tipCleaningDesc": "Hafif nemli bezle silip kurulayın. Islak bez ahşabı şişirir."
+  "tipCleaningDesc": "Hafif nemli bezle silip kurulayın. Islak bez ahşabı şişirir.",
+  "helpCenter": "YARDIM MERKEZİ",
+  "faqTitle": "Sıkça Sorulan Sorular",
+  "faqSub": "Merak ettiğiniz her şeyin cevabı burada"
 }

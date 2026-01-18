@@ -529,7 +529,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                product.category.name,
+                product.category.label(context),
                 style: TextStyle(
                   fontSize: context.captionSize,
                   fontWeight: FontWeight.w800,
@@ -901,7 +901,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
       {
         'icon': Icons.category_rounded,
         'label': 'Kategori',
-        'value': product.category,
+        'value': product.category.label(context),
         'color': AppColors.primary,
       },
       {

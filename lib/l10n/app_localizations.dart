@@ -1111,6 +1111,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Hafif nemli bezle silip kurulayın. Islak bez ahşabı şişirir.'**
   String get tipCleaningDesc;
+
+  /// No description provided for @helpCenter.
+  ///
+  /// In tr, this message translates to:
+  /// **'YARDIM MERKEZİ'**
+  String get helpCenter;
+
+  /// No description provided for @faqTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıkça Sorulan Sorular'**
+  String get faqTitle;
+
+  /// No description provided for @faqSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Merak ettiğiniz her şeyin cevabı burada'**
+  String get faqSub;
 }
 
 class _AppLocalizationsDelegate
