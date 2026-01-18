@@ -494,6 +494,12 @@ abstract class AppLocalizations {
   /// **'SSS'**
   String get sss;
 
+  /// No description provided for @qualityFurniture.
+  ///
+  /// In tr, this message translates to:
+  /// **'\'Kaliteli mobilyanın adresi Sağlam Spot\''**
+  String get qualityFurniture;
+
   /// No description provided for @footerDesc.
   ///
   /// In tr, this message translates to:

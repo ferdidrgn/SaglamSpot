@@ -221,6 +221,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sss => 'SSS';
 
   @override
+  String get qualityFurniture => '\'Kaliteli mobilyanın adresi Sağlam Spot\'';
+
+  @override
   String get footerDesc =>
       'With over 20 years of experience, we bring quality and trust to every corner of Istanbul.';
 
