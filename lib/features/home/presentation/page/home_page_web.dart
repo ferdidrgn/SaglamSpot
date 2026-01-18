@@ -295,7 +295,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   ),
                   child: Center(
                     child: Text(
-                      category?.label(context) ?? 'Tümü',
+                      category?.label(context) ?? context.l10n.conditionAll,
                       style: TextStyle(
                         fontSize: context.responsive(
                             mobile: 12, tablet: 14, desktop: 16),
