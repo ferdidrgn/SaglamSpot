@@ -7,6 +7,7 @@ import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/extentions/product_category_ex.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
+import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
@@ -118,6 +119,23 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
               );
             },
+          ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                24,
+                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                40, // Alt boşluk
+              ),
+              child: const Column(
+                children: [
+                  AdsenseBanner(width: 728, height: 90),
+                  AdNativeWidget(),
+                ],
+              ),
+            ),
           ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
@@ -494,9 +512,11 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   bool _hasActiveFilters(final dynamic filters) {
-    return (filters.category != null && filters.category != ProductCategory.other) ||
+    return (filters.category != null &&
+            filters.category != ProductCategory.other) ||
         // Eski: filters.condition != 'Tümü'
-        (filters.condition != null && filters.condition != ProductCondition.all) ||
+        (filters.condition != null &&
+            filters.condition != ProductCondition.all) ||
         filters.minPrice > 0 ||
         filters.maxPrice < 100000;
   }
@@ -515,12 +535,12 @@ class _SearchPageState extends ConsumerState<SearchPage>
           children: [
             if (filters.category != null && filters.category != 'Tümü')
               _buildFilterChip(filters.category!, Icons.category_rounded),
-            if (filters.condition != null && filters.condition != ProductCondition.all)
+            if (filters.condition != null &&
+                filters.condition != ProductCondition.all)
               _buildFilterChip(
-                // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
-                filters.condition!.label(context),
-                Icons.verified_rounded
-              ),
+                  // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
+                  filters.condition!.label(context),
+                  Icons.verified_rounded),
             if (filters.minPrice > 0 || filters.maxPrice < 100000)
               _buildFilterChip(
                 '${filters.minPrice.toInt()}₺ - ${filters.maxPrice.toInt()}₺',
