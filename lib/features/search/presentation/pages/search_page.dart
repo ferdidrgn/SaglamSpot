@@ -64,65 +64,91 @@ class _SearchPageState extends ConsumerState<SearchPage>
     final currentFilters = ref.watch(searchFiltersProvider);
     final isMobile = context.isMobile;
     final searchQuery = ref.watch(searchQueryProvider);
-
-    // Taşmayı önlemek için yüksekliği kesin bir değer yapalım
-    final double searchSectionHeight = context.responsive(
-      mobile: 170.0,
-      tablet: 180.0,
-      desktop: 190.0,
-    );
-
+    final getSearchSectionHeight =
+    context.responsive(mobile: 180.0, tablet: 220.0, desktop: 240.0);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         slivers: [
+          // Fresh Hero Header
           _buildHeroHeader(context, isMobile),
 
-          // Sticky Header Alanı
           SliverPersistentHeader(
             pinned: true,
             delegate: _StickySearchDelegate(
-              minHeight: searchSectionHeight,
-              maxHeight: searchSectionHeight,
-              builder: (final context, final shrinkOffset) {
-                return _buildSearchSection(
-                  context,
-                  isMobile,
-                  searchQuery,
-                  currentFilters,
-                  shrinkOffset,
-                  searchSectionHeight,
-                );
-              },
+              minHeight: getSearchSectionHeight,
+              maxHeight: getSearchSectionHeight,
+              child: _buildSearchSection(context, isMobile, searchQuery),
             ),
           ),
 
-          // Sonuçlar ve İçerik
+          // Fresh Category Pills
+          _buildCategorySection(currentFilters, isMobile),
+
+          // Active Filters
+          if (_hasActiveFilters(currentFilters))
+            _buildActiveFiltersSliver(currentFilters),
+
+          // Results Header
+          searchResultsAsync.when(
+            loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+            error: (final _, final __) =>
+            const SliverToBoxAdapter(child: SizedBox.shrink()),
+            data: (final products) =>
+                _buildResultsHeader(context, products.length, searchQuery),
+          ),
+
+          // Product Showcase with Ads
           searchResultsAsync.when(
             loading: () => const SliverFillRemaining(child: FullPageShimmer()),
-            error: (final err, final _) =>
-                SliverFillRemaining(child: _buildErrorState(err.toString())),
+            error: (final err, final _) => SliverFillRemaining(
+              child: _buildErrorState(err.toString()),
+            ),
             data: (final products) {
               if (products.isEmpty) return _buildEmptyState();
               return SliverPadding(
-                padding: const EdgeInsets.only(bottom: 100),
+                padding: EdgeInsets.only(
+                  bottom: isMobile ? 100 : 60,
+                  left: context.responsive(mobile: 0.0, desktop: 20.0),
+                  right: context.responsive(mobile: 0.0, desktop: 20.0),
+                ),
                 sliver: SliverMainAxisGroup(
                   slivers: _buildProductGridsWithAds(context, products),
                 ),
               );
             },
           ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                24,
+                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                40, // Alt boşluk
+              ),
+              child: const Column(
+                children: [
+                  AdsenseBanner(width: 728, height: 90),
+                  AdNativeWidget(),
+                ],
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
+      floatingActionButton: isMobile ? _buildFloatingFilter(context) : null,
     );
   }
 
   Widget _buildHeroHeader(final BuildContext context, final bool isMobile) {
     return SliverAppBar(
       expandedHeight:
-          context.responsive(mobile: 240.0, tablet: 280.0, desktop: 320.0),
+      context.responsive(mobile: 240.0, tablet: 280.0, desktop: 320.0),
       pinned: true,
       stretch: true,
       backgroundColor: AppColors.textPrimary,
@@ -179,8 +205,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
-                              BoxShadow(
+                            boxShadow: [
+                              const BoxShadow(
                                   color: Colors.black26,
                                   blurRadius: 10,
                                   offset: Offset(0, 4))
@@ -253,117 +279,90 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   Widget _buildSearchSection(
-      final BuildContext context,
-      final bool isMobile,
-      final String query,
-      final SearchFiltersState filters,
-      final double shrinkOffset,
-      final double sectionHeight,
-      ) {
-    // Yüksekliğin 0 gelme ihtimaline karşı koruma
-    final double currentHeight = sectionHeight > 0 ? sectionHeight : 170.0;
-    final double shrinkProgress = (shrinkOffset / currentHeight).clamp(0.0, 1.0);
-
+      final BuildContext context, final bool isMobile, final String query) {
     return Container(
-      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.surface,
         boxShadow: [
-          if (shrinkProgress > 0.8)
-            BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10)
+          BoxShadow(
+            color: AppColors.textSecondary.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
         ],
+      ),
+      padding: context.responsive(
+        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        tablet: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        desktop: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // 1. Logo Satırı (Sadece daraldığında görünür)
-          if (shrinkProgress > 0.5)
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Row(
-                  children: [
-                    Image.asset('assets/images/saglam_spot_logo.png', height: 24),
-                    const SizedBox(width: 12),
-                    const Text(
-                      "SAĞLAM SPOT",
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 14),
-                    ),
-                  ],
-                ),
+          // Premium Search Input
+          Container(
+            height:
+            context.responsive(mobile: 56.0, tablet: 60.0, desktop: 64.0),
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: _showSearchFocus
+                    ? AppColors.textSecondary
+                    : AppColors.border,
+                width: 1.5,
               ),
             ),
-
-          // 2. Arama Girişi
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, shrinkProgress > 0.5 ? 8 : 20, 16, 12),
-            child: _buildPremiumSearchInput(context, query),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (final val) =>
+                  ref.read(searchQueryProvider.notifier).update(val),
+              onTap: () => setState(() => _showSearchFocus = true),
+              onTapOutside: (final _) =>
+                  setState(() => _showSearchFocus = false),
+              style: TextStyle(
+                fontSize: context.responsive(
+                    mobile: 15.0, tablet: 15.5, desktop: 16.0),
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
+              decoration: InputDecoration(
+                hintText: context.l10n.searchHint,
+                hintStyle: TextStyle(
+                  color: AppColors.textSecondary.withOpacity(0.5),
+                  fontWeight: FontWeight.w400,
+                ),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: _showSearchFocus
+                      ? AppColors.textSecondary
+                      : AppColors.textSecondary.withOpacity(0.6),
+                  size: context.responsive(
+                      mobile: 22.0, tablet: 23.0, desktop: 24.0),
+                ),
+                suffixIcon: query.isNotEmpty
+                    ? IconButton(
+                  icon: const Icon(Icons.close_rounded,
+                      color: AppColors.textSecondary, size: 20),
+                  onPressed: () {
+                    _searchController.clear();
+                    ref.read(searchQueryProvider.notifier).update('');
+                  },
+                )
+                    : null,
+                border: InputBorder.none,
+                contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              ),
+            ),
           ),
 
-          // 3. Kategoriler (Taşmayı önlemek için SizedBox içinde)
-          SizedBox(
-            height: 50,
-            child: _buildCategoryList(filters),
-          ),
+          // Desktop Filters Row
+          if (!isMobile) ...[
+            const SizedBox(height: 12),
+            _buildDesktopQuickFilters(),
+          ],
         ],
       ),
-    );
-  }
-
-  // Arama çubuğunu ayrı bir metot olarak çıkardık (temizlik için)
-  Widget _buildPremiumSearchInput(
-      final BuildContext context, final String query) {
-    return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: _showSearchFocus ? AppColors.textSecondary : AppColors.border,
-          width: 1.5,
-        ),
-      ),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (final val) =>
-            ref.read(searchQueryProvider.notifier).update(val),
-        decoration: InputDecoration(
-          hintText: context.l10n.searchHint,
-          prefixIcon: const Icon(Icons.search_rounded),
-          suffixIcon: query.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => _searchController.clear())
-              : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
-        ),
-      ),
-    );
-  }
-
-  // Kategori listesi (Daha önce build metodu içindeydi, buraya aldık)
-  Widget _buildCategoryList(final SearchFiltersState filters) {
-    final List<ProductCategory?> categoriesWithAll = [
-      null,
-      ...ProductCategory.values
-    ];
-    return ListView.separated(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(
-          horizontal: context.responsive(mobile: 16.0, desktop: 32.0)),
-      itemCount: categoriesWithAll.length,
-      separatorBuilder: (final _, final __) => const SizedBox(width: 8),
-      itemBuilder: (final context, final index) {
-        final category = categoriesWithAll[index];
-        final isSelected = filters.category == category;
-        return _buildCategoryPill(
-          ProductCategoryExtension(category).label(context),
-          isSelected,
-          () => ref.read(searchFiltersProvider.notifier).setCategory(category),
-        );
-      },
     );
   }
 
@@ -380,7 +379,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 context.l10n.condition,
                 filters.condition ?? ProductCondition.all,
                 ProductCondition.values,
-                (final val) => notifier.setCondition(val),
+                    (final val) => notifier.setCondition(val),
               ),
             ),
             const SizedBox(width: 12),
@@ -394,13 +393,13 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   Widget _buildQuickFilterDropdown(
-    final String label,
-    final ProductCondition value, // String? yerine ProductCondition
-    final List<ProductCondition> items,
-    // List<String> yerine List<ProductCondition>
-    final Function(ProductCondition?) onChanged,
-    // Callback tipini de güncelle
-  ) {
+      final String label,
+      final ProductCondition value, // String? yerine ProductCondition
+      final List<ProductCondition> items,
+      // List<String> yerine List<ProductCondition>
+      final Function(ProductCondition?) onChanged,
+      // Callback tipini de güncelle
+      ) {
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -423,9 +422,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
           // Otomatik Enum-to-L10n dönüşümü burada yapılıyor:
           items: items
               .map((final item) => DropdownMenuItem<ProductCondition>(
-                    value: item,
-                    child: Text(item.label(context)), // Extension metodu
-                  ))
+            value: item,
+            child: Text(item.label(context)), // Extension metodu
+          ))
               .toList(),
           onChanged: onChanged,
         ),
@@ -488,37 +487,30 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildCategorySection(
-      final SearchFiltersState filters, final bool isMobile) {
-    // dynamic yerine tipi yazdık
-
-    // Başına null (Tümü) eklenmiş liste
-    final List<ProductCategory?> categoriesWithAll = [
-      null,
-      ...ProductCategory.values
-    ];
-
+  Widget _buildCategorySection(final dynamic filters, final bool isMobile) {
     return SliverToBoxAdapter(
       child: Container(
         height: context.responsive(mobile: 60.0, tablet: 65.0, desktop: 70.0),
         color: AppColors.surface,
+        padding: EdgeInsets.symmetric(
+          horizontal:
+          context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
+          vertical:
+          context.responsive(mobile: 8.0, tablet: 10.0, desktop: 12.0),
+        ),
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(
-            horizontal:
-                context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
-          ),
-          itemCount: categoriesWithAll.length,
+          itemCount: ProductCategory.values.length,
           separatorBuilder: (final _, final __) => const SizedBox(width: 10),
           itemBuilder: (final context, final index) {
-            final category = categoriesWithAll[index];
-            final isSelected = filters.category == category;
+            final category = ProductCategory.values[index];
+            final isSelected =
+                (filters.category ?? ProductCategory.other) == category;
 
             return _buildCategoryPill(
-              // Extension sayesinde null gelince otomatik 'Tümü' yazar:
               ProductCategoryExtension(category).label(context),
               isSelected,
-              () => ref
+                  () => ref
                   .read(searchFiltersProvider.notifier)
                   .setCategory(category),
             );
@@ -537,9 +529,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(
           horizontal:
-              context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+          context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
           vertical:
-              context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
+          context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
         ),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.textSecondary : AppColors.secondary,
@@ -550,12 +542,12 @@ class _SearchPageState extends ConsumerState<SearchPage>
           ),
           boxShadow: isSelected
               ? [
-                  BoxShadow(
-                    color: AppColors.textSecondary.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
+            BoxShadow(
+              color: AppColors.textSecondary.withOpacity(0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ]
               : null,
         ),
         child: Center(
@@ -563,7 +555,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
             label,
             style: TextStyle(
               fontSize:
-                  context.responsive(mobile: 13.0, tablet: 13.5, desktop: 14.0),
+              context.responsive(mobile: 13.0, tablet: 13.5, desktop: 14.0),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               color: isSelected ? Colors.white : AppColors.textPrimary,
               letterSpacing: 0.3,
@@ -574,31 +566,37 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  bool _hasActiveFilters(final SearchFiltersState filters) =>
-      filters.category != null || // null değilse bir kategori seçilmiştir
-      (filters.condition != null &&
-          filters.condition != ProductCondition.all) ||
-      filters.minPrice > 0 ||
-      filters.maxPrice < 100000;
+  bool _hasActiveFilters(final dynamic filters) {
+    return (filters.category != null &&
+        filters.category != ProductCategory.other) ||
+        // Eski: filters.condition != 'Tümü'
+        (filters.condition != null &&
+            filters.condition != ProductCondition.all) ||
+        filters.minPrice > 0 ||
+        filters.maxPrice < 100000;
+  }
 
-  // Aktif filtre chiplerini gösteren metot:
-  Widget _buildActiveFiltersSliver(final SearchFiltersState filters) {
+  Widget _buildActiveFiltersSliver(final dynamic filters) {
     return SliverToBoxAdapter(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        padding: EdgeInsets.symmetric(
+          horizontal:
+          context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+          vertical: 16,
+        ),
         child: Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            // Sadece bir kategori seçiliyse (null değilse) chip göster:
-            if (filters.category != null)
+            if (filters.category != null &&
+                filters.category != ProductCategory.other)
               _buildFilterChip(
                   ProductCategoryExtension(filters.category).label(context),
                   Icons.category_rounded),
             if (filters.condition != null &&
                 filters.condition != ProductCondition.all)
               _buildFilterChip(
-                  // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
+                // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
                   filters.condition!.label(context),
                   Icons.verified_rounded),
             if (filters.minPrice > 0 || filters.maxPrice < 100000)
@@ -753,7 +751,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 label: Text('Filtreleri Temizle',
                     style: TextStyle(
                         fontSize:
-                            context.responsive(mobile: 15.0, desktop: 16.0))),
+                        context.responsive(mobile: 15.0, desktop: 16.0))),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.textSecondary,
                   foregroundColor: Colors.white,
@@ -962,7 +960,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
     final maxController = TextEditingController(
       text:
-          filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
+      filters.maxPrice < 100000 ? filters.maxPrice.toInt().toString() : '',
     );
 
     showDialog(
@@ -988,7 +986,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide:
-                        const BorderSide(color: AppColors.textSecondary),
+                    const BorderSide(color: AppColors.textSecondary),
                   ),
                 ),
               ),
@@ -1014,7 +1012,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide:
-                        const BorderSide(color: AppColors.textSecondary),
+                    const BorderSide(color: AppColors.textSecondary),
                   ),
                 ),
               ),
@@ -1049,20 +1047,34 @@ class _SearchPageState extends ConsumerState<SearchPage>
 }
 
 class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
-  final Widget Function(BuildContext context, double shrinkOffset) builder;
+  final Widget child;
   final double minHeight;
   final double maxHeight;
 
   _StickySearchDelegate({
-    required this.builder,
+    required this.child,
     required this.minHeight,
     required this.maxHeight,
   });
 
   @override
-  Widget build(final BuildContext context, final double shrinkOffset,
-      final bool overlapsContent) {
-    return builder(context, shrinkOffset);
+  Widget build(final context, final shrinkOffset, final overlapsContent) {
+    // Scroll miktarına göre opaklık ve gölge hesaplama
+    final progress = shrinkOffset / maxExtent;
+
+    return Container(
+      height: maxHeight,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(progress * 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
+        ],
+      ),
+      child: child,
+    );
   }
 
   @override
@@ -1072,5 +1084,6 @@ class _StickySearchDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => minHeight;
 
   @override
-  bool shouldRebuild(covariant final _StickySearchDelegate oldDelegate) => true;
+  bool shouldRebuild(covariant final _StickySearchDelegate oldDelegate) =>
+      oldDelegate.minHeight != minHeight || oldDelegate.maxHeight != maxHeight;
 }
