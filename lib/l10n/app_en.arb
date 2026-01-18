@@ -40,5 +40,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "conditionAll": "All",
+  "conditionNew": "New",
+  "conditionUsed": "Used"
 }

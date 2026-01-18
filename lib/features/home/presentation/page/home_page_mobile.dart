@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
@@ -307,7 +308,7 @@ class _InfoArea extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          product.category,
+          product.category.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),

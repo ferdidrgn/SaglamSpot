@@ -80,4 +80,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String pieces(int count) {
     return '$count Parça';
   }
+
+  @override
+  String get conditionAll => 'Tümü';
+
+  @override
+  String get conditionNew => 'Sıfır';
+
+  @override
+  String get conditionUsed => 'İkinci El';
 }

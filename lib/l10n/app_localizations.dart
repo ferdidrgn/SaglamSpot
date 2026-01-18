@@ -217,6 +217,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{count} Parça'**
   String pieces(int count);
+
+  /// No description provided for @conditionAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümü'**
+  String get conditionAll;
+
+  /// No description provided for @conditionNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfır'**
+  String get conditionNew;
+
+  /// No description provided for @conditionUsed.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci El'**
+  String get conditionUsed;
 }
 
 class _AppLocalizationsDelegate

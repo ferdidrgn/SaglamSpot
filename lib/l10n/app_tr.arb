@@ -40,5 +40,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "conditionAll": "Tümü",
+  "conditionNew": "Sıfır",
+  "conditionUsed": "İkinci El"
 }

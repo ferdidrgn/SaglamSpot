@@ -584,7 +584,7 @@ class _EnhancedProductDetailPageState extends ConsumerState<ProductDetailPage>
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                product.category,
+                product.category.name,
                 style: TextStyle(
                   fontSize: context.captionSize,
                   fontWeight: FontWeight.w800,

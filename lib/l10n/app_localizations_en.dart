@@ -80,4 +80,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String pieces(int count) {
     return '$count Pieces';
   }
+
+  @override
+  String get conditionAll => 'All';
+
+  @override
+  String get conditionNew => 'New';
+
+  @override
+  String get conditionUsed => 'Used';
 }

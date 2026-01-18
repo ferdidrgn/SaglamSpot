@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/enum/enums.dart';
 import '../providers/search_providers.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
@@ -30,6 +31,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
   @override
   void initState() {
     super.initState();
+    // Senin orijinal 400ms süren korundu
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -50,7 +52,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
 
     _animController.forward();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((final _) {
       final filters = ref.read(searchFiltersProvider);
       if (filters.minPrice > 0) {
         _minPriceController.text = filters.minPrice.toInt().toString();
@@ -75,7 +77,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final filters = ref.watch(searchFiltersProvider);
     final filtersNotifier = ref.read(searchFiltersProvider.notifier);
 
@@ -84,7 +86,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
       child: Container(
         color: Colors.black.withOpacity(0.5),
         child: GestureDetector(
-          onTap: () {},
+          onTap: () {}, // İçeriğe tıklayınca kapanmasın
           child: SlideTransition(
             position: _slideAnimation,
             child: FadeTransition(
@@ -128,7 +130,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildSectionTitle('Ürün Durumu'),
+                              _buildSectionTitle(context.l10n.condition),
                               SizedBox(
                                   height: context.responsive(
                                       mobile: 12.0, desktop: 14.0)),
@@ -138,7 +140,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                                       mobile: 28.0,
                                       tablet: 32.0,
                                       desktop: 36.0)),
-                              _buildSectionTitle('Fiyat Aralığı'),
+                              _buildSectionTitle(context.l10n.priceRange),
                               SizedBox(
                                   height: context.responsive(
                                       mobile: 12.0, desktop: 14.0)),
@@ -174,17 +176,15 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
     );
   }
 
-  Widget _buildHandleBar() {
-    return Container(
-      margin: const EdgeInsets.only(top: 12),
-      width: 48,
-      height: 4,
-      decoration: BoxDecoration(
-        color: AppColors.border,
-        borderRadius: BorderRadius.circular(2),
-      ),
-    );
-  }
+  Widget _buildHandleBar() => Container(
+        margin: const EdgeInsets.only(top: 12),
+        width: 48,
+        height: 4,
+        decoration: BoxDecoration(
+          color: AppColors.border,
+          borderRadius: BorderRadius.circular(2),
+        ),
+      );
 
   Widget _buildHeader() {
     return Padding(
@@ -210,14 +210,12 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   context.responsive(mobile: 22.0, tablet: 23.0, desktop: 24.0),
             ),
           ),
-          SizedBox(
-              width: context.responsive(
-                  mobile: 14.0, tablet: 16.0, desktop: 18.0)),
+          const SizedBox(width: 14),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Filtreleme',
+                context.l10n.filter,
                 style: TextStyle(
                   fontSize: context.responsive(
                       mobile: 22.0, tablet: 23.0, desktop: 24.0),
@@ -226,21 +224,14 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   letterSpacing: -0.5,
                 ),
               ),
-              Text(
-                'Aradığınız ürünü kolayca bulun',
-                style: TextStyle(
-                  fontSize: context.responsive(
-                      mobile: 12.5, tablet: 13.0, desktop: 13.5),
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              const Text('Aradığınız ürünü kolayca bulun'),
             ],
           ),
           const Spacer(),
           IconButton(
             onPressed: _closeSheet,
-            icon: Icon(Icons.close_rounded, color: AppColors.textSecondary),
+            icon:
+                const Icon(Icons.close_rounded, color: AppColors.textSecondary),
             style: IconButton.styleFrom(
               backgroundColor: AppColors.secondary,
               shape: RoundedRectangleBorder(
@@ -252,62 +243,42 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Row(
-      children: [
-        Container(
-          width: 3,
-          height: 18,
-          decoration: BoxDecoration(
-            color: AppColors.textSecondary,
-            borderRadius: BorderRadius.circular(2),
+  Widget _buildSectionTitle(final String title) => Row(
+        children: [
+          Container(
+            width: 3,
+            height: 18,
+            decoration: BoxDecoration(
+                color: AppColors.textSecondary,
+                borderRadius: BorderRadius.circular(2)),
           ),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize:
-                context.responsive(mobile: 15.0, tablet: 15.5, desktop: 16.0),
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-            letterSpacing: -0.2,
-          ),
-        ),
-      ],
-    );
-  }
+          const SizedBox(width: 10),
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        ],
+      );
 
-  Widget _buildConditionSelector(dynamic filters, dynamic notifier) {
-    final conditions = [
-      ('Tümü', Icons.grid_view_rounded, 'Hepsi'),
-      ('Sıfır', Icons.new_releases_rounded, 'Yeni'),
-      ('İkinci El', Icons.recycling_rounded, 'Kullanılmış'),
-    ];
-
+  Widget _buildConditionSelector(
+      final dynamic filters, final dynamic notifier) {
     return Wrap(
       spacing: context.responsive(mobile: 10.0, tablet: 12.0, desktop: 14.0),
-      runSpacing: context.responsive(mobile: 10.0, tablet: 12.0, desktop: 14.0),
-      children: conditions.map((condition) {
-        final isSelected = (filters.condition ?? 'Tümü') == condition.$1;
+      runSpacing: 12,
+      children: ProductCondition.values.map((final cond) {
+        final isSelected = (filters.condition ?? ProductCondition.all) == cond;
         return _buildConditionCard(
-          label: condition.$1,
-          icon: condition.$2,
-          subtitle: condition.$3,
+          label: cond.label(context),
           isSelected: isSelected,
-          onTap: () => notifier.setCondition(condition.$1),
+          onTap: () => notifier.setCondition(cond),
         );
       }).toList(),
     );
   }
 
-  Widget _buildConditionCard({
-    required String label,
-    required IconData icon,
-    required String subtitle,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildConditionCard(
+      {required final String label,
+      required final bool isSelected,
+      required final VoidCallback onTap}) {
     final cardWidth = (MediaQuery.of(context).size.width -
             context.responsive(mobile: 60.0, tablet: 72.0, desktop: 84.0)) /
         3;
@@ -318,282 +289,114 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: cardWidth,
-        padding: EdgeInsets.symmetric(
-          vertical:
-              context.responsive(mobile: 14.0, tablet: 16.0, desktop: 18.0),
-          horizontal:
-              context.responsive(mobile: 10.0, tablet: 12.0, desktop: 14.0),
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.textSecondary.withOpacity(0.12)
               : AppColors.secondary,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppColors.textSecondary : AppColors.border,
-            width: 2,
-          ),
+              color: isSelected ? AppColors.textSecondary : AppColors.border,
+              width: 2),
         ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? AppColors.textSecondary
-                  : AppColors.textSecondary.withOpacity(0.5),
-              size:
-                  context.responsive(mobile: 26.0, tablet: 28.0, desktop: 30.0),
-            ),
-            SizedBox(
-                height:
-                    context.responsive(mobile: 7.0, tablet: 8.0, desktop: 9.0)),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: context.responsive(
-                    mobile: 13.5, tablet: 14.0, desktop: 14.5),
-                fontWeight: FontWeight.w700,
+        child: Text(label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
                 color: isSelected
                     ? AppColors.textSecondary
-                    : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: context.responsive(
-                    mobile: 10.5, tablet: 11.0, desktop: 11.5),
-                color: AppColors.textSecondary.withOpacity(0.7),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+                    : AppColors.textPrimary)),
       ),
     );
   }
 
-  Widget _buildPriceRangeInputs(dynamic filters, dynamic notifier) {
+  Widget _buildPriceRangeInputs(final dynamic filters, final dynamic notifier) {
     return Row(
       children: [
         Expanded(
-          child: _buildPriceInput(
-            controller: _minPriceController,
-            label: 'Minimum',
-            hint: '0',
-            icon: Icons.arrow_upward_rounded,
-            onChanged: (val) {
-              final min = double.tryParse(val) ?? 0;
-              notifier.setPriceRange(min, filters.maxPrice);
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Container(width: 24, height: 2, color: AppColors.border),
-        ),
+            child: _buildPriceInput(
+                controller: _minPriceController,
+                label: 'Min',
+                onChanged: (final val) => notifier.setPriceRange(
+                    double.tryParse(val) ?? 0, filters.maxPrice))),
+        const SizedBox(width: 12),
         Expanded(
-          child: _buildPriceInput(
-            controller: _maxPriceController,
-            label: 'Maksimum',
-            hint: '∞',
-            icon: Icons.arrow_downward_rounded,
-            onChanged: (val) {
-              final max = double.tryParse(val) ?? 100000;
-              notifier.setPriceRange(filters.minPrice, max);
-            },
-          ),
-        ),
+            child: _buildPriceInput(
+                controller: _maxPriceController,
+                label: 'Max',
+                onChanged: (final val) => notifier.setPriceRange(
+                    filters.minPrice, double.tryParse(val) ?? 100000))),
       ],
     );
   }
 
-  Widget _buildPriceInput({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    required Function(String) onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize:
-                context.responsive(mobile: 11.5, tablet: 12.0, desktop: 12.5),
-            fontWeight: FontWeight.w600,
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(
-            height: context.responsive(mobile: 7.0, tablet: 8.0, desktop: 9.0)),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.secondary,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            onChanged: onChanged,
-            style: TextStyle(
-              fontSize:
-                  context.responsive(mobile: 15.0, tablet: 15.5, desktop: 16.0),
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(
-                color: AppColors.textSecondary.withOpacity(0.4),
-                fontWeight: FontWeight.w500,
-              ),
-              prefixIcon: Icon(icon, color: AppColors.textSecondary, size: 18),
-              suffixText: '₺',
-              suffixStyle: TextStyle(
-                fontSize: context.responsive(
-                    mobile: 13.5, tablet: 14.0, desktop: 14.5),
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-              ),
-              border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            ),
-          ),
-        ),
-      ],
+  Widget _buildPriceInput(
+      {required final TextEditingController controller,
+      required final String label,
+      required final Function(String) onChanged}) {
+    return Container(
+      decoration: BoxDecoration(
+          color: AppColors.secondary,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border)),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+            labelText: label,
+            prefixIcon: const Icon(Icons.payments_rounded, size: 18),
+            suffixText: '₺',
+            border: InputBorder.none,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+      ),
     );
   }
 
-  Widget _buildPricePresets(dynamic notifier) {
+  Widget _buildPricePresets(final dynamic notifier) {
     final presets = [
       (0.0, 1000.0, '0-1K'),
       (1000.0, 5000.0, '1K-5K'),
-      (5000.0, 10000.0, '5K-10K'),
-      (10000.0, 100000.0, '10K+'),
+      (5000.0, 10000.0, '5K-10K')
     ];
-
     return Wrap(
-      spacing: context.responsive(mobile: 9.0, tablet: 10.0, desktop: 11.0),
-      runSpacing: context.responsive(mobile: 9.0, tablet: 10.0, desktop: 11.0),
-      children: presets.map((preset) {
-        return InkWell(
-          onTap: () {
-            _minPriceController.text = preset.$1.toInt().toString();
-            _maxPriceController.text =
-                preset.$2 < 100000 ? preset.$2.toInt().toString() : '';
-            notifier.setPriceRange(preset.$1, preset.$2);
-          },
-          borderRadius: BorderRadius.circular(24),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal:
-                  context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
-              vertical:
-                  context.responsive(mobile: 11.0, tablet: 12.0, desktop: 13.0),
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.secondary,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.payments_rounded,
-                    size: 18, color: AppColors.textSecondary),
-                const SizedBox(width: 8),
-                Text(
-                  preset.$3,
-                  style: TextStyle(
-                    fontSize: context.responsive(
-                        mobile: 13.5, tablet: 14.0, desktop: 14.5),
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
+      spacing: 8,
+      children: presets
+          .map((final p) => ActionChip(
+              label: Text(p.$3),
+              onPressed: () {
+                _minPriceController.text = p.$1.toInt().toString();
+                _maxPriceController.text = p.$2.toInt().toString();
+                notifier.setPriceRange(p.$1, p.$2);
+              }))
+          .toList(),
     );
   }
 
   Widget _buildActionButtons() {
     return Container(
-      padding: EdgeInsets.all(
-          context.responsive(mobile: 20.0, tablet: 24.0, desktop: 28.0)),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  widget.onResetFilters();
-                  _minPriceController.clear();
-                  _maxPriceController.clear();
-                  _closeSheet();
-                },
-                icon: Icon(Icons.refresh_rounded,
-                    size: context.responsive(
-                        mobile: 19.0, tablet: 20.0, desktop: 21.0)),
-                label: Text('Temizle',
-                    style: TextStyle(
-                        fontSize: context.responsive(
-                            mobile: 14.5, tablet: 15.0, desktop: 15.5))),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
-                  side: BorderSide(color: AppColors.border, width: 1.5),
-                  padding: EdgeInsets.symmetric(
-                      vertical: context.responsive(
-                          mobile: 16.0, tablet: 17.0, desktop: 18.0)),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 3,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  widget.onApplyFilters();
-                  _closeSheet();
-                },
-                icon: Icon(Icons.check_rounded,
-                    size: context.responsive(
-                        mobile: 19.0, tablet: 20.0, desktop: 21.0)),
-                label: Text('Uygula',
-                    style: TextStyle(
-                        fontSize: context.responsive(
-                            mobile: 14.5, tablet: 15.0, desktop: 15.5))),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.textSecondary,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(
-                      vertical: context.responsive(
-                          mobile: 16.0, tablet: 17.0, desktop: 18.0)),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 0,
-                ),
-              ),
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.border))),
+      child: Row(
+        children: [
+          Expanded(
+              child: OutlinedButton(
+                  onPressed: () {
+                    widget.onResetFilters();
+                    _closeSheet();
+                  },
+                  child: Text(context.l10n.clear))),
+          const SizedBox(width: 12),
+          Expanded(
+              child: ElevatedButton(
+                  onPressed: () {
+                    widget.onApplyFilters();
+                    _closeSheet();
+                  },
+                  child: const Text('Uygula'))),
+        ],
       ),
     );
   }

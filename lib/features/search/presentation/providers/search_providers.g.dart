@@ -8,14 +8,11 @@ part of 'search_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Sadece arama metnini tutar
 
 @ProviderFor(SearchQuery)
 const searchQueryProvider = SearchQueryProvider._();
 
-/// Sadece arama metnini tutar
 final class SearchQueryProvider extends $NotifierProvider<SearchQuery, String> {
-  /// Sadece arama metnini tutar
   const SearchQueryProvider._()
       : super(
           from: null,
@@ -45,8 +42,6 @@ final class SearchQueryProvider extends $NotifierProvider<SearchQuery, String> {
 
 String _$searchQueryHash() => r'1255a1cce2d67e66f98d54fea6445539e28dc0d9';
 
-/// Sadece arama metnini tutar
-
 abstract class _$SearchQuery extends $Notifier<String> {
   String build();
   @$mustCallSuper
@@ -60,21 +55,17 @@ abstract class _$SearchQuery extends $Notifier<String> {
   }
 }
 
-/// Sadece aktif filtreleri tutar (Record kullanarak state sınıfı yazmaktan kurtulduk)
-
 @ProviderFor(SearchFilters)
 const searchFiltersProvider = SearchFiltersProvider._();
 
-/// Sadece aktif filtreleri tutar (Record kullanarak state sınıfı yazmaktan kurtulduk)
 final class SearchFiltersProvider extends $NotifierProvider<
     SearchFilters,
     ({
       ProductCategory? category,
-      String? condition,
+      ProductCondition? condition,
       double maxPrice,
       double minPrice,
     })> {
-  /// Sadece aktif filtreleri tutar (Record kullanarak state sınıfı yazmaktan kurtulduk)
   const SearchFiltersProvider._()
       : super(
           from: null,
@@ -97,7 +88,7 @@ final class SearchFiltersProvider extends $NotifierProvider<
   Override overrideWithValue(
       ({
         ProductCategory? category,
-        String? condition,
+        ProductCondition? condition,
         double maxPrice,
         double minPrice,
       }) value) {
@@ -106,7 +97,7 @@ final class SearchFiltersProvider extends $NotifierProvider<
       providerOverride: $SyncValueProvider<
           ({
             ProductCategory? category,
-            String? condition,
+            ProductCondition? condition,
             double maxPrice,
             double minPrice,
           })>(value),
@@ -114,20 +105,18 @@ final class SearchFiltersProvider extends $NotifierProvider<
   }
 }
 
-String _$searchFiltersHash() => r'e2a8d4acc5a40f3f562d039f224607d581c4aaff';
-
-/// Sadece aktif filtreleri tutar (Record kullanarak state sınıfı yazmaktan kurtulduk)
+String _$searchFiltersHash() => r'e6c678ff93f8bbef66f323a0fb23149a92935d3b';
 
 abstract class _$SearchFilters extends $Notifier<
     ({
       ProductCategory? category,
-      String? condition,
+      ProductCondition? condition,
       double maxPrice,
       double minPrice,
     })> {
   ({
     ProductCategory? category,
-    String? condition,
+    ProductCondition? condition,
     double maxPrice,
     double minPrice,
   }) build();
@@ -138,13 +127,13 @@ abstract class _$SearchFilters extends $Notifier<
     final ref = this.ref as $Ref<
         ({
           ProductCategory? category,
-          String? condition,
+          ProductCondition? condition,
           double maxPrice,
           double minPrice,
         }),
         ({
           ProductCategory? category,
-          String? condition,
+          ProductCondition? condition,
           double maxPrice,
           double minPrice,
         })>;
@@ -152,19 +141,19 @@ abstract class _$SearchFilters extends $Notifier<
         AnyNotifier<
             ({
               ProductCategory? category,
-              String? condition,
+              ProductCondition? condition,
               double maxPrice,
               double minPrice,
             }),
             ({
               ProductCategory? category,
-              String? condition,
+              ProductCondition? condition,
               double maxPrice,
               double minPrice,
             })>,
         ({
           ProductCategory? category,
-          String? condition,
+          ProductCondition? condition,
           double maxPrice,
           double minPrice,
         }),
@@ -215,4 +204,4 @@ final class SearchedProductsProvider extends $FunctionalProvider<
   }
 }
 
-String _$searchedProductsHash() => r'9698244ef1de53e80f76bea9b4da6829a8c3fbc6';
+String _$searchedProductsHash() => r'b3835f875678e957fba35b1a950adfdc3d716708';

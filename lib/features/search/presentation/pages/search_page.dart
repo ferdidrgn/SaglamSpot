@@ -303,8 +303,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
             Expanded(
               child: _buildQuickFilterDropdown(
                 context.l10n.condition,
-                filters.condition ?? 'Tümü',
-                ['Tümü', 'Sıfır', 'İkinci El'],
+                filters.condition ?? ProductCondition.all,
+                ProductCondition.values,
                 (final val) => notifier.setCondition(val),
               ),
             ),
@@ -320,9 +320,11 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
   Widget _buildQuickFilterDropdown(
     final String label,
-    final String value,
-    final List<String> items,
-    final Function(String?) onChanged,
+    final ProductCondition value, // String? yerine ProductCondition
+    final List<ProductCondition> items,
+    // List<String> yerine List<ProductCondition>
+    final Function(ProductCondition?) onChanged,
+    // Callback tipini de güncelle
   ) {
     return Container(
       height: 48,
@@ -333,7 +335,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
         border: Border.all(color: AppColors.border),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
+        child: DropdownButton<ProductCondition>(
+          // Tipi buraya açıkça yaz
           value: value,
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down_rounded,
@@ -342,9 +345,12 @@ class _SearchPageState extends ConsumerState<SearchPage>
               fontSize: 14,
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500),
+          // Otomatik Enum-to-L10n dönüşümü burada yapılıyor:
           items: items
-              .map((final item) =>
-                  DropdownMenuItem(value: item, child: Text(item)))
+              .map((final item) => DropdownMenuItem<ProductCondition>(
+                    value: item,
+                    child: Text(item.label(context)), // Extension metodu
+                  ))
               .toList(),
           onChanged: onChanged,
         ),
@@ -488,8 +494,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
   }
 
   bool _hasActiveFilters(final dynamic filters) {
-    return (filters.category != null && filters.category != 'Tümü') ||
-        (filters.condition != null && filters.condition != 'Tümü') ||
+    return (filters.category != null && filters.category != ProductCategory.other) ||
+        // Eski: filters.condition != 'Tümü'
+        (filters.condition != null && filters.condition != ProductCondition.all) ||
         filters.minPrice > 0 ||
         filters.maxPrice < 100000;
   }
@@ -508,8 +515,12 @@ class _SearchPageState extends ConsumerState<SearchPage>
           children: [
             if (filters.category != null && filters.category != 'Tümü')
               _buildFilterChip(filters.category!, Icons.category_rounded),
-            if (filters.condition != null && filters.condition != 'Tümü')
-              _buildFilterChip(filters.condition!, Icons.verified_rounded),
+            if (filters.condition != null && filters.condition != ProductCondition.all)
+              _buildFilterChip(
+                // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
+                filters.condition!.label(context),
+                Icons.verified_rounded
+              ),
             if (filters.minPrice > 0 || filters.maxPrice < 100000)
               _buildFilterChip(
                 '${filters.minPrice.toInt()}₺ - ${filters.maxPrice.toInt()}₺',
