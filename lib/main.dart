@@ -18,7 +18,7 @@ class MyApp extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final appTheme = ref.watch(appThemeProvider);
     final router = ref.watch(appRouterProvider);
-    final selectedLocale = ref.watch(localeControllerProvider);
+    final localeAsync = ref.watch(localeControllerProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -26,7 +26,7 @@ class MyApp extends ConsumerWidget {
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,
       themeMode: ThemeMode.light,
-      locale: selectedLocale,
+      locale: localeAsync.value ?? const Locale('tr'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,

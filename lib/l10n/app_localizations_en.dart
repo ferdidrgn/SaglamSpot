@@ -30,6 +30,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String resultsFor(String query) {
+    return 'Results for \"$query\"';
+  }
+
+  @override
   String get category => 'Category';
 
   @override
@@ -54,20 +59,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryOther => 'Other';
 
   @override
-  String get addProduct => 'Add New Product';
+  String get condition => 'Condition';
 
   @override
-  String get productName => 'Product Name';
+  String get priceRange => 'Price Range';
 
   @override
-  String get price => 'Price';
-
-  @override
-  String get description => 'Description';
-
-  @override
-  String get save => 'Save';
+  String get clear => 'Clear';
 
   @override
   String get filter => 'Filter';
+
+  @override
+  String get currentCollection => 'CURRENT COLLECTION';
+
+  @override
+  String get soldProducts => 'SOLD PRODUCTS';
+
+  @override
+  String pieces(int count) {
+    return '$count Pieces';
+  }
 }

@@ -30,6 +30,11 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String resultsFor(String query) {
+    return '\"$query\" için sonuçlar';
+  }
+
+  @override
   String get category => 'Kategori';
 
   @override
@@ -54,20 +59,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryOther => 'Diğer';
 
   @override
-  String get addProduct => 'Yeni Ürün Ekle';
+  String get condition => 'Durum';
 
   @override
-  String get productName => 'Ürün Adı';
+  String get priceRange => 'Fiyat Aralığı';
 
   @override
-  String get price => 'Fiyat';
-
-  @override
-  String get description => 'Açıklama';
-
-  @override
-  String get save => 'Kaydet';
+  String get clear => 'Temizle';
 
   @override
   String get filter => 'Filtrele';
+
+  @override
+  String get currentCollection => 'MEVCUT KOLEKSİYON';
+
+  @override
+  String get soldProducts => 'SATILMIŞ ÜRÜNLER';
+
+  @override
+  String pieces(int count) {
+    return '$count Parça';
+  }
 }

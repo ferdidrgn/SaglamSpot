@@ -6,7 +6,17 @@
   "productsFound": "{count, plural, =0{Ürün bulunamadı} =1{1 Ürün Bulundu} other{{count} Ürün Bulundu}}",
   "@productsFound": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsFor": "\"{query}\" için sonuçlar",
+  "@resultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
     }
   },
   "category": "Kategori",
@@ -17,10 +27,18 @@
   "categoryWardrobe": "Gardırop",
   "categoryWhite": "Beyaz Eşya",
   "categoryOther": "Diğer",
-  "addProduct": "Yeni Ürün Ekle",
-  "productName": "Ürün Adı",
-  "price": "Fiyat",
-  "description": "Açıklama",
-  "save": "Kaydet",
-  "filter": "Filtrele"
+  "condition": "Durum",
+  "priceRange": "Fiyat Aralığı",
+  "clear": "Temizle",
+  "filter": "Filtrele",
+  "currentCollection": "MEVCUT KOLEKSİYON",
+  "soldProducts": "SATILMIŞ ÜRÜNLER",
+  "pieces": "{count} Parça",
+  "@pieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

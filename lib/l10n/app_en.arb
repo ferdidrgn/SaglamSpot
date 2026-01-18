@@ -6,7 +6,17 @@
   "productsFound": "{count, plural, =0{No products found} =1{1 Product Found} other{{count} Products Found}}",
   "@productsFound": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsFor": "Results for \"{query}\"",
+  "@resultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
     }
   },
   "category": "Category",
@@ -17,10 +27,18 @@
   "categoryWardrobe": "Wardrobe",
   "categoryWhite": "White Goods",
   "categoryOther": "Other",
-  "addProduct": "Add New Product",
-  "productName": "Product Name",
-  "price": "Price",
-  "description": "Description",
-  "save": "Save",
-  "filter": "Filter"
+  "condition": "Condition",
+  "priceRange": "Price Range",
+  "clear": "Clear",
+  "filter": "Filter",
+  "currentCollection": "CURRENT COLLECTION",
+  "soldProducts": "SOLD PRODUCTS",
+  "pieces": "{count} Pieces",
+  "@pieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

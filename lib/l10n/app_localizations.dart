@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Ürün bulunamadı} =1{1 Ürün Bulundu} other{{count} Ürün Bulundu}}'**
   String productsFound(int count);
 
+  /// No description provided for @resultsFor.
+  ///
+  /// In tr, this message translates to:
+  /// **'\"{query}\" için sonuçlar'**
+  String resultsFor(String query);
+
   /// No description provided for @category.
   ///
   /// In tr, this message translates to:
@@ -170,41 +176,47 @@ abstract class AppLocalizations {
   /// **'Diğer'**
   String get categoryOther;
 
-  /// No description provided for @addProduct.
+  /// No description provided for @condition.
   ///
   /// In tr, this message translates to:
-  /// **'Yeni Ürün Ekle'**
-  String get addProduct;
+  /// **'Durum'**
+  String get condition;
 
-  /// No description provided for @productName.
+  /// No description provided for @priceRange.
   ///
   /// In tr, this message translates to:
-  /// **'Ürün Adı'**
-  String get productName;
+  /// **'Fiyat Aralığı'**
+  String get priceRange;
 
-  /// No description provided for @price.
+  /// No description provided for @clear.
   ///
   /// In tr, this message translates to:
-  /// **'Fiyat'**
-  String get price;
-
-  /// No description provided for @description.
-  ///
-  /// In tr, this message translates to:
-  /// **'Açıklama'**
-  String get description;
-
-  /// No description provided for @save.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kaydet'**
-  String get save;
+  /// **'Temizle'**
+  String get clear;
 
   /// No description provided for @filter.
   ///
   /// In tr, this message translates to:
   /// **'Filtrele'**
   String get filter;
+
+  /// No description provided for @currentCollection.
+  ///
+  /// In tr, this message translates to:
+  /// **'MEVCUT KOLEKSİYON'**
+  String get currentCollection;
+
+  /// No description provided for @soldProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'SATILMIŞ ÜRÜNLER'**
+  String get soldProducts;
+
+  /// No description provided for @pieces.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} Parça'**
+  String pieces(int count);
 }
 
 class _AppLocalizationsDelegate

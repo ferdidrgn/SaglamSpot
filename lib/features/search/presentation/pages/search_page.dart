@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import '../../../../core/enum/enums.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
+import '../../../../core/extentions/product_category_ex.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/shimmer_components.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
@@ -25,16 +26,6 @@ class _SearchPageState extends ConsumerState<SearchPage>
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   bool _showSearchFocus = false;
-
-  final _categories = const [
-    'Tümü',
-    'Oturma Grupları',
-    'Yatak Odası',
-    'Yemek Odası',
-    'Çalışma Masası',
-    'Dekorasyon',
-    'Aydınlatma',
-  ];
 
   @override
   void initState() {
@@ -61,12 +52,13 @@ class _SearchPageState extends ConsumerState<SearchPage>
   void _resetAll() {
     _searchController.clear();
     ref.read(searchQueryProvider.notifier).update('');
+    // String 'Tümü' yerine Enum gönderiyoruz:
+    ref.read(searchFiltersProvider.notifier).setCategory(ProductCategory.other);
     ref.read(searchFiltersProvider.notifier).reset();
   }
 
   @override
   Widget build(final BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final searchResultsAsync = ref.watch(searchedProductsProvider);
     final currentFilters = ref.watch(searchFiltersProvider);
     final isMobile = context.isMobile;
@@ -160,7 +152,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'KOLEKSİYON',
+                context.l10n.collection,
                 style: TextStyle(
                   fontSize: context.responsive(
                       mobile: 9.0, tablet: 10.0, desktop: 11.0),
@@ -171,7 +163,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
               ),
               SizedBox(height: context.responsive(mobile: 4.0, desktop: 6.0)),
               Text(
-                'Zarafet & Konfor',
+                context.l10n.eleganceAndComfort,
                 style: TextStyle(
                   fontSize: context.responsive(
                       mobile: 22.0, tablet: 28.0, desktop: 32.0),
@@ -260,7 +252,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
-                hintText: l10n.searchHint,
+                hintText: context.l10n.searchHint,
                 hintStyle: TextStyle(
                   color: AppColors.textSecondary.withOpacity(0.5),
                   fontWeight: FontWeight.w400,
@@ -310,7 +302,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
           children: [
             Expanded(
               child: _buildQuickFilterDropdown(
-                'Durum',
+                context.l10n.condition,
                 filters.condition ?? 'Tümü',
                 ['Tümü', 'Sıfır', 'İkinci El'],
                 (final val) => notifier.setCondition(val),
@@ -399,13 +391,13 @@ class _SearchPageState extends ConsumerState<SearchPage>
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.refresh_rounded,
+            const Icon(Icons.refresh_rounded,
                 color: AppColors.textSecondary, size: 18),
-            SizedBox(width: 8),
-            Text('Temizle',
-                style: TextStyle(
+            const SizedBox(width: 8),
+            Text(context.l10n.clear,
+                style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w600)),
@@ -428,13 +420,16 @@ class _SearchPageState extends ConsumerState<SearchPage>
         ),
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemCount: _categories.length,
+          itemCount: ProductCategory.values.length,
           separatorBuilder: (final _, final __) => const SizedBox(width: 10),
           itemBuilder: (final context, final index) {
-            final category = _categories[index];
-            final isSelected = (filters.category ?? 'Tümü') == category;
+            final category = ProductCategory.values[index];
+            final isSelected =
+                (filters.category ?? ProductCategory.other) == category;
+
             return _buildCategoryPill(
-              category,
+              // Extension sayesinde otomatik TR/EN gelir:
+              category.label(context),
               isSelected,
               () => ref
                   .read(searchFiltersProvider.notifier)
@@ -577,7 +572,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.productsFound(count),
+                  context.l10n.productsFound(count),
                   style: TextStyle(
                     fontSize: context.responsive(
                         mobile: 17.0, tablet: 18.0, desktop: 19.0),
@@ -587,7 +582,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   ),
                 ),
                 Text(
-                  '"$query" için sonuçlar',
+                  context.l10n.resultsFor(query),
                   style: TextStyle(
                     fontSize: context.responsive(
                         mobile: 12.5, tablet: 13.0, desktop: 13.5),
@@ -722,14 +717,14 @@ class _SearchPageState extends ConsumerState<SearchPage>
 
     if (available.isNotEmpty) {
       slivers.add(_buildSectionDivider(
-          'MEVCUT KOLEKSİYON', available.length, AppColors.success));
+          context.l10n.currentCollection, available.length, AppColors.success));
       slivers.addAll(_buildProductsWithAds(context, available));
     }
 
     if (sold.isNotEmpty) {
       slivers.add(const SliverToBoxAdapter(child: SizedBox(height: 40)));
       slivers.add(_buildSectionDivider(
-          'SATILMIŞ ÜRÜNLER', sold.length, AppColors.textTertiary));
+          context.l10n.soldProducts, sold.length, AppColors.textTertiary));
       slivers.addAll(_buildProductsWithAds(context, sold));
     }
 
@@ -813,7 +808,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$count Parça',
+                  context.l10n.pieces(count),
                   style: TextStyle(
                     fontSize: context.responsive(
                         mobile: 12.5, tablet: 13.0, desktop: 13.5),
@@ -846,8 +841,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
         backgroundColor: AppColors.textSecondary,
         elevation: 0,
         icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 22),
-        label: const Text('Filtrele',
-            style: TextStyle(
+        label: Text(context.l10n.filter,
+            style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 15)),
@@ -882,8 +877,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
       builder: (final context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: AppColors.surface,
-        title: const Text('Fiyat Aralığı',
-            style: TextStyle(color: AppColors.textPrimary)),
+        title: Text(context.l10n.priceRange,
+            style: const TextStyle(color: AppColors.textPrimary)),
         content: Row(
           children: [
             Expanded(
