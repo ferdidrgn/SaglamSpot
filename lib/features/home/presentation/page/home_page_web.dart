@@ -442,7 +442,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.accentDark),
-                    child: Text(context.l10n.visitUs),
+                    child: Text(context.l10n.visitUsButton),
                   )
                 ],
               ),

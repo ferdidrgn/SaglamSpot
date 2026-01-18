@@ -170,5 +170,22 @@
   "tipSunTitle": "Protect from Sunlight",
   "tipSunDesc": "Direct sunlight causes color fading and wood deformation. Filter light with curtains.",
   "tipCleaningTitle": "Moist Cleaning",
-  "tipCleaningDesc": "Wipe with a slightly damp cloth and dry immediately. A soaking wet cloth causes wood to swell."
+  "tipCleaningDesc": "Wipe with a slightly damp cloth and dry immediately. A soaking wet cloth causes wood to swell.",
+  "sessionClosed": "Session closed",
+  "authDeniedAdminOnly": "Access Denied: This email was not found in the admin list.",
+  "fillRequiredFields": "Please add product name, price, and at least one image!",
+  "productAddedSuccess": "Product added successfully",
+  "authOrConnectionError": "Authorization or connection error occurred",
+  "accountDisabled": "This user account has been disabled.",
+  "adminNotFound": "No admin registered with this email was found.",
+  "wrongPassword": "Incorrect password, please check again.",
+  "invalidEmailOrPassword": "Invalid email or password.",
+  "tooManyAttempts": "Too many attempts. Please try again later.",
+  "loginFailed": "Login failed",
+  "adminPanel": "Admin Panel",
+  "adminLogin": "Admin Panel Login",
+  "quickOptions": "Quick Options",
+  "addImages": "Add Images",
+  "changeImages": "Change Images",
+  "noImagesFound": "No images"
 }
