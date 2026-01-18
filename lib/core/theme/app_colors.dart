@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // --- ANA LÜKS PALET (Emerald & Forest Green Temelli) ---
-  static const Color primary =
-      Color(0xFF0F302A); // Koyu Orman Yeşili (Lüks hissi)
-  static const Color primaryVariant =
-      Color(0xFF071F1B); // Daha derin yeşil (Hover/Pres)
+  static const Color primary = Color(0xFF0F302A);
+  static const Color primaryVariant = Color(0xFF071F1B);
   static const Color onPrimary = Color(0xFF4CAF93); // Canlı nane yeşili (Vurgu)
 
   static const Color surface = Color(0xFFF9FDFB); // Çok hafif yeşil çalan beyaz
-  static const Color onSurface =
-      Color(0xFF8BAE9E); // Yüzey üzerindeki yumuşak yeşil-gri tonu
-
+  static const Color onSurface = Color(0xFF8BAE9E);
   static const Color background = Color(0xFFF8FAF9); // Temiz, modern arka plan
 
   static const Color secondary =

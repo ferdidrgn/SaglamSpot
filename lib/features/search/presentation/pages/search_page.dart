@@ -8,6 +8,7 @@ import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
+import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
@@ -153,9 +154,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
       pinned: true,
       stretch: true,
       backgroundColor: AppColors.textPrimary,
-      // Default leading yerine custom bir alan kullanacağımız için burayı temizliyoruz
-      leading: const SizedBox.shrink(),
-      leadingWidth: 0,
+      // Varsayılan geri butonunu devre dışı bırakıyoruz çünkü Custom Glassmorphism kullanacağız
+      automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const [
           StretchMode.zoomBackground,
@@ -164,24 +164,31 @@ class _SearchPageState extends ConsumerState<SearchPage>
         background: Stack(
           fit: StackFit.expand,
           children: [
-            // Arka plan görseli - Yumuşak bir overlay ile
+            // Arka plan görseli
             Image.network(
               'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
               fit: BoxFit.cover,
             ),
-            // Premium Gradient Layer
+            // Karartma Katmanı
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black26,
-                    Colors.black87,
-                  ],
+                  colors: [Colors.black45, Colors.black87],
                 ),
               ),
             ),
+
+            // 🆕 GLASSMORPHISM BACK BUTTON
+            Positioned(
+                top: MediaQuery.of(context).padding.top + 10,
+                // Durum çubuğunun hemen altına
+                left: 16,
+                // onPressed null bırakılırsa otomatik NavigationHandler.smartGoBack çalışır
+                child: const GlassmorphismBackButton(
+                    backgroundColor: AppColors.primary)),
+
             // İçerik Alanı (Logo ve Metinler)
             Padding(
               padding: EdgeInsets.symmetric(
@@ -194,63 +201,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo ve Marka Adı Grubu
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Büyütülmüş Logo
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4))
-                            ],
-                          ),
-                          child: Image.asset(
-                            'assets/images/saglam_spot_logo.png',
-                            height: context.responsive(
-                                mobile: 50.0, tablet: 60.0, desktop: 70.0),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        // Marka Metni
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "SAĞLAM SPOT",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 2,
-                                fontSize: context.responsive(
-                                    mobile: 18.0, tablet: 22.0, desktop: 26.0),
-                              ),
-                            ),
-                            Text(
-                              "Eskiyi Yeniler, Yeniyi Değerlendirir",
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: context.responsive(
-                                    mobile: 10.0, tablet: 12.0, desktop: 14.0),
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildBrandLogo(context),
+                  // Logo kısmını temizlik için aşağıya taşıdık
                   const SizedBox(height: 20),
-                  // Sayfa Başlığı
                   Text(
                     context.l10n.collection,
                     style: const TextStyle(
@@ -275,6 +228,61 @@ class _SearchPageState extends ConsumerState<SearchPage>
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBrandLogo(final BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Logo Görseli (Beyaz kutu içinde)
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                    color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))
+              ],
+            ),
+            child: Image.asset(
+              'assets/images/saglam_spot_logo.png',
+              height:
+                  context.responsive(mobile: 50.0, tablet: 60.0, desktop: 70.0),
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Marka Metinleri
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "SAĞLAM SPOT",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                  fontSize: context.responsive(
+                      mobile: 18.0, tablet: 22.0, desktop: 26.0),
+                ),
+              ),
+              Text(
+                "Eskiyi Yeniler, Yeniyi Değerlendirir",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: context.responsive(
+                      mobile: 10.0, tablet: 12.0, desktop: 14.0),
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
