@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
-  String get searchHint => 'Search for products, styles...';
+  String get searchHint => 'Search for products, categories...';
 
   @override
   String get collection => 'COLLECTION';
@@ -196,6 +196,9 @@ class AppLocalizationsEn extends AppLocalizations {
       '© 2026 SAĞLAM SPOT TRADE. ALL RIGHTS RESERVED.';
 
   @override
+  String get qualityFurniture => '\'Kaliteli mobilyanın adresi Sağlam Spot\'';
+
+  @override
   String get collections => 'Collections';
 
   @override
@@ -203,6 +206,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutUs => 'About Us';
+
+  @override
+  String get sss => 'SSS';
 
   @override
   String get contact => 'Communication';

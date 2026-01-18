@@ -9,13 +9,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get brand => 'Sağlam Spot';
+  String get brand => 'SAĞLAM SPOT';
 
   @override
   String get home => 'Ana Sayfa';
 
   @override
-  String get searchHint => 'Ürün, kategori veya stil arayın...';
+  String get searchHint => 'Ürün, kategori arayın...';
 
   @override
   String get collection => 'KOLEKSİYON';
@@ -196,6 +196,9 @@ class AppLocalizationsTr extends AppLocalizations {
       '© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.';
 
   @override
+  String get qualityFurniture => '\'Kaliteli mobilyanın adresi Sağlam Spot\'';
+
+  @override
   String get collections => 'Koleksiyonlar';
 
   @override
@@ -203,6 +206,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get aboutUs => 'Hakkımızda';
+
+  @override
+  String get sss => 'SSS';
 
   @override
   String get contact => 'İletişim';

@@ -6,7 +6,7 @@ import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/extentions/app_context_ui_extension.dart';
 import '../../../../core/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/util/nav_handler.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/widgets/glassmorphism_back_button.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';

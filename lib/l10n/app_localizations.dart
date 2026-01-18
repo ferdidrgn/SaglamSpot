@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @brand.
   ///
   /// In tr, this message translates to:
-  /// **'Sağlam Spot'**
+  /// **'SAĞLAM SPOT'**
   String get brand;
 
   /// No description provided for @home.
@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchHint.
   ///
   /// In tr, this message translates to:
-  /// **'Ürün, kategori veya stil arayın...'**
+  /// **'Ürün, kategori arayın...'**
   String get searchHint;
 
   /// No description provided for @collection.
@@ -440,6 +440,12 @@ abstract class AppLocalizations {
   /// **'© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.'**
   String get allRightsReserved;
 
+  /// No description provided for @qualityFurniture.
+  ///
+  /// In tr, this message translates to:
+  /// **'\'Kaliteli mobilyanın adresi Sağlam Spot\''**
+  String get qualityFurniture;
+
   /// No description provided for @collections.
   ///
   /// In tr, this message translates to:
@@ -457,6 +463,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Hakkımızda'**
   String get aboutUs;
+
+  /// No description provided for @sss.
+  ///
+  /// In tr, this message translates to:
+  /// **'SSS'**
+  String get sss;
 
   /// No description provided for @contact.
   ///

@@ -2,7 +2,7 @@
   "@@locale": "en",
   "brand": "Sağlam Spot",
   "home": "Home",
-  "searchHint": "Search for products, styles...",
+  "searchHint": "Search for products, categories...",
   "collection": "COLLECTION",
   "eleganceAndComfort": "Elegance & Comfort",
   "productsFound": "{count, plural, =0{No products found} =1{1 Product Found} other{{count} Products Found}}",
@@ -81,5 +81,6 @@
   "collections": "Collections",
   "spotProducts": "Spot Products",
   "aboutUs": "About Us",
+  "sss": "SSS",
   "contact": "Communication"
 }

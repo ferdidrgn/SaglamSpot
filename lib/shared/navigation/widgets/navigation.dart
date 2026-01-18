@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import 'package:saglamspot/core/util/platform_checker.dart';
 import 'package:saglamspot/core/widgets/ad_mobile_banner.dart';
 import '../../../core/extentions/app_context_ui_extension.dart';
@@ -26,11 +27,17 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   late final List<NavigationItem> _navItems = [
-    NavigationItem(label: 'Ana Sayfa', icon: Icons.home_rounded, index: 0),
-    NavigationItem(label: 'Sıfır Mobilya', icon: Icons.chair_rounded, index: 1),
-    NavigationItem(label: 'İkinci El', icon: Icons.weekend_rounded, index: 2),
-    NavigationItem(label: 'Hakkımızda', icon: Icons.store_rounded, index: 3),
-    NavigationItem(label: 'SSS', icon: Icons.quiz_rounded, index: 4),
+    NavigationItem(
+        label: context.l10n.home, icon: Icons.home_rounded, index: 0),
+    NavigationItem(
+        label: context.l10n.conditionNew, icon: Icons.chair_rounded, index: 1),
+    NavigationItem(
+        label: context.l10n.conditionUsed,
+        icon: Icons.weekend_rounded,
+        index: 2),
+    NavigationItem(
+        label: context.l10n.aboutUs, icon: Icons.store_rounded, index: 3),
+    NavigationItem(label: context.l10n.sss, icon: Icons.quiz_rounded, index: 4),
   ];
 
   void _onItemTapped(final int index) {
@@ -55,7 +62,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
         ),
         SizedBox(width: context.responsive(mobile: 4, tablet: 6, desktop: 8)),
         Text(
-          "SAĞLAM SPOT",
+          context.l10n.brand,
           style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w900,
@@ -76,9 +83,9 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   }
 
   Widget _buildSearchButton(final bool isMobile) {
-    void onTap() => context.go("/search");
+    void onTap() => NavigationHandler.goToSearch(context);
 
-    if (isMobile) {
+    if (isMobile)
       return IconButton(
         onPressed: onTap,
         icon: Icon(
@@ -87,7 +94,6 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
         ),
         color: AppColors.textPrimary,
       );
-    }
 
     return InkWell(
       onTap: onTap,
@@ -112,7 +118,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
             SizedBox(
                 width: context.responsive(mobile: 4, tablet: 6, desktop: 8)),
             Text(
-              'Ürün Ara...',
+              context.l10n.searchHint,
               style: TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w500,
@@ -180,8 +186,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
 
   @override
   Widget build(final BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final isMobile = width < 1024;
+    final isMobile = MediaQuery.sizeOf(context).width < 1024;
     final currentIndex = widget.navigationShell.currentIndex;
 
     return Shortcuts(
@@ -194,8 +199,8 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       child: Actions(
         actions: <Type, Action<Intent>>{
           SearchIntent: CallbackAction<SearchIntent>(
-            onInvoke: (final intent) => context.go("/search"),
-          ),
+              onInvoke: (final intent) =>
+                  NavigationHandler.goToSearch(context)),
         },
         child: Focus(
           autofocus: true,
@@ -297,7 +302,8 @@ class _MobileDrawer extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 16),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 16),
               child: Row(
                 children: [
                   logo, const SizedBox(width: 8),
@@ -350,27 +356,21 @@ class _DrawerFooter extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(context.responsive(
-        mobile: 16,
-        tablet: 20,
-        desktop: 24,
-      )),
+      padding: EdgeInsets.all(
+          context.responsive(mobile: 16, tablet: 20, desktop: 24)),
       child: Column(
         children: [
           ElevatedButton.icon(
-            onPressed: () => context.go("/search"),
+            onPressed: () => NavigationHandler.goToSearch(context),
             icon: Icon(
               Icons.search_rounded,
               size: context.responsive(mobile: 20, tablet: 22, desktop: 24),
             ),
             label: Text(
-              'Ürün Ara',
+              context.l10n.searchHint,
               style: TextStyle(
-                fontSize: context.responsive(
-                  mobile: 14,
-                  tablet: 16,
-                  desktop: 18,
-                ),
+                fontSize:
+                    context.responsive(mobile: 14, tablet: 16, desktop: 18),
               ),
             ),
             style: ElevatedButton.styleFrom(
@@ -385,14 +385,10 @@ class _DrawerFooter extends StatelessWidget {
           SizedBox(
               height: context.responsive(mobile: 8, tablet: 10, desktop: 12)),
           Text(
-            'Kaliteli mobilyanın adresi Sağlam Spot',
+            context.l10n.qualityFurniture,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: context.responsive(
-                mobile: 11,
-                tablet: 12,
-                desktop: 13,
-              ),
+              fontSize: context.responsive(mobile: 11, tablet: 12, desktop: 13),
               color: Colors.grey,
             ),
           ),
