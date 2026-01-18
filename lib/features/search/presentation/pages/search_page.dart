@@ -149,9 +149,15 @@ class _SearchPageState extends ConsumerState<SearchPage>
     return SliverAppBar(
       expandedHeight:
           context.responsive(mobile: 200.0, tablet: 240.0, desktop: 280.0),
-      pinned: false,
+      pinned: true,
+      // Marka adının her zaman görünmesi için true yaptık
       stretch: true,
       backgroundColor: AppColors.textPrimary,
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset('assets/images/saglam_spot_logo.png',
+            fit: BoxFit.contain),
+      ),
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const [
           StretchMode.zoomBackground,
@@ -169,6 +175,17 @@ class _SearchPageState extends ConsumerState<SearchPage>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // MARKA ADI
+              const Text(
+                'SAĞLAM SPOT',
+                style: TextStyle(
+                  fontSize: 10,
+                  letterSpacing: 4,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white54,
+                ),
+              ),
+              const SizedBox(height: 4),
               Text(
                 context.l10n.collection,
                 style: TextStyle(

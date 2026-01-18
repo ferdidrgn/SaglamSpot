@@ -146,10 +146,10 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
       ),
 
       GoRoute(
-        path: '/product/:id',
-        name: 'product',
+        path: '/product/:slugWithId',
         pageBuilder: (final context, final state) {
-          final String productId = state.pathParameters['id'] ?? '';
+          final String fullParam = state.pathParameters['slugWithId']!;
+          final String productId = fullParam.split('-').last;
 
           return CustomTransitionPage(
             key: state.pageKey,

@@ -7,6 +7,7 @@ import 'package:saglamspot/core/widgets/ad_mobile_banner.dart';
 import '../../../core/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/ad_sense_banner.dart';
+import '../../../core/widgets/language_selector.dart';
 
 class SearchIntent extends Intent {
   const SearchIntent();
@@ -151,7 +152,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
         ),
       ),
       title: InkWell(onTap: () => _onItemTapped(0), child: _buildLogo()),
-      actions: [_buildSearchButton(true), const SizedBox(width: 8)],
+      actions: [
+        const LanguageSelector(),
+        _buildSearchButton(true),
+        const SizedBox(width: 8)
+      ],
       toolbarHeight: context.responsive(
         mobile: 60,
         tablet: 70,
@@ -166,34 +171,24 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       elevation: 1,
       title: Row(
         children: [
-          // Logo solda
           InkWell(onTap: () => _onItemTapped(0), child: _buildLogo()),
-
-          // Spacer ile diğer item'ları sağa itiyoruz
           const Spacer(),
-
-          // Nav item'ları
           ..._navItems.map((final item) => _DesktopNavItem(
                 item: item,
                 isActive: currentIndex == item.index,
                 onTap: () => _onItemTapped(item.index),
               )),
-
           SizedBox(
               width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
-
-          // Arama butonu
+          const LanguageSelector(),
           _buildSearchButton(false),
-
+          SizedBox(
+              width: context.responsive(mobile: 12, tablet: 16, desktop: 20)),
           SizedBox(
               width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
         ],
       ),
-      toolbarHeight: context.responsive(
-        mobile: 60,
-        tablet: 70,
-        desktop: 80,
-      ),
+      toolbarHeight: context.responsive(mobile: 60, tablet: 70, desktop: 80),
     );
   }
 
@@ -323,6 +318,7 @@ class _MobileDrawer extends StatelessWidget {
               child: Row(children: [
                 logo,
                 const Spacer(),
+                const LanguageSelector(isDrawer: true),
                 IconButton(
                   icon: Icon(
                     Icons.close,

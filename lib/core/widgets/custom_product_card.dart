@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
+import '../extentions/reg_exp_extentions.dart';
 import 'gallery_section.dart';
 
 class CustomProductCard extends StatefulWidget {
@@ -95,8 +96,11 @@ class _CustomProductCardState extends State<CustomProductCard> {
                 left: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () => context.push('/product/${widget.product.id}'),
-                  // Buraya tıklayınca detay sayfası
+                  onTap: () {
+                    final String slug = widget.product.name.toSlug();
+                    // Örnek: /product/istikbal-koltuk-takimi-AB123
+                    context.push('/product/$slug-${widget.product.id}');
+                  },
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
                     decoration: const BoxDecoration(
