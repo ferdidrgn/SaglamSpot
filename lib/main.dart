@@ -34,6 +34,12 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   @override
+  void dispose() {
+    DeeplinkListener.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(final BuildContext context) {
     final appTheme = ref.watch(appThemeProvider);
     final localeAsync = ref.watch(localeControllerProvider);
