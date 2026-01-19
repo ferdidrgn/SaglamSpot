@@ -1,15 +1,29 @@
+import 'package:flutter/foundation.dart'; // kIsWeb için gerekli
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
-// Riverpod ile tema yönetimini sağlarız
 final appThemeProvider = Provider<AppTheme>((final ref) {
   return AppTheme();
 });
 
 class AppTheme {
+  // --- Yardımcı Metot: Platforma Göre TextTheme Seçimi ve Renklendirme ---
+  TextTheme _getTextTheme(final Brightness brightness, final ColorScheme colors) {
+    // 1. Platforma göre (Web/Mobil) ana şablonu seçiyoruz
+    const TextTheme baseTheme =
+        kIsWeb ? AppTextStyles.webTextTheme : AppTextStyles.mobileTextTheme;
+
+    // 2. Şablonu mevcut renk paletiyle (Light/Dark) boyuyoruz
+    return baseTheme.apply(
+      bodyColor: colors.onSurface,
+      displayColor: colors.onSurface,
+      decorationColor: colors.onSurface,
+    );
+  }
+
   ThemeData get lightTheme {
     const colorScheme = ColorScheme.light(
       primary: AppColors.primary,
@@ -30,10 +44,13 @@ class AppTheme {
       shadow: Colors.black,
     );
 
-    final textTheme = _lightTextTheme;
+    // Yeni TextTheme entegrasyonu
+    final textTheme = _getTextTheme(Brightness.light, colorScheme);
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: AppTextStyles.fontFamily,
+      // Global font ailesi
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.background,
@@ -48,15 +65,15 @@ class AppTheme {
       cardTheme: _cardTheme(colors: colorScheme, bgColor: AppColors.background),
       elevatedButtonTheme: _elevatedButtonTheme(
         colors: colorScheme,
-        textStyle: AppTextStyles.button,
+        textStyle: textTheme.labelLarge!, // Şablondaki stili kullan
       ),
       outlinedButtonTheme: _outlinedButtonTheme(
         colors: colorScheme,
-        textStyle: AppTextStyles.button,
+        textStyle: textTheme.labelLarge!,
       ),
       textButtonTheme: _textButtonTheme(
         colors: colorScheme,
-        textStyle: AppTextStyles.button,
+        textStyle: textTheme.labelLarge!,
       ),
       inputDecorationTheme: _inputDecorationTheme(colors: colorScheme),
       bottomNavigationBarTheme: _bottomNavigationBarTheme(colors: colorScheme),
@@ -84,10 +101,13 @@ class AppTheme {
       shadow: Colors.black,
     );
 
-    final textTheme = _darkTextTheme;
+    // Yeni TextTheme entegrasyonu
+    final textTheme = _getTextTheme(Brightness.dark, colorScheme);
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: AppTextStyles.fontFamily,
+      // Global font ailesi
       brightness: Brightness.dark,
       primaryColor: AppColors.darkBackground,
       scaffoldBackgroundColor: AppColors.darkBackground,
@@ -103,46 +123,21 @@ class AppTheme {
           _cardTheme(colors: colorScheme, bgColor: AppColors.darkBackground),
       elevatedButtonTheme: _elevatedButtonTheme(
         colors: colorScheme,
-        textStyle: AppTextStyles.button,
+        textStyle: textTheme.labelLarge!,
       ),
       outlinedButtonTheme: _outlinedButtonTheme(
         colors: colorScheme,
-        textStyle: AppTextStyles.button,
+        textStyle: textTheme.labelLarge!,
       ),
       textButtonTheme: _textButtonTheme(
         colors: colorScheme,
-        textStyle: AppTextStyles.button,
+        textStyle: textTheme.labelLarge!,
       ),
       inputDecorationTheme: _inputDecorationTheme(colors: colorScheme),
       bottomNavigationBarTheme: _bottomNavigationBarTheme(colors: colorScheme),
       navigationBarTheme: _navigationBarTheme(colors: colorScheme),
     );
   }
-
-  // --- Yardımcı TextTheme Tanımları ---
-  static TextTheme get _lightTextTheme => const TextTheme(
-        displayLarge: AppTextStyles.h1,
-        headlineMedium: AppTextStyles.h2,
-        titleLarge: AppTextStyles.subtitle1,
-        bodyLarge: AppTextStyles.bodyText1,
-        bodyMedium: AppTextStyles.bodyText2,
-        labelLarge: AppTextStyles.button,
-      );
-
-  static TextTheme get _darkTextTheme => TextTheme(
-        displayLarge:
-            AppTextStyles.h1.copyWith(color: AppColors.darkTextPrimary),
-        headlineMedium:
-            AppTextStyles.h2.copyWith(color: AppColors.darkTextPrimary),
-        titleLarge:
-            AppTextStyles.subtitle1.copyWith(color: AppColors.darkTextPrimary),
-        bodyLarge:
-            AppTextStyles.bodyText1.copyWith(color: AppColors.darkTextPrimary),
-        bodyMedium:
-            AppTextStyles.bodyText2.copyWith(color: AppColors.darkTextPrimary),
-        labelLarge:
-            AppTextStyles.button.copyWith(color: AppColors.darkTextPrimary),
-      );
 
   // --- Statik Metotlar ---
   static AppBarTheme _appBarTheme({
