@@ -138,10 +138,9 @@ class FullPageShimmer extends StatelessWidget {
           Padding(
             padding: context.sectionPadding,
             child: ShimmerLoading(
-              width: double.infinity,
-              height: context.hp(45),
-              borderRadius: 30,
-            ),
+                width: double.infinity,
+                height: context.hp(45),
+                borderRadius: 30),
           ),
 
           // Kategori Listesi Shimmer
@@ -163,9 +162,8 @@ class FullPageShimmer extends StatelessWidget {
 
           // Ürün Gridi Shimmer
           Padding(
-            padding: context.sectionPadding,
-            child: const ShimmerCard(itemCount: 8),
-          ),
+              padding: context.sectionPadding,
+              child: const ShimmerCard(itemCount: 8)),
         ],
       ),
     );

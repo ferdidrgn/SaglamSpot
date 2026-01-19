@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import '../common/extentions/app_context_ui_extension.dart';
 import '../theme/app_colors.dart';
 
@@ -59,9 +59,7 @@ class CustomAppHeader extends StatelessWidget {
   Widget _buildSearchBar(final BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(10),
-      onTap: () {
-        context.push('/search');
-      },
+      onTap: () => NavigationHandler.goToSearch(context),
       child: Container(
         constraints: BoxConstraints(
           maxWidth: context.responsive(
@@ -77,17 +75,18 @@ class CustomAppHeader extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.border.withOpacity(0.5)),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_rounded, size: 16, color: AppColors.textTertiary),
-            SizedBox(width: 6),
+            const Icon(Icons.search_rounded,
+                size: 16, color: AppColors.textTertiary),
+            const SizedBox(width: 6),
             Flexible(
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  'Ürün ara...',
-                  style: TextStyle(
+                  context.l10n.searchHint,
+                  style: const TextStyle(
                     color: AppColors.textTertiary,
                     fontSize: 13,
                   ),
@@ -116,7 +115,7 @@ class CustomAppHeader extends StatelessWidget {
             _buildActionButton(
               context: context,
               icon: Icons.search_outlined,
-              onPressed: () => context.push('/search'),
+              onPressed: () => NavigationHandler.goToSearch(context),
             ),
             const SizedBox(width: 8),
             _buildActionButton(
@@ -132,7 +131,7 @@ class CustomAppHeader extends StatelessWidget {
 
 // --- LOGO METODU (Ferah Tasarım Güncellemesi) ---
   Widget _buildLogo(final BuildContext context) => GestureDetector(
-        onTap: () => context.go('/'),
+        onTap: () => NavigationHandler.goToHome(context),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -167,7 +166,13 @@ class CustomAppHeader extends StatelessWidget {
       );
 
   Widget _buildDesktopNavigation(final BuildContext context) {
-    const labels = ['Ana Sayfa', 'Sıfır Ürünler', 'Spot', 'Hakkımızda', 'SSS'];
+    final labels = [
+      context.l10n.home,
+      context.l10n.conditionNew,
+      context.l10n.conditionUsed,
+      context.l10n.aboutUs,
+      context.l10n.sss
+    ];
 
     return Row(
       children: List.generate(labels.length, (final i) {

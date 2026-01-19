@@ -4,11 +4,7 @@ class ErrorStateWidget extends StatelessWidget {
   final String? message;
   final VoidCallback onRetry;
 
-  const ErrorStateWidget({
-    super.key,
-    this.message,
-    required this.onRetry,
-  });
+  const ErrorStateWidget({super.key, this.message, required this.onRetry});
 
   @override
   Widget build(final BuildContext context) {
@@ -16,14 +12,14 @@ class ErrorStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 64,
             color: Color(0xFFD4AF37),
           ),
           const SizedBox(height: 16),
           Text(
-            message ?? 'Hata',
+            message ?? 'Error',
             style: const TextStyle(color: Colors.white70, fontSize: 18),
           ),
           const SizedBox(height: 24),
@@ -32,7 +28,7 @@ class ErrorStateWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [
                     Color(0xFFD4AF37),
                     Color(0xFFF5E6A3),

@@ -8,13 +8,12 @@ class InsaneMagicShowcase extends StatefulWidget {
   final bool enableInteraction;
   final double imageScale;
 
-  const InsaneMagicShowcase({
-    super.key,
-    this.height,
-    required this.imageUrl,
-    this.enableInteraction = true,
-    this.imageScale = 1.05,
-  });
+  const InsaneMagicShowcase(
+      {super.key,
+      this.height,
+      required this.imageUrl,
+      this.enableInteraction = true,
+      this.imageScale = 1.05});
 
   @override
   State<InsaneMagicShowcase> createState() => _InsaneMagicShowcaseState();
@@ -49,10 +48,7 @@ class _InsaneMagicShowcaseState extends State<InsaneMagicShowcase>
     final dx = ((local.dx / size.width) - 0.5) * 2;
     final dy = ((local.dy / size.height) - 0.5) * 2;
 
-    return Offset(
-      dx.clamp(-0.6, 0.6),
-      dy.clamp(-0.6, 0.6),
-    );
+    return Offset(dx.clamp(-0.6, 0.6), dy.clamp(-0.6, 0.6));
   }
 
   @override
@@ -65,11 +61,7 @@ class _InsaneMagicShowcaseState extends State<InsaneMagicShowcase>
   Widget build(final BuildContext context) {
     final sectionHeight = widget.height ??
         context.responsive(
-          mobile: 520.0,
-          tablet: 640.0,
-          desktop: 820.0,
-          largeDesktop: 920.0,
-        );
+            mobile: 520.0, tablet: 640.0, desktop: 820.0, largeDesktop: 920.0);
 
     return LayoutBuilder(
       builder: (final _, final constraints) {
@@ -92,12 +84,7 @@ class _InsaneMagicShowcaseState extends State<InsaneMagicShowcase>
               clipBehavior: Clip.hardEdge,
               decoration: const BoxDecoration(
                 gradient: RadialGradient(
-                  radius: 1.4,
-                  colors: [
-                    Color(0xFF1A1A2E),
-                    Colors.black,
-                  ],
-                ),
+                    radius: 1.4, colors: [Color(0xFF1A1A2E), Colors.black]),
               ),
               child: Stack(
                 fit: StackFit.expand,
@@ -107,10 +94,7 @@ class _InsaneMagicShowcaseState extends State<InsaneMagicShowcase>
                     decoration: const BoxDecoration(
                       gradient: RadialGradient(
                         radius: 1.4,
-                        colors: [
-                          Color(0xFF1A1A2E),
-                          Colors.black,
-                        ],
+                        colors: [Color(0xFF1A1A2E), Colors.black],
                       ),
                     ),
                   ),
@@ -125,12 +109,10 @@ class _InsaneMagicShowcaseState extends State<InsaneMagicShowcase>
                       ..rotateX(-_smooth.dy * 0.2)
                       ..rotateY(-_smooth.dx * 0.1)
                       //gezinme - kaydırma
-                      ..translate(
-                        _smooth.dx * 22,
-                        _smooth.dy * 16,
-                      )
+                      ..translate(_smooth.dx * 22, _smooth.dy * 16)
                       //takip hızı
-                      ..scale(widget.imageScale.clamp(1.08, 1.18)),                    child: Image.network(
+                      ..scale(widget.imageScale.clamp(1.08, 1.18)),
+                    child: Image.network(
                       widget.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,

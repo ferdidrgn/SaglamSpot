@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class GradientStrip extends StatelessWidget {
   final bool isAlignmentCenterLeft;
 
-  const GradientStrip({
-    super.key,
-    required this.isAlignmentCenterLeft,
-  });
+  const GradientStrip({super.key, required this.isAlignmentCenterLeft});
 
   @override
   Widget build(final BuildContext context) {

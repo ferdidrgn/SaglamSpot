@@ -34,7 +34,7 @@ class SectionHeader extends StatelessWidget {
       ),
     );
 
-    if (mobile) {
+    if (mobile)
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,7 +45,7 @@ class SectionHeader extends StatelessWidget {
           ],
         ],
       );
-    } else {
+    else
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -54,6 +54,5 @@ class SectionHeader extends StatelessWidget {
           if (action != null) action!,
         ],
       );
-    }
   }
 }

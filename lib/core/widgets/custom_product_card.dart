@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../shared/navigation/widgets/nav_handler.dart';
 import '../common/extentions/reg_exp_extentions.dart';
@@ -151,22 +152,17 @@ class _CustomProductCardState extends State<CustomProductCard> {
     );
   }
 
-  // ✅ NavigationHandler kullanıyor
-  void _navigateToProductDetail(final BuildContext context) {
-    final String slug = widget.product.name.toSlug();
-
-    NavigationHandler.goToProduct(
-      context: context,
-      productId: widget.product.id,
-      productSlug: slug,
-    );
-  }
+  void _navigateToProductDetail(final BuildContext context) =>
+      NavigationHandler.goToProduct(
+          context: context,
+          productId: widget.product.id,
+          productSlug: widget.product.name.toSlug());
 
   void _openGallery(final BuildContext context) => showDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
         builder: (final context) => GalleryViewerDialog(
             images: widget.product.imagesUrl,
-            isMobile: MediaQuery.of(context).size.width < 900),
+            isMobile: context.screenWidth < 900),
       );
 }
