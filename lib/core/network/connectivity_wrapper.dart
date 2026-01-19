@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart';
 import 'connectivity_provider.dart';
 
 class ConnectivityWrapper extends ConsumerWidget {
@@ -56,10 +57,9 @@ class _OfflineScreenState extends State<_OfflineScreen>
     _startPulse();
   }
 
-  void _startPulse() =>
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      if (mounted) _controller.repeat(reverse: true);
-    });
+  void _startPulse() => Future.delayed(const Duration(milliseconds: 1000), () {
+        if (mounted) _controller.repeat(reverse: true);
+      });
 
   @override
   void dispose() {
@@ -129,9 +129,9 @@ class _OfflineScreenState extends State<_OfflineScreen>
                       const SizedBox(height: 48),
 
                       // Başlık
-                      const Text(
-                        'Bağlantı Kesildi',
-                        style: TextStyle(
+                      Text(
+                        context.l10n.error_connection_lost,
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -145,7 +145,7 @@ class _OfflineScreenState extends State<_OfflineScreen>
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 48),
                         child: Text(
-                          'İnternet bağlantınız yok.\nBağlantı sağlandığında otomatik olarak devam edeceksiniz.',
+                          context.l10n.error_no_internet_auto_retry,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
@@ -172,7 +172,7 @@ class _OfflineScreenState extends State<_OfflineScreen>
                       const SizedBox(height: 16),
 
                       Text(
-                        'Bağlantı bekleniyor...',
+                        context.l10n.status_waiting_connection,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey.shade500,

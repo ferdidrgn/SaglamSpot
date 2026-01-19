@@ -25,9 +25,7 @@ final class DeeplinkListener {
     // 1️⃣ App TAM KAPALIYKEN gelen deeplink
     try {
       final Uri? initialUri = await _appLinks.getInitialLink();
-      if (initialUri != null) {
-        _handleUri(router, initialUri);
-      }
+      if (initialUri != null) _handleUri(router, initialUri);
     } catch (e) {
       debugPrint('❌ Initial deeplink error: $e');
     }
