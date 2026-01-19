@@ -104,7 +104,6 @@
   "noImages": "Görsel Yok",
   "error_check_connection": "İnternet bağlantınızı kontrol edin.",
   "error_server_no_response": "Sunucu şu an yanıt vermiyor.",
-  "error_critical": "Kritik bir hata oluştu.",
   "error_connection": "Bağlantı hatası",
   "error_connection_lost": "Bağlantı Kesildi",
   "status_waiting_connection": "Bağlantı bekleniyor...",

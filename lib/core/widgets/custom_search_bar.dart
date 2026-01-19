@@ -38,7 +38,7 @@ class CustomSearchBar extends StatelessWidget {
           },
 
           decoration: InputDecoration(
-            hintText: "Eviniz için ne aramıştınız?",
+            hintText: context.l10n.searchHint,
             hintStyle: const TextStyle(
               color: Colors.black26,
               fontSize: 18,

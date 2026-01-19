@@ -104,7 +104,6 @@
   "noImages": "No Images",
   "error_check_connection": "Please check your internet connection.",
   "error_server_no_response": "The server is currently not responding.",
-  "error_critical": "A critical error occurred.",
   "error_connection": "Connection error",
   "error_connection_lost": "Connection Lost",
   "status_waiting_connection": "Waiting for connection...",
