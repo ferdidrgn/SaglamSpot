@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:saglamspot/core/services/remote_config_service.dart';
 import '../common/enum/enums.dart';
 import '../util/platform_checker.dart';
 
@@ -13,8 +14,8 @@ final class AdManager {
   /// 🔹 SADECE MOBİL
   static Future<void> initialize() async {
     if (_initialized) return;
-
-    if (PlatformChecker.isMobile) await MobileAds.instance.initialize();
+    if (PlatformChecker.isMobile && RemoteConfigService.adsEnabled)
+      await MobileAds.instance.initialize();
 
     _initialized = true;
   }

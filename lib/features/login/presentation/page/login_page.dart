@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/ad_mobile_banner.dart'; // Senin oluşturduğun Banner Widget
-import '../../../../core/widgets/ad_native_widget.dart'; // Senin oluşturduğun Native Widget
+import '../../../../core/ads/widgets/ad_banner_widget.dart';
+import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
 class LoginPage extends ConsumerStatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../common/enum/enums.dart';
-import '../services/ad_manager.dart';
-import '../services/remote_config_service.dart';
+import '../../common/enum/enums.dart';
+import '../ads_manager.dart';
+import '../ads_remote_config.dart';
 
 class AdBannerWidget extends StatefulWidget {
   final AdSize size;
@@ -38,17 +38,16 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   }
 
   @override
-  Widget build(final BuildContext context) {
-    if (!_loaded || _ad == null) return const SizedBox.shrink();
-    if (!RemoteConfigService.adsEnabled) return const SizedBox.shrink();
-
-    return Container(
-      margin: widget.margin,
-      width: _ad!.size.width.toDouble(),
-      height: _ad!.size.height.toDouble(),
-      child: AdWidget(ad: _ad!),
-    );
-  }
+  Widget build(final BuildContext context) => ReactiveAdWrapper(
+        child: (!_loaded || _ad == null)
+            ? const SizedBox.shrink()
+            : Container(
+                margin: widget.margin,
+                width: _ad!.size.width.toDouble(),
+                height: _ad!.size.height.toDouble(),
+                child: AdWidget(ad: _ad!),
+              ),
+      );
 
   @override
   void dispose() {
