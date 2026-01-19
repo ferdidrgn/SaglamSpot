@@ -24,7 +24,7 @@ class ResponsiveProductGrid extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    if (products.isEmpty) return _buildEmptyState(context);
+    if (products.isEmpty) return _BuildEmptyState();
 
     // Extension'lar kullanıldı
     final crossAxisCount = context.gridColumns();
@@ -53,55 +53,6 @@ class ResponsiveProductGrid extends ConsumerWidget {
       },
     );
   }
-
-  Widget _buildEmptyState(final BuildContext context) {
-    final screenPadding = context.responsive(
-        mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
-
-    return Center(
-      child: Padding(
-        padding: screenPadding,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off_rounded,
-              size: context.responsive(mobile: 64.0, desktop: 80.0),
-              // Extension
-              color: const Color(0xFF94A3B8),
-            ),
-            SizedBox(
-              height:
-                  context.responsive(mobile: 16.0, desktop: 24.0), // Extension
-            ),
-            Text(
-              'Ürün bulunamadı',
-              style: TextStyle(
-                fontSize: context.responsive(
-                    mobile: 18.0, tablet: 20.0, desktop: 22.0), // Extension
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF1E293B),
-              ),
-            ),
-            SizedBox(
-              height:
-                  context.responsive(mobile: 8.0, desktop: 12.0), // Extension
-            ),
-            Text(
-              'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: context.responsive(
-                    mobile: 14.0, desktop: 16.0), // Extension
-                color: const Color(0xFF64748B),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 /// Sliver variant for CustomScrollView
@@ -117,8 +68,7 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    if (products.isEmpty)
-      return SliverFillRemaining(child: _buildEmptyState(context));
+    if (products.isEmpty) return SliverFillRemaining(child: _BuildEmptyState());
 
     final crossAxisCount = context.gridColumns();
     final spacing = context.gridSpacing;
@@ -153,8 +103,11 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildEmptyState(final BuildContext context) {
+class _BuildEmptyState extends StatelessWidget {
+  @override
+  Widget build(final BuildContext context) {
     final screenPadding = context.responsive(
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         desktop: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0));
@@ -176,7 +129,7 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
                   context.responsive(mobile: 16.0, desktop: 24.0), // Extension
             ),
             Text(
-              'Ürün bulunamadı',
+              context.l10n.productNotFound,
               style: TextStyle(
                 fontSize: context.responsive(
                     mobile: 18.0, tablet: 20.0, desktop: 22.0), // Extension

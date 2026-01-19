@@ -10,13 +10,12 @@ class PaginationController<T> {
   });
 
   List<T> get currentItems {
-    final startIndex = 0;
     final endIndex = currentPage * itemsPerPage;
     if (endIndex >= allItems.length) {
       hasMoreItems = false;
       return allItems;
     }
-    return allItems.sublist(startIndex, endIndex);
+    return allItems.sublist(0, endIndex);
   }
 
   void loadMoreItems() {
