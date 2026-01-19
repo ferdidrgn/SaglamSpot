@@ -140,7 +140,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   ),
                   child: const Column(
                     children: [
-                      AdsenseBanner(width: 728, height: 90),
+                      AdsenseBanner(height: 90,type: AdUnitType.multiplex),
                       AdNativeWidget(),
                     ],
                   ),

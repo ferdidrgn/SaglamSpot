@@ -22,3 +22,11 @@ enum ProductCondition {
     }
   }
 }
+
+enum AdUnitType {
+  banner, // Mobil Banner
+  native, // Mobil Native
+  display, // Web Görüntülü
+  inArticle, // Web Yazı İçi
+  multiplex, // Web Benzer Ürünler Altı
+}

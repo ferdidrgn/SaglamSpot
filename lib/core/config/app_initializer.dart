@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../services/ad_manager.dart';
 import '../services/app_check_service.dart';
+import '../services/remote_config_service.dart';
 import '../util/platform_checker.dart';
 import 'firebase_options.dart';
 
@@ -33,6 +35,10 @@ abstract final class AppInitializer {
 
     // 🔥 Firebase Temel Kurulum (Artık her platform için ortak)
     await _initFirebase();
+
+    await RemoteConfigService.init();
+
+    await AdManager.initialize();
 
     // 📢 Google Mobile Ads Başlatma
     if (kIsWeb) // Web'de bunları await etme, arka planda başlasınlar

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 
@@ -166,7 +167,7 @@ class WebOnboardingScreen extends StatelessWidget {
           ),
 
           SizedBox(height: context.spacing * 2),
-          const SliverToBoxAdapter(child: AdsenseBanner(height: 100)),
+          const SliverToBoxAdapter(child: AdsenseBanner(height: 100,type: AdUnitType.multiplex)),
 
           // Subtitle
           Text(

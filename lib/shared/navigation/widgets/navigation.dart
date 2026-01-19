@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/util/platform_checker.dart';
 import 'package:saglamspot/core/widgets/ad_mobile_banner.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
+import '../../../core/common/enum/enums.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/ad_sense_banner.dart';
@@ -343,7 +344,7 @@ class _MobileDrawer extends StatelessWidget {
             if (PlatformChecker.isMobile)
               const AdBannerWidget()
             else
-              const AdsenseBanner(height: 100),
+              const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
             _DrawerFooter(),
           ],
         ),

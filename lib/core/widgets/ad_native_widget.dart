@@ -1,56 +1,55 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../common/enum/enums.dart';
 import '../services/ad_manager.dart';
+import '../services/remote_config_service.dart';
 
 class AdNativeWidget extends StatefulWidget {
-  const AdNativeWidget({super.key});
+  final double height;
+
+  const AdNativeWidget({super.key, this.height = 110});
 
   @override
   State<AdNativeWidget> createState() => _AdNativeWidgetState();
 }
 
 class _AdNativeWidgetState extends State<AdNativeWidget> {
-  NativeAd? _nativeAd;
-  bool _isLoaded = false;
+  NativeAd? _ad;
+  bool _loaded = false;
 
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) _loadAd(); // Web’de native reklam yok
+    if (!kIsWeb) _load();
   }
 
-  void _loadAd() {
-    _nativeAd = NativeAd(
-      adUnitId: AdManager().nativeId(), // ID artık AdManager’dan
+  void _load() {
+    _ad = NativeAd(
+      adUnitId: AdManager.getAdUnitId(AdUnitType.native),
       request: const AdRequest(),
       listener: NativeAdListener(
-        onAdLoaded: (final ad) => setState(() => _isLoaded = true),
-        onAdFailedToLoad: (final ad, final error) => ad.dispose(),
+        onAdLoaded: (final _) => setState(() => _loaded = true),
+        onAdFailedToLoad: (final ad, final _) => ad.dispose(),
       ),
       nativeTemplateStyle: NativeTemplateStyle(
         templateType: TemplateType.small,
+        cornerRadius: 16,
         mainBackgroundColor: Colors.white,
-        cornerRadius: 16.0,
       ),
     )..load();
   }
 
   @override
   Widget build(final BuildContext context) {
-    if (_isLoaded && _nativeAd != null)
-      return Container(
-        height: 100,
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: AdWidget(ad: _nativeAd!),
-      );
-
-    return const SizedBox.shrink();
+    if (!_loaded || _ad == null) return const SizedBox.shrink();
+    if (!RemoteConfigService.adsEnabled) return const SizedBox.shrink();
+    return SizedBox(height: widget.height, child: AdWidget(ad: _ad!));
   }
 
   @override
   void dispose() {
-    _nativeAd?.dispose();
+    _ad?.dispose();
     super.dispose();
   }
 }

@@ -1,35 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart';
+import '../common/enum/enums.dart';
 import '../services/ad_manager.dart';
+import '../services/remote_config_service.dart';
 
 class AdsenseBanner extends StatelessWidget {
-  final double width;
+  final AdUnitType type;
   final double height;
 
-  const AdsenseBanner({
-    super.key,
-    this.width = 320,
-    this.height = 50,
-  });
+  const AdsenseBanner({super.key, required this.type, this.height = 90});
 
   @override
   Widget build(final BuildContext context) {
-    if (kIsWeb) {
-      final adSlot = AdManager().adsenseId();
-      return Container(
-        width: width,
-        height: height,
-        color: Colors.grey.shade300,
-        alignment: Alignment.center,
-        child: Text(
-          "AdSense Banner $adSlot",
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink(); // Mobil ve Desktop
+    if (!kIsWeb) return const SizedBox.shrink();
+
+    if (!RemoteConfigService.adsEnabled) return const SizedBox.shrink();
+
+    return Container(
+      height: height,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        'Adsense • ${AdManager.getAdUnitId(type)}',
+        style: context.textTheme.bodySmall,
+      ),
+    );
   }
 }
