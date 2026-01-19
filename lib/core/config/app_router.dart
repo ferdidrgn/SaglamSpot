@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/page_transitions.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
 import 'package:saglamspot/features/products/presentation/pages/product_detail_page.dart';
+import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
@@ -13,13 +13,11 @@ import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
-
 final appRouterProvider = Provider<GoRouter>((final ref) {
   final authState = ref.watch(authProvider);
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: NavigationKeys.rootNavigatorKey,
     initialLocation: kIsWeb ? '/' : '/login',
     observers: [SeoRouteObserver()],
     redirect: (final context, final state) {
@@ -47,9 +45,8 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
       ),
 
       StatefulShellRoute.indexedStack(
-        builder: (final context, final state, final navigationShell) {
-          return NavigationScreen(navigationShell: navigationShell);
-        },
+        builder: (final context, final state, final navigationShell) =>
+            NavigationScreen(navigationShell: navigationShell),
         branches: [
           StatefulShellBranch(
             routes: [
@@ -97,9 +94,11 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
       GoRoute(
         path: '/search',
         name: 'search',
-        pageBuilder: (final context, final state) => const CustomTransitionPage(
-          child: SearchPage(),
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SearchPage(),
           transitionsBuilder: shimmerSlideTransition,
+          transitionDuration: const Duration(milliseconds: 500),
         ),
       ),
 
@@ -115,6 +114,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
             key: state.pageKey,
             child: ProductDetailPage(productId: productId),
             transitionsBuilder: shimmerSlideTransition,
+            transitionDuration: const Duration(milliseconds: 500),
           );
         },
       ),
