@@ -1,6 +1,5 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-
-import '../common/extentions/app_context_ui_extension.dart';
 
 class ScrollUpButton extends StatelessWidget {
   final ScrollController scrollController;
@@ -21,24 +20,63 @@ class ScrollUpButton extends StatelessWidget {
             scrollController.hasClients && scrollController.offset > showOffset;
 
         return AnimatedPositioned(
-          duration: const Duration(milliseconds: 250),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOutCubic,
-          right: 24,
-          bottom: visible ? 24 : -80,
-          child: FloatingActionButton(
-            elevation: 6,
-            backgroundColor: context.colors.secondary,
-            onPressed: () {
+          right: 20,
+          bottom: visible ? 20 : -90,
+          child: _GlassFab(
+            onTap: () {
               scrollController.animateTo(
                 0,
-                duration: const Duration(milliseconds: 450),
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.easeOutCubic,
               );
             },
-            child: const Icon(Icons.keyboard_arrow_up),
           ),
         );
       },
+    );
+  }
+}
+
+class _GlassFab extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _GlassFab({required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              color: Colors.black.withOpacity(0.35),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.25),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.35),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.keyboard_arrow_up_rounded,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

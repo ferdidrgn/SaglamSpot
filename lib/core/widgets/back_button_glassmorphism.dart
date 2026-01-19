@@ -16,7 +16,7 @@ class GlassmorphismBackButton extends StatefulWidget {
     super.key,
     this.onPressed,
     this.size = 48,
-    this.backgroundColor,
+    this.backgroundColor = AppColors.accentDark,
     this.iconColor,
     this.showBorder = true,
   });
@@ -299,9 +299,8 @@ class GlassmorphismAppBar extends StatelessWidget {
                       // Leading / Back Button
                       if (showBackButton)
                         GlassmorphismBackButton(
-                          onPressed: onBackPressed,
-                          backgroundColor: AppColors.primary,
-                        )
+                            onPressed: onBackPressed,
+                            backgroundColor: AppColors.primary)
                       else if (leading != null)
                         leading!,
 
@@ -329,9 +328,8 @@ class GlassmorphismAppBar extends StatelessWidget {
                                 Text(
                                   subtitle!,
                                   style: const TextStyle(
-                                    fontSize: 13,
-                                    color: AppColors.textSecondary,
-                                  ),
+                                      fontSize: 13,
+                                      color: AppColors.textSecondary),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),

@@ -695,17 +695,15 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   Widget _buildBackgroundPattern(final BuildContext context) => Positioned.fill(
         child: CustomPaint(
           painter: _BackgroundPatternPainter(
-            color: AppColors.primary.withOpacity(0.02),
-          ),
+              color: AppColors.primary.withOpacity(0.02)),
         ),
       );
 
   Widget _buildAdBanner(final BuildContext context, final double height) =>
       SliverToBoxAdapter(
         child: Padding(
-          padding: context.sectionPadding,
-          child: AdsenseBanner(height: height),
-        ),
+            padding: context.sectionPadding,
+            child: AdsenseBanner(height: height)),
       );
 
   Widget _buildErrorState(final BuildContext context, final String error) =>
@@ -768,13 +766,8 @@ class _BackgroundPatternPainter extends CustomPainter {
       ..color = color
       ..strokeWidth = 0.8;
 
-    for (double i = 0; i < size.width; i += 60) {
-      canvas.drawLine(
-        Offset(i, 0),
-        Offset(i - 100, size.height),
-        paint,
-      );
-    }
+    for (double i = 0; i < size.width; i += 60)
+      canvas.drawLine(Offset(i, 0), Offset(i - 100, size.height), paint);
   }
 
   @override

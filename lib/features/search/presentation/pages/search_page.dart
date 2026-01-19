@@ -9,6 +9,7 @@ import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
 import '../../../../core/widgets/ad_sense_banner.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
+import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
@@ -24,7 +25,7 @@ class SearchPage extends ConsumerStatefulWidget {
 class _SearchPageState extends ConsumerState<SearchPage>
     with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   bool _showSearchFocus = false;
@@ -68,79 +69,87 @@ class _SearchPageState extends ConsumerState<SearchPage>
         context.responsive(mobile: 180.0, tablet: 220.0, desktop: 240.0);
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        controller: _scrollController,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // Fresh Hero Header
-          _buildHeroHeader(context, isMobile),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // Fresh Hero Header
+              _buildHeroHeader(context, isMobile),
 
-          /*SliverPersistentHeader(
-            pinned: true,
-            delegate: _StickySearchDelegate(
-                minHeight: getSearchSectionHeight,
-                maxHeight: getSearchSectionHeight,
-                child: _buildSearchSection(context, isMobile, searchQuery)),
-          ),*/
+              /*SliverPersistentHeader(
+                pinned: true,
+                delegate: _StickySearchDelegate(
+                    minHeight: getSearchSectionHeight,
+                    maxHeight: getSearchSectionHeight,
+                    child: _buildSearchSection(context, isMobile, searchQuery)),
+              ),*/
 
-          SliverToBoxAdapter(
-              child: _buildSearchSection(context, isMobile, searchQuery)),
+              SliverToBoxAdapter(
+                  child: _buildSearchSection(context, isMobile, searchQuery)),
 
-          // Fresh Category Pills
-          _buildCategorySection(currentFilters, isMobile),
+              // Fresh Category Pills
+              _buildCategorySection(currentFilters, isMobile),
 
-          // Active Filters
-          if (_hasActiveFilters(currentFilters))
-            _buildActiveFiltersSliver(currentFilters),
+              // Active Filters
+              if (_hasActiveFilters(currentFilters))
+                _buildActiveFiltersSliver(currentFilters),
 
-          // Results Header
-          searchResultsAsync.when(
-            loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-            error: (final _, final __) =>
-                const SliverToBoxAdapter(child: SizedBox.shrink()),
-            data: (final products) =>
-                _buildResultsHeader(context, products.length, searchQuery),
-          ),
-
-          // Product Showcase with Ads
-          searchResultsAsync.when(
-            loading: () => const SliverFillRemaining(child: FullPageShimmer()),
-            error: (final err, final _) => SliverFillRemaining(
-              child: _buildErrorState(err.toString()),
-            ),
-            data: (final products) {
-              if (products.isEmpty) return _buildEmptyState();
-              return SliverPadding(
-                padding: EdgeInsets.only(
-                  bottom: isMobile ? 100 : 60,
-                  left: context.responsive(mobile: 0.0, desktop: 20.0),
-                  right: context.responsive(mobile: 0.0, desktop: 20.0),
-                ),
-                sliver: SliverMainAxisGroup(
-                  slivers: _buildProductGridsWithAds(context, products),
-                ),
-              );
-            },
-          ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
-                24,
-                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
-                40, // Alt boşluk
+              // Results Header
+              searchResultsAsync.when(
+                loading: () =>
+                    const SliverToBoxAdapter(child: SizedBox.shrink()),
+                error: (final _, final __) =>
+                    const SliverToBoxAdapter(child: SizedBox.shrink()),
+                data: (final products) =>
+                    _buildResultsHeader(context, products.length, searchQuery),
               ),
-              child: const Column(
-                children: [
-                  AdsenseBanner(width: 728, height: 90),
-                  AdNativeWidget(),
-                ],
-              ),
-            ),
-          ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 80)),
+              // Product Showcase with Ads
+              searchResultsAsync.when(
+                loading: () =>
+                    const SliverFillRemaining(child: FullPageShimmer()),
+                error: (final err, final _) => SliverFillRemaining(
+                  child: _buildErrorState(err.toString()),
+                ),
+                data: (final products) {
+                  if (products.isEmpty) return _buildEmptyState();
+                  return SliverPadding(
+                    padding: EdgeInsets.only(
+                      bottom: isMobile ? 100 : 60,
+                      left: context.responsive(mobile: 0.0, desktop: 20.0),
+                      right: context.responsive(mobile: 0.0, desktop: 20.0),
+                    ),
+                    sliver: SliverMainAxisGroup(
+                      slivers: _buildProductGridsWithAds(context, products),
+                    ),
+                  );
+                },
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    context.responsive(
+                        mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                    24,
+                    context.responsive(
+                        mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                    40, // Alt boşluk
+                  ),
+                  child: const Column(
+                    children: [
+                      AdsenseBanner(width: 728, height: 90),
+                      AdNativeWidget(),
+                    ],
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
+            ],
+          ),
+          ScrollUpButton(scrollController: _scrollController)
         ],
       ),
       floatingActionButton: isMobile ? _buildFloatingFilter(context) : null,
