@@ -248,8 +248,8 @@ class VintagePageShimmer extends StatelessWidget {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: 6,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (context, index) => Shimmer.fromColors(
+                    separatorBuilder: (final _, final __) => const SizedBox(width: 12),
+                    itemBuilder: (final context, final index) => Shimmer.fromColors(
                       baseColor: Colors.grey.shade200,
                       highlightColor: Colors.grey.shade100,
                       child: Container(
@@ -281,7 +281,7 @@ class VintagePageShimmer extends StatelessWidget {
                 crossAxisSpacing: 16,
                 childAspectRatio: 0.75,
               ),
-              itemBuilder: (context, index) => Container(
+              itemBuilder: (final context, final index) => Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
