@@ -10,6 +10,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../services/ad_manager.dart';
 import '../services/app_check_service.dart';
 import '../services/remote_config_service.dart';
+import '../util/date_formatter.dart';
 import '../util/platform_checker.dart';
 import 'firebase_options.dart';
 
@@ -32,6 +33,9 @@ abstract final class AppInitializer {
     // Eğer SharedPreferences kullanmaya devam edecekseniz init kalsın,
     // ama Secure Storage'da bu satırı siliyoruz veya sadece log basıyoruz.
     debugPrint('🔐 Güvenli depolama hazır.');
+
+    // Dil formatlarını hazırla
+    await DateFormatter.initializeLocale();
 
     // 🔥 Firebase Temel Kurulum (Artık her platform için ortak)
     await _initFirebase();
