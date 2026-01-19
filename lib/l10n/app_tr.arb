@@ -124,5 +124,7 @@
   "month_9": "Eylül",
   "month_10": "Ekim",
   "month_11": "Kasım",
-  "month_12": "Aralık"
+  "month_12": "Aralık",
+  "noProductFoundTitle": "Aradığınız Kriterde Ürün Bulunamadı",
+  "noProductFoundDescription": "Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz"
 }

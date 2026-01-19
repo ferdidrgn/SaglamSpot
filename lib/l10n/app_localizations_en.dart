@@ -149,6 +149,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get easyFind => 'Easily find the product you are looking for';
 
   @override
+  String get mottoBrand => 'Renews the Old, Evaluates the New';
+
+  @override
   String get newCollection => 'New Collection';
 
   @override
@@ -339,4 +342,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get month_12 => 'December';
+
+  @override
+  String get noProductFoundTitle => 'No Products Found for Your Criteria';
+
+  @override
+  String get noProductFoundDescription =>
+      'You can try different filters or change your search term';
 }

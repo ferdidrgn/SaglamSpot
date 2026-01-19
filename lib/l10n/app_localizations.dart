@@ -350,6 +350,12 @@ abstract class AppLocalizations {
   /// **'Aradığınız ürünü kolayca bulun'**
   String get easyFind;
 
+  /// No description provided for @mottoBrand.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eskiyi Yeniler, Yeniyi Değerlendirir'**
+  String get mottoBrand;
+
   /// No description provided for @newCollection.
   ///
   /// In tr, this message translates to:
@@ -715,6 +721,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Aralık'**
   String get month_12;
+
+  /// No description provided for @noProductFoundTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aradığınız Kriterde Ürün Bulunamadı'**
+  String get noProductFoundTitle;
+
+  /// No description provided for @noProductFoundDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz'**
+  String get noProductFoundDescription;
 }
 
 class _AppLocalizationsDelegate

@@ -148,6 +148,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get easyFind => 'Aradığınız ürünü kolayca bulun';
 
   @override
+  String get mottoBrand => 'Eskiyi Yeniler, Yeniyi Değerlendirir';
+
+  @override
   String get newCollection => 'Yeni Koleksiyon';
 
   @override
@@ -335,4 +338,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get month_12 => 'Aralık';
+
+  @override
+  String get noProductFoundTitle => 'Aradığınız Kriterde Ürün Bulunamadı';
+
+  @override
+  String get noProductFoundDescription =>
+      'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz';
 }

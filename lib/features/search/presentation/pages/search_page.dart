@@ -735,7 +735,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                     height: context.responsive(
                         mobile: 20.0, tablet: 24.0, desktop: 28.0)),
                 Text(
-                  'Aradığınız Kriterde\nÜrün Bulunamadı',
+                  context.l10n.noProductFoundTitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: context.responsive(
@@ -749,7 +749,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                     height: context.responsive(
                         mobile: 10.0, tablet: 12.0, desktop: 14.0)),
                 Text(
-                  'Farklı filtreler deneyebilir veya\narama teriminizi değiştirebilirsiniz',
+                  context.l10n.noProductFoundDescription,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: context.responsive(
