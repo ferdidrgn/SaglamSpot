@@ -21,6 +21,15 @@
       }
     }
   },
+  "seoHomeTitle": "Sağlam Spot | Spot & Sıfır Mobilya",
+  "seoHomeDesc": "Spot ve sıfır mobilyalarda en uygun fiyatlar. 20 yıllık esnaf güvencesiyle.",
+  "seoNewTitle": "Sıfır Ürünler | Sağlam Spot",
+  "seoNewDesc": "Garantili ve kaliteli sıfır mobilya koleksiyonu.",
+  "seoSpotTitle": "Spot Ürünler | Sağlam Spot",
+  "seoSpotDesc": "Ekonomik ve kaliteli spot mobilya seçenekleri.",
+  "seoAboutTitle": "Hakkımızda | Sağlam Spot",
+  "seoAboutDesc": "20 yıllık tecrübemizle mobilya sektöründe güvenin adresi.",
+  "seoProductDetailSuffix": "Ürünü İncele | Sağlam Spot",
   "category": "Kategori",
   "categorySofa": "Oturma Grupları",
   "categoryChair": "Sandalye",
