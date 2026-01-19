@@ -23,9 +23,20 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
 
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
-    initialLocation: kIsWeb ? '/' : '/',
+    initialLocation: kIsWeb ? '/' : '/login',
+    refreshListenable: authNotifier,
+    observers: [SeoRouteObserver()],
     redirect: (final context, final state) {
+      final isLoggedIn = authState.value != null;
+      final location = state.uri.path;
 
+      final isLoginPage = location == '/login';
+
+      if (!isLoggedIn) return isLoginPage ? null : '/login';
+
+      if (isLoggedIn && isLoginPage) return '/';
+
+      return null;
     },
     routes: [
       GoRoute(

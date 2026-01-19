@@ -1,48 +1,35 @@
-import 'package:flutter/foundation.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../common/extentions/reg_exp_extentions.dart';
-import 'deeplink_service_stub.dart'
-    if (dart.library.js_interop) 'deeplink_service_web.dart';
-// KOŞULLU IMPORT: Web ise web dosyasını, değilse stub dosyasını yükle
 
-final class DeeplinkShareService {
-  DeeplinkShareService._();
+final class FurnitureShareService {
+  FurnitureShareService._();
 
-  static const String _baseUrl = "https://saglamspot.com";
+  static const String _domain = "https://saglamspot.com";
 
+  /// 🛋️ Mobilya Ürün Linki Oluşturucu
   static String generateProductUrl(final String id, final String name) {
-    final slug = name.toSlug();
-    return "$_baseUrl/product/$slug-$id";
+    final slug = name.toSlug(); // SEO uyumlu isim
+    return "$_domain/product/$slug-$id";
   }
 
+  /// 📤 Ürün Paylaş
   static Future<void> shareProduct({
     required final String productId,
     required final String productName,
+    final String? price,
   }) async {
     final url = generateProductUrl(productId, productName);
-    final message = "Sağlam Spot - $productName\n$url";
 
-    await Share.share(
-      message,
-      subject: productName,
-    );
+    final String priceInfo = price != null ? "\nFiyat: $price TL" : "";
+    final String message =
+        "Sağlam Spot'ta harika bir mobilya buldum! ✨\n\n$productName$priceInfo\nDetaylar: $url";
+
+    await Share.share(message, subject: productName);
   }
 
-  /// WEB ONLY — SEO + OG META
-  static void updateWebMeta({
-    required final String title,
-    required final String description,
-    required final String imageUrl,
-    required final String productId,
-    required final String productName,
-  }) {
-    if (!kIsWeb) return;
-
-    try {
-      final url = generateProductUrl(productId, productName);
-      setMeta(title, description, imageUrl, url);
-    } catch (e) {
-      debugPrint("Meta error: $e");
-    }
+  /// 📱 Uygulama Paylaş
+  static Future<void> shareApp() async {
+    await Share.share(
+        "Eviniz için en kaliteli spot mobilyalar Sağlam Spot'ta! 🏠\nUygulamayı indir: $_domain");
   }
 }

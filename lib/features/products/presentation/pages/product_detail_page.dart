@@ -139,7 +139,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           ],
           GlassmorphismIconButton(
             icon: Icons.share_outlined,
-            onPressed: () => DeeplinkShareService.shareProduct(
+            onPressed: () => FurnitureShareService.shareProduct(
               productId: product.id,
               productName: product.name,
             ),
@@ -339,7 +339,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                           GlassmorphismIconButton(
                             icon: Icons.share_outlined,
                             onPressed: () {
-                              DeeplinkShareService.shareProduct(
+                              FurnitureShareService.shareProduct(
                                   productId: product.id,
                                   productName: product.name);
                             },
