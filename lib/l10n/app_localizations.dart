@@ -272,6 +272,24 @@ abstract class AppLocalizations {
   /// **'Fiyat Aralığı'**
   String get priceRange;
 
+  /// No description provided for @price.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat'**
+  String get price;
+
+  /// No description provided for @save.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet'**
+  String get save;
+
+  /// No description provided for @explanation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get explanation;
+
   /// No description provided for @clear.
   ///
   /// In tr, this message translates to:
@@ -404,11 +422,11 @@ abstract class AppLocalizations {
   /// **'{count} Parça'**
   String pieces(int count);
 
-  /// No description provided for @inStock.
+  /// No description provided for @stock.
   ///
   /// In tr, this message translates to:
   /// **'STOKTA'**
-  String get inStock;
+  String get stock;
 
   /// No description provided for @sold.
   ///

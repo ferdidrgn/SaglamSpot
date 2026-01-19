@@ -109,6 +109,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get priceRange => 'Fiyat Aralığı';
 
   @override
+  String get price => 'Fiyat';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String get explanation => 'Açıklama';
+
+  @override
   String get clear => 'Temizle';
 
   @override
@@ -177,7 +186,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get inStock => 'STOKTA';
+  String get stock => 'STOKTA';
 
   @override
   String get sold => 'SATILDI';

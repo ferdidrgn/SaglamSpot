@@ -43,6 +43,9 @@
   "conditionNew": "Sıfır",
   "conditionUsed": "İkinci El",
   "priceRange": "Fiyat Aralığı",
+  "price": "Fiyat",
+  "save": "Kaydet",
+  "explanation": "Açıklama",
   "clear": "Temizle",
   "filter": "Filtrele",
   "apply": "Uygula",
@@ -72,7 +75,7 @@
       }
     }
   },
-  "inStock": "STOKTA",
+  "stock": "STOKTA",
   "sold": "SATILDI",
   "byRoom": "Yaşam Alanına Göre",
   "byRoomSub": "Evinizin her köşesi için özel seçimler",

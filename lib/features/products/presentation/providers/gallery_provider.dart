@@ -26,9 +26,7 @@ class Gallery extends _$Gallery {
   // Sayfa kapandığında state otomatik temizlenir (autoDispose varsayılandır)
 
   @override
-  GalleryState build(final int totalCount) {
-    return GalleryState.initial(totalCount);
-  }
+  GalleryState build(final int totalCount) => GalleryState.initial(totalCount);
 
   void setCurrentIndex(final int index) {
     if (index >= 0 && index < state.totalImages)

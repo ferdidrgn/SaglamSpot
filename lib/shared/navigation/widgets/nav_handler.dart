@@ -52,6 +52,8 @@ class NavigationHandler {
   /// Ana sayfaya git
   static void goToHome(final BuildContext context) => context.go('/');
 
+  static void goToLogin(final BuildContext context) => context.go('/login');
+
   /// Arama sayfasına git
   static void goToSearch(final BuildContext context) => context.go('/search');
 

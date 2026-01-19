@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
@@ -35,7 +36,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
     Future.microtask(() {
       final auth = ref.read(authProvider).value;
-      if (auth?.uid == null) context.go('/login');
+      if (auth?.uid == null) NavigationHandler.goToLogin(context) ;
     });
   }
 
@@ -82,7 +83,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               _imageSection(),
               const SizedBox(height: 24),
               _field(_name, 'Ürün Adı', Icons.shopping_bag),
-              _field(_price, 'Fiyat', Icons.attach_money, numeric: true),
+              _field(_price, context.l10n.price, Icons.attach_money, numeric: true),
               _categoryDropdown(),
               _field(_desc, 'Açıklama', Icons.description, lines: 3),
               SwitchListTile(
@@ -103,7 +104,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                           height: 24,
                           child: CircularProgressIndicator(
                               strokeWidth: 2, color: Colors.white))
-                      : const Text('Kaydet'),
+                      : Text(context.l10n.save),
                 ),
               ),
               const SizedBox(height: 24),

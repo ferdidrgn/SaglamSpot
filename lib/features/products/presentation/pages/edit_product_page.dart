@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/widgets/ad_mobile_banner.dart';
 import '../../../../core/widgets/ad_native_widget.dart';
@@ -119,7 +120,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   const AdNativeWidget(), // NATIVE REKLAM
                   const SizedBox(height: 16),
                   _section("Durum ve Kategori"),
-                  _buildSwitchTile("Ürün Satıldı", _isSold,
+                  _buildSwitchTile(context.l10n.sold, _isSold,
                       (final v) => setState(() => _isSold = v)),
                   _buildSwitchTile("Spot / İkinci El", _isSpotProduct,
                       (final v) => setState(() => _isSpotProduct = v)),

@@ -110,6 +110,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get priceRange => 'Price Range';
 
   @override
+  String get price => 'Price';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get explanation => 'Explanation';
+
+  @override
   String get clear => 'Clear';
 
   @override
@@ -178,7 +187,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get inStock => 'IN STOCK';
+  String get stock => 'IN STOCK';
 
   @override
   String get sold => 'SOLD';

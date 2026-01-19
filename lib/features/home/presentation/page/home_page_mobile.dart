@@ -412,7 +412,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        isSold ? 'SATILDI' : 'STOKTA',
+        isSold ? context.l10n.sold : context.l10n.stock,
         style: const TextStyle(
             color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
       ),

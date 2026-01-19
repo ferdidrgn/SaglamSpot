@@ -43,6 +43,9 @@
   "conditionNew": "New",
   "conditionUsed": "Used",
   "priceRange": "Price Range",
+  "price": "Price",
+  "save": "Save",
+  "explanation": "Explanation",
   "clear": "Clear",
   "filter": "Filter",
   "apply": "Apply",
@@ -72,7 +75,7 @@
       }
     }
   },
-  "inStock": "IN STOCK",
+  "stock": "IN STOCK",
   "sold": "SOLD",
   "byRoom": "By Living Area",
   "byRoomSub": "Special selections for every corner of your home",

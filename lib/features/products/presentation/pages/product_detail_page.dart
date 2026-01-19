@@ -121,8 +121,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       right: 0,
       child: GlassmorphismAppBar(
         title: product.name,
-        subtitle:
-            product.isSold ? 'SATILDI' : '₺${product.price.toStringAsFixed(0)}',
+        subtitle: product.isSold
+            ? context.l10n.sold
+            : '₺${product.price.toStringAsFixed(0)}',
         showBackButton: true,
         // Actions kısmı mobil/tablet için responsive olmalı
         actions: [
@@ -430,9 +431,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                                     blurRadius: 20)
                               ],
                             ),
-                            child: const Text(
-                              'SATILDI',
-                              style: TextStyle(
+                            child: Text(
+                              context.l10n.sold,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 32,
                                 fontWeight: FontWeight.w900,
@@ -665,7 +666,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'FİYAT',
+                        context.l10n.price.toUpperCase(),
                         style: TextStyle(
                           fontSize: context.captionSize,
                           fontWeight: FontWeight.w700,
@@ -778,7 +779,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             ),
             const SizedBox(width: 12),
             Text(
-              'AÇIKLAMA',
+              context.l10n.explanation,
               style: TextStyle(
                 fontSize: context.bodySize,
                 fontWeight: FontWeight.w900,
