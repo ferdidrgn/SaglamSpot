@@ -94,3 +94,35 @@ flutter:
     - assets/images/map.jpg
     - assets/images/book_room.jpg
     - assets/images/man_walk.jpg
+
+
+
+# ================================================
+# NATIVE SPLASH SCREEN CONFIGURATION
+# ================================================
+flutter_native_splash:
+  color: "#0A1628"
+  background_image: "assets/images/saglam_spot_logo.png"
+  image: "assets/images/saglam_spot_logo.png"
+
+  android_12:
+    image: "assets/images/saglam_spot_logo.png"
+    color: "#0A1628"
+    image_dark: "assets/images/saglam_spot_logo.png"
+    color_dark: "#0A1628"
+    icon_background_color: "#0A1628"
+
+  color_dark: "#0A1628"
+  background_image_dark: "assets/images/saglam_spot_logo.png"
+  image_dark: "assets/images/saglam_spot_logo.png"
+  android_navbar_color: "#0A1628"
+
+
+  android: true
+  ios: true
+  web: false
+
+  android_gravity: center
+  ios_content_mode: center
+
+  fullscreen: true
