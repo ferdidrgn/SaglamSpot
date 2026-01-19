@@ -14,7 +14,7 @@ abstract class BaseRepository {
       // İnternet yoksa veya sunucuya ulaşılamıyorsa
       return const Left(NetworkFailure('Bağlantı hatası'));
     } on HttpException catch (e) {
-      return Left(ServerFailure('HTTP Hatası: ${e.message}'));
+      return Left(ServerFailure('HTTP Error: ${e.message}'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

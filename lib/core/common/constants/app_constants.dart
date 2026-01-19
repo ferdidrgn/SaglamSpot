@@ -13,10 +13,9 @@ class AppConstants {
   static const double navigationFontSize = 16.0;
 
   // Footer Constants
-  static const String appName = 'Sağlam Spot'; // Application name
-  static const String appNameTr =
-      'İkinci El ve Sıfır Satış Uygulaması'; // Application name
-  static const String copyright = '© 2024 My Company'; // Copyright
+  static const String appName = 'SAĞLAM SPOT';
+  static const String appNameTr = 'İkinci El ve Sıfır Satış Uygulaması';
+  static const String copyright = '© 2020 My Company';
 
 // Animasyon süreleri
   static const Duration heroAnimationDuration = Duration(milliseconds: 800);

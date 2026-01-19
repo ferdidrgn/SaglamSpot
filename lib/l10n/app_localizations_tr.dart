@@ -557,4 +557,33 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get faqSub => 'Merak ettiğiniz her şeyin cevabı burada';
+
+  @override
+  String get seoHomeTitle => 'Sağlam Spot | Spot & Sıfır Mobilya';
+
+  @override
+  String get seoHomeDesc =>
+      'Spot ve sıfır mobilyalarda en uygun fiyatlar. 20 yıllık esnaf güvencesiyle.';
+
+  @override
+  String get seoNewTitle => 'Sıfır Ürünler | Sağlam Spot';
+
+  @override
+  String get seoNewDesc => 'Garantili ve kaliteli sıfır mobilya koleksiyonu.';
+
+  @override
+  String get seoSpotTitle => 'Spot Ürünler | Sağlam Spot';
+
+  @override
+  String get seoSpotDesc => 'Ekonomik ve kaliteli spot mobilya seçenekleri.';
+
+  @override
+  String get seoAboutTitle => 'Hakkımızda | Sağlam Spot';
+
+  @override
+  String get seoAboutDesc =>
+      '20 yıllık tecrübemizle mobilya sektöründe güvenin adresi.';
+
+  @override
+  String get seoProductDetailSuffix => 'Ürünü İncele | Sağlam Spot';
 }
