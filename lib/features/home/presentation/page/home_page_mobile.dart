@@ -14,7 +14,6 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_mutation_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 
-// --- ENUMLAR ---
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
@@ -252,39 +251,41 @@ class _ImageArea extends ConsumerWidget {
   const _ImageArea({required this.product});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () {
-            ref.read(galleryProvider.notifier).setCurrentIndex(0);
-            showDialog(
-              context: context,
-              barrierColor: Colors.black.withOpacity(0.95),
-              builder: (final _) => GalleryViewerDialog(
-                images: product.imagesUrl,
-                isMobile: context.isMobile,
-              ),
-            ).then((final _) => ref.read(galleryProvider.notifier).reset());
-          },
-          child: Positioned.fill(
+  Widget build(final BuildContext context, final WidgetRef ref) => Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              ref
+                  .read(galleryProvider(product.imagesUrl.length).notifier)
+                  .setCurrentIndex(0);
+
+              showDialog(
+                context: context,
+                barrierColor: Colors.black.withOpacity(0.95),
+                builder: (final _) => GalleryViewerDialog(
+                    images: product.imagesUrl, isMobile: context.isMobile),
+              );
+            },
             child: product.imagesUrl.isNotEmpty
                 ? OptimizedCachedImage(
                     imageUrl: product.imagesUrl.first, fit: BoxFit.cover)
                 : Container(
+                    width: double.infinity,
+                    height: double.infinity,
                     color: AppColors.darkSurface,
-                    child: const Icon(Icons.chair_alt_rounded,
-                        size: 48, color: AppColors.textTertiary),
+                    child: const Icon(
+                      Icons.chair_alt_rounded,
+                      size: 48,
+                      color: AppColors.textTertiary,
+                    ),
                   ),
           ),
-        ),
-        Positioned(
-            top: 10, left: 10, child: _StatusBadge(isSold: product.isSold)),
-        Positioned(
-            bottom: 10, right: 10, child: _PriceBadge(price: product.price)),
-      ],
-    );
-  }
+          Positioned(
+              top: 10, left: 10, child: _StatusBadge(isSold: product.isSold)),
+          Positioned(
+              bottom: 10, right: 10, child: _PriceBadge(price: product.price)),
+        ],
+      );
 }
 
 class _InfoArea extends StatelessWidget {

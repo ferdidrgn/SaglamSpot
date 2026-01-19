@@ -7,9 +7,6 @@ import '../common/extentions/app_context_ui_extension.dart';
 import 'empty_state_message_web.dart';
 import 'optimized_cached_image.dart';
 
-/// ------------------------------------------------------------
-/// GALLERY SECTION
-/// ------------------------------------------------------------
 class GallerySection extends ConsumerStatefulWidget {
   final List<String> photos;
 
@@ -32,11 +29,8 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
     final isTablet = context.isTablet;
     final photos = widget.photos;
 
-    /// MOBILE → horizontal list
     if (isMobile) {
-      // Eğer çok fazla resim varsa horizontal, azsa grid göster
-      if (photos.length <= 4)
-        // Grid göster
+      if (photos.length <= 4) {
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -56,8 +50,7 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
             );
           },
         );
-      else
-        // Horizontal list göster
+      } else {
         return SizedBox(
           height: 200,
           child: ListView.builder(
@@ -67,7 +60,7 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
             itemCount: photos.length,
             itemBuilder: (final _, final index) {
               return Container(
-                width: 160, // Sabit genişlik
+                width: 160,
                 margin: const EdgeInsets.only(right: 12),
                 child: _GalleryItem(
                   url: photos[index],
@@ -79,12 +72,11 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
             },
           ),
         );
+      }
     }
 
-    /// DESKTOP / TABLET
     final totalPages =
         (photos.length / AppConstants.galleryItemsPerPage).ceil();
-
     final start = _currentPage * AppConstants.galleryItemsPerPage;
     final end =
         math.min(start + AppConstants.galleryItemsPerPage, photos.length);
@@ -130,9 +122,6 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
   }
 }
 
-/// ------------------------------------------------------------
-/// GALLERY ITEM
-/// ------------------------------------------------------------
 class _GalleryItem extends ConsumerWidget {
   final String url;
   final int index;
@@ -150,7 +139,10 @@ class _GalleryItem extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) =>
       GestureDetector(
         onTap: () {
-          ref.read(galleryProvider.notifier).setCurrentIndex(index);
+          // Riverpod 3+ family kullanımı: toplam resim sayısını parametre veriyoruz
+          ref
+              .read(galleryProvider(allPhotos.length).notifier)
+              .setCurrentIndex(index);
 
           showDialog(
             context: context,
@@ -159,9 +151,8 @@ class _GalleryItem extends ConsumerWidget {
               images: allPhotos,
               isMobile: isMobile,
             ),
-          ).then((final _) {
-            ref.read(galleryProvider.notifier).reset();
-          });
+          );
+          // autoDispose kullandığımız için .then(reset) kısmına artık gerek yok.
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
@@ -173,9 +164,6 @@ class _GalleryItem extends ConsumerWidget {
       );
 }
 
-/// ------------------------------------------------------------
-/// FULLSCREEN VIEWER
-/// ------------------------------------------------------------
 class GalleryViewerDialog extends ConsumerStatefulWidget {
   final List<String> images;
   final bool isMobile;
@@ -197,7 +185,9 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
   @override
   void initState() {
     super.initState();
-    final currentIndex = ref.read(galleryProvider).currentIndex;
+    // Başlangıç indexini provider'dan alıyoruz
+    final currentIndex =
+        ref.read(galleryProvider(widget.images.length)).currentIndex;
     _pageController = PageController(initialPage: currentIndex);
   }
 
@@ -207,12 +197,15 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
     super.dispose();
   }
 
-  void _onPageChanged(final int index) =>
-      ref.read(galleryProvider.notifier).setCurrentIndex(index);
+  void _onPageChanged(final int index) => ref
+      .read(galleryProvider(widget.images.length).notifier)
+      .setCurrentIndex(index);
 
   @override
   Widget build(final BuildContext context) {
-    final currentIndex = ref.watch(galleryProvider).currentIndex;
+    // State takibi
+    final currentIndex =
+        ref.watch(galleryProvider(widget.images.length)).currentIndex;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -223,7 +216,6 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
           height: double.infinity,
           child: Column(
             children: [
-              /// HEADER WITH CLOSE BUTTON
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -231,19 +223,15 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '${currentIndex + 1} / ${widget.images.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                     GestureDetector(
@@ -255,18 +243,13 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                           color: Colors.black.withOpacity(0.5),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 24,
-                        ),
+                        child: const Icon(Icons.close,
+                            color: Colors.white, size: 24),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              /// IMAGE WITH PAGEVIEW
               Expanded(
                 child: Stack(
                   children: [
@@ -288,8 +271,6 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                         );
                       },
                     ),
-
-                    /// ◀ PREVIOUS BUTTON
                     if (currentIndex > 0)
                       Positioned(
                         left: 20,
@@ -307,8 +288,6 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                           ),
                         ),
                       ),
-
-                    /// ▶ NEXT BUTTON
                     if (currentIndex < widget.images.length - 1)
                       Positioned(
                         right: 20,
@@ -329,8 +308,6 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                   ],
                 ),
               ),
-
-              /// THUMBNAILS
               ThumbnailCarousel(
                 images: widget.images,
                 isMobile: widget.isMobile,
@@ -342,7 +319,6 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                   );
                 },
               ),
-
               const SizedBox(height: 16),
             ],
           ),
@@ -352,9 +328,6 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
   }
 }
 
-/// ------------------------------------------------------------
-/// THUMBNAIL CAROUSEL (WEB + MOBILE)
-/// ------------------------------------------------------------
 class ThumbnailCarousel extends ConsumerStatefulWidget {
   final List<String> images;
   final bool isMobile;
@@ -390,7 +363,9 @@ class _ThumbnailCarouselState extends ConsumerState<ThumbnailCarousel> {
 
   @override
   Widget build(final BuildContext context) {
-    final currentIndex = ref.watch(galleryProvider).currentIndex;
+    // State takibi
+    final currentIndex =
+        ref.watch(galleryProvider(widget.images.length)).currentIndex;
 
     return SizedBox(
       height: 110,
@@ -413,7 +388,9 @@ class _ThumbnailCarouselState extends ConsumerState<ThumbnailCarousel> {
 
                 return GestureDetector(
                   onTap: () {
-                    ref.read(galleryProvider.notifier).setCurrentIndex(index);
+                    ref
+                        .read(galleryProvider(widget.images.length).notifier)
+                        .setCurrentIndex(index);
                     widget.onThumbnailTap?.call(index);
                   },
                   child: AnimatedContainer(
@@ -460,23 +437,17 @@ class _NavBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _NavBtn({
-    required this.icon,
-    required this.onTap,
-  });
+  const _NavBtn({required this.icon, required this.onTap});
 
   @override
   Widget build(final BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.6),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.white),
-        ),
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6), shape: BoxShape.circle),
+            child: Icon(icon, color: Colors.white)),
       );
 }
 
@@ -485,12 +456,11 @@ class GalleryPaginationControls extends StatelessWidget {
   final int totalPages;
   final Function(int) onPageChanged;
 
-  const GalleryPaginationControls({
-    super.key,
-    required this.currentPage,
-    required this.totalPages,
-    required this.onPageChanged,
-  });
+  const GalleryPaginationControls(
+      {super.key,
+      required this.currentPage,
+      required this.totalPages,
+      required this.onPageChanged});
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -529,11 +499,8 @@ class _PageButton extends StatelessWidget {
   final bool enabled;
   final VoidCallback onTap;
 
-  const _PageButton({
-    required this.icon,
-    required this.enabled,
-    required this.onTap,
-  });
+  const _PageButton(
+      {required this.icon, required this.enabled, required this.onTap});
 
   @override
   Widget build(final BuildContext context) => MouseRegion(
@@ -563,11 +530,7 @@ class GalleryNavButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const GalleryNavButton({
-    super.key,
-    required this.icon,
-    required this.onTap,
-  });
+  const GalleryNavButton({super.key, required this.icon, required this.onTap});
 
   @override
   Widget build(final BuildContext context) => MouseRegion(

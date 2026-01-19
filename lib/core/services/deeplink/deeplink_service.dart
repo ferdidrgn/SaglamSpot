@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../common/extentions/reg_exp_extentions.dart';
 import 'deeplink_service_stub.dart'
-    if (dart.library.js_interop) 'social_share_web.dart';
+    if (dart.library.js_interop) 'deeplink_service_web.dart';
 // KOŞULLU IMPORT: Web ise web dosyasını, değilse stub dosyasını yükle
 
 class DeeplinkShareService {
