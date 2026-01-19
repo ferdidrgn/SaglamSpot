@@ -193,7 +193,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     fontSize: context.responsive(mobile: 10, desktop: 14))),
             const SizedBox(height: 10),
             Text(context.l10n.heroTitle,
-                style: AppTextStyles.h1.copyWith(
+                style: AppTextStyles.webTextTheme.bodyLarge?.copyWith(
                     color: Colors.white,
                     fontSize: context.heroSize * 0.8,
                     height: 1.1)),
