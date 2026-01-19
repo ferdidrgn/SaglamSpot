@@ -82,6 +82,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   _buildSliverAppBar(context, product),
+                  SliverToBoxAdapter(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).padding.top + 20)),
                   _buildResponsiveProductLayout(context, product),
                   _buildTabSection(context, product),
                   _buildSimilarProducts(context, similarProducts),
@@ -107,36 +110,42 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildFloatingHeader(
       final BuildContext context, final Product product) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      height: _isScrolled ? 70 : 0,
-      child: _isScrolled
-          ? GlassmorphismAppBar(
-              title: product.name,
-              subtitle: product.isSold
-                  ? 'BU ÜRÜN SATILDI'
-                  : '₺${product.price.toStringAsFixed(0)}',
-              showBackButton: true,
-              actions: [
-                GlassmorphismIconButton(
-                  icon: _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  onPressed: () => setState(() => _isFavorite = !_isFavorite),
-                  backgroundColor:
-                      _isFavorite ? AppColors.error : AppColors.primary,
-                ),
-                const SizedBox(width: 12),
-                GlassmorphismIconButton(
-                  icon: Icons.share_outlined,
-                  onPressed: () {
-                    DeepLinkService.shareProduct(
-                        productId: product.id, productName: product.name);
-                  },
-                  backgroundColor: AppColors.primary,
-                ),
-                const SizedBox(width: 4),
-              ],
-            )
-          : const SizedBox(),
+    final double safeTop = MediaQuery.of(context).padding.top;
+    final double headerHeight = safeTop + 60; // Dinamik yükseklik
+
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 250),
+      top: _isScrolled ? 0 : -headerHeight,
+      // Yukarı kaydırarak gizle/göster
+      left: 0,
+      right: 0,
+      child: GlassmorphismAppBar(
+        title: product.name,
+        subtitle:
+            product.isSold ? 'SATILDI' : '₺${product.price.toStringAsFixed(0)}',
+        showBackButton: true,
+        // Actions kısmı mobil/tablet için responsive olmalı
+        actions: [
+          if (!context.isMobile) ...[
+            // Mobilde çok kalabalık yapmasın
+            GlassmorphismIconButton(
+              icon: _isFavorite ? Icons.favorite : Icons.favorite_border,
+              onPressed: () => setState(() => _isFavorite = !_isFavorite),
+              backgroundColor:
+                  _isFavorite ? AppColors.error : AppColors.primary,
+            ),
+            const SizedBox(width: 8),
+          ],
+          GlassmorphismIconButton(
+            icon: Icons.share_outlined,
+            onPressed: () => DeepLinkService.shareProduct(
+              productId: product.id,
+              productName: product.name,
+            ),
+            backgroundColor: AppColors.primary,
+          ),
+        ],
+      ),
     );
   }
 
@@ -303,17 +312,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
                 // Top Actions
                 Positioned(
-                  top: 20,
+                  top: MediaQuery.of(context).padding.top > 0
+                      ? MediaQuery.of(context).padding.top
+                      : 10,
                   left: 20,
                   right: 20,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // ✅ YENİ: Glassmorphism Back Button
                       const GlassmorphismBackButton(
                           backgroundColor: AppColors.primary),
-
-                      // ✅ YENİ: Glassmorphism Actions
                       Row(
                         children: [
                           GlassmorphismIconButton(
@@ -830,118 +838,101 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildActionButtons(
       final BuildContext context, final bool isSold, final bool isMobile) {
-    if (isSold)
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.error.withOpacity(0.3)),
-        ),
-        child: Column(
-          children: [
-            const Icon(Icons.not_interested_rounded,
-                color: AppColors.error, size: 32),
-            const SizedBox(height: 8),
-            const Text(
-              'ÜZGÜNÜZ, BU ÜRÜN SATILDI',
-              style: TextStyle(
-                color: AppColors.error,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Benzer ürünlere aşağıdan göz atabilirsiniz.',
-              style: TextStyle(
-                color: AppColors.error.withOpacity(0.7),
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      );
+    if (isSold) return _buildSoldBottomNotification(context);
 
-    // Eğer satılmadıysa eski butonları göster:
-    return Column(
-      children: [
-        _buildPrimaryButton(
-          context,
-          label: 'ŞİMDİ SATIN AL',
-          icon: Icons.shopping_bag_rounded,
-          onTap: () {},
-        ),
-        SizedBox(height: context.spacing),
-        Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Eğer genişlik 500px'den fazlaysa butonları yan yana diz (Tablet/Desktop)
+        if (constraints.maxWidth > 500) {
+          return Row(
+            children: [
+              Expanded(
+                  child: _buildPrimaryButton(context,
+                      label: 'SATIN AL',
+                      icon: Icons.shopping_bag,
+                      onTap: () {})),
+              const SizedBox(width: 12),
+              Expanded(
+                  child: _buildSecondaryButton(context,
+                      label: 'MESAJ', icon: Icons.message, onTap: () {})),
+            ],
+          );
+        }
+
+        // Mobilde alt alta diz (Zaten kaydırılabilir alan içindeyiz)
+        return Column(
           children: [
-            Expanded(
-              child: _buildSecondaryButton(
-                context,
-                label: 'SEPETE EKLE',
-                icon: Icons.add_shopping_cart_rounded,
-                onTap: () {},
-              ),
-            ),
-            SizedBox(width: context.spacing),
-            Expanded(
-              child: _buildSecondaryButton(
-                context,
-                label: 'MESAJ GÖNDER',
-                icon: Icons.message_rounded,
-                onTap: () {},
-              ),
+            _buildPrimaryButton(context,
+                label: 'ŞİMDİ SATIN AL',
+                icon: Icons.shopping_bag_rounded,
+                onTap: () {}),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                    child: _buildSecondaryButton(context,
+                        label: 'SEPETE EKLE',
+                        icon: Icons.add_shopping_cart,
+                        onTap: () {})),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: _buildSecondaryButton(context,
+                        label: 'MESAJ GÖNDER',
+                        icon: Icons.message,
+                        onTap: () {})),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
-  Widget _buildPrimaryButton(
-    final BuildContext context, {
-    required final String label,
-    required final IconData icon,
-    required final VoidCallback onTap,
-  }) =>
-      Container(
-        height: 64,
-        decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
+  Widget _buildPrimaryButton(final BuildContext context,
+      {required final String label,
+      required final IconData icon,
+      required final VoidCallback onTap}) {
+    return Container(
+      // Küçük ekranlarda 50px, büyük ekranlarda 60px
+      height: context.responsive(mobile: 50.0, tablet: 56.0, desktop: 60.0),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.primary.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4))
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
+          child: Center(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: Colors.white, size: 24),
-                const SizedBox(width: 12),
+                Icon(icon,
+                    color: Colors.white,
+                    size: context.responsive(mobile: 18.0, desktop: 24.0)),
+                const SizedBox(width: 8),
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: context.bodySize,
-                    fontWeight: FontWeight.w900,
+                    fontSize: context.responsive(mobile: 13.0, desktop: 16.0),
+                    fontWeight: FontWeight.w800,
                     color: Colors.white,
-                    letterSpacing: 1,
                   ),
                 ),
               ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildSecondaryButton(final BuildContext context,
           {required final String label,
@@ -985,91 +976,95 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         'icon': Icons.category_rounded,
         'label': 'Kategori',
         'value': product.category.label(context),
-        'color': AppColors.primary,
+        'color': AppColors.primary
       },
       {
         'icon': Icons.verified_outlined,
         'label': 'Durum',
         'value': product.isSpotProduct ? 'İkinci El' : 'Sıfır',
-        'color': AppColors.success,
+        'color': AppColors.success
       },
       {
         'icon': Icons.local_shipping_outlined,
         'label': 'Teslimat',
         'value': '1-2 Gün',
-        'color': AppColors.info,
+        'color': AppColors.info
       },
       {
         'icon': Icons.location_on_outlined,
         'label': 'Konum',
         'value': 'İstanbul',
-        'color': AppColors.accent,
+        'color': AppColors.accent
       },
     ];
 
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 2.5,
-      ),
-      itemCount: details.length,
-      itemBuilder: (final context, final index) {
-        final detail = details[index];
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Ekran genişliğine göre sütun sayısını belirliyoruz
+        final int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
+
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            // Sabit yükseklik vererek taşmayı engelliyoruz
+            mainAxisExtent:
+                context.responsive(mobile: 75.0, tablet: 85.0, desktop: 90.0),
           ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: (detail['color'] as Color).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  detail['icon'] as IconData,
-                  size: 18,
-                  color: detail['color'] as Color,
-                ),
+          itemCount: details.length,
+          itemBuilder: (final context, final index) {
+            final detail = details[index];
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      detail['label'] as String,
-                      style: TextStyle(
-                        fontSize: context.captionSize,
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
+              child: Row(
+                children: [
+                  Icon(
+                    detail['icon'] as IconData,
+                    size: context.responsive(mobile: 18.0, desktop: 22.0),
+                    color: detail['color'] as Color,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          detail['label'] as String,
+                          style: TextStyle(
+                            fontSize:
+                                context.responsive(mobile: 10.0, desktop: 12.0),
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                        ),
+                        Text(
+                          detail['value'] as String,
+                          style: TextStyle(
+                            fontSize:
+                                context.responsive(mobile: 11.0, desktop: 14.0),
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      detail['value'] as String,
-                      style: TextStyle(
-                        fontSize: context.bodySize,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -1144,22 +1139,19 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             children: [
               TabBar(
                 controller: _tabController,
-                labelColor: AppColors.textPrimary,
-                unselectedLabelColor: AppColors.textSecondary,
-                indicatorColor: AppColors.primary,
-                indicatorWeight: 3,
-                labelStyle: TextStyle(
-                  fontSize: context.bodySize,
-                  fontWeight: FontWeight.w700,
-                ),
+                // ... styling ...
                 tabs: const [
                   Tab(text: 'DETAYLAR'),
                   Tab(text: 'TESLİMAT'),
                   Tab(text: 'DEĞERLENDİRMELER'),
                 ],
               ),
-              SizedBox(
-                height: 300,
+              // SABİT 300 YERİNE RESPONSIVE YÜKSEKLİK
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                // Mobilde içerik taşmaması için daha esnek bir alan veriyoruz
+                height: context.responsive(
+                    mobile: 350.0, tablet: 400.0, desktop: 500.0),
                 child: TabBarView(
                   controller: _tabController,
                   children: [
@@ -1618,72 +1610,79 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   Widget _buildMobileBottomBar(
           final BuildContext context, final Product product) =>
       Container(
-        padding: EdgeInsets.all(context.spacing),
+        // Padding'i responsive yapalım
+        padding:
+            EdgeInsets.all(context.responsive(mobile: 12.0, desktop: 20.0)),
         decoration: BoxDecoration(
           color: AppColors.surface,
           boxShadow: [
             BoxShadow(
               color: AppColors.textPrimary.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
             ),
           ],
         ),
         child: SafeArea(
+          top: false, // Sadece alt tarafı koru
           child: product.isSold
-              ? _buildSoldBottomNotification(context) // Satıldı uyarısı
-              : Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Toplam Fiyat',
-                            style: TextStyle(
-                                fontSize: context.captionSize,
-                                color: AppColors.textSecondary),
-                          ),
-                          Text(
-                            '₺${product.price.toStringAsFixed(0)}',
-                            style: TextStyle(
-                                fontSize: context.h4Size,
-                                fontWeight: FontWeight.w900,
-                                color: AppColors.textPrimary),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Container(
-                        height: 56,
-                        decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius: BorderRadius.circular(16),
-                            child: const Center(
-                              child: Text(
-                                'SATIN AL',
+              ? _buildSoldBottomNotification(context)
+              : IntrinsicHeight(
+                  // İçeriğin kendi boyuna göre daralmasını sağlar
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Toplam Fiyat',
                                 style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: 1,
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary)),
+                            FittedBox(
+                              // Fiyat çok uzunsa küçültür, taşmayı önler
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                '₺${product.price.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {},
+                              borderRadius: BorderRadius.circular(16),
+                              child: const Center(
+                                child: Text(
+                                  'SATIN AL',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
         ),
       );
