@@ -19,9 +19,9 @@ mixin BaseNotifierActionHandler<T extends BaseState> {
     final tag = operationTag ?? 'Operation';
 
     try {
-      if (showLoading) {
+      if (showLoading)
         state = state.copyWith(isLoading: true, errorMessage: null) as T;
-      }
+
 
       dev.log('Executing $tag...', name: 'BaseActionHandler');
       final result = await operation();
