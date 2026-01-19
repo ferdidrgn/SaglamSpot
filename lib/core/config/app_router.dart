@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, ValueNotifier;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/page_transitions.dart';
@@ -16,20 +16,24 @@ import '../../shared/navigation/widgets/navigation.dart';
 final appRouterProvider = Provider<GoRouter>((final ref) {
   final authState = ref.watch(authProvider);
 
+  // Riverpod provider'ını ValueNotifier'a çevirerek GoRouter'a dinletiyoruz
+  final authNotifier = ValueNotifier(authState.value);
+  ref.listen(authProvider,
+      (final previous, final next) => authNotifier.value = next.value);
+
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
     initialLocation: kIsWeb ? '/' : '/login',
+    refreshListenable: authNotifier,
     observers: [SeoRouteObserver()],
     redirect: (final context, final state) {
       final isLoggedIn = authState.value != null;
-      final location = state.matchedLocation;
+      final location = state.uri.path;
 
       final isLoginPage = location == '/login';
 
-      // 🔐 Login değilse → sadece /login serbest
-      if (!isLoggedIn && !isLoginPage) return '/login';
+      if (!isLoggedIn) return isLoginPage ? null : '/login';
 
-      // 🔁 Login olduysa /login'e giremez
       if (isLoggedIn && isLoginPage) return '/';
 
       return null;
@@ -43,7 +47,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
             transitionsBuilder: focalTransition,
             transitionDuration: Duration(milliseconds: 600)),
       ),
-
       StatefulShellRoute.indexedStack(
         builder: (final context, final state, final navigationShell) =>
             NavigationScreen(navigationShell: navigationShell),
@@ -90,7 +93,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           ),
         ],
       ),
-
       GoRoute(
         path: '/search',
         name: 'search',
@@ -101,8 +103,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           transitionDuration: const Duration(milliseconds: 500),
         ),
       ),
-
-      // ✅ DEĞİŞTİ: name eklendi
       GoRoute(
         path: '/product/:slugWithId',
         name: 'productDetail',

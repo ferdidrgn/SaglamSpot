@@ -4,10 +4,7 @@ class PaginationController<T> {
   int currentPage = 1;
   bool hasMoreItems = true;
 
-  PaginationController({
-    required this.allItems,
-    this.itemsPerPage = 10,
-  });
+  PaginationController({required this.allItems, this.itemsPerPage = 10});
 
   List<T> get currentItems {
     final endIndex = currentPage * itemsPerPage;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../providers/navigation_keys.dart';
+
 /// 🧭 Global Navigation Handler
 /// Tüm uygulama genelinde navigasyon işlemlerini yönetir
 class NavigationHandler {
@@ -63,6 +65,25 @@ class NavigationHandler {
   /// Spot ürünler sayfasına git
   static void goToSpotProducts(final BuildContext context) =>
       context.go('/spot');
+
+  // ✅ MOBİL TAB NAVIGATION (ROUTER)
+  static void goToDiscoverWithCategory(
+          final BuildContext context, final String category) =>
+      context.go('/discover?category=$category');
+
+  /// Web'de belirli bir bölüme (Hakkımızda, İletişim vb.) kaydır
+  //static void scrollToWebSection(final String section) => NavigationKeys.webNavKey.currentState?.scrollToSection(section);
+
+  // ═══════════════════════════════════════════════════════════════
+  // GLOBAL ERİŞİM (BuildContext Olmayan Yerler İçin)
+  // ═══════════════════════════════════════════════════════════════
+
+  static NavigatorState? get _rootNav =>
+      NavigationKeys.rootNavigatorKey.currentState;
+
+  /// Örn: Bildirim geldiğinde BuildContext olmadan sayfaya yönlendirme
+  static void globalGoTo(final String location) =>
+      _rootNav?.context.go(location);
 
   // ═══════════════════════════════════════════════════════════════
   // UTILITY
