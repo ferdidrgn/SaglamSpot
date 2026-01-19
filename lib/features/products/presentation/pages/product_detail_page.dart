@@ -4,7 +4,7 @@ import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
-import '../../../../core/services/deeplink_service.dart';
+import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
