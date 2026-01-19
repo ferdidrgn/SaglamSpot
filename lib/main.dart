@@ -30,12 +30,12 @@ class _MyAppState extends ConsumerState<MyApp> {
     _router = ref.read(appRouterProvider);
 
     // 🔗 Deeplink listener (1 kere)
-    DeeplinkListener.start(_router);
+    DeeplinkListener.init(_router);
   }
 
   @override
   void dispose() {
-    DeeplinkListener.dispose();
+    DeeplinkListener.stop();
     super.dispose();
   }
 

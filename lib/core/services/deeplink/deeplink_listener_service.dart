@@ -3,54 +3,67 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
-/// 🔗 Sağlam Spot Deeplink Dinleyicisi
+/// 🔗 Sağlam Spot Deeplink / App Link Dinleyicisi
+/// - Uygulama kapalıyken gelen linkleri yakalar.
+/// - Uygulama açıkken gelen link akışını dinler.
+/// - Double init ve bellek sızıntısı korumasına sahiptir.
 final class DeeplinkListener {
   DeeplinkListener._();
 
   static final AppLinks _appLinks = AppLinks();
   static StreamSubscription<Uri>? _subscription;
-  static bool _initialized = false;
+  static bool _isInitialized = false;
 
-  static Future<void> start(final GoRouter router) async {
-    if (_initialized) return;
-    _initialized = true;
+  /// 🚀 Uygulama başlatıldığında GoRouter ile entegre edilir.
+  static Future<void> init(final GoRouter router) async {
+    if (_isInitialized) return;
+    _isInitialized = true;
 
-    if (kIsWeb) return;
+    if (kIsWeb) return; // Web tarafında URL yönetimi tarayıcıya aittir.
 
-    // 1️⃣ Kapalıyken gelen link
+    // 1️⃣ Uygulama TAM KAPALIYKEN (Cold Start) gelen linki yakala
     try {
       final initialUri = await _appLinks.getInitialLink();
-      if (initialUri != null) _handleUri(router, initialUri);
+      if (initialUri != null) _handleNavigation(router, initialUri);
     } catch (e) {
-      debugPrint('❌ Initial link error: $e');
+      debugPrint('❌ Sağlam Spot Deeplink Initial Error: $e');
     }
 
-    // 2️⃣ Açıkken gelen linkler
+    // 2️⃣ Uygulama AÇIKKEN (Background/Foreground) gelen linkleri dinle
     _subscription = _appLinks.uriLinkStream.listen(
-      (final uri) => _handleUri(router, uri),
-      onError: (final error) => debugPrint('❌ Stream error: $error'),
+      (final uri) => _handleNavigation(router, uri),
+      onError: (final err) =>
+          debugPrint('❌ Sağlam Spot Deeplink Stream Error: $err'),
     );
   }
 
-  static void dispose() {
-    _subscription?.cancel();
-    _subscription = null;
-    _initialized = false;
-  }
-
-  static void _handleUri(final GoRouter router, final Uri uri) {
+  /// 🎯 Navigasyon ve URL Senkronizasyonu
+  static void _handleNavigation(final GoRouter router, final Uri uri) {
     final String path = uri.path;
     if (path.isEmpty || path == '/') return;
 
-    debugPrint('🔗 Deeplink: $path');
+    debugPrint('🔗 Deeplink yakalandı: $path');
 
+    // Mevcut konum kontrolü (Sonsuz döngü ve gereksiz render önleyici)
     final currentPath = router.routerDelegate.currentConfiguration.fullPath;
-    if (currentPath == path) return;
+    if (currentPath == path) {
+      debugPrint('ℹ️ Zaten hedef sayfadasınız: $path');
+      return;
+    }
 
     try {
-      router.go(path); // Adres çubuğu senkronizasyonu için 'go'
+      // Tarayıcı geçmişi ve URL çubuğu senkronizasyonu için 'go' kullanıyoruz
+      router.go(path);
     } catch (e) {
-      debugPrint('❌ Path error: $path');
+      debugPrint('❌ Geçersiz Deeplink Yolu: $path');
     }
+  }
+
+  /// 🧹 Dinleyiciyi durdurur ve kaynakları serbest bırakır (Dispose)
+  static void stop() {
+    _subscription?.cancel();
+    _subscription = null;
+    _isInitialized = false;
+    debugPrint('🛑 Deeplink dinleyicisi durduruldu.');
   }
 }
