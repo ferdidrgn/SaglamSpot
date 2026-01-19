@@ -45,7 +45,8 @@ mixin BaseNotifierActionHandler<T extends BaseState> {
           name: 'BaseActionHandler', error: e, stackTrace: stackTrace);
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Kritik bir hata oluştu.',
+        errorMessage:
+            'Beklenmedik bir hata oluştu... / An unexpected error has occurred...',
       ) as T;
       return null;
     }
@@ -54,8 +55,10 @@ mixin BaseNotifierActionHandler<T extends BaseState> {
   String _mapFailureToMessage(final Failure failure, final String? custom) {
     if (custom != null) return custom;
     return switch (failure.runtimeType.toString()) {
-      'NetworkFailure' => 'İnternet bağlantınızı kontrol edin.',
-      'ServerFailure' => 'Sunucu şu an yanıt vermiyor.',
+      'NetworkFailure' =>
+        'İnternet bağlantınızı kontrol edin / Network Checking',
+      'ServerFailure' =>
+        'Sunucu şu an yanıt vermiyor / Server is not answer now',
       _ => failure.message,
     };
   }

@@ -34,15 +34,17 @@ mixin BaseResultHandler {
     } catch (e, stackTrace) {
       dev.log('Critical Error in $tag',
           name: 'BaseResultHandler', error: e, stackTrace: stackTrace);
-      onError?.call('Beklenmeyen bir hata oluştu.');
+      onError?.call('Beklenmeyen bir hata oluştu / An unexpected error has occurred');
       return null;
     }
   }
 
   String _mapFailureToMessage(final Failure failure) {
     return switch (failure.runtimeType.toString()) {
-      'NetworkFailure' => 'İnternet bağlantınızı kontrol edin.',
-      'ServerFailure' => 'Sunucu şu an yanıt vermiyor.',
+      'NetworkFailure' =>
+        'İnternet bağlantınızı kontrol edin / Network Checking',
+      'ServerFailure' =>
+        'Sunucu şu an yanıt vermiyor / Server is not answer now',
       _ => failure.message,
     };
   }
