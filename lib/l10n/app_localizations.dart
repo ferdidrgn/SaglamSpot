@@ -140,6 +140,60 @@ abstract class AppLocalizations {
   /// **'\"{query}\" için sonuçlar'**
   String resultsFor(String query);
 
+  /// No description provided for @seoHomeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağlam Spot | Spot & Sıfır Mobilya'**
+  String get seoHomeTitle;
+
+  /// No description provided for @seoHomeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot ve sıfır mobilyalarda en uygun fiyatlar. 20 yıllık esnaf güvencesiyle.'**
+  String get seoHomeDesc;
+
+  /// No description provided for @seoNewTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfır Ürünler | Sağlam Spot'**
+  String get seoNewTitle;
+
+  /// No description provided for @seoNewDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Garantili ve kaliteli sıfır mobilya koleksiyonu.'**
+  String get seoNewDesc;
+
+  /// No description provided for @seoSpotTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot Ürünler | Sağlam Spot'**
+  String get seoSpotTitle;
+
+  /// No description provided for @seoSpotDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekonomik ve kaliteli spot mobilya seçenekleri.'**
+  String get seoSpotDesc;
+
+  /// No description provided for @seoAboutTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hakkımızda | Sağlam Spot'**
+  String get seoAboutTitle;
+
+  /// No description provided for @seoAboutDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 yıllık tecrübemizle mobilya sektöründe güvenin adresi.'**
+  String get seoAboutDesc;
+
+  /// No description provided for @seoProductDetailSuffix.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünü İncele | Sağlam Spot'**
+  String get seoProductDetailSuffix;
+
   /// No description provided for @category.
   ///
   /// In tr, this message translates to:

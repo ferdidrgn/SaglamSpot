@@ -41,6 +41,36 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get seoHomeTitle => 'Saglam Spot | Spot & New Furniture';
+
+  @override
+  String get seoHomeDesc =>
+      'Best prices on spot and new furniture with 20 years of trusted craftsmanship.';
+
+  @override
+  String get seoNewTitle => 'New Products | Saglam Spot';
+
+  @override
+  String get seoNewDesc =>
+      'Guaranteed and high-quality new furniture collection.';
+
+  @override
+  String get seoSpotTitle => 'Spot Products | Saglam Spot';
+
+  @override
+  String get seoSpotDesc => 'Affordable and quality spot furniture options.';
+
+  @override
+  String get seoAboutTitle => 'About Us | Saglam Spot';
+
+  @override
+  String get seoAboutDesc =>
+      'The trusted name in furniture with over 20 years of experience.';
+
+  @override
+  String get seoProductDetailSuffix => 'View Product | Saglam Spot';
+
+  @override
   String get category => 'Category';
 
   @override

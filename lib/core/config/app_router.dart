@@ -24,19 +24,15 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
     observers: [SeoRouteObserver()],
     redirect: (final context, final state) {
       final isLoggedIn = authState.value != null;
-      final isLoggingIn = state.matchedLocation == '/login';
+      final location = state.matchedLocation;
 
-      final adminRoutes = ['/add-product', '/edit-product'];
-      final isAdminPage =
-          adminRoutes.any((final r) => state.matchedLocation.startsWith(r));
+      final isLoginPage = location == '/login';
 
-      if (kIsWeb) {
-        if (!isLoggedIn && isAdminPage) return '/login';
-        return null;
-      }
+      // 🔐 Login değilse → sadece /login serbest
+      if (!isLoggedIn && !isLoginPage) return '/login';
 
-      if (!isLoggedIn && !isLoggingIn) return '/login';
-      if (isLoggedIn && isLoggingIn) return '/';
+      // 🔁 Login olduysa /login'e giremez
+      if (isLoggedIn && isLoginPage) return '/';
 
       return null;
     },
@@ -44,7 +40,10 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
       GoRoute(
         path: '/login',
         name: 'login',
-        builder: (final context, final state) => const LoginPage(),
+        pageBuilder: (final context, final state) => const CustomTransitionPage(
+            child: LoginPage(),
+            transitionsBuilder: focalTransition,
+            transitionDuration: Duration(milliseconds: 600)),
       ),
 
       StatefulShellRoute.indexedStack(

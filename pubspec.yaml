@@ -48,6 +48,8 @@ dependencies:
   google_maps_flutter:
   google_mobile_ads:
 
+  app_links: ^6.1.1
+
   # UI Components
   permission_handler:
   simple_html_css:

@@ -5,11 +5,13 @@ import 'deeplink_service_stub.dart'
     if (dart.library.js_interop) 'deeplink_service_web.dart';
 // KOŞULLU IMPORT: Web ise web dosyasını, değilse stub dosyasını yükle
 
-class DeeplinkShareService {
-  static const String _baseUrl = "https://saglamspotcu.web.app";
+final class DeeplinkShareService {
+  DeeplinkShareService._();
+
+  static const String _baseUrl = "https://saglamspot.com";
 
   static String generateProductUrl(final String id, final String name) {
-    final String slug = name.toSlug();
+    final slug = name.toSlug();
     return "$_baseUrl/product/$slug-$id";
   }
 
@@ -17,12 +19,16 @@ class DeeplinkShareService {
     required final String productId,
     required final String productName,
   }) async {
-    final String url = generateProductUrl(productId, productName);
-    final String message = "Sağlam Spot - $productName\n$url";
+    final url = generateProductUrl(productId, productName);
+    final message = "Sağlam Spot - $productName\n$url";
 
-    await Share.share(message, subject: productName);
+    await Share.share(
+      message,
+      subject: productName,
+    );
   }
 
+  /// WEB ONLY — SEO + OG META
   static void updateWebMeta({
     required final String title,
     required final String description,
@@ -30,16 +36,13 @@ class DeeplinkShareService {
     required final String productId,
     required final String productName,
   }) {
-    // kIsWeb kontrolü ile sadece web'de çalıştırıyoruz
-    if (kIsWeb) {
-      try {
-        final url = generateProductUrl(productId, productName);
-        // Bu çağrı, web'de deeplink_service_web.dart'taki fonksiyonu,
-        // mobilde ise deeplink_service_stub.dart'taki boş fonksiyonu çağırır.
-        setMeta(title, description, imageUrl, url);
-      } catch (e) {
-        debugPrint("Meta error: $e");
-      }
+    if (!kIsWeb) return;
+
+    try {
+      final url = generateProductUrl(productId, productName);
+      setMeta(title, description, imageUrl, url);
+    } catch (e) {
+      debugPrint("Meta error: $e");
     }
   }
 }
