@@ -150,7 +150,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                                       mobile: 28.0,
                                       tablet: 32.0,
                                       desktop: 36.0)),
-                              _buildSectionTitle('Hızlı Seçenekler'),
+                              _buildSectionTitle(context.l10n.quickOptions),
                               SizedBox(
                                   height: context.responsive(
                                       mobile: 12.0, desktop: 14.0)),
@@ -224,7 +224,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   letterSpacing: -0.5,
                 ),
               ),
-              const Text('Aradığınız ürünü kolayca bulun'),
+              Text(context.l10n.easyFind),
             ],
           ),
           const Spacer(),
@@ -395,7 +395,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                     widget.onApplyFilters();
                     _closeSheet();
                   },
-                  child: const Text('Uygula'))),
+                  child: Text(context.l10n.apply))),
         ],
       ),
     );

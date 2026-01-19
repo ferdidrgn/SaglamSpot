@@ -142,6 +142,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get featureShipping => 'Hızlı Nakliye';
 
   @override
+  String get quickOptions => 'Hızlı Seçenekler';
+
+  @override
+  String get easyFind => 'Aradığınız ürünü kolayca bulun';
+
+  @override
   String get newCollection => 'Yeni Koleksiyon';
 
   @override
@@ -274,9 +280,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get error_server_no_response => 'Sunucu şu an yanıt vermiyor.';
-
-  @override
-  String get error_critical => 'Kritik bir hata oluştu.';
 
   @override
   String get error_connection => 'Bağlantı hatası';

@@ -143,6 +143,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureShipping => 'Fast Shipping';
 
   @override
+  String get quickOptions => 'Quick Options';
+
+  @override
+  String get easyFind => 'Easily find the product you are looking for';
+
+  @override
   String get newCollection => 'New Collection';
 
   @override
@@ -278,9 +284,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_server_no_response =>
       'The server is currently not responding.';
-
-  @override
-  String get error_critical => 'A critical error occurred.';
 
   @override
   String get error_connection => 'Connection error';

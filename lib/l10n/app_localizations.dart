@@ -338,6 +338,18 @@ abstract class AppLocalizations {
   /// **'Hızlı Nakliye'**
   String get featureShipping;
 
+  /// No description provided for @quickOptions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hızlı Seçenekler'**
+  String get quickOptions;
+
+  /// No description provided for @easyFind.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aradığınız ürünü kolayca bulun'**
+  String get easyFind;
+
   /// No description provided for @newCollection.
   ///
   /// In tr, this message translates to:
@@ -595,12 +607,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Sunucu şu an yanıt vermiyor.'**
   String get error_server_no_response;
-
-  /// No description provided for @error_critical.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kritik bir hata oluştu.'**
-  String get error_critical;
 
   /// No description provided for @error_connection.
   ///

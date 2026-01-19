@@ -140,7 +140,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   ),
                   child: const Column(
                     children: [
-                      AdsenseBanner(height: 90,type: AdUnitType.multiplex),
+                      AdsenseBanner(height: 90, type: AdUnitType.multiplex),
                       AdNativeWidget(),
                     ],
                   ),
@@ -286,7 +286,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 ),
               ),
               Text(
-                "Eskiyi Yeniler, Yeniyi Değerlendirir",
+                context.l10n.mottoBrand,
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: context.responsive(
@@ -422,7 +422,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
     // Callback tipini de güncelle
   ) {
     return Container(
-      height: 48,
+      height: 50,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: AppColors.secondary,
@@ -465,48 +465,47 @@ class _SearchPageState extends ConsumerState<SearchPage>
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.border),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Text('Fiyat Aralığı',
-                style: TextStyle(
+            Text(context.l10n.priceRange,
+                style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w500)),
-            Spacer(),
-            Icon(Icons.tune_rounded, color: AppColors.textSecondary, size: 20),
+            const Spacer(),
+            const Icon(Icons.tune_rounded,
+                color: AppColors.textSecondary, size: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildResetButton() {
-    return InkWell(
-      onTap: _resetAll,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        height: 48,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          color: AppColors.textSecondary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
+  Widget _buildResetButton() => InkWell(
+        onTap: _resetAll,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: AppColors.textSecondary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.refresh_rounded,
+                  color: AppColors.textSecondary, size: 18),
+              const SizedBox(width: 8),
+              Text(context.l10n.clear,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
         ),
-        child: Row(
-          children: [
-            const Icon(Icons.refresh_rounded,
-                color: AppColors.textSecondary, size: 18),
-            const SizedBox(width: 8),
-            Text(context.l10n.clear,
-                style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600)),
-          ],
-        ),
-      ),
-    );
-  }
+      );
 
   Widget _buildCategorySection(final dynamic filters, final bool isMobile) {
     final categories = [null, ...ProductCategory.values];
@@ -545,51 +544,50 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildCategoryPill(
-      final String label, final bool isSelected, final VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(
-          horizontal:
-              context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
-          vertical:
-              context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.textSecondary : AppColors.secondary,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: isSelected ? AppColors.textSecondary : AppColors.border,
-            width: 1.5,
+  Widget _buildCategoryPill(final String label, final bool isSelected,
+          final VoidCallback onTap) =>
+      InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
+            vertical:
+                context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.textSecondary.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize:
-                  context.responsive(mobile: 13.0, tablet: 13.5, desktop: 14.0),
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-              color: isSelected ? Colors.white : AppColors.textPrimary,
-              letterSpacing: 0.3,
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.textSecondary : AppColors.secondary,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: isSelected ? AppColors.textSecondary : AppColors.border,
+              width: 1.5,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: AppColors.textSecondary.withOpacity(0.15),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: context.responsive(
+                    mobile: 13.0, tablet: 13.5, desktop: 14.0),
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected ? Colors.white : AppColors.textPrimary,
+                letterSpacing: 0.3,
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   bool _hasActiveFilters(final dynamic filters) {
     return (filters.category != null &&
@@ -601,62 +599,58 @@ class _SearchPageState extends ConsumerState<SearchPage>
         filters.maxPrice < 100000;
   }
 
-  Widget _buildActiveFiltersSliver(final dynamic filters) {
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal:
-              context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
-          vertical: 16,
+  Widget _buildActiveFiltersSliver(final dynamic filters) => SliverToBoxAdapter(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+            vertical: 16,
+          ),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (filters.category != null &&
+                  filters.category != ProductCategory.other)
+                _buildFilterChip(
+                    ProductCategoryExtension(filters.category).label(context),
+                    Icons.category_rounded),
+              if (filters.condition != null &&
+                  filters.condition != ProductCondition.all)
+                _buildFilterChip(
+                    // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
+                    filters.condition!.label(context),
+                    Icons.verified_rounded),
+              if (filters.minPrice > 0 || filters.maxPrice < 100000)
+                _buildFilterChip(
+                  '${filters.minPrice.toInt()}₺ - ${filters.maxPrice.toInt()}₺',
+                  Icons.payments_rounded,
+                ),
+            ],
+          ),
         ),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
+      );
+
+  Widget _buildFilterChip(final String label, final IconData icon) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.secondary,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (filters.category != null &&
-                filters.category != ProductCategory.other)
-              _buildFilterChip(
-                  ProductCategoryExtension(filters.category).label(context),
-                  Icons.category_rounded),
-            if (filters.condition != null &&
-                filters.condition != ProductCondition.all)
-              _buildFilterChip(
-                  // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
-                  filters.condition!.label(context),
-                  Icons.verified_rounded),
-            if (filters.minPrice > 0 || filters.maxPrice < 100000)
-              _buildFilterChip(
-                '${filters.minPrice.toInt()}₺ - ${filters.maxPrice.toInt()}₺',
-                Icons.payments_rounded,
-              ),
+            Icon(icon, size: 16, color: AppColors.textSecondary),
+            const SizedBox(width: 6),
+            Text(label,
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(final String label, final IconData icon) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: AppColors.textSecondary),
-          const SizedBox(width: 6),
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary)),
-        ],
-      ),
-    );
-  }
+      );
 
   Widget _buildResultsHeader(
       final BuildContext context, final int count, final String query) {
@@ -712,117 +706,113 @@ class _SearchPageState extends ConsumerState<SearchPage>
     );
   }
 
-  Widget _buildEmptyState() {
-    return SliverFillRemaining(
-      hasScrollBody: false, // Ekranın taşmasını önlemek için kritik ayar
-      child: Padding(
-        padding: context.pagePadding,
-        child: Center(
+  Widget _buildEmptyState() => SliverFillRemaining(
+        hasScrollBody: false, // Ekranın taşmasını önlemek için kritik ayar
+        child: Padding(
+          padding: context.pagePadding,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // İçeriği sıkıştırır
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: context.responsive(
+                      mobile: 110.0, tablet: 120.0, desktop: 130.0),
+                  height: context.responsive(
+                      mobile: 110.0, tablet: 120.0, desktop: 130.0),
+                  decoration: const BoxDecoration(
+                    color: AppColors.secondary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.search_off_rounded,
+                    size: context.responsive(
+                        mobile: 52.0, tablet: 56.0, desktop: 60.0),
+                    color: AppColors.textSecondary.withOpacity(0.4),
+                  ),
+                ),
+                SizedBox(
+                    height: context.responsive(
+                        mobile: 20.0, tablet: 24.0, desktop: 28.0)),
+                Text(
+                  'Aradığınız Kriterde\nÜrün Bulunamadı',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: context.responsive(
+                        mobile: 19.0, tablet: 20.0, desktop: 21.0),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.3,
+                  ),
+                ),
+                SizedBox(
+                    height: context.responsive(
+                        mobile: 10.0, tablet: 12.0, desktop: 14.0)),
+                Text(
+                  'Farklı filtreler deneyebilir veya\narama teriminizi değiştirebilirsiniz',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: context.responsive(
+                        mobile: 14.0, tablet: 15.0, desktop: 16.0),
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+                SizedBox(
+                    height: context.responsive(
+                        mobile: 28.0, tablet: 32.0, desktop: 36.0)),
+                ElevatedButton.icon(
+                  onPressed: _resetAll,
+                  icon: Icon(Icons.refresh_rounded,
+                      size: context.responsive(
+                          mobile: 19.0, tablet: 20.0, desktop: 21.0)),
+                  label: Text(context.l10n.clear,
+                      style: TextStyle(
+                          fontSize:
+                              context.responsive(mobile: 15.0, desktop: 16.0))),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.textSecondary,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.responsive(
+                          mobile: 28.0, tablet: 32.0, desktop: 36.0),
+                      vertical: context.responsive(
+                          mobile: 14.0, tablet: 16.0, desktop: 18.0),
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildErrorState(final String error) => Center(
+        child: Padding(
+          padding: context.pagePadding,
           child: Column(
-            mainAxisSize: MainAxisSize.min, // İçeriği sıkıştırır
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: context.responsive(
-                    mobile: 110.0, tablet: 120.0, desktop: 130.0),
-                height: context.responsive(
-                    mobile: 110.0, tablet: 120.0, desktop: 130.0),
-                decoration: const BoxDecoration(
-                  color: AppColors.secondary,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.search_off_rounded,
-                  size: context.responsive(
-                      mobile: 52.0, tablet: 56.0, desktop: 60.0),
-                  color: AppColors.textSecondary.withOpacity(0.4),
-                ),
-              ),
-              SizedBox(
-                  height: context.responsive(
-                      mobile: 20.0, tablet: 24.0, desktop: 28.0)),
-              Text(
-                'Aradığınız Kriterde\nÜrün Bulunamadı',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: context.responsive(
-                      mobile: 19.0, tablet: 20.0, desktop: 21.0),
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                  height: 1.3,
-                ),
-              ),
-              SizedBox(
-                  height: context.responsive(
-                      mobile: 10.0, tablet: 12.0, desktop: 14.0)),
-              Text(
-                'Farklı filtreler deneyebilir veya\narama teriminizi değiştirebilirsiniz',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: context.responsive(
-                      mobile: 14.0, tablet: 15.0, desktop: 16.0),
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
-              ),
-              SizedBox(
-                  height: context.responsive(
-                      mobile: 28.0, tablet: 32.0, desktop: 36.0)),
-              ElevatedButton.icon(
-                onPressed: _resetAll,
-                icon: Icon(Icons.refresh_rounded,
-                    size: context.responsive(
-                        mobile: 19.0, tablet: 20.0, desktop: 21.0)),
-                label: Text('Filtreleri Temizle',
-                    style: TextStyle(
-                        fontSize:
-                            context.responsive(mobile: 15.0, desktop: 16.0))),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.textSecondary,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.responsive(
-                        mobile: 28.0, tablet: 32.0, desktop: 36.0),
-                    vertical: context.responsive(
-                        mobile: 14.0, tablet: 16.0, desktop: 18.0),
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  elevation: 0,
-                ),
-              ),
+              Icon(Icons.error_outline_rounded,
+                  size: 80, color: AppColors.error.withOpacity(0.7)),
+              const SizedBox(height: 20),
+              Text(context.l10n.errorOccurred,
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary)),
+              const SizedBox(height: 8),
+              Text(error,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 14, color: AppColors.textSecondary)),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildErrorState(final String error) {
-    return Center(
-      child: Padding(
-        padding: context.pagePadding,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline_rounded,
-                size: 80, color: AppColors.error.withOpacity(0.7)),
-            const SizedBox(height: 20),
-            const Text('Bir Hata Oluştu',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary)),
-            const SizedBox(height: 8),
-            Text(error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 14, color: AppColors.textSecondary)),
-          ],
-        ),
-      ),
-    );
-  }
+      );
 
   List<Widget> _buildProductGridsWithAds(
       final BuildContext context, final List<Product> products) {
@@ -966,42 +956,38 @@ class _SearchPageState extends ConsumerState<SearchPage>
         ),
       );
 
-  Widget _buildFloatingFilter(final BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.15),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: FloatingActionButton.extended(
-        onPressed: () => _showFilterSheet(context),
-        backgroundColor: AppColors.textSecondary,
-        elevation: 0,
-        icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 22),
-        label: Text(context.l10n.filter,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 15)),
-      ),
-    );
-  }
+  Widget _buildFloatingFilter(final BuildContext context) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.textPrimary.withOpacity(0.15),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () => _showFilterSheet(context),
+          backgroundColor: AppColors.textSecondary,
+          elevation: 0,
+          icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 22),
+          label: Text(context.l10n.filter,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15)),
+        ),
+      );
 
-  void _showFilterSheet(final BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (final _) => FilterSheet(
-          onApplyFilters: () => Navigator.pop(context),
-          onResetFilters: _resetAll),
-    );
-  }
+  void _showFilterSheet(final BuildContext context) => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (final _) => FilterSheet(
+            onApplyFilters: () => Navigator.pop(context),
+            onResetFilters: _resetAll),
+      );
 
   void _showPriceRangeDialog(final BuildContext context) {
     final filters = ref.read(searchFiltersProvider);
@@ -1071,8 +1057,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('İptal',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(context.l10n.cancel,
+                style: const TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -1087,7 +1073,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('Uygula'),
+            child: Text(context.l10n.apply),
           ),
         ],
       ),
