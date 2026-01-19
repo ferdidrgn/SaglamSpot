@@ -588,4 +588,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seoProductDetailSuffix => 'View Product | Saglam Spot';
+
+  @override
+  String get error_check_connection => 'Please check your internet connection.';
+
+  @override
+  String get error_server_no_response =>
+      'Server is not responding at the moment.';
+
+  @override
+  String get error_critical => 'A critical error has occurred.';
+
+  @override
+  String get error_connection => 'Connection error';
+
+  @override
+  String get error_connection_lost => 'Connection lost';
+
+  @override
+  String get status_waiting_connection => 'Waiting for connection...';
+
+  @override
+  String get error_no_internet_auto_retry =>
+      'No internet connection.\nYou will automatically continue when a connection is established.';
+
+  @override
+  String get empty_state_search_hint =>
+      'You can try different filters or change your search term.';
+
+  @override
+  String get month_1 => 'January';
+
+  @override
+  String get month_2 => 'February';
+
+  @override
+  String get month_3 => 'March';
+
+  @override
+  String get month_4 => 'April';
+
+  @override
+  String get month_5 => 'May';
+
+  @override
+  String get month_6 => 'June';
+
+  @override
+  String get month_7 => 'July';
+
+  @override
+  String get month_8 => 'August';
+
+  @override
+  String get month_9 => 'September';
+
+  @override
+  String get month_10 => 'October';
+
+  @override
+  String get month_11 => 'November';
+
+  @override
+  String get month_12 => 'December';
 }

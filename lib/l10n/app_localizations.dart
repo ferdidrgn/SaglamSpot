@@ -1183,6 +1183,126 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ürünü İncele | Sağlam Spot'**
   String get seoProductDetailSuffix;
+
+  /// No description provided for @error_check_connection.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternet bağlantınızı kontrol edin.'**
+  String get error_check_connection;
+
+  /// No description provided for @error_server_no_response.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sunucu şu an yanıt vermiyor.'**
+  String get error_server_no_response;
+
+  /// No description provided for @error_critical.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kritik bir hata oluştu.'**
+  String get error_critical;
+
+  /// No description provided for @error_connection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantı hatası'**
+  String get error_connection;
+
+  /// No description provided for @error_connection_lost.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantı Kesildi'**
+  String get error_connection_lost;
+
+  /// No description provided for @status_waiting_connection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantı bekleniyor...'**
+  String get status_waiting_connection;
+
+  /// No description provided for @error_no_internet_auto_retry.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternet bağlantınız yok.\nBağlantı sağlandığında otomatik olarak devam edeceksiniz.'**
+  String get error_no_internet_auto_retry;
+
+  /// No description provided for @empty_state_search_hint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz.'**
+  String get empty_state_search_hint;
+
+  /// No description provided for @month_1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ocak'**
+  String get month_1;
+
+  /// No description provided for @month_2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şubat'**
+  String get month_2;
+
+  /// No description provided for @month_3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mart'**
+  String get month_3;
+
+  /// No description provided for @month_4.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nisan'**
+  String get month_4;
+
+  /// No description provided for @month_5.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mayıs'**
+  String get month_5;
+
+  /// No description provided for @month_6.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haziran'**
+  String get month_6;
+
+  /// No description provided for @month_7.
+  ///
+  /// In tr, this message translates to:
+  /// **'Temmuz'**
+  String get month_7;
+
+  /// No description provided for @month_8.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ağustos'**
+  String get month_8;
+
+  /// No description provided for @month_9.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eylül'**
+  String get month_9;
+
+  /// No description provided for @month_10.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekim'**
+  String get month_10;
+
+  /// No description provided for @month_11.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kasım'**
+  String get month_11;
+
+  /// No description provided for @month_12.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aralık'**
+  String get month_12;
 }
 
 class _AppLocalizationsDelegate

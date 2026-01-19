@@ -38,7 +38,7 @@ class DeeplinkShareService {
         // mobilde ise deeplink_service_stub.dart'taki boş fonksiyonu çağırır.
         setMeta(title, description, imageUrl, url);
       } catch (e) {
-        debugPrint("Meta hatası: $e");
+        debugPrint("Meta error: $e");
       }
     }
   }

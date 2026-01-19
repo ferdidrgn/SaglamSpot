@@ -586,4 +586,66 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get seoProductDetailSuffix => 'Ürünü İncele | Sağlam Spot';
+
+  @override
+  String get error_check_connection => 'İnternet bağlantınızı kontrol edin.';
+
+  @override
+  String get error_server_no_response => 'Sunucu şu an yanıt vermiyor.';
+
+  @override
+  String get error_critical => 'Kritik bir hata oluştu.';
+
+  @override
+  String get error_connection => 'Bağlantı hatası';
+
+  @override
+  String get error_connection_lost => 'Bağlantı Kesildi';
+
+  @override
+  String get status_waiting_connection => 'Bağlantı bekleniyor...';
+
+  @override
+  String get error_no_internet_auto_retry =>
+      'İnternet bağlantınız yok.\nBağlantı sağlandığında otomatik olarak devam edeceksiniz.';
+
+  @override
+  String get empty_state_search_hint =>
+      'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz.';
+
+  @override
+  String get month_1 => 'Ocak';
+
+  @override
+  String get month_2 => 'Şubat';
+
+  @override
+  String get month_3 => 'Mart';
+
+  @override
+  String get month_4 => 'Nisan';
+
+  @override
+  String get month_5 => 'Mayıs';
+
+  @override
+  String get month_6 => 'Haziran';
+
+  @override
+  String get month_7 => 'Temmuz';
+
+  @override
+  String get month_8 => 'Ağustos';
+
+  @override
+  String get month_9 => 'Eylül';
+
+  @override
+  String get month_10 => 'Ekim';
+
+  @override
+  String get month_11 => 'Kasım';
+
+  @override
+  String get month_12 => 'Aralık';
 }
