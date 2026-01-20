@@ -33,12 +33,24 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
     redirect: (final context, final state) {
       final isLoggedIn = authState.value != null;
       final location = state.uri.path;
-
       final isLoginPage = location == '/login';
 
-      if (!isLoggedIn) return isLoginPage ? null : '/login';
+      // 1. Web ise login zorunluluğunu kaldır
+      if (kIsWeb) {
+        // Web'de giriş yapmamış olsa bile istediği yere gidebilir.
+        // Sadece zaten giriş yapmışsa login sayfasına girmesini engelleyebiliriz.
+        if (isLoggedIn && isLoginPage) return '/';
+        return null;
+      }
 
-      if (isLoggedIn && isLoginPage) return '/';
+      // 2. Mobil (veya Web dışı) için mevcut katı kurallar
+      if (!isLoggedIn) {
+        return isLoginPage ? null : '/login';
+      }
+
+      if (isLoggedIn && isLoginPage) {
+        return '/';
+      }
 
       return null;
     },
