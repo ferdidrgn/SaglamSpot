@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, ValueNotifier;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:saglamspot/core/config/page_transitions.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
 import 'package:saglamspot/features/products/presentation/pages/product_detail_page.dart';
 import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
+
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
@@ -25,7 +27,10 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
     navigatorKey: NavigationKeys.rootNavigatorKey,
     initialLocation: kIsWeb ? '/' : '/login',
     refreshListenable: authNotifier,
-    observers: [SeoRouteObserver()],
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      SeoRouteObserver(),
+    ],
     redirect: (final context, final state) {
       final isLoggedIn = authState.value != null;
       final location = state.uri.path;
