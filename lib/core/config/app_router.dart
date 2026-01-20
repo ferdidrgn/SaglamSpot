@@ -6,7 +6,6 @@ import 'package:saglamspot/core/config/page_transitions.dart';
 import 'package:saglamspot/core/config/seo/seo_route_observer.dart';
 import 'package:saglamspot/features/products/presentation/pages/product_detail_page.dart';
 import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
-
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/login/presentation/page/login_page.dart';
