@@ -1,7 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import '../../../../core/common/enum/enums.dart';
-import '../../../../core/common/extentions/product_category_ex.dart';
 
+part 'product.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Product extends Equatable {
   final String id;
   final String createdAt;
@@ -9,10 +12,19 @@ class Product extends Equatable {
   final String soldAt;
   final String name;
   final String desc;
+
+  /// 🏷️ Enum otomatik olarak String <-> Enum dönüşümü yapar
   final ProductCategory category;
+
   final double price;
+
+  @JsonKey(defaultValue: [])
   final List<String> imagesUrl;
+
+  @JsonKey(defaultValue: false)
   final bool isSold;
+
+  @JsonKey(defaultValue: false)
   final bool isSpotProduct;
 
   const Product({
@@ -24,11 +36,34 @@ class Product extends Equatable {
     required this.desc,
     required this.category,
     required this.price,
+    required this.imagesUrl,
     required this.isSold,
     required this.isSpotProduct,
-    required this.imagesUrl,
   });
 
+  /// 🏭 BOŞ / BAŞLANGIÇ NESNESİ (Loading durumları için)
+  factory Product.empty() => const Product(
+        id: '',
+        createdAt: '',
+        updatedAt: '',
+        soldAt: '',
+        name: '',
+        desc: '',
+        category: ProductCategory.other,
+        price: 0.0,
+        imagesUrl: [],
+        isSold: false,
+        isSpotProduct: false,
+      );
+
+  /// 🧱 JSON'dan Nesne Üretme (Otomatik)
+  factory Product.fromJson(final Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
+
+  /// 📦 Nesneyi JSON'a Çevirme (Otomatik)
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
+
+  /// 📋 CopyWith (State yönetimi için manuel kalması daha sağlıklıdır veya freezed kullanılabilir)
   Product copyWith({
     final String? id,
     final String? createdAt,
@@ -66,37 +101,8 @@ class Product extends Equatable {
         desc,
         category,
         price,
+        imagesUrl,
         isSold,
         isSpotProduct,
-        imagesUrl,
       ];
-
-  // Firestore'dan gelen veriyi Entity'e çevirmek için (Opsiyonel ama kullanışlı)
-  factory Product.fromMap(final Map<String, dynamic> data) => Product(
-        id: data['id'] ?? '',
-        createdAt: data['createdAt'] ?? '',
-        updatedAt: data['updatedAt'] ?? '',
-        soldAt: data['soldAt'] ?? '',
-        name: data['name'] ?? '',
-        desc: data['desc'] ?? '',
-        category: (data['category'] as String).toProductCategory(),
-        price: (data['price'] as num?)?.toDouble() ?? 0.0,
-        isSold: data['isSold'] ?? false,
-        isSpotProduct: data['isSpotProduct'] ?? false,
-        imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
-      );
-
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'createdAt': createdAt,
-        'updatedAt': updatedAt,
-        'soldAt': soldAt,
-        'name': name,
-        'desc': desc,
-        'category': category.name,
-        'price': price,
-        'isSold': isSold,
-        'isSpotProduct': isSpotProduct,
-        'imagesUrl': imagesUrl,
-      };
 }
