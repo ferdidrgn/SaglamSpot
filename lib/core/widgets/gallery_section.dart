@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/common/extentions/app_context_ui_extension.dart';
-import '../../features/shows/presentation/providers/gallery_provider.dart';
+import '../../features/products/presentation/providers/gallery_provider.dart';
 import 'optimized_cached_image.dart';
 
 class GallerySection extends ConsumerStatefulWidget {
