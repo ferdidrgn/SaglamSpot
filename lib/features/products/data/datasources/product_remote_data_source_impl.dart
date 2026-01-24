@@ -104,9 +104,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   @override
   Future<void> addProduct(
-    final ProductModel product,
-    final List<dynamic> images,
-  ) async {
+      final ProductModel product, final List<dynamic> images) async {
     if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı');
 
     try {
@@ -114,23 +112,19 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final imageUrls = await _uploadImages(images, productId);
       final now = _formattedNow();
 
-      final newProduct = product.copyWith(
-        id: productId,
-        imagesUrl: imageUrls,
-        createdAt: now,
-        updatedAt: now,
-        soldAt: '',
-      );
+      final data = product.toFirestore();
+      data['_id'] = productId;
+      data['imagesUrl'] = imageUrls;
+      data['_createdAt'] = now;
+      data['_updatedAt'] = now;
+      data['_soldAt'] = '';
 
-      await _productRef.doc(productId).set(newProduct.toFirestore());
+      // 3. Firestore'a yazma
+      await _productRef.doc(productId).set(data);
     } catch (e) {
       _throwError('Ürün eklenirken hata oluştu', e);
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // UPDATE
-  // ---------------------------------------------------------------------------
 
   @override
   Future<void> updateProduct(
@@ -139,10 +133,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   ) async {
     try {
       final updatedImages = await _handleImageUpdate(product, newImages);
+      final now = _formattedNow();
 
-      await _productRef.doc(product.id).update(product
-          .copyWith(imagesUrl: updatedImages, updatedAt: _formattedNow())
-          .toFirestore());
+      final updateData = {'imagesUrl': updatedImages, '_updatedAt': now};
+
+      final fullData = product.toFirestore();
+      fullData.addAll(updateData);
+
+      await _productRef.doc(product.id).update(fullData);
     } catch (e) {
       _throwError('Ürün güncellenirken hata oluştu', e);
     }

@@ -1,10 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 import '../../../../core/common/enum/enums.dart';
 
-part 'product.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class Product extends Equatable {
   final String id;
   final String createdAt;
@@ -12,19 +8,10 @@ class Product extends Equatable {
   final String soldAt;
   final String name;
   final String desc;
-
-  /// 🏷️ Enum otomatik olarak String <-> Enum dönüşümü yapar
   final ProductCategory category;
-
   final double price;
-
-  @JsonKey(defaultValue: [])
   final List<String> imagesUrl;
-
-  @JsonKey(defaultValue: false)
   final bool isSold;
-
-  @JsonKey(defaultValue: false)
   final bool isSpotProduct;
 
   const Product({
@@ -41,8 +28,7 @@ class Product extends Equatable {
     required this.isSpotProduct,
   });
 
-  /// 🏭 BOŞ / BAŞLANGIÇ NESNESİ (Loading durumları için)
-  factory Product.empty() => const Product(
+  factory Product.empty() => Product(
         id: '',
         createdAt: '',
         updatedAt: '',
@@ -50,20 +36,28 @@ class Product extends Equatable {
         name: '',
         desc: '',
         category: ProductCategory.other,
+        // Varsayılan enum
         price: 0.0,
-        imagesUrl: [],
+        imagesUrl: const [],
         isSold: false,
         isSpotProduct: false,
       );
 
-  /// 🧱 JSON'dan Nesne Üretme (Otomatik)
-  factory Product.fromJson(final Map<String, dynamic> json) =>
-      _$ProductFromJson(json);
+  @override
+  List<Object?> get props => [
+        id,
+        createdAt,
+        updatedAt,
+        soldAt,
+        name,
+        desc,
+        category,
+        price,
+        imagesUrl,
+        isSold,
+        isSpotProduct
+      ];
 
-  /// 📦 Nesneyi JSON'a Çevirme (Otomatik)
-  Map<String, dynamic> toJson() => _$ProductToJson(this);
-
-  /// 📋 CopyWith (State yönetimi için manuel kalması daha sağlıklıdır veya freezed kullanılabilir)
   Product copyWith({
     final String? id,
     final String? createdAt,
@@ -90,19 +84,4 @@ class Product extends Equatable {
         isSold: isSold ?? this.isSold,
         isSpotProduct: isSpotProduct ?? this.isSpotProduct,
       );
-
-  @override
-  List<Object?> get props => [
-        id,
-        createdAt,
-        updatedAt,
-        soldAt,
-        name,
-        desc,
-        category,
-        price,
-        imagesUrl,
-        isSold,
-        isSpotProduct,
-      ];
 }
