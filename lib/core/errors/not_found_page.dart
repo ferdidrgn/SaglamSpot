@@ -2,7 +2,6 @@
 // 404 ERROR PAGE
 // ═══════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 
 class NotFoundPage extends StatelessWidget {
