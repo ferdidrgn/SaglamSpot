@@ -115,10 +115,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ? null
             : () {
                 FocusScope.of(context).unfocus();
-                ref.read(authProvider.notifier).signIn(
-                      _emailController.text,
-                      _passController.text,
-                    );
+                ref
+                    .read(authProvider.notifier)
+                    .signIn(_emailController.text, _passController.text);
               },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF6366F1),
