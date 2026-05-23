@@ -1,5 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, ValueNotifier;
+import 'package:flutter/foundation.dart' show kIsWeb, ChangeNotifier;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/config/page_transitions.dart';
@@ -15,42 +15,36 @@ import '../../features/search/presentation/pages/search_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
 
 final appRouterProvider = Provider<GoRouter>((final ref) {
-  final authState = ref.watch(authProvider);
+  // ChangeNotifier'dan türetilmiş Listenable — GoRouter bunu kabul eder
+  final routerNotifier = _AuthRouterNotifier(ref);
 
-  // Riverpod provider'ını ValueNotifier'a çevirerek GoRouter'a dinletiyoruz
-  final authNotifier = ValueNotifier(authState.value);
-  ref.listen(authProvider,
-      (final previous, final next) => authNotifier.value = next.value);
-
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
     initialLocation: kIsWeb ? '/' : '/login',
-    refreshListenable: authNotifier,
+    // refreshListenable bir Listenable bekler — _AuthRouterNotifier bunu sağlar
+    refreshListenable: routerNotifier,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
       SeoRouteObserver(),
     ],
     redirect: (final context, final state) {
-      final isLoggedIn = authState.value != null;
-      final location = state.uri.path;
-      final isLoginPage = location == '/login';
+      final authState = ref.read(authProvider);
 
-      // 1. Web ise login zorunluluğunu kaldır
+      // Yükleniyor — yönlendirme yapma
+      if (authState.isLoading) return null;
+
+      final isLoggedIn = authState.value != null;
+      final isOnLoginPage = state.uri.path == '/login';
+
+      // WEB: giriş zorunlu değil
       if (kIsWeb) {
-        // Web'de giriş yapmamış olsa bile istediği yere gidebilir.
-        // Sadece zaten giriş yapmışsa login sayfasına girmesini engelleyebiliriz.
-        if (isLoggedIn && isLoginPage) return '/';
+        if (isLoggedIn && isOnLoginPage) return '/';
         return null;
       }
 
-      // 2. Mobil (veya Web dışı) için mevcut katı kurallar
-      if (!isLoggedIn) {
-        return isLoginPage ? null : '/login';
-      }
-
-      if (isLoggedIn && isLoginPage) {
-        return '/';
-      }
+      // MOBİL: giriş zorunlu
+      if (!isLoggedIn) return isOnLoginPage ? null : '/login';
+      if (isLoggedIn && isOnLoginPage) return '/';
 
       return null;
     },
@@ -59,9 +53,10 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         path: '/login',
         name: 'login',
         pageBuilder: (final context, final state) => const CustomTransitionPage(
-            child: LoginPage(),
-            transitionsBuilder: focalTransition,
-            transitionDuration: Duration(milliseconds: 600)),
+          child: LoginPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: Duration(milliseconds: 600),
+        ),
       ),
       StatefulShellRoute.indexedStack(
         builder: (final context, final state, final navigationShell) =>
@@ -125,7 +120,6 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         pageBuilder: (final context, final state) {
           final String fullParam = state.pathParameters['slugWithId']!;
           final String productId = fullParam.split('-').last;
-
           return CustomTransitionPage(
             key: state.pageKey,
             child: ProductDetailPage(productId: productId),
@@ -136,4 +130,31 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
       ),
     ],
   );
+
+  // Provider dispose olunca notifier'ı temizle
+  ref.onDispose(routerNotifier.dispose);
+
+  return router;
 });
+
+/// GoRouter'ın `refreshListenable` parametresi `Listenable` bekler.
+/// `ChangeNotifier`, `Listenable`'ı implement eder — bu doğru tür.
+class _AuthRouterNotifier extends ChangeNotifier {
+  _AuthRouterNotifier(final Ref ref) {
+    // Auth state değiştiğinde GoRouter'ı redirect için tetikle
+    ref.listen<AsyncValue>(
+      authProvider,
+      (final previous, final next) {
+        // Loading bitti veya kullanıcı değişti → router'ı yenile
+        final prevLoading = previous?.isLoading ?? true;
+        final nextLoading = next.isLoading;
+        final prevUser = previous?.value;
+        final nextUser = next.value;
+
+        if (prevLoading != nextLoading || prevUser != nextUser) {
+          notifyListeners();
+        }
+      },
+    );
+  }
+}

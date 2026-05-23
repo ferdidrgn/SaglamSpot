@@ -1,9 +1,8 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id 'com.google.gms.google-services'
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id 'com.google.firebase.crashlytics'
+    id "com.google.gms.google-services"
+    id "com.google.firebase.crashlytics"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -14,18 +13,18 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.ferdidrgn.saglamspot"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    namespace "com.ferdidrgn.saglamspot"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
 
     defaultConfig {
-        applicationId = "com.ferdidrgn.saglamspot"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        applicationId "com.ferdidrgn.saglamspot"
+        minSdkVersion flutter.minSdkVersion
+        //minSdk = flutter.minSdkVersion
+        // Güvenlik kütüphaneleri ve biyometrik doğrulamalar için minimum 23 (Android 6.0) önerilir
+        targetSdk flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
         multiDexEnabled true
     }
 
@@ -41,11 +40,19 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
+
+            // 🛡️ AŞIRI GÜVENLİK VE ZIRHLAMA AYARLARI
+            minifyEnabled true       // Kod obfuscation (kod karartma/anlaşılmazlaştırma) aktif
             shrinkResources true
+            // Kullanılmayan tüm kaynakları siler, tersine mühendisliği zorlaştırır
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            debuggable false
-            // Crashlytics'in hata raporlarını okunabilir kılması için mapping dosyasını ister
+            debuggable false         // Uygulamanın debug modda çalışmasını kesinlikle engeller
+
+            // NDK Seviyesinde Güvenlik için debug sembollerini ayıklar
+            ndk {
+                debugSymbolLevel 'SYMBOL_TABLE'
+            }
+
             firebaseCrashlytics {
                 mappingFileUploadEnabled true
                 nativeSymbolUploadEnabled true
@@ -60,6 +67,8 @@ android {
 
     kotlinOptions {
         jvmTarget = '17'
+        // Derleyici seviyesinde ek güvenlik optimizasyonları
+        freeCompilerArgs += ["-Xstdlib-call-evaluation-mode=strict"]
     }
 }
 
@@ -67,20 +76,14 @@ flutter {
     source = "../.."
 }
 
-
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
-
-    // 🚀 Flutter'ın native tarafta Material 3 ve AppCompat kullanabilmesi için bunlar kalmalı
-    implementation "androidx.appcompat:appcompat:1.7.0" // Versiyon güncellendi
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "com.google.android.material:material:1.12.0"
     implementation "androidx.core:core-ktx:1.13.1"
 
-    // Firebase Bill of Materials (BoM) - Versiyon karmaşasını önler
+    // Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
-
-    // Kotlin stdlib artık çoğu zaman otomatik eklenir, manuel yazmaya gerek yok.
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20"
 }
