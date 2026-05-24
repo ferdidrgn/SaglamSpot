@@ -31,7 +31,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="saglamspot">
 
-        <!-- 🚀 AdMob Uygulama Kimliği (Uygulama düzeyinde kalmalı) -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5779807348211992~7119883441" />
@@ -44,19 +43,19 @@
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
-            android:windowSoftInputMode="adjustResize"
-            android:windowLayoutInDisplayCutoutMode="always"> <!-- 💡 Android 15 Uçtan Uca (Edge-to-Edge) ekran yerleşimi için eklendi -->
+            android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
-
-
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
 
-            <!-- Activity içindeki mükerrer AD_ID meta-datası temizlendi, yukarıdaki uygulama düzeyi yeterlidir -->
+            <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="ca-app-pub-5779807348211992~7119883441" />
+
             <meta-data
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />

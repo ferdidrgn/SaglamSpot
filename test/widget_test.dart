@@ -9,7 +9,7 @@ void main() {
       (final WidgetTester tester) async {
     // Uygulamanızı Riverpod ProviderScope ile sarmalayıp, isDeviceSecure: true gönderiyoruz
     await tester.pumpWidget(
-      const ProviderScope(child: MyApp(isDeviceSecure: true)),
+      const ProviderScope(child: MyApp()),
     );
 
     // Uygulama router yapısıyla başladığı için arayüzün yüklenmeye başladığını doğrula
@@ -22,7 +22,7 @@ void main() {
       (final WidgetTester tester) async {
     // isDeviceSecure: false göndererek bariyeri test ediyoruz
     await tester.pumpWidget(
-      const ProviderScope(child: MyApp(isDeviceSecure: false)),
+      const ProviderScope(child: MyApp()),
     );
 
     // Ekranda 'Güvenlik Uyarısı' başlığının olduğunu doğrula

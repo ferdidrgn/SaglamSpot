@@ -17,6 +17,7 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+-dontwarn com.google.android.play.core.**
 
 # --- Flutter Çekirdek ---
 -keep class io.flutter.app.** { *; }
@@ -31,6 +32,9 @@
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.** { *; }
 -keepclassmembers class com.google.firebase.** { *; }
+
+# --- Play Store & Split Install Koruması ---
+-keep class com.google.android.play.core.** { *; }
 
 # --- Kotlin ---
 -keep class kotlin.** { *; }

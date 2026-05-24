@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:safe_device/safe_device.dart';
 import '../ads/ads_manager.dart';
 import '../services/app_check_service.dart';
 import '../services/remote_config_service.dart';
@@ -15,90 +14,75 @@ import '../util/date_formatter.dart';
 import '../util/platform_checker.dart';
 import 'firebase_options.dart';
 
-abstract final class AppInitializer {
-  // Native Android kanalını tanımlıyoruz
-  static const MethodChannel _securityChannel =
-      MethodChannel('com.ferdidrgn.saglamspot/security');
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(
+    final RemoteMessage message) async {
+  // Arka plan bildirimleri için Firebase'i başlat
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 
-  static Future<bool> init() async {
-    // 1. Flutter engine başlat
+abstract final class AppInitializer {
+  static Future<void> init() async {
+    // 1. Flutter bindings başlatılması
     WidgetsFlutterBinding.ensureInitialized();
 
-    // 🛡️ GÜVENLİK ADIMI: Ekran Görüntüsü, Kaydını Engelle ve Root Kontrolü
-    if (!PlatformChecker.isWeb && (Platform.isAndroid || Platform.isIOS)) {
-      try {
-        // Platform kanalı üzerinden Android'e FLAG_SECURE emri gönderiyoruz (Aşağıdaki 2. adıma bakın)
-        await _securityChannel.invokeMethod('enableSecureMode');
-      } catch (e) {
-        debugPrint('🛡️ Native Güvenlik Kanalı Hatası: $e');
-      }
-
-      // Root ve Sahte Konum Kontrolü
-      try {
-        bool isJailBroken = await SafeDevice.isJailBroken;
-        bool isMockLocation = await SafeDevice.isMockLocation;
-
-        if (isJailBroken || isMockLocation) {
-          return false;
-        }
-      } catch (e) {
-        debugPrint('🛡️ Güvenlik taraması yapılamadı: $e');
-      }
-    }
-
-    // 2. Web URL stratejisi (# olmadan)
+    // 🌐 Web URL stratejisi (# işaretini kaldırır)
     if (PlatformChecker.isWeb) usePathUrlStrategy();
 
-    // 3. Tarih/saat locale
+    // 💾 Yerel Veri Depolama (Secure Storage'ın init()'e ihtiyacı yoktur)
+    // Eğer SharedPreferences kullanmaya devam edecekseniz init kalsın,
+    // ama Secure Storage'da bu satırı siliyoruz veya sadece log basıyoruz.
+    debugPrint('🔐 Güvenli depolama hazır.');
+
+    // Dil formatlarını hazırla
     await DateFormatter.initializeLocale();
 
-    // 4. Firebase — ÖNCELİKLİ
+    // 🔥 Firebase Temel Kurulum (Artık her platform için ortak)
     await _initFirebase();
 
-    // 5. RemoteConfig
     await RemoteConfigService.init();
 
-    // 6. AdMob
-    if (!kIsWeb) {
-      await AdManager.initialize();
-      await MobileAds.instance.initialize();
-    } else {
-      AdManager.initialize();
-      MobileAds.instance.initialize();
-    }
+    await AdManager.initialize();
 
-    // 7. AppCheck
+    // 📢 Google Mobile Ads Başlatma
+    if (kIsWeb) // Web'de bunları await etme, arka planda başlasınlar
+      MobileAds.instance.initialize();
+    else
+      await MobileAds.instance.initialize();
+
+    // 🛡️ Güvenlik ve Hata Takibi (Firebase bağımlı servisler)
     if (Firebase.apps.isNotEmpty) {
-      await AppCheckService.init();
+      await AppCheckService.init(); // App Check (Hacker koruması)
+      // Crashlytics (Hata raporlama - Sadece Mobil)
       if (!kIsWeb) _setupCrashlytics();
     }
 
-    // 8. Sistem UI
-    _configureSystemUI();
+    // ☁️ Bildirim Yönetimi
+    //FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    //if (!PlatformChecker.isWeb) await FCMManager.instance.init();
 
-    debugPrint('🚀 Sağlam Spot hazır.');
-    return true;
+    // 📱 Sistem Arayüzü Ayarları
+    _configureSystemUI();
+    debugPrint('🚀 Sağlam Spot Sistemleri Hazır.');
   }
 
   static Future<void> _initFirebase() async {
     try {
-      if (Firebase.apps.isNotEmpty) {
-        debugPrint('🔥 Firebase zaten başlatılmış.');
-        return;
-      }
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
-      ).timeout(const Duration(seconds: 15));
-      debugPrint('🔥 Firebase bağlandı.');
+      ).timeout(const Duration(seconds: 10));
+      debugPrint('🔥 Firebase başarıyla bağlandı.');
     } catch (e) {
       debugPrint('🔥 Firebase başlatma hatası: $e');
     }
   }
 
   static void _setupCrashlytics() {
+    // Web'de Crashlytics desteklenmez, bu yüzden kontrol ekliyoruz
     FlutterError.onError = (final errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
+
     PlatformDispatcher.instance.onError = (final error, final stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
@@ -107,14 +91,13 @@ abstract final class AppInitializer {
 
   static void _configureSystemUI() {
     if (!PlatformChecker.isWeb) {
-      // Android 15+ uyumluluğu için desteği sonlandırılmış renk parametrelerini kaldırdık
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
-      );
-      // Sistemi uçtan uca ekran moduna geçirir
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        // Koyu ikonlar daha okunaklıdır
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ));
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
   }
