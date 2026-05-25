@@ -34,6 +34,11 @@ android {
 
         // Backup kısıtlaması — hassas veri sızıntısını önler
         manifestPlaceholders["allowBackup"] = "false"
+
+        // ABI filtreleri splits çakışması olmadan güvenli şekilde burada yönetilir
+        ndk {
+            abiFilters.addAll(setOf("armeabi-v7a", "arm64-v8a", "x86_64"))
+        }
     }
 
     signingConfigs {
@@ -50,7 +55,7 @@ android {
         release {
             signingConfig = signingConfigs.getByName("release")
 
-            // 🛡️ Güvenlik & Obfuscation
+            // 🛡️ Güvenlik, Obfuscation & Optimizasyon
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
@@ -69,7 +74,7 @@ android {
                 nativeSymbolUploadEnabled = true
             }
 
-            // BuildConfig flag — release ortamını gizle
+            // BuildConfig flag — release ortam konfigürasyonu
             buildConfigField("boolean", "IS_RELEASE", "true")
             buildConfigField("String", "BASE_URL", "\"https://saglamspotcu.web.app\"")
         }
@@ -84,30 +89,19 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true  // API 21 altı desugar
+        isCoreLibraryDesugaringEnabled = true  // API 21 altı desugar desteği
     }
 
     buildFeatures {
-        buildConfig = true  // BuildConfig sınıfı aktif
+        buildConfig = true  // BuildConfig sınıfını aktif tutar
     }
 
-    // Lint — production kırıcı hataları yakala
+    // Lint — üretim öncesi kod analiz denetimleri
     lint {
         checkReleaseBuilds = true
         abortOnError = false
         warningsAsErrors = false
-        // Edge-to-edge, deprecated API kullanımı raporla
         checkDependencies = true
-    }
-
-    // APK bölme — boyut optimizasyonu
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a", "armeabi-v7a", "x86_64")
-            isUniversalApk = false
-        }
     }
 
     packaging {
@@ -125,20 +119,20 @@ dependencies {
     // MultiDex
     implementation("com.android.support:multidex:1.0.3")
 
-    // AndroidX Core — Edge-to-Edge için güncel versiyon şart
+    // AndroidX Core — Uçtan Uca ekran için güncel yerel kütüphaneler
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
 
-    // Activity — enableEdgeToEdge() için
+    // Activity — enableEdgeToEdge pencere tetikleyicileri için
     implementation("androidx.activity:activity-ktx:1.9.3")
 
-    // Firebase BOM
+    // Firebase Mimari Bağımlılıkları (Aynen Korundu)
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
 
-    // Desugar — Java 8+ API desteği
+    // Desugar — Java 8+ modern API geriye dönük uyumluluk paketi
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 

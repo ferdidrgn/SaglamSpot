@@ -18,9 +18,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
     final sub = _auth.authStateChanges().listen(
       (final user) {
         // Sadece loading state'deyken veya farklı user gelince güncelle
-        if (state.value != user) {
-          state = AsyncValue.data(user);
-        }
+        if (state.value != user) state = AsyncValue.data(user);
       },
       onError: (final e, final st) {
         state = AsyncValue.error(e, st);
@@ -57,10 +55,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
 
       final user = credential.user;
       if (user == null) {
-        state = AsyncValue.error(
-          'Kullanıcı bulunamadı.',
-          StackTrace.current,
-        );
+        state = AsyncValue.error('Kullanıcı bulunamadı.', StackTrace.current);
         return;
       }
 
@@ -77,9 +72,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
         // Yetkisiz kullanıcı — hemen çıkış yap
         await _auth.signOut();
         state = AsyncValue.error(
-          'Bu hesabın yönetici yetkisi bulunmuyor.',
-          StackTrace.current,
-        );
+            'Bu hesabın yönetici yetkisi bulunmuyor.', StackTrace.current);
         return;
       }
 

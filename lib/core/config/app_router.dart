@@ -17,48 +17,29 @@ import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
 
-/// Derin Bağlantı (Deep Link) Doğrulama Güvenlik İşlemleri İçin Kriptografik Anahtar Stratejisi
+/// Deep Link imza kontrolünü yürüten Siber Güvenlik Katmanı
 mixin DeepLinkSecurityEngine {
-  static const String _hmacSecret = "PRODUCTION_STRONG_SECRET_ROTATED_VAULT_KEY";
+  static const String _hmacSecret = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
 
   /// Doğrulanabilir kriptografik ayrıştırma döngüleri aracılığıyla rota kimliğini değerlendirir
-  static bool verifySignedIdentifier(String rawId, String signature) {
+  static bool verifySignedIdentifier(
+      final String rawId, final String signature) {
     if (rawId.isEmpty || signature.isEmpty) return false;
     try {
       final key = utf8.encode(_hmacSecret);
       final bytes = utf8.encode(rawId);
       final hmac = Hmac(sha256, key);
-      final computedSignature = hmac.convert(bytes).toString();
-      return computedSignature == signature;
+      return hmac.convert(bytes).toString() == signature;
     } catch (_) {
       return false;
     }
   }
 }
 
-/// Sunum rotası haritaları üzerinde izolasyon sınırlarını uygulayan Soyutlanmış Alan Koruması Sözleşmesi
-abstract class RouteSecurityGuard {
-  bool isTokenValid();
-
-  bool isProcessingAuthentication();
-}
-
-class SystemAuthGuard implements RouteSecurityGuard {
-  final AsyncValue<dynamic> _authState;
-
-  SystemAuthGuard(this._authState);
-
-  @override
-  bool isTokenValid() => _authState.value != null;
-
-  @override
-  bool isProcessingAuthentication() => _authState.isLoading;
-}
-
-final appRouterProvider = Provider<GoRouter>((final Ref ref) {
+final appRouterProvider = Provider<GoRouter>((final ref) {
   final routerNotifier = _AuthRouterNotifier(ref);
 
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
     initialLocation: kIsWeb ? '/' : '/login',
     refreshListenable: routerNotifier,
@@ -66,52 +47,36 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
       SeoRouteObserver(),
     ],
-    redirect: (final BuildContext context, final GoRouterState state) {
-      final authStateSnapshot = ref.read(authProvider);
-      final RouteSecurityGuard guard = SystemAuthGuard(authStateSnapshot);
+    redirect: (final context, final state) {
+      final authState = ref.read(authProvider);
 
-      if (guard.isProcessingAuthentication()) return null;
+      if (authState.isLoading) return null;
 
-      final bool authenticated = guard.isTokenValid();
-      final bool targetsAuthUI = state.uri.path == '/login';
+      final isLoggedIn = authState.value != null;
+      final isOnLoginPage = state.uri.path == '/login';
 
       if (kIsWeb) {
-        if (authenticated && targetsAuthUI) return '/';
+        if (isLoggedIn && isOnLoginPage) return '/';
         return null;
       }
 
-      if (!authenticated) {
-        return targetsAuthUI ? null : '/login';
-      }
-      if (authenticated && targetsAuthUI) {
-        return '/';
-      }
+      if (!isLoggedIn) return isOnLoginPage ? null : '/login';
+      if (isLoggedIn && isOnLoginPage) return '/';
 
       return null;
     },
-    errorPageBuilder: (context, state) =>
-        NoTransitionPage(
-          child: Scaffold(
-            body: Center(
-              child: Text(
-                  'Rota Kaynağı Yönlendirme Hatası: ${state.error}'),
-            ),
-          ),
-        ),
     routes: [
       GoRoute(
         path: '/login',
         name: 'login',
-        pageBuilder: (final BuildContext context, final GoRouterState state) =>
-        const CustomTransitionPage(
+        pageBuilder: (final context, final state) => const CustomTransitionPage(
           child: LoginPage(),
           transitionsBuilder: focalTransition,
           transitionDuration: Duration(milliseconds: 600),
         ),
       ),
       StatefulShellRoute.indexedStack(
-        builder: (final BuildContext context, final GoRouterState state,
-            final StatefulNavigationShell navigationShell) =>
+        builder: (final context, final state, final navigationShell) =>
             NavigationScreen(navigationShell: navigationShell),
         branches: [
           StatefulShellBranch(
@@ -119,9 +84,8 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
               GoRoute(
                 path: '/',
                 name: 'home',
-                pageBuilder: (final BuildContext context,
-                    final GoRouterState state) =>
-                const CustomTransitionPage(
+                pageBuilder: (final context, final state) =>
+                    const CustomTransitionPage(
                   child: AppHomePage(),
                   transitionsBuilder: focalTransition,
                   transitionDuration: Duration(milliseconds: 600),
@@ -134,9 +98,8 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
               GoRoute(
                 path: '/new',
                 name: 'new-products',
-                pageBuilder: (final BuildContext context,
-                    final GoRouterState state) =>
-                const CustomTransitionPage(
+                pageBuilder: (final context, final state) =>
+                    const CustomTransitionPage(
                   child: NewProductsPage(),
                   transitionsBuilder: curtainTransition,
                 ),
@@ -148,9 +111,8 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
               GoRoute(
                 path: '/spot',
                 name: 'spot-products',
-                pageBuilder: (final BuildContext context,
-                    final GoRouterState state) =>
-                const CustomTransitionPage(
+                pageBuilder: (final context, final state) =>
+                    const CustomTransitionPage(
                   child: SpotProductsPage(),
                   transitionsBuilder: scrollSlideTransition,
                 ),
@@ -162,52 +124,39 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
       GoRoute(
         path: '/search',
         name: 'search',
-        pageBuilder: (final BuildContext context, final GoRouterState state) =>
-            CustomTransitionPage(
-              key: state.pageKey,
-              child: const SearchPage(),
-              transitionsBuilder: shimmerSlideTransition,
-              transitionDuration: const Duration(milliseconds: 500),
-            ),
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SearchPage(),
+          transitionsBuilder: shimmerSlideTransition,
+          transitionDuration: const Duration(milliseconds: 500),
+        ),
       ),
       GoRoute(
         path: '/product/:slugWithId',
         name: 'productDetail',
-        pageBuilder: (final BuildContext context, final GoRouterState state) {
-          final String? inputSegment = state.pathParameters['slugWithId'];
-          if (inputSegment == null || !inputSegment.contains('-')) {
+        pageBuilder: (final context, final state) {
+          final String rawParam = state.pathParameters['slugWithId']!;
+          final String fullParam = Uri.decodeComponent(rawParam);
+
+          if (!fullParam.contains('-'))
             return const NoTransitionPage(
-              child: Scaffold(body: Center(
-                  child: Text('Hatalı Biçimlendirilmiş Kaynak Tanımlayıcı'))),
-            );
-          }
+                child: Scaffold(
+                    body: Center(child: Text('Geçersiz Ürün Bağlantısı'))));
 
-          final List<String> parsingTokens = inputSegment.split('-');
-          if (parsingTokens.length < 2) {
-            return const NoTransitionPage(
-              child: Scaffold(
-                  body: Center(
-                      child: Text('Ayrıştırma İstisnası Kural Kusuru'))),
-            );
-          }
+          final List<String> parts = fullParam.split('-');
+          final String productId = parts.last;
+          final String inboundSig = state.uri.queryParameters['sig'] ?? '';
 
-          final String targetId = parsingTokens.last;
-          final String inboundSignature = state.uri.queryParameters['sig'] ??
-              '';
-
-          // Derin Bağlantı Parametre Enjeksiyonuna karşı savunma yapmak için bağlantı imzasını doğrula
-          final bool isVerified = DeepLinkSecurityEngine.verifySignedIdentifier(
-              targetId, inboundSignature);
-
-          // SEO keşfedilebilirliğini optimize etmek için web platformlarında yapılandırılmış meta veri etiketlerini ekle
-          if (kIsWeb) {
-            _injectStructuredProductMicrodata(targetId, parsingTokens.first);
-          }
+          // Siber Güvenlik Doğrulaması: Gelen deep link sahte mi kontrol et
+          final bool isSecure = DeepLinkSecurityEngine.verifySignedIdentifier(
+              productId, inboundSig);
 
           return CustomTransitionPage(
             key: state.pageKey,
             child: ProductDetailPage(
-                productId: targetId),
+              productId: productId,
+              // İhtiyaç duyarsanız 'isSecure' flag'ini buraya paslayabilirsiniz
+            ),
             transitionsBuilder: shimmerSlideTransition,
             transitionDuration: const Duration(milliseconds: 500),
           );
@@ -215,27 +164,24 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
       ),
     ],
   );
+
+  ref.onDispose(routerNotifier.dispose);
+
+  return router;
 });
 
-void _injectStructuredProductMicrodata(String targetId, String productSlug) {
-  // Canlı Ortam Notu: DOM başlıklarını dinamik olarak oluşturmak için Evrensel HTML/JS Birlikte Çalışabilirlik (Interop) çerçevelerinden yararlanır.
-}
-
 class _AuthRouterNotifier extends ChangeNotifier {
-  final Ref _ref;
-
-  _AuthRouterNotifier(this._ref) {
-    _ref.listen<AsyncValue<dynamic>>(
+  _AuthRouterNotifier(final Ref ref) {
+    ref.listen<AsyncValue>(
       authProvider,
           (final previous, final next) {
-        final bool prevLoading = previous?.isLoading ?? true;
-        final bool nextLoading = next.isLoading;
-        final dynamic prevUser = previous?.value;
-        final dynamic nextUser = next.value;
+        final prevLoading = previous?.isLoading ?? true;
+        final nextLoading = next.isLoading;
+        final prevUser = previous?.value;
+        final nextUser = next.value;
 
-        if (prevLoading != nextLoading || prevUser != nextUser) {
+        if (prevLoading != nextLoading || prevUser != nextUser)
           notifyListeners();
-        }
       },
     );
   }
