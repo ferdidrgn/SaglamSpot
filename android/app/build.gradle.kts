@@ -28,6 +28,12 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
+
+        // Network Security Config (SSL pinning + cleartext block)
+        manifestPlaceholders["networkSecurityConfig"] = "@xml/network_security_config"
+
+        // Backup kısıtlaması — hassas veri sızıntısını önler
+        manifestPlaceholders["allowBackup"] = "false"
     }
 
     signingConfigs {
@@ -44,14 +50,15 @@ android {
         release {
             signingConfig = signingConfigs.getByName("release")
 
-            // 🛡️ AŞIRI GÜVENLİK VE ZIRHLAMA AYARLARI
+            // 🛡️ Güvenlik & Obfuscation
             isMinifyEnabled = true
             isShrinkResources = true
+            isDebuggable = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            isDebuggable = false
 
             ndk {
                 debugSymbolLevel = "SYMBOL_TABLE"
@@ -61,33 +68,84 @@ android {
                 mappingFileUploadEnabled = true
                 nativeSymbolUploadEnabled = true
             }
+
+            // BuildConfig flag — release ortamını gizle
+            buildConfigField("boolean", "IS_RELEASE", "true")
+            buildConfigField("String", "BASE_URL", "\"https://saglamspotcu.web.app\"")
+        }
+
+        debug {
+            isDebuggable = true
+            buildConfigField("boolean", "IS_RELEASE", "false")
+            buildConfigField("String", "BASE_URL", "\"https://saglamspotcu.web.app\"")
         }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true  // API 21 altı desugar
+    }
+
+    buildFeatures {
+        buildConfig = true  // BuildConfig sınıfı aktif
+    }
+
+    // Lint — production kırıcı hataları yakala
+    lint {
+        checkReleaseBuilds = true
+        abortOnError = false
+        warningsAsErrors = false
+        // Edge-to-edge, deprecated API kullanımı raporla
+        checkDependencies = true
+    }
+
+    // APK bölme — boyut optimizasyonu
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86_64")
+            isUniversalApk = false
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/LICENSE*",
+                "/META-INF/NOTICE*"
+            )
+        }
     }
 }
 
-// 📌 JAVA VE KOTLIN ARASINDAKİ SÜRÜM ÇAKIŞMASINI KÖKTEN ÇÖZEN TOOLCHAIN AYARI:
-// Bu blok hem Java'yı hem de Kotlin derleyicisini senkronize ederek ikisini de Java 17'ye sabitler.
 dependencies {
+    // MultiDex
     implementation("com.android.support:multidex:1.0.3")
+
+    // AndroidX Core — Edge-to-Edge için güncel versiyon şart
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.core:core-ktx:1.13.1")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    // Activity — enableEdgeToEdge() için
+    implementation("androidx.activity:activity-ktx:1.9.3")
+
+    // Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
+
+    // Desugar — Java 8+ API desteği
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {
     source = "../.."
 }
 
-// Kotlin derleyicisini merkezi olarak Java 17'ye zorla bağlayan güvenli yapı
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
