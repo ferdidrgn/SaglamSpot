@@ -17,52 +17,80 @@ import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
 
-/// Deep Link imza kontrolünü yürüten Siber Güvenlik Katmanı
 mixin DeepLinkSecurityEngine {
-  static const String _hmacSecret = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
+  // Canlı üretim ortamında bu anahtar CI/CD süreçlerinden derleme anında (compile-time flag) enjekte edilmelidir
+  static const String _hmacSecret =
+      "SAGLAM_SPOT_CYBER_SECURE_FURNITURE_TOKEN_2026";
 
-  /// Doğrulanabilir kriptografik ayrıştırma döngüleri aracılığıyla rota kimliğini değerlendirir
+  /// Gelen link imzasını sabit zamanlı (constant-time) algoritma döngüsü ile güvenli bir şekilde doğrular
   static bool verifySignedIdentifier(
       final String rawId, final String signature) {
     if (rawId.isEmpty || signature.isEmpty) return false;
     try {
-      final key = utf8.encode(_hmacSecret);
-      final bytes = utf8.encode(rawId);
-      final hmac = Hmac(sha256, key);
-      return hmac.convert(bytes).toString() == signature;
+      final List<int> keyBytes = utf8.encode(_hmacSecret);
+      final List<int> dataBytes = utf8.encode(rawId);
+      final Hmac hmac = Hmac(sha256, keyBytes);
+      final String calculatedSignature = hmac.convert(dataBytes).toString();
+
+      return _fixedTimeStringEquals(calculatedSignature, signature);
     } catch (_) {
       return false;
     }
   }
+
+  /// Karakterleri bit düzeyinde XOR işlemine sokarak zamanlama analizi (side-channel timing) açıklarını engeller
+  static bool _fixedTimeStringEquals(final String a, final String b) {
+    if (a.length != b.length) return false;
+    int result = 0;
+    for (int i = 0; i < a.length; i++) {
+      result |= a.codeUnitAt(i) ^ b.codeUnitAt(i);
+    }
+    return result == 0;
+  }
 }
 
-final appRouterProvider = Provider<GoRouter>((final ref) {
+final appRouterProvider = Provider<GoRouter>((final Ref ref) {
   final routerNotifier = _AuthRouterNotifier(ref);
 
-  final router = GoRouter(
+  return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
-    initialLocation: kIsWeb ? '/' : '/login',
+    initialLocation: '/',
     refreshListenable: routerNotifier,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
       SeoRouteObserver(),
     ],
-    redirect: (final context, final state) {
-      final authState = ref.read(authProvider);
-
+    redirect: (final BuildContext context, final GoRouterState state) {
+      final AsyncValue<dynamic> authState = ref.read(authProvider);
       if (authState.isLoading) return null;
 
-      final isLoggedIn = authState.value != null;
-      final isOnLoginPage = state.uri.path == '/login';
+      final bool isLoggedIn = authState.value != null;
+      final String currentPath = state.uri.path;
+      final bool isOnLoginPage = currentPath == '/login';
 
+      // Web platformunda halka açık mobilya listelerinin taranabilmesi için yönlendirme bypass mekanizması
       if (kIsWeb) {
         if (isLoggedIn && isOnLoginPage) return '/';
         return null;
       }
 
-      if (!isLoggedIn) return isOnLoginPage ? null : '/login';
-      if (isLoggedIn && isOnLoginPage) return '/';
+      // Kullanıcı oturum açmamışsa geldiği derin link verisini kaybetmeden güvenli parametre olarak taşı
+      if (!isLoggedIn) {
+        if (isOnLoginPage) return null;
+        return '/login?redirect=${Uri.encodeComponent(state.uri.toString())}';
+      }
 
+      if (isOnLoginPage) {
+        final String? prospectiveTarget = state.uri.queryParameters['redirect'];
+        if (prospectiveTarget != null && prospectiveTarget.isNotEmpty) {
+          final String decodedTarget = Uri.decodeComponent(prospectiveTarget);
+          // Açık yönlendirme saldırılarını engellemek için adresin sadece iç rota olduğunu doğrula
+          if (decodedTarget.startsWith('/') && !decodedTarget.contains('//')) {
+            return decodedTarget;
+          }
+        }
+        return '/';
+      }
       return null;
     },
     routes: [
@@ -72,7 +100,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
         pageBuilder: (final context, final state) => const CustomTransitionPage(
           child: LoginPage(),
           transitionsBuilder: focalTransition,
-          transitionDuration: Duration(milliseconds: 600),
+          transitionDuration: Duration(milliseconds: 400),
         ),
       ),
       StatefulShellRoute.indexedStack(
@@ -88,7 +116,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
                     const CustomTransitionPage(
                   child: AppHomePage(),
                   transitionsBuilder: focalTransition,
-                  transitionDuration: Duration(milliseconds: 600),
+                  transitionDuration: Duration(milliseconds: 450),
                 ),
               ),
             ],
@@ -102,6 +130,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
                     const CustomTransitionPage(
                   child: NewProductsPage(),
                   transitionsBuilder: curtainTransition,
+                  transitionDuration: Duration(milliseconds: 400),
                 ),
               ),
             ],
@@ -115,6 +144,7 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
                     const CustomTransitionPage(
                   child: SpotProductsPage(),
                   transitionsBuilder: scrollSlideTransition,
+                  transitionDuration: Duration(milliseconds: 400),
                 ),
               ),
             ],
@@ -128,61 +158,88 @@ final appRouterProvider = Provider<GoRouter>((final ref) {
           key: state.pageKey,
           child: const SearchPage(),
           transitionsBuilder: shimmerSlideTransition,
-          transitionDuration: const Duration(milliseconds: 500),
+          transitionDuration: const Duration(milliseconds: 400),
         ),
       ),
       GoRoute(
         path: '/product/:slugWithId',
         name: 'productDetail',
-        pageBuilder: (final context, final state) {
-          final String rawParam = state.pathParameters['slugWithId']!;
+        pageBuilder: (final BuildContext context, final GoRouterState state) {
+          final String rawParam = state.pathParameters['slugWithId'] ?? '';
           final String fullParam = Uri.decodeComponent(rawParam);
 
-          if (!fullParam.contains('-'))
+          if (!fullParam.contains('-')) {
             return const NoTransitionPage(
-                child: Scaffold(
-                    body: Center(child: Text('Geçersiz Ürün Bağlantısı'))));
+              child:
+                  ArchitecturalErrorScreen(message: 'GEÇERSİZ BAĞLANTI YAPISI'),
+            );
+          }
 
           final List<String> parts = fullParam.split('-');
           final String productId = parts.last;
           final String inboundSig = state.uri.queryParameters['sig'] ?? '';
 
-          // Siber Güvenlik Doğrulaması: Gelen deep link sahte mi kontrol et
           final bool isSecure = DeepLinkSecurityEngine.verifySignedIdentifier(
-              productId, inboundSig);
+            productId,
+            inboundSig,
+          );
+
+          // Mobil cihazlarda imzasız derin linklerin içeriğe erişmesini engelle
+          if (!isSecure && !kIsWeb) {
+            return const NoTransitionPage(
+              child: ArchitecturalErrorScreen(
+                  message: 'GÜVENLİK DOĞRULAMASI BAŞARISIZ'),
+            );
+          }
 
           return CustomTransitionPage(
             key: state.pageKey,
             child: ProductDetailPage(
               productId: productId,
-              // İhtiyaç duyarsanız 'isSecure' flag'ini buraya paslayabilirsiniz
             ),
             transitionsBuilder: shimmerSlideTransition,
-            transitionDuration: const Duration(milliseconds: 500),
+            transitionDuration: const Duration(milliseconds: 450),
           );
         },
       ),
     ],
   );
-
-  ref.onDispose(routerNotifier.dispose);
-
-  return router;
 });
 
 class _AuthRouterNotifier extends ChangeNotifier {
   _AuthRouterNotifier(final Ref ref) {
-    ref.listen<AsyncValue>(
+    ref.listen<AsyncValue<dynamic>>(
       authProvider,
-          (final previous, final next) {
-        final prevLoading = previous?.isLoading ?? true;
-        final nextLoading = next.isLoading;
-        final prevUser = previous?.value;
-        final nextUser = next.value;
-
-        if (prevLoading != nextLoading || prevUser != nextUser)
+      (final previous, final next) {
+        if ((previous?.isLoading ?? true) != next.isLoading ||
+            previous?.value != next.value) {
           notifyListeners();
+        }
       },
+    );
+  }
+}
+
+class ArchitecturalErrorScreen extends StatelessWidget {
+  final String message;
+
+  const ArchitecturalErrorScreen({super.key, required this.message});
+
+  @override
+  Widget build(final BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F172A),
+      body: Center(
+        child: Text(
+          message,
+          style: const TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 12,
+            letterSpacing: 4,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+      ),
     );
   }
 }
