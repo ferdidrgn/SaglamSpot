@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import '../../common/extentions/app_context_ui_extension.dart';
-import 'seo_service.dart';
+import 'wrapper/seo_service.dart';
 
 final class SeoRoutes {
   const SeoRoutes._();
@@ -8,14 +8,14 @@ final class SeoRoutes {
   static void update(final BuildContext context, final String location) {
     final l10n = context.l10n;
 
-    // Dinamik Ürün Detay SEO
+    // Dinamik Ürün Detay SEO Katmanı
     if (location.startsWith('/product/')) {
       SeoService.set(
           title: l10n.seoProductDetailSuffix, description: l10n.seoHomeDesc);
       return;
     }
 
-    // Statik Sayfa SEO
+    // Statik Sayfa SEO Kuralları
     switch (location) {
       case '/':
         SeoService.set(title: l10n.seoHomeTitle, description: l10n.seoHomeDesc);

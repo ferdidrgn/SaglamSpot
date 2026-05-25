@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // System UI yönetimi için eklendi
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'core/config/app_initializer.dart';
@@ -10,44 +9,47 @@ import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // 1. Flutter motorunun bağlayıcı kilit mekanizmasını güvenli bir şekilde başlat
+  final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
 
-  // TargetSDK 37 (Android 15/16) Uçtan Uca Ekran Zorunluluğu Aktivasyonu
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // 2. İşletim sistemi arayüz düzen kurallarını (Edge-to-Edge) yarış durumuna düşmeden hemen işlet
+  AppInitializer.configureSystemUIPreBoot();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.dark,
-    systemNavigationBarDividerColor: Colors.transparent,
-  ));
+  // 3. Arka plan servis ağını arayüz çizimini engellemeyecek şekilde asenkron olarak ayağa kaldır
+  await AppInitializer.init(binding);
 
-  await AppInitializer.init(); // Her şeyi tek bir yerden başlat
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    const ProviderScope(
+      observers: [],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  //
   const MyApp({super.key});
 
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   late final GoRouter _router;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _router = ref.read(appRouterProvider);
-    DeeplinkListener.init(_router); // 🔗 Deeplink listener (1 kere)
+
+    // Uygulama genelinde derin link dinleme hattını tek seferlik güvenli modda başlat
+    DeeplinkListener.init(_router);
   }
 
   @override
   void dispose() {
     DeeplinkListener.stop();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -62,17 +64,20 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,
       themeMode: ThemeMode.light,
+      // Editoryal lüks mimari tasarımı korumak adına açık renk şeması tabanlı tutulmuştur
       locale: localeAsync.value ?? const Locale('tr'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: _router,
-
-      // Uygulama genelinde Safe Area kontrolü alt katmanlara bırakılacaktır.
-      builder: (final context, final child) => MediaQuery(
-        // Cihazın safe inset'lerini tüm alt sayfalara doğru şekilde izole eder
-        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
-        child: child ?? const SizedBox.shrink(),
-      ),
+      builder: (final BuildContext context, final Widget? child) {
+        return MediaQuery(
+          // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
+          data: MediaQuery.of(context).copyWith(
+            textScaler: const TextScaler.linear(1.0),
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }
