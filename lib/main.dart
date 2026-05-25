@@ -19,10 +19,7 @@ void main() async {
   await AppInitializer.init(binding);
 
   runApp(
-    const ProviderScope(
-      observers: [],
-      child: MyApp(),
-    ),
+      const ProviderScope(observers: [], child: MyApp())
   );
 }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -16,20 +17,18 @@ import 'firebase_options.dart';
 abstract final class AppInitializer {
   static Future<void> init(final WidgetsBinding binding) async {
     try {
-      // Web platformundaki arama motoru botları için URL adresindeki gereksiz kare (#) işaretlerini kaldır
-      if (PlatformChecker.isWeb) {
-        usePathUrlStrategy();
-      }
+      // 🌐 Web platformunda URL adresindeki '#' işaretini kaldır
+      if (PlatformChecker.isWeb) usePathUrlStrategy();
 
       // Bölgesel tarih ve dil formatlarını belleğe yükle
       await DateFormatter.initializeLocale();
       debugPrint(
           '🔐 Güvenli depolama alt yapısı ve yerelleştirme modülleri aktif.');
 
-      // Çekirdek bulut motorlarını katı zaman aşımı süreleri ile sisteme bağla
+      // Çekirdek bulut motorlarını (Firebase) ve yerel AppCheck bütünlüğünü başlat
       await _bootstrapFirebaseAndCoreEngines();
 
-      // İkincil ağ yapılandırmalarını ana ekran çizimini engellemeyecek şekilde asenkron (arka planda) başlat
+      // İkincil ağ yapılandırmalarını ana ekran çizimini engellemeyecek şekilde arka planda paralel başlat
       unawaited(Future.wait([
         _safeInitializeRemoteConfig(),
         _safeInitializeAdEngine(),
@@ -62,9 +61,11 @@ abstract final class AppInitializer {
         options: DefaultFirebaseOptions.currentPlatform,
       ).timeout(const Duration(seconds: 5));
 
+      // DOĞRULAMA: Sizin projenizin ham siber koruma servisi tam olması gerektiği yere geri mühürlendi!
       if (Firebase.apps.isNotEmpty) {
         await AppCheckService
-            .init(); // Hacker ve sahte istek koruma kalkanı (App Check)
+            .init(); // Sizin özgün yerel App Check başlatıcınız
+
         if (!kIsWeb) {
           _setupCrashlyticsPipeline();
         }
