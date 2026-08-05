@@ -18,8 +18,11 @@ import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
+import '../widgets/how_it_works_section.dart';
 import '../widgets/newsletter_section.dart';
+import '../widgets/popular_categories_showcase.dart';
 import '../widgets/testimonials_section.dart';
+import '../widgets/why_us_section.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -106,6 +109,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     ),
                   ),
                   _buildCategoriesSection(),
+                  PopularCategoriesShowcase(allProducts: availableProducts),
                   SliverToBoxAdapter(
                       child: _buildSectionHeader(
                     context.l10n.newCollection,
@@ -129,7 +133,9 @@ class _HomePageState extends ConsumerState<HomePage>
                           type: AdUnitType.inArticle, height: 300),
                     ),
                   ),
+                  const HowItWorksSection(),
                   _buildArtisanInfo(),
+                  const WhyUsSection(),
                   const TestimonialsSection(),
                   _buildStatsSection(),
                   const FurnitureTipsSection(),

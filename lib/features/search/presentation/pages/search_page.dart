@@ -106,9 +106,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
               // Fresh Category Pills
               _buildCategorySection(currentFilters, isMobile),
 
-              // Active Filters
-              if (_hasActiveFilters(currentFilters))
-                _buildActiveFiltersSliver(currentFilters),
+              // Aktif filtreler + sıralama (sıralama her zaman görünür)
+              _buildActiveFiltersSliver(currentFilters),
 
               // Results Header
               searchResultsAsync.when(
@@ -560,32 +559,89 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
             vertical: 16,
           ),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (filters.category != null &&
-                  filters.category != ProductCategory.other)
-                _buildFilterChip(
-                    ProductCategoryExtension(filters.category).label(context),
-                    Icons.category_rounded),
-              if (filters.condition != null &&
-                  filters.condition != ProductCondition.all)
-                _buildFilterChip(
-                    // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
-                    filters.condition!.label(context),
-                    Icons.verified_rounded),
-              if (filters.minPrice > 0 || filters.maxPrice < 100000)
-                _buildFilterChip(
-                  '${filters.minPrice.toInt()}₺ - ${filters.maxPrice.toInt()}₺',
-                  Icons.payments_rounded,
+              Expanded(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    if (filters.category != null &&
+                        filters.category != ProductCategory.other)
+                      _buildFilterChip(
+                        ProductCategoryExtension(filters.category)
+                            .label(context),
+                        Icons.category_rounded,
+                        onRemove: () => ref
+                            .read(searchFiltersProvider.notifier)
+                            .setCategory(null),
+                      ),
+                    if (filters.condition != null &&
+                        filters.condition != ProductCondition.all)
+                      _buildFilterChip(
+                        // .label(context) eklemezsen o "Instance of ProductCondition" hatasını alırsın
+                        filters.condition!.label(context),
+                        Icons.verified_rounded,
+                        onRemove: () => ref
+                            .read(searchFiltersProvider.notifier)
+                            .setCondition(ProductCondition.all),
+                      ),
+                    if (filters.minPrice > 0 || filters.maxPrice < 100000)
+                      _buildFilterChip(
+                        '${filters.minPrice.toInt()}₺ - ${filters.maxPrice.toInt()}₺',
+                        Icons.payments_rounded,
+                        onRemove: () => ref
+                            .read(searchFiltersProvider.notifier)
+                            .setPriceRange(0, 100000),
+                      ),
+                  ],
                 ),
+              ),
+              const SizedBox(width: 12),
+              _buildSortDropdown(),
             ],
           ),
         ),
       );
 
-  Widget _buildFilterChip(final String label, final IconData icon) => Container(
+  Widget _buildSortDropdown() {
+    final current = ref.watch(sortOptionProvider);
+    return PopupMenuButton<SortOption>(
+      initialValue: current,
+      onSelected: (final option) =>
+          ref.read(sortOptionProvider.notifier).state = option,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      itemBuilder: (final context) => SortOption.values
+          .map((final o) => PopupMenuItem(value: o, child: Text(o.label)))
+          .toList(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.swap_vert_rounded,
+                size: 16, color: AppColors.textSecondary),
+            const SizedBox(width: 6),
+            Text(current.label,
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(final String label, final IconData icon,
+          {final VoidCallback? onRemove}) =>
+      Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.secondary,
@@ -602,6 +658,14 @@ class _SearchPageState extends ConsumerState<SearchPage>
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
+            if (onRemove != null) ...[
+              const SizedBox(width: 6),
+              GestureDetector(
+                onTap: onRemove,
+                child: const Icon(Icons.close_rounded,
+                    size: 15, color: AppColors.textSecondary),
+              ),
+            ],
           ],
         ),
       );

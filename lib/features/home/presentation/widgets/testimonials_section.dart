@@ -10,8 +10,8 @@ class TestimonialsSection extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SliverPadding(
-      padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 60, vertical: 40),
+      padding:
+          EdgeInsets.symmetric(horizontal: isMobile ? 20 : 60, vertical: 40),
       sliver: SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +25,7 @@ class TestimonialsSection extends StatelessWidget {
             Container(height: 3, width: 40, color: context.colors.secondary),
             const SizedBox(height: 8),
             Text(
-              '20 yılı aşkın süredir Ankara ve çevresinde binlerce eve dokunduk',
+              '20 yılı aşkın süredir İçerenköy ve çevresinde binlerce eve dokunduk',
               style: TextStyle(
                   color: context.primaryColor.withOpacity(0.5),
                   fontSize: context.captionSize),
@@ -77,7 +77,9 @@ class _TestimonialCard extends StatelessWidget {
               children: List.generate(
                 5,
                 (final i) => Icon(
-                  i < data.rating ? Icons.star_rounded : Icons.star_border_rounded,
+                  i < data.rating
+                      ? Icons.star_rounded
+                      : Icons.star_border_rounded,
                   color: AppColors.accent,
                   size: 20,
                 ),
@@ -143,42 +145,42 @@ class _Testimonial {
 const List<_Testimonial> _testimonials = [
   _Testimonial(
     name: 'Elif Yıldız',
-    location: 'Çankaya, Ankara',
+    location: 'İçerenköy, Ataşehir',
     comment:
         'Koltuk takımını çok uygun fiyata aldık, hem de sıfır gibi. Teslimat aynı gün elden ele yapıldı, esnaf usulü güven tam anlamıyla buradaydı.',
     rating: 5,
   ),
   _Testimonial(
     name: 'Mehmet Kaya',
-    location: 'Etimesgut, Ankara',
+    location: 'Kayışdağı, Ataşehir',
     comment:
         'Yatak odası takımını spot fiyatına buradan aldım. Ürün açıklamasıyla birebir aynıydı, hiçbir sürpriz yaşamadım. Kesinlikle tavsiye ederim.',
     rating: 5,
   ),
   _Testimonial(
     name: 'Ayşe Demir',
-    location: 'Keçiören, Ankara',
+    location: 'Küçükbakkalköy, Ataşehir',
     comment:
         'Ofis için toplu mobilya alımı yaptık, hem fiyat hem kalite beklentimizin üzerindeydi. İlgili ve sabırlı bir ekip, teşekkürler Sağlam Spot.',
     rating: 4,
   ),
   _Testimonial(
     name: 'Burak Şahin',
-    location: 'Mamak, Ankara',
+    location: 'Bostancı, Kadıköy',
     comment:
         'Yemek masası setini pazarlıksız, dürüst bir fiyata satın aldık. Nakliye konusunda da yardımcı oldular, gönül rahatlığıyla alışveriş yaptık.',
     rating: 5,
   ),
   _Testimonial(
     name: 'Zeynep Arslan',
-    location: 'Yenimahalle, Ankara',
+    location: 'Fındıklı, Ataşehir',
     comment:
         'İkinci el gardırop aradık, hem sağlam hem şık bir ürün bulduk. Fiyat/performans olarak piyasadaki en iyi seçenekti.',
     rating: 5,
   ),
   _Testimonial(
     name: 'Can Öztürk',
-    location: 'Sincan, Ankara',
+    location: 'Kozyatağı, Kadıköy',
     comment:
         'Showroom ziyaretimizde ürünleri yerinde görme şansımız oldu, bu güveni artırdı. Satış sonrası da bize her zaman ulaşılabilir oldular.',
     rating: 4,

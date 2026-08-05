@@ -1,9 +1,40 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/enum/enums.dart';
+import '../../../../core/util/date_formatter.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 
 part 'search_providers.g.dart';
+
+enum SortOption { featured, priceAsc, priceDesc, newest }
+
+extension SortOptionLabel on SortOption {
+  String get label {
+    switch (this) {
+      case SortOption.featured:
+        return 'Öne Çıkanlar';
+      case SortOption.priceAsc:
+        return 'Fiyat: Artan';
+      case SortOption.priceDesc:
+        return 'Fiyat: Azalan';
+      case SortOption.newest:
+        return 'En Yeni';
+    }
+  }
+}
+
+/// Kullanıcının arama sonuçları için seçtiği sıralama tercihi.
+/// (Riverpod 3'te StateProvider kaldırıldığı için Notifier deseni kullanıyoruz.)
+class SortOptionNotifier extends Notifier<SortOption> {
+  @override
+  SortOption build() => SortOption.featured;
+
+  void set(final SortOption option) => state = option;
+}
+
+final sortOptionProvider =
+    NotifierProvider<SortOptionNotifier, SortOption>(SortOptionNotifier.new);
 
 @riverpod
 class SearchQuery extends _$SearchQuery {
@@ -67,6 +98,7 @@ AsyncValue<List<Product>> searchedProducts(final Ref ref) {
   final productsAsync = ref.watch(productsProvider);
   final query = ref.watch(searchQueryProvider).toLowerCase().trim();
   final filters = ref.watch(searchFiltersProvider);
+  final sortOption = ref.watch(sortOptionProvider);
 
   return productsAsync.whenData((final allProducts) {
     final filtered = allProducts.where((final product) {
@@ -98,10 +130,29 @@ AsyncValue<List<Product>> searchedProducts(final Ref ref) {
           matchesPrice;
     }).toList();
 
-    return filtered
-      ..sort((final a, final b) {
-        if (a.isSold != b.isSold) return a.isSold ? 1 : -1;
-        return a.price.compareTo(b.price);
-      });
+    switch (sortOption) {
+      case SortOption.priceAsc:
+        filtered.sort((final a, final b) => a.price.compareTo(b.price));
+        break;
+      case SortOption.priceDesc:
+        filtered.sort((final a, final b) => b.price.compareTo(a.price));
+        break;
+      case SortOption.newest:
+        filtered.sort((final a, final b) {
+          final da = DateFormatter.parseDateString(a.createdAt);
+          final db = DateFormatter.parseDateString(b.createdAt);
+          if (da == null || db == null) return 0;
+          return db.compareTo(da); // en yeni önce
+        });
+        break;
+      case SortOption.featured:
+        filtered.sort((final a, final b) {
+          if (a.isSold != b.isSold) return a.isSold ? 1 : -1;
+          return a.price.compareTo(b.price);
+        });
+        break;
+    }
+
+    return filtered;
   });
 }
