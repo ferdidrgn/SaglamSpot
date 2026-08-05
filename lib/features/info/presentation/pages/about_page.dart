@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/common/enum/enums.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/util/comminucation_actions.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -969,13 +969,10 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Future<void> _launchPhone() async {
-    final phoneNumber = Uri.parse('tel:+905392019961');
-    if (await canLaunchUrl(phoneNumber)) await launchUrl(phoneNumber);
+    await SaglamSpotCommunication.makeCall();
   }
 
   Future<void> _launchMaps() async {
-    final mapsUrl = Uri.parse(
-        'https://www.google.com/maps/place/Sa%C4%9Flam+Spot/@40.9699248,29.1146853,21z/data=!4m6!3m5!1s0x14cac64216b4ccb7:0x49124944b40496f6!8m2!3d40.9699196!4d29.1148379!16s%2Fg%2F11dxc20095?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D');
-    if (await canLaunchUrl(mapsUrl)) await launchUrl(mapsUrl);
+    await SaglamSpotCommunication.openStoreLocation();
   }
 }

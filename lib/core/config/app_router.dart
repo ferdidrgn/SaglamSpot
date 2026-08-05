@@ -12,9 +12,11 @@ import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
 import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
+import '../../features/info/presentation/pages/about_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
+import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
 
 mixin DeepLinkSecurityEngine {
@@ -158,6 +160,26 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
           key: state.pageKey,
           child: const SearchPage(),
           transitionsBuilder: shimmerSlideTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/about',
+        name: 'about',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const AboutPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/sss',
+        name: 'sss',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SSSPage(),
+          transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),
       ),

@@ -9,6 +9,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
@@ -602,10 +603,20 @@ class _HomePageState extends ConsumerState<HomePage>
                       ],
                     ),
                   ),
-                  _footerColumn(context.l10n.explore,
-                      [context.l10n.collections, context.l10n.spotProducts]),
-                  _footerColumn(context.l10n.corporate,
-                      [context.l10n.aboutUs, context.l10n.contact]),
+                  _footerColumn(context.l10n.explore, {
+                    context.l10n.collections: () =>
+                        NavigationHandler.goToSearch(context),
+                    context.l10n.spotProducts: () =>
+                        NavigationHandler.goToSpotProducts(context),
+                  }),
+                  _footerColumn(context.l10n.corporate, {
+                    context.l10n.aboutUs: () =>
+                        NavigationHandler.goToAbout(context),
+                    'Sıkça Sorulan Sorular': () =>
+                        NavigationHandler.goToSSS(context),
+                    context.l10n.contact: () =>
+                        SaglamSpotCommunication.launchWhatsApp(),
+                  }),
                   SizedBox(
                     width: context.responsive(
                         mobile: double.infinity, desktop: 250),
@@ -620,7 +631,7 @@ class _HomePageState extends ConsumerState<HomePage>
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12)),
                         const SizedBox(height: 10),
-                        Text("info@saglamspot.com",
+                        Text(SaglamSpotCommunication.email,
                             style: TextStyle(
                                 color: Colors.white.withOpacity(0.6))),
                       ],
@@ -637,7 +648,8 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       );
 
-  Widget _footerColumn(final String title, final List<String> items) =>
+  Widget _footerColumn(
+          final String title, final Map<String, VoidCallback> items) =>
       SizedBox(
         width: context.responsive(mobile: context.wp(40), desktop: 150),
         child: Column(
@@ -649,11 +661,14 @@ class _HomePageState extends ConsumerState<HomePage>
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
             const SizedBox(height: 25),
-            ...items.map((final item) => Padding(
+            ...items.entries.map((final entry) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(item,
-                      style: TextStyle(
+                  child: InkWell(
+                    onTap: entry.value,
+                    child: Text(entry.key,
+                        style: TextStyle(
                           color: Colors.white.withOpacity(0.3), fontSize: 13)),
+                  ),
                 )),
           ],
         ),

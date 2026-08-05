@@ -6,7 +6,9 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
+import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
@@ -22,7 +24,7 @@ class ProductDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   int _selectedImageIndex = 0;
   bool _isFavorite = false;
   bool _showMoreDescription = false;
@@ -30,11 +32,27 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   final ScrollController _scrollController = ScrollController();
   bool _isScrolled = false;
 
+  // Sayfa açılırken bilgi kartının yumuşak şekilde belirmesi için.
+  late final AnimationController _entranceController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 600),
+  );
+  late final Animation<double> _entranceFade = CurvedAnimation(
+    parent: _entranceController,
+    curve: Curves.easeOut,
+  );
+  late final Animation<Offset> _entranceSlide = Tween<Offset>(
+    begin: const Offset(0, 0.04),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+      parent: _entranceController, curve: Curves.easeOutCubic));
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _scrollController.addListener(_onScroll);
+    _entranceController.forward();
   }
 
   void _onScroll() {
@@ -48,6 +66,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   void dispose() {
     _tabController.dispose();
     _scrollController.dispose();
+    _entranceController.dispose();
     super.dispose();
   }
 
@@ -269,13 +288,26 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         context.responsive(mobile: 24, desktop: 48)),
                     child: Hero(
                       tag: 'product-${product.id}',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          product.imagesUrl[_selectedImageIndex],
-                          fit: BoxFit.contain,
-                          width: double.infinity,
-                          height: double.infinity,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        transitionBuilder: (final child, final animation) =>
+                            FadeTransition(
+                          opacity: animation,
+                          child: ScaleTransition(
+                            scale: Tween<double>(begin: 0.96, end: 1.0)
+                                .animate(animation),
+                            child: child,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          key: ValueKey(_selectedImageIndex),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            product.imagesUrl[_selectedImageIndex],
+                            fit: BoxFit.contain,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
                         ),
                       ),
                     ),
@@ -381,30 +413,58 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                 ),
 
-                // Special Badge
+                // Durum Rozeti (SIFIR / İKİNCİ EL) — artık ürünün gerçek
+                // durumuna göre renk ve metin değiştiriyor.
                 Positioned(
                   top: 20,
                   left: 20,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: const Text(
-                      'ÖZEL',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        letterSpacing: 2,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      key: ValueKey(product.isSpotProduct),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: product.isSpotProduct
+                            ? const LinearGradient(colors: [
+                                AppColors.accentDark,
+                                AppColors.accent,
+                              ])
+                            : AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: (product.isSpotProduct
+                                    ? AppColors.accent
+                                    : AppColors.primary)
+                                .withOpacity(0.35),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            product.isSpotProduct
+                                ? Icons.inventory_2_rounded
+                                : Icons.new_releases_rounded,
+                            size: 13,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            product.isSpotProduct
+                                ? 'İKİNCİ EL · TEK PARÇA'
+                                : 'SIFIR ÜRÜN',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -559,7 +619,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildProductInfo(final BuildContext context, final Product product,
           {final bool isMobile = false}) =>
-      Container(
+      FadeTransition(
+        opacity: _entranceFade,
+        child: SlideTransition(
+          position: _entranceSlide,
+          child: Container(
         padding: EdgeInsets.all(context.responsive(mobile: 24, desktop: 40)),
         decoration: BoxDecoration(
           color: AppColors.surface,
@@ -689,8 +753,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                             ),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            product.price.toStringAsFixed(0),
+                          CountUpOnVisible(
+                            targetValue: product.price,
+                            decimalDigits: 0,
+                            duration: const Duration(milliseconds: 900),
                             style: TextStyle(
                               fontSize:
                                   context.responsive(mobile: 48, desktop: 64),
@@ -749,7 +815,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             SizedBox(height: context.spacingLarge * 2),
 
             // Action Buttons
-            _buildActionButtons(context, product.isSold, isMobile),
+            _buildActionButtons(context, product, isMobile),
 
             SizedBox(height: context.spacingLarge * 2),
 
@@ -761,6 +827,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             // Seller Info
             _buildSellerInfo(context),
           ],
+        ),
+      ),
         ),
       );
 
@@ -844,8 +912,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   }
 
   Widget _buildActionButtons(
-      final BuildContext context, final bool isSold, final bool isMobile) {
-    if (isSold) return _buildSoldBottomNotification(context);
+      final BuildContext context, final Product product, final bool isMobile) {
+    if (product.isSold) return _buildSoldBottomNotification(context);
+
+    void contactWhatsApp() => FurnitureShareService.contactAboutProduct(
+          productId: product.id,
+          productName: product.name,
+          price: product.price,
+        );
+
+    void callPhone() => SaglamSpotCommunication.makeCall();
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -855,13 +931,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             children: [
               Expanded(
                   child: _buildPrimaryButton(context,
-                      label: 'SATIN AL',
-                      icon: Icons.shopping_bag,
-                      onTap: () {})),
+                      label: 'WHATSAPP\'TAN YAZ',
+                      icon: Icons.chat_bubble_rounded,
+                      onTap: contactWhatsApp)),
               const SizedBox(width: 12),
               Expanded(
                   child: _buildSecondaryButton(context,
-                      label: 'MESAJ', icon: Icons.message, onTap: () {})),
+                      label: 'ARA', icon: Icons.call_rounded, onTap: callPhone)),
             ],
           );
         }
@@ -870,23 +946,26 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         return Column(
           children: [
             _buildPrimaryButton(context,
-                label: 'ŞİMDİ SATIN AL',
-                icon: Icons.shopping_bag_rounded,
-                onTap: () {}),
+                label: 'WHATSAPP\'TAN YAZ',
+                icon: Icons.chat_bubble_rounded,
+                onTap: contactWhatsApp),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                     child: _buildSecondaryButton(context,
-                        label: 'SEPETE EKLE',
-                        icon: Icons.add_shopping_cart,
-                        onTap: () {})),
+                        label: 'TELEFON ET',
+                        icon: Icons.call_rounded,
+                        onTap: callPhone)),
                 const SizedBox(width: 12),
                 Expanded(
                     child: _buildSecondaryButton(context,
-                        label: 'MESAJ GÖNDER',
-                        icon: Icons.message,
-                        onTap: () {})),
+                        label: 'PAYLAŞ',
+                        icon: Icons.share_rounded,
+                        onTap: () => FurnitureShareService.shareProduct(
+                            productId: product.id,
+                            productName: product.name,
+                            price: product.price.toStringAsFixed(0)))),
               ],
             ),
           ],
@@ -1024,7 +1103,25 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           itemCount: details.length,
           itemBuilder: (final context, final index) {
             final detail = details[index];
-            return Container(
+            final Animation<double> staggered = CurvedAnimation(
+              parent: _entranceController,
+              curve: Interval(
+                (index * 0.1).clamp(0.0, 0.6),
+                1.0,
+                curve: Curves.easeOut,
+              ),
+            );
+
+            return AnimatedBuilder(
+              animation: staggered,
+              builder: (final context, final child) => Opacity(
+                opacity: staggered.value,
+                child: Transform.translate(
+                  offset: Offset(0, (1 - staggered.value) * 12),
+                  child: child,
+                ),
+              ),
+              child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 color: AppColors.secondary.withOpacity(0.3),
@@ -1069,6 +1166,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     ),
                   ),
                 ],
+              ),
               ),
             );
           },
@@ -1126,7 +1224,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => NavigationHandler.goToAbout(context),
               icon: const Icon(Icons.chevron_right),
               color: AppColors.textPrimary,
             ),
@@ -1399,10 +1497,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Tümünü Gör →'),
-                  ),
                 ],
               ),
               SizedBox(height: context.spacingLarge),
@@ -1671,17 +1765,30 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () => FurnitureShareService
+                                  .contactAboutProduct(
+                                productId: product.id,
+                                productName: product.name,
+                                price: product.price,
+                              ),
                               borderRadius: BorderRadius.circular(16),
                               child: const Center(
-                                child: Text(
-                                  'SATIN AL',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: 1,
-                                  ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.chat_bubble_rounded,
+                                        color: Colors.white, size: 18),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'WHATSAPP\'TAN YAZ',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

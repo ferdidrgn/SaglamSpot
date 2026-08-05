@@ -8,8 +8,12 @@ final class SaglamSpotCommunication {
   // --- MAĞAZA BİLGİLERİ ---
   static const String _phoneNumber = "905392019961";
   static const String _instaUser = "saglamspot";
+  static const String email = "info@saglamspot.com";
   static const String _fullAddress =
       "İçerenköy Mahallesi Buket Sokak No:6, Ataşehir/İstanbul";
+
+  /// Ekranda göstermek için biçimlendirilmiş telefon numarası.
+  static String get displayPhone => "+90 539 201 99 61";
 
   // Koordinatlar: İçerenköy / Buket Sokak
   static const double _lat = 40.9691;
@@ -51,8 +55,9 @@ final class SaglamSpotCommunication {
 
   /// Mağaza konumunu Apple veya Google Haritalar'da açar
   static Future<void> openStoreLocation() async {
-    final String googleUrl =
-        "https://www.google.com/maps/search/?api=1&query=$_lat,$_lng";
+    // Google için tam mağaza kaydını gösteren kesin adres (place ID'li).
+    const String googleUrl =
+        'https://www.google.com/maps/place/Sa%C4%9Flam+Spot/@40.9699248,29.1146853,21z/data=!4m6!3m5!1s0x14cac64216b4ccb7:0x49124944b40496f6!8m2!3d40.9699196!4d29.1148379!16s%2Fg%2F11dxc20095?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D';
     final String appleUrl =
         "https://maps.apple.com/?q=Sağlam Spot&ll=$_lat,$_lng";
 

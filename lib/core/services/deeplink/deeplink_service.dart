@@ -2,6 +2,7 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:share_plus/share_plus.dart';
 import '../../common/extentions/reg_exp_extentions.dart'; //
+import '../../util/comminucation_actions.dart';
 
 final class FurnitureShareService {
   FurnitureShareService._(); //
@@ -44,5 +45,23 @@ final class FurnitureShareService {
   static Future<void> shareApp() async {
     await Share.share(
         "Eviniz için en kaliteli spot mobilyalar Sağlam Spot'ta! 🏠\nUygulamayı indir: $_domain"); //
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // WHATSAPP İLETİŞİM (Ürün detay sayfasındaki "Satın Al"/"Mesaj" butonları)
+  // ─────────────────────────────────────────────────────────────
+
+  /// Ürünle ilgili WhatsApp üzerinden iletişime geçer; mesaja ürün adını,
+  /// fiyatını ve linkini otomatik doldurur. Numara tek kaynaktan
+  /// (SaglamSpotCommunication) gelir, burada tekrar tanımlanmaz.
+  static Future<void> contactAboutProduct({
+    required final String productId,
+    required final String productName,
+    required final double price,
+  }) async {
+    final url = generateProductUrl(productId, productName);
+    final message = 'Merhaba, "$productName" (₺${price.toStringAsFixed(0)}) '
+        'ürünü ile ilgileniyorum.\n$url';
+    await SaglamSpotCommunication.launchWhatsApp(message: message);
   }
 }

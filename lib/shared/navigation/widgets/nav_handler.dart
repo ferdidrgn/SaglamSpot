@@ -76,6 +76,12 @@ class NavigationHandler {
   static void goToSpotProducts(final BuildContext context) =>
       context.go('/spot');
 
+  /// Hakkımızda sayfasına git
+  static void goToAbout(final BuildContext context) => context.go('/about');
+
+  /// Sıkça Sorulan Sorular sayfasına git
+  static void goToSSS(final BuildContext context) => context.go('/sss');
+
   // ✅ MOBİL TAB NAVIGATION (ROUTER)
   static void goToDiscoverWithCategory(
           final BuildContext context, final String category) =>
