@@ -59,6 +59,16 @@ class NavigationHandler {
   /// Arama sayfasına git
   static void goToSearch(final BuildContext context) => context.go('/search');
 
+  /// Arama sayfasına, belirli bir kategori önceden seçili olacak şekilde git.
+  /// [category] null ise normal /search sayfasına gider.
+  static void goToSearchWithCategory(
+    final BuildContext context,
+    final String? categoryName,
+  ) =>
+      context.go(categoryName == null
+          ? '/search'
+          : '/search?category=$categoryName');
+
   /// Yeni ürünler sayfasına git
   static void goToNewProducts(final BuildContext context) => context.go('/new');
 

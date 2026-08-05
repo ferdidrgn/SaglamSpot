@@ -79,6 +79,19 @@
             src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
     </script>
 
+    <!-- ================= ADSENSE FLUTTER KÖPRÜSÜ =================
+         Flutter tarafında HtmlElementView ile DOM'a eklenen <ins class="adsbygoogle">
+         etiketlerini gerçek reklamla doldurmak için adsbygoogle kuyruğuna push eder. -->
+    <script>
+        function pushAdsenseAd() {
+            try {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+                console.warn('AdSense push hatası:', e);
+            }
+        }
+    </script>
+
     <!-- ================= CACHE CONTROL ================= -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">

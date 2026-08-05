@@ -46,12 +46,42 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   onTap: () => _openGallery(context),
                   child: Hero(
                     tag: 'prod_img_${widget.product.id}',
-                    child: Image.network(
-                      widget.product.imagesUrl.first,
-                      fit: BoxFit.cover,
-                      errorBuilder: (final c, final e, final s) => Container(
-                          color: const Color(0xFFF3F7F6),
-                          child: const Icon(Icons.chair, size: 40)),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        AnimatedScale(
+                          scale: _isHovered ? 1.08 : 1.0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOutCubic,
+                          child: Image.network(
+                            widget.product.imagesUrl.first,
+                            fit: BoxFit.cover,
+                            errorBuilder: (final c, final e, final s) =>
+                                Container(
+                                    color: const Color(0xFFF3F7F6),
+                                    child: const Icon(Icons.chair, size: 40)),
+                          ),
+                        ),
+                        // İkinci bir fotoğraf varsa, hover'da yumuşak geçişle
+                        // gösteriyoruz (endüstriyel e-ticaret sitelerinin
+                        // ürün kartlarında yaygın kullandığı bir mikro-etkileşim).
+                        if (widget.product.imagesUrl.length > 1)
+                          AnimatedOpacity(
+                            opacity: _isHovered ? 1 : 0,
+                            duration: const Duration(milliseconds: 400),
+                            child: AnimatedScale(
+                              scale: _isHovered ? 1.08 : 1.0,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeOutCubic,
+                              child: Image.network(
+                                widget.product.imagesUrl[1],
+                                fit: BoxFit.cover,
+                                errorBuilder: (final c, final e, final s) =>
+                                    const SizedBox.shrink(),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),

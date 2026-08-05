@@ -7,6 +7,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -24,7 +25,7 @@ class NewProductsPage extends ConsumerStatefulWidget {
 class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
-  String _selectedCategory = 'Tümü';
+  ProductCategory? _selectedCategory;
   String _selectedSort = 'Yeniler';
   late AnimationController _filterAnimController;
 
@@ -527,75 +528,12 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   // ════════════════════════════════════════════════════════════════
 
   Widget _buildCategoryTabs(final BuildContext context) {
-    final categories = [
-      'Tümü',
-      'Koltuk',
-      'Masa',
-      'Dekor',
-      'Ofis',
-      'Yatak',
-      'Aydınlatma'
-    ];
-
     return SliverToBoxAdapter(
-      child: SizedBox(
-        height: context.responsive(mobile: 56, desktop: 64),
-        child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
-          itemBuilder: (final context, final index) {
-            final isActive = _selectedCategory == categories[index];
-
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () =>
-                      setState(() => _selectedCategory = categories[index]),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.responsive(mobile: 20, desktop: 32),
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: isActive ? AppColors.primaryGradient : null,
-                      color: isActive ? null : AppColors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isActive ? Colors.transparent : AppColors.border,
-                        width: 1.5,
-                      ),
-                      boxShadow: isActive
-                          ? [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: Text(
-                        categories[index],
-                        style: TextStyle(
-                          color:
-                              isActive ? Colors.white : AppColors.textPrimary,
-                          fontWeight: FontWeight.w700,
-                          fontSize: context.bodySize,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+      child: DynamicCategoryChips(
+        selected: _selectedCategory,
+        onSelect: (final category) =>
+            setState(() => _selectedCategory = category),
+        padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
       ),
     );
   }
@@ -676,7 +614,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
   List<Product> _filterProducts(final List<Product> products) {
     var filtered = products;
 
-    if (_selectedCategory != 'Tümü')
+    if (_selectedCategory != null)
       filtered =
           filtered.where((final p) => p.category == _selectedCategory).toList();
 

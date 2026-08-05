@@ -4,16 +4,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
+import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/util/responsive_utils.dart';
+import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
+import '../widgets/newsletter_section.dart';
+import '../widgets/testimonials_section.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -74,6 +80,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
     final availableProducts = ref.watch(availableProductsProvider);
+    final selectedCategory = ref.watch(searchFiltersProvider).category;
 
     return Scaffold(
       backgroundColor: context.colors.surface,
@@ -91,15 +98,49 @@ class _HomePageState extends ConsumerState<HomePage>
                 slivers: [
                   _buildHeroSliderSection(),
                   _buildQuickFeatures(),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: AdsenseBanner(
+                          type: AdUnitType.display, height: 250),
+                    ),
+                  ),
                   _buildCategoriesSection(),
                   SliverToBoxAdapter(
-                      child: _buildSectionHeader(context.l10n.newCollection,
-                          context.l10n.newCollectionSub)),
-                  _buildDynamicFeaturedGrid(availableProducts),
+                      child: _buildSectionHeader(
+                    context.l10n.newCollection,
+                    context.l10n.newCollectionSub,
+                    actionLabel: 'Tümünü Gör',
+                    onActionTap: () => NavigationHandler.goToSearchWithCategory(
+                        context, selectedCategory?.toFirestore()),
+                  )),
+                  _buildDynamicFeaturedGrid(
+                    availableProducts
+                        .where((final p) =>
+                            selectedCategory == null ||
+                            p.category == selectedCategory)
+                        .toList(),
+                  ),
                   _buildRoomsSection(),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: AdsenseBanner(
+                          type: AdUnitType.inArticle, height: 300),
+                    ),
+                  ),
                   _buildArtisanInfo(),
+                  const TestimonialsSection(),
                   _buildStatsSection(),
                   const FurnitureTipsSection(),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: AdsenseBanner(
+                          type: AdUnitType.multiplex, height: 320),
+                    ),
+                  ),
+                  const NewsletterSection(),
                   _buildFooter(),
                 ],
               ),
@@ -146,12 +187,35 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       );
 
-  Widget _buildHeroSliderSection() => SliverToBoxAdapter(
-        child: Container(
-          height: context.hp(context.isMobile ? 50 : 65),
-          margin: context.pagePadding,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+  Widget _buildHeroSliderSection() {
+    const double parallaxRange = 30; // px cinsinden, her iki yönde de güvenli sınır
+
+    return SliverToBoxAdapter(
+      child: Container(
+        height: context.hp(context.isMobile ? 50 : 65),
+        margin: context.pagePadding,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+          child: AnimatedBuilder(
+            animation: _scrollController,
+            builder: (final context, final child) {
+              // Parallax: hero görseli sayfa kaydırmasına göre hafifçe,
+              // güvenli (±30px) bir aralıkta sürükleniyor — derinlik hissi
+              // veren "scroll-triggered depth" efekti. Görsel, taşma
+              // olmaması için baştan +2*parallaxRange kadar büyük tutuluyor.
+              final double raw =
+                  _scrollController.hasClients ? _scrollController.offset : 0;
+              final double drift =
+                  (raw * 0.08).clamp(-parallaxRange, parallaxRange);
+              return Transform.translate(
+                offset: Offset(0, drift - parallaxRange),
+                child: SizedBox(
+                  height: context.hp(context.isMobile ? 50 : 65) +
+                      parallaxRange * 2,
+                  child: child,
+                ),
+              );
+            },
             child: PageView.builder(
               controller: _heroPageController,
               itemCount: 3,
@@ -159,7 +223,9 @@ class _HomePageState extends ConsumerState<HomePage>
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _heroSlide(final int index) {
     final List<String> images = [
@@ -251,94 +317,49 @@ class _HomePageState extends ConsumerState<HomePage>
       );
 
   Widget _buildCategoriesSection() {
-    final List<ProductCategory?> categories = [null, ...ProductCategory.values];
-
     return SliverToBoxAdapter(
       child: Container(
-        height: context.responsive(mobile: 50, desktop: 70),
         margin: const EdgeInsets.symmetric(vertical: 20),
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
+        child: DynamicCategoryChips(
+          selected: ref.watch(searchFiltersProvider).category,
+          onSelect: (final category) => ref
+              .read(searchFiltersProvider.notifier)
+              .setCategory(category),
           padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-          itemCount: categories.length,
-          itemBuilder: (final context, final i) {
-            final category = categories[i];
-            final isSelected =
-                ref.watch(searchFiltersProvider).category == category;
-            return Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: InkWell(
-                onTap: () => ref
-                    .read(searchFiltersProvider.notifier)
-                    .setCategory(category),
-                borderRadius: BorderRadius.circular(context.borderRadius(2)),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: context.responsive(mobile: 20, desktop: 40)),
-                  decoration: BoxDecoration(
-                    gradient: isSelected
-                        ? LinearGradient(colors: [
-                            context.primaryColor,
-                            context.primaryColor.withOpacity(0.8)
-                          ])
-                        : LinearGradient(colors: [
-                            context.colors.surface,
-                            context.colors.surface.withOpacity(0.5)
-                          ]),
-                    borderRadius:
-                        BorderRadius.circular(context.borderRadius(2)),
-                    border: Border.all(
-                        color: isSelected
-                            ? context.primaryColor
-                            : context.primaryColor.withOpacity(0.1)),
-                  ),
-                  child: Center(
-                    child: Text(
-                      category?.label(context) ?? context.l10n.conditionAll,
-                      style: TextStyle(
-                        fontSize: context.responsive(
-                            mobile: 12, tablet: 14, desktop: 16),
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.w500,
-                        color: isSelected ? Colors.white : context.primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
         ),
       ),
     );
   }
 
   Widget _buildRoomsSection() {
-    final List<Map<String, String>> rooms = [
+    final List<Map<String, dynamic>> rooms = [
       {
         "title": context.l10n.roomLivingRoom,
         "img":
             "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=800",
-        "sub": context.l10n.roomLivingRoomSub
+        "sub": context.l10n.roomLivingRoomSub,
+        "category": ProductCategory.sofa,
       },
       {
         "title": context.l10n.roomBedroom,
         "img":
             "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=800",
-        "sub": context.l10n.roomBedroomSub
+        "sub": context.l10n.roomBedroomSub,
+        "category": ProductCategory.bed,
       },
       {
         "title": context.l10n.roomKitchen,
         "img":
             "https://images.unsplash.com/photo-1556912178-8f4df6d97a33?q=80&w=800",
-        "sub": context.l10n.roomKitchenSub
+        "sub": context.l10n.roomKitchenSub,
+        "category": ProductCategory.white,
       },
       {
         "title": context.l10n.roomOffice,
         "img":
             "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800",
-        "sub": context.l10n.roomOfficeSub
+        "sub": context.l10n.roomOfficeSub,
+        "category": ProductCategory.table,
       },
     ];
 
@@ -355,9 +376,10 @@ class _HomePageState extends ConsumerState<HomePage>
                   EdgeInsets.symmetric(horizontal: context.pagePadding.left),
               itemCount: rooms.length,
               itemBuilder: (final context, final index) => _roomCard(
-                  rooms[index]["title"]!,
-                  rooms[index]["img"]!,
-                  rooms[index]["sub"]!),
+                  rooms[index]["title"] as String,
+                  rooms[index]["img"] as String,
+                  rooms[index]["sub"] as String,
+                  rooms[index]["category"] as ProductCategory),
             ),
           ),
         ],
@@ -365,41 +387,16 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _roomCard(final String title, final String img, final String sub) =>
-      Container(
-        width: context.wp(context.isMobile ? 70 : 25),
-        margin: const EdgeInsets.only(right: 20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(context.borderRadius(2)),
-          image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(context.borderRadius(2)),
-            gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                colors: [Colors.black.withOpacity(0.7), Colors.transparent]),
-          ),
-          alignment: Alignment.bottomLeft,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(sub,
-                  style: TextStyle(
-                      color: context.colors.secondary,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold)),
-              Text(title,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: context.h3Size,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-      );
+  Widget _roomCard(final String title, final String img, final String sub,
+      final ProductCategory category) {
+    return _RoomCard(
+      title: title,
+      img: img,
+      sub: sub,
+      onTap: () => NavigationHandler.goToSearchWithCategory(
+          context, category.toFirestore()),
+    );
+  }
 
   Widget _buildArtisanInfo() => SliverToBoxAdapter(
         child: Container(
@@ -463,22 +460,31 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _buildStatsSection() {
     final stats = [
       {
-        "val": "2.5K+",
+        "target": 2.5,
+        "decimals": 1,
+        "suffix": "K+",
         "label": context.l10n.statHappyCustomer,
         "icon": Icons.people_outline
       },
       {
-        "val": "20+ Yıl",
+        "target": 20.0,
+        "decimals": 0,
+        "suffix": "+ Yıl",
         "label": context.l10n.statExperience,
         "icon": Icons.workspace_premium_outlined
       },
       {
-        "val": "15K+",
+        "target": 15.0,
+        "decimals": 0,
+        "suffix": "K+",
         "label": context.l10n.statDelivery,
         "icon": Icons.local_shipping_outlined
       },
       {
-        "val": "%100",
+        "target": 100.0,
+        "decimals": 0,
+        "prefix": "%",
+        "suffix": "",
         "label": context.l10n.statTrust,
         "icon": Icons.verified_user_outlined
       },
@@ -494,8 +500,14 @@ class _HomePageState extends ConsumerState<HomePage>
             spacing: 20,
             runSpacing: 20,
             children: stats
-                .map((final s) => _buildStatCard(s["val"] as String,
-                    s["label"] as String, s["icon"] as IconData))
+                .map((final s) => _buildStatCard(
+                      target: s["target"] as double,
+                      decimals: s["decimals"] as int,
+                      prefix: s["prefix"] as String? ?? "",
+                      suffix: s["suffix"] as String,
+                      label: s["label"] as String,
+                      icon: s["icon"] as IconData,
+                    ))
                 .toList(),
           ),
         ),
@@ -503,8 +515,14 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildStatCard(
-          final String val, final String label, final IconData icon) =>
+  Widget _buildStatCard({
+    required final double target,
+    required final int decimals,
+    required final String suffix,
+    required final String label,
+    required final IconData icon,
+    final String prefix = "",
+  }) =>
       Container(
         width: context.responsive(
             mobile: context.wp(42), tablet: 200, desktop: 250),
@@ -518,11 +536,16 @@ class _HomePageState extends ConsumerState<HomePage>
           children: [
             Icon(icon, color: context.colors.secondary, size: 30),
             const SizedBox(height: 15),
-            Text(val,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: context.h3Size,
-                    fontWeight: FontWeight.w900)),
+            CountUpOnVisible(
+              targetValue: target,
+              prefix: prefix,
+              suffix: suffix,
+              decimalDigits: decimals,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.h3Size,
+                  fontWeight: FontWeight.w900),
+            ),
             const SizedBox(height: 5),
             Text(label.toUpperCase(),
                 style: TextStyle(
@@ -630,26 +653,177 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       );
 
-  Widget _buildSectionHeader(final String title, final String sub) => Padding(
+  Widget _buildSectionHeader(final String title, final String sub,
+          {final VoidCallback? onActionTap, final String? actionLabel}) =>
+      Padding(
         padding: context.pagePadding.copyWith(bottom: 20, top: 40),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: TextStyle(
-                    fontSize: context.h2Size,
-                    fontWeight: FontWeight.w900,
-                    color: context.primaryColor)),
-            const SizedBox(height: 4),
-            Container(height: 3, width: 40, color: context.colors.secondary),
-            const SizedBox(height: 8),
-            Text(sub,
-                style: TextStyle(
-                    color: context.primaryColor.withOpacity(0.5),
-                    fontSize: context.captionSize)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: TextStyle(
+                          fontSize: context.h2Size,
+                          fontWeight: FontWeight.w900,
+                          color: context.primaryColor)),
+                  const SizedBox(height: 4),
+                  Container(
+                      height: 3, width: 40, color: context.colors.secondary),
+                  const SizedBox(height: 8),
+                  Text(sub,
+                      style: TextStyle(
+                          color: context.primaryColor.withOpacity(0.5),
+                          fontSize: context.captionSize)),
+                ],
+              ),
+            ),
+            if (onActionTap != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 12, top: 6),
+                child: TextButton.icon(
+                  onPressed: onActionTap,
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColor,
+                    backgroundColor: context.colors.secondary.withOpacity(0.5),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
+                  ),
+                  icon: const Icon(Icons.grid_view_rounded, size: 16),
+                  label: Text(actionLabel ?? 'Tümünü Gör',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 13)),
+                ),
+              ),
           ],
         ),
       );
+}
+
+/// Oda kartı: tıklanınca ilgili kategoriyle arama sayfasına götürür.
+/// Web'de fare üzerine gelince görsel hafifçe büyür ve bir "İncele" rozeti
+/// belirir — tıklanabilir olduğunu netleştirmek için.
+class _RoomCard extends StatefulWidget {
+  final String title;
+  final String img;
+  final String sub;
+  final VoidCallback onTap;
+
+  const _RoomCard({
+    required this.title,
+    required this.img,
+    required this.sub,
+    required this.onTap,
+  });
+
+  @override
+  State<_RoomCard> createState() => _RoomCardState();
+}
+
+class _RoomCardState extends State<_RoomCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+          width: context.wp(context.isMobile ? 70 : 25),
+          margin: const EdgeInsets.only(right: 20),
+          transform: _isHovered
+              ? (Matrix4.identity()..translate(0.0, -6.0))
+              : Matrix4.identity(),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.22 : 0.08),
+                blurRadius: _isHovered ? 24 : 12,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                AnimatedScale(
+                  scale: _isHovered ? 1.1 : 1.0,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeOutCubic,
+                  child: Image.network(widget.img, fit: BoxFit.cover),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.75),
+                          Colors.transparent
+                        ]),
+                  ),
+                  alignment: Alignment.bottomLeft,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.sub,
+                          style: TextStyle(
+                              color: context.colors.secondary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold)),
+                      Text(widget.title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: context.h3Size,
+                              fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 10),
+                      AnimatedOpacity(
+                        opacity: _isHovered ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text('İncele',
+                                  style: TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 12)),
+                              SizedBox(width: 4),
+                              Icon(Icons.arrow_forward_rounded,
+                                  size: 14, color: AppColors.primary),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _OrbPainter extends CustomPainter {

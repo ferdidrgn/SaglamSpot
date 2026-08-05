@@ -7,6 +7,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -25,7 +26,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
 
-  String _selectedCategory = 'Tümü';
+  ProductCategory? _selectedCategory;
   String _selectedCondition = 'Tümü';
   String _selectedSort = 'En Yeni';
   double _minPrice = 0;
@@ -827,79 +828,12 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
   // ════════════════════════════════════════════════════════════════
 
   Widget _buildCategoryFilter(final BuildContext context) {
-    final categories = [
-      'Tümü',
-      'Koltuk',
-      'Masa',
-      'Dekor',
-      'Ofis',
-      'Yatak',
-      'Sandalye',
-      'Dolap'
-    ];
-
     return SliverToBoxAdapter(
-      child: SizedBox(
-        height: context.responsive(mobile: 60, desktop: 70),
-        child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
-          itemBuilder: (final context, final index) {
-            final isActive = _selectedCategory == categories[index];
-
-            return Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () =>
-                    setState(() => _selectedCategory = categories[index]),
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.responsive(mobile: 24, desktop: 32),
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: isActive
-                        ? LinearGradient(
-                            colors: [
-                              AppColors.error,
-                              AppColors.error.withOpacity(0.8)
-                            ],
-                          )
-                        : null,
-                    color: isActive ? null : AppColors.surface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isActive ? Colors.transparent : AppColors.border,
-                      width: 1.5,
-                    ),
-                    boxShadow: isActive
-                        ? [
-                            BoxShadow(
-                              color: AppColors.error.withOpacity(0.4),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      categories[index],
-                      style: TextStyle(
-                        color: isActive ? Colors.white : AppColors.textPrimary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: context.bodySize,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+      child: DynamicCategoryChips(
+        selected: _selectedCategory,
+        onSelect: (final category) =>
+            setState(() => _selectedCategory = category),
+        padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
       ),
     );
   }
@@ -1065,7 +999,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     var filtered = products;
 
     // Category filter
-    if (_selectedCategory != 'Tümü') {
+    if (_selectedCategory != null) {
       filtered =
           filtered.where((final p) => p.category == _selectedCategory).toList();
     }

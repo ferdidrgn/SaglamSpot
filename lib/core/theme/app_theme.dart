@@ -78,6 +78,12 @@ class AppTheme {
       inputDecorationTheme: _inputDecorationTheme(colors: colorScheme),
       bottomNavigationBarTheme: _bottomNavigationBarTheme(colors: colorScheme),
       navigationBarTheme: _navigationBarTheme(colors: colorScheme),
+      chipTheme: _chipTheme(colors: colorScheme, textTheme: textTheme),
+      tabBarTheme: _tabBarTheme(colors: colorScheme, textTheme: textTheme),
+      dividerTheme: DividerThemeData(
+          color: colorScheme.outline.withOpacity(0.3), thickness: 1, space: 1),
+      floatingActionButtonTheme: _fabTheme(colors: colorScheme),
+      snackBarTheme: _snackBarTheme(colors: colorScheme, textTheme: textTheme),
     );
   }
 
@@ -136,6 +142,12 @@ class AppTheme {
       inputDecorationTheme: _inputDecorationTheme(colors: colorScheme),
       bottomNavigationBarTheme: _bottomNavigationBarTheme(colors: colorScheme),
       navigationBarTheme: _navigationBarTheme(colors: colorScheme),
+      chipTheme: _chipTheme(colors: colorScheme, textTheme: textTheme),
+      tabBarTheme: _tabBarTheme(colors: colorScheme, textTheme: textTheme),
+      dividerTheme: DividerThemeData(
+          color: colorScheme.outline.withOpacity(0.3), thickness: 1, space: 1),
+      floatingActionButtonTheme: _fabTheme(colors: colorScheme),
+      snackBarTheme: _snackBarTheme(colors: colorScheme, textTheme: textTheme),
     );
   }
 
@@ -270,5 +282,57 @@ class AppTheme {
                       : colors.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 )),
+      );
+
+  static ChipThemeData _chipTheme({
+    required final ColorScheme colors,
+    required final TextTheme textTheme,
+  }) =>
+      ChipThemeData(
+        backgroundColor: colors.surfaceContainerHighest,
+        selectedColor: colors.primary,
+        disabledColor: colors.onSurface.withOpacity(0.08),
+        labelStyle: textTheme.labelLarge?.copyWith(color: colors.onSurface),
+        secondaryLabelStyle:
+            textTheme.labelLarge?.copyWith(color: colors.onPrimary),
+        side: BorderSide(color: colors.outline.withOpacity(0.4)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      );
+
+  static TabBarThemeData _tabBarTheme({
+    required final ColorScheme colors,
+    required final TextTheme textTheme,
+  }) =>
+      TabBarThemeData(
+        labelColor: colors.primary,
+        unselectedLabelColor: colors.onSurfaceVariant,
+        labelStyle: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+        unselectedLabelStyle: textTheme.labelLarge,
+        indicatorColor: colors.primary,
+        indicatorSize: TabBarIndicatorSize.label,
+        dividerColor: Colors.transparent,
+      );
+
+  static FloatingActionButtonThemeData _fabTheme(
+          {required final ColorScheme colors}) =>
+      FloatingActionButtonThemeData(
+        backgroundColor: colors.primary,
+        foregroundColor: colors.onPrimary,
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      );
+
+  static SnackBarThemeData _snackBarTheme({
+    required final ColorScheme colors,
+    required final TextTheme textTheme,
+  }) =>
+      SnackBarThemeData(
+        backgroundColor: colors.brightness == Brightness.light
+            ? AppColors.textPrimary
+            : AppColors.darkCard,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(color: Colors.white),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       );
 }

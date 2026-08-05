@@ -9,6 +9,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
+import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/domain/entites/product.dart';
@@ -42,6 +43,19 @@ class _SearchPageState extends ConsumerState<SearchPage>
       curve: Curves.easeOutCubic,
     );
     _animController.forward();
+
+    // Ana sayfadan (chip/oda kartı) '/search?category=sofa' gibi bir bağlantıyla
+    // gelindiyse, o kategoriyi otomatik olarak seçili hale getir.
+    WidgetsBinding.instance.addPostFrameCallback((final _) {
+      if (!mounted) return;
+      final categoryParam =
+          GoRouterState.of(context).uri.queryParameters['category'];
+      if (categoryParam != null && categoryParam.isNotEmpty) {
+        ref
+            .read(searchFiltersProvider.notifier)
+            .setCategory(categoryParam.toProductCategory());
+      }
+    });
   }
 
   @override
@@ -508,86 +522,26 @@ class _SearchPageState extends ConsumerState<SearchPage>
       );
 
   Widget _buildCategorySection(final dynamic filters, final bool isMobile) {
-    final categories = [null, ...ProductCategory.values];
-
     return SliverToBoxAdapter(
       child: Container(
-        height: context.responsive(mobile: 60.0, tablet: 65.0, desktop: 70.0),
         color: AppColors.surface,
         padding: EdgeInsets.symmetric(
-          horizontal:
-              context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
           vertical:
               context.responsive(mobile: 8.0, tablet: 10.0, desktop: 12.0),
         ),
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 10),
-          itemBuilder: (final context, final index) {
-            final category = categories[index];
-
-            final isSelected = filters.category == category;
-
-            return _buildCategoryPill(
-              category == null
-                  ? context.l10n.conditionAll
-                  : ProductCategoryExtension(category).label(context),
-              isSelected,
-              () => ref
-                  .read(searchFiltersProvider.notifier)
-                  .setCategory(category),
-            );
-          },
+        child: DynamicCategoryChips(
+          selected: filters.category as ProductCategory?,
+          onSelect: (final category) => ref
+              .read(searchFiltersProvider.notifier)
+              .setCategory(category),
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
+          ),
         ),
       ),
     );
   }
-
-  Widget _buildCategoryPill(final String label, final bool isSelected,
-          final VoidCallback onTap) =>
-      InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(
-            horizontal:
-                context.responsive(mobile: 18.0, tablet: 20.0, desktop: 22.0),
-            vertical:
-                context.responsive(mobile: 10.0, tablet: 11.0, desktop: 12.0),
-          ),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.textSecondary : AppColors.secondary,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: isSelected ? AppColors.textSecondary : AppColors.border,
-              width: 1.5,
-            ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: AppColors.textSecondary.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: context.responsive(
-                    mobile: 13.0, tablet: 13.5, desktop: 14.0),
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? Colors.white : AppColors.textPrimary,
-                letterSpacing: 0.3,
-              ),
-            ),
-          ),
-        ),
-      );
 
   bool _hasActiveFilters(final dynamic filters) {
     return (filters.category != null &&
