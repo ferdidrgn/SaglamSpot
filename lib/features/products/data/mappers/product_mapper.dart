@@ -17,6 +17,7 @@ extension ProductModelMapper on ProductModel {
         imagesUrl: imagesUrl,
         isSold: isSold,
         isSpotProduct: isSpotProduct,
+        availableColors: availableColors,
       );
 }
 
@@ -34,5 +35,6 @@ extension ProductEntityMapper on Product {
         imagesUrl: imagesUrl,
         isSold: isSold,
         isSpotProduct: isSpotProduct,
+        availableColors: availableColors,
       );
 }

@@ -14,6 +14,11 @@ class Product extends Equatable {
   final bool isSold;
   final bool isSpotProduct;
 
+  /// Sadece SIFIR (isSpotProduct == false) ürünlerde anlamlıdır. İkinci el/spot
+  /// ürünlerde tek bir fiziksel parça satıldığı için renk seçeneği gösterilmez.
+  /// Hex renk kodları olarak saklanır (örn: '#2E7D6B'). Boşsa hiç gösterilmez.
+  final List<String> availableColors;
+
   const Product({
     required this.id,
     required this.createdAt,
@@ -26,6 +31,7 @@ class Product extends Equatable {
     required this.imagesUrl,
     required this.isSold,
     required this.isSpotProduct,
+    this.availableColors = const [],
   });
 
   factory Product.empty() => Product(
@@ -55,7 +61,8 @@ class Product extends Equatable {
         price,
         imagesUrl,
         isSold,
-        isSpotProduct
+        isSpotProduct,
+        availableColors,
       ];
 
   Product copyWith({
@@ -70,6 +77,7 @@ class Product extends Equatable {
     final List<String>? imagesUrl,
     final bool? isSold,
     final bool? isSpotProduct,
+    final List<String>? availableColors,
   }) =>
       Product(
         id: id ?? this.id,
@@ -83,5 +91,6 @@ class Product extends Equatable {
         imagesUrl: imagesUrl ?? this.imagesUrl,
         isSold: isSold ?? this.isSold,
         isSpotProduct: isSpotProduct ?? this.isSpotProduct,
+        availableColors: availableColors ?? this.availableColors,
       );
 }

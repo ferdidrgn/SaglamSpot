@@ -11,29 +11,25 @@ class WhyUsSection extends StatelessWidget {
     _Usp(
       icon: Icons.verified_user_rounded,
       title: '20 Yıllık Esnaf Güvencesi',
-      desc:
-          'İçerenköy’de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.',
+      desc: 'İçerenköy’de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.',
       color: Color(0xFF2E7D6B),
     ),
     _Usp(
       icon: Icons.savings_rounded,
       title: 'Piyasanın Altında Fiyat',
-      desc:
-          'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.',
+      desc: 'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.',
       color: Color(0xFFC5A358),
     ),
     _Usp(
       icon: Icons.fact_check_rounded,
       title: 'Kontrollü Ürün Kalitesi',
-      desc:
-          'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.',
+      desc: 'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.',
       color: Color(0xFF3E6B8A),
     ),
     _Usp(
       icon: Icons.support_agent_rounded,
       title: 'Satış Sonrası Destek',
-      desc:
-          'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.',
+      desc: 'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.',
       color: Color(0xFFB2673E),
     ),
   ];
@@ -43,8 +39,8 @@ class WhyUsSection extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SliverPadding(
-      padding:
-          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 60, vertical: 40),
+      padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 16 : 60, vertical: 40),
       sliver: SliverToBoxAdapter(
         child: Container(
           padding: EdgeInsets.all(isMobile ? 20 : 40),

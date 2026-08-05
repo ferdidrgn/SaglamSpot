@@ -11,26 +11,22 @@ class HowItWorksSection extends StatelessWidget {
     _Step(
       icon: Icons.travel_explore_rounded,
       title: 'Gözat & Filtrele',
-      desc:
-          'Kategoriler ve fiyat aralığına göre binlerce ürün arasından beğendiğini bul.',
+      desc: 'Kategoriler ve fiyat aralığına göre binlerce ürün arasından beğendiğini bul.',
     ),
     _Step(
       icon: Icons.chat_bubble_rounded,
       title: 'Bizimle İletişime Geç',
-      desc:
-          'Ürün sayfasından tek tıkla WhatsApp veya telefonla ekibimize ulaş.',
+      desc: 'Ürün sayfasından tek tıkla WhatsApp veya telefonla ekibimize ulaş.',
     ),
     _Step(
       icon: Icons.handshake_rounded,
       title: 'Fiyatı Netleştir',
-      desc:
-          'Ürünü showroom’da gör veya fotoğraflarla teyit et, esnaf usulü net fiyat al.',
+      desc: 'Ürünü showroom’da gör veya fotoğraflarla teyit et, esnaf usulü net fiyat al.',
     ),
     _Step(
       icon: Icons.local_shipping_rounded,
       title: 'Kapına Teslim',
-      desc:
-          'İçerenköy ve Anadolu Yakası’na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.',
+      desc: 'İçerenköy ve Anadolu Yakası’na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.',
     ),
   ];
 
@@ -39,8 +35,8 @@ class HowItWorksSection extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SliverPadding(
-      padding:
-          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 60, vertical: 40),
+      padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 16 : 60, vertical: 40),
       sliver: SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,8 +63,7 @@ class HowItWorksSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       for (int i = 0; i < _steps.length; i++) ...[
-                        Expanded(
-                            child: _StepCard(step: _steps[i], index: i + 1)),
+                        Expanded(child: _StepCard(step: _steps[i], index: i + 1)),
                         if (i != _steps.length - 1)
                           Padding(
                             padding: const EdgeInsets.only(top: 40),
@@ -149,8 +144,7 @@ class _StepCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(step.title,
-              style:
-                  const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
           const SizedBox(height: 6),
           Text(step.desc,
               style: const TextStyle(

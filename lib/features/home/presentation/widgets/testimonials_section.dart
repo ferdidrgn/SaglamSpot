@@ -10,8 +10,8 @@ class TestimonialsSection extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SliverPadding(
-      padding:
-          EdgeInsets.symmetric(horizontal: isMobile ? 20 : 60, vertical: 40),
+      padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 20 : 60, vertical: 40),
       sliver: SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,9 +77,7 @@ class _TestimonialCard extends StatelessWidget {
               children: List.generate(
                 5,
                 (final i) => Icon(
-                  i < data.rating
-                      ? Icons.star_rounded
-                      : Icons.star_border_rounded,
+                  i < data.rating ? Icons.star_rounded : Icons.star_border_rounded,
                   color: AppColors.accent,
                   size: 20,
                 ),

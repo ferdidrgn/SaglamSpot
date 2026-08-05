@@ -10,6 +10,7 @@ class ProductModel {
   final List<String> imagesUrl;
   final bool isSold;
   final bool isSpotProduct;
+  final List<String> availableColors;
 
   const ProductModel({
     required this.id,
@@ -23,6 +24,7 @@ class ProductModel {
     required this.isSold,
     required this.isSpotProduct,
     required this.imagesUrl,
+    this.availableColors = const [],
   });
 
   factory ProductModel.fromFirestore(final Map<String, dynamic> data) =>
@@ -38,6 +40,8 @@ class ProductModel {
         isSold: data['isSold'] ?? false,
         isSpotProduct: data['isSpotProduct'] ?? false,
         imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
+        // Eski dokümanlarda bu alan yok, boş liste ile güvenli varsayılan.
+        availableColors: List<String>.from(data['availableColors'] ?? []),
       );
 
   Map<String, dynamic> toFirestore() => {
@@ -52,5 +56,6 @@ class ProductModel {
         'isSold': isSold,
         'isSpotProduct': isSpotProduct,
         'imagesUrl': imagesUrl,
+        'availableColors': availableColors,
       };
 }

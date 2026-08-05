@@ -610,7 +610,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
     return PopupMenuButton<SortOption>(
       initialValue: current,
       onSelected: (final option) =>
-          ref.read(sortOptionProvider.notifier).state = option,
+          ref.read(sortOptionProvider.notifier).set(option),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       itemBuilder: (final context) => SortOption.values
           .map((final o) => PopupMenuItem(value: o, child: Text(o.label)))

@@ -10,6 +10,7 @@ import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
+import '../widgets/product_color_section.dart';
 
 class ProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
@@ -734,6 +735,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 ],
               ),
             ),
+
+            SizedBox(height: context.spacingLarge * 1.5),
+
+            // Renk seçenekleri (sıfır ürün) / Tek parça rozeti (ikinci el)
+            ProductColorSection(product: product),
 
             SizedBox(height: context.spacingLarge * 1.5),
 
