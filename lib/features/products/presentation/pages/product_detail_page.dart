@@ -10,9 +10,11 @@ import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../../data/models/category_meta.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
 import '../widgets/product_color_section.dart';
+import '../widgets/wave_bottom_clipper.dart';
 
 class ProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
@@ -249,8 +251,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       );
 
   // ════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════
   // GALLERY SECTION
   // ════════════════════════════════════════════════════════════════
+
+  /// Ürünün kategorisine göre canlı bir zemin rengi döndürür (referans
+  /// tasarımlardaki dolgun, tek renkli arka plan hissi için).
+  Color _heroColor(final Product product) =>
+      defaultCategoryMeta[product.category]?.color ?? AppColors.primary;
 
   Widget _buildGallerySection(
     final BuildContext context,
@@ -260,22 +268,22 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   }) =>
       Column(
         children: [
-          // Main Image Container
-          Container(
-            height: height,
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.border, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.textPrimary.withOpacity(0.08),
-                  blurRadius: 50,
-                  spreadRadius: 5,
-                  offset: const Offset(0, 10),
+          // Main Image Container — artık kategori rengine göre canlı bir
+          // gradyan zemin üzerinde "yüzen" ürün görseli + dalgalı alt kenar.
+          ClipPath(
+            clipper: const WaveBottomClipper(),
+            child: Container(
+              height: height,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    _heroColor(product).withOpacity(0.85),
+                    _heroColor(product),
+                  ],
                 ),
-              ],
-            ),
+              ),
             child: Stack(
               children: [
                 // Background Pattern
@@ -508,6 +516,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
               ],
             ),
+          ),
           ),
 
           SizedBox(height: context.spacingLarge),

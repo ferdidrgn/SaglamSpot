@@ -110,7 +110,6 @@ class _HomePageState extends ConsumerState<HomePage>
                     ),
                   ),
                   _buildCategoriesSection(),
-                  PopularCategoriesShowcase(allProducts: availableProducts),
                   SliverToBoxAdapter(
                       child: _buildSectionHeader(
                     context.l10n.newCollection,
@@ -126,6 +125,7 @@ class _HomePageState extends ConsumerState<HomePage>
                             p.category == selectedCategory)
                         .toList(),
                   ),
+                  PopularCategoriesShowcase(allProducts: availableProducts),
                   _buildRoomsSection(),
                   const SliverToBoxAdapter(
                     child: Padding(
