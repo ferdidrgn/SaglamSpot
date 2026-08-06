@@ -5,13 +5,17 @@ import 'package:saglamspot/core/common/extentions/product_category_ex.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
+import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
+import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
@@ -530,9 +534,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
         ),
         child: DynamicCategoryChips(
           selected: filters.category as ProductCategory?,
-          onSelect: (final category) => ref
-              .read(searchFiltersProvider.notifier)
-              .setCategory(category),
+          onSelect: (final category) =>
+              ref.read(searchFiltersProvider.notifier).setCategory(category),
           padding: EdgeInsets.symmetric(
             horizontal:
                 context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0),
@@ -598,6 +601,8 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   ],
                 ),
               ),
+              const SizedBox(width: 12),
+              const ViewModeToggle(),
               const SizedBox(width: 12),
               _buildSortDropdown(),
             ],
@@ -861,18 +866,33 @@ class _SearchPageState extends ConsumerState<SearchPage>
     final crossAxisCount = context.gridColumns();
     final adFrequency = context.responsive(
         mobile: 6, tablet: 9, desktop: 12); // Her N üründe bir reklam
+    final isListMode =
+        ref.watch(productViewModeProvider) == ProductViewMode.list;
 
     int productIndex = 0;
     while (productIndex < products.length) {
       final endIndex = (productIndex + adFrequency).clamp(0, products.length);
       final chunk = products.sublist(productIndex, endIndex);
 
-      // Ürün chunklarını ekle
+      // Ürün chunklarını ekle — seçili görünüme göre ızgara veya liste.
       slivers.add(
-        ResponsiveProductSliverGrid(
-          products: chunk,
-          onProductTap: (final p) => context.push('/product/${p.id}'),
-        ),
+        isListMode
+            ? SliverPadding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: context.responsive(
+                        mobile: 16.0, tablet: 20.0, desktop: 24.0)),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (final context, final i) =>
+                        ProductListCard(product: chunk[i]),
+                    childCount: chunk.length,
+                  ),
+                ),
+              )
+            : ResponsiveProductSliverGrid(
+                products: chunk,
+                onProductTap: (final p) => context.push('/product/${p.id}'),
+              ),
       );
 
       // Chunk sonunda ve daha ürün varsa reklam ekle
@@ -886,7 +906,7 @@ class _SearchPageState extends ConsumerState<SearchPage>
                 vertical: context.responsive(
                     mobile: 16.0, tablet: 20.0, desktop: 24.0),
               ),
-              child: const AdNativeWidget(),
+              child: const WebAdProductCard(height: 280),
             ),
           ),
         );

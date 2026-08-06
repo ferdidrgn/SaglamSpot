@@ -358,4 +358,149 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noProductFoundDescription =>
       'You can try different filters or change your search term';
+
+  @override
+  String get adminPanelTitle => 'Admin Panel';
+
+  @override
+  String get totalCount => 'Total';
+
+  @override
+  String get productAddedSuccess => 'Product added successfully';
+
+  @override
+  String get authOrConnectionError =>
+      'Authorization or connection error occurred';
+
+  @override
+  String get fillRequiredFields =>
+      'Please add a product name, price, and at least one image!';
+
+  @override
+  String get sessionClosed => 'Session closed';
+
+  @override
+  String get addNewProduct => 'Add New Product';
+
+  @override
+  String get productImages => 'Product Images';
+
+  @override
+  String get generalInfo => 'General Information';
+
+  @override
+  String get productNameLabel => 'Product Name';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get spotSecondHand => 'Spot / Second-Hand';
+
+  @override
+  String get secondHandHint => 'Single piece — color options won\'t be shown';
+
+  @override
+  String get newProductHint => 'New product — you can add color options';
+
+  @override
+  String get colorOptionsOptional => 'Color Options (optional)';
+
+  @override
+  String get noImagesYet => 'No images added yet';
+
+  @override
+  String get addImage => 'Add Image';
+
+  @override
+  String get editProductTitle => 'Edit Product';
+
+  @override
+  String get changeImages => 'Change Images';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get deleteProductTitle => 'Delete Product';
+
+  @override
+  String get deleteProductConfirmSuffix => 'will be deleted. Are you sure?';
+
+  @override
+  String get yesDelete => 'Yes, Delete';
+
+  @override
+  String get emptyCategoryProducts => 'No products found in this category';
+
+  @override
+  String get adminLoginSubtitle => 'Admin Panel Login';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get loginButton => 'Log In';
+
+  @override
+  String get sponsored => 'Sponsored';
+
+  @override
+  String get addProductFab => 'Add Product';
+
+  @override
+  String get singlePieceNotice =>
+      'This is a second-hand / spot item — only one piece is in stock, and the color/appearance is exactly as shown in the photos.';
+
+  @override
+  String get colorOptionsTitle => 'Color Options';
+
+  @override
+  String get newProductBadge => 'NEW PRODUCT';
+
+  @override
+  String get usedProductBadge => 'SECOND-HAND';
+
+  @override
+  String get readMore => 'Read more';
+
+  @override
+  String get readLess => 'Show less';
+
+  @override
+  String get specDelivery => 'Delivery';
+
+  @override
+  String get specDeliveryValue => 'Within 1-2 Days';
+
+  @override
+  String get specLocation => 'Location';
+
+  @override
+  String get sellerTrustLine =>
+      '20 years of trusted local business · İçerenköy';
+
+  @override
+  String get whatsappCta => 'Message on WhatsApp';
+
+  @override
+  String get callCta => 'Call';
+
+  @override
+  String get similarProducts => 'Similar Products';
+
+  @override
+  String get conditionShowcase => 'Showcase';
+
+  @override
+  String get productDescriptionTitle => 'Description';
+
+  @override
+  String get loginBrand => 'Sağlam Spot';
 }

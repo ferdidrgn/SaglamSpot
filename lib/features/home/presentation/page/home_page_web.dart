@@ -5,6 +5,7 @@ import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
+import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
@@ -161,6 +162,10 @@ class _HomePageState extends ConsumerState<HomePage>
 
   Widget _buildDynamicFeaturedGrid(final List availableProducts) {
     final latestTenProducts = availableProducts.take(10).toList();
+    // 8 üründe bir reklam kartı — bu küçük vitrin ızgarasında en fazla 1 kez
+    // görünür, kullanıcıyı boğmaz.
+    final itemCount = latestTenProducts.length +
+        (latestTenProducts.length ~/ 8);
 
     return SliverPadding(
       padding: context.pagePadding,
@@ -173,10 +178,16 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
-            final product = latestTenProducts[index];
-            return CustomProductCard(product: product);
+            if (index > 0 && (index + 1) % 9 == 0) {
+              return const WebAdProductCard();
+            }
+            final realIndex = index - (index ~/ 9);
+            if (realIndex >= latestTenProducts.length) {
+              return const SizedBox.shrink();
+            }
+            return CustomProductCard(product: latestTenProducts[realIndex]);
           },
-          childCount: latestTenProducts.length,
+          childCount: itemCount,
         ),
       ),
     );
@@ -195,39 +206,16 @@ class _HomePageState extends ConsumerState<HomePage>
       );
 
   Widget _buildHeroSliderSection() {
-    const double parallaxRange = 30; // px cinsinden, her iki yönde de güvenli sınır
-
     return SliverToBoxAdapter(
       child: Container(
         height: context.hp(context.isMobile ? 50 : 65),
         margin: context.pagePadding,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
-          child: AnimatedBuilder(
-            animation: _scrollController,
-            builder: (final context, final child) {
-              // Parallax: hero görseli sayfa kaydırmasına göre hafifçe,
-              // güvenli (±30px) bir aralıkta sürükleniyor — derinlik hissi
-              // veren "scroll-triggered depth" efekti. Görsel, taşma
-              // olmaması için baştan +2*parallaxRange kadar büyük tutuluyor.
-              final double raw =
-                  _scrollController.hasClients ? _scrollController.offset : 0;
-              final double drift =
-                  (raw * 0.08).clamp(-parallaxRange, parallaxRange);
-              return Transform.translate(
-                offset: Offset(0, drift - parallaxRange),
-                child: SizedBox(
-                  height: context.hp(context.isMobile ? 50 : 65) +
-                      parallaxRange * 2,
-                  child: child,
-                ),
-              );
-            },
-            child: PageView.builder(
-              controller: _heroPageController,
-              itemCount: 3,
-              itemBuilder: (final context, final index) => _heroSlide(index),
-            ),
+          child: PageView.builder(
+            controller: _heroPageController,
+            itemCount: 3,
+            itemBuilder: (final context, final index) => _heroSlide(index),
           ),
         ),
       ),

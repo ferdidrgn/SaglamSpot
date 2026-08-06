@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,21 @@ import 'core/localization/locale_provider.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
+
+/// Flutter web/masaüstünde varsayılan olarak fare ile "tıkla-sürükle" kaydırma
+/// KAPALIDIR (sadece dokunmatik/touch destekleniyordu) — bu yüzden odalar,
+/// küçük resimler, kategori şeritleri gibi yatay listeler masaüstünde fare
+/// ile kaydırılamıyordu. Bu, tüm uygulama için tek seferde düzeltir.
+class MouseDragScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.invertedStylus,
+        PointerDeviceKind.trackpad,
+      };
+}
 
 void main() async {
   // 1. Flutter motorunun bağlayıcı kilit mekanizmasını güvenli bir şekilde başlat
@@ -58,6 +74,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Sağlam Spot',
+      scrollBehavior: MouseDragScrollBehavior(),
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,
       themeMode: ThemeMode.light,

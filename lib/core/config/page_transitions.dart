@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// Saydamlaşarak geçiş (Fade)
@@ -67,35 +66,26 @@ Widget curtainTransition(
   );
 }
 
-/// 👁️ **Derin Odaklanma (Slow Focal Blur)**
-/// Yavaş gelmediğinde sadece bir "titreme" gibi görünür.
-/// 800ms ile rüya gibi bir netleşme sağlar.
+/// 👁️ **Yumuşak Netleşme (Fade + Scale)**
+/// NOT: Bu fonksiyon önceden her karede tüm ekranı bulanıklaştıran
+/// (ImageFilter.blur, sigma 15'e kadar) çok maliyetli bir efekt kullanıyordu.
+/// Web'de bu, karelerin düşmesine ve geçişin "karıncalanıp ileri geri"
+/// gibi görünmesine sebep oluyordu. Aynı "yumuşak netleşme" hissini,
+/// hiçbir ağır GPU filtresi kullanmadan, sadece fade+scale ile veriyoruz.
 Widget focalTransition(
   final BuildContext context,
   final Animation<double> animation,
   final Animation<double> secondaryAnimation,
   final Widget child,
 ) {
-  final slowCurve =
-      CurvedAnimation(parent: animation, curve: Curves.easeOutQuart);
+  final curve = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
 
-  return AnimatedBuilder(
-    animation: slowCurve,
-    builder: (final context, final child) {
-      // Sigma değerini 15'e çıkararak bulanıklığı artırdık
-      final blurValue = (1 - slowCurve.value) * 15;
-      return ImageFiltered(
-        imageFilter: ImageFilter.blur(sigmaX: blurValue, sigmaY: blurValue),
-        child: Transform.scale(
-          scale: 0.8 + (slowCurve.value * 0.2), // Daha geniş bir zoom aralığı
-          child: FadeTransition(
-            opacity: slowCurve,
-            child: child,
-          ),
-        ),
-      );
-    },
-    child: child,
+  return FadeTransition(
+    opacity: curve,
+    child: ScaleTransition(
+      scale: Tween<double>(begin: 0.98, end: 1.0).animate(curve),
+      child: child,
+    ),
   );
 }
 

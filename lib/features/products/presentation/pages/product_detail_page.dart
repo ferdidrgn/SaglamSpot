@@ -478,8 +478,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Açıklama',
-            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+        Text(context.l10n.productDescriptionTitle,
+            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
         const SizedBox(height: 8),
         Text(text,
             style: const TextStyle(
@@ -491,7 +491,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               onTap: () =>
                   setState(() => _showFullDescription = !_showFullDescription),
               child: Text(
-                _showFullDescription ? 'Daha az göster' : 'Devamını oku',
+                _showFullDescription ? context.l10n.readLess : context.l10n.readMore,
                 style: const TextStyle(
                     color: AppColors.accentDark,
                     fontWeight: FontWeight.w700,
@@ -513,8 +513,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         'Durum',
         product.isSpotProduct ? 'İkinci El' : 'Sıfır Ürün',
       ),
-      (Icons.local_shipping_rounded, 'Teslimat', '1-2 Gün İçinde'),
-      (Icons.location_on_rounded, 'Konum', 'İçerenköy, İstanbul'),
+      (Icons.local_shipping_rounded, context.l10n.specDelivery, context.l10n.specDeliveryValue),
+      (Icons.location_on_rounded, context.l10n.specLocation, 'İçerenköy, İstanbul'),
     ];
 
     return GridView.builder(
@@ -598,23 +598,23 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       children: [
-                        Text('Sağlam Spot',
-                            style: TextStyle(
+                        Text(context.l10n.loginBrand,
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w800, fontSize: 14)),
-                        SizedBox(width: 4),
-                        Icon(Icons.verified_rounded,
+                        const SizedBox(width: 4),
+                        const Icon(Icons.verified_rounded,
                             size: 14, color: AppColors.success),
                       ],
                     ),
-                    Text('20 yıllık esnaf güvencesi · İçerenköy',
-                        style: TextStyle(
+                    Text(context.l10n.sellerTrustLine,
+                        style: const TextStyle(
                             fontSize: 11.5, color: AppColors.textTertiary)),
                   ],
                 ),
@@ -632,7 +632,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       children: [
         Expanded(
           child: _PrimaryButton(
-            label: "WhatsApp'tan Yaz",
+            label: context.l10n.whatsappCta,
             icon: Icons.chat_bubble_rounded,
             onTap: () => FurnitureShareService.contactAboutProduct(
               productId: product.id,
@@ -665,8 +665,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-            child: const Text('Benzer Ürünler',
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+            child: Text(context.l10n.similarProducts,
+                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
           ),
           const SizedBox(height: 14),
           SizedBox(
@@ -719,7 +719,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             const SizedBox(width: 12),
             Expanded(
               child: _PrimaryButton(
-                label: "WhatsApp'tan Yaz",
+                label: context.l10n.whatsappCta,
                 icon: Icons.chat_bubble_rounded,
                 onTap: () => FurnitureShareService.contactAboutProduct(
                   productId: product.id,
@@ -835,7 +835,7 @@ class _StatusPill extends StatelessWidget {
           ),
           const SizedBox(width: 5),
           Text(
-            spot ? 'İKİNCİ EL' : 'SIFIR ÜRÜN',
+            spot ? context.l10n.usedProductBadge : context.l10n.newProductBadge,
             style: const TextStyle(
                 fontSize: 10.5,
                 fontWeight: FontWeight.w800,

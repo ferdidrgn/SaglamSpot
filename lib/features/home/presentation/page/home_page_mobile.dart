@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
-import '../../../../core/ads/widgets/ad_native_widget.dart';
+import '../../../../core/ads/widgets/native_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/gallery_section.dart';
@@ -92,11 +93,11 @@ class _HomePageState extends ConsumerState<HomePage>
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: false,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 4),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 4),
           child: Text(
-            'Yönetici Paneli',
-            style: TextStyle(
+            context.l10n.adminPanelTitle,
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w900,
               fontSize: 24,
@@ -112,21 +113,21 @@ class _HomePageState extends ConsumerState<HomePage>
           children: [
             Expanded(
                 child: _StatCard(
-                    label: 'Stokta',
+                    label: context.l10n.stock,
                     value: '$stock',
                     icon: Icons.inventory_2_rounded,
                     color: AppColors.success)),
             const SizedBox(width: 10),
             Expanded(
                 child: _StatCard(
-                    label: 'Satıldı',
+                    label: context.l10n.sold,
                     value: '$sold',
                     icon: Icons.check_circle_rounded,
                     color: AppColors.accentDark)),
             const SizedBox(width: 10),
             Expanded(
                 child: _StatCard(
-                    label: 'Toplam',
+                    label: context.l10n.totalCount,
                     value: '${stock + sold}',
                     icon: Icons.widgets_rounded,
                     color: AppColors.info)),
@@ -162,7 +163,7 @@ class _HomePageState extends ConsumerState<HomePage>
             unselectedLabelStyle:
                 const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             dividerColor: Colors.transparent,
-            tabs: [_buildTab('STOKTA', stock), _buildTab('SATILDI', sold)],
+            tabs: [_buildTab(context.l10n.stock, stock), _buildTab(context.l10n.sold, sold)],
           ),
         ),
       );
@@ -193,8 +194,8 @@ class _HomePageState extends ConsumerState<HomePage>
             MaterialPageRoute(builder: (final _) => const AddProductPage())),
         backgroundColor: AppColors.accent,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: const Text('Ürün Ekle',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: Text(context.l10n.addProductFab,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       );
 }
 
@@ -241,14 +242,14 @@ class _ProductGrid extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     if (products.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.inbox_rounded, size: 48, color: AppColors.textTertiary),
-            SizedBox(height: 10),
-            Text('Bu kategoride ürün bulunamadı',
-                style: TextStyle(color: AppColors.textTertiary)),
+            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.textTertiary),
+            const SizedBox(height: 10),
+            Text(context.l10n.emptyCategoryProducts,
+                style: const TextStyle(color: AppColors.textTertiary)),
           ],
         ),
       );
@@ -264,7 +265,7 @@ class _ProductGrid extends StatelessWidget {
       ),
       itemCount: products.length + (products.length ~/ 5),
       itemBuilder: (final context, final index) {
-        if (index > 0 && (index + 1) % 6 == 0) return const AdNativeWidget();
+        if (index > 0 && (index + 1) % 6 == 0) return const NativeAdProductCard();
         final realIndex = index - (index ~/ 6);
         if (realIndex >= products.length) return const SizedBox.shrink();
         return TweenAnimationBuilder<double>(
@@ -408,7 +409,7 @@ class _InfoArea extends StatelessWidget {
             ],
             Expanded(
               child: Text(
-                product.category.name,
+                product.category.label(context),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -481,18 +482,18 @@ class _ActionBar extends ConsumerWidget {
       context: context,
       builder: (final _) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Ürünü Sil'),
-        content: Text('${product.name} silinecek. Emin misiniz?'),
+        title: Text(context.l10n.deleteProductTitle),
+        content: Text('${product.name} ${context.l10n.deleteProductConfirmSuffix}'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text('Vazgeç')),
+              onPressed: () => Navigator.pop(context), child: Text(context.l10n.cancel)),
           TextButton(
             onPressed: () {
               ref.read(productMutationProvider.notifier).delete(product.id);
               Navigator.pop(context);
             },
-            child: const Text('Evet, Sil',
-                style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+            child: Text(context.l10n.yesDelete,
+                style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

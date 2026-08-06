@@ -53,10 +53,10 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   Widget build(final BuildContext context) {
     ref.listen<AsyncValue<void>>(productMutationProvider, (final previous, final next) {
       if (next is AsyncData) {
-        _snack('Ürün başarıyla eklendi', success: true);
+        _snack(context.l10n.productAddedSuccess, success: true);
         if (mounted) Navigator.of(context).pop();
       }
-      if (next is AsyncError) _snack('Yetki veya bağlantı hatası oluştu', error: true);
+      if (next is AsyncError) _snack(context.l10n.authOrConnectionError, error: true);
     });
 
     final mutationState = ref.watch(productMutationProvider);
@@ -64,7 +64,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Yeni Ürün Ekle',
+        title: Text(context.l10n.addNewProduct,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
@@ -80,19 +80,19 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               const SizedBox(height: 16),
 
               AdminFormSection(
-                title: 'Ürün Görselleri',
+                title: context.l10n.productImages,
                 icon: Icons.photo_library_rounded,
                 child: _imageSection(),
               ),
 
               AdminFormSection(
-                title: 'Genel Bilgiler',
+                title: context.l10n.generalInfo,
                 icon: Icons.info_rounded,
                 child: Column(
                   children: [
                     AdminFormField(
                         controller: _name,
-                        label: 'Ürün Adı',
+                        label: context.l10n.productNameLabel,
                         icon: Icons.shopping_bag_rounded),
                     AdminFormField(
                         controller: _price,
@@ -101,7 +101,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                         numeric: true),
                     AdminFormField(
                         controller: _desc,
-                        label: 'Açıklama',
+                        label: context.l10n.descriptionLabel,
                         icon: Icons.description_rounded,
                         lines: 3),
                   ],
@@ -109,7 +109,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               ),
 
               AdminFormSection(
-                title: 'Kategori',
+                title: context.l10n.category,
                 icon: Icons.category_rounded,
                 child: CategoryFormSelector(
                   selected: _selectedCategory,
@@ -118,13 +118,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               ),
 
               AdminFormSection(
-                title: 'Durum',
+                title: context.l10n.statusLabel,
                 icon: Icons.inventory_2_rounded,
                 child: AdminFormSwitch(
-                  title: 'Spot / İkinci El',
+                  title: context.l10n.spotSecondHand,
                   subtitle: _isSecondHand
-                      ? 'Tek parça — renk seçeneği gösterilmeyecek'
-                      : 'Sıfır ürün — aşağıdan renk seçenekleri ekleyebilirsin',
+                      ? context.l10n.secondHandHint
+                      : context.l10n.newProductHint,
                   value: _isSecondHand,
                   onChanged: (final v) => setState(() => _isSecondHand = v),
                 ),
@@ -135,7 +135,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               // (bkz. product_color_section.dart, vitrin tarafındaki aynı mantık).
               if (!_isSecondHand)
                 AdminFormSection(
-                  title: 'Renk Seçenekleri (opsiyonel)',
+                  title: context.l10n.colorOptionsOptional,
                   icon: Icons.palette_rounded,
                   child: ColorVariantPicker(
                     selectedHexColors: _selectedColors,
@@ -165,13 +165,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   Future<void> _submit() async {
     if (_name.text.trim().isEmpty || _price.text.trim().isEmpty || _images.isEmpty) {
-      _snack('Lütfen ürün adı, fiyat ve en az bir görsel ekleyin!', error: true);
+      _snack(context.l10n.fillRequiredFields, error: true);
       return;
     }
 
     final auth = ref.read(authProvider).value;
     if (auth?.uid == null) {
-      _snack('Oturum kapalı', error: true);
+      _snack(context.l10n.sessionClosed, error: true);
       return;
     }
 
@@ -210,7 +210,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                     border: Border.all(
                         color: AppColors.border, style: BorderStyle.solid),
                   ),
-                  child: const Text('Henüz görsel eklenmedi',
+                  child: Text(context.l10n.noImagesYet,
                       style: TextStyle(color: AppColors.textTertiary)),
                 )
               : SizedBox(
@@ -250,7 +250,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
             child: OutlinedButton.icon(
               onPressed: _pickImages,
               icon: const Icon(Icons.add_a_photo_rounded, size: 18),
-              label: const Text('Görsel Ekle'),
+              label: Text(context.l10n.addImage),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.accentDark,
                 side: const BorderSide(color: AppColors.accent),

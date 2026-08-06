@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
@@ -70,9 +71,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         size: 40, color: Colors.white),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Sağlam Spot',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.loginBrand,
+                    style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 26,
                       fontWeight: FontWeight.w900,
@@ -80,9 +81,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    'Yönetici Paneline Giriş',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14.5),
+                  Text(
+                    context.l10n.adminLoginSubtitle,
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 14.5),
                   ),
                   const SizedBox(height: 40),
 
@@ -102,7 +103,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       children: [
                         _buildInput(
                           controller: _emailController,
-                          label: 'E-posta',
+                          label: context.l10n.emailLabel,
                           icon: Icons.alternate_email_rounded,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
@@ -111,7 +112,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         const SizedBox(height: 14),
                         _buildInput(
                           controller: _passController,
-                          label: 'Şifre',
+                          label: context.l10n.passwordLabel,
                           icon: Icons.lock_rounded,
                           isObscure: _obscurePassword,
                           textInputAction: TextInputAction.done,
@@ -170,7 +171,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2.5),
                     )
-                  : const Text('Giriş Yap',
+                  : Text(context.l10n.loginButton,
                       style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 15.5,

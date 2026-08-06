@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../../core/common/enum/enums.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_image_selector.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -88,7 +89,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     if (_currentProduct == null) {
       return Scaffold(
         backgroundColor: AppColors.background,
-        body: const Center(child: Text('Ürün bulunamadı')),
+        body: Center(child: Text(context.l10n.productNotFound)),
       );
     }
 
@@ -97,7 +98,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Ürünü Düzenle',
+        title: Text(context.l10n.editProductTitle,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
@@ -113,7 +114,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AdminFormSection(
-                    title: 'Ürün Görselleri',
+                    title: context.l10n.productImages,
                     icon: Icons.photo_library_rounded,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,22 +126,22 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                     ),
                   ),
                   AdminFormSection(
-                    title: 'Genel Bilgiler',
+                    title: context.l10n.generalInfo,
                     icon: Icons.info_rounded,
                     child: Column(
                       children: [
                         AdminFormField(
                             controller: _nameController,
-                            label: 'Ürün Adı',
+                            label: context.l10n.productNameLabel,
                             icon: Icons.shopping_bag_rounded),
                         AdminFormField(
                             controller: _priceController,
-                            label: 'Fiyat',
+                            label: context.l10n.price,
                             icon: Icons.attach_money_rounded,
                             numeric: true),
                         AdminFormField(
                             controller: _descController,
-                            label: 'Açıklama',
+                            label: context.l10n.descriptionLabel,
                             icon: Icons.description_rounded,
                             lines: 3),
                       ],
@@ -149,7 +150,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   const AdNativeWidget(),
                   const SizedBox(height: 16),
                   AdminFormSection(
-                    title: 'Kategori',
+                    title: context.l10n.category,
                     icon: Icons.category_rounded,
                     child: CategoryFormSelector(
                       selected: _selectedCategory,
@@ -157,21 +158,21 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                     ),
                   ),
                   AdminFormSection(
-                    title: 'Durum',
+                    title: context.l10n.statusLabel,
                     icon: Icons.inventory_2_rounded,
                     child: Column(
                       children: [
                         AdminFormSwitch(
-                          title: 'Satıldı',
+                          title: context.l10n.sold,
                           value: _isSold,
                           onChanged: (final v) => setState(() => _isSold = v),
                         ),
                         const Divider(height: 20),
                         AdminFormSwitch(
-                          title: 'Spot / İkinci El',
+                          title: context.l10n.spotSecondHand,
                           subtitle: _isSpotProduct
-                              ? 'Tek parça — renk seçeneği gösterilmeyecek'
-                              : 'Sıfır ürün — renk seçeneği ekleyebilirsin',
+                              ? context.l10n.secondHandHint
+                              : context.l10n.newProductHint,
                           value: _isSpotProduct,
                           onChanged: (final v) => setState(() => _isSpotProduct = v),
                         ),
@@ -180,7 +181,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   ),
                   if (!_isSpotProduct)
                     AdminFormSection(
-                      title: 'Renk Seçenekleri (opsiyonel)',
+                      title: context.l10n.colorOptionsOptional,
                       icon: Icons.palette_rounded,
                       child: ColorVariantPicker(
                         selectedHexColors: _selectedColors,
@@ -190,7 +191,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                     ),
                   const SizedBox(height: 8),
                   AdminSubmitButton(
-                    label: 'Değişiklikleri Kaydet',
+                    label: context.l10n.saveChanges,
                     isLoading: mutationState.isLoading,
                     onTap: _handleUpdate,
                   ),
@@ -241,9 +242,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                     ),
                   ),
                 )
-              : const Center(
-                  child: Text('Görsel Yok',
-                      style: TextStyle(color: AppColors.textTertiary)))),
+              : Center(
+                  child: Text(context.l10n.noImages,
+                      style: const TextStyle(color: AppColors.textTertiary)))),
     );
   }
 
@@ -256,7 +257,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           if (images.isNotEmpty) setState(() => _newSelectedImages = images);
         },
         icon: const Icon(Icons.add_a_photo_outlined, size: 18),
-        label: const Text('Görselleri Değiştir'),
+        label: Text(context.l10n.changeImages),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.accentDark,
           side: const BorderSide(color: AppColors.accent),

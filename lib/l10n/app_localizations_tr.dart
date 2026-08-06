@@ -354,4 +354,147 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get noProductFoundDescription =>
       'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz';
+
+  @override
+  String get adminPanelTitle => 'Yönetici Paneli';
+
+  @override
+  String get totalCount => 'Toplam';
+
+  @override
+  String get productAddedSuccess => 'Ürün başarıyla eklendi';
+
+  @override
+  String get authOrConnectionError => 'Yetki veya bağlantı hatası oluştu';
+
+  @override
+  String get fillRequiredFields =>
+      'Lütfen ürün adı, fiyat ve en az bir görsel ekleyin!';
+
+  @override
+  String get sessionClosed => 'Oturum kapalı';
+
+  @override
+  String get addNewProduct => 'Yeni Ürün Ekle';
+
+  @override
+  String get productImages => 'Ürün Görselleri';
+
+  @override
+  String get generalInfo => 'Genel Bilgiler';
+
+  @override
+  String get productNameLabel => 'Ürün Adı';
+
+  @override
+  String get descriptionLabel => 'Açıklama';
+
+  @override
+  String get statusLabel => 'Durum';
+
+  @override
+  String get spotSecondHand => 'Spot / İkinci El';
+
+  @override
+  String get secondHandHint => 'Tek parça — renk seçeneği gösterilmeyecek';
+
+  @override
+  String get newProductHint => 'Sıfır ürün — renk seçeneği ekleyebilirsin';
+
+  @override
+  String get colorOptionsOptional => 'Renk Seçenekleri (opsiyonel)';
+
+  @override
+  String get noImagesYet => 'Henüz görsel eklenmedi';
+
+  @override
+  String get addImage => 'Görsel Ekle';
+
+  @override
+  String get editProductTitle => 'Ürünü Düzenle';
+
+  @override
+  String get changeImages => 'Görselleri Değiştir';
+
+  @override
+  String get saveChanges => 'Değişiklikleri Kaydet';
+
+  @override
+  String get deleteProductTitle => 'Ürünü Sil';
+
+  @override
+  String get deleteProductConfirmSuffix => 'silinecek. Emin misiniz?';
+
+  @override
+  String get yesDelete => 'Evet, Sil';
+
+  @override
+  String get emptyCategoryProducts => 'Bu kategoride ürün bulunamadı';
+
+  @override
+  String get adminLoginSubtitle => 'Yönetici Paneline Giriş';
+
+  @override
+  String get emailLabel => 'E-posta';
+
+  @override
+  String get passwordLabel => 'Şifre';
+
+  @override
+  String get loginButton => 'Giriş Yap';
+
+  @override
+  String get sponsored => 'Sponsorlu';
+
+  @override
+  String get addProductFab => 'Ürün Ekle';
+
+  @override
+  String get singlePieceNotice =>
+      'Bu, ikinci el / spot bir üründür — stokta tek parça vardır, renk ve görsel tamamen fotoğraflardaki gibidir.';
+
+  @override
+  String get colorOptionsTitle => 'Renk Seçenekleri';
+
+  @override
+  String get newProductBadge => 'SIFIR ÜRÜN';
+
+  @override
+  String get usedProductBadge => 'İKİNCİ EL';
+
+  @override
+  String get readMore => 'Devamını oku';
+
+  @override
+  String get readLess => 'Daha az göster';
+
+  @override
+  String get specDelivery => 'Teslimat';
+
+  @override
+  String get specDeliveryValue => '1-2 Gün İçinde';
+
+  @override
+  String get specLocation => 'Konum';
+
+  @override
+  String get sellerTrustLine => '20 yıllık esnaf güvencesi · İçerenköy';
+
+  @override
+  String get whatsappCta => 'WhatsApp\'tan Yaz';
+
+  @override
+  String get callCta => 'Ara';
+
+  @override
+  String get similarProducts => 'Benzer Ürünler';
+
+  @override
+  String get conditionShowcase => 'Vitrin';
+
+  @override
+  String get productDescriptionTitle => 'Açıklama';
+
+  @override
+  String get loginBrand => 'Sağlam Spot';
 }

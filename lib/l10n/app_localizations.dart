@@ -751,6 +751,288 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz'**
   String get noProductFoundDescription;
+
+  /// No description provided for @adminPanelTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici Paneli'**
+  String get adminPanelTitle;
+
+  /// No description provided for @totalCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam'**
+  String get totalCount;
+
+  /// No description provided for @productAddedSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün başarıyla eklendi'**
+  String get productAddedSuccess;
+
+  /// No description provided for @authOrConnectionError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yetki veya bağlantı hatası oluştu'**
+  String get authOrConnectionError;
+
+  /// No description provided for @fillRequiredFields.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lütfen ürün adı, fiyat ve en az bir görsel ekleyin!'**
+  String get fillRequiredFields;
+
+  /// No description provided for @sessionClosed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oturum kapalı'**
+  String get sessionClosed;
+
+  /// No description provided for @addNewProduct.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Ürün Ekle'**
+  String get addNewProduct;
+
+  /// No description provided for @productImages.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Görselleri'**
+  String get productImages;
+
+  /// No description provided for @generalInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel Bilgiler'**
+  String get generalInfo;
+
+  /// No description provided for @productNameLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Adı'**
+  String get productNameLabel;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get descriptionLabel;
+
+  /// No description provided for @statusLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum'**
+  String get statusLabel;
+
+  /// No description provided for @spotSecondHand.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot / İkinci El'**
+  String get spotSecondHand;
+
+  /// No description provided for @secondHandHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tek parça — renk seçeneği gösterilmeyecek'**
+  String get secondHandHint;
+
+  /// No description provided for @newProductHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfır ürün — renk seçeneği ekleyebilirsin'**
+  String get newProductHint;
+
+  /// No description provided for @colorOptionsOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'Renk Seçenekleri (opsiyonel)'**
+  String get colorOptionsOptional;
+
+  /// No description provided for @noImagesYet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz görsel eklenmedi'**
+  String get noImagesYet;
+
+  /// No description provided for @addImage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsel Ekle'**
+  String get addImage;
+
+  /// No description provided for @editProductTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünü Düzenle'**
+  String get editProductTitle;
+
+  /// No description provided for @changeImages.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görselleri Değiştir'**
+  String get changeImages;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değişiklikleri Kaydet'**
+  String get saveChanges;
+
+  /// No description provided for @deleteProductTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünü Sil'**
+  String get deleteProductTitle;
+
+  /// No description provided for @deleteProductConfirmSuffix.
+  ///
+  /// In tr, this message translates to:
+  /// **'silinecek. Emin misiniz?'**
+  String get deleteProductConfirmSuffix;
+
+  /// No description provided for @yesDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Evet, Sil'**
+  String get yesDelete;
+
+  /// No description provided for @emptyCategoryProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kategoride ürün bulunamadı'**
+  String get emptyCategoryProducts;
+
+  /// No description provided for @adminLoginSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici Paneline Giriş'**
+  String get adminLoginSubtitle;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta'**
+  String get emailLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifre'**
+  String get passwordLabel;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Giriş Yap'**
+  String get loginButton;
+
+  /// No description provided for @sponsored.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sponsorlu'**
+  String get sponsored;
+
+  /// No description provided for @addProductFab.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Ekle'**
+  String get addProductFab;
+
+  /// No description provided for @singlePieceNotice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu, ikinci el / spot bir üründür — stokta tek parça vardır, renk ve görsel tamamen fotoğraflardaki gibidir.'**
+  String get singlePieceNotice;
+
+  /// No description provided for @colorOptionsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Renk Seçenekleri'**
+  String get colorOptionsTitle;
+
+  /// No description provided for @newProductBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIFIR ÜRÜN'**
+  String get newProductBadge;
+
+  /// No description provided for @usedProductBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'İKİNCİ EL'**
+  String get usedProductBadge;
+
+  /// No description provided for @readMore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devamını oku'**
+  String get readMore;
+
+  /// No description provided for @readLess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Daha az göster'**
+  String get readLess;
+
+  /// No description provided for @specDelivery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Teslimat'**
+  String get specDelivery;
+
+  /// No description provided for @specDeliveryValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'1-2 Gün İçinde'**
+  String get specDeliveryValue;
+
+  /// No description provided for @specLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum'**
+  String get specLocation;
+
+  /// No description provided for @sellerTrustLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 yıllık esnaf güvencesi · İçerenköy'**
+  String get sellerTrustLine;
+
+  /// No description provided for @whatsappCta.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp\'tan Yaz'**
+  String get whatsappCta;
+
+  /// No description provided for @callCta.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ara'**
+  String get callCta;
+
+  /// No description provided for @similarProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Benzer Ürünler'**
+  String get similarProducts;
+
+  /// No description provided for @conditionShowcase.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vitrin'**
+  String get conditionShowcase;
+
+  /// No description provided for @productDescriptionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get productDescriptionTitle;
+
+  /// No description provided for @loginBrand.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağlam Spot'**
+  String get loginBrand;
 }
 
 class _AppLocalizationsDelegate

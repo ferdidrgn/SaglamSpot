@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
+import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
+import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
@@ -27,7 +31,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
   final ScrollController _scrollController = ScrollController();
 
   ProductCategory? _selectedCategory;
-  String _selectedCondition = 'Tümü';
+  String _selectedCondition = 'all';
   String _selectedSort = 'En Yeni';
   double _minPrice = 0;
   double _maxPrice = 50000;
@@ -71,6 +75,16 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                   _buildDynamicHeader(context, products.length),
                   _buildStatsAndFilters(context, products),
                   _buildCategoryFilter(context),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: context.pagePadding.left, vertical: 8),
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: ViewModeToggle(),
+                      ),
+                    ),
+                  ),
                   SliverToBoxAdapter(
                       child: SizedBox(height: context.spacingLarge)),
                   _buildProductGrid(context, filtered),
@@ -658,8 +672,14 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                             padding: EdgeInsets.all(context.spacingLarge),
                             children: [
                               _buildFilterSection(
-                                'DURUM',
-                                ['Tümü', 'Sıfır', 'İkinci El', 'Vitrin'],
+                                context.l10n.statusLabel.toUpperCase(),
+                                const ['all', 'new', 'used', 'showcase'],
+                                [
+                                  context.l10n.conditionAll,
+                                  context.l10n.conditionNew,
+                                  context.l10n.conditionUsed,
+                                  context.l10n.conditionShowcase,
+                                ],
                                 _selectedCondition,
                                 (final val) =>
                                     setState(() => _selectedCondition = val),
@@ -683,8 +703,9 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     );
   }
 
-  Widget _buildFilterSection(final String title, final List<String> options,
-      final String selected, final Function(String) onSelect) {
+  Widget _buildFilterSection(final String title, final List<String> values,
+      final List<String> labels, final String selected,
+      final Function(String) onSelect) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -701,10 +722,11 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: options.map((final option) {
-            final isSelected = selected == option;
+          children: List.generate(values.length, (final i) {
+            final value = values[i];
+            final isSelected = selected == value;
             return GestureDetector(
-              onTap: () => onSelect(option),
+              onTap: () => onSelect(value),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -717,7 +739,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                   ),
                 ),
                 child: Text(
-                  option,
+                  labels[i],
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -726,7 +748,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                 ),
               ),
             );
-          }).toList(),
+          }),
         ),
       ],
     );
@@ -801,7 +823,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         child: InkWell(
           onTap: () {
             setState(() {
-              _selectedCondition = 'Tümü';
+              _selectedCondition = 'all';
               _minPrice = 0;
               _maxPrice = 50000;
             });
@@ -884,6 +906,21 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
       );
     }
 
+    if (ref.watch(productViewModeProvider) == ProductViewMode.list) {
+      return SliverPadding(
+        padding: context.sectionPadding,
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (final context, final index) =>
+                ProductListCard(product: products[index]),
+            childCount: products.length,
+          ),
+        ),
+      );
+    }
+
+    final int itemCount = products.length + (products.length ~/ 8);
+
     return SliverPadding(
       padding: context.sectionPadding,
       sliver: SliverGrid(
@@ -903,9 +940,15 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
           ),
         ),
         delegate: SliverChildBuilderDelegate(
-          (final context, final index) =>
-              _buildSpotProductCard(context, products[index]),
-          childCount: products.length,
+          (final context, final index) {
+            if (index > 0 && (index + 1) % 9 == 0) {
+              return const WebAdProductCard();
+            }
+            final realIndex = index - (index ~/ 9);
+            if (realIndex >= products.length) return const SizedBox.shrink();
+            return _buildSpotProductCard(context, products[realIndex]);
+          },
+          childCount: itemCount,
         ),
       ),
     );
@@ -1005,7 +1048,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     }
 
     // Condition filter
-    if (_selectedCondition != 'Tümü') {
+    if (_selectedCondition != 'all') {
       // Add your condition logic here
     }
 

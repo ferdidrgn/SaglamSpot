@@ -7,7 +7,11 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/ads/widgets/web_ad_product_card.dart';
+import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
+import '../../../../core/widgets/product_list_card.dart';
+import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -69,6 +73,16 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                   _buildStatsBar(context, products),
                   _buildFilterSection(context),
                   _buildCategoryTabs(context),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: context.pagePadding.left, vertical: 8),
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: ViewModeToggle(),
+                      ),
+                    ),
+                  ),
                   SliverToBoxAdapter(
                       child: SizedBox(height: context.spacingLarge)),
                   _buildProductGrid(context, filtered),
@@ -576,6 +590,22 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
         ),
       );
 
+    if (ref.watch(productViewModeProvider) == ProductViewMode.list) {
+      return SliverPadding(
+        padding: context.sectionPadding,
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (final context, final index) =>
+                ProductListCard(product: products[index]),
+            childCount: products.length,
+          ),
+        ),
+      );
+    }
+
+    // 8 üründe bir reklam kartı ekleniyor — kullanıcıyı boğmayacak sıklıkta.
+    final int itemCount = products.length + (products.length ~/ 8);
+
     return SliverPadding(
       padding: context.sectionPadding,
       sliver: SliverGrid(
@@ -595,9 +625,15 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           ),
         ),
         delegate: SliverChildBuilderDelegate(
-          (final context, final index) =>
-              _buildEnhancedProductCard(context, products[index]),
-          childCount: products.length,
+          (final context, final index) {
+            if (index > 0 && (index + 1) % 9 == 0) {
+              return const WebAdProductCard();
+            }
+            final realIndex = index - (index ~/ 9);
+            if (realIndex >= products.length) return const SizedBox.shrink();
+            return _buildEnhancedProductCard(context, products[realIndex]);
+          },
+          childCount: itemCount,
         ),
       ),
     );
