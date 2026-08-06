@@ -11,7 +11,7 @@ List<Product> similarProducts(final Ref ref,
   final products = ref.watch(newDealsProductsProvider);
 
   return products
-      .where((final p) => p.category == category && p.id != currentProductId)
+      .where((final p) => p.category.name == category && p.id != currentProductId)
       .toList();
 }
 

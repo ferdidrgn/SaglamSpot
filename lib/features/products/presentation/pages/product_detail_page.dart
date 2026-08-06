@@ -7,15 +7,19 @@ import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
-import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
+import '../../../../core/widgets/gallery_section.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../data/models/category_meta.dart';
+import '../providers/gallery_provider.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
 import '../widgets/product_color_section.dart';
-import '../widgets/wave_bottom_clipper.dart';
 
+/// Ürün Detay Sayfası — sıfırdan, sade ve premium bir tasarım anlayışıyla
+/// yeniden inşa edildi. Renkli/dalgalı zemin denemesi tamamen kaldırıldı;
+/// bunun yerine temiz beyaz zemin, güçlü tipografi, yumuşak gölgeler ve
+/// ince mikro-animasyonlarla "sakin ama şık" bir his hedeflendi.
 class ProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
 
@@ -29,46 +33,33 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     with TickerProviderStateMixin {
   int _selectedImageIndex = 0;
   bool _isFavorite = false;
-  bool _showMoreDescription = false;
-  late TabController _tabController;
+  bool _showFullDescription = false;
   final ScrollController _scrollController = ScrollController();
-  bool _isScrolled = false;
+  bool _isAppBarSolid = false;
 
-  // Sayfa açılırken bilgi kartının yumuşak şekilde belirmesi için.
-  late final AnimationController _entranceController = AnimationController(
+  late final AnimationController _entrance = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 600),
-  );
-  late final Animation<double> _entranceFade = CurvedAnimation(
-    parent: _entranceController,
-    curve: Curves.easeOut,
-  );
-  late final Animation<Offset> _entranceSlide = Tween<Offset>(
-    begin: const Offset(0, 0.04),
-    end: Offset.zero,
-  ).animate(CurvedAnimation(
-      parent: _entranceController, curve: Curves.easeOutCubic));
+    duration: const Duration(milliseconds: 650),
+  )..forward();
+
+  Animation<double> _stagger(final double startAt) => CurvedAnimation(
+        parent: _entrance,
+        curve: Interval(startAt.clamp(0.0, 0.9), 1.0, curve: Curves.easeOutCubic),
+      );
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _scrollController.addListener(_onScroll);
-    _entranceController.forward();
-  }
-
-  void _onScroll() {
-    if (_scrollController.offset > 100 && !_isScrolled)
-      setState(() => _isScrolled = true);
-    else if (_scrollController.offset <= 100 && _isScrolled)
-      setState(() => _isScrolled = false);
+    _scrollController.addListener(() {
+      final solid = _scrollController.offset > 180;
+      if (solid != _isAppBarSolid) setState(() => _isAppBarSolid = solid);
+    });
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     _scrollController.dispose();
-    _entranceController.dispose();
+    _entrance.dispose();
     super.dispose();
   }
 
@@ -79,22 +70,22 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     return productAsync.when(
       loading: () => const Scaffold(
         backgroundColor: AppColors.background,
-        body:
-            Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
       ),
       error: (final e, final _) => Scaffold(
         backgroundColor: AppColors.background,
+        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
         body: Center(
-          child: Text(e.toString(),
+          child: Text('Ürün yüklenemedi: $e',
               style: const TextStyle(color: AppColors.textPrimary)),
         ),
       ),
       data: (final product) {
-        final similarProducts = ref.watch(similarProductsProvider(
+        final similar = ref.watch(similarProductsProvider(
           category: product.category.name,
-          // Enum'ın kod adını gönderiyoruz (örn: sofa)
           currentProductId: product.id,
         ));
+
         return Scaffold(
           backgroundColor: AppColors.background,
           body: Stack(
@@ -103,218 +94,177 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  _buildSliverAppBar(context, product),
+                  _buildAppBar(context, product),
+                  SliverPadding(
+                    padding: context.pagePadding,
+                    sliver: SliverToBoxAdapter(
+                      child: context.isMobile
+                          ? _buildMobileBody(context, product)
+                          : _buildDesktopBody(context, product),
+                    ),
+                  ),
+                  if (similar.isNotEmpty)
+                    SliverToBoxAdapter(
+                        child: _buildSimilarSection(context, similar)),
                   SliverToBoxAdapter(
-                      child: SizedBox(
-                          height: MediaQuery.of(context).padding.top + 20)),
-                  _buildResponsiveProductLayout(context, product),
-                  _buildTabSection(context, product),
-                  _buildSimilarProducts(context, similarProducts),
-                  _buildFeatures(context),
-                  _buildReviews(context),
-                  SliverToBoxAdapter(
-                      child: SizedBox(height: context.spacingLarge * 3)),
+                      child:
+                          SizedBox(height: context.isMobile ? 110 : 60)),
                 ],
               ),
-              _buildFloatingHeader(context, product),
+              if (context.isMobile) _buildStickyBar(context, product),
             ],
           ),
-          bottomNavigationBar:
-              context.isMobile ? _buildMobileBottomBar(context, product) : null,
         );
       },
     );
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // FLOATING HEADER (for scroll effect)
-  // ════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
+  // APP BAR
+  // ════════════════════════════════════════════════════════════
 
-  Widget _buildFloatingHeader(
-      final BuildContext context, final Product product) {
-    final double safeTop = MediaQuery.of(context).padding.top;
-    final double headerHeight = safeTop + 60; // Dinamik yükseklik
-
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 250),
-      top: _isScrolled ? 0 : -headerHeight,
-      // Yukarı kaydırarak gizle/göster
-      left: 0,
-      right: 0,
-      child: GlassmorphismAppBar(
-        title: product.name,
-        subtitle: product.isSold
-            ? context.l10n.sold
-            : '₺${product.price.toStringAsFixed(0)}',
-        showBackButton: true,
-        // Actions kısmı mobil/tablet için responsive olmalı
+  Widget _buildAppBar(final BuildContext context, final Product product) =>
+      SliverAppBar(
+        pinned: true,
+        backgroundColor: _isAppBarSolid ? AppColors.surface : Colors.transparent,
+        elevation: _isAppBarSolid ? 1 : 0,
+        surfaceTintColor: Colors.transparent,
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: _RoundIconButton(
+            icon: Icons.arrow_back_ios_new_rounded,
+            onTap: () => NavigationHandler.smartGoBack(context),
+          ),
+        ),
+        title: AnimatedOpacity(
+          opacity: _isAppBarSolid ? 1 : 0,
+          duration: const Duration(milliseconds: 200),
+          child: Text(product.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700)),
+        ),
         actions: [
-          if (!context.isMobile) ...[
-            // Mobilde çok kalabalık yapmasın
-            GlassmorphismIconButton(
-              icon: _isFavorite ? Icons.favorite : Icons.favorite_border,
-              onPressed: () => setState(() => _isFavorite = !_isFavorite),
-              backgroundColor:
-                  _isFavorite ? AppColors.error : AppColors.primary,
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: _RoundIconButton(
+              icon: Icons.ios_share_rounded,
+              onTap: () => FurnitureShareService.shareProduct(
+                productId: product.id,
+                productName: product.name,
+                price: product.price.toStringAsFixed(0),
+              ),
             ),
-            const SizedBox(width: 8),
-          ],
-          GlassmorphismIconButton(
-            icon: Icons.share_outlined,
-            onPressed: () => FurnitureShareService.shareProduct(
-              productId: product.id,
-              productName: product.name,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
+            child: _RoundIconButton(
+              icon: _isFavorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              iconColor: _isFavorite ? AppColors.error : AppColors.textPrimary,
+              onTap: () => setState(() => _isFavorite = !_isFavorite),
             ),
-            backgroundColor: AppColors.primary,
           ),
         ],
+      );
+
+  // ════════════════════════════════════════════════════════════
+  // LAYOUT — MOBİL / MASAÜSTÜ
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildMobileBody(final BuildContext context, final Product product) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGallery(context, product, height: context.hp(48)),
+          SizedBox(height: context.spacingLarge),
+          _buildInfo(context, product),
+        ],
+      );
+
+  Widget _buildDesktopBody(final BuildContext context, final Product product) =>
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1400),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+                flex: 55,
+                child: _buildGallery(context, product, height: context.hp(70))),
+            SizedBox(width: context.spacingLarge * 1.5),
+            Expanded(flex: 45, child: _buildInfo(context, product)),
+          ],
+        ),
+      );
+
+  /// Görsele tıklanınca, tıklanan index'ten başlayarak sağa/sola kaydırılabilir
+  /// tam ekran galeriyi açar (mevcut GalleryViewerDialog altyapısını kullanır).
+  void _openFullscreenGallery(final BuildContext context, final Product product) {
+    ref
+        .read(galleryProvider(product.imagesUrl.length).notifier)
+        .setCurrentIndex(_selectedImageIndex);
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.95),
+      builder: (final _) => GalleryViewerDialog(
+        images: product.imagesUrl,
+        isMobile: context.isMobile,
       ),
     );
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // SLIVER APP BAR
-  // ════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
+  // GALERİ — sade, beyaz, yumuşak gölgeli. Renk/dalga denemesi kaldırıldı.
+  // ════════════════════════════════════════════════════════════
 
-  SliverAppBar _buildSliverAppBar(
-          final BuildContext context, final Product product) =>
-      const SliverAppBar(
-        expandedHeight: 0,
-        pinned: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: SizedBox(),
-      );
-
-  // ════════════════════════════════════════════════════════════════
-  // RESPONSIVE PRODUCT LAYOUT
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildResponsiveProductLayout(
-          final BuildContext context, final Product product) =>
-      context.responsive(
-          mobile: _buildMobileLayout(context, product),
-          desktop: _buildDesktopLayout(context, product));
-
-  SliverToBoxAdapter _buildDesktopLayout(
-          final BuildContext context, final Product product) =>
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: context.sectionPadding,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1600),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Gallery Section - 55%
-                Expanded(
-                  flex: 55,
-                  child: _buildGallerySection(
-                    context,
-                    product,
-                    height: context.hp(75),
-                  ),
-                ),
-                SizedBox(width: context.spacingLarge * 2),
-
-                // Info Section - 45%
-                Expanded(
-                  flex: 45,
-                  child: _buildStickyInfoSection(context, product),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-  SliverList _buildMobileLayout(
-          final BuildContext context, final Product product) =>
-      SliverList(
-        delegate: SliverChildListDelegate([
-          Padding(
-            padding: context.pagePadding,
-            child: Column(
-              children: [
-                _buildGallerySection(
-                  context,
-                  product,
-                  height: context.hp(50),
-                  isMobile: true,
-                ),
-                SizedBox(height: context.spacingLarge),
-                _buildProductInfo(context, product, isMobile: true),
-              ],
-            ),
-          ),
-        ]),
-      );
-
-  // ════════════════════════════════════════════════════════════════
-  // ════════════════════════════════════════════════════════════════
-  // GALLERY SECTION
-  // ════════════════════════════════════════════════════════════════
-
-  /// Ürünün kategorisine göre canlı bir zemin rengi döndürür (referans
-  /// tasarımlardaki dolgun, tek renkli arka plan hissi için).
-  Color _heroColor(final Product product) =>
-      defaultCategoryMeta[product.category]?.color ?? AppColors.primary;
-
-  Widget _buildGallerySection(
-    final BuildContext context,
-    final Product product, {
-    required final double height,
-    final bool isMobile = false,
-  }) =>
-      Column(
+  Widget _buildGallery(final BuildContext context, final Product product,
+      {required final double height}) {
+    return FadeTransition(
+      opacity: _stagger(0),
+      child: Column(
         children: [
-          // Main Image Container — artık kategori rengine göre canlı bir
-          // gradyan zemin üzerinde "yüzen" ürün görseli + dalgalı alt kenar.
-          ClipPath(
-            clipper: const WaveBottomClipper(),
-            child: Container(
-              height: height,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    _heroColor(product).withOpacity(0.85),
-                    _heroColor(product),
-                  ],
+          Container(
+            height: height,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.textPrimary.withOpacity(0.06),
+                  blurRadius: 32,
+                  offset: const Offset(0, 12),
                 ),
-              ),
+              ],
+            ),
             child: Stack(
               children: [
-                // Background Pattern
-                _buildBackgroundPattern(),
-
-                // Main Image
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(
-                        context.responsive(mobile: 24, desktop: 48)),
-                    child: Hero(
-                      tag: 'product-${product.id}',
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 350),
-                        transitionBuilder: (final child, final animation) =>
-                            FadeTransition(
-                          opacity: animation,
-                          child: ScaleTransition(
-                            scale: Tween<double>(begin: 0.96, end: 1.0)
-                                .animate(animation),
-                            child: child,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          key: ValueKey(_selectedImageIndex),
-                          borderRadius: BorderRadius.circular(16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(28),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (final child, final anim) =>
+                        FadeTransition(opacity: anim, child: child),
+                    child: Padding(
+                      key: ValueKey(_selectedImageIndex),
+                      padding: EdgeInsets.all(
+                          context.responsive(mobile: 28, desktop: 48)),
+                      child: Hero(
+                        tag: 'product-${product.id}',
+                        child: GestureDetector(
+                          onTap: () => _openFullscreenGallery(context, product),
                           child: Image.network(
                             product.imagesUrl[_selectedImageIndex],
                             fit: BoxFit.contain,
                             width: double.infinity,
                             height: double.infinity,
+                            errorBuilder: (final c, final e, final s) => const Icon(
+                                Icons.chair_alt_rounded,
+                                size: 64,
+                                color: AppColors.textTertiary),
                           ),
                         ),
                       ),
@@ -322,1505 +272,638 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                 ),
 
-                // Navigation Arrows
-                if (product.imagesUrl.length > 1)
-                  Positioned.fill(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildImageNavigationButton(
-                          icon: Icons.chevron_left_rounded,
-                          onTap: () {
-                            setState(() {
-                              _selectedImageIndex = (_selectedImageIndex -
-                                      1 +
-                                      product.imagesUrl.length) %
-                                  product.imagesUrl.length;
-                            });
-                          },
-                        ),
-                        _buildImageNavigationButton(
-                          icon: Icons.chevron_right_rounded,
-                          onTap: () {
-                            setState(() {
-                              _selectedImageIndex = (_selectedImageIndex + 1) %
-                                  product.imagesUrl.length;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
-                // Top Actions
+                // Durum rozeti — sade, tek renk, ürünün gerçek durumunu yansıtır.
                 Positioned(
-                  top: MediaQuery.of(context).padding.top > 0
-                      ? MediaQuery.of(context).padding.top
-                      : 10,
-                  left: 20,
-                  right: 20,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const GlassmorphismBackButton(
-                          backgroundColor: AppColors.primary),
-                      Row(
-                        children: [
-                          GlassmorphismIconButton(
-                            icon: _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            onPressed: () =>
-                                setState(() => _isFavorite = !_isFavorite),
-                            backgroundColor: _isFavorite
-                                ? AppColors.error
-                                : AppColors.primary,
-                          ),
-                          const SizedBox(width: 12),
-                          GlassmorphismIconButton(
-                            icon: Icons.share_outlined,
-                            onPressed: () {
-                              FurnitureShareService.shareProduct(
-                                  productId: product.id,
-                                  productName: product.name);
-                            },
-                            backgroundColor: AppColors.primary,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Image Counter
-                Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface.withOpacity(0.95),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: AppColors.border, width: 1.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.textPrimary.withOpacity(0.1),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      '${_selectedImageIndex + 1} / ${product.imagesUrl.length}',
-                      style: TextStyle(
-                        fontSize: context.captionSize,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Durum Rozeti (SIFIR / İKİNCİ EL) — artık ürünün gerçek
-                // durumuna göre renk ve metin değiştiriyor.
-                Positioned(
-                  top: 20,
-                  left: 20,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Container(
-                      key: ValueKey(product.isSpotProduct),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        gradient: product.isSpotProduct
-                            ? const LinearGradient(colors: [
-                                AppColors.accentDark,
-                                AppColors.accent,
-                              ])
-                            : AppColors.primaryGradient,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: (product.isSpotProduct
-                                    ? AppColors.accent
-                                    : AppColors.primary)
-                                .withOpacity(0.35),
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            product.isSpotProduct
-                                ? Icons.inventory_2_rounded
-                                : Icons.new_releases_rounded,
-                            size: 13,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            product.isSpotProduct
-                                ? 'İKİNCİ EL · TEK PARÇA'
-                                : 'SIFIR ÜRÜN',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  top: 18,
+                  left: 18,
+                  child: _StatusPill(product: product),
                 ),
 
                 if (product.isSold)
                   Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.2), // Hafif karartma
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Center(
-                        child: Transform.rotate(
-                          angle: -0.2, // Hafif yan yatırılmış
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 15),
-                            decoration: BoxDecoration(
-                              color: AppColors.error,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 20)
-                              ],
-                            ),
-                            child: Text(
-                              context.l10n.sold,
-                              style: const TextStyle(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.45),
+                        alignment: Alignment.center,
+                        child: const Text('SATILDI',
+                            style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 32,
+                                fontSize: 22,
                                 fontWeight: FontWeight.w900,
-                                letterSpacing: 4,
-                              ),
-                            ),
-                          ),
-                        ),
+                                letterSpacing: 2)),
+                      ),
+                    ),
+                  ),
+
+                // Sayaç
+                if (product.imagesUrl.length > 1)
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.55),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${_selectedImageIndex + 1}/${product.imagesUrl.length}',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
               ],
             ),
           ),
-          ),
-
-          SizedBox(height: context.spacingLarge),
-
-          // Thumbnail Gallery
-          _buildThumbnailGallery(context, product),
+          if (product.imagesUrl.length > 1) ...[
+            const SizedBox(height: 14),
+            _buildThumbnails(product),
+          ],
         ],
-      );
+      ),
+    );
+  }
 
-  Widget _buildThumbnailGallery(
-          final BuildContext context, final Product product) =>
-      Container(
-        height: context.responsive(mobile: 80, desktop: 100),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border, width: 1.5),
-        ),
+  Widget _buildThumbnails(final Product product) => SizedBox(
+        height: 68,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
           itemCount: product.imagesUrl.length,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
-          itemBuilder: (final _, final i) => GestureDetector(
-            onTap: () => setState(() => _selectedImageIndex = i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: context.responsive(mobile: 70, desktop: 80),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: i == _selectedImageIndex
-                      ? AppColors.primary
-                      : AppColors.border,
-                  width: i == _selectedImageIndex ? 3 : 1.5,
+          separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+          itemBuilder: (final context, final index) {
+            final selected = index == _selectedImageIndex;
+            return GestureDetector(
+              onTap: () => setState(() => _selectedImageIndex = index),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 68,
+                height: 68,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: selected ? AppColors.accent : AppColors.border,
+                    width: selected ? 2 : 1,
+                  ),
+                  boxShadow: selected
+                      ? [
+                          BoxShadow(
+                              color: AppColors.accent.withOpacity(0.25),
+                              blurRadius: 10)
+                        ]
+                      : null,
                 ),
-                boxShadow: i == _selectedImageIndex
-                    ? [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                        ),
-                      ]
-                    : null,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  product.imagesUrl[i],
-                  fit: BoxFit.cover,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.network(product.imagesUrl[index],
+                      fit: BoxFit.cover,
+                      errorBuilder: (final c, final e, final s) =>
+                          const SizedBox.shrink()),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       );
 
-  Widget _buildImageNavigationButton(
-          {required final IconData icon, required final VoidCallback onTap}) =>
-      Padding(
-        padding: const EdgeInsets.all(20),
-        child: Material(
-          color: AppColors.surface.withOpacity(0.95),
-          borderRadius: BorderRadius.circular(16),
-          elevation: 4,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Icon(icon, color: AppColors.textPrimary, size: 32),
-            ),
-          ),
-        ),
-      );
+  // ════════════════════════════════════════════════════════════
+  // BİLGİ KARTI
+  // ════════════════════════════════════════════════════════════
 
-  Widget _buildBackgroundPattern() => Opacity(
-        opacity: 0.02,
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80',
-              ),
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                AppColors.textPrimary,
-                BlendMode.modulate,
-              ),
-            ),
-          ),
-        ),
-      );
+  Widget _buildInfo(final BuildContext context, final Product product) {
+    final meta = defaultCategoryMeta[product.category];
 
-  // ════════════════════════════════════════════════════════════════
-  // INFO SECTION (STICKY ON DESKTOP)
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildStickyInfoSection(
-          final BuildContext context, final Product product) =>
-      SingleChildScrollView(child: _buildProductInfo(context, product));
-
-  Widget _buildProductInfo(final BuildContext context, final Product product,
-          {final bool isMobile = false}) =>
-      FadeTransition(
-        opacity: _entranceFade,
-        child: SlideTransition(
-          position: _entranceSlide,
-          child: Container(
-        padding: EdgeInsets.all(context.responsive(mobile: 24, desktop: 40)),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.border, width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.05),
-              blurRadius: 40,
-              spreadRadius: 5,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+    return FadeTransition(
+      opacity: _stagger(0.15),
+      child: SlideTransition(
+        position: Tween<Offset>(
+                begin: const Offset(0, 0.03), end: Offset.zero)
+            .animate(_stagger(0.15)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Category Badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                product.category.label(context),
-                style: TextStyle(
-                  fontSize: context.captionSize,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primary,
-                  letterSpacing: 1.5,
-                ),
-              ),
-            ),
-
-            SizedBox(height: context.spacing),
-
-            // Product Title
-            Text(
-              product.name,
-              style: TextStyle(
-                fontSize: context.responsive(mobile: 28, desktop: 42),
-                fontWeight: FontWeight.w900,
-                color: AppColors.textPrimary,
-                height: 1.1,
-                letterSpacing: -0.5,
-              ),
-            ),
-
-            SizedBox(height: context.spacing),
-
-            // Rating & Reviews
+            // Kategori etiketi
             Row(
               children: [
-                ...List.generate(
-                  5,
-                  (final i) => Icon(
-                    i < 4 ? Icons.star : Icons.star_border,
-                    color: AppColors.accent,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
+                if (meta != null) ...[
+                  Icon(meta.icon, size: 15, color: meta.color),
+                  const SizedBox(width: 6),
+                ],
                 Text(
-                  '4.8',
+                  product.category.label(context).toUpperCase(),
                   style: TextStyle(
-                    fontSize: context.bodySize,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '(127 değerlendirme)',
-                  style: TextStyle(
-                    fontSize: context.captionSize,
-                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: meta?.color ?? AppColors.textSecondary,
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 10),
 
-            SizedBox(height: context.spacingLarge),
-
-            // Price Section
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: context.spacing,
-                horizontal: context.spacingLarge,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.secondary.withOpacity(0.3),
-                    AppColors.secondary.withOpacity(0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border, width: 1.5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.l10n.price.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: context.captionSize,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textSecondary,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '₺',
-                            style: TextStyle(
-                              fontSize:
-                                  context.responsive(mobile: 20, desktop: 24),
-                              fontWeight: FontWeight.w300,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          CountUpOnVisible(
-                            targetValue: product.price,
-                            decimalDigits: 0,
-                            duration: const Duration(milliseconds: 900),
-                            style: TextStyle(
-                              fontSize:
-                                  context.responsive(mobile: 48, desktop: 64),
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.textPrimary,
-                              height: 0.9,
-                              letterSpacing: -2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: AppColors.success.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border:
-                          Border.all(color: AppColors.success.withOpacity(0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.trending_down,
-                          color: AppColors.success,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '%15',
-                          style: TextStyle(
-                            fontSize: context.bodySize,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.success,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            // Ürün adı
+            Text(
+              product.name,
+              style: TextStyle(
+                fontSize: context.responsive(mobile: 24, desktop: 30),
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+                height: 1.2,
               ),
             ),
+            const SizedBox(height: 16),
 
-            SizedBox(height: context.spacingLarge * 1.5),
+            // Fiyat
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                CountUpOnVisible(
+                  targetValue: product.price,
+                  decimalDigits: 0,
+                  duration: const Duration(milliseconds: 700),
+                  style: TextStyle(
+                    fontSize: context.responsive(mobile: 34, desktop: 42),
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -1,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 6, left: 4),
+                  child: Text('₺',
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textSecondary)),
+                ),
+              ],
+            ),
+            SizedBox(height: context.spacingLarge),
 
-            // Renk seçenekleri (sıfır ürün) / Tek parça rozeti (ikinci el)
+            // Renk seçenekleri / tek parça bilgisi
             ProductColorSection(product: product),
+            SizedBox(height: context.spacingLarge),
 
-            SizedBox(height: context.spacingLarge * 1.5),
+            // Açıklama
+            _buildDescription(context, product),
+            SizedBox(height: context.spacingLarge),
 
-            // Description
-            _buildDescriptionSection(context, product),
+            // Özellik ızgarası
+            _buildSpecs(context, product),
+            SizedBox(height: context.spacingLarge),
 
-            SizedBox(height: context.spacingLarge * 2),
+            // Satıcı kartı
+            _buildSellerCard(context),
+            SizedBox(height: context.spacingLarge),
 
-            // Action Buttons
-            _buildActionButtons(context, product, isMobile),
-
-            SizedBox(height: context.spacingLarge * 2),
-
-            // Product Details Grid
-            _buildDetailsGrid(context, product),
-
-            SizedBox(height: context.spacingLarge * 2),
-
-            // Seller Info
-            _buildSellerInfo(context),
+            // Masaüstünde aksiyon butonları burada (mobilde sabit alt bar var)
+            if (!context.isMobile) _buildActionButtons(product),
           ],
         ),
       ),
-        ),
-      );
+    );
+  }
 
-  Widget _buildDescriptionSection(
-      final BuildContext context, final Product product) {
-    final shortDesc = product.desc.length > 200
-        ? '${product.desc.substring(0, 200)}...'
-        : product.desc;
+  Widget _buildDescription(final BuildContext context, final Product product) {
+    final isLong = product.desc.length > 140;
+    final text = _showFullDescription || !isLong
+        ? product.desc
+        : '${product.desc.substring(0, 140)}…';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 4,
-              height: 24,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              context.l10n.explanation,
-              style: TextStyle(
-                fontSize: context.bodySize,
-                fontWeight: FontWeight.w900,
-                color: AppColors.textPrimary,
-                letterSpacing: 2,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        AnimatedCrossFade(
-          firstChild: Text(
-            shortDesc,
-            style: TextStyle(
-              fontSize: context.bodySize,
-              height: 1.8,
-              color: AppColors.textPrimary.withOpacity(0.8),
-            ),
-          ),
-          secondChild: Text(
-            product.desc,
-            style: TextStyle(
-              fontSize: context.bodySize,
-              height: 1.8,
-              color: AppColors.textPrimary.withOpacity(0.8),
-            ),
-          ),
-          crossFadeState: _showMoreDescription
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-          duration: const Duration(milliseconds: 300),
-        ),
-        if (product.desc.length > 200) ...[
-          const SizedBox(height: 12),
-          TextButton.icon(
-            onPressed: () =>
-                setState(() => _showMoreDescription = !_showMoreDescription),
-            icon: Icon(
-              _showMoreDescription ? Icons.expand_less : Icons.expand_more,
-              color: AppColors.primary,
-              size: 20,
-            ),
-            label: Text(
-              _showMoreDescription ? 'DAHA AZ GÖSTER' : 'DEVAMINI OKU',
-              style: TextStyle(
-                fontSize: context.captionSize,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
-                letterSpacing: 1,
+        const Text('Açıklama',
+            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+        const SizedBox(height: 8),
+        Text(text,
+            style: const TextStyle(
+                color: AppColors.textSecondary, fontSize: 14, height: 1.55)),
+        if (isLong)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: GestureDetector(
+              onTap: () =>
+                  setState(() => _showFullDescription = !_showFullDescription),
+              child: Text(
+                _showFullDescription ? 'Daha az göster' : 'Devamını oku',
+                style: const TextStyle(
+                    color: AppColors.accentDark,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13),
               ),
             ),
           ),
-        ],
       ],
     );
   }
 
-  Widget _buildActionButtons(
-      final BuildContext context, final Product product, final bool isMobile) {
-    if (product.isSold) return _buildSoldBottomNotification(context);
-
-    void contactWhatsApp() => FurnitureShareService.contactAboutProduct(
-          productId: product.id,
-          productName: product.name,
-          price: product.price,
-        );
-
-    void callPhone() => SaglamSpotCommunication.makeCall();
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Eğer genişlik 500px'den fazlaysa butonları yan yana diz (Tablet/Desktop)
-        if (constraints.maxWidth > 500) {
-          return Row(
-            children: [
-              Expanded(
-                  child: _buildPrimaryButton(context,
-                      label: 'WHATSAPP\'TAN YAZ',
-                      icon: Icons.chat_bubble_rounded,
-                      onTap: contactWhatsApp)),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: _buildSecondaryButton(context,
-                      label: 'ARA', icon: Icons.call_rounded, onTap: callPhone)),
-            ],
-          );
-        }
-
-        // Mobilde alt alta diz (Zaten kaydırılabilir alan içindeyiz)
-        return Column(
-          children: [
-            _buildPrimaryButton(context,
-                label: 'WHATSAPP\'TAN YAZ',
-                icon: Icons.chat_bubble_rounded,
-                onTap: contactWhatsApp),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildSecondaryButton(context,
-                        label: 'TELEFON ET',
-                        icon: Icons.call_rounded,
-                        onTap: callPhone)),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: _buildSecondaryButton(context,
-                        label: 'PAYLAŞ',
-                        icon: Icons.share_rounded,
-                        onTap: () => FurnitureShareService.shareProduct(
-                            productId: product.id,
-                            productName: product.name,
-                            price: product.price.toStringAsFixed(0)))),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildPrimaryButton(final BuildContext context,
-      {required final String label,
-      required final IconData icon,
-      required final VoidCallback onTap}) {
-    return Container(
-      // Küçük ekranlarda 50px, büyük ekranlarda 60px
-      height: context.responsive(mobile: 50.0, tablet: 56.0, desktop: 60.0),
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4))
-        ],
+  Widget _buildSpecs(final BuildContext context, final Product product) {
+    final specs = [
+      (Icons.category_rounded, 'Kategori', product.category.label(context)),
+      (
+        product.isSpotProduct
+            ? Icons.inventory_2_rounded
+            : Icons.new_releases_rounded,
+        'Durum',
+        product.isSpotProduct ? 'İkinci El' : 'Sıfır Ürün',
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Center(
+      (Icons.local_shipping_rounded, 'Teslimat', '1-2 Gün İçinde'),
+      (Icons.location_on_rounded, 'Konum', 'İçerenköy, İstanbul'),
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 2.6,
+      ),
+      itemCount: specs.length,
+      itemBuilder: (final context, final index) {
+        final (icon, label, value) = specs[index];
+        return FadeTransition(
+          opacity: _stagger(0.3 + index * 0.05),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border),
+            ),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon,
-                    color: Colors.white,
-                    size: context.responsive(mobile: 18.0, desktop: 24.0)),
-                const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: context.responsive(mobile: 13.0, desktop: 16.0),
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, size: 17, color: AppColors.onSecondary),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(label,
+                          style: const TextStyle(
+                              fontSize: 10.5, color: AppColors.textTertiary)),
+                      Text(value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary)),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildSecondaryButton(final BuildContext context,
-          {required final String label,
-          required final IconData icon,
-          required final VoidCallback onTap}) =>
-      Container(
-        height: 56,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border, width: 2),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: AppColors.textPrimary, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: context.captionSize,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                    letterSpacing: 0.5,
-                  ),
+  Widget _buildSellerCard(final BuildContext context) => GestureDetector(
+        onTap: () => NavigationHandler.goToAbout(context),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: const BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  shape: BoxShape.circle,
                 ),
-              ],
-            ),
+                child: const Icon(Icons.storefront_rounded,
+                    color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Text('Sağlam Spot',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800, fontSize: 14)),
+                        SizedBox(width: 4),
+                        Icon(Icons.verified_rounded,
+                            size: 14, color: AppColors.success),
+                      ],
+                    ),
+                    Text('20 yıllık esnaf güvencesi · İçerenköy',
+                        style: TextStyle(
+                            fontSize: 11.5, color: AppColors.textTertiary)),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded,
+                  color: AppColors.textTertiary),
+            ],
           ),
         ),
       );
 
-  Widget _buildDetailsGrid(final BuildContext context, final Product product) {
-    final details = [
-      {
-        'icon': Icons.category_rounded,
-        'label': 'Kategori',
-        'value': product.category.label(context),
-        'color': AppColors.primary
-      },
-      {
-        'icon': Icons.verified_outlined,
-        'label': 'Durum',
-        'value': product.isSpotProduct ? 'İkinci El' : 'Sıfır',
-        'color': AppColors.success
-      },
-      {
-        'icon': Icons.local_shipping_outlined,
-        'label': 'Teslimat',
-        'value': '1-2 Gün',
-        'color': AppColors.info
-      },
-      {
-        'icon': Icons.location_on_outlined,
-        'label': 'Konum',
-        'value': 'İstanbul',
-        'color': AppColors.accent
-      },
-    ];
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Ekran genişliğine göre sütun sayısını belirliyoruz
-        final int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
-
-        return GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            // Sabit yükseklik vererek taşmayı engelliyoruz
-            mainAxisExtent:
-                context.responsive(mobile: 75.0, tablet: 85.0, desktop: 90.0),
+  Widget _buildActionButtons(final Product product) {
+    if (product.isSold) return const SizedBox.shrink();
+    return Row(
+      children: [
+        Expanded(
+          child: _PrimaryButton(
+            label: "WhatsApp'tan Yaz",
+            icon: Icons.chat_bubble_rounded,
+            onTap: () => FurnitureShareService.contactAboutProduct(
+              productId: product.id,
+              productName: product.name,
+              price: product.price,
+            ),
           ),
-          itemCount: details.length,
-          itemBuilder: (final context, final index) {
-            final detail = details[index];
-            final Animation<double> staggered = CurvedAnimation(
-              parent: _entranceController,
-              curve: Interval(
-                (index * 0.1).clamp(0.0, 0.6),
-                1.0,
-                curve: Curves.easeOut,
-              ),
-            );
-
-            return AnimatedBuilder(
-              animation: staggered,
-              builder: (final context, final child) => Opacity(
-                opacity: staggered.value,
-                child: Transform.translate(
-                  offset: Offset(0, (1 - staggered.value) * 12),
-                  child: child,
-                ),
-              ),
-              child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    detail['icon'] as IconData,
-                    size: context.responsive(mobile: 18.0, desktop: 22.0),
-                    color: detail['color'] as Color,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          detail['label'] as String,
-                          style: TextStyle(
-                            fontSize:
-                                context.responsive(mobile: 10.0, desktop: 12.0),
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          detail['value'] as String,
-                          style: TextStyle(
-                            fontSize:
-                                context.responsive(mobile: 11.0, desktop: 14.0),
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              ),
-            );
-          },
-        );
-      },
+        ),
+        const SizedBox(width: 12),
+        _RoundIconButton(
+          size: 52,
+          icon: Icons.call_rounded,
+          filled: true,
+          onTap: SaglamSpotCommunication.makeCall,
+        ),
+      ],
     );
   }
 
-  Widget _buildSellerInfo(final BuildContext context) => Container(
-        padding: EdgeInsets.all(context.spacing),
+  // ════════════════════════════════════════════════════════════
+  // BENZER ÜRÜNLER
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildSimilarSection(
+      final BuildContext context, final List<Product> similar) {
+    return Padding(
+      padding: EdgeInsets.only(top: context.spacingLarge, bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+            child: const Text('Benzer Ürünler',
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            height: 220,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding:
+                  EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+              itemCount: similar.length,
+              separatorBuilder: (final _, final __) => const SizedBox(width: 14),
+              itemBuilder: (final context, final index) =>
+                  _SimilarProductCard(product: similar[index]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // MOBİL SABİT ALT BAR
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildStickyBar(final BuildContext context, final Product product) {
+    if (product.isSold) return const SizedBox.shrink();
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+            16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 20,
+                offset: const Offset(0, -6)),
+          ],
         ),
         child: Row(
           children: [
-            Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Image.asset('assets/images/saglam_spot_logo.png')),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Sağlam Spot',
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.verified,
-                          size: 14, color: AppColors.success),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Onaylı Satıcı',
-                        style: TextStyle(
-                          fontSize: context.captionSize,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            _RoundIconButton(
+              size: 52,
+              icon: Icons.call_rounded,
+              filled: true,
+              onTap: SaglamSpotCommunication.makeCall,
             ),
-            IconButton(
-              onPressed: () => NavigationHandler.goToAbout(context),
-              icon: const Icon(Icons.chevron_right),
-              color: AppColors.textPrimary,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _PrimaryButton(
+                label: "WhatsApp'tan Yaz",
+                icon: Icons.chat_bubble_rounded,
+                onTap: () => FurnitureShareService.contactAboutProduct(
+                  productId: product.id,
+                  productName: product.name,
+                  price: product.price,
+                ),
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// KÜÇÜK YARDIMCI WIDGET'LAR
+// ══════════════════════════════════════════════════════════════
+
+class _RoundIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final double size;
+  final bool filled;
+  final Color? iconColor;
+
+  const _RoundIconButton({
+    required this.icon,
+    required this.onTap,
+    this.size = 40,
+    this.filled = false,
+    this.iconColor,
+  });
+
+  @override
+  Widget build(final BuildContext context) => Material(
+        color: filled ? AppColors.secondary : Colors.white,
+        shape: const CircleBorder(),
+        elevation: filled ? 0 : 2,
+        shadowColor: Colors.black.withOpacity(0.1),
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: SizedBox(
+            width: size,
+            height: size,
+            child: Icon(icon,
+                size: size * 0.42,
+                color: iconColor ??
+                    (filled ? AppColors.primary : AppColors.textPrimary)),
+          ),
+        ),
       );
+}
 
-  // ════════════════════════════════════════════════════════════════
-  // TAB SECTION (Details, Shipping, Reviews)
-  // ════════════════════════════════════════════════════════════════
+class _PrimaryButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
 
-  Widget _buildTabSection(final BuildContext context, final Product product) =>
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: context.sectionPadding,
+  const _PrimaryButton(
+      {required this.label, required this.icon, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => Material(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            height: 52,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: Colors.white, size: 18),
+                const SizedBox(width: 8),
+                Text(label,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14.5)),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
+class _StatusPill extends StatelessWidget {
+  final Product product;
+
+  const _StatusPill({required this.product});
+
+  @override
+  Widget build(final BuildContext context) {
+    final bool spot = product.isSpotProduct;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: (spot ? AppColors.accentDark : AppColors.success)
+            .withOpacity(0.95),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            spot ? Icons.inventory_2_rounded : Icons.new_releases_rounded,
+            size: 12,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            spot ? 'İKİNCİ EL' : 'SIFIR ÜRÜN',
+            style: const TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 0.8),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SimilarProductCard extends StatelessWidget {
+  final Product product;
+
+  const _SimilarProductCard({required this.product});
+
+  @override
+  Widget build(final BuildContext context) => GestureDetector(
+        onTap: () => NavigationHandler.goToProduct(
+          context: context,
+          productId: product.id,
+          productSlug: product.name.toSlug(),
+        ),
+        child: Container(
+          width: 160,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.border),
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TabBar(
-                controller: _tabController,
-                // ... styling ...
-                tabs: const [
-                  Tab(text: 'DETAYLAR'),
-                  Tab(text: 'TESLİMAT'),
-                  Tab(text: 'DEĞERLENDİRMELER'),
-                ],
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
+                child: Image.network(
+                  product.imagesUrl.first,
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (final c, final e, final s) => Container(
+                      height: 120,
+                      color: AppColors.secondary,
+                      child: const Icon(Icons.chair_alt_rounded)),
+                ),
               ),
-              // SABİT 300 YERİNE RESPONSIVE YÜKSEKLİK
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                // Mobilde içerik taşmaması için daha esnek bir alan veriyoruz
-                height: context.responsive(
-                    mobile: 350.0, tablet: 400.0, desktop: 500.0),
-                child: TabBarView(
-                  controller: _tabController,
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildDetailsTab(context, product),
-                    _buildShippingTab(context),
-                    _buildReviewsTab(context),
+                    Text(product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 12.5, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    Text('₺${product.price.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.textPrimary)),
                   ],
                 ),
               ),
             ],
-          ),
-        ),
-      );
-
-  Widget _buildDetailsTab(final BuildContext context, final Product product) =>
-      Container(
-        margin: const EdgeInsets.only(top: 24),
-        padding: EdgeInsets.all(context.spacingLarge),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: SingleChildScrollView(
-          child: Text(
-            product.desc,
-            style: TextStyle(
-              fontSize: context.bodySize,
-              height: 1.8,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-      );
-
-  Widget _buildShippingTab(final BuildContext context) => Container(
-        margin: const EdgeInsets.only(top: 24),
-        child: ListView(
-          children: [
-            _buildInfoTile(
-              icon: Icons.local_shipping_outlined,
-              title: 'Ücretsiz Kargo',
-              subtitle: 'Maalesef Yakın Çevrelerimize',
-            ),
-            _buildInfoTile(
-              icon: Icons.access_time,
-              title: 'Hızlı Teslimat',
-              subtitle: '1-2 iş günü içinde',
-            ),
-            _buildInfoTile(
-              icon: Icons.shield_outlined,
-              title: '',
-              subtitle: '',
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildReviewsTab(final BuildContext context) => Container(
-        margin: const EdgeInsets.only(top: 24),
-        child: Center(
-          child: Text(
-            'Henüz değerlendirme yok',
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: context.bodySize,
-            ),
-          ),
-        ),
-      );
-
-  Widget _buildInfoTile(
-          {required final IconData icon,
-          required final String title,
-          required final String subtitle}) =>
-      Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: AppColors.primary),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-
-  // ════════════════════════════════════════════════════════════════
-  // FEATURES SECTION
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildFeatures(final BuildContext context) => SliverToBoxAdapter(
-        child: Padding(
-          padding: context.sectionPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'ÖZELLİKLER',
-                style: TextStyle(
-                  fontSize: context.h3Size,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.textPrimary,
-                  letterSpacing: 1,
-                ),
-              ),
-              SizedBox(height: context.spacingLarge),
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: context.responsive(mobile: 2, desktop: 4),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.2,
-                children: [
-                  _buildFeatureCard(
-                    icon: Icons.verified_user_outlined,
-                    title: 'Garantimiz Yoktur',
-                    subtitle: 'X',
-                  ),
-                  _buildFeatureCard(
-                    icon: Icons.settings_outlined,
-                    title: 'Montaj',
-                    subtitle: 'Ücretsiz',
-                  ),
-                  _buildFeatureCard(
-                    icon: Icons.swap_horiz_outlined,
-                    title: 'İade Yoktur',
-                    subtitle: 'X',
-                  ),
-                  _buildFeatureCard(
-                    icon: Icons.support_agent_outlined,
-                    title: 'Destek',
-                    subtitle: '16/6',
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildFeatureCard({
-    required final IconData icon,
-    required final String title,
-    required final String subtitle,
-  }) =>
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: Colors.white, size: 28),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      );
-
-  // ════════════════════════════════════════════════════════════════
-  // REVIEWS SECTION
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildReviews(final BuildContext context) => SliverToBoxAdapter(
-        child: Padding(
-          padding: context.sectionPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'MÜŞTERİ GÖRÜŞLERİ',
-                    style: TextStyle(
-                      fontSize: context.h3Size,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: context.spacingLarge),
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  itemBuilder: (final context, final index) =>
-                      _buildReviewCard(context),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildReviewCard(final BuildContext context) => Container(
-        width: context.responsive(mobile: 280, desktop: 350),
-        margin: const EdgeInsets.only(right: 16),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'AY',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Ayşe Y.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      Row(
-                        children: List.generate(
-                          5,
-                          (final i) => const Icon(
-                            Icons.star,
-                            color: AppColors.accent,
-                            size: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Ürün çok kaliteli ve tam beklemde gibi geldi. Montajı da çok kolay oldu. Teşekkürler!',
-              style: TextStyle(
-                fontSize: context.captionSize,
-                height: 1.6,
-                color: AppColors.textPrimary.withOpacity(0.8),
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const Spacer(),
-            Text(
-              '2 gün önce',
-              style: TextStyle(
-                fontSize: context.captionSize,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      );
-
-  // ════════════════════════════════════════════════════════════════
-  // SIMILAR PRODUCTS
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildSimilarProducts(
-          final BuildContext context, final List<Product> allProducts) =>
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: context.sectionPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'BENZER ÜRÜNLER',
-                style: TextStyle(
-                  fontSize: context.h3Size,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              SizedBox(height: context.spacingLarge),
-              SizedBox(
-                height: 300,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: allProducts.length,
-                  separatorBuilder: (final _, final __) =>
-                      const SizedBox(width: 16),
-                  itemBuilder: (final context, final index) =>
-                      _buildSimilarProductCard(context, allProducts[index]),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildSimilarProductCard(
-      final BuildContext context, final Product product) {
-    return GestureDetector(
-      onTap: () {
-        final String slug = product.name.toSlug();
-
-        NavigationHandler.goToProduct(
-          context: context,
-          productId: product.id,
-          productSlug: slug,
-        );
-      },
-      child: Container(
-        width: context.responsive(mobile: 180, desktop: 220),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 180,
-              decoration: const BoxDecoration(
-                  color: AppColors.secondary,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(16))),
-              child: product.imagesUrl.isNotEmpty
-                  ? ClipRRect(
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(16)),
-                      child: Image.network(
-                        product.imagesUrl.first,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    )
-                  : const Icon(Icons.image_not_supported),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '₺${product.price.toStringAsFixed(0)}',
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // MOBILE BOTTOM BAR
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildMobileBottomBar(
-          final BuildContext context, final Product product) =>
-      Container(
-        // Padding'i responsive yapalım
-        padding:
-            EdgeInsets.all(context.responsive(mobile: 12.0, desktop: 20.0)),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          top: false, // Sadece alt tarafı koru
-          child: product.isSold
-              ? _buildSoldBottomNotification(context)
-              : IntrinsicHeight(
-                  // İçeriğin kendi boyuna göre daralmasını sağlar
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('Toplam Fiyat',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.textSecondary)),
-                            FittedBox(
-                              // Fiyat çok uzunsa küçültür, taşmayı önler
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                '₺${product.price.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w900),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Container(
-                          height: 56,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => FurnitureShareService
-                                  .contactAboutProduct(
-                                productId: product.id,
-                                productName: product.name,
-                                price: product.price,
-                              ),
-                              borderRadius: BorderRadius.circular(16),
-                              child: const Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.chat_bubble_rounded,
-                                        color: Colors.white, size: 18),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'WHATSAPP\'TAN YAZ',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w900,
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-        ),
-      );
-
-  Widget _buildSoldBottomNotification(final BuildContext context) => Container(
-        height: 56,
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: AppColors.textSecondary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16)),
-        child: const Center(
-          child: Text(
-            'ÜRÜN STOKTA YOK (SATILDI)',
-            style: TextStyle(
-                fontWeight: FontWeight.w900, color: AppColors.textSecondary),
           ),
         ),
       );

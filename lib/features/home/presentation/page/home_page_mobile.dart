@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
+import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
 import '../../../products/presentation/pages/edit_product_page.dart';
@@ -14,12 +17,29 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_mutation_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 
-class HomePage extends ConsumerWidget {
+/// Mobil Yönetici Paneli — Ana Sayfa. Stok/satılan ürünleri yönetmek için
+/// kategoriye göre filtrelenebilir, hızlı özet istatistikli bir kontrol
+/// paneli.
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    // İşlem başarılı olduğunda listeyi otomatik yenile
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController = TabController(length: 2, vsync: this);
+  ProductCategory? _selectedCategory;
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
     ref.listen(productMutationProvider, (final _, final next) {
       if (next is AsyncData) ref.invalidate(productsProvider);
     });
@@ -28,145 +48,189 @@ class HomePage extends ConsumerWidget {
     final inStock = ref.watch(availableProductsProvider);
     final sold = ref.watch(soldProductsProvider);
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: _buildAppBar(inStock.length, sold.length),
-        body: productsAsync.when(
-          loading: () => const Center(
-              child: CircularProgressIndicator(color: AppColors.accent)),
-          error: (final e, final _) => Center(child: Text('Hata: $e')),
-          data: (final _) => Column(
-            children: [
-              const AdBannerWidget(),
-              Expanded(
-                child: TabBarView(
-                  physics: const BouncingScrollPhysics(),
-                  children: [
-                    _ProductGrid(products: inStock),
-                    _ProductGrid(products: sold),
-                  ],
-                ),
-              ),
-              const AdBannerWidget(),
-            ],
-          ),
-        ),
-        floatingActionButton: _buildLuxuryFAB(context),
-      ),
-    );
-  }
+    List<Product> filtered(final List<Product> list) => _selectedCategory == null
+        ? list
+        : list.where((final p) => p.category == _selectedCategory).toList();
 
-  PreferredSizeWidget _buildAppBar(final int stock, final int sold) {
-    return AppBar(
+    return Scaffold(
       backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: false,
-      // Daha modern bir sol hizalama
-      title: const Padding(
-        padding: EdgeInsets.only(left: 4),
-        child: Text(
-          'Yönetici Paneli',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w900,
-            fontSize: 26, // Daha iddialı bir başlık
-            letterSpacing: -0.5,
-          ),
-        ),
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
-        child: Column(
+      appBar: _buildAppBar(context),
+      body: productsAsync.when(
+        loading: () =>
+            const Center(child: CircularProgressIndicator(color: AppColors.accent)),
+        error: (final e, final _) => Center(child: Text('Hata: $e')),
+        data: (final _) => Column(
           children: [
-            // TabBar'ı taşıyan ana yapı
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white, // Kart rengiyle uyumlu
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: TabBar(
-                  // Gösterge (Seçili Alan) Ayarları
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicator: BoxDecoration(
-                    gradient: AppColors.accentGradient, // Premium degrade
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  // Yazı Stilleri
-                  labelColor: Colors.white,
-                  unselectedLabelColor: AppColors.textSecondary,
-                  labelStyle: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  // Çizgileri kaldır
-                  dividerColor: Colors.transparent,
-                  tabs: [
-                    _buildTab('STOKTA', stock),
-                    _buildTab('SATILDI', sold),
-                  ],
-                ),
+            _buildStatsRow(inStock.length, sold.length),
+            _buildTabBar(inStock.length, sold.length),
+            DynamicCategoryChips(
+              selected: _selectedCategory,
+              onSelect: (final c) => setState(() => _selectedCategory = c),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+            const SizedBox(height: 4),
+            const AdBannerWidget(),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  _ProductGrid(products: filtered(inStock)),
+                  _ProductGrid(products: filtered(sold)),
+                ],
               ),
             ),
-            // Reklam alanı (Opsiyonel: Eğer hala buradaysa)
-            // const AdBannerWidget(),
+            const AdBannerWidget(),
           ],
         ),
       ),
+      floatingActionButton: _buildAddButton(context),
     );
   }
 
-// Tab içeriği için yardımcı fonksiyon (Sayıyı şık bir baloncuk içinde gösterir)
-  Widget _buildTab(final String label, final int count) {
-    return Tab(
-      height: 44,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(label),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              count.toString(),
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+  PreferredSizeWidget _buildAppBar(final BuildContext context) => AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        centerTitle: false,
+        title: const Padding(
+          padding: EdgeInsets.only(left: 4),
+          child: Text(
+            'Yönetici Paneli',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w900,
+              fontSize: 24,
+              letterSpacing: -0.5,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      );
 
-  Widget _buildLuxuryFAB(final BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () => Navigator.push(context,
-          MaterialPageRoute(builder: (final _) => const AddProductPage())),
-      backgroundColor: AppColors.accent,
-      icon: const Icon(Icons.add, color: Colors.white),
-      label: const Text('Ürün Ekle',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-    );
-  }
+  Widget _buildStatsRow(final int stock, final int sold) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        child: Row(
+          children: [
+            Expanded(
+                child: _StatCard(
+                    label: 'Stokta',
+                    value: '$stock',
+                    icon: Icons.inventory_2_rounded,
+                    color: AppColors.success)),
+            const SizedBox(width: 10),
+            Expanded(
+                child: _StatCard(
+                    label: 'Satıldı',
+                    value: '$sold',
+                    icon: Icons.check_circle_rounded,
+                    color: AppColors.accentDark)),
+            const SizedBox(width: 10),
+            Expanded(
+                child: _StatCard(
+                    label: 'Toplam',
+                    value: '${stock + sold}',
+                    icon: Icons.widgets_rounded,
+                    color: AppColors.info)),
+          ],
+        ),
+      );
+
+  Widget _buildTabBar(final int stock, final int sold) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10)),
+            ],
+          ),
+          child: TabBar(
+            controller: _tabController,
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicator: BoxDecoration(
+              gradient: AppColors.accentGradient,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            labelColor: Colors.white,
+            unselectedLabelColor: AppColors.textSecondary,
+            labelStyle: const TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 0.5),
+            unselectedLabelStyle:
+                const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            dividerColor: Colors.transparent,
+            tabs: [_buildTab('STOKTA', stock), _buildTab('SATILDI', sold)],
+          ),
+        ),
+      );
+
+  Widget _buildTab(final String label, final int count) => Tab(
+        height: 44,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(label),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(count.toString(),
+                  style:
+                      const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildAddButton(final BuildContext context) => FloatingActionButton.extended(
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (final _) => const AddProductPage())),
+        backgroundColor: AppColors.accent,
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text('Ürün Ekle',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      );
+}
+
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatCard(
+      {required this.label,
+      required this.value,
+      required this.icon,
+      required this.color});
+
+  @override
+  Widget build(final BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 18, color: color),
+            const SizedBox(height: 6),
+            Text(value,
+                style: const TextStyle(
+                    fontSize: 17, fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary)),
+            Text(label,
+                style: const TextStyle(fontSize: 10.5, color: AppColors.textTertiary)),
+          ],
+        ),
+      );
 }
 
 class _ProductGrid extends StatelessWidget {
@@ -176,13 +240,24 @@ class _ProductGrid extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    if (products.isEmpty) return const Center(child: Text('Ürün bulunamadı'));
+    if (products.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.inbox_rounded, size: 48, color: AppColors.textTertiary),
+            SizedBox(height: 10),
+            Text('Bu kategoride ürün bulunamadı',
+                style: TextStyle(color: AppColors.textTertiary)),
+          ],
+        ),
+      );
+    }
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: context.gridColumns(2),
-        // Görsel büyüdüğü için oranı 0.65'ten 0.58'e çektik (Daha uzun kartlar)
         childAspectRatio: 0.58,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
@@ -192,40 +267,61 @@ class _ProductGrid extends StatelessWidget {
         if (index > 0 && (index + 1) % 6 == 0) return const AdNativeWidget();
         final realIndex = index - (index ~/ 6);
         if (realIndex >= products.length) return const SizedBox.shrink();
-        return LuxuryProductCard(product: products[realIndex]);
+        return TweenAnimationBuilder<double>(
+          key: ValueKey(products[realIndex].id),
+          tween: Tween(begin: 0, end: 1),
+          duration: Duration(milliseconds: 300 + (realIndex % 6) * 60),
+          curve: Curves.easeOutCubic,
+          builder: (final context, final t, final child) => Opacity(
+            opacity: t,
+            child: Transform.translate(
+                offset: Offset(0, (1 - t) * 16), child: child),
+          ),
+          child: LuxuryProductCard(product: products[realIndex]),
+        );
       },
     );
   }
 }
 
-class LuxuryProductCard extends ConsumerWidget {
+class LuxuryProductCard extends ConsumerStatefulWidget {
   final Product product;
 
   const LuxuryProductCard({super.key, required this.product});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    return Container(
+  ConsumerState<LuxuryProductCard> createState() => _LuxuryProductCardState();
+}
+
+class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    final product = widget.product;
+    return GestureDetector(
+      onTapDown: (final _) => setState(() => _isPressed = true),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTapUp: (final _) => setState(() => _isPressed = false),
+      child: AnimatedScale(
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        child: Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-              color: AppColors.accent.withOpacity(0.15),
-              blurRadius: 20,
-              offset: const Offset(0, 10))
+              color: AppColors.textPrimary.withOpacity(0.06),
+              blurRadius: 18,
+              offset: const Offset(0, 8)),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // GÖRSEL ALANI: AspectRatio 1.1'den 0.9'a çekildi (Daha Büyük Görsel)
-          AspectRatio(
-            aspectRatio: 0.9,
-            child: _ImageArea(product: product),
-          ),
-          // BİLGİ VE AKSİYON ALANI
+          AspectRatio(aspectRatio: 0.9, child: _ImageArea(product: product)),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -240,6 +336,8 @@ class LuxuryProductCard extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+        ),
       ),
     );
   }
@@ -258,7 +356,6 @@ class _ImageArea extends ConsumerWidget {
               ref
                   .read(galleryProvider(product.imagesUrl.length).notifier)
                   .setCurrentIndex(0);
-
               showDialog(
                 context: context,
                 barrierColor: Colors.black.withOpacity(0.95),
@@ -273,15 +370,11 @@ class _ImageArea extends ConsumerWidget {
                     width: double.infinity,
                     height: double.infinity,
                     color: AppColors.darkSurface,
-                    child: const Icon(
-                      Icons.chair_alt_rounded,
-                      size: 48,
-                      color: AppColors.textTertiary,
-                    ),
+                    child: const Icon(Icons.chair_alt_rounded,
+                        size: 48, color: AppColors.textTertiary),
                   ),
           ),
-          Positioned(
-              top: 10, left: 10, child: _StatusBadge(isSold: product.isSold)),
+          Positioned(top: 10, left: 10, child: _StatusBadge(product: product)),
           Positioned(
               bottom: 10, right: 10, child: _PriceBadge(price: product.price)),
         ],
@@ -295,6 +388,7 @@ class _InfoArea extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    final meta = defaultCategoryMeta[product.category];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -303,16 +397,27 @@ class _InfoArea extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textPrimary),
+              fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
         ),
-        const SizedBox(height: 2),
-        Text(
-          product.category.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            if (meta != null) ...[
+              Icon(meta.icon, size: 12, color: meta.color),
+              const SizedBox(width: 4),
+            ],
+            Expanded(
+              child: Text(
+                product.category.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: meta?.color ?? AppColors.textSecondary),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -342,8 +447,8 @@ class _ActionBar extends ConsumerWidget {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (final _) => EditProductPage(
-                        productId: product.id, product: product),
+                    builder: (final _) =>
+                        EditProductPage(productId: product.id, product: product),
                   )),
             ),
             Container(width: 1, color: AppColors.border),
@@ -380,16 +485,14 @@ class _ActionBar extends ConsumerWidget {
         content: Text('${product.name} silinecek. Emin misiniz?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Vazgeç')),
+              onPressed: () => Navigator.pop(context), child: const Text('Vazgeç')),
           TextButton(
             onPressed: () {
               ref.read(productMutationProvider.notifier).delete(product.id);
               Navigator.pop(context);
             },
             child: const Text('Evet, Sil',
-                style: TextStyle(
-                    color: AppColors.error, fontWeight: FontWeight.bold)),
+                style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -398,21 +501,22 @@ class _ActionBar extends ConsumerWidget {
 }
 
 class _StatusBadge extends StatelessWidget {
-  final bool isSold;
+  final Product product;
 
-  const _StatusBadge({required this.isSold});
+  const _StatusBadge({required this.product});
 
   @override
   Widget build(final BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        gradient:
-            isSold ? AppColors.secondaryGradient : AppColors.accentGradient,
+        gradient: product.isSold
+            ? AppColors.secondaryGradient
+            : AppColors.accentGradient,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        isSold ? context.l10n.sold : context.l10n.stock,
+        product.isSold ? context.l10n.sold : context.l10n.stock,
         style: const TextStyle(
             color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
       ),
