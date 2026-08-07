@@ -10,119 +10,167 @@ import '../theme/app_colors.dart';
 /// Işaret görselindeki liste görünümü için: yatay, geniş, tek satırlık
 /// ürün kartı. Işıklık kartla (CustomProductCard) aynı marka dilini
 /// (yuvarlak köşe, yumuşak gölge) korur, sadece yerleşimi farklıdır.
-class ProductListCard extends StatelessWidget {
+class ProductListCard extends StatefulWidget {
   final Product product;
 
   const ProductListCard({super.key, required this.product});
 
   @override
+  State<ProductListCard> createState() => _ProductListCardState();
+}
+
+class _ProductListCardState extends State<ProductListCard> {
+  bool _isHovered = false;
+
+  @override
   Widget build(final BuildContext context) {
+    final product = widget.product;
     final meta = defaultCategoryMeta[product.category];
 
-    return GestureDetector(
-      onTap: () => NavigationHandler.goToProduct(
-        context: context,
-        productId: product.id,
-        productSlug: product.name.toSlug(),
-      ),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 14,
-                offset: const Offset(0, 6)),
-          ],
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: () => NavigationHandler.goToProduct(
+          context: context,
+          productId: product.id,
+          productSlug: product.name.toSlug(),
         ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: SizedBox(
-                width: 96,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.only(bottom: 14),
+          transform: _isHovered
+              ? (Matrix4.identity()..translate(0.0, -3.0))
+              : Matrix4.identity(),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(_isHovered ? 0.09 : 0.05),
+                  blurRadius: _isHovered ? 22 : 14,
+                  offset: const Offset(0, 6)),
+            ],
+          ),
+          child: Row(
+            children: [
+              // Kategori renginde ince bir vurgu şeridi — premium his için.
+              Container(
+                width: 4,
                 height: 96,
-                child: product.imagesUrl.isNotEmpty
-                    ? Image.network(product.imagesUrl.first, fit: BoxFit.cover)
-                    : Container(
-                        color: AppColors.secondary,
-                        child: const Icon(Icons.chair_alt_rounded,
-                            color: AppColors.textTertiary)),
+                decoration: BoxDecoration(
+                  color: meta?.color ?? AppColors.primary,
+                  borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(22)),
+                ),
               ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      if (meta != null) ...[
-                        Icon(meta.icon, size: 12, color: meta.color),
-                        const SizedBox(width: 4),
-                      ],
-                      Text(
-                        product.category.label(context).toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.6,
-                          color: meta?.color ?? AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: SizedBox(
+                    width: 96,
+                    height: 96,
+                    child: product.imagesUrl.isNotEmpty
+                        ? Image.network(product.imagesUrl.first, fit: BoxFit.cover)
+                        : Container(
+                            color: AppColors.secondary,
+                            child: const Icon(Icons.chair_alt_rounded,
+                                color: AppColors.textTertiary)),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary),
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
+                ),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12).copyWith(right: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('₺${product.price.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.textPrimary)),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: (product.isSpotProduct
-                                  ? AppColors.accentDark
-                                  : AppColors.success)
-                              .withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          product.isSpotProduct
-                              ? context.l10n.conditionUsed
-                              : context.l10n.conditionNew,
-                          style: TextStyle(
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w700,
-                            color: product.isSpotProduct
-                                ? AppColors.accentDark
-                                : AppColors.success,
+                      Row(
+                        children: [
+                          if (meta != null) ...[
+                            Icon(meta.icon, size: 12, color: meta.color),
+                            const SizedBox(width: 4),
+                          ],
+                          Text(
+                            product.category.label(context).toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.6,
+                              color: meta?.color ?? AppColors.textSecondary,
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 15.5, fontWeight: FontWeight.w800,
+                            color: AppColors.textPrimary),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text('₺${product.price.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w900,
+                                  color: AppColors.textPrimary,
+                                  letterSpacing: -0.5)),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: (product.isSpotProduct
+                                      ? AppColors.accentDark
+                                      : AppColors.success)
+                                  .withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              product.isSpotProduct
+                                  ? context.l10n.conditionUsed
+                                  : context.l10n.conditionNew,
+                              style: TextStyle(
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w700,
+                                color: product.isSpotProduct
+                                    ? AppColors.accentDark
+                                    : AppColors.success,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-            const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary),
-          ],
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                margin: const EdgeInsets.only(right: 14),
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: _isHovered
+                      ? AppColors.primary.withOpacity(0.1)
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.arrow_forward_rounded,
+                    size: 18,
+                    color: _isHovered
+                        ? AppColors.primary
+                        : AppColors.textTertiary),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -18,6 +18,7 @@ class WebAdProductCard extends StatelessWidget {
     if (slotId.isEmpty) return const SizedBox.shrink();
 
     return Container(
+      height: height,
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(right: 20, bottom: 10),
       decoration: BoxDecoration(

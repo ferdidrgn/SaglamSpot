@@ -17,6 +17,15 @@ class LanguageSelector extends ConsumerWidget {
     final List<({Locale locale, String label, String flag})> languages = [
       (locale: const Locale('tr'), label: 'Türkçe', flag: '🇹🇷'),
       (locale: const Locale('en'), label: 'English', flag: '🇺🇸'),
+      (locale: const Locale('ar'), label: 'العربية', flag: '🇸🇦'),
+      (locale: const Locale('zh'), label: '中文', flag: '🇨🇳'),
+      (locale: const Locale('ru'), label: 'Русский', flag: '🇷🇺'),
+      (locale: const Locale('uk'), label: 'Українська', flag: '🇺🇦'),
+      (locale: const Locale('de'), label: 'Deutsch', flag: '🇩🇪'),
+      (locale: const Locale('it'), label: 'Italiano', flag: '🇮🇹'),
+      (locale: const Locale('el'), label: 'Ελληνικά', flag: '🇬🇷'),
+      (locale: const Locale('uz'), label: 'O\'zbekcha', flag: '🇺🇿'),
+      (locale: const Locale('ky'), label: 'Кыргызча', flag: '🇰🇬'),
     ];
 
     // --- DRAWER TASARIMI (Yan Menü) ---

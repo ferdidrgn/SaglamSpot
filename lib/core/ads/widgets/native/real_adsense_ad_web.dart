@@ -59,35 +59,41 @@ class _RealAdsenseAdState extends State<RealAdsenseAd> {
     _viewType =
         'adsense-${widget.slotId}-${_instanceCounter}-${DateTime.now().microsecondsSinceEpoch}';
 
-    ui_web.platformViewRegistry.registerViewFactory(_viewType, (final int viewId) {
-      final html.DivElement container = html.DivElement()
-        ..style.width = '100%'
-        ..style.height = '${widget.height}px'
-        ..style.display = 'block'
-        ..style.overflow = 'hidden'
-        ..style.textAlign = 'center';
+    try {
+      ui_web.platformViewRegistry.registerViewFactory(_viewType, (final int viewId) {
+        final html.DivElement container = html.DivElement()
+          ..style.width = '100%'
+          ..style.height = '${widget.height}px'
+          ..style.display = 'block'
+          ..style.overflow = 'hidden'
+          ..style.textAlign = 'center';
 
-      final html.Element ins = html.Element.tag('ins')
-        ..className = 'adsbygoogle'
-        ..style.display = 'block'
-        ..setAttribute('data-ad-client', _kAdsensePublisherId)
-        ..setAttribute('data-ad-slot', widget.slotId)
-        ..setAttribute('data-ad-format', widget.format);
+        final html.Element ins = html.Element.tag('ins')
+          ..className = 'adsbygoogle'
+          ..style.display = 'block'
+          ..setAttribute('data-ad-client', _kAdsensePublisherId)
+          ..setAttribute('data-ad-slot', widget.slotId)
+          ..setAttribute('data-ad-format', widget.format);
 
-      if (widget.layout != null) {
-        ins.setAttribute('data-ad-layout', widget.layout!);
-      }
-      if (widget.fullWidthResponsive) {
-        ins.setAttribute('data-full-width-responsive', 'true');
-      }
+        if (widget.layout != null) {
+          ins.setAttribute('data-ad-layout', widget.layout!);
+        }
+        if (widget.fullWidthResponsive) {
+          ins.setAttribute('data-full-width-responsive', 'true');
+        }
 
-      container.append(ins);
+        container.append(ins);
 
-      // Element DOM'a eklendikten sonraki ilk frame'de reklamı tetikle.
-      html.window.requestAnimationFrame((final _) => _triggerAdLoad());
+        // Element DOM'a eklendikten sonraki ilk frame'de reklamı tetikle.
+        html.window.requestAnimationFrame((final _) => _triggerAdLoad());
 
-      return container;
-    });
+        return container;
+      });
+    } catch (e) {
+      // Aynı görünüm ID'si ile ikinci bir kayıt denemesi (ya da başka bir
+      // platform view hatası) artık sayfayı çökertmiyor/dondurmuyor.
+      debugPrint('⚠️ AdSense view factory kaydı başarısız: $e');
+    }
   }
 
   void _triggerAdLoad() {

@@ -503,4 +503,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginBrand => 'Sağlam Spot';
+
+  @override
+  String get logout => 'Log Out';
+
+  @override
+  String get logoutConfirm =>
+      'Are you sure you want to safely log out of your account?';
 }

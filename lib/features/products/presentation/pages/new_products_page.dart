@@ -11,7 +11,6 @@ import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/product_list_card.dart';
-import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -73,16 +72,6 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                   _buildStatsBar(context, products),
                   _buildFilterSection(context),
                   _buildCategoryTabs(context),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: context.pagePadding.left, vertical: 8),
-                      child: const Align(
-                        alignment: Alignment.centerRight,
-                        child: ViewModeToggle(),
-                      ),
-                    ),
-                  ),
                   SliverToBoxAdapter(
                       child: SizedBox(height: context.spacingLarge)),
                   _buildProductGrid(context, filtered),
@@ -505,35 +494,45 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
         ),
       );
 
-  Widget _buildViewToggle(final BuildContext context) => Container(
-        height: 56,
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border, width: 1.5),
-        ),
-        child: Row(
-          children: [
-            _buildToggleButton(Icons.grid_view, true),
-            const SizedBox(width: 4),
-            _buildToggleButton(Icons.view_list, false),
-          ],
-        ),
-      );
+  Widget _buildViewToggle(final BuildContext context) {
+    final mode = ref.watch(productViewModeProvider);
+    return Container(
+      height: 56,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1.5),
+      ),
+      child: Row(
+        children: [
+          _buildToggleButton(Icons.grid_view, mode == ProductViewMode.grid,
+              () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.grid)),
+          const SizedBox(width: 4),
+          _buildToggleButton(Icons.view_list, mode == ProductViewMode.list,
+              () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.list)),
+        ],
+      ),
+    );
+  }
 
-  Widget _buildToggleButton(final IconData icon, final bool isActive) =>
-      Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          icon,
-          color: isActive ? Colors.white : AppColors.textSecondary,
-          size: 20,
+  Widget _buildToggleButton(
+          final IconData icon, final bool isActive, final VoidCallback onTap) =>
+      GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            color: isActive ? Colors.white : AppColors.textSecondary,
+            size: 20,
+          ),
         ),
       );
 

@@ -176,5 +176,7 @@
   "similarProducts": "Similar Products",
   "conditionShowcase": "Showcase",
   "productDescriptionTitle": "Description",
-  "loginBrand": "Sağlam Spot"
+  "loginBrand": "Sağlam Spot",
+  "logout": "Log Out",
+  "logoutConfirm": "Are you sure you want to safely log out of your account?"
 }

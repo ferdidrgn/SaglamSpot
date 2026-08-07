@@ -176,5 +176,7 @@
   "similarProducts": "Benzer Ürünler",
   "conditionShowcase": "Vitrin",
   "productDescriptionTitle": "Açıklama",
-  "loginBrand": "Sağlam Spot"
+  "loginBrand": "Sağlam Spot",
+  "logout": "Oturumu Kapat",
+  "logoutConfirm": "Hesabınızdan güvenli bir şekilde çıkış yapmak istediğinize emin misiniz?"
 }

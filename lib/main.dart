@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'core/config/app_initializer.dart';
@@ -25,6 +26,24 @@ class MouseDragScrollBehavior extends MaterialScrollBehavior {
 }
 
 void main() async {
+  // "Ekran bomboş kalıyor" gibi bulgulara kesin teşhis koyabilmek için:
+  // bir widget build sırasında hata fırlatırsa artık boş/gri bir alan
+  // DEĞİL, kırmızı zeminde okunabilir hata metni gösteriyoruz — profil/
+  // release modda bile. Bu sayede bir sonraki hata görünmez olmaz.
+  ErrorWidget.builder = (final FlutterErrorDetails details) => Material(
+        color: Colors.red.shade900,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: Text(
+              '⚠️ Widget hatası:\n${details.exception}',
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+
   // 1. Flutter motorunun bağlayıcı kilit mekanizmasını güvenli bir şekilde başlat
   final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -89,7 +108,23 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           data: MediaQuery.of(context).copyWith(
             textScaler: const TextScaler.linear(1.0),
           ),
-          child: child ?? const SizedBox.shrink(),
+          // Ctrl+K / Cmd+K artık HER sayfada çalışıyor. NOT: Önceki
+          // sürüm Shortcuts+Actions+Focus(autofocus:true) kullanıyordu —
+          // autofocus:true tüm uygulamayı saran bir Focus düğümünde
+          // henüz layout tamamlanmadan odak sıralaması hesaplamaya
+          // çalışıyordu ("RenderBox was not laid out" hatası) ve bu da
+          // art arda hata/rebuild döngüsüne girip sayfayı kilitliyordu.
+          // CallbackShortcuts hiçbir Focus düğümüne ihtiyaç duymadığı
+          // için bu sorunu tamamen ortadan kaldırıyor.
+          child: CallbackShortcuts(
+            bindings: <ShortcutActivator, VoidCallback>{
+              LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
+                  () => _router.go('/search'),
+              LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
+                  () => _router.go('/search'),
+            },
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
     );

@@ -4,18 +4,20 @@ import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/common/extentions/product_category_ex.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
-import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/ads/widgets/web_ad_product_card.dart';
+import '../../../../core/providers/product_view_mode_provider.dart';
+import '../../../../core/widgets/product_list_card.dart';
+import '../../../../core/widgets/view_mode_toggle.dart';
+import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
-import '../../../../core/providers/product_view_mode_provider.dart';
+import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/back_button_glassmorphism.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
-import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
-import '../../../../core/widgets/view_mode_toggle.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
@@ -869,6 +871,13 @@ class _SearchPageState extends ConsumerState<SearchPage>
     final isListMode =
         ref.watch(productViewModeProvider) == ProductViewMode.list;
 
+    // Sayfa başına gösterilecek reklam sayısını sabit bir tavanla sınırlıyoruz.
+    // Filtre uygulanmadığında (Tümü) ürün sayısı çok artabiliyor; her chunk'ta
+    // bir reklam eklemek onlarca AdSense DOM enjeksiyonunun AYNI ANDA monte
+    // olmasına yol açıp tarayıcıyı kilitleyebiliyordu (donma + UI kaybolması).
+    const int maxAdsPerList = 3;
+    int adsInserted = 0;
+
     int productIndex = 0;
     while (productIndex < products.length) {
       final endIndex = (productIndex + adFrequency).clamp(0, products.length);
@@ -891,12 +900,16 @@ class _SearchPageState extends ConsumerState<SearchPage>
               )
             : ResponsiveProductSliverGrid(
                 products: chunk,
-                onProductTap: (final p) => context.push('/product/${p.id}'),
+                onProductTap: (final p) => NavigationHandler.goToProduct(
+                    context: context,
+                    productId: p.id,
+                    productSlug: p.name.toSlug()),
               ),
       );
 
-      // Chunk sonunda ve daha ürün varsa reklam ekle
-      if (endIndex < products.length) {
+      // Chunk sonunda, daha ürün varsa VE reklam tavanına ulaşılmadıysa ekle.
+      if (endIndex < products.length && adsInserted < maxAdsPerList) {
+        adsInserted++;
         slivers.add(
           SliverToBoxAdapter(
             child: Padding(

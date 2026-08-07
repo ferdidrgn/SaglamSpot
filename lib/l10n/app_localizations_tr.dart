@@ -497,4 +497,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loginBrand => 'Sağlam Spot';
+
+  @override
+  String get logout => 'Oturumu Kapat';
+
+  @override
+  String get logoutConfirm =>
+      'Hesabınızdan güvenli bir şekilde çıkış yapmak istediğinize emin misiniz?';
 }

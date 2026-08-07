@@ -29,7 +29,7 @@ class NavigationScreen extends ConsumerStatefulWidget {
 class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  late final List<NavigationItem> _navItems = [
+  List<NavigationItem> get _navItems => [
     NavigationItem(label: context.l10n.home, icon: Icons.home_rounded, index: 0),
     NavigationItem(label: context.l10n.conditionNew, icon: Icons.chair_rounded, index: 1),
     NavigationItem(label: context.l10n.conditionUsed, icon: Icons.weekend_rounded, index: 2),
@@ -61,11 +61,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
             Text(context.l10n.brand, style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
-        content: const Text('Hesabınızdan güvenli bir şekilde çıkış yapmak istediğinize emin misiniz?'),
+        content: Text(context.l10n.logoutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+            child: Text(context.l10n.cancel, style: const TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
@@ -74,7 +74,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            child: const Text('Çıkış Yap'),
+            child: Text(context.l10n.logout),
           ),
         ],
       ),
@@ -413,9 +413,9 @@ class _MobileDrawer extends StatelessWidget {
               ListTile(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
-                title: const Text(
-                  'Oturumu Kapat',
-                  style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+                title: Text(
+                  context.l10n.logout,
+                  style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
                 ),
                 onTap: onLogoutTapped,
               ),
