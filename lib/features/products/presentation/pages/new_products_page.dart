@@ -161,12 +161,13 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                                 Text(
                                   'Yeni\nKoleksiyon',
                                   style: TextStyle(
+                                    fontFamily: 'Fraunces',
                                     fontSize: context.responsive(
                                       mobile: 42,
                                       tablet: 56,
                                       desktop: 72,
                                     ),
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.w600,
                                     height: 0.95,
                                     color: AppColors.textPrimary,
                                     letterSpacing: -1,

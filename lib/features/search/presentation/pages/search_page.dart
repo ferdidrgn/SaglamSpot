@@ -249,9 +249,10 @@ class _SearchPageState extends ConsumerState<SearchPage>
                   Text(
                     context.l10n.eleganceAndComfort,
                     style: TextStyle(
+                      fontFamily: 'Fraunces',
                       fontSize: context.responsive(
                           mobile: 28.0, tablet: 36.0, desktop: 44.0),
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
                       height: 1.1,
                     ),
@@ -297,8 +298,9 @@ class _SearchPageState extends ConsumerState<SearchPage>
               Text(
                 "SAĞLAM SPOT",
                 style: TextStyle(
+                  fontFamily: 'Fraunces',
                   color: Colors.white,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 2,
                   fontSize: context.responsive(
                       mobile: 18.0, tablet: 22.0, desktop: 26.0),

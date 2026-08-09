@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/products/domain/entites/product.dart';
 import '../common/extentions/app_context_ui_extension.dart';
+import '../theme/app_colors.dart';
 import '../widgets/custom_product_card.dart';
 
 /// Responsive product grid with optimal performance
@@ -122,7 +123,7 @@ class _BuildEmptyState extends StatelessWidget {
               Icons.search_off_rounded,
               size: context.responsive(mobile: 64.0, desktop: 80.0),
               // Extension
-              color: const Color(0xFF94A3B8),
+              color: AppColors.textTertiary,
             ),
             SizedBox(
               height:
@@ -131,10 +132,11 @@ class _BuildEmptyState extends StatelessWidget {
             Text(
               context.l10n.productNotFound,
               style: TextStyle(
+                fontFamily: 'Fraunces',
                 fontSize: context.responsive(
                     mobile: 18.0, tablet: 20.0, desktop: 22.0), // Extension
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF1E293B),
+                color: AppColors.textPrimary,
               ),
             ),
             SizedBox(
@@ -147,7 +149,7 @@ class _BuildEmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: context.responsive(
                     mobile: 14.0, desktop: 16.0), // Extension
-                color: const Color(0xFF64748B),
+                color: AppColors.textSecondary,
               ),
             ),
           ],

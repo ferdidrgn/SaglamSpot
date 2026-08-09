@@ -163,8 +163,9 @@ class CustomAppHeader extends StatelessWidget {
                 child: Text(
                   'Sağlam Spot',
                   style: TextStyle(
+                    fontFamily: 'Fraunces',
                     fontSize: context.responsive(mobile: 18.0, desktop: 22.0),
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                   ),
                 ),
@@ -186,17 +187,10 @@ class CustomAppHeader extends StatelessWidget {
     return Row(
       children: List.generate(labels.length, (final i) {
         final active = i == currentIndex;
-        return GestureDetector(
+        return _NavLink(
+          label: labels[i],
+          active: active,
           onTap: () => onNavigate(i),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              labels[i],
-              style: TextStyle(
-                fontWeight: active ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ),
         );
       }),
     );
@@ -242,6 +236,62 @@ class CustomAppHeader extends StatelessWidget {
           onPressed: onPressed,
           color: AppColors.textSecondary,
           padding: EdgeInsets.zero),
+    );
+  }
+}
+
+/// Masaüstü menü bağlantısı — hover'da yumuşak renk geçişi, aktif
+/// sekmenin altında beliren ince bir vurgu çizgisi.
+class _NavLink extends StatefulWidget {
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  const _NavLink(
+      {required this.label, required this.active, required this.onTap});
+
+  @override
+  State<_NavLink> createState() => _NavLinkState();
+}
+
+class _NavLinkState extends State<_NavLink> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    final bool highlighted = widget.active || _isHovered;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 180),
+                style: TextStyle(
+                  fontWeight: widget.active ? FontWeight.bold : FontWeight.w500,
+                  color: highlighted
+                      ? AppColors.accent
+                      : AppColors.textPrimary,
+                ),
+                child: Text(widget.label),
+              ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                height: 2,
+                width: highlighted ? 16 : 0,
+                color: AppColors.accent,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +10,6 @@ import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
@@ -37,12 +36,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin, ResponsiveUtils {
   late AnimationController _heroController;
-  late AnimationController _floatingController;
-  late AnimationController _pulseController;
-
-  int _currentHeroPage = 0;
-  Timer? _heroTimer;
-  final PageController _heroPageController = PageController();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -51,33 +44,11 @@ class _HomePageState extends ConsumerState<HomePage>
     _heroController =
         AnimationController(vsync: this, duration: const Duration(seconds: 15))
           ..repeat();
-    _floatingController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 4))
-          ..repeat(reverse: true);
-    _pulseController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2000))
-      ..repeat(reverse: true);
-    _startHeroTimer();
-  }
-
-  void _startHeroTimer() {
-    _heroTimer = Timer.periodic(const Duration(seconds: 6), (final timer) {
-      if (mounted && _heroPageController.hasClients) {
-        _currentHeroPage = (_currentHeroPage + 1) % 3;
-        _heroPageController.animateToPage(_currentHeroPage,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeInOutQuint);
-      }
-    });
   }
 
   @override
   void dispose() {
-    _heroTimer?.cancel();
     _heroController.dispose();
-    _floatingController.dispose();
-    _pulseController.dispose();
-    _heroPageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -207,192 +178,176 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       );
 
+  static const List<String> _heroImages = [
+    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
+    "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
+    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
+  ];
+
   Widget _buildHeroSliderSection() {
     return SliverToBoxAdapter(
       child: Container(
         height: context.hp(context.isMobile ? 52 : 66),
         margin: context.pagePadding,
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
-              child: PageView.builder(
-                controller: _heroPageController,
-                itemCount: 3,
-                onPageChanged: (final i) => setState(() => _currentHeroPage = i),
-                itemBuilder: (final context, final index) => _heroSlide(index),
-              ),
-            ),
-            // Esnaf dükkânı kimliğini yansıtan, sol altta yüzen "cam" rozet
-            // — Samimi Esnaflık teması, "Ustanın Notu" hissiyle uyumlu.
-            Positioned(
-              left: context.responsive(mobile: 16, desktop: 32),
-              bottom: context.responsive(mobile: 16, desktop: 32),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(context.borderRadius(1)),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: context.responsive(mobile: 12, desktop: 18),
-                        vertical: context.responsive(mobile: 8, desktop: 12)),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.16),
-                      borderRadius: BorderRadius.circular(context.borderRadius(1)),
-                      border: Border.all(color: Colors.white.withOpacity(0.35)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.volunteer_activism_rounded,
-                            size: context.iconSmall, color: AppColors.accentLight),
-                        const SizedBox(width: 8),
-                        Text(context.l10n.featureArtisan,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: context.captionSize)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+          child: Stack(
+            children: [
+              // Video hissi veren, gerçek video dosyası olmadan çalışan
+              // "Ken Burns" arka plan: görseller yavaşça zoom+pan yaparak
+              // birbirine crossfade olur, üzerine ince bir toz/ışık katmanı
+              // eklenir.
+              _KenBurnsHeroBackground(images: _heroImages),
+              // Okunabilirlik için sabit, yumuşak bir vinyet.
+              IgnorePointer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
+                        AppColors.primaryVariant.withOpacity(0.80),
+                        AppColors.primaryVariant.withOpacity(0.32),
+                        Colors.transparent,
                       ],
+                      stops: const [0.0, 0.55, 1.0],
                     ),
                   ),
                 ),
               ),
-            ),
-            // Sayfa göstergesi noktaları — hangi slaytta olduğumuzu zarifçe belirtir.
-            Positioned(
-              right: context.responsive(mobile: 16, desktop: 32),
-              bottom: context.responsive(mobile: 16, desktop: 32),
-              child: Row(
-                children: List.generate(3, (final i) {
-                  final bool active = i == _currentHeroPage;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 260),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: active ? 20 : 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: active ? Colors.white : Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
+              // Başlık ve WhatsApp CTA'sı — hareketli arka planın üzerinde
+              // her zaman sabit kalır, animasyondan etkilenmez.
+              Padding(
+                padding:
+                    EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.responsive(mobile: 10, desktop: 14),
+                          vertical:
+                              context.responsive(mobile: 5, desktop: 7)),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: AppColors.accentLight.withOpacity(0.7)),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Text(context.l10n.newSeason,
+                          style: TextStyle(
+                              color: AppColors.accentLight,
+                              letterSpacing: context.isMobile ? 2 : 3,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  context.responsive(mobile: 9, desktop: 12))),
                     ),
-                  );
-                }),
+                    const SizedBox(height: 14),
+                    Text(context.l10n.heroTitle,
+                        style: TextStyle(
+                            fontFamily: 'Fraunces',
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: context.heroSize * 0.8,
+                            height: 1.1)),
+                    const SizedBox(height: 8),
+                    Text(context.l10n.featureArtisan,
+                        style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Colors.white.withOpacity(0.78),
+                            fontStyle: FontStyle.italic,
+                            fontSize:
+                                context.responsive(mobile: 13, desktop: 16))),
+                    SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 10,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () =>
+                              NavigationHandler.goToNewProducts(context),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: context.responsive(
+                                      mobile: 18, desktop: 30),
+                                  vertical: context.responsive(
+                                      mobile: 12, desktop: 18))),
+                          icon: const Icon(Icons.auto_awesome, size: 16),
+                          label: Text(context.l10n.conditionNew,
+                              style: TextStyle(
+                                  fontSize: context.captionSize,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: SaglamSpotCommunication.launchWhatsApp,
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: context.responsive(
+                                      mobile: 18, desktop: 30),
+                                  vertical: context.responsive(
+                                      mobile: 12, desktop: 18))),
+                          icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                          label: Text('WhatsApp\'tan Sor',
+                              style: TextStyle(
+                                  fontSize: context.captionSize,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _heroSlide(final int index) {
-    final List<String> images = [
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
-      "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600"
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: NetworkImage(images[index]), fit: BoxFit.cover),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
-        // Önceki sürümdeki tek yönlü, sert renk bloğu yerine daha yumuşak,
-        // köşeden köşeye yayılan bir vinyet — metin okunabilirliği artıyor,
-        // görsel daha "soluk alıyor" hissi veriyor.
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [
-              context.primaryColor.withOpacity(0.82),
-              context.primaryColor.withOpacity(0.35),
-              Colors.transparent,
+              // Esnaf dükkânı kimliğini yansıtan, sol altta yüzen "cam" rozet
+              // — Samimi Esnaflık teması, "Ustanın Notu" hissiyle uyumlu.
+              Positioned(
+                left: context.responsive(mobile: 16, desktop: 32),
+                bottom: context.responsive(mobile: 16, desktop: 32),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(context.borderRadius(1)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.responsive(mobile: 12, desktop: 18),
+                          vertical:
+                              context.responsive(mobile: 8, desktop: 12)),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.16),
+                        borderRadius:
+                            BorderRadius.circular(context.borderRadius(1)),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.35)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.volunteer_activism_rounded,
+                              size: context.iconSmall,
+                              color: AppColors.accentLight),
+                          const SizedBox(width: 8),
+                          Text(context.l10n.featureArtisan,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: context.captionSize)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
-            stops: const [0.0, 0.55, 1.0],
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Eyebrow etiketi artık ince kenarlıklı bir "hap" içinde —
-            // düz metin yerine dokunsal, premium bir rozet hissi.
-            Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: context.responsive(mobile: 10, desktop: 14),
-                  vertical: context.responsive(mobile: 5, desktop: 7)),
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.accentLight.withOpacity(0.6)),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Text(context.l10n.newSeason,
-                  style: TextStyle(
-                      color: AppColors.accentLight,
-                      letterSpacing: context.isMobile ? 2 : 3,
-                      fontWeight: FontWeight.w700,
-                      fontSize: context.responsive(mobile: 9, desktop: 12))),
-            ),
-            const SizedBox(height: 14),
-            Text(context.l10n.heroTitle,
-                style: AppTextStyles.webTextTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontSize: context.heroSize * 0.8,
-                    height: 1.1)),
-            const SizedBox(height: 8),
-            Text(context.l10n.featureArtisan,
-                style: TextStyle(
-                    color: Colors.white.withOpacity(0.78),
-                    fontStyle: FontStyle.italic,
-                    fontSize: context.responsive(mobile: 13, desktop: 16))),
-            SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
-            // Tek "Koleksiyonu Gör" butonu yerine, sıfır/ikinci el ayrımını
-            // ilk bakışta netleştiren çift CTA — dükkânın iki yüzünü de
-            // hemen gösteriyor.
-            Wrap(
-              spacing: 12,
-              runSpacing: 10,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () => NavigationHandler.goToNewProducts(context),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: context.primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.responsive(mobile: 18, desktop: 30),
-                          vertical:
-                              context.responsive(mobile: 12, desktop: 18))),
-                  icon: const Icon(Icons.auto_awesome, size: 16),
-                  label: Text(context.l10n.conditionNew,
-                      style: TextStyle(
-                          fontSize: context.captionSize,
-                          fontWeight: FontWeight.w600)),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () => NavigationHandler.goToSpotProducts(context),
-                  style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white70),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.responsive(mobile: 18, desktop: 30),
-                          vertical:
-                              context.responsive(mobile: 12, desktop: 18))),
-                  icon: const Icon(Icons.recycling, size: 16),
-                  label: Text(context.l10n.conditionUsed,
-                      style: TextStyle(
-                          fontSize: context.captionSize,
-                          fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );
@@ -554,8 +509,9 @@ class _HomePageState extends ConsumerState<HomePage>
                     const SizedBox(height: 15),
                     Text(context.l10n.artisanTitle,
                         style: TextStyle(
+                            fontFamily: 'Fraunces',
                             fontSize: context.h2Size,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w600,
                             height: 1.2)),
                     const SizedBox(height: 15),
                     Text(context.l10n.artisanDesc,
@@ -614,9 +570,10 @@ class _HomePageState extends ConsumerState<HomePage>
                     const SizedBox(height: 12),
                     Text('Bir Selam Ver, Yeter',
                         style: TextStyle(
+                            fontFamily: 'Fraunces',
                             color: Colors.white,
                             fontSize: context.h2Size,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w600,
                             height: 1.2)),
                     const SizedBox(height: 14),
                     Text(
@@ -847,10 +804,11 @@ class _HomePageState extends ConsumerState<HomePage>
                       children: [
                         const Text("SAĞLAM SPOT",
                             style: TextStyle(
+                                fontFamily: 'Fraunces',
                                 color: Colors.white,
                                 fontSize: 24,
                                 letterSpacing: 4,
-                                fontWeight: FontWeight.w900)),
+                                fontWeight: FontWeight.w600)),
                         const SizedBox(height: 20),
                         Text(
                           context.l10n.footerDesc,
@@ -948,8 +906,9 @@ class _HomePageState extends ConsumerState<HomePage>
                 children: [
                   Text(title,
                       style: TextStyle(
+                          fontFamily: 'Fraunces',
                           fontSize: context.h2Size,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w600,
                           color: context.primaryColor)),
                   const SizedBox(height: 4),
                   Container(
@@ -1067,9 +1026,10 @@ class _RoomCardState extends State<_RoomCard> {
                               fontWeight: FontWeight.bold)),
                       Text(widget.title,
                           style: TextStyle(
+                              fontFamily: 'Fraunces',
                               color: Colors.white,
                               fontSize: context.h3Size,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.w600)),
                       const SizedBox(height: 10),
                       AnimatedOpacity(
                         opacity: _isHovered ? 1 : 0,
@@ -1136,4 +1096,176 @@ class _OrbPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(final _OrbPainter oldDelegate) => true;
+}
+
+/// Gerçek bir video dosyası olmadan "video hissi" veren hero arka planı:
+/// 2-3 görsel, AnimationController ile yavaşça zoom+pan (Ken Burns efekti)
+/// yaparak birbirine crossfade olur. Üzerine çok sübtil, yavaş hareket eden
+/// bir ışık/toz parçacığı katmanı eklenir.
+class _KenBurnsHeroBackground extends StatefulWidget {
+  final List<String> images;
+
+  const _KenBurnsHeroBackground({required this.images});
+
+  @override
+  State<_KenBurnsHeroBackground> createState() =>
+      _KenBurnsHeroBackgroundState();
+}
+
+class _KenBurnsHeroBackgroundState extends State<_KenBurnsHeroBackground>
+    with TickerProviderStateMixin {
+  // Her görsel ekranda yaklaşık bu kadar kalır (crossfade süresi dahil).
+  static const double _secondsPerImage = 9;
+  static const double _crossfadeSeconds = 1.6;
+  static const List<Alignment> _panTargets = [
+    Alignment(-0.35, -0.25),
+    Alignment(0.35, 0.3),
+    Alignment(0.2, -0.35),
+  ];
+
+  late final AnimationController _kenBurnsController;
+  late final AnimationController _dustController;
+
+  @override
+  void initState() {
+    super.initState();
+    _kenBurnsController = AnimationController(
+      vsync: this,
+      duration:
+          Duration(seconds: (_secondsPerImage * widget.images.length).round()),
+    )..repeat();
+    _dustController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 26),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _kenBurnsController.dispose();
+    _dustController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final int total = widget.images.length;
+    final double segment = 1.0 / total;
+    final double fadeFraction = (_crossfadeSeconds / _secondsPerImage).clamp(
+        0.0, 0.45);
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Toplam animasyon boyunca hiçbir karede tam saydamlık oluşmasın
+        // diye altta sabit, koyu bir zemin.
+        Container(color: AppColors.primaryVariant),
+        AnimatedBuilder(
+          animation: _kenBurnsController,
+          builder: (final context, final _) {
+            final double raw = _kenBurnsController.value;
+            return Stack(
+              fit: StackFit.expand,
+              children: List.generate(total, (final i) {
+                final double d =
+                    ((raw - i * segment) % 1.0 + 1.0) % 1.0;
+                if (d >= segment) {
+                  return const SizedBox.shrink();
+                }
+                final double local = (d / segment).clamp(0.0, 1.0);
+                double opacity;
+                if (local < fadeFraction) {
+                  opacity = local / fadeFraction;
+                } else if (local > 1 - fadeFraction) {
+                  opacity = (1 - local) / fadeFraction;
+                } else {
+                  opacity = 1.0;
+                }
+                final double scale = 1.0 + 0.14 * local;
+                final Alignment align = Alignment.lerp(
+                    Alignment.center, _panTargets[i % _panTargets.length], local)!;
+                return Opacity(
+                  opacity: opacity.clamp(0.0, 1.0),
+                  child: Transform.scale(
+                    scale: scale,
+                    alignment: align,
+                    child: Image.network(
+                      widget.images[i],
+                      fit: BoxFit.cover,
+                      errorBuilder: (final c, final e, final s) =>
+                          const SizedBox.shrink(),
+                    ),
+                  ),
+                );
+              }),
+            );
+          },
+        ),
+        IgnorePointer(
+          child: AnimatedBuilder(
+            animation: _dustController,
+            builder: (final context, final _) => CustomPaint(
+              painter: _DustPainter(progress: _dustController.value),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Sabit bir tohumla üretilmiş, sayfa her yeniden çizildiğinde aynı kalan
+/// parçacık koordinatları — hafif yukarı sürüklenen, çok düşük opasiteli
+/// ışık/toz efekti.
+class _DustParticle {
+  final double x;
+  final double y;
+  final double radius;
+  final double phase;
+  final double speed;
+
+  const _DustParticle(
+      {required this.x,
+      required this.y,
+      required this.radius,
+      required this.phase,
+      required this.speed});
+}
+
+final List<_DustParticle> _dustParticles = List.generate(26, (final i) {
+  final random = math.Random(i * 97);
+  return _DustParticle(
+    x: random.nextDouble(),
+    y: random.nextDouble(),
+    radius: 1.0 + random.nextDouble() * 2.2,
+    phase: random.nextDouble(),
+    speed: 0.4 + random.nextDouble() * 0.6,
+  );
+});
+
+class _DustPainter extends CustomPainter {
+  final double progress;
+
+  _DustPainter({required this.progress});
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
+
+    for (final particle in _dustParticles) {
+      final double travel = (particle.y - progress * particle.speed) % 1.0;
+      final double y = (travel < 0 ? travel + 1.0 : travel) * size.height;
+      final double twinkle =
+          0.5 + 0.5 * math.sin(2 * math.pi * (progress * 1.4 + particle.phase));
+      final double opacity = 0.05 + 0.07 * twinkle;
+      paint.color = Colors.white.withOpacity(opacity);
+      canvas.drawCircle(
+          Offset(particle.x * size.width, y), particle.radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(final _DustPainter oldDelegate) => true;
 }

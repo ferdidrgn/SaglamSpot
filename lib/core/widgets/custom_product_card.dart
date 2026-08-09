@@ -144,9 +144,10 @@ class _CustomProductCardState extends State<CustomProductCard> {
                               Text(
                                 widget.product.name,
                                 style: const TextStyle(
+                                  fontFamily: 'Fraunces',
                                   color: Colors.white,
                                   fontSize: 18,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   letterSpacing: -0.5,
                                 ),
                                 maxLines: 1,

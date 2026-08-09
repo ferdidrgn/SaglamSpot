@@ -196,12 +196,13 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                               Text(
                                 'Fırsat\nÜrünleri',
                                 style: TextStyle(
+                                  fontFamily: 'Fraunces',
                                   fontSize: context.responsive(
                                     mobile: 48,
                                     tablet: 64,
                                     desktop: 80,
                                   ),
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w600,
                                   height: 0.95,
                                   color: AppColors.textPrimary,
                                   letterSpacing: -2,

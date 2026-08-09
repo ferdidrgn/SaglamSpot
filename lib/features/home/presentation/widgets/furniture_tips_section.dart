@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class FurnitureTipsSection extends StatelessWidget {
   const FurnitureTipsSection({super.key});
@@ -13,9 +15,15 @@ class FurnitureTipsSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Uzmanından Püf Noktaları',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 32),
+            Text('Uzmanından Püf Noktaları',
+                style: TextStyle(
+                    fontFamily: 'Fraunces',
+                    fontSize: context.h2Size,
+                    fontWeight: FontWeight.w600,
+                    color: context.primaryColor)),
+            const SizedBox(height: 4),
+            Container(height: 3, width: 40, color: AppColors.accent),
+            const SizedBox(height: 28),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -27,107 +35,135 @@ class FurnitureTipsSection extends StatelessWidget {
               ),
               itemCount: _furnitureTips.length,
               itemBuilder: (final context, final index) =>
-                  _build3DTipCard(_furnitureTips[index], index + 1),
+                  _TipCard(tip: _furnitureTips[index], number: index + 1),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _build3DTipCard(final FurnitureTip tip, final int number) {
+Color _getCategoryColor(final String category) {
+  switch (category) {
+    case 'Yerleştirme':
+      return AppColors.sage;
+    case 'Koruma':
+      return AppColors.info;
+    case 'Temizlik':
+      return AppColors.sageDark;
+    case 'Bakım':
+      return AppColors.accent;
+    case 'Kullanım':
+      return AppColors.accentDark;
+    case 'Taşıma':
+      return AppColors.primary;
+    default:
+      return AppColors.textSecondary;
+  }
+}
+
+class _TipCard extends StatefulWidget {
+  final FurnitureTip tip;
+  final int number;
+
+  const _TipCard({required this.tip, required this.number});
+
+  @override
+  State<_TipCard> createState() => _TipCardState();
+}
+
+class _TipCardState extends State<_TipCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    final tip = widget.tip;
     final color = _getCategoryColor(tip.category);
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 20,
-              offset: const Offset(0, 10))
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 85,
-            height: double.infinity,
-            margin: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [color.withOpacity(0.7), color],
-                  begin: Alignment.topLeft),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                    color: color.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 6))
-              ],
-            ),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(tip.icon, color: Colors.white, size: 28),
-              const SizedBox(height: 4),
-              Text("#$number",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12)),
-            ]),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(tip.category.toUpperCase(),
-                      style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                          letterSpacing: 1)),
-                  const SizedBox(height: 4),
-                  Text(tip.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 6),
-                  Text(tip.description,
-                      style: const TextStyle(
-                          color: Colors.black54, fontSize: 12, height: 1.3),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis),
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        transform: _isHovered
+            ? (Matrix4.identity()..translate(0.0, -4.0))
+            : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.09 : 0.04),
+                blurRadius: _isHovered ? 26 : 20,
+                offset: Offset(0, _isHovered ? 14 : 10))
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 85,
+              height: double.infinity,
+              margin: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [color.withOpacity(0.7), color],
+                    begin: Alignment.topLeft),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                      color: color.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 6))
                 ],
               ),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(tip.icon, color: Colors.white, size: 28),
+                    const SizedBox(height: 4),
+                    Text("#${widget.number}",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12)),
+                  ]),
             ),
-          ),
-        ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(tip.category.toUpperCase(),
+                        style: TextStyle(
+                            color: color,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 10,
+                            letterSpacing: 1)),
+                    const SizedBox(height: 4),
+                    Text(tip.title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 6),
+                    Text(tip.description,
+                        style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                            height: 1.3),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  Color _getCategoryColor(final String category) {
-    switch (category) {
-      case 'Yerleştirme':
-        return Colors.green;
-      case 'Koruma':
-        return Colors.blue;
-      case 'Temizlik':
-        return Colors.cyan;
-      case 'Bakım':
-        return Colors.orange;
-      case 'Kullanım':
-        return Colors.pink;
-      case 'Taşıma':
-        return Colors.purple;
-      default:
-        return Colors.blueGrey;
-    }
   }
 }
 

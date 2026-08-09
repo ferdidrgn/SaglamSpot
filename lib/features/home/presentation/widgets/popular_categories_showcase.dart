@@ -48,8 +48,9 @@ class PopularCategoriesShowcase extends ConsumerWidget {
           children: [
             Text('Popüler Kategoriler',
                 style: TextStyle(
+                    fontFamily: 'Fraunces',
                     fontSize: context.h2Size,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     color: context.primaryColor)),
             const SizedBox(height: 4),
             Container(height: 3, width: 40, color: AppColors.accent),

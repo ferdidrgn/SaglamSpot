@@ -18,8 +18,9 @@ class TestimonialsSection extends StatelessWidget {
           children: [
             Text('Müşterilerimiz Ne Diyor?',
                 style: TextStyle(
+                    fontFamily: 'Fraunces',
                     fontSize: context.h2Size,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     color: context.primaryColor)),
             const SizedBox(height: 4),
             Container(height: 3, width: 40, color: AppColors.accent),
@@ -60,7 +61,7 @@ class _TestimonialCard extends StatelessWidget {
   Widget build(final BuildContext context) => Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: AppColors.border),
           boxShadow: [

@@ -12,25 +12,25 @@ class WhyUsSection extends StatelessWidget {
       icon: Icons.verified_user_rounded,
       title: '20 Yıllık Esnaf Güvencesi',
       desc: 'İçerenköy’de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.',
-      color: Color(0xFF2E7D6B),
+      color: AppColors.sage,
     ),
     _Usp(
       icon: Icons.savings_rounded,
       title: 'Piyasanın Altında Fiyat',
       desc: 'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.',
-      color: Color(0xFFC5A358),
+      color: AppColors.accent,
     ),
     _Usp(
       icon: Icons.fact_check_rounded,
       title: 'Kontrollü Ürün Kalitesi',
       desc: 'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.',
-      color: Color(0xFF3E6B8A),
+      color: AppColors.primary,
     ),
     _Usp(
       icon: Icons.support_agent_rounded,
       title: 'Satış Sonrası Destek',
       desc: 'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.',
-      color: Color(0xFFB2673E),
+      color: AppColors.sageDark,
     ),
   ];
 
@@ -53,8 +53,9 @@ class WhyUsSection extends StatelessWidget {
             children: [
               Text('Neden Sağlam Spot?',
                   style: TextStyle(
+                      fontFamily: 'Fraunces',
                       fontSize: context.h2Size,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       color: context.primaryColor)),
               const SizedBox(height: 4),
               Container(height: 3, width: 40, color: AppColors.accent),
@@ -93,55 +94,71 @@ class _Usp {
       required this.color});
 }
 
-class _UspCard extends StatelessWidget {
+class _UspCard extends StatefulWidget {
   final _Usp item;
 
   const _UspCard({required this.item});
 
   @override
+  State<_UspCard> createState() => _UspCardState();
+}
+
+class _UspCardState extends State<_UspCard> {
+  bool _isHovered = false;
+
+  @override
   Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 16,
-              offset: const Offset(0, 6)),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: item.color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        transform:
+            _isHovered ? (Matrix4.identity()..scale(1.02)) : Matrix4.identity(),
+        transformAlignment: Alignment.center,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.08 : 0.03),
+                blurRadius: _isHovered ? 24 : 16,
+                offset: Offset(0, _isHovered ? 10 : 6)),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: widget.item.color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(widget.item.icon, color: widget.item.color, size: 24),
             ),
-            child: Icon(item.icon, color: item.color, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item.title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w800, fontSize: 14.5)),
-                const SizedBox(height: 6),
-                Text(item.desc,
-                    style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 12.5,
-                        height: 1.4)),
-              ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.item.title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w800, fontSize: 14.5)),
+                  const SizedBox(height: 6),
+                  Text(widget.item.desc,
+                      style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12.5,
+                          height: 1.4)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

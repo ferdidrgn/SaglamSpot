@@ -94,6 +94,7 @@ class _AboutPageState extends State<AboutPage> {
                   Text(
                     'Sağlam Spot\nBildiğiniz Güven',
                     style: TextStyle(
+                      fontFamily: 'Fraunces',
                       color: Colors.white,
                       fontSize: context.responsive(mobile: 32, desktop: 52),
                       fontWeight: FontWeight.bold,
@@ -137,12 +138,12 @@ class _AboutPageState extends State<AboutPage> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: Container(
-          color: Colors.brown.withOpacity(0.1),
+          color: AppColors.accent.withOpacity(0.1),
           child: const Center(
             child: Icon(
               Icons.store,
               size: 120,
-              color: Colors.brown,
+              color: AppColors.accent,
             ),
           ),
         ),
@@ -155,6 +156,7 @@ class _AboutPageState extends State<AboutPage> {
         Text(
           'Biz Kimiz? (Hikayemiz)',
           style: TextStyle(
+            fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 28, desktop: 42),
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
@@ -329,6 +331,7 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               'İlkelerimiz',
               style: TextStyle(
+                fontFamily: 'Fraunces',
                 fontSize: context.responsive(mobile: 28, desktop: 42),
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
@@ -417,13 +420,13 @@ class _AboutPageState extends State<AboutPage> {
       width: context.responsive(mobile: 100, desktop: 120),
       height: context.responsive(mobile: 100, desktop: 120),
       decoration: BoxDecoration(
-        color: Colors.purple.withOpacity(0.2),
+        color: AppColors.accentDark.withOpacity(0.18),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Icon(
         Icons.engineering_outlined,
         size: context.responsive(mobile: 50, desktop: 60),
-        color: Colors.purple,
+        color: AppColors.accentDark,
       ),
     );
 
@@ -433,6 +436,7 @@ class _AboutPageState extends State<AboutPage> {
         Text(
           'Ustamızı Tanıyın',
           style: TextStyle(
+            fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 22, desktop: 28),
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
@@ -463,11 +467,11 @@ class _AboutPageState extends State<AboutPage> {
           desktop: const EdgeInsets.all(48),
         ),
         decoration: BoxDecoration(
-          color: Colors.purple.withOpacity(0.1),
+          color: AppColors.accentDark.withOpacity(0.08),
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          border: Border.all(color: Colors.purple.withOpacity(0.3)),
+          border: Border.all(color: AppColors.accentDark.withOpacity(0.3)),
         ),
         child: context.responsive<Widget>(
           mobile: Column(
@@ -495,13 +499,13 @@ class _AboutPageState extends State<AboutPage> {
       width: context.responsive(mobile: 100, desktop: 120),
       height: context.responsive(mobile: 100, desktop: 120),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.2),
+        color: AppColors.accent.withOpacity(0.18),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Icon(
         Icons.local_shipping_outlined,
         size: context.responsive(mobile: 50, desktop: 60),
-        color: Colors.orange,
+        color: AppColors.accent,
       ),
     );
 
@@ -511,6 +515,7 @@ class _AboutPageState extends State<AboutPage> {
         Text(
           'Nakliye ve Montaj Hizmetimiz',
           style: TextStyle(
+            fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 22, desktop: 28),
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
@@ -521,7 +526,7 @@ class _AboutPageState extends State<AboutPage> {
           'Ücretsiz Nakliye ve Montaj',
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
-            color: Colors.orange,
+            color: AppColors.accent,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -575,11 +580,11 @@ class _AboutPageState extends State<AboutPage> {
           desktop: const EdgeInsets.all(48),
         ),
         decoration: BoxDecoration(
-          color: Colors.orange.withOpacity(0.1),
+          color: AppColors.accent.withOpacity(0.08),
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          border: Border.all(color: Colors.orange.withOpacity(0.3)),
+          border: Border.all(color: AppColors.accent.withOpacity(0.3)),
         ),
         child: context.responsive<Widget>(
           mobile: Column(children: [
@@ -603,13 +608,13 @@ class _AboutPageState extends State<AboutPage> {
       width: context.responsive(mobile: 100, desktop: 120),
       height: context.responsive(mobile: 100, desktop: 120),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.2),
+        color: AppColors.sage.withOpacity(0.18),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Icon(
         Icons.directions_bus_outlined,
         size: context.responsive(mobile: 50, desktop: 60),
-        color: Colors.green,
+        color: AppColors.sage,
       ),
     );
 
@@ -619,6 +624,7 @@ class _AboutPageState extends State<AboutPage> {
         Text(
           'Dükkanımıza Nasıl Gelirsiniz?',
           style: TextStyle(
+            fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 22, desktop: 28),
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
@@ -663,11 +669,11 @@ class _AboutPageState extends State<AboutPage> {
           desktop: const EdgeInsets.all(48),
         ),
         decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.1),
+          color: AppColors.sage.withOpacity(0.08),
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          border: Border.all(color: Colors.green.withOpacity(0.3)),
+          border: Border.all(color: AppColors.sage.withOpacity(0.3)),
         ),
         child: context.responsive<Widget>(
           mobile: Column(children: [
@@ -833,6 +839,7 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               'Bize Ulaşın',
               style: TextStyle(
+                fontFamily: 'Fraunces',
                 fontSize: context.responsive(mobile: 28, desktop: 42),
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
