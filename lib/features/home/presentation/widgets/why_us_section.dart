@@ -12,25 +12,25 @@ class WhyUsSection extends StatelessWidget {
       icon: Icons.verified_user_rounded,
       title: '20 Yıllık Esnaf Güvencesi',
       desc: 'İçerenköy’de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.',
-      color: Color(0xFF2E7D6B),
+      color: AppColors.accentDark,
     ),
     _Usp(
       icon: Icons.savings_rounded,
       title: 'Piyasanın Altında Fiyat',
       desc: 'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.',
-      color: Color(0xFFC5A358),
+      color: AppColors.warning,
     ),
     _Usp(
       icon: Icons.fact_check_rounded,
       title: 'Kontrollü Ürün Kalitesi',
       desc: 'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.',
-      color: Color(0xFF3E6B8A),
+      color: AppColors.sage,
     ),
     _Usp(
       icon: Icons.support_agent_rounded,
       title: 'Satış Sonrası Destek',
       desc: 'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.',
-      color: Color(0xFFB2673E),
+      color: AppColors.accent,
     ),
   ];
 
@@ -103,7 +103,7 @@ class _UspCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
