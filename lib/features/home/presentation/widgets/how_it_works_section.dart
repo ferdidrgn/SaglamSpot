@@ -47,7 +47,7 @@ class HowItWorksSection extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                     color: context.primaryColor)),
             const SizedBox(height: 4),
-            Container(height: 3, width: 40, color: context.colors.secondary),
+            Container(height: 3, width: 40, color: AppColors.accent),
             const SizedBox(height: 24),
             isMobile
                 ? Column(

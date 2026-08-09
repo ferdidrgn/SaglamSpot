@@ -135,16 +135,25 @@ class CustomAppHeader extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              'assets/images/saglam_spot_logo.png',
-              height:
-                  context.responsive(mobile: 36.0, tablet: 42.0, desktop: 48.0),
-              fit: BoxFit.contain,
-              errorBuilder: (final context, final error, final stackTrace) =>
-                  Icon(Icons.auto_awesome, size: context.iconSmall),
+            // Kare logo dosyası artık her zaman daireye kırpılıyor —
+            // ikinci_sans_furniture prototipindeki BrandLogo mantığı.
+            ClipOval(
+              child: Container(
+                width: context.responsive(
+                    mobile: 36.0, tablet: 42.0, desktop: 48.0),
+                height: context.responsive(
+                    mobile: 36.0, tablet: 42.0, desktop: 48.0),
+                color: AppColors.primary,
+                child: Image.asset(
+                  'assets/images/saglam_spot_logo.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (final context, final error, final stackTrace) =>
+                      Icon(Icons.auto_awesome,
+                          size: context.iconSmall, color: AppColors.accentLight),
+                ),
+              ),
             ),
-            const Icon(Icons.auto_awesome, color: Color(0xFF103E35), size: 24),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             // Flexible + FittedBox kombinasyonu 31 piksellik taşmayı engeller
             Flexible(
               child: FittedBox(
@@ -156,7 +165,7 @@ class CustomAppHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: context.responsive(mobile: 18.0, desktop: 22.0),
                     fontWeight: FontWeight.w900,
-                    color: const Color(0xFF1E293B),
+                    color: AppColors.primary,
                   ),
                 ),
               ),

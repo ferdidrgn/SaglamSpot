@@ -1,100 +1,101 @@
 import 'package:flutter/material.dart';
 
+/// "Soft Premium" palet — köklü renk değişimi. Tüm sabit isimler
+/// (primary, secondary, accent, background, surface...) AYNI kaldı;
+/// sadece DEĞERLER değişti. Bu sayede bu isimlere bağlı 30'dan fazla
+/// dosya (ColorScheme, tema, kartlar, butonlar) hiçbir kod değişikliği
+/// gerektirmeden yeni paleti otomatik olarak alır.
+///
+/// Önceki palet: Zümrüt/Orman Yeşili + Altın vurgu.
+/// Yeni palet: Sıcak toprak tonu bej/krem + kömür siyahı + tek amber/
+/// terracotta vurgu (ikinci_sans_furniture prototipinden entegre edildi).
 class AppColors {
-  // --- ANA LÜKS PALET (Emerald & Forest Green Temelli) ---
-  static const Color primary = Color(0xFF0F302A);
-  static const Color primaryVariant = Color(0xFF071F1B);
-  static const Color onPrimary = Color(0xFF4CAF93); // Canlı nane yeşili (Vurgu)
+  // --- ANA LÜKS PALET (Sıcak Krem & Kömür Temelli) ---
+  static const Color primary = Color(0xFF2E2A26); // kömür siyahı (ink)
+  static const Color primaryVariant = Color(0xFF201C18); // daha koyu kömür
+  static const Color onPrimary = Color(0xFFC98A4B); // amber/terracotta vurgu
 
-  static const Color surface = Color(0xFFF9FDFB); // Çok hafif yeşil çalan beyaz
-  static const Color onSurface = Color(0xFF8BAE9E);
-  static const Color background = Color(0xFFF8FAF9); // Temiz, modern arka plan
+  static const Color surface = Color(0xFFFFFDF9); // sıcak fildişi
+  static const Color onSurface = Color(0xFF4A443D); // yumuşak kömür metin
+  static const Color background = Color(0xFFFAF6F0); // sıcak krem zemin
 
-  static const Color secondary =
-      Color(0xFFE8F1ED); // Adaçayı Yeşili (Kart içleri için ideal)
-  static const Color onSecondary =
-      Color(0xFF638C7D); // İkincil alanlardaki metin/ikon rengi
-  static const Color secondaryVariant = Color(0xFFD4E2DC); // Hafif koyu adaçayı
+  static const Color secondary = Color(0xFFF3EDE3); // sıcak bej panel
+  static const Color onSecondary = Color(0xFF4A443D); // panel üstü metin/ikon
+  static const Color secondaryVariant = Color(0xFFE6DDCF); // hafif koyu bej
 
   // --- YARDIMCI VE SEMANTİK RENKLER ---
   static const Color white = Colors.white;
-  static const Color black =
-      Color(0xFF121212); // Tam siyah yerine lüks mat siyah
-  static const Color error = Color(0xFFD32F2F); // Güven veren kırmızı
-  static const Color onError = Color(0xFFE86060); // Güven veren kırmızı
-  static const Color success = Color(0xFF2E7D32); // Uyumlu yeşil başarı rengi
-  static const Color warning = Color(0xFFED6C02); // Okunabilir turuncu-sarı
-  static const Color info = Color(0xFF0288D1); // Bilgilendirme mavisi
+  static const Color black = Color(0xFF201C18); // tam siyah yerine kömür
+  static const Color error = Color(0xFFC0392B); // sıcak, güven veren kırmızı
+  static const Color onError = Color(0xFFE07A6B);
+  static const Color success = Color(0xFF6E8B5B); // zeytin yeşili başarı
+  static const Color warning = Color(0xFFD98C3D);
+  static const Color info = Color(0xFF5B7C99);
 
   // --- METİN VE SINIRLAR ---
-  static const Color textPrimary =
-      Color(0xFF0F302A); // Ana başlıklar için koyu yeşil siyah
-  static const Color textSecondary =
-      Color(0xFF5A6E6A); // Açıklama metinleri için gri-yeşil
-  static const Color textTertiary =
-      Color(0xFF94A3B8); // Yardımcı metinler (Hint text)
-  static const Color textLight = white; // Koyu zemin üzerindeki beyaz metin
+  static const Color textPrimary = Color(0xFF2E2A26); // ana başlıklar
+  static const Color textSecondary = Color(0xFF6B5D50); // açıklama metinleri
+  static const Color textTertiary = Color(0xFF8A8177); // yardımcı/hint metin
+  static const Color textLight = white;
 
-  static const Color border = Color(0xFFE2E8F0); // Modern ve ince sınırlar
-  static const Color divider = Color(0xFFF1F5F9); // Çok hafif ayraçlar
+  static const Color border = Color(0xFFE6DDCF); // sıcak, ince sınırlar
+  static const Color divider = Color(0xFFEFE8DB); // çok hafif sıcak ayraçlar
 
-  // --- GRİ TONLAMALARI (Neutral) ---
-  static const Color lightGrey = Color(0xFFF1F5F9);
-  static const Color mediumGrey = Color(0xFFCBD5E1);
-  static const Color darkGrey = Color(0xFF334155);
+  // --- GRİ TONLAMALARI (Neutral — sıcak tona kaydırıldı) ---
+  static const Color lightGrey = Color(0xFFF3EDE3);
+  static const Color mediumGrey = Color(0xFFD8CDBC);
+  static const Color darkGrey = Color(0xFF4A443D);
 
   // --- ARKA PLANLAR ---
   static const Color backgroundLight = white;
-  static const Color backgroundDark =
-      Color(0xFF0F172A); // Koyu mod için derin lacivert-siyah
+  static const Color backgroundDark = Color(0xFF1C1512); // koyu mod (pasif)
 
-  // --- MODERN PRIMARY (Indigo-Based) ---
-  // Not: Emerald ana paletinize uyum sağlaması için Indigo tonlarını yumuşattım.
-  static const Color primaryDark = Color(0xFF3730A3);
-  static const Color primaryLight = Color(0xFF818CF8);
+  // --- MODERN PRIMARY (artık indigo değil — kömür tonuyla uyumlu) ---
+  static const Color primaryDark = Color(0xFF1C1512);
+  static const Color primaryLight = Color(0xFF6B5D50);
 
-  // --- SECONDARY (Pink-Based) ---
-  static const Color secondaryDark = Color(0xFFBE185D);
-  static const Color secondaryLight = Color(0xFFF472B6);
+  // --- SECONDARY (artık pembe değil — sıcak terracotta) ---
+  static const Color secondaryDark = Color(0xFFAD6B37);
+  static const Color secondaryLight = Color(0xFFE7C6A0);
 
-  // --- ACCENT (Gold/Altın - Emerald'ın En İyi Tamamlayıcısı) ---
-  static const Color accent = Color(0xFFC5A358); // Marka altını
-  static const Color accentDark = Color(0xFFA67C52); // Bronza çalan altın
-  static const Color accentLight = Color(0xFFE7C8A9); // Krem-altın karışımı
+  // --- ACCENT (Amber/Terracotta — markanın tek sıcak vurgusu) ---
+  static const Color accent = Color(0xFFC98A4B);
+  static const Color accentDark = Color(0xFFAD6B37);
+  static const Color accentLight = Color(0xFFE7C6A0);
 
   // --- NEUTRAL UI ---
-  static const Color card = Color(0xFFFFFFFF);
+  static const Color card = Color(0xFFFFFDF9);
 
-  // --- DARK MODE PALETİ (Senkronize Tonlar) ---
-  static const Color darkBackground = Color(0xFF0B1210); // Koyu zümrüt siyahı
-  static const Color darkSurface = Color(0xFF1A2623); // Koyu yeşil-gri yüzey
-  static const Color darkCard = Color(0xFF22302C); // Koyu kart rengi
-  static const Color darkTextPrimary = Color(0xFFF1F5F9);
-  static const Color darkTextSecondary = Color(0xFF94A3B8);
-  static const Color darkBorder = Color(0xFF2D3E3A);
+  // --- DARK MODE PALETİ (uygulama ThemeMode.light'a sabitli, pasif) ---
+  static const Color darkBackground = Color(0xFF1C1512);
+  static const Color darkSurface = Color(0xFF2A231E);
+  static const Color darkCard = Color(0xFF332B24);
+  static const Color darkTextPrimary = Color(0xFFF3EDE3);
+  static const Color darkTextSecondary = Color(0xFFB8AC9C);
+  static const Color darkBorder = Color(0xFF443A31);
 
   // --- GRADIENT YAPILARI ---
   static const Gradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF2D2D2D), Color(0xFF000000)], // Siyah lüks butonlar için
+    colors: [Color(0xFF352F29), primary], // kömür geçişi
   );
 
   static const Gradient secondaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [secondary, Color(0xFFBDD2C9)], // Adaçayı tonlarında yumuşak geçiş
+    colors: [secondary, secondaryVariant], // sıcak bej geçişi
   );
 
   static const Gradient accentGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [accent, accentDark], // Altın geçişi
+    colors: [accent, accentDark], // amber/terracotta geçişi
   );
 
   static const Gradient backgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [background, Color(0xFFEDF2F1)], // Beyazdan hafif yeşil-griye
+    colors: [background, secondary], // kremden sıcak beje
   );
 }

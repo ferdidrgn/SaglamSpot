@@ -3,6 +3,7 @@ import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart'
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../shared/navigation/widgets/nav_handler.dart';
 import '../common/extentions/reg_exp_extentions.dart';
+import '../theme/app_colors.dart';
 import 'gallery_section.dart';
 
 class CustomProductCard extends StatefulWidget {
@@ -58,7 +59,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                             fit: BoxFit.cover,
                             errorBuilder: (final c, final e, final s) =>
                                 Container(
-                                    color: const Color(0xFFF3F7F6),
+                                    color: AppColors.secondary,
                                     child: const Icon(Icons.chair, size: 40)),
                           ),
                         ),
@@ -102,6 +103,11 @@ class _CustomProductCardState extends State<CustomProductCard> {
                     ),
                   ),
                 ),
+              ),
+              Positioned(
+                top: 15,
+                left: 15,
+                child: _ConditionBadge(isSpotProduct: widget.product.isSpotProduct),
               ),
               Positioned(
                 top: 15,
@@ -195,4 +201,51 @@ class _CustomProductCardState extends State<CustomProductCard> {
             images: widget.product.imagesUrl,
             isMobile: context.screenWidth < 900),
       );
+}
+
+/// "Sıfır" (dolgun/solid) ve "İkinci El" (ince kenarlıklı/outlined) rozet
+/// ayrımı — ikinci_sans_furniture prototipinden entegre edildi.
+/// `isSpotProduct == true` -> ikinci el/spot ürün.
+class _ConditionBadge extends StatelessWidget {
+  final bool isSpotProduct;
+  const _ConditionBadge({required this.isSpotProduct});
+
+  @override
+  Widget build(final BuildContext context) {
+    if (!isSpotProduct) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: const Text(
+          'SIFIR',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.6,
+          ),
+        ),
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: AppColors.accentDark, width: 1.2),
+      ),
+      child: const Text(
+        'İKİNCİ EL',
+        style: TextStyle(
+          color: AppColors.accentDark,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
+        ),
+      ),
+    );
+  }
 }

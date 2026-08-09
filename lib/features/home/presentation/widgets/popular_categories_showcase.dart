@@ -52,7 +52,7 @@ class PopularCategoriesShowcase extends ConsumerWidget {
                     fontWeight: FontWeight.w900,
                     color: context.primaryColor)),
             const SizedBox(height: 4),
-            Container(height: 3, width: 40, color: context.colors.secondary),
+            Container(height: 3, width: 40, color: AppColors.accent),
             const SizedBox(height: 8),
             Text('İhtiyacına uygun mobilyayı tek tıkla bul',
                 style: TextStyle(

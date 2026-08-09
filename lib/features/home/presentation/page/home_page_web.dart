@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
@@ -137,6 +138,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   ),
                   const HowItWorksSection(),
                   _buildArtisanInfo(),
+                  _buildVisitSection(),
                   const WhyUsSection(),
                   const TestimonialsSection(),
                   _buildStatsSection(),
@@ -208,15 +210,75 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _buildHeroSliderSection() {
     return SliverToBoxAdapter(
       child: Container(
-        height: context.hp(context.isMobile ? 50 : 65),
+        height: context.hp(context.isMobile ? 52 : 66),
         margin: context.pagePadding,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
-          child: PageView.builder(
-            controller: _heroPageController,
-            itemCount: 3,
-            itemBuilder: (final context, final index) => _heroSlide(index),
-          ),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+              child: PageView.builder(
+                controller: _heroPageController,
+                itemCount: 3,
+                onPageChanged: (final i) => setState(() => _currentHeroPage = i),
+                itemBuilder: (final context, final index) => _heroSlide(index),
+              ),
+            ),
+            // Esnaf dükkânı kimliğini yansıtan, sol altta yüzen "cam" rozet
+            // — Samimi Esnaflık teması, "Ustanın Notu" hissiyle uyumlu.
+            Positioned(
+              left: context.responsive(mobile: 16, desktop: 32),
+              bottom: context.responsive(mobile: 16, desktop: 32),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(context.borderRadius(1)),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.responsive(mobile: 12, desktop: 18),
+                        vertical: context.responsive(mobile: 8, desktop: 12)),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.16),
+                      borderRadius: BorderRadius.circular(context.borderRadius(1)),
+                      border: Border.all(color: Colors.white.withOpacity(0.35)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.volunteer_activism_rounded,
+                            size: context.iconSmall, color: AppColors.accentLight),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.featureArtisan,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: context.captionSize)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Sayfa göstergesi noktaları — hangi slaytta olduğumuzu zarifçe belirtir.
+            Positioned(
+              right: context.responsive(mobile: 16, desktop: 32),
+              bottom: context.responsive(mobile: 16, desktop: 32),
+              child: Row(
+                children: List.generate(3, (final i) {
+                  final bool active = i == _currentHeroPage;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 260),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: active ? 20 : 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: active ? Colors.white : Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -236,38 +298,99 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
       child: Container(
         padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+        // Önceki sürümdeki tek yönlü, sert renk bloğu yerine daha yumuşak,
+        // köşeden köşeye yayılan bir vinyet — metin okunabilirliği artıyor,
+        // görsel daha "soluk alıyor" hissi veriyor.
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [context.primaryColor.withOpacity(0.8), Colors.transparent],
-            begin: Alignment.centerLeft,
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [
+              context.primaryColor.withOpacity(0.82),
+              context.primaryColor.withOpacity(0.35),
+              Colors.transparent,
+            ],
+            stops: const [0.0, 0.55, 1.0],
           ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(context.l10n.newSeason,
-                style: TextStyle(
-                    color: context.colors.secondary,
-                    letterSpacing: context.isMobile ? 2 : 4,
-                    fontWeight: FontWeight.bold,
-                    fontSize: context.responsive(mobile: 10, desktop: 14))),
-            const SizedBox(height: 10),
+            // Eyebrow etiketi artık ince kenarlıklı bir "hap" içinde —
+            // düz metin yerine dokunsal, premium bir rozet hissi.
+            Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: context.responsive(mobile: 10, desktop: 14),
+                  vertical: context.responsive(mobile: 5, desktop: 7)),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.accentLight.withOpacity(0.6)),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Text(context.l10n.newSeason,
+                  style: TextStyle(
+                      color: AppColors.accentLight,
+                      letterSpacing: context.isMobile ? 2 : 3,
+                      fontWeight: FontWeight.w700,
+                      fontSize: context.responsive(mobile: 9, desktop: 12))),
+            ),
+            const SizedBox(height: 14),
             Text(context.l10n.heroTitle,
                 style: AppTextStyles.webTextTheme.bodyLarge?.copyWith(
                     color: Colors.white,
                     fontSize: context.heroSize * 0.8,
                     height: 1.1)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colors.secondary,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: context.responsive(mobile: 20, desktop: 40),
-                      vertical: context.responsive(mobile: 12, desktop: 20))),
-              child: Text(context.l10n.viewCollection,
-                  style: TextStyle(fontSize: context.captionSize)),
+            const SizedBox(height: 8),
+            Text(context.l10n.featureArtisan,
+                style: TextStyle(
+                    color: Colors.white.withOpacity(0.78),
+                    fontStyle: FontStyle.italic,
+                    fontSize: context.responsive(mobile: 13, desktop: 16))),
+            SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
+            // Tek "Koleksiyonu Gör" butonu yerine, sıfır/ikinci el ayrımını
+            // ilk bakışta netleştiren çift CTA — dükkânın iki yüzünü de
+            // hemen gösteriyor.
+            Wrap(
+              spacing: 12,
+              runSpacing: 10,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => NavigationHandler.goToNewProducts(context),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: context.primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.responsive(mobile: 18, desktop: 30),
+                          vertical:
+                              context.responsive(mobile: 12, desktop: 18))),
+                  icon: const Icon(Icons.auto_awesome, size: 16),
+                  label: Text(context.l10n.conditionNew,
+                      style: TextStyle(
+                          fontSize: context.captionSize,
+                          fontWeight: FontWeight.w600)),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => NavigationHandler.goToSpotProducts(context),
+                  style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white70),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.responsive(mobile: 18, desktop: 30),
+                          vertical:
+                              context.responsive(mobile: 12, desktop: 18))),
+                  icon: const Icon(Icons.recycling, size: 16),
+                  label: Text(context.l10n.conditionUsed,
+                      style: TextStyle(
+                          fontSize: context.captionSize,
+                          fontWeight: FontWeight.w600)),
+                ),
+              ],
             ),
           ],
         ),
@@ -281,8 +404,8 @@ class _HomePageState extends ConsumerState<HomePage>
           child: Center(
             child: Wrap(
               alignment: WrapAlignment.center,
-              spacing: context.responsive(mobile: 20, tablet: 40, desktop: 60),
-              runSpacing: 20,
+              spacing: context.responsive(mobile: 12, tablet: 20, desktop: 28),
+              runSpacing: 14,
               children: [
                 _featureItem(Icons.volunteer_activism_rounded,
                     context.l10n.featureArtisan),
@@ -298,17 +421,30 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
       );
 
-  Widget _featureItem(final IconData icon, final String text) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: context.primaryColor, size: context.iconMedium),
-          const SizedBox(width: 8),
-          Text(text,
-              style: TextStyle(
-                  color: context.primaryColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: context.bodySize)),
-        ],
+  // Önceki sürümde düz bir ikon+metin satırıydı; artık yumuşak kenarlıklı,
+  // hafif gölgeli bir "hap" kart — diğer premium rozet/etiketlerle
+  // tutarlı bir dokunsal dil oluşturuyor.
+  Widget _featureItem(final IconData icon, final String text) => Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 12, desktop: 16),
+            vertical: context.responsive(mobile: 8, desktop: 10)),
+        decoration: BoxDecoration(
+          color: context.colors.secondary.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: context.primaryColor, size: context.iconMedium),
+            const SizedBox(width: 8),
+            Text(text,
+                style: TextStyle(
+                    color: context.primaryColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: context.bodySize)),
+          ],
+        ),
       );
 
   Widget _buildCategoriesSection() {
@@ -412,7 +548,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   children: [
                     Text(context.l10n.whoWeAre,
                         style: TextStyle(
-                            color: context.colors.secondary,
+                            color: AppColors.accentDark,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 2)),
                     const SizedBox(height: 15),
@@ -428,7 +564,7 @@ class _HomePageState extends ConsumerState<HomePage>
                             fontSize: context.bodySize)),
                     const SizedBox(height: 25),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => NavigationHandler.goToAbout(context),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.accentDark),
                       child: Text(context.l10n.visitUsButton),
@@ -450,6 +586,143 @@ class _HomePageState extends ConsumerState<HomePage>
             ],
           ),
         ),
+      );
+
+  Widget _buildVisitSection() => SliverToBoxAdapter(
+        child: Container(
+          margin: context.sectionPadding,
+          padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 48)),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+          ),
+          child: Flex(
+            direction: context.isMobile ? Axis.vertical : Axis.horizontal,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: context.isMobile ? 0 : 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('BİZE UĞRA',
+                        style: TextStyle(
+                            color: AppColors.accentLight,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                            fontSize: context.captionSize)),
+                    const SizedBox(height: 12),
+                    Text('Bir Selam Ver, Yeter',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.h2Size,
+                            fontWeight: FontWeight.w900,
+                            height: 1.2)),
+                    const SizedBox(height: 14),
+                    Text(
+                      'Kapımız her zaman açık. ${SaglamSpotCommunication.workingHours}',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: context.bodySize,
+                          height: 1.5),
+                    ),
+                    const SizedBox(height: 24),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 10,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: SaglamSpotCommunication.launchWhatsApp,
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                          label: const Text('WhatsApp'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: SaglamSpotCommunication.makeCall,
+                          style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          icon: const Icon(Icons.call_outlined, size: 16),
+                          label: Text(SaglamSpotCommunication.displayPhone),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: SaglamSpotCommunication.openStoreLocation,
+                          style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          icon: const Icon(Icons.north_east, size: 16),
+                          label: const Text('Yol Tarifi'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              if (!context.isMobile) const SizedBox(width: 40),
+              if (context.isMobile) const SizedBox(height: 28),
+              Expanded(
+                flex: context.isMobile ? 0 : 4,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.06),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _visitInfoRow(Icons.local_shipping_outlined,
+                          'Ücretsiz Teslimat',
+                          SaglamSpotCommunication.freeDeliveryZones.join(', ')),
+                      const SizedBox(height: 16),
+                      _visitInfoRow(
+                          Icons.directions_bus_outlined,
+                          'Otobüs Hatları',
+                          SaglamSpotCommunication.getBusLines()
+                              .entries
+                              .map((final e) => '${e.key}: ${e.value.join(', ')}')
+                              .join('\n')),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _visitInfoRow(final IconData icon, final String title, final String detail) =>
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.accentLight, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13)),
+                const SizedBox(height: 4),
+                Text(detail,
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.6), fontSize: 12, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
       );
 
   Widget _buildStatsSection() {
@@ -529,7 +802,7 @@ class _HomePageState extends ConsumerState<HomePage>
         ),
         child: Column(
           children: [
-            Icon(icon, color: context.colors.secondary, size: 30),
+            Icon(icon, color: AppColors.accentLight, size: 30),
             const SizedBox(height: 15),
             CountUpOnVisible(
               targetValue: target,
@@ -615,7 +888,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       children: [
                         Text(context.l10n.contactUs,
                             style: TextStyle(
-                                color: context.colors.secondary,
+                                color: AppColors.accentLight,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12)),
                         const SizedBox(height: 10),
@@ -680,7 +953,7 @@ class _HomePageState extends ConsumerState<HomePage>
                           color: context.primaryColor)),
                   const SizedBox(height: 4),
                   Container(
-                      height: 3, width: 40, color: context.colors.secondary),
+                      height: 3, width: 40, color: AppColors.accent),
                   const SizedBox(height: 8),
                   Text(sub,
                       style: TextStyle(
@@ -789,7 +1062,7 @@ class _RoomCardState extends State<_RoomCard> {
                     children: [
                       Text(widget.sub,
                           style: TextStyle(
-                              color: context.colors.secondary,
+                              color: AppColors.accentLight,
                               fontSize: 10,
                               fontWeight: FontWeight.bold)),
                       Text(widget.title,
