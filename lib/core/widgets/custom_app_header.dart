@@ -186,17 +186,10 @@ class CustomAppHeader extends StatelessWidget {
     return Row(
       children: List.generate(labels.length, (final i) {
         final active = i == currentIndex;
-        return GestureDetector(
+        return _HeaderNavLink(
+          label: labels[i],
+          active: active,
           onTap: () => onNavigate(i),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              labels[i],
-              style: TextStyle(
-                fontWeight: active ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ),
         );
       }),
     );
@@ -228,20 +221,118 @@ class CustomAppHeader extends StatelessWidget {
   }) {
     final double size = context.responsive(mobile: 40.0, desktop: 40.0);
 
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(
-              context.responsive(mobile: 10.0, desktop: 12.0)),
-          border: Border.all(color: AppColors.border)),
-      child: IconButton(
-          icon:
-              Icon(icon, size: context.responsive(mobile: 20.0, desktop: 20.0)),
-          onPressed: onPressed,
-          color: AppColors.textSecondary,
-          padding: EdgeInsets.zero),
+    return _HeaderActionButton(
+      size: size,
+      icon: icon,
+      iconSize: context.responsive(mobile: 20.0, desktop: 20.0),
+      borderRadius: context.responsive(mobile: 10.0, desktop: 12.0),
+      onPressed: onPressed,
     );
   }
+}
+
+/// Masaüstü nav bağlantısı — hover'da yumuşak bir renk geçişi ve altı çizili
+/// vurgu ile tıklanabilirliği belli eder (Emil Kowalski: her etkileşimin
+/// amaçlı, sübtil bir geri bildirimi olmalı).
+class _HeaderNavLink extends StatefulWidget {
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  const _HeaderNavLink(
+      {required this.label, required this.active, required this.onTap});
+
+  @override
+  State<_HeaderNavLink> createState() => _HeaderNavLinkState();
+}
+
+class _HeaderNavLinkState extends State<_HeaderNavLink> {
+  bool _hovered = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    final highlighted = widget.active || _hovered;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (final _) => setState(() => _hovered = true),
+      onExit: (final _) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: TextStyle(
+                  fontWeight: widget.active ? FontWeight.bold : FontWeight.w500,
+                  color: highlighted
+                      ? AppColors.accentDark
+                      : AppColors.textPrimary,
+                ),
+                child: Text(widget.label),
+              ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                height: 2,
+                width: highlighted ? 16 : 0,
+                color: AppColors.accentDark,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// İkon aksiyon butonu — hover'da hafif zeminle ve kenarlıkla kendini belli
+/// eder.
+class _HeaderActionButton extends StatefulWidget {
+  final double size;
+  final double iconSize;
+  final double borderRadius;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _HeaderActionButton({
+    required this.size,
+    required this.iconSize,
+    required this.borderRadius,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  State<_HeaderActionButton> createState() => _HeaderActionButtonState();
+}
+
+class _HeaderActionButtonState extends State<_HeaderActionButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(final BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (final _) => setState(() => _hovered = true),
+        onExit: (final _) => setState(() => _hovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            color: _hovered ? AppColors.secondary : AppColors.surface,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            border: Border.all(
+                color: _hovered ? AppColors.accentDark : AppColors.border),
+          ),
+          child: IconButton(
+              icon: Icon(widget.icon, size: widget.iconSize),
+              onPressed: widget.onPressed,
+              color: _hovered ? AppColors.accentDark : AppColors.textSecondary,
+              padding: EdgeInsets.zero),
+        ),
+      );
 }

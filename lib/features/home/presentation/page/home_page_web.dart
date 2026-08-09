@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,11 +39,34 @@ class _HomePageState extends ConsumerState<HomePage>
   late AnimationController _heroController;
   late AnimationController _floatingController;
   late AnimationController _pulseController;
+  late AnimationController _kenBurnsController;
+  late AnimationController _dustController;
 
-  int _currentHeroPage = 0;
-  Timer? _heroTimer;
-  final PageController _heroPageController = PageController();
   final ScrollController _scrollController = ScrollController();
+
+  // Hero arka planında yavaşça birbirine geçen ürün/atmosfer görselleri —
+  // gerçek video yerine Ken Burns (zoom+pan) hissi veren bir crossfade.
+  static const List<String> _heroImages = [
+    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
+    "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
+    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
+  ];
+  static const Duration _heroSlideDuration = Duration(seconds: 9);
+  static const double _heroCrossfade = 0.35; // geçiş genişliği (slot birimi)
+
+  late final List<_DustSpeck> _dustSpecks = List.generate(
+    20,
+    (final i) {
+      final rnd = math.Random(i * 7919 + 13);
+      return _DustSpeck(
+        dx: rnd.nextDouble(),
+        radius: 0.8 + rnd.nextDouble() * 1.6,
+        speed: 0.35 + rnd.nextDouble() * 0.5,
+        drift: (rnd.nextDouble() - 0.5) * 0.05,
+        phase: rnd.nextDouble(),
+      );
+    },
+  );
 
   @override
   void initState() {
@@ -57,27 +80,25 @@ class _HomePageState extends ConsumerState<HomePage>
     _pulseController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000))
       ..repeat(reverse: true);
-    _startHeroTimer();
-  }
-
-  void _startHeroTimer() {
-    _heroTimer = Timer.periodic(const Duration(seconds: 6), (final timer) {
-      if (mounted && _heroPageController.hasClients) {
-        _currentHeroPage = (_currentHeroPage + 1) % 3;
-        _heroPageController.animateToPage(_currentHeroPage,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeInOutQuint);
-      }
-    });
+    _kenBurnsController = AnimationController(
+      vsync: this,
+      duration: _heroSlideDuration * _heroImages.length,
+    )..repeat();
+    // Toz/ışık parçacıkları Ken Burns döngüsünden bağımsız, uzun periyotlu
+    // ayrı bir kontrolcüyle sürüklenir — çok sübtil, dikkat dağıtmayan bir
+    // "canlılık" hissi için.
+    _dustController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 26))
+          ..repeat();
   }
 
   @override
   void dispose() {
-    _heroTimer?.cancel();
     _heroController.dispose();
     _floatingController.dispose();
     _pulseController.dispose();
-    _heroPageController.dispose();
+    _kenBurnsController.dispose();
+    _dustController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -212,191 +233,240 @@ class _HomePageState extends ConsumerState<HomePage>
       child: Container(
         height: context.hp(context.isMobile ? 52 : 66),
         margin: context.pagePadding,
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
-              child: PageView.builder(
-                controller: _heroPageController,
-                itemCount: 3,
-                onPageChanged: (final i) => setState(() => _currentHeroPage = i),
-                itemBuilder: (final context, final index) => _heroSlide(index),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // "Video hissi" veren arka plan: 3 görsel, AnimationController ile
+              // yavaş zoom+pan (Ken Burns) yaparak birbirine crossfade olur.
+              AnimatedBuilder(
+                animation: _kenBurnsController,
+                builder: (final context, final _) =>
+                    _buildKenBurnsBackground(_kenBurnsController.value),
               ),
-            ),
-            // Esnaf dükkânı kimliğini yansıtan, sol altta yüzen "cam" rozet
-            // — Samimi Esnaflık teması, "Ustanın Notu" hissiyle uyumlu.
-            Positioned(
-              left: context.responsive(mobile: 16, desktop: 32),
-              bottom: context.responsive(mobile: 16, desktop: 32),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(context.borderRadius(1)),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: context.responsive(mobile: 12, desktop: 18),
-                        vertical: context.responsive(mobile: 8, desktop: 12)),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.16),
-                      borderRadius: BorderRadius.circular(context.borderRadius(1)),
-                      border: Border.all(color: Colors.white.withOpacity(0.35)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.volunteer_activism_rounded,
-                            size: context.iconSmall, color: AppColors.accentLight),
-                        const SizedBox(width: 8),
-                        Text(context.l10n.featureArtisan,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: context.captionSize)),
-                      ],
+              // Metin okunabilirliği için köşeden köşeye yumuşak bir vinyet.
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: [
+                      context.primaryColor.withOpacity(0.82),
+                      context.primaryColor.withOpacity(0.32),
+                      context.primaryColor.withOpacity(0.05),
+                    ],
+                    stops: const [0.0, 0.55, 1.0],
+                  ),
+                ),
+              ),
+              // İnce, yavaş süzülen ışık/toz parçacığı katmanı — çok sübtil,
+              // dikkat dağıtmadan "canlı" bir video hissi ekler.
+              IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _dustController,
+                  builder: (final context, final _) => CustomPaint(
+                    painter: _DustParticlesPainter(
+                      progress: _dustController.value,
+                      specks: _dustSpecks,
                     ),
                   ),
                 ),
               ),
-            ),
-            // Sayfa göstergesi noktaları — hangi slaytta olduğumuzu zarifçe belirtir.
-            Positioned(
-              right: context.responsive(mobile: 16, desktop: 32),
-              bottom: context.responsive(mobile: 16, desktop: 32),
-              child: Row(
-                children: List.generate(3, (final i) {
-                  final bool active = i == _currentHeroPage;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 260),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: active ? 20 : 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: active ? Colors.white : Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  );
-                }),
+              // Başlık ve WhatsApp CTA'sı — hareketli arka planın üzerinde sabit.
+              Padding(
+                padding:
+                    EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+                child: _heroContent(),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _heroSlide(final int index) {
-    final List<String> images = [
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
-      "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600"
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: NetworkImage(images[index]), fit: BoxFit.cover),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
-        // Önceki sürümdeki tek yönlü, sert renk bloğu yerine daha yumuşak,
-        // köşeden köşeye yayılan bir vinyet — metin okunabilirliği artıyor,
-        // görsel daha "soluk alıyor" hissi veriyor.
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [
-              context.primaryColor.withOpacity(0.82),
-              context.primaryColor.withOpacity(0.35),
-              Colors.transparent,
+              // Esnaf dükkânı kimliğini yansıtan, sol altta yüzen "cam" rozet
+              // — Samimi Esnaflık teması, "Ustanın Notu" hissiyle uyumlu.
+              Positioned(
+                left: context.responsive(mobile: 16, desktop: 32),
+                bottom: context.responsive(mobile: 16, desktop: 32),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(context.borderRadius(1)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.responsive(mobile: 12, desktop: 18),
+                          vertical: context.responsive(mobile: 8, desktop: 12)),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.16),
+                        borderRadius:
+                            BorderRadius.circular(context.borderRadius(1)),
+                        border: Border.all(color: Colors.white.withOpacity(0.35)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.volunteer_activism_rounded,
+                              size: context.iconSmall, color: AppColors.accentLight),
+                          const SizedBox(width: 8),
+                          Text(context.l10n.featureArtisan,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: context.captionSize)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
-            stops: const [0.0, 0.55, 1.0],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Eyebrow etiketi artık ince kenarlıklı bir "hap" içinde —
-            // düz metin yerine dokunsal, premium bir rozet hissi.
-            Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: context.responsive(mobile: 10, desktop: 14),
-                  vertical: context.responsive(mobile: 5, desktop: 7)),
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.accentLight.withOpacity(0.6)),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Text(context.l10n.newSeason,
-                  style: TextStyle(
-                      color: AppColors.accentLight,
-                      letterSpacing: context.isMobile ? 2 : 3,
-                      fontWeight: FontWeight.w700,
-                      fontSize: context.responsive(mobile: 9, desktop: 12))),
-            ),
-            const SizedBox(height: 14),
-            Text(context.l10n.heroTitle,
-                style: AppTextStyles.webTextTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontSize: context.heroSize * 0.8,
-                    height: 1.1)),
-            const SizedBox(height: 8),
-            Text(context.l10n.featureArtisan,
-                style: TextStyle(
-                    color: Colors.white.withOpacity(0.78),
-                    fontStyle: FontStyle.italic,
-                    fontSize: context.responsive(mobile: 13, desktop: 16))),
-            SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
-            // Tek "Koleksiyonu Gör" butonu yerine, sıfır/ikinci el ayrımını
-            // ilk bakışta netleştiren çift CTA — dükkânın iki yüzünü de
-            // hemen gösteriyor.
-            Wrap(
-              spacing: 12,
-              runSpacing: 10,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () => NavigationHandler.goToNewProducts(context),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: context.primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.responsive(mobile: 18, desktop: 30),
-                          vertical:
-                              context.responsive(mobile: 12, desktop: 18))),
-                  icon: const Icon(Icons.auto_awesome, size: 16),
-                  label: Text(context.l10n.conditionNew,
-                      style: TextStyle(
-                          fontSize: context.captionSize,
-                          fontWeight: FontWeight.w600)),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () => NavigationHandler.goToSpotProducts(context),
-                  style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white70),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.responsive(mobile: 18, desktop: 30),
-                          vertical:
-                              context.responsive(mobile: 12, desktop: 18))),
-                  icon: const Icon(Icons.recycling, size: 16),
-                  label: Text(context.l10n.conditionUsed,
-                      style: TextStyle(
-                          fontSize: context.captionSize,
-                          fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
+
+  /// Ken Burns arka planı: her görsel dairesel bir zaman ekseninde kendi
+  /// slotunda belirir, yavaşça büyüyüp kayar (zoom+pan) ve komşu görselle
+  /// [_heroCrossfade] genişliğinde yumuşak bir crossfade ile devrelir.
+  Widget _buildKenBurnsBackground(final double t) {
+    final n = _heroImages.length;
+    final total = t * n;
+    return Stack(
+      fit: StackFit.expand,
+      children: List.generate(n, (final i) {
+        final weight = _kenBurnsWeight(total, i, n);
+        if (weight <= 0.0) return const SizedBox.shrink();
+        final local = _kenBurnsLocalProgress(total, i, n);
+        final panRight = i.isEven;
+        final beginAlign =
+            panRight ? const Alignment(-0.15, -0.08) : const Alignment(0.15, 0.08);
+        final endAlign =
+            panRight ? const Alignment(0.15, 0.08) : const Alignment(-0.15, -0.08);
+        return Opacity(
+          opacity: weight,
+          child: Transform.scale(
+            scale: 1.0 + 0.14 * local,
+            alignment: Alignment.lerp(beginAlign, endAlign, local)!,
+            child: Image.network(_heroImages[i], fit: BoxFit.cover),
+          ),
+        );
+      }),
+    );
+  }
+
+  double _circularDelta(final double a, final double b, final double period) {
+    var d = (a - b) % period;
+    if (d > period / 2) d -= period;
+    if (d < -period / 2) d += period;
+    return d;
+  }
+
+  double _kenBurnsWeight(final double total, final int index, final int n) {
+    final delta = _circularDelta(total, index + 0.5, n.toDouble()).abs();
+    const half = 0.5;
+    final fadeStart = half - _heroCrossfade / 2;
+    final fadeEnd = half + _heroCrossfade / 2;
+    if (delta <= fadeStart) return 1.0;
+    if (delta >= fadeEnd) return 0.0;
+    return 1 - (delta - fadeStart) / _heroCrossfade;
+  }
+
+  double _kenBurnsLocalProgress(final double total, final int index, final int n) {
+    final delta = _circularDelta(total, index + 0.5, n.toDouble());
+    final windowHalf = 0.5 + _heroCrossfade / 2;
+    return ((delta + windowHalf) / (2 * windowHalf)).clamp(0.0, 1.0);
+  }
+
+  Widget _heroContent() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Eyebrow etiketi ince kenarlıklı bir "hap" içinde — düz metin
+          // yerine dokunsal, premium bir rozet hissi.
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: context.responsive(mobile: 10, desktop: 14),
+                vertical: context.responsive(mobile: 5, desktop: 7)),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.accentLight.withOpacity(0.6)),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Text(context.l10n.newSeason,
+                style: TextStyle(
+                    color: AppColors.accentLight,
+                    letterSpacing: context.isMobile ? 2 : 3,
+                    fontWeight: FontWeight.w700,
+                    fontSize: context.responsive(mobile: 9, desktop: 12))),
+          ),
+          const SizedBox(height: 14),
+          Text(context.l10n.heroTitle,
+              style: AppTextStyles.webTextTheme.displayMedium?.copyWith(
+                  color: Colors.white,
+                  fontSize: context.heroSize * 0.8,
+                  height: 1.1)),
+          const SizedBox(height: 8),
+          Text(context.l10n.featureArtisan,
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.78),
+                  fontStyle: FontStyle.italic,
+                  fontSize: context.responsive(mobile: 13, desktop: 16))),
+          SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
+          // Sıfır/ikinci el ayrımını gösteren çift CTA + WhatsApp'tan doğrudan
+          // sorma imkânı — hareketli arka planın üzerinde her zaman sabit.
+          Wrap(
+            spacing: 12,
+            runSpacing: 10,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () => NavigationHandler.goToNewProducts(context),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: context.primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.responsive(mobile: 18, desktop: 30),
+                        vertical: context.responsive(mobile: 12, desktop: 18))),
+                icon: const Icon(Icons.auto_awesome, size: 16),
+                label: Text(context.l10n.conditionNew,
+                    style: TextStyle(
+                        fontSize: context.captionSize,
+                        fontWeight: FontWeight.w600)),
+              ),
+              OutlinedButton.icon(
+                onPressed: () => NavigationHandler.goToSpotProducts(context),
+                style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white70),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.responsive(mobile: 18, desktop: 30),
+                        vertical: context.responsive(mobile: 12, desktop: 18))),
+                icon: const Icon(Icons.recycling, size: 16),
+                label: Text(context.l10n.conditionUsed,
+                    style: TextStyle(
+                        fontSize: context.captionSize,
+                        fontWeight: FontWeight.w600)),
+              ),
+              ElevatedButton.icon(
+                onPressed: SaglamSpotCommunication.launchWhatsApp,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.responsive(mobile: 18, desktop: 30),
+                        vertical: context.responsive(mobile: 12, desktop: 18))),
+                icon: const Icon(Icons.chat_bubble_outline_rounded, size: 16),
+                label: Text("WhatsApp'tan Sor",
+                    style: TextStyle(
+                        fontSize: context.captionSize,
+                        fontWeight: FontWeight.w600)),
+              ),
+            ],
+          ),
+        ],
+      );
 
   Widget _buildQuickFeatures() => SliverToBoxAdapter(
         child: Padding(
@@ -1136,4 +1206,51 @@ class _OrbPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(final _OrbPainter oldDelegate) => true;
+}
+
+/// Hero arka planındaki tek bir toz/ışık zerreciğinin sabit özellikleri.
+class _DustSpeck {
+  final double dx; // 0..1 yatay taban konumu
+  final double radius;
+  final double speed; // dikey süzülme hızı çarpanı
+  final double drift; // yatay salınım genliği (ekran genişliğine oran)
+  final double phase; // döngü içindeki başlangıç fazı
+
+  const _DustSpeck({
+    required this.dx,
+    required this.radius,
+    required this.speed,
+    required this.drift,
+    required this.phase,
+  });
+}
+
+/// Hero'nun üzerinde çok sübtil, yavaş yukarı süzülen ışık/toz katmanı.
+/// Gerçek video hissini tamamlar ama dikkat dağıtmaması için opaklık düşük
+/// tutulur.
+class _DustParticlesPainter extends CustomPainter {
+  final double progress;
+  final List<_DustSpeck> specks;
+
+  _DustParticlesPainter({required this.progress, required this.specks});
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final paint = Paint();
+    for (final s in specks) {
+      final t = (progress * s.speed + s.phase) % 1.0;
+      final y = size.height * (1 - t);
+      final x = size.width * s.dx +
+          math.sin((progress * 2 * math.pi) + s.phase * 10) *
+              size.width *
+              s.drift;
+      final fade = math.sin(t * math.pi).clamp(0.0, 1.0);
+      paint.color = Colors.white.withOpacity(fade * 0.28);
+      canvas.drawCircle(Offset(x, y), s.radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant final _DustParticlesPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }

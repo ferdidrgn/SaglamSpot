@@ -229,7 +229,7 @@ class _SSSPageState extends State<SSSPage> {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.info, Color(0xFF0EA5E9)],
+            colors: [AppColors.accentDark, AppColors.accent],
           ),
         ),
         child: Stack(
