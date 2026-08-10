@@ -16,13 +16,14 @@ import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
+import '../../../products/presentation/providers/category_meta_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
 import '../widgets/newsletter_section.dart';
-import '../widgets/popular_categories_showcase.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/testimonials_section.dart';
 import '../widgets/why_us_section.dart';
@@ -89,8 +90,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   const FurnitureTipsSection(),
                   const SocialShowcaseSection(),
                   // --- Önceki tasarımların bölümleri: kaldırılmadı, yeni
-                  // vitrin düzeninin altına eklendi. ---
-                  PopularCategoriesShowcase(allProducts: availableProducts),
+                  // vitrin düzeninin altına eklendi. "Popüler Kategoriler"
+                  // artık ayrı bir bölüm değil — verisi yukarıdaki "Yaşam
+                  // Alanına Göre" panelinde kullanılıyor. ---
                   const SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -300,30 +302,38 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // "50+ Beautiful rooms inspiration" referansının bölünmüş panel düzeni:
   // solda sabit renkli metin bloğu + "Keşfet" CTA'sı, sağda kademeli
   // (staggered) yerleşimli oda fotoğrafları.
-  Widget _buildRoomsInspirationBanner() {
-    final rooms = <Map<String, Object>>[
-      {
-        "title": context.l10n.roomLivingRoom,
-        "img":
-            "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=800",
-        "sub": context.l10n.roomLivingRoomSub,
-        "category": ProductCategory.sofa,
-      },
-      {
-        "title": context.l10n.roomBedroom,
-        "img":
-            "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=800",
-        "sub": context.l10n.roomBedroomSub,
-        "category": ProductCategory.bed,
-      },
-    ];
+  // Firestore'dan beslenen 'Popüler Kategoriler' bölümünün ismini ve
+  // dinamik veri altyapısını (orderedActiveCategoriesProvider) alıp, ayrı
+  // bir bölüm olarak DEĞİL, bu daha şık bölünmüş-panel tasarımının sağ
+  // tarafına aktif kategori sayısı kadar kart olarak yerleştiriyoruz. Ayrı
+  // "Popüler Kategoriler" bölümü artık gösterilmiyor.
+  static const Map<ProductCategory, String> _categoryPhotos = {
+    ProductCategory.sofa:
+        'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800',
+    ProductCategory.chair:
+        'https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=800',
+    ProductCategory.table:
+        'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?q=80&w=800',
+    ProductCategory.bed:
+        'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800',
+    ProductCategory.wardrobe:
+        'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800',
+    ProductCategory.white:
+        'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=800',
+    ProductCategory.other:
+        'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
+  };
 
-    Widget room(final int i) => _RoomCard(
-          title: rooms[i]["title"] as String,
-          img: rooms[i]["img"] as String,
-          sub: rooms[i]["sub"] as String,
+  Widget _buildRoomsInspirationBanner() {
+    final categories = ref.watch(orderedActiveCategoriesProvider);
+
+    Widget room(final CategoryMeta meta) => _RoomCard(
+          title: meta.customLabel ?? meta.category.label(context),
+          img: _categoryPhotos[meta.category] ??
+              _categoryPhotos[ProductCategory.other]!,
+          sub: context.l10n.byRoomSub,
           onTap: () => NavigationHandler.goToSearchWithCategory(
-              context, (rooms[i]["category"] as ProductCategory).toFirestore()),
+              context, meta.category.toFirestore()),
         );
 
     final textBlock = Container(
@@ -331,9 +341,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       padding: EdgeInsets.all(context.responsive(mobile: 24, desktop: 40)),
       decoration: BoxDecoration(
         color: AppColors.secondary,
-        borderRadius: context.isMobile
-            ? const BorderRadius.vertical(top: Radius.circular(28))
-            : const BorderRadius.horizontal(left: Radius.circular(28)),
+        borderRadius: BorderRadius.circular(28),
       ),
       alignment: Alignment.centerLeft,
       child: Column(
@@ -373,22 +381,16 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       ),
     );
 
-    final collage = ClipRRect(
-      borderRadius: context.isMobile
-          ? const BorderRadius.vertical(bottom: Radius.circular(28))
-          : const BorderRadius.horizontal(right: Radius.circular(28)),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 28),
-              child: room(0),
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(flex: 2, child: room(1)),
-        ],
+    // Kategori sayısı Firestore'a göre değişebileceği için sabit 2 kart
+    // yerine yatay kaydırmalı bir şerit — aktif kaç kategori varsa o kadar
+    // kart gösterir.
+    final collage = SizedBox(
+      height: context.hp(context.isMobile ? 40 : 52),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: categories.length,
+        itemBuilder: (final context, final i) => room(categories[i]),
       ),
     );
 
@@ -399,7 +401,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             ? Column(
                 children: [
                   textBlock,
-                  SizedBox(height: context.hp(38), child: collage),
+                  const SizedBox(height: 16),
+                  collage,
                 ],
               )
             : SizedBox(
@@ -408,7 +411,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(flex: 4, child: textBlock),
-                    Expanded(flex: 6, child: collage),
+                    SizedBox(width: context.spacingLarge),
+                    Expanded(flex: 7, child: collage),
                   ],
                 ),
               ),
@@ -1165,8 +1169,8 @@ class _HeroBannerState extends State<_HeroBanner> {
           ],
           if (widget.featuredPool.isNotEmpty)
             Positioned(
-              left: context.responsive(mobile: 16, desktop: 32),
-              top: context.responsive(mobile: 90, desktop: 120),
+              right: context.responsive(mobile: 60, desktop: 88),
+              top: context.responsive(mobile: 70, desktop: 90),
               child: _FloatingFeaturedStack(products: widget.featuredPool),
             ),
         ],
@@ -1247,60 +1251,40 @@ class _FloatingFeaturedStackState extends State<_FloatingFeaturedStack> {
     final currentSet = _sets[_setIndex % _sets.length];
 
     return SizedBox(
-      width: context.responsive(mobile: 190, desktop: 232),
-      height: context.responsive(mobile: 150, desktop: 176),
+      width: context.responsive(mobile: 210, desktop: 252),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 650),
         switchInCurve: Curves.easeOutCubic,
         switchOutCurve: Curves.easeInCubic,
         transitionBuilder: (final child, final animation) => SlideTransition(
           position: Tween<Offset>(
-                  begin: const Offset(-0.2, 0.08), end: Offset.zero)
+                  begin: const Offset(0.18, -0.06), end: Offset.zero)
               .animate(animation),
           child: FadeTransition(opacity: animation, child: child),
         ),
-        child: _CardFan(key: ValueKey(_setIndex), products: currentSet),
+        child: Column(
+          key: ValueKey(_setIndex),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (int i = 0; i < currentSet.length; i++) ...[
+              if (i > 0) const SizedBox(height: 14),
+              _NumberedProductCard(number: i + 1, product: currentSet[i]),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _CardFan extends StatelessWidget {
-  final List<Product> products;
-
-  const _CardFan({super.key, required this.products});
-
-  static const List<double> _rotations = [-0.08, 0.05, -0.015];
-  static const List<Offset> _offsets = [
-    Offset(0, 34),
-    Offset(20, 14),
-    Offset(6, 0),
-  ];
-
-  @override
-  Widget build(final BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        for (int i = 0; i < products.length && i < 3; i++)
-          Positioned(
-            left: _offsets[i].dx,
-            top: _offsets[i].dy,
-            child: Transform.rotate(
-              angle: _rotations[i],
-              child: _MiniProductCard(product: products[i]),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-/// Yığındaki tek bir kart — küçültülmüş `_FloatingFeaturedCard` içeriği.
-class _MiniProductCard extends StatelessWidget {
+/// Referans tasarımdaki sağ üstteki numaralı kart şeridinin karşılığı:
+/// numara + ürün fotoğrafı + isim + fiyat/kategori + "İncele" rozeti.
+/// "Shop Now" yerine ürün detayına yönlendiren dürüst bir eylem.
+class _NumberedProductCard extends StatelessWidget {
+  final int number;
   final Product product;
 
-  const _MiniProductCard({required this.product});
+  const _NumberedProductCard({required this.number, required this.product});
 
   @override
   Widget build(final BuildContext context) {
@@ -1311,25 +1295,25 @@ class _MiniProductCard extends StatelessWidget {
           productId: product.id,
           productSlug: product.name.toSlug()),
       child: Container(
-        width: context.responsive(mobile: 172, desktop: 204),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(16),
+          color: Colors.white.withOpacity(0.96),
+          borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.22),
-                blurRadius: 18,
-                offset: const Offset(0, 8)),
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 22,
+                offset: const Offset(0, 10)),
           ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               child: SizedBox(
-                width: 42,
-                height: 42,
+                width: 54,
+                height: 54,
                 child: hasImage
                     ? Image.network(
                         product.imagesUrl.first,
@@ -1340,26 +1324,58 @@ class _MiniProductCard extends StatelessWidget {
                     : const _FeaturedCardFallback(),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Text('$number.',
+                      style: const TextStyle(
+                          color: AppColors.accent,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 11)),
+                  const SizedBox(height: 2),
                   Text(product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           fontFamily: 'Fraunces',
                           fontWeight: FontWeight.w600,
-                          fontSize: 12.5,
+                          fontSize: 13.5,
                           color: AppColors.textPrimary)),
-                  const SizedBox(height: 2),
-                  Text('₺${product.price.toStringAsFixed(0)}',
+                  const SizedBox(height: 3),
+                  Text(
+                      '₺${product.price.toStringAsFixed(0)} · ${product.category.label(context)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          color: AppColors.accentDark,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 11.5)),
+                          color: AppColors.textTertiary, fontSize: 11)),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('İncele',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11)),
+                          SizedBox(width: 4),
+                          Icon(Icons.arrow_forward_rounded,
+                              color: Colors.white, size: 12),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
