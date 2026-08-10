@@ -221,12 +221,27 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
             splashColor: Colors.transparent,
             child: _buildLogo(),
           ),
-          const Spacer(),
-          ..._navItems.map((final item) => _DesktopNavItem(
-            item: item,
-            isActive: currentIndex == item.index,
-            onTap: () => _onItemTapped(item.index),
-          )),
+          // Nav öğeleri sabit genişlikte bir Row olarak Spacer'ın yanına
+          // konulunca, 1024-1200px aralığındaki laptop pencerelerinde
+          // toplam genişlik taşıp RenderFlex overflow hatası veriyordu.
+          // Expanded + yatay kaydırma bunu kalıcı olarak imkansız kılar:
+          // sığdığında ortalanır, sığmadığında sessizce kayar.
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _navItems
+                    .map((final item) => _DesktopNavItem(
+                          item: item,
+                          isActive: currentIndex == item.index,
+                          onTap: () => _onItemTapped(item.index),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
           SizedBox(width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
           const LanguageSelector(),
           const SizedBox(width: 12),

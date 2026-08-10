@@ -186,7 +186,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       child: Padding(
         padding: context.pagePadding,
         child: SizedBox(
-          height: context.hp(context.isMobile ? 62 : 74),
+          // Tarayıcı penceresinin yüksekliğine (hp) değil, sabit ve her
+          // kırılım noktasında içeriğin rahatça sığdığı bir yüksekliğe
+          // bağlandı — kısa/geniş pencerelerde metnin taşmasını önler.
+          height: context.responsive(
+              mobile: 460.0, tablet: 500.0, desktop: 560.0, largeDesktop: 620.0),
           child: _HeroBanner(images: _heroImages, featuredPool: featuredPool),
         ),
       ),
@@ -383,9 +387,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
     // Kategori sayısı Firestore'a göre değişebileceği için sabit 2 kart
     // yerine yatay kaydırmalı bir şerit — aktif kaç kategori varsa o kadar
-    // kart gösterir.
+    // kart gösterir. Yükseklik tarayıcı penceresine (hp) değil sabit
+    // piksele bağlı — kısa pencerelerde taşmayı önler.
     final collage = SizedBox(
-      height: context.hp(context.isMobile ? 40 : 52),
+      height: context.responsive(
+          mobile: 240.0, tablet: 340.0, desktop: 400.0, largeDesktop: 440.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -406,7 +412,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 ],
               )
             : SizedBox(
-                height: context.hp(52),
+                height: context.responsive(
+                    mobile: 340.0,
+                    tablet: 340.0,
+                    desktop: 400.0,
+                    largeDesktop: 440.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1052,10 +1062,27 @@ class _HeroBannerState extends State<_HeroBanner> {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          PageView.builder(
+      child: LayoutBuilder(
+        builder: (final context, final constraints) {
+          // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik
+          // varsa göster — dar tabletlerde/laptop pencerelerinde başlık
+          // metniyle çakışmalarını (üst üste binmesini) önler. Ölçüm
+          // nominal breakpoint yerine gerçek piksel genişliğine dayanır.
+          final heroWidth = constraints.maxWidth;
+          final showSideCards =
+              heroWidth >= 1100 && widget.featuredPool.isNotEmpty;
+          return _buildHeroContent(context, slide, showSideCards);
+        },
+      ),
+    );
+  }
+
+  Widget _buildHeroContent(final BuildContext context,
+      final _HeroSlideContent slide, final bool showSideCards) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        PageView.builder(
             controller: _pageController,
             itemCount: widget.images.length,
             onPageChanged: (final i) => setState(() => _page = i),
@@ -1113,7 +1140,8 @@ class _HeroBannerState extends State<_HeroBanner> {
                 const SizedBox(height: 14),
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxWidth: context.responsive(mobile: 320, desktop: 520)),
+                      maxWidth: context.responsive(
+                          mobile: 320, tablet: 380, desktop: 480)),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 450),
                     child: Text(slide.title,
@@ -1214,21 +1242,20 @@ class _HeroBannerState extends State<_HeroBanner> {
               ),
             ),
           ],
-          if (widget.featuredPool.isNotEmpty)
+          if (showSideCards)
             Positioned(
-              right: context.responsive(mobile: 60, desktop: 88),
-              top: context.responsive(mobile: 70, desktop: 90),
+              right: 88,
+              top: 90,
               child: _FloatingFeaturedStack(products: widget.featuredPool),
             ),
-          if (widget.featuredPool.isNotEmpty)
+          if (showSideCards)
             Positioned(
-              left: context.responsive(mobile: 16, desktop: 32),
-              bottom: context.responsive(mobile: 56, desktop: 68),
+              left: 32,
+              bottom: 68,
               child: _HeroShowcaseCard(products: widget.featuredPool),
             ),
         ],
-      ),
-    );
+      );
   }
 }
 
