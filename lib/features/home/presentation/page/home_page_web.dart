@@ -11,6 +11,7 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
+import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
@@ -19,7 +20,12 @@ import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
+import '../widgets/how_it_works_section.dart';
+import '../widgets/newsletter_section.dart';
+import '../widgets/popular_categories_showcase.dart';
 import '../widgets/social_showcase_section.dart';
+import '../widgets/testimonials_section.dart';
+import '../widgets/why_us_section.dart';
 
 /// Ana sayfa — referans alınan vitrin/katalog düzenine göre sıfırdan
 /// kurulmuştur: tek parça banner hero, güven şeridi, ürün ızgarası, oda
@@ -82,6 +88,23 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   _buildRoomsInspirationBanner(),
                   const FurnitureTipsSection(),
                   const SocialShowcaseSection(),
+                  // --- Önceki tasarımların bölümleri: kaldırılmadı, yeni
+                  // vitrin düzeninin altına eklendi. ---
+                  PopularCategoriesShowcase(allProducts: availableProducts),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: AdsenseBanner(
+                          type: AdUnitType.inArticle, height: 300),
+                    ),
+                  ),
+                  const HowItWorksSection(),
+                  _buildArtisanInfo(),
+                  _buildVisitSection(),
+                  const WhyUsSection(),
+                  const TestimonialsSection(),
+                  _buildStatsSection(),
+                  const NewsletterSection(),
                   _buildFooter(),
                 ],
               ),
@@ -155,14 +178,14 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // altta gerçek bir ürünü tanıtan yüzen kart. Satın alma değil, ürün
   // detayına ya da WhatsApp'a yönlendirme.
   Widget _buildHeroBanner(final List<Product> availableProducts) {
-    final featured = availableProducts.isNotEmpty ? availableProducts.first : null;
+    final featuredPool = availableProducts.take(9).toList();
 
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.pagePadding,
         child: SizedBox(
           height: context.hp(context.isMobile ? 62 : 74),
-          child: _HeroBanner(images: _heroImages, featured: featured),
+          child: _HeroBanner(images: _heroImages, featuredPool: featuredPool),
         ),
       ),
     );
@@ -393,9 +416,310 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  // Referans footer'ının 4 sütunlu düzeni: marka + sosyal ikonlar, menü
-  // linkleri, gerçek iletişim bilgileri ve bülten kaydı. Hesap/sepet
-  // sütunu yok — bu bir showcase sitesi.
+  // --- Önceki tasarımdan geri getirilen bölümler ---
+
+  Widget _buildArtisanInfo() => SliverToBoxAdapter(
+        child: Container(
+          margin: context.sectionPadding,
+          padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+            border: Border.all(color: context.primaryColor.withOpacity(0.05)),
+          ),
+          child: Flex(
+            direction: context.isMobile ? Axis.vertical : Axis.horizontal,
+            children: [
+              Expanded(
+                flex: context.isMobile ? 0 : 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.whoWeAre,
+                        style: TextStyle(
+                            color: AppColors.accentDark,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2)),
+                    const SizedBox(height: 15),
+                    Text(context.l10n.artisanTitle,
+                        style: TextStyle(
+                            fontFamily: 'Fraunces',
+                            fontSize: context.h2Size,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2)),
+                    const SizedBox(height: 15),
+                    Text(context.l10n.artisanDesc,
+                        style: TextStyle(
+                            color: context.primaryColor.withOpacity(0.6),
+                            fontSize: context.bodySize)),
+                    const SizedBox(height: 25),
+                    ElevatedButton(
+                      onPressed: () => NavigationHandler.goToAbout(context),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accentDark),
+                      child: Text(context.l10n.visitUsButton),
+                    )
+                  ],
+                ),
+              ),
+              if (!context.isMobile) const SizedBox(width: 40),
+              if (context.isMobile) const SizedBox(height: 30),
+              Expanded(
+                flex: context.isMobile ? 0 : 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                      "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
+                      fit: BoxFit.cover),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildVisitSection() => SliverToBoxAdapter(
+        child: Container(
+          margin: context.sectionPadding,
+          padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 48)),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(context.borderRadius(2)),
+          ),
+          child: Flex(
+            direction: context.isMobile ? Axis.vertical : Axis.horizontal,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: context.isMobile ? 0 : 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('BİZE UĞRA',
+                        style: TextStyle(
+                            color: AppColors.accentLight,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                            fontSize: context.captionSize)),
+                    const SizedBox(height: 12),
+                    Text('Bir Selam Ver, Yeter',
+                        style: TextStyle(
+                            fontFamily: 'Fraunces',
+                            color: Colors.white,
+                            fontSize: context.h2Size,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2)),
+                    const SizedBox(height: 14),
+                    Text(
+                      'Kapımız her zaman açık. ${SaglamSpotCommunication.workingHours}',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: context.bodySize,
+                          height: 1.5),
+                    ),
+                    const SizedBox(height: 24),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 10,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: SaglamSpotCommunication.launchWhatsApp,
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                          label: const Text('WhatsApp'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: SaglamSpotCommunication.makeCall,
+                          style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          icon: const Icon(Icons.call_outlined, size: 16),
+                          label: Text(SaglamSpotCommunication.displayPhone),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: SaglamSpotCommunication.openStoreLocation,
+                          style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          icon: const Icon(Icons.north_east, size: 16),
+                          label: const Text('Yol Tarifi'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              if (!context.isMobile) const SizedBox(width: 40),
+              if (context.isMobile) const SizedBox(height: 28),
+              Expanded(
+                flex: context.isMobile ? 0 : 4,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.06),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _visitInfoRow(Icons.local_shipping_outlined,
+                          'Ücretsiz Teslimat',
+                          SaglamSpotCommunication.freeDeliveryZones.join(', ')),
+                      const SizedBox(height: 16),
+                      _visitInfoRow(
+                          Icons.directions_bus_outlined,
+                          'Otobüs Hatları',
+                          SaglamSpotCommunication.getBusLines()
+                              .entries
+                              .map((final e) => '${e.key}: ${e.value.join(', ')}')
+                              .join('\n')),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _visitInfoRow(final IconData icon, final String title, final String detail) =>
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.accentLight, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13)),
+                const SizedBox(height: 4),
+                Text(detail,
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.6), fontSize: 12, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildStatsSection() {
+    final stats = [
+      {
+        "target": 2.5,
+        "decimals": 1,
+        "suffix": "K+",
+        "label": context.l10n.statHappyCustomer,
+        "icon": Icons.people_outline
+      },
+      {
+        "target": 20.0,
+        "decimals": 0,
+        "suffix": "+ Yıl",
+        "label": context.l10n.statExperience,
+        "icon": Icons.workspace_premium_outlined
+      },
+      {
+        "target": 15.0,
+        "decimals": 0,
+        "suffix": "K+",
+        "label": context.l10n.statDelivery,
+        "icon": Icons.local_shipping_outlined
+      },
+      {
+        "target": 100.0,
+        "decimals": 0,
+        "prefix": "%",
+        "suffix": "",
+        "label": context.l10n.statTrust,
+        "icon": Icons.verified_user_outlined
+      },
+    ];
+
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: context.hp(8)),
+        decoration: const BoxDecoration(color: AppColors.backgroundDark),
+        child: Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 20,
+            runSpacing: 20,
+            children: stats
+                .map((final s) => _buildStatCard(
+                      target: s["target"] as double,
+                      decimals: s["decimals"] as int,
+                      prefix: s["prefix"] as String? ?? "",
+                      suffix: s["suffix"] as String,
+                      label: s["label"] as String,
+                      icon: s["icon"] as IconData,
+                    ))
+                .toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard({
+    required final double target,
+    required final int decimals,
+    required final String suffix,
+    required final String label,
+    required final IconData icon,
+    final String prefix = "",
+  }) =>
+      Container(
+        width: context.responsive(
+            mobile: context.wp(42), tablet: 200, desktop: 250),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(context.borderRadius()),
+          border: Border.all(color: Colors.white.withOpacity(0.05)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: AppColors.accentLight, size: 30),
+            const SizedBox(height: 15),
+            CountUpOnVisible(
+              targetValue: target,
+              prefix: prefix,
+              suffix: suffix,
+              decimalDigits: decimals,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.h3Size,
+                  fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: 5),
+            Text(label.toUpperCase(),
+                style: TextStyle(
+                    color: Colors.white.withOpacity(0.4),
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.bold)),
+          ],
+        ),
+      );
+
+  // --- Yeni referans tasarımın footer'ı ---
+  // 4 sütunlu düzen: marka + sosyal ikonlar, menü linkleri, gerçek
+  // iletişim bilgileri ve bülten kaydı. Hesap/sepet sütunu yok — bu bir
+  // showcase sitesi.
   Widget _buildFooter() => SliverToBoxAdapter(
         child: Container(
           padding: EdgeInsets.fromLTRB(
@@ -657,9 +981,9 @@ class _RoomCardState extends State<_RoomCard> {
 /// yüzen kart durur; satın alma değil, ürün detayına yönlendirir.
 class _HeroBanner extends StatefulWidget {
   final List<String> images;
-  final Product? featured;
+  final List<Product> featuredPool;
 
-  const _HeroBanner({required this.images, required this.featured});
+  const _HeroBanner({required this.images, required this.featuredPool});
 
   @override
   State<_HeroBanner> createState() => _HeroBannerState();
@@ -817,9 +1141,7 @@ class _HeroBannerState extends State<_HeroBanner> {
             Positioned(
               left: 0,
               right: 0,
-              bottom: widget.featured != null
-                  ? context.responsive(mobile: 96, desktop: 110)
-                  : 20,
+              bottom: 20,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(widget.images.length, (final i) {
@@ -841,11 +1163,11 @@ class _HeroBannerState extends State<_HeroBanner> {
               ),
             ),
           ],
-          if (widget.featured != null)
+          if (widget.featuredPool.isNotEmpty)
             Positioned(
-              right: context.responsive(mobile: 16, desktop: 32),
-              bottom: context.responsive(mobile: 16, desktop: 32),
-              child: _FloatingFeaturedCard(product: widget.featured!),
+              left: context.responsive(mobile: 16, desktop: 32),
+              top: context.responsive(mobile: 90, desktop: 120),
+              child: _FloatingFeaturedStack(products: widget.featuredPool),
             ),
         ],
       ),
@@ -874,13 +1196,111 @@ class _HeroArrowButton extends StatelessWidget {
       );
 }
 
-/// Hero'nun sağ alt köşesinde yüzen, gerçek stoktan tek bir ürünü tanıtan
-/// kart — referanstaki "Bohauss / Rp 17.000.000" kartının karşılığı.
-/// Sepete ekleme yok; tıklanınca ürün detayına gider.
-class _FloatingFeaturedCard extends StatelessWidget {
+/// Hero görselinin solunda, gerçek stoktan 3'erli setler halinde dönen,
+/// hafifçe dağınık (fanned) bir kart yığını — küçük bir "reklam panosu"
+/// hissi. Birkaç saniyede bir mevcut 3 kart kayıp-solarak gider, yeni bir
+/// 3'lü aynı şekilde belirir. Sepete ekleme yok; her kart kendi ürününün
+/// detay sayfasına gider.
+class _FloatingFeaturedStack extends StatefulWidget {
+  final List<Product> products;
+
+  const _FloatingFeaturedStack({required this.products});
+
+  @override
+  State<_FloatingFeaturedStack> createState() => _FloatingFeaturedStackState();
+}
+
+class _FloatingFeaturedStackState extends State<_FloatingFeaturedStack> {
+  Timer? _timer;
+  int _setIndex = 0;
+  late List<List<Product>> _sets;
+
+  @override
+  void initState() {
+    super.initState();
+    _sets = _buildSets();
+    if (_sets.length > 1) {
+      _timer = Timer.periodic(const Duration(seconds: 5), (final _) {
+        if (!mounted) return;
+        setState(() => _setIndex = (_setIndex + 1) % _sets.length);
+      });
+    }
+  }
+
+  List<List<Product>> _buildSets() {
+    final sets = <List<Product>>[];
+    for (var i = 0; i < widget.products.length; i += 3) {
+      sets.add(widget.products.skip(i).take(3).toList());
+    }
+    return sets;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    if (_sets.isEmpty) return const SizedBox.shrink();
+    final currentSet = _sets[_setIndex % _sets.length];
+
+    return SizedBox(
+      width: context.responsive(mobile: 190, desktop: 232),
+      height: context.responsive(mobile: 150, desktop: 176),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 650),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        transitionBuilder: (final child, final animation) => SlideTransition(
+          position: Tween<Offset>(
+                  begin: const Offset(-0.2, 0.08), end: Offset.zero)
+              .animate(animation),
+          child: FadeTransition(opacity: animation, child: child),
+        ),
+        child: _CardFan(key: ValueKey(_setIndex), products: currentSet),
+      ),
+    );
+  }
+}
+
+class _CardFan extends StatelessWidget {
+  final List<Product> products;
+
+  const _CardFan({super.key, required this.products});
+
+  static const List<double> _rotations = [-0.08, 0.05, -0.015];
+  static const List<Offset> _offsets = [
+    Offset(0, 34),
+    Offset(20, 14),
+    Offset(6, 0),
+  ];
+
+  @override
+  Widget build(final BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        for (int i = 0; i < products.length && i < 3; i++)
+          Positioned(
+            left: _offsets[i].dx,
+            top: _offsets[i].dy,
+            child: Transform.rotate(
+              angle: _rotations[i],
+              child: _MiniProductCard(product: products[i]),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Yığındaki tek bir kart — küçültülmüş `_FloatingFeaturedCard` içeriği.
+class _MiniProductCard extends StatelessWidget {
   final Product product;
 
-  const _FloatingFeaturedCard({required this.product});
+  const _MiniProductCard({required this.product});
 
   @override
   Widget build(final BuildContext context) {
@@ -891,25 +1311,25 @@ class _FloatingFeaturedCard extends StatelessWidget {
           productId: product.id,
           productSlug: product.name.toSlug()),
       child: Container(
-        width: context.responsive(mobile: 210, desktop: 260),
-        padding: const EdgeInsets.all(12),
+        width: context.responsive(mobile: 172, desktop: 204),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: AppColors.card,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 24,
-                offset: const Offset(0, 10)),
+                color: Colors.black.withOpacity(0.22),
+                blurRadius: 18,
+                offset: const Offset(0, 8)),
           ],
         ),
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               child: SizedBox(
-                width: 52,
-                height: 52,
+                width: 42,
+                height: 42,
                 child: hasImage
                     ? Image.network(
                         product.imagesUrl.first,
@@ -920,7 +1340,7 @@ class _FloatingFeaturedCard extends StatelessWidget {
                     : const _FeaturedCardFallback(),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,19 +1352,17 @@ class _FloatingFeaturedCard extends StatelessWidget {
                       style: const TextStyle(
                           fontFamily: 'Fraunces',
                           fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                          fontSize: 12.5,
                           color: AppColors.textPrimary)),
                   const SizedBox(height: 2),
                   Text('₺${product.price.toStringAsFixed(0)}',
                       style: const TextStyle(
                           color: AppColors.accentDark,
                           fontWeight: FontWeight.w700,
-                          fontSize: 13)),
+                          fontSize: 11.5)),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded,
-                size: 14, color: AppColors.textTertiary),
           ],
         ),
       ),
@@ -959,7 +1377,7 @@ class _FeaturedCardFallback extends StatelessWidget {
   Widget build(final BuildContext context) => Container(
       color: AppColors.secondary,
       child: const Icon(Icons.chair_rounded,
-          size: 22, color: AppColors.textTertiary));
+          size: 18, color: AppColors.textTertiary));
 }
 
 class _FooterSocialIcon extends StatelessWidget {
