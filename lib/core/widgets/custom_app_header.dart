@@ -274,7 +274,9 @@ class _NavLinkState extends State<_NavLink> {
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 180),
                 style: TextStyle(
-                  fontWeight: widget.active ? FontWeight.bold : FontWeight.w500,
+                  fontSize: 14.5,
+                  letterSpacing: 0.3,
+                  fontWeight: widget.active ? FontWeight.w700 : FontWeight.w500,
                   color: highlighted
                       ? AppColors.accent
                       : AppColors.textPrimary,

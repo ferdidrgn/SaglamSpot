@@ -309,19 +309,19 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // "Popüler Kategoriler" bölümü artık gösterilmiyor.
   static const Map<ProductCategory, String> _categoryPhotos = {
     ProductCategory.sofa:
-        'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800',
+        'https://images.unsplash.com/photo-1550254478-ead40cc54513?q=80&w=800',
     ProductCategory.chair:
-        'https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=800',
+        'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800',
     ProductCategory.table:
-        'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?q=80&w=800',
+        'https://images.unsplash.com/photo-1617806118233-18e1de247200?q=80&w=800',
     ProductCategory.bed:
-        'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800',
+        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800',
     ProductCategory.wardrobe:
         'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800',
     ProductCategory.white:
         'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=800',
     ProductCategory.other:
-        'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
+        'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800',
   };
 
   Widget _buildRoomsInspirationBanner() {
@@ -1023,6 +1023,33 @@ class _HeroBannerState extends State<_HeroBanner> {
 
   @override
   Widget build(final BuildContext context) {
+    // Arka plan sayfalandıkça başlık/CTA de birlikte akar: Sıfır ->
+    // İkinci El -> Keşfet — sabit tek mesaj yerine dinamik bir döngü.
+    final slides = <_HeroSlideContent>[
+      _HeroSlideContent(
+        eyebrow: context.l10n.newSeason,
+        title: context.l10n.heroTitle,
+        subtitle: context.l10n.featureArtisan,
+        ctaLabel: context.l10n.conditionNew,
+        onTap: () => NavigationHandler.goToNewProducts(context),
+      ),
+      _HeroSlideContent(
+        eyebrow: 'İKİNCİ EL',
+        title: 'Öyküsü Olan Mobilyalar',
+        subtitle: 'Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.',
+        ctaLabel: context.l10n.conditionUsed,
+        onTap: () => NavigationHandler.goToSpotProducts(context),
+      ),
+      _HeroSlideContent(
+        eyebrow: 'VİTRİN',
+        title: 'Tüm Koleksiyonu Keşfedin',
+        subtitle: context.l10n.byRoomSub,
+        ctaLabel: 'Keşfet',
+        onTap: () => NavigationHandler.goToSearch(context),
+      ),
+    ];
+    final slide = slides[_page % slides.length];
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
       child: Stack(
@@ -1061,59 +1088,79 @@ class _HeroBannerState extends State<_HeroBanner> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: context.responsive(mobile: 10, desktop: 14),
-                      vertical: context.responsive(mobile: 5, desktop: 7)),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: AppColors.accentLight.withOpacity(0.7)),
-                    borderRadius: BorderRadius.circular(30),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 450),
+                  child: Container(
+                    key: ValueKey('eyebrow-$_page'),
+                    padding: EdgeInsets.symmetric(
+                        horizontal:
+                            context.responsive(mobile: 10, desktop: 14),
+                        vertical: context.responsive(mobile: 5, desktop: 7)),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: AppColors.accentLight.withOpacity(0.7)),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Text(slide.eyebrow,
+                        style: TextStyle(
+                            color: AppColors.accentLight,
+                            letterSpacing: context.isMobile ? 2 : 3,
+                            fontWeight: FontWeight.w700,
+                            fontSize:
+                                context.responsive(mobile: 9, desktop: 12))),
                   ),
-                  child: Text(context.l10n.newSeason,
-                      style: TextStyle(
-                          color: AppColors.accentLight,
-                          letterSpacing: context.isMobile ? 2 : 3,
-                          fontWeight: FontWeight.w700,
-                          fontSize: context.responsive(mobile: 9, desktop: 12))),
                 ),
                 const SizedBox(height: 14),
                 ConstrainedBox(
                   constraints: BoxConstraints(
                       maxWidth: context.responsive(mobile: 320, desktop: 520)),
-                  child: Text(context.l10n.heroTitle,
-                      style: TextStyle(
-                          fontFamily: 'Fraunces',
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: context.heroSize * 0.72,
-                          height: 1.12)),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 450),
+                    child: Text(slide.title,
+                        key: ValueKey('title-$_page'),
+                        style: TextStyle(
+                            fontFamily: 'Fraunces',
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: context.heroSize * 0.72,
+                            height: 1.12)),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 ConstrainedBox(
                   constraints: BoxConstraints(
                       maxWidth: context.responsive(mobile: 280, desktop: 420)),
-                  child: Text(context.l10n.featureArtisan,
-                      style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: Colors.white.withOpacity(0.78),
-                          fontSize:
-                              context.responsive(mobile: 13, desktop: 16))),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 450),
+                    child: Text(slide.subtitle,
+                        key: ValueKey('subtitle-$_page'),
+                        style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Colors.white.withOpacity(0.78),
+                            fontSize:
+                                context.responsive(mobile: 13, desktop: 16))),
+                  ),
                 ),
                 SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
-                ElevatedButton.icon(
-                  onPressed: () => NavigationHandler.goToNewProducts(context),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: context.responsive(mobile: 22, desktop: 32),
-                          vertical: context.responsive(mobile: 14, desktop: 18))),
-                  icon: const Icon(Icons.explore_outlined, size: 16),
-                  label: const Text('Koleksiyonu Keşfet',
-                      style: TextStyle(fontWeight: FontWeight.w700)),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 450),
+                  child: ElevatedButton.icon(
+                    key: ValueKey('cta-$_page'),
+                    onPressed: slide.onTap,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                context.responsive(mobile: 22, desktop: 32),
+                            vertical:
+                                context.responsive(mobile: 14, desktop: 18))),
+                    icon: const Icon(Icons.explore_outlined, size: 16),
+                    label: Text(slide.ctaLabel,
+                        style: const TextStyle(fontWeight: FontWeight.w700)),
+                  ),
                 ),
               ],
             ),
@@ -1173,7 +1220,146 @@ class _HeroBannerState extends State<_HeroBanner> {
               top: context.responsive(mobile: 70, desktop: 90),
               child: _FloatingFeaturedStack(products: widget.featuredPool),
             ),
+          if (widget.featuredPool.isNotEmpty)
+            Positioned(
+              left: context.responsive(mobile: 16, desktop: 32),
+              bottom: context.responsive(mobile: 56, desktop: 68),
+              child: _HeroShowcaseCard(products: widget.featuredPool),
+            ),
         ],
+      ),
+    );
+  }
+}
+
+/// Hero'nun bir sayfasına ait metin/CTA içeriği — arka plan görseliyle
+/// birlikte döner.
+class _HeroSlideContent {
+  final String eyebrow;
+  final String title;
+  final String subtitle;
+  final String ctaLabel;
+  final VoidCallback onTap;
+
+  const _HeroSlideContent({
+    required this.eyebrow,
+    required this.title,
+    required this.subtitle,
+    required this.ctaLabel,
+    required this.onTap,
+  });
+}
+
+/// Sol altta duran, gerçek stoktan tek bir ürünü büyük gösteren "Vitrin"
+/// kartı — birkaç saniyede bir bir sonraki ürüne yumuşakça geçer.
+/// Sepete ekleme yok; tıklanınca ürün detayına gider.
+class _HeroShowcaseCard extends StatefulWidget {
+  final List<Product> products;
+
+  const _HeroShowcaseCard({required this.products});
+
+  @override
+  State<_HeroShowcaseCard> createState() => _HeroShowcaseCardState();
+}
+
+class _HeroShowcaseCardState extends State<_HeroShowcaseCard> {
+  Timer? _timer;
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.products.length > 1) {
+      _timer = Timer.periodic(const Duration(seconds: 4), (final _) {
+        if (!mounted) return;
+        setState(() => _index = (_index + 1) % widget.products.length);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    if (widget.products.isEmpty) return const SizedBox.shrink();
+    final product = widget.products[_index];
+    final hasImage = product.imagesUrl.isNotEmpty;
+
+    return GestureDetector(
+      onTap: () => NavigationHandler.goToProduct(
+          context: context,
+          productId: product.id,
+          productSlug: product.name.toSlug()),
+      child: Container(
+        width: context.responsive(mobile: 220, desktop: 270),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.96),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.22),
+                blurRadius: 26,
+                offset: const Offset(0, 12)),
+          ],
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: SizedBox(
+                  key: ValueKey(product.id),
+                  width: 64,
+                  height: 64,
+                  child: hasImage
+                      ? Image.network(
+                          product.imagesUrl.first,
+                          fit: BoxFit.cover,
+                          errorBuilder: (final c, final e, final s) =>
+                              const _FeaturedCardFallback(),
+                        )
+                      : const _FeaturedCardFallback(),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('VİTRİN',
+                      style: TextStyle(
+                          color: AppColors.accent,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 10,
+                          letterSpacing: 1)),
+                  const SizedBox(height: 3),
+                  Text(product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontFamily: 'Fraunces',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 2),
+                  Text('₺${product.price.toStringAsFixed(0)}',
+                      style: const TextStyle(
+                          color: AppColors.accentDark,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12.5)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
