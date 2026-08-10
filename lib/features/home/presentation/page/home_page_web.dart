@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
+import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
@@ -17,6 +19,7 @@ import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
@@ -73,7 +76,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  _buildHeroSliderSection(),
+                  _buildHeroSliderSection(availableProducts),
                   _buildQuickFeatures(),
                   const SliverToBoxAdapter(
                     child: Padding(
@@ -184,166 +187,72 @@ class _HomePageState extends ConsumerState<HomePage>
     "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
   ];
 
-  Widget _buildHeroSliderSection() {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: context.hp(context.isMobile ? 52 : 66),
-        margin: context.pagePadding,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
-          child: Stack(
+  // Tek parça, tam genişlik hero yerine asimetrik bir "bento" vitrin
+  // ızgarası: solda gerçek ürünleri döndüren bir "Vitrin" kartı, sağda
+  // "video hissi" veren Ken Burns arka planlı iki tanıtım kartı. Satış/
+  // sepet değil, WhatsApp ve gezinme odaklı — showcase kimliğine sadık.
+  Widget _buildHeroSliderSection(final List<Product> availableProducts) {
+    final heroProducts = availableProducts.take(6).toList();
+    final gap = context.responsive(mobile: 14.0, tablet: 16.0, desktop: 20.0);
+
+    if (context.isMobile) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: context.pagePadding,
+          child: Column(
             children: [
-              // Video hissi veren, gerçek video dosyası olmadan çalışan
-              // "Ken Burns" arka plan: görseller yavaşça zoom+pan yaparak
-              // birbirine crossfade olur, üzerine ince bir toz/ışık katmanı
-              // eklenir.
-              _KenBurnsHeroBackground(images: _heroImages),
-              // Okunabilirlik için sabit, yumuşak bir vinyet.
-              IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: [
-                        AppColors.primaryVariant.withOpacity(0.80),
-                        AppColors.primaryVariant.withOpacity(0.32),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.55, 1.0],
-                    ),
-                  ),
+              SizedBox(
+                height: context.hp(48),
+                child: _FeaturedShowcaseCard(products: heroProducts),
+              ),
+              SizedBox(height: gap),
+              SizedBox(
+                height: context.hp(30),
+                child: _HeroPromoCard(
+                  images: [_heroImages[0], _heroImages[1]],
+                  eyebrow: context.l10n.newSeason,
+                  title: context.l10n.heroTitle,
+                  actionLabel: context.l10n.conditionNew,
+                  onTap: () => NavigationHandler.goToNewProducts(context),
                 ),
               ),
-              // Başlık ve WhatsApp CTA'sı — hareketli arka planın üzerinde
-              // her zaman sabit kalır, animasyondan etkilenmez.
-              Padding(
-                padding:
-                    EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.responsive(mobile: 10, desktop: 14),
-                          vertical:
-                              context.responsive(mobile: 5, desktop: 7)),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: AppColors.accentLight.withOpacity(0.7)),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(context.l10n.newSeason,
-                          style: TextStyle(
-                              color: AppColors.accentLight,
-                              letterSpacing: context.isMobile ? 2 : 3,
-                              fontWeight: FontWeight.w700,
-                              fontSize:
-                                  context.responsive(mobile: 9, desktop: 12))),
-                    ),
-                    const SizedBox(height: 14),
-                    Text(context.l10n.heroTitle,
-                        style: TextStyle(
-                            fontFamily: 'Fraunces',
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                            fontSize: context.heroSize * 0.8,
-                            height: 1.1)),
-                    const SizedBox(height: 8),
-                    Text(context.l10n.featureArtisan,
-                        style: TextStyle(
-                            fontFamily: 'Inter',
-                            color: Colors.white.withOpacity(0.78),
-                            fontStyle: FontStyle.italic,
-                            fontSize:
-                                context.responsive(mobile: 13, desktop: 16))),
-                    SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 10,
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () =>
-                              NavigationHandler.goToNewProducts(context),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30)),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: context.responsive(
-                                      mobile: 18, desktop: 30),
-                                  vertical: context.responsive(
-                                      mobile: 12, desktop: 18))),
-                          icon: const Icon(Icons.auto_awesome, size: 16),
-                          label: Text(context.l10n.conditionNew,
-                              style: TextStyle(
-                                  fontSize: context.captionSize,
-                                  fontWeight: FontWeight.w600)),
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: SaglamSpotCommunication.launchWhatsApp,
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.accent,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30)),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: context.responsive(
-                                      mobile: 18, desktop: 30),
-                                  vertical: context.responsive(
-                                      mobile: 12, desktop: 18))),
-                          icon: const Icon(Icons.chat_bubble_outline, size: 16),
-                          label: Text('WhatsApp\'tan Sor',
-                              style: TextStyle(
-                                  fontSize: context.captionSize,
-                                  fontWeight: FontWeight.w600)),
-                        ),
-                      ],
-                    ),
-                  ],
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.pagePadding,
+        child: SizedBox(
+          height: context.hp(58),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 5,
+                child: _FeaturedShowcaseCard(products: heroProducts),
+              ),
+              SizedBox(width: gap),
+              Expanded(
+                flex: 6,
+                child: _HeroPromoCard(
+                  images: [_heroImages[0], _heroImages[1]],
+                  eyebrow: context.l10n.newSeason,
+                  title: context.l10n.heroTitle,
+                  actionLabel: context.l10n.conditionNew,
+                  onTap: () => NavigationHandler.goToNewProducts(context),
                 ),
               ),
-              // Esnaf dükkânı kimliğini yansıtan, sol altta yüzen "cam" rozet
-              // — Samimi Esnaflık teması, "Ustanın Notu" hissiyle uyumlu.
-              Positioned(
-                left: context.responsive(mobile: 16, desktop: 32),
-                bottom: context.responsive(mobile: 16, desktop: 32),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.borderRadius(1)),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.responsive(mobile: 12, desktop: 18),
-                          vertical:
-                              context.responsive(mobile: 8, desktop: 12)),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.16),
-                        borderRadius:
-                            BorderRadius.circular(context.borderRadius(1)),
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.35)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.volunteer_activism_rounded,
-                              size: context.iconSmall,
-                              color: AppColors.accentLight),
-                          const SizedBox(width: 8),
-                          Text(context.l10n.featureArtisan,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: context.captionSize)),
-                        ],
-                      ),
-                    ),
-                  ),
+              SizedBox(width: gap),
+              Expanded(
+                flex: 4,
+                child: _HeroPromoCard(
+                  images: [_heroImages[2], _heroImages[0]],
+                  eyebrow: context.l10n.featureArtisan,
+                  title: context.l10n.conditionUsed,
+                  onTap: () => NavigationHandler.goToSpotProducts(context),
                 ),
               ),
             ],
@@ -1056,6 +965,343 @@ class _RoomCardState extends State<_RoomCard> {
                           ),
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Hero'nun sol "Vitrin" kartı: gerçek stoktaki ürünleri (varsa) belirli
+/// aralıklarla otomatik döndürür, sağ-sol ok düğmeleriyle de elle
+/// gezilebilir. Satın alma yerine tek eylem WhatsApp'tan sormaktır.
+class _FeaturedShowcaseCard extends StatefulWidget {
+  final List<Product> products;
+
+  const _FeaturedShowcaseCard({required this.products});
+
+  @override
+  State<_FeaturedShowcaseCard> createState() => _FeaturedShowcaseCardState();
+}
+
+class _FeaturedShowcaseCardState extends State<_FeaturedShowcaseCard> {
+  int _index = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.products.length > 1) {
+      _timer = Timer.periodic(const Duration(seconds: 5), (final _) {
+        if (mounted) _go(1);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _go(final int delta) {
+    if (widget.products.isEmpty) return;
+    setState(() =>
+        _index = (_index + delta + widget.products.length) % widget.products.length);
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final product =
+        widget.products.isNotEmpty ? widget.products[_index] : null;
+    final hasImage = product != null && product.imagesUrl.isNotEmpty;
+
+    return Container(
+      padding: EdgeInsets.all(context.responsive(mobile: 18, desktop: 24)),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.secondary, AppColors.background],
+        ),
+        borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text('VİTRİN',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.5)),
+              ),
+              const Spacer(),
+              _RoundIconButton(
+                icon: Icons.chat_bubble_outline_rounded,
+                onTap: SaglamSpotCommunication.launchWhatsApp,
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            product != null ? product.name : 'Öne Çıkan Ürünler',
+            style: const TextStyle(
+                fontFamily: 'Fraunces',
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+                height: 1.15),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (product != null) ...[
+            const SizedBox(height: 4),
+            Text('₺${product.price.toStringAsFixed(0)}',
+                style: const TextStyle(
+                    color: AppColors.accentDark,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15)),
+          ],
+          Expanded(
+            child: GestureDetector(
+              onTap: product != null
+                  ? () => NavigationHandler.goToProduct(
+                      context: context,
+                      productId: product.id,
+                      productSlug: product.name.toSlug())
+                  : null,
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 450),
+                  switchInCurve: Curves.easeOut,
+                  child: hasImage
+                      ? Container(
+                          key: ValueKey(product!.id),
+                          margin: const EdgeInsets.symmetric(vertical: 14),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.18),
+                                  blurRadius: 30,
+                                  offset: const Offset(0, 16)),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.network(
+                              product!.imagesUrl.first,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              errorBuilder: (final c, final e, final s) =>
+                                  Container(
+                                color: AppColors.card,
+                                child: const Icon(Icons.chair_rounded,
+                                    size: 48, color: AppColors.textTertiary),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Icon(Icons.storefront_rounded,
+                          key: const ValueKey('empty'),
+                          size: 56,
+                          color: AppColors.textTertiary.withOpacity(0.6)),
+                ),
+              ),
+            ),
+          ),
+          if (widget.products.length > 1)
+            Row(
+              children: [
+                _RoundIconButton(
+                    icon: Icons.arrow_back_rounded,
+                    small: true,
+                    onTap: () => _go(-1)),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(widget.products.length, (final i) {
+                      final active = i == _index;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: active ? 16 : 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: active
+                              ? AppColors.accent
+                              : AppColors.border,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                _RoundIconButton(
+                    icon: Icons.arrow_forward_rounded,
+                    small: true,
+                    onTap: () => _go(1)),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RoundIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool small;
+
+  const _RoundIconButton(
+      {required this.icon, required this.onTap, this.small = false});
+
+  @override
+  Widget build(final BuildContext context) {
+    final double size = small ? 32 : 40;
+    return Material(
+      color: AppColors.card,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: Icon(icon, size: small ? 16 : 18, color: AppColors.primary),
+        ),
+      ),
+    );
+  }
+}
+
+/// Hero'nun sağdaki tanıtım kartları: Ken Burns arka planı üzerinde
+/// eyebrow/başlık ve (varsa) yönlendirme rozeti. `actionLabel` verilmezse
+/// rozet gösterilmez, kart yine de tıklanabilir kalır.
+class _HeroPromoCard extends StatefulWidget {
+  final List<String> images;
+  final String eyebrow;
+  final String title;
+  final String? actionLabel;
+  final VoidCallback onTap;
+
+  const _HeroPromoCard({
+    required this.images,
+    required this.eyebrow,
+    required this.title,
+    required this.onTap,
+    this.actionLabel,
+  });
+
+  @override
+  State<_HeroPromoCard> createState() => _HeroPromoCardState();
+}
+
+class _HeroPromoCardState extends State<_HeroPromoCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.24 : 0.12),
+                blurRadius: _isHovered ? 28 : 18,
+                offset: const Offset(0, 12),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(context.borderRadius(1.5)),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _KenBurnsHeroBackground(images: widget.images),
+                IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.75),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.7],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 20,
+                  right: 20,
+                  bottom: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(widget.eyebrow,
+                          style: const TextStyle(
+                              color: AppColors.accentLight,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 11,
+                              letterSpacing: 1.4)),
+                      const SizedBox(height: 4),
+                      Text(widget.title,
+                          style: TextStyle(
+                              fontFamily: 'Fraunces',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize:
+                                  context.responsive(mobile: 20, desktop: 24),
+                              height: 1.15)),
+                      if (widget.actionLabel != null) ...[
+                        const SizedBox(height: 14),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: AppColors.accent,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(widget.actionLabel!,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13)),
+                              const SizedBox(width: 6),
+                              const Icon(Icons.arrow_forward_rounded,
+                                  color: Colors.white, size: 14),
+                            ],
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

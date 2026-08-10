@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import '../common/extentions/app_context_ui_extension.dart';
 import '../theme/app_colors.dart';
+import '../util/comminucation_actions.dart';
 
 class CustomAppHeader extends StatelessWidget {
   final int currentIndex;
@@ -44,54 +45,55 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
+  // Arama çubuğu artık başlığın görsel merkezi — geniş, hap biçimli ve
+  // sonunda dolgu vurgu renkli bir arama düğmesiyle bitiyor. Bento/vitrin
+  // referans tasarımındaki "arama öncelikli" üst çubuk hissini yakalıyor.
   Widget _buildDesktopLayout(final BuildContext context) => Row(
         children: [
           _buildLogo(context),
-          const Spacer(flex: 10),
-          // 3. Navigasyon Menüsü
+          SizedBox(width: context.responsive(mobile: 24, desktop: 36)),
+          Expanded(child: _buildSearchBar(context)),
+          SizedBox(width: context.responsive(mobile: 24, desktop: 36)),
           _buildDesktopNavigation(context),
-          const SizedBox(width: 30),
-          _buildUserActions(context),
+          SizedBox(width: context.responsive(mobile: 16, desktop: 24)),
+          _buildWhatsAppButton(context),
         ],
       );
 
 // --- ARAMA ÇUBUĞU (Tıklanabilir + GoRouter) ---
   Widget _buildSearchBar(final BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(30),
       onTap: () => NavigationHandler.goToSearch(context),
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: context.responsive(
-            mobile: 100.0,
-            tablet: 140.0,
-            desktop: 180.0,
-          ),
-        ),
-        height: 38,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        constraints: const BoxConstraints(maxWidth: 520),
+        height: context.responsive(mobile: 40.0, desktop: 48.0),
+        padding: const EdgeInsets.only(left: 20, right: 6),
         decoration: BoxDecoration(
           color: AppColors.background,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.border.withOpacity(0.5)),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.search_rounded,
-                size: 16, color: AppColors.textTertiary),
-            const SizedBox(width: 6),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  context.l10n.searchHint,
-                  style: const TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: 13,
-                  ),
-                ),
+                size: 18, color: AppColors.textTertiary),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                context.l10n.searchHint,
+                style: const TextStyle(
+                    color: AppColors.textTertiary, fontSize: 14),
+                overflow: TextOverflow.ellipsis,
               ),
+            ),
+            Container(
+              width: context.responsive(mobile: 30.0, desktop: 36.0),
+              height: context.responsive(mobile: 30.0, desktop: 36.0),
+              decoration:
+                  const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+              child: const Icon(Icons.arrow_forward_rounded,
+                  color: Colors.white, size: 16),
             ),
           ],
         ),
@@ -196,23 +198,21 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildUserActions(final BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min, // Sadece içerik kadar yer kaplar
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildSearchBar(context),
-          const SizedBox(width: 15),
-          // Great Showman ferahlığı için artırılmış boşluk
-
-          // Profil Butonu - En sondaki eleman
-          _buildActionButton(
-            context: context,
-            icon: Icons.person_outline_rounded,
-            onPressed: () {
-              // Profil işlemleri
-            },
+  // Showcase sitesinde kullanıcı hesabı/sepeti yok — üst çubuğun son
+  // eylemi her zaman doğrudan WhatsApp ile iletişim.
+  Widget _buildWhatsAppButton(final BuildContext context) => Material(
+        color: AppColors.accent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: SaglamSpotCommunication.launchWhatsApp,
+          child: SizedBox(
+            width: context.responsive(mobile: 40.0, desktop: 44.0),
+            height: context.responsive(mobile: 40.0, desktop: 44.0),
+            child: const Icon(Icons.chat_bubble_outline_rounded,
+                color: Colors.white, size: 20),
           ),
-        ],
+        ),
       );
 
   Widget _buildActionButton({
