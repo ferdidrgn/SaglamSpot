@@ -1040,22 +1040,16 @@ class _HeroBannerState extends State<_HeroBanner> {
         eyebrow: context.l10n.newSeason,
         title: context.l10n.heroTitle,
         subtitle: context.l10n.featureArtisan,
-        ctaLabel: context.l10n.conditionNew,
-        onTap: () => NavigationHandler.goToNewProducts(context),
       ),
-      _HeroSlideContent(
+      const _HeroSlideContent(
         eyebrow: 'İKİNCİ EL',
         title: 'Öyküsü Olan Mobilyalar',
         subtitle: 'Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.',
-        ctaLabel: context.l10n.conditionUsed,
-        onTap: () => NavigationHandler.goToSpotProducts(context),
       ),
       _HeroSlideContent(
         eyebrow: 'VİTRİN',
         title: 'Tüm Koleksiyonu Keşfedin',
         subtitle: context.l10n.byRoomSub,
-        ctaLabel: 'Keşfet',
-        onTap: () => NavigationHandler.goToSearch(context),
       ),
     ];
     final slide = slides[_page % slides.length];
@@ -1170,25 +1164,33 @@ class _HeroBannerState extends State<_HeroBanner> {
                   ),
                 ),
                 SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 450),
-                  child: ElevatedButton.icon(
-                    key: ValueKey('cta-$_page'),
-                    onPressed: slide.onTap,
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                context.responsive(mobile: 22, desktop: 32),
-                            vertical:
-                                context.responsive(mobile: 14, desktop: 18))),
-                    icon: const Icon(Icons.explore_outlined, size: 16),
-                    label: Text(slide.ctaLabel,
-                        style: const TextStyle(fontWeight: FontWeight.w700)),
-                  ),
+                // Üç eylem her zaman birlikte, yan yana duruyor — slayta
+                // göre tek bir dinamik CTA yerine, referans tasarımdaki
+                // şık "üç buton" şeridinin karşılığı. Wrap kullanılıyor ki
+                // dar ekranlarda taşma yerine ikinci satıra sarsın.
+                Wrap(
+                  spacing: context.responsive(mobile: 8, desktop: 12),
+                  runSpacing: 10,
+                  children: [
+                    _HeroPillButton(
+                      icon: Icons.new_releases_rounded,
+                      label: context.l10n.conditionNew,
+                      variant: _HeroPillVariant.solidLight,
+                      onTap: () => NavigationHandler.goToNewProducts(context),
+                    ),
+                    _HeroPillButton(
+                      icon: Icons.history_rounded,
+                      label: context.l10n.conditionUsed,
+                      variant: _HeroPillVariant.solidAccent,
+                      onTap: () => NavigationHandler.goToSpotProducts(context),
+                    ),
+                    _HeroPillButton(
+                      icon: Icons.explore_outlined,
+                      label: 'Keşfet',
+                      variant: _HeroPillVariant.outline,
+                      onTap: () => NavigationHandler.goToSearch(context),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -1248,144 +1250,94 @@ class _HeroBannerState extends State<_HeroBanner> {
               top: 90,
               child: _FloatingFeaturedStack(products: widget.featuredPool),
             ),
-          if (showSideCards)
-            Positioned(
-              left: 32,
-              bottom: 68,
-              child: _HeroShowcaseCard(products: widget.featuredPool),
-            ),
         ],
       );
   }
 }
 
-/// Hero'nun bir sayfasına ait metin/CTA içeriği — arka plan görseliyle
-/// birlikte döner.
+/// Hero'nun bir sayfasına ait metin içeriği — arka plan görseliyle birlikte
+/// döner. Eylem butonları artık sabit üç buton olduğu için burada CTA yok.
 class _HeroSlideContent {
   final String eyebrow;
   final String title;
   final String subtitle;
-  final String ctaLabel;
-  final VoidCallback onTap;
 
   const _HeroSlideContent({
     required this.eyebrow,
     required this.title,
     required this.subtitle,
-    required this.ctaLabel,
-    required this.onTap,
   });
 }
 
-/// Sol altta duran, gerçek stoktan tek bir ürünü büyük gösteren "Vitrin"
-/// kartı — birkaç saniyede bir bir sonraki ürüne yumuşakça geçer.
-/// Sepete ekleme yok; tıklanınca ürün detayına gider.
-class _HeroShowcaseCard extends StatefulWidget {
-  final List<Product> products;
+enum _HeroPillVariant { solidLight, solidAccent, outline }
 
-  const _HeroShowcaseCard({required this.products});
+/// Hero'daki üç eylem butonundan biri — referans tasarımdaki şık "yan yana
+/// üç buton" şeridinin karşılığı. Başlık fontuyla (Fraunces) aynı ailede,
+/// gövde metninden ayrışan bir tipografi kullanır; her varyantın kendi
+/// rengi vardır.
+class _HeroPillButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final _HeroPillVariant variant;
+  final VoidCallback onTap;
 
-  @override
-  State<_HeroShowcaseCard> createState() => _HeroShowcaseCardState();
-}
-
-class _HeroShowcaseCardState extends State<_HeroShowcaseCard> {
-  Timer? _timer;
-  int _index = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.products.length > 1) {
-      _timer = Timer.periodic(const Duration(seconds: 4), (final _) {
-        if (!mounted) return;
-        setState(() => _index = (_index + 1) % widget.products.length);
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+  const _HeroPillButton({
+    required this.icon,
+    required this.label,
+    required this.variant,
+    required this.onTap,
+  });
 
   @override
   Widget build(final BuildContext context) {
-    if (widget.products.isEmpty) return const SizedBox.shrink();
-    final product = widget.products[_index];
-    final hasImage = product.imagesUrl.isNotEmpty;
+    late final Color background;
+    late final Color foreground;
+    late final BoxBorder? border;
+    switch (variant) {
+      case _HeroPillVariant.solidLight:
+        background = Colors.white;
+        foreground = AppColors.primary;
+        border = null;
+        break;
+      case _HeroPillVariant.solidAccent:
+        background = AppColors.accent;
+        foreground = Colors.white;
+        border = null;
+        break;
+      case _HeroPillVariant.outline:
+        background = Colors.white.withOpacity(0.08);
+        foreground = Colors.white;
+        border = Border.all(color: Colors.white.withOpacity(0.6));
+        break;
+    }
 
-    return GestureDetector(
-      onTap: () => NavigationHandler.goToProduct(
-          context: context,
-          productId: product.id,
-          productSlug: product.name.toSlug()),
-      child: Container(
-        width: context.responsive(mobile: 220, desktop: 270),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.96),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.22),
-                blurRadius: 26,
-                offset: const Offset(0, 12)),
-          ],
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                child: SizedBox(
-                  key: ValueKey(product.id),
-                  width: 64,
-                  height: 64,
-                  child: hasImage
-                      ? Image.network(
-                          product.imagesUrl.first,
-                          fit: BoxFit.cover,
-                          errorBuilder: (final c, final e, final s) =>
-                              const _FeaturedCardFallback(),
-                        )
-                      : const _FeaturedCardFallback(),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('VİTRİN',
-                      style: TextStyle(
-                          color: AppColors.accent,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10,
-                          letterSpacing: 1)),
-                  const SizedBox(height: 3),
-                  Text(product.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontFamily: 'Fraunces',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: AppColors.textPrimary)),
-                  const SizedBox(height: 2),
-                  Text('₺${product.price.toStringAsFixed(0)}',
-                      style: const TextStyle(
-                          color: AppColors.accentDark,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12.5)),
-                ],
-              ),
-            ),
-          ],
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(30),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(30),
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(mobile: 14, desktop: 20),
+              vertical: context.responsive(mobile: 10, desktop: 13)),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            border: border,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: context.responsive(mobile: 14, desktop: 16), color: foreground),
+              SizedBox(width: context.responsive(mobile: 5, desktop: 7)),
+              Text(label,
+                  style: TextStyle(
+                      fontFamily: 'Fraunces',
+                      fontWeight: FontWeight.w600,
+                      color: foreground,
+                      fontSize: context.responsive(mobile: 12.5, desktop: 14))),
+            ],
+          ),
         ),
       ),
     );

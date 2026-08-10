@@ -3,36 +3,41 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 
 /// Referans tasarımdaki "Share your setup" fotoğraf duvarının karşılığı:
-/// eşit boy sütunlar DEĞİL, gerçek bir bento/mozaik ızgara — bazı kareler
-/// büyük, bazıları küçük, bazıları geniş. 4x4'lük bir hücre planı üzerine
-/// 9 farklı boyutta karo yerleştirilerek elde edilir (harici paket yok).
+/// eşit boy sütunlar DEĞİL, gerçek bir bento/mozaik ızgara. Referans
+/// görseldeki asimetrik ritmi birebir yakalayan 6 sütunluk bir hücre planı
+/// kullanılıyor: solda üst-alt ikili sütunlar, ortada boydan boya tek bir
+/// "vitrin" fotoğraf, sağında geniş+uzun bir çift ve en sağda dar-uzun bir
+/// aksan sütunu (harici paket yok).
 class SocialShowcaseSection extends StatelessWidget {
   const SocialShowcaseSection({super.key});
 
   static const List<String> _photos = [
-    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=600', // A
-    'https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=600', // B
-    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600', // C
-    'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=900', // D (büyük, orta)
-    'https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=800', // E (geniş)
-    'https://images.unsplash.com/photo-1556912178-8f4df6d97a33?q=80&w=600', // F
-    'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800', // G
-    'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800', // H
-    'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=600', // I
+    'https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?q=80&w=700', // 0 raf
+    'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?q=80&w=700', // 1 koltuk
+    'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=700', // 2 çalışma masası
+    'https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=700', // 3 sehpa/vazo
+    'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=900', // 4 yemek odası (vitrin, uzun)
+    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=900', // 5 yatak odası (geniş)
+    'https://images.unsplash.com/photo-1531835551805-16d864c8d311?q=80&w=700', // 6 çerçeve/dekor
+    'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=700', // 7 mutfak rafı
+    'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=700', // 8 tuğla duvar/ahşap masa (aksan)
   ];
 
-  // (col, row, colSpan, rowSpan, photoIndex) — 4 sütun x 4 satırlık bir
-  // hücre planı, boşluk kalmadan 9 farklı boyutta karo ile dolduruluyor.
+  // (col, row, colSpan, rowSpan, photoIndex) — 6 sütun x 6 satırlık bir
+  // hücre planı, boşluk kalmadan 9 karo ile dolduruluyor. Referans
+  // görseldeki yerleşimin birebir karşılığı: iki dar sütun üst/alt ikili,
+  // ortada boydan boya bir "vitrin" karo, sağda geniş+uzun bir çift ve en
+  // sağda dar-uzun bir aksan sütunu.
   static const List<List<int>> _tiles = [
-    [0, 0, 1, 2, 0], // A: uzun, sol üst
-    [1, 0, 1, 1, 1], // B: küçük
-    [1, 1, 1, 1, 2], // C: küçük
-    [2, 0, 2, 2, 3], // D: büyük kare, orta (öne çıkan)
-    [0, 2, 2, 1, 4], // E: geniş, alt sol
-    [2, 2, 1, 2, 5], // F: uzun, sağ orta
-    [3, 2, 1, 1, 6], // G: küçük
-    [0, 3, 2, 1, 7], // H: geniş, alt
-    [3, 3, 1, 1, 8], // I: küçük
+    [0, 0, 1, 3, 0], // raf — sol üst
+    [0, 3, 1, 3, 1], // koltuk — sol alt
+    [1, 0, 1, 3, 2], // çalışma masası — üst
+    [1, 3, 1, 3, 3], // sehpa/vazo — alt
+    [2, 0, 1, 6, 4], // yemek odası — boydan boya vitrin
+    [3, 0, 2, 4, 5], // yatak odası — geniş, üst
+    [3, 4, 1, 2, 6], // çerçeve/dekor — alt sol
+    [4, 4, 1, 2, 7], // mutfak rafı — alt sağ
+    [5, 0, 1, 6, 8], // tuğla duvar — boydan boya aksan
   ];
 
   @override
@@ -65,15 +70,16 @@ class SocialShowcaseSection extends StatelessWidget {
     );
   }
 
-  // Masaüstü/tablet: gerçek bento — büyük/küçük/geniş karışık, boşluksuz.
+  // Masaüstü/tablet: 6 sütunluk gerçek bento — büyük/küçük/geniş/uzun
+  // karışık, boşluksuz, referans görseldeki asimetrik ritimle.
   Widget _buildBentoGrid(final BuildContext context) {
     const spacing = 12.0;
-    final rowHeight = context.responsive(mobile: 120.0, tablet: 130.0, desktop: 148.0);
+    final rowUnit = context.responsive(mobile: 60.0, tablet: 66.0, desktop: 76.0);
 
     return LayoutBuilder(
       builder: (final context, final constraints) {
-        final colWidth = (constraints.maxWidth - 3 * spacing) / 4;
-        final totalHeight = 4 * rowHeight + 3 * spacing;
+        final colWidth = (constraints.maxWidth - 5 * spacing) / 6;
+        final totalHeight = 6 * rowUnit + 5 * spacing;
 
         return SizedBox(
           height: totalHeight,
@@ -82,9 +88,9 @@ class SocialShowcaseSection extends StatelessWidget {
               for (final tile in _tiles)
                 Positioned(
                   left: tile[0] * (colWidth + spacing),
-                  top: tile[1] * (rowHeight + spacing),
+                  top: tile[1] * (rowUnit + spacing),
                   width: tile[2] * colWidth + (tile[2] - 1) * spacing,
-                  height: tile[3] * rowHeight + (tile[3] - 1) * spacing,
+                  height: tile[3] * rowUnit + (tile[3] - 1) * spacing,
                   child: _PhotoTile(url: _photos[tile[4]]),
                 ),
             ],
@@ -94,13 +100,13 @@ class SocialShowcaseSection extends StatelessWidget {
     );
   }
 
-  // Mobil: dar ekranda karmaşık bento yerine, hâlâ eşit olmayan iki
-  // sütunlu bir masonry — sade ama tekdüze değil.
+  // Mobil: dar ekranda karmaşık bento yerine, tüm 9 fotoğrafı kullanan
+  // eşit olmayan iki sütunlu bir masonry — dolu ama sade.
   Widget _buildMobileMasonry(final BuildContext context) {
-    const leftHeights = [190.0, 130.0, 210.0];
-    const leftPhotos = [0, 3, 6];
-    const rightHeights = [140.0, 220.0, 150.0];
-    const rightPhotos = [1, 4, 7];
+    const leftHeights = [190.0, 130.0, 170.0, 150.0, 200.0];
+    const leftPhotos = [0, 2, 4, 6, 8];
+    const rightHeights = [140.0, 220.0, 150.0, 180.0];
+    const rightPhotos = [1, 3, 5, 7];
 
     Widget column(final List<int> photos, final List<double> heights) => Column(
           children: [

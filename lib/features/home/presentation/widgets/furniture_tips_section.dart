@@ -2,28 +2,23 @@ import 'package:flutter/material.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 
-/// Referans tasarımdaki "Tips & Tricks" şeridinin karşılığı: masaüstünde
-/// yan yana 3 fotoğraflı kart, mobilde kaydırmalı + noktalı gösterge.
-class FurnitureTipsSection extends StatefulWidget {
+/// Referans tasarımdaki "Tips & Tricks" şeridinin karşılığı. 10 ipucu
+/// olduğu için artık ne mobilde tek kart ne masaüstünde eşit bölünmüş bir
+/// Row (10 kartı sıkıştırıp berbat görünürdü) kullanılıyor — hepsi sabit
+/// genişlikli kartlarla yatay kaydırılan tek bir şerit, her kırılım
+/// noktasında kendi kart genişliğiyle "yan yana birkaç kart" hissini korur.
+class FurnitureTipsSection extends StatelessWidget {
   const FurnitureTipsSection({super.key});
 
   @override
-  State<FurnitureTipsSection> createState() => _FurnitureTipsSectionState();
-}
-
-class _FurnitureTipsSectionState extends State<FurnitureTipsSection> {
-  final PageController _pageController = PageController(viewportFraction: 0.86);
-  int _page = 0;
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(final BuildContext context) {
-    final isMobile = context.isMobile;
+    final cardWidth =
+        context.responsive(mobile: 260.0, tablet: 300.0, desktop: 340.0);
+    // Kart yüksekliği kart genişliğine göre hesaplanıyor: görsel (4:3) +
+    // metin bloğu. Eskiden mobilde sabit 340px'e sıkıştırılmıştı ve bu,
+    // geniş "mobil" aralığında (0-768px) alttan taşıyordu — artık kart
+    // genişliği ne olursa olsun içerik tam sığıyor.
+    final cardHeight = cardWidth * 0.75 + 150;
 
     return SliverPadding(
       padding: context.pagePadding.copyWith(
@@ -46,48 +41,20 @@ class _FurnitureTipsSectionState extends State<FurnitureTipsSection> {
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
             const SizedBox(height: 32),
-            if (isMobile)
-              SizedBox(
-                height: 340,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: _tips.length,
-                  onPageChanged: (final i) => setState(() => _page = i),
-                  itemBuilder: (final context, final index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: _TipCard(tip: _tips[index]),
-                  ),
+            SizedBox(
+              height: cardHeight,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: _tips.length,
+                separatorBuilder: (final _, final __) =>
+                    const SizedBox(width: 20),
+                itemBuilder: (final context, final index) => SizedBox(
+                  width: cardWidth,
+                  child: _TipCard(tip: _tips[index]),
                 ),
-              )
-            else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (int i = 0; i < _tips.length; i++) ...[
-                    if (i > 0) const SizedBox(width: 24),
-                    Expanded(child: _TipCard(tip: _tips[i])),
-                  ],
-                ],
               ),
-            if (isMobile) ...[
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_tips.length, (final i) {
-                  final active = i == _page;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: active ? 18 : 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: active ? AppColors.accent : AppColors.border,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  );
-                }),
-              ),
-            ],
+            ),
           ],
         ),
       ),
@@ -236,5 +203,61 @@ const List<FurnitureTip> _tips = [
         'Ağır malzemeleri alt raflara, sık kullandıklarınızı göz hizasına yerleştirin — hem pratik hem güvenli.',
     category: 'Düzen',
     image: 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.bed_rounded,
+    title: 'Rahat Bir Uyku Köşesi Kurun',
+    description:
+        'Yatak başlığını pencereden uzağa, ışığı en aza indirecek şekilde konumlandırın — daha derin bir uyku için küçük ama etkili bir değişiklik.',
+    category: 'Konfor',
+    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.checkroom_rounded,
+    title: 'Dolabınızı Ferahlatın',
+    description:
+        'Sezonluk kıyafetleri ayırın, askı yönünü tek taraflı tutun — hem yer kazanır hem de her sabah seçim yapmak kolaylaşır.',
+    category: 'Organizasyon',
+    image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.forest_rounded,
+    title: 'Ahşap Mobilyaya Ömür Katın',
+    description:
+        'Doğrudan güneş ışığından koruyun, yılda birkaç kez besleyici yağ ile silin — çizik ve solmaya karşı en etkili bakım budur.',
+    category: 'Bakım',
+    image: 'https://images.unsplash.com/photo-1601057483204-3b0a4c50d4ac?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.dry_cleaning_rounded,
+    title: 'Kumaş Koltukları Uzun Ömürlü Kılın',
+    description:
+        'Haftada bir vakumlayın, lekeleri hemen nemli bezle tamponlayın — beklemek lekenin kumaşa işlemesine sebep olur.',
+    category: 'Bakım',
+    image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.lightbulb_rounded,
+    title: 'Doğru Aydınlatmayı Seçin',
+    description:
+        'Tek bir tavan lambası yerine kat kat aydınlatma kullanın: genel, görev ve atmosfer ışığı bir arada odayı daha sıcak gösterir.',
+    category: 'Aydınlatma',
+    image: 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.space_dashboard_rounded,
+    title: 'Küçük Alanları Akıllıca Kullanın',
+    description:
+        'Katlanabilir ve çok amaçlı mobilyalar tercih edin; duvara monte raflar zemin alanını özgür bırakır.',
+    category: 'Düzen',
+    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800',
+  ),
+  FurnitureTip(
+    icon: Icons.deck_rounded,
+    title: 'Balkonunuzu Yaşam Alanına Dönüştürün',
+    description:
+        'Hava koşullarına dayanıklı bir koltuk takımı ve birkaç saksı bitkiyle balkon, evin en sevilen köşesi haline gelir.',
+    category: 'Dış Mekan',
+    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=800',
   ),
 ];
