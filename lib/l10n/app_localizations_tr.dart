@@ -504,4 +504,784 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get logoutConfirm =>
       'Hesabınızdan güvenli bir şekilde çıkış yapmak istediğinize emin misiniz?';
+
+  @override
+  String get testimonialsHeading => 'Müşterilerimiz Ne Diyor?';
+
+  @override
+  String get testimonialsSubheading =>
+      '20 yılı aşkın süredir İçerenköy ve çevresinde binlerce eve dokunduk';
+
+  @override
+  String get testimonial1Comment =>
+      'Koltuk takımını çok uygun fiyata aldık, hem de sıfır gibi. Teslimat aynı gün elden ele yapıldı, esnaf usulü güven tam anlamıyla buradaydı.';
+
+  @override
+  String get testimonial2Comment =>
+      'Yatak odası takımını spot fiyatına buradan aldım. Ürün açıklamasıyla birebir aynıydı, hiçbir sürpriz yaşamadım. Kesinlikle tavsiye ederim.';
+
+  @override
+  String get testimonial3Comment =>
+      'Ofis için toplu mobilya alımı yaptık, hem fiyat hem kalite beklentimizin üzerindeydi. İlgili ve sabırlı bir ekip, teşekkürler Sağlam Spot.';
+
+  @override
+  String get testimonial4Comment =>
+      'Yemek masası setini pazarlıksız, dürüst bir fiyata satın aldık. Nakliye konusunda da yardımcı oldular, gönül rahatlığıyla alışveriş yaptık.';
+
+  @override
+  String get testimonial5Comment =>
+      'İkinci el gardırop aradık, hem sağlam hem şık bir ürün bulduk. Fiyat/performans olarak piyasadaki en iyi seçenekti.';
+
+  @override
+  String get testimonial6Comment =>
+      'Showroom ziyaretimizde ürünleri yerinde görme şansımız oldu, bu güveni artırdı. Satış sonrası da bize her zaman ulaşılabilir oldular.';
+
+  @override
+  String get howItWorksHeading => 'Nasıl Çalışır?';
+
+  @override
+  String get step1Title => 'Gözat & Filtrele';
+
+  @override
+  String get step1Desc =>
+      'Kategoriler ve fiyat aralığına göre binlerce ürün arasından beğendiğini bul.';
+
+  @override
+  String get step2Title => 'Bizimle İletişime Geç';
+
+  @override
+  String get step2Desc =>
+      'Ürün sayfasından tek tıkla WhatsApp veya telefonla ekibimize ulaş.';
+
+  @override
+  String get step3Title => 'Fiyatı Netleştir';
+
+  @override
+  String get step3Desc =>
+      'Ürünü showroomda gör veya fotoğraflarla teyit et, esnaf usulü net fiyat al.';
+
+  @override
+  String get step4Title => 'Kapına Teslim';
+
+  @override
+  String get step4Desc =>
+      'İçerenköy ve Anadolu Yakası\'na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.';
+
+  @override
+  String get tipsEyebrow => 'İPUÇLARI';
+
+  @override
+  String get tipsHeading => 'Uzmanından Bakım Önerileri';
+
+  @override
+  String get tip1Title => 'Oturma Odasını Sevilesi Hale Getirin';
+
+  @override
+  String get tip1Desc =>
+      'Koltuk yerleşimini duvardan 1-2 cm boşluk bırakarak yapın; hem hava sirkülasyonu sağlar hem de odayı ferahlatır.';
+
+  @override
+  String get tip1Category => 'Yerleştirme';
+
+  @override
+  String get tip2Title => 'Temiz Görünen Bir Çalışma Alanı';
+
+  @override
+  String get tip2Desc =>
+      'Kabloları toplayıcılarla düzenleyin, mikrofiber bezle dairesel hareketlerle silin — masanız hep yeni gibi kalsın.';
+
+  @override
+  String get tip2Category => 'Temizlik';
+
+  @override
+  String get tip3Title => 'Mutfakta Keyifli Bir Kurulum';
+
+  @override
+  String get tip3Desc =>
+      'Ağır malzemeleri alt raflara, sık kullandıklarınızı göz hizasına yerleştirin — hem pratik hem güvenli.';
+
+  @override
+  String get tip3Category => 'Düzen';
+
+  @override
+  String get tip4Title => 'Rahat Bir Uyku Köşesi Kurun';
+
+  @override
+  String get tip4Desc =>
+      'Yatak başlığını pencereden uzağa, ışığı en aza indirecek şekilde konumlandırın — daha derin bir uyku için küçük ama etkili bir değişiklik.';
+
+  @override
+  String get tip4Category => 'Konfor';
+
+  @override
+  String get tip5Title => 'Dolabınızı Ferahlatın';
+
+  @override
+  String get tip5Desc =>
+      'Sezonluk kıyafetleri ayırın, askı yönünü tek taraflı tutun — hem yer kazanır hem de her sabah seçim yapmak kolaylaşır.';
+
+  @override
+  String get tip5Category => 'Organizasyon';
+
+  @override
+  String get tip6Title => 'Ahşap Mobilyaya Ömür Katın';
+
+  @override
+  String get tip6Desc =>
+      'Doğrudan güneş ışığından koruyun, yılda birkaç kez besleyici yağ ile silin — çizik ve solmaya karşı en etkili bakım budur.';
+
+  @override
+  String get tip6Category => 'Bakım';
+
+  @override
+  String get tip7Title => 'Kumaş Koltukları Uzun Ömürlü Kılın';
+
+  @override
+  String get tip7Desc =>
+      'Haftada bir vakumlayın, lekeleri hemen nemli bezle tamponlayın — beklemek lekenin kumaşa işlemesine sebep olur.';
+
+  @override
+  String get tip7Category => 'Bakım';
+
+  @override
+  String get tip8Title => 'Doğru Aydınlatmayı Seçin';
+
+  @override
+  String get tip8Desc =>
+      'Tek bir tavan lambası yerine kat kat aydınlatma kullanın: genel, görev ve atmosfer ışığı bir arada odayı daha sıcak gösterir.';
+
+  @override
+  String get tip8Category => 'Aydınlatma';
+
+  @override
+  String get tip9Title => 'Küçük Alanları Akıllıca Kullanın';
+
+  @override
+  String get tip9Desc =>
+      'Katlanabilir ve çok amaçlı mobilyalar tercih edin; duvara monte raflar zemin alanını özgür bırakır.';
+
+  @override
+  String get tip9Category => 'Düzen';
+
+  @override
+  String get tip10Title => 'Balkonunuzu Yaşam Alanına Dönüştürün';
+
+  @override
+  String get tip10Desc =>
+      'Hava koşullarına dayanıklı bir koltuk takımı ve birkaç saksı bitkiyle balkon, evin en sevilen köşesi haline gelir.';
+
+  @override
+  String get tip10Category => 'Dış Mekan';
+
+  @override
+  String get popularCategoriesHeading => 'Popüler Kategoriler';
+
+  @override
+  String get popularCategoriesSub => 'İhtiyacına uygun mobilyayı tek tıkla bul';
+
+  @override
+  String categoryProductCount(int count) {
+    return '$count ürün';
+  }
+
+  @override
+  String get newsletterSubscribeSuccess =>
+      'Bültenimize başarıyla abone oldunuz!';
+
+  @override
+  String get newsletterHeading => 'Yeni Ürünlerden İlk Siz Haberdar Olun';
+
+  @override
+  String get newsletterDesc =>
+      'Spot fırsatlar, yeni koleksiyonlar ve kampanyalar e-posta kutunuza gelsin. Spam yok, sadece işinize yarayacak fırsatlar.';
+
+  @override
+  String get emailHint => 'E-posta adresiniz';
+
+  @override
+  String get emailRequired => 'E-posta gerekli';
+
+  @override
+  String get emailInvalid => 'Geçerli bir e-posta girin';
+
+  @override
+  String get whyUsHeading => 'Neden Sağlam Spot?';
+
+  @override
+  String get usp1Title => '20 Yıllık Esnaf Güvencesi';
+
+  @override
+  String get usp1Desc =>
+      'İçerenköy\'de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.';
+
+  @override
+  String get usp2Title => 'Piyasanın Altında Fiyat';
+
+  @override
+  String get usp2Desc =>
+      'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.';
+
+  @override
+  String get usp3Title => 'Kontrollü Ürün Kalitesi';
+
+  @override
+  String get usp3Desc =>
+      'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.';
+
+  @override
+  String get usp4Title => 'Satış Sonrası Destek';
+
+  @override
+  String get usp4Desc =>
+      'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.';
+
+  @override
+  String get socialShowcaseEyebrow => 'PAYLAŞIN';
+
+  @override
+  String get socialShowcaseHeading => '#SağlamSpot ile Kurulumunuzu Paylaşın';
+
+  @override
+  String productsLoadError(String error) {
+    return 'Ürünler yüklenirken hata oluştu: $error';
+  }
+
+  @override
+  String get viewAllButton => 'Tümünü Gör';
+
+  @override
+  String get showcaseEyebrow => 'VİTRİN';
+
+  @override
+  String get exploreButton => 'Keşfet';
+
+  @override
+  String get visitUsEyebrow => 'BİZE UĞRA';
+
+  @override
+  String get visitUsHeading => 'Bir Selam Ver, Yeter';
+
+  @override
+  String visitUsOpenLine(String hours) {
+    return 'Kapımız her zaman açık. $hours';
+  }
+
+  @override
+  String get directionsButton => 'Yol Tarifi';
+
+  @override
+  String get freeDeliveryLabel => 'Ücretsiz Teslimat';
+
+  @override
+  String get busLinesLabel => 'Otobüs Hatları';
+
+  @override
+  String get statYearsSuffix => '+ Yıl';
+
+  @override
+  String get storeAddress => 'İçerenköy, Ataşehir/İstanbul';
+
+  @override
+  String get stayUpdated => 'Güncel Kalın';
+
+  @override
+  String get viewButton => 'İncele';
+
+  @override
+  String get heroSlide2Eyebrow => 'İKİNCİ EL';
+
+  @override
+  String get heroSlide2Title => 'Öyküsü Olan Mobilyalar';
+
+  @override
+  String get heroSlide2Subtitle =>
+      'Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.';
+
+  @override
+  String get heroSlide3Title => 'Tüm Koleksiyonu Keşfedin';
+
+  @override
+  String get aboutBadge => '2012\'DEN BERİ SİZİNLE';
+
+  @override
+  String get aboutHeroTitle => 'Sağlam Spot\nBildiğiniz Güven';
+
+  @override
+  String get aboutHeroSubtitle =>
+      'İşimizi sevgi ve titizlikle yaparak\nmahallemize hizmet veriyoruz.';
+
+  @override
+  String get aboutStoryHeading => 'Biz Kimiz? (Hikayemiz)';
+
+  @override
+  String get aboutStoryPara1 =>
+      'Amacımız, evinize sıcaklık katacak, kaliteli ve içinize sinen mobilyaları bulmanıza yardımcı olmak. Yaşam alanlarınızı güzelleştirmek bizim işimiz.';
+
+  @override
+  String get aboutStoryPara2 =>
+      'Her şey 2012\'de, İçerenköy\'deki bu dükkanda başladı. O günden beri konuk olduğumuz ev sayısı daha da arttı.';
+
+  @override
+  String get aboutStoryPara3 =>
+      'Bugün, hem sıfır hem de özenle seçtiğimiz ikinci el ürünlerimizle, binlerce komşumuzun evine konuk olduk. Sizin güveninizle büyüyoruz.';
+
+  @override
+  String get aboutStoryStartLabel => 'Başlangıç';
+
+  @override
+  String get aboutStoryExperienceLabel => 'Yıllık Tecrübe';
+
+  @override
+  String get aboutStorySmilesLabel => 'Gülen Yüz';
+
+  @override
+  String get aboutValuesHeading => 'İlkelerimiz';
+
+  @override
+  String get aboutValuesSubheading =>
+      'Esnaflıktan ödün vermediğimiz prensiplerimiz';
+
+  @override
+  String get aboutValue1Title => 'Kalite ve Titizlik';
+
+  @override
+  String get aboutValue1Desc =>
+      'İster sıfır ister ikinci el olsun titizlikle seçer, size öyle sunarız.';
+
+  @override
+  String get aboutValue2Title => 'Gülen Yüz';
+
+  @override
+  String get aboutValue2Desc =>
+      'Bizim için en büyük kazanç, dükkandan mutlu ayrılan bir komşumuzdur. Memnuniyetiniz her şeyden önce gelir.';
+
+  @override
+  String get aboutValue3Title => 'Emeğe Saygı';
+
+  @override
+  String get aboutValue3Desc =>
+      'Mobilya kıymetli bir emektir. İkinci el ürünlere yeniden hayat vererek hem bütçenizi hem de doğayı koruruz.';
+
+  @override
+  String get aboutValue4Title => 'Dürüstlük ve Güven';
+
+  @override
+  String get aboutValue4Desc =>
+      'Şeffaf ve dürüst esnaflık en büyük değerimizdir. Yıllardır aynı konumumuzda sizlerle birlikteyiz.';
+
+  @override
+  String get aboutMasterHeading => 'Ustamızı Tanıyın';
+
+  @override
+  String get aboutMasterBody =>
+      'Ustamız, 1995\'ten beri, yani çeyrek asırdan fazladır bu işin içinde. Sektörün tozunu yutmuş, en iyi markalarda (İstikbal) çalışarak mobilyanın \'püf noktalarını\' öğrenmiş biridir.\n\nSürücülükten montaja, müşteri karşılamadan taşımaya kadar her alanda bizzat çalışarak tam bir tecrübe kazanmıştır. 2012\'de ise \'artık kendi dükkanım\' diyerek bu tecrübesini Sağlam Spot\'a taşımıştır.\n\nAmacı, o büyük firmalarda öğrendiği kaliteyi, mahalle esnafının samimiyeti ve titizliğiyle birleştirip size en iyi hizmeti sunmaktır.';
+
+  @override
+  String get aboutDeliveryHeading => 'Nakliye ve Montaj Hizmetimiz';
+
+  @override
+  String get aboutDeliveryFreeTitle => 'Ücretsiz Nakliye ve Montaj';
+
+  @override
+  String get aboutDeliveryZonesLabel => 'Ücretsiz Hizmet Bölgelerimiz:';
+
+  @override
+  String get aboutDeliveryZonesList =>
+      '• İçerenköy Mahallemiz\n• Fındıklı, Kayışdağı, Küçükbakkalköy\n• İnönü ve Bostancı Sanayi gibi yakın komşularımız';
+
+  @override
+  String get aboutDeliveryNote =>
+      'Önemli Not: Ustamızın sağlığını korumak için, asansör olmayan binalarda yüksek katlara maalesef hizmet veremiyoruz. Anlayışınız için teşekkür ederiz.';
+
+  @override
+  String get aboutDeliveryPunctual =>
+      '⏰ Sizinle sözleştiğimiz saatte kapınızdayız!';
+
+  @override
+  String get aboutTransportHeading => 'Dükkanımıza Nasıl Gelirsiniz?';
+
+  @override
+  String get aboutTransportBusIntro => 'Otobüsle Gelirseniz:';
+
+  @override
+  String get aboutBusStop1 => 'Ziyapaşa Durağı (Kadıköy Yönü):';
+
+  @override
+  String get aboutBusStop2 => 'İçerenköy Durağı (Kayışdağı Yönü):';
+
+  @override
+  String get aboutBusStop3 => 'İçerenköy Durağı (Yeniyol):';
+
+  @override
+  String get aboutContactPhoneLabel => 'Telefon (Hızlı Çözüm)';
+
+  @override
+  String get aboutContactAddressLabel => 'Adres (Çaya Bekleriz)';
+
+  @override
+  String get aboutContactAddressValue =>
+      'İçerenköy Mahallesi\nBuket Sokak No:6';
+
+  @override
+  String get aboutContactHoursLabel => 'Çalışma Saatlerimiz';
+
+  @override
+  String get aboutContactHoursValue =>
+      'Pzt-Cmt: 09:00 - 22:00\nPazar: 10:00 - 20:00';
+
+  @override
+  String get aboutContactHeading => 'Bize Ulaşın';
+
+  @override
+  String get aboutCallNowButton => 'Hemen Ara';
+
+  @override
+  String get aboutViewMapButton => 'Haritada Gör';
+
+  @override
+  String get aboutMapHeading => 'Dükkanımız Tam Burada';
+
+  @override
+  String get aboutMapSubtext => 'Yol tarifi almak için haritaya dokunun';
+
+  @override
+  String get newProductsBadgeEyebrow => 'NEW COLLECTION';
+
+  @override
+  String get newProductsTitle => 'Yeni\nKoleksiyon';
+
+  @override
+  String get productsBadgeLabel => 'ÜRÜN';
+
+  @override
+  String get breadcrumbHome => 'Ana Sayfa';
+
+  @override
+  String get statTotalProducts => 'TOPLAM ÜRÜN';
+
+  @override
+  String get statCategoryLabel => 'KATEGORİ';
+
+  @override
+  String get statConditionValueNew => 'YENİ';
+
+  @override
+  String get statConditionLabel => 'DURUM';
+
+  @override
+  String get statRatingLabel => 'PUAN';
+
+  @override
+  String get searchBarRichPrefix => 'Detaylı ürün araması için ';
+
+  @override
+  String get searchBarRichOr => ' yapın ya da ';
+
+  @override
+  String get searchBarRichHereLink => 'BURADAKİ';
+
+  @override
+  String get searchBarRichSuffix => ' yazıya tıklayın.';
+
+  @override
+  String get sortNewProductsDefault => 'Yeniler';
+
+  @override
+  String get sortSpotProductsDefault => 'En Yeni';
+
+  @override
+  String get sortPriceLowHigh => 'Fiyat: Düşük-Yüksek';
+
+  @override
+  String get sortPriceHighLow => 'Fiyat: Yüksek-Düşük';
+
+  @override
+  String get sortMostPopular => 'En Popüler';
+
+  @override
+  String get spotBadgeEyebrow => 'SPOT ÜRÜNLER';
+
+  @override
+  String get spotHeroTitle => 'Fırsat\nÜrünleri';
+
+  @override
+  String get spotDiscountLabel => 'İNDİRİM';
+
+  @override
+  String get statSpotProductLabel => 'Spot Ürün';
+
+  @override
+  String get statDiscountLabel => 'İndirim';
+
+  @override
+  String get statSupportLabel => 'Destek';
+
+  @override
+  String get statFreeLabel => 'Ücretsiz';
+
+  @override
+  String get statFreeShippingNote => 'Maalesef Yakın Çevrelerimize, Kargo';
+
+  @override
+  String get statFreeShippingShort => 'Kargo';
+
+  @override
+  String get filtersPanelTitle => 'FİLTRELER';
+
+  @override
+  String get priceRangeSectionTitle => 'FİYAT ARALIĞI';
+
+  @override
+  String get clearFiltersButton => 'FİLTRELERİ TEMİZLE';
+
+  @override
+  String get tryDifferentFiltersShort => 'Farklı filtreler deneyebilirsiniz';
+
+  @override
+  String get spotBadgeTag => 'SPOT';
+
+  @override
+  String productLoadError(String error) {
+    return 'Ürün yüklenemedi: $error';
+  }
+
+  @override
+  String get productSpecConditionNew => 'Sıfır Ürün';
+
+  @override
+  String get productLocationValue => 'İçerenköy, İstanbul';
+
+  @override
+  String get sortFeatured => 'Öne Çıkanlar';
+
+  @override
+  String get sortPriceAsc => 'Fiyat: Artan';
+
+  @override
+  String get sortPriceDesc => 'Fiyat: Azalan';
+
+  @override
+  String get languageSelectorTitle => 'Dil Seçimi';
+
+  @override
+  String get languageTooltip => 'Dil';
+
+  @override
+  String get galleryEmptyMessage => 'Bu ürüne ait henüz fotoğraf eklenmemiş.';
+
+  @override
+  String get productCardNewBadge => 'SIFIR';
+
+  @override
+  String get sssHelpCenterBadge => 'YARDIM MERKEZİ';
+
+  @override
+  String get sssHeroTitle => 'Sıkça Sorulan\nSorular';
+
+  @override
+  String get sssHeroSubtitle => 'Merak ettiğiniz her şeyin cevabı burada';
+
+  @override
+  String get sssCategoryAll => 'Tümü';
+
+  @override
+  String get sssCategoryGeneral => 'Genel';
+
+  @override
+  String get sssCategoryProductService => 'Ürün & Hizmet';
+
+  @override
+  String get sssCategoryDelivery => 'Teslimat & Montaj';
+
+  @override
+  String get sssCategoryPayment => 'Ödeme & Sipariş';
+
+  @override
+  String get sssCategoryReturns => 'İade & Garanti';
+
+  @override
+  String get sssCategorySecondHandBuying => 'İkinci El Alım Süreci';
+
+  @override
+  String get sssPhoneSupportTitle => 'Telefon Desteği';
+
+  @override
+  String get sssWorkingHoursTitle => 'Çalışma Saatleri';
+
+  @override
+  String get sssWorkingHoursValue => '09:00 - 22:00';
+
+  @override
+  String get sssStoreAddressTitle => 'Mağaza Adresi';
+
+  @override
+  String get sssStoreAddressValue => 'İçerenköy Mahallesi Buket Sok. No:6';
+
+  @override
+  String get sssNoAnswerTitle => 'Sorunuz Yanıt Bulamadı mı?';
+
+  @override
+  String get sssNoAnswerSubtitle => 'Bize Ulaşabilirsiniz';
+
+  @override
+  String get sssVisitStoreButton => 'Mağazaya Gel';
+
+  @override
+  String get sssQ1 =>
+      'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?';
+
+  @override
+  String get sssA1 =>
+      'Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. Çalışma hayatı boyunca, teslimatlar için sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. Özellikle 2010 yılına kadar İstikbal\'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. 2010\'dan sonra, yakın civardaki Işık Çeyiz\'de çalışarak sektördeki yetkinliğini artırmıştır. 2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.';
+
+  @override
+  String get sssQ2 => 'Sağlam Spot güvenilir mi?';
+
+  @override
+  String get sssA2 =>
+      '2012 yılından beri İçerenköy\'de, komşularımıza hizmet veriyoruz. Sayısızca evlere konuk olduk ve hâlâ konuk olmaya devam ediyoruz.';
+
+  @override
+  String get sssQ3 => 'Ürünleri incelemek için mağazanıza gelebilir miyim?';
+
+  @override
+  String get sssA3 =>
+      'Elbette! Hatta biz de özellikle bunu tavsiye ediyoruz. Çayımızı içerken ürünleri canlı canlı görmeniz, dokunmanız ve içinize sinmesi en sağlıklısı. İçerenköy Mahallesi\'ndeki dükkanımıza her zaman bekleriz.';
+
+  @override
+  String get sssQ4 => 'İkinci el ürünlerin durumu nasıl kontrol ediliyor?';
+
+  @override
+  String get sssA4 =>
+      'Bizim için ikinci el, \'ikinci kalite\' demek değildir. Her ürün ustamızın titiz kontrolünden geçer; temizliği, bakımı ve gerekli onarımları eksiksiz yapılır. Fotoğraflarda ne görüyorsanız o, ama biz yine de \'gelin, bir de siz görün\' deriz. Gözünüzle görmeniz her zaman en iyisidir.';
+
+  @override
+  String get sssQ5 => 'Mobilyaların malzeme kalitesi nedir?';
+
+  @override
+  String get sssA5 =>
+      'Şeffaflığı önemsiyoruz. Her ürünün kendine ait bir hikayesi ve malzemesi var. Bu yüzden tüm detayları, malzeme kalitesini ve özelliklerini ürün açıklama bölümlerine net bir şekilde yazıyoruz. Aklınıza takılan bir şey olursa sormaktan çekinmeyin.';
+
+  @override
+  String get sssQ6 => 'Ürün fiyatları nasıl belirleniyor?';
+
+  @override
+  String get sssA6 =>
+      'Fiyatlarımızı belirlerken hem ürünün kalitesine hem de piyasa koşullarına adil bir şekilde bakıyoruz. Amacımız, bütçenizi zorlamadan, kaliteli ve uzun ömürlü ürünlere ulaşmanızı sağlamaktır. Hakkı neyse, o.';
+
+  @override
+  String get sssQ7 => 'Ürünlerinizde renk seçenekleri var mı?';
+
+  @override
+  String get sssA7 =>
+      'Ürünlerimiz genellikle anlık ve tek parçalar olduğu için, mevcut renkleri neyse o şekilde sunuyoruz. Maalesef farklı renk seçenekleri yapamıyoruz. Beğendiğiniz ürünün rengi, gördüğünüz renktir.';
+
+  @override
+  String get sssQ8 => 'Özel sipariş alıyor musunuz?';
+
+  @override
+  String get sssA8 =>
+      'Keşke yapabilsek! Ancak biz daha çok mevcut, özenle seçilmiş ürünlerimize odaklanıyoruz. Özel üretim veya tasarım siparişi şu an için maalesef alamıyoruz. Hazırdaki ürünlerimizi incelemenizi öneririz.';
+
+  @override
+  String get sssQ9 => 'Ürün açıklamalarında nelere dikkat etmeliyim?';
+
+  @override
+  String get sssA9 =>
+      'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Ayrıca ölçü Alırken Koridoru Unutmayın: Sadece mobilyayı koyacağınız yeri değil, o mobilyanın kapıdan, koridordan ve merdivenden nasıl geçeceğini de ölçün. Malzeme ve durum bilgilerini de mutlaka okuyun.';
+
+  @override
+  String get sssQ10 =>
+      'Asansör olmayan binalara veya yüksek katlara teslimat yapıyor musunuz?';
+
+  @override
+  String get sssA10 =>
+      'Bu, bizim için en hassas ve önemli konulardan biri. Biz, işini bizzat yapan küçük bir esnafız. Ustamız, yılların tecrübesiyle birlikte artık genç olmadığı için sağlığını da düşünmek zorundayız. Anlayışınıza sığınarak, asansör olmayan binalarda yüksek katlara (örneğin 2. kat ve üzeri) eşya çıkarma ve indirme hizmeti kesinlikle veremiyoruz. Lütfen siparişinizi vermeden önce bu konuyu netleştirelim, size mahcup olmak istemeyiz.';
+
+  @override
+  String get sssQ11 => 'Taşıma hizmeti sağlıyor musunuz?';
+
+  @override
+  String get sssA11 =>
+      'Elbette, komşularımıza yardımcı oluyoruz. İçerenköy başta olmak üzere Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü ve Bostancı Sanayi gibi yakın çevremize ücretsiz nakliye hizmetimiz var. (Bostancı ve Kozyatağı\'nın bazı bölgeleri hariç, ve yaşlılık açısından yüksek katlara asansörsüz taşıyamıyoruz, onu ayrıca konuşuruz).';
+
+  @override
+  String get sssQ12 => 'Teslimat süresi ne kadar?';
+
+  @override
+  String get sssA12 =>
+      'Siparişi verdiğiniz an sizinle iletişime geçeriz. \'Ne zaman müsaitsiniz?\' diye sorarız. Hem size hem bize uyan en yakın vakit için sözleşiriz. Genellikle 1-3 gün içinde, anlaştığımız saatte teslimatı ve montajı tamamlamış oluruz.';
+
+  @override
+  String get sssQ13 => 'Montaj hizmeti veriyor musunuz?';
+
+  @override
+  String get sssA13 =>
+      'Tabii ki. Mobilyayı alıp kapıya bırakmak bizim tarzımız değil. Büyük ürünlerin hepsini ustamız bizzat kurar ve bu hizmet için ekstra bir ücret talep etmeyiz. Siz sadece yerini gösterin, gerisi bizde.';
+
+  @override
+  String get sssQ14 => 'Mobilya siparişi ne kadar sürede teslim edilir?';
+
+  @override
+  String get sssA14 =>
+      'Ürün hazırsa, sizinle ortak belirlediğimiz bir zamanda en kısa sürede kapınızdayız. Montajı da dert etmeyin; getirdiğimiz gibi kurar, öyle teslim ederiz. Genellikle aynı gün içinde her şey biter.';
+
+  @override
+  String get sssQ15 => 'Veresiye sipariş verebilir miyim?';
+
+  @override
+  String get sssA15 =>
+      'Bu konuda anlayışınızı rica ediyoruz. Bir esnaf olarak ayakta kalabilmemiz için \'veresiye\' veya \'sonra ödeme\' gibi yöntemlerle maalesef çalışamıyoruz. Anlaştığımız ücreti, ürünü teslim ederken peşin olarak almamız gerekiyor. Size mahcup olmamak için bu kuralımızı baştan belirtmeyi tercih ediyoruz.';
+
+  @override
+  String get sssQ16 => 'Nasıl sipariş verebilirim?';
+
+  @override
+  String get sssA16 =>
+      'En sağlıklı yöntem, her zaman yüz yüze olandır. Siteden beğendiğiniz ürünü not edin, sonra dükkanımıza gelin. Ürünü canlı görün, aklınızdaki soruları sorun, içinize sinerse siparişinizi orada tamamlayalım. Böylece hiçbir şüphe kalmaz.';
+
+  @override
+  String get sssQ17 => 'Ürün iade politikası nedir?';
+
+  @override
+  String get sssA17 =>
+      'İkinci el ürünlerin doğası gereği ve esnaf usulü çalıştığımız için maalesef iade kabul edemiyoruz. Bu yüzden \'gelin, görün, çayımızı için\' diye ısrar ediyoruz. Almadan önce ürünü detaylıca incelemeniz, ölçüp biçmeniz en doğrusu. Emin olmadan alışverişi tamamlamayalım.';
+
+  @override
+  String get sssQ18 => 'Ürünlerin garanti süresi var mı?';
+
+  @override
+  String get sssA18 =>
+      'Ürünlerimiz ikinci el olduğu için, bir markanın sunduğu gibi resmi bir garanti süremiz maalesef yok. Ancak biz \'sattık, bitti\' diyenlerden değiliz. Teslimat ve montaj sırasında her şeyin düzgün çalıştığından emin oluruz.';
+
+  @override
+  String get sssQ19 =>
+      'Evimdeki eşyaları satmak istiyorum, ikinci el alımı yapıyor musunuz?';
+
+  @override
+  String get sssA19 =>
+      'Evet, dükkanımızda sergileyebileceğimize inandığımız, temiz ve yeniden satılabilir durumdaki seçili ürünleri alıyoruz. Ancak, dükkanımızın yeri gerçekten çok küçük olduğu için bu konuda maalesef çok seçici davranmak zorundayız.\n\nBu konuda baştan dürüst olmayı severiz: Bizden alacağınız teklif, muhtemelen Letgo gibi platformlarda kendinizin satabileceğiniz rakamdan biraz daha düşük olabilir. Bunun sebebi şudur: Biz esnaf olarak o eşyayı almak için benzin yakıyor, taşıma için emek harcıyor ve en önemlisi, onu satmak için dükkanımızda sergileyip tüm müşteri süreciyle (pazarlık, sorular vs.) biz ilgileniyoruz.\n\nSiz o platformlarda satarken bu süreçlerin tamamını kendiniz üstlenirsiniz. Biz ise sizden bu zahmeti de devralmış oluyoruz. Teklifimizi bu hizmeti de içerecek şekilde veriyoruz. Anlayışınız için teşekkür ederiz.';
+
+  @override
+  String get sssQ20 =>
+      'Komple takım mobilyaları (Yatak odası, salon takımı vb.) alıyor musunuz?';
+
+  @override
+  String get sssA20 =>
+      'Dükkanımızın küçük olmasından dolayı, maalesef komple yatak odası, koltuk takımı gibi büyük setleri alamıyoruz. Yerimiz çok kısıtlı. Biz daha çok tek parça, satışı daha kolay olan (konsol, dolap, masa, sandalye gibi) ürünlere odaklanıyoruz.';
+
+  @override
+  String get sssQ21 =>
+      'Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?';
+
+  @override
+  String get sssA21 =>
+      'Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.';
+
+  @override
+  String get sssQ22 => 'Her zaman eşya alımı yapıyor musunuz?';
+
+  @override
+  String get sssA22 =>
+      'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.';
 }
