@@ -13,7 +13,7 @@ class AppTheme {
   // --- Yardımcı Metot: Platforma Göre TextTheme Seçimi ve Renklendirme ---
   TextTheme _getTextTheme(final Brightness brightness, final ColorScheme colors) {
     // 1. Platforma göre (Web/Mobil) ana şablonu seçiyoruz
-    const TextTheme baseTheme =
+    final TextTheme baseTheme =
         kIsWeb ? AppTextStyles.webTextTheme : AppTextStyles.mobileTextTheme;
 
     // 2. Şablonu mevcut renk paletiyle (Light/Dark) boyuyoruz
