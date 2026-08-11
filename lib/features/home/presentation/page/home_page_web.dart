@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
@@ -107,6 +108,16 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   const TestimonialsSection(),
                   _buildStatsSection(),
                   const NewsletterSection(),
+                  // Sayfanın en altına, footer'dan hemen önce ikinci bir
+                  // reklam — kullanıcı sayfanın sonuna kadar geldiğinde de
+                  // bir kazanım fırsatı olsun diye.
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: AdsenseBanner(
+                          type: AdUnitType.multiplex, height: 250),
+                    ),
+                  ),
                   _buildFooter(),
                 ],
               ),
@@ -137,9 +148,18 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               childAspectRatio: context.cardAspectRatio(),
             ),
             delegate: SliverChildBuilderDelegate(
-              (final context, final index) =>
-                  CustomProductCard(product: visibleProducts[index]),
-              childCount: visibleProducts.length,
+              (final context, final index) {
+                if (isAdSlot(index, visibleProducts.length)) {
+                  return const NativeAdCard();
+                }
+                final realIndex =
+                    realIndexForAdGrid(index, visibleProducts.length);
+                if (realIndex >= visibleProducts.length) {
+                  return const SizedBox.shrink();
+                }
+                return CustomProductCard(product: visibleProducts[realIndex]);
+              },
+              childCount: paddedItemCountForAds(visibleProducts.length),
             ),
           ),
           if (availableProducts.length > visibleProducts.length)

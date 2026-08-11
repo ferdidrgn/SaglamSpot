@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/common/extentions/product_category_ex.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
-import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/view_mode_toggle.dart';
@@ -660,67 +660,49 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     return slivers;
   }
 
+  // Reklamlar artık ürünlerin arasına, ürün kartıyla AYNI çerçevede
+  // "doğal" kartlar olarak serpiştiriliyor (bkz. ad_grid_helper.dart) —
+  // liste kısaysa her 5, uzunsa her 10 üründe bir. Eskiden aralara büyük
+  // tam genişlikte bloklar sokuluyordu; artık ızgaraya/listeye gömülü.
   List<Widget> _buildProductsWithAds(
       final BuildContext context, final List<Product> products) {
-    final List<Widget> slivers = [];
-    final adFrequency = context.responsive(
-        mobile: 6, tablet: 9, desktop: 12); // Her N üründe bir reklam
     final isListMode =
         ref.watch(productViewModeProvider) == ProductViewMode.list;
 
-    // Sayfa başına gösterilecek reklam sayısını sabit bir tavanla sınırlıyoruz.
-    const int maxAdsPerList = 3;
-    int adsInserted = 0;
-
-    int productIndex = 0;
-    while (productIndex < products.length) {
-      final endIndex = (productIndex + adFrequency).clamp(0, products.length);
-      final chunk = products.sublist(productIndex, endIndex);
-
-      slivers.add(
-        isListMode
-            ? SliverPadding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: context.responsive(
-                        mobile: 16.0, tablet: 20.0, desktop: 24.0)),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (final context, final i) =>
-                        ProductListCard(product: chunk[i]),
-                    childCount: chunk.length,
-                  ),
-                ),
-              )
-            : ResponsiveProductSliverGrid(
-                products: chunk,
-                onProductTap: (final p) => NavigationHandler.goToProduct(
-                    context: context,
-                    productId: p.id,
-                    productSlug: p.name.toSlug()),
-              ),
-      );
-
-      if (endIndex < products.length && adsInserted < maxAdsPerList) {
-        adsInserted++;
-        slivers.add(
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.responsive(
-                    mobile: 16.0, tablet: 20.0, desktop: 24.0),
-                vertical: context.responsive(
-                    mobile: 16.0, tablet: 20.0, desktop: 24.0),
-              ),
-              child: const WebAdProductCard(height: 280),
-            ),
-          ),
-        );
-      }
-
-      productIndex = endIndex;
+    if (!isListMode) {
+      return [
+        ResponsiveProductSliverGrid(
+          products: products,
+          insertAds: true,
+          onProductTap: (final p) => NavigationHandler.goToProduct(
+              context: context, productId: p.id, productSlug: p.name.toSlug()),
+        ),
+      ];
     }
 
-    return slivers;
+    return [
+      SliverPadding(
+        padding: EdgeInsets.symmetric(
+            horizontal:
+                context.responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0)),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (final context, final index) {
+              if (isAdSlot(index, products.length)) {
+                return const Padding(
+                  padding: EdgeInsets.only(bottom: 14),
+                  child: SizedBox(height: 140, child: NativeAdCard()),
+                );
+              }
+              final realIndex = realIndexForAdGrid(index, products.length);
+              if (realIndex >= products.length) return const SizedBox.shrink();
+              return ProductListCard(product: products[realIndex]);
+            },
+            childCount: paddedItemCountForAds(products.length),
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _buildSectionDivider(

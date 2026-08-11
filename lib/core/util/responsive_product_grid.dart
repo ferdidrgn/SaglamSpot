@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/products/domain/entites/product.dart';
+import '../ads/widgets/ad_grid_helper.dart';
 import '../common/extentions/app_context_ui_extension.dart';
 import '../theme/app_colors.dart';
 import '../widgets/custom_product_card.dart';
@@ -61,10 +62,16 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
   final List<Product> products;
   final void Function(Product)? onProductTap;
 
+  /// true ise, ürünlerin arasına ürün kartıyla aynı çerçeveye sahip
+  /// "doğal" reklam kartları serpiştirilir (bkz. ad_grid_helper.dart):
+  /// liste kısaysa her 5, uzunsa her 10 üründe bir.
+  final bool insertAds;
+
   const ResponsiveProductSliverGrid({
     super.key,
     required this.products,
     this.onProductTap,
+    this.insertAds = false,
   });
 
   @override
@@ -73,12 +80,6 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
 
     final crossAxisCount = context.gridColumns();
     final spacing = context.gridSpacing;
-
-    // --- DEĞİŞİKLİK BURADA ---
-    // İki widget'ın da tutarlı olması için aynı oranlar girildi.
-    final aspectRatio =
-        context.responsive(mobile: 0.62, tablet: 0.75, desktop: 0.78);
-    // --- DEĞİŞİKLİK SONU ---
 
     final screenPadding = context.responsive(
         mobile: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -90,16 +91,19 @@ class ResponsiveProductSliverGrid extends ConsumerWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           childAspectRatio: context.cardAspectRatio(),
-          // Güncellenen değer kullanıldı
           crossAxisSpacing: spacing,
           mainAxisSpacing: spacing,
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
-            final product = products[index];
-            return CustomProductCard(product: product);
+            if (!insertAds) return CustomProductCard(product: products[index]);
+            if (isAdSlot(index, products.length)) return const NativeAdCard();
+            final realIndex = realIndexForAdGrid(index, products.length);
+            if (realIndex >= products.length) return const SizedBox.shrink();
+            return CustomProductCard(product: products[realIndex]);
           },
-          childCount: products.length,
+          childCount:
+              insertAds ? paddedItemCountForAds(products.length) : products.length,
         ),
       ),
     );
