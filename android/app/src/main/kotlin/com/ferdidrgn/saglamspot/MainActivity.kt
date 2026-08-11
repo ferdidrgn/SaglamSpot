@@ -1,15 +1,8 @@
 package com.ferdidrgn.saglamspot
 
-import android.os.Build
-import android.os.Bundle
-import android.view.WindowManager
-import androidx.core.view.WindowCompat
 import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity : FlutterActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        // Native katmanda tam ekran geçiş pencerelerini temizle
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+class MainActivity : FlutterActivity()
 
         super.onCreate(savedInstanceState)
 

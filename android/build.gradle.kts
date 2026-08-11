@@ -15,33 +15,8 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
-
 subprojects {
     project.evaluationDependsOn(":app")
-}
-// ==============================================================================
-// 🛡️ SAGLAMSPOT GLOBAL GRADLE MIDDLEWARE — ANTI-EVALUATION CRASH
-// ==============================================================================
-// afterEvaluate yerine plugins.withId kullanarak eval hatasını engelliyoruz.
-
-subprojects {
-    plugins.withId("com.android.library") {
-        configureAndroidNamespace(this@subprojects)
-    }
-    plugins.withId("com.android.application") {
-        configureAndroidNamespace(this@subprojects)
-    }
-}
-
-fun configureAndroidNamespace(project: Project) {
-    val android = project.extensions.findByName("android")
-    if (android is com.android.build.gradle.BaseExtension) {
-        if (android.namespace == null) {
-            val sanitizedName = project.name.replace("-", "_")
-            android.namespace = "com.ferdidrgn.saglamspot.patched.$sanitizedName"
-            project.logger.lifecycle("🛡️ Yama: [${project.name}] modülü için namespace enjekte edildi.")
-        }
-    }
 }
 
 tasks.register<Delete>("clean") {
