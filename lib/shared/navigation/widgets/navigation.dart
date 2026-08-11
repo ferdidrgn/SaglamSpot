@@ -224,21 +224,30 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           // Nav öğeleri sabit genişlikte bir Row olarak Spacer'ın yanına
           // konulunca, 1024-1200px aralığındaki laptop pencerelerinde
           // toplam genişlik taşıp RenderFlex overflow hatası veriyordu.
-          // Expanded + yatay kaydırma bunu kalıcı olarak imkansız kılar:
-          // sığdığında ortalanır, sığmadığında sessizce kayar.
+          // Expanded + yatay kaydırma bunu kalıcı olarak imkansız kılar.
+          // ÖNEMLİ: SingleChildScrollView içindeki Row'a "mainAxisSize.min"
+          // verilirse mainAxisAlignment.center etkisiz kalır (Row zaten
+          // içeriği kadar dar olur) — öğeler sola yapışık görünür. Bunun
+          // yerine LayoutBuilder ile ölçülen genişlik kadar bir minWidth
+          // dayatılıyor: sığdığında gerçekten ortalanır, sığmadığında
+          // içerik kendi genişliğini alıp sessizce kayar.
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _navItems
-                    .map((final item) => _DesktopNavItem(
-                          item: item,
-                          isActive: currentIndex == item.index,
-                          onTap: () => _onItemTapped(item.index),
-                        ))
-                    .toList(),
+            child: LayoutBuilder(
+              builder: (final context, final constraints) => SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _navItems
+                        .map((final item) => _DesktopNavItem(
+                              item: item,
+                              isActive: currentIndex == item.index,
+                              onTap: () => _onItemTapped(item.index),
+                            ))
+                        .toList(),
+                  ),
+                ),
               ),
             ),
           ),
