@@ -2,12 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/product_list_card.dart';
@@ -161,12 +161,13 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                                 Text(
                                   'Yeni\nKoleksiyon',
                                   style: TextStyle(
+                                    fontFamily: 'Fraunces',
                                     fontSize: context.responsive(
                                       mobile: 42,
                                       tablet: 56,
                                       desktop: 72,
                                     ),
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.w600,
                                     height: 0.95,
                                     color: AppColors.textPrimary,
                                     letterSpacing: -1,
@@ -602,9 +603,6 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
       );
     }
 
-    // 8 üründe bir reklam kartı ekleniyor — kullanıcıyı boğmayacak sıklıkta.
-    final int itemCount = products.length + (products.length ~/ 8);
-
     return SliverPadding(
       padding: context.sectionPadding,
       sliver: SliverGrid(
@@ -625,14 +623,12 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
-            if (index > 0 && (index + 1) % 9 == 0) {
-              return const WebAdProductCard();
-            }
-            final realIndex = index - (index ~/ 9);
+            if (isAdSlot(index, products.length)) return const NativeAdCard();
+            final realIndex = realIndexForAdGrid(index, products.length);
             if (realIndex >= products.length) return const SizedBox.shrink();
             return _buildEnhancedProductCard(context, products[realIndex]);
           },
-          childCount: itemCount,
+          childCount: paddedItemCountForAds(products.length),
         ),
       ),
     );

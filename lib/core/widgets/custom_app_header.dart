@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import '../common/extentions/app_context_ui_extension.dart';
 import '../theme/app_colors.dart';
+import '../util/comminucation_actions.dart';
 
 class CustomAppHeader extends StatelessWidget {
   final int currentIndex;
@@ -44,54 +45,55 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
+  // Arama çubuğu artık başlığın görsel merkezi — geniş, hap biçimli ve
+  // sonunda dolgu vurgu renkli bir arama düğmesiyle bitiyor. Bento/vitrin
+  // referans tasarımındaki "arama öncelikli" üst çubuk hissini yakalıyor.
   Widget _buildDesktopLayout(final BuildContext context) => Row(
         children: [
           _buildLogo(context),
-          const Spacer(flex: 10),
-          // 3. Navigasyon Menüsü
+          SizedBox(width: context.responsive(mobile: 24, desktop: 36)),
+          Expanded(child: _buildSearchBar(context)),
+          SizedBox(width: context.responsive(mobile: 24, desktop: 36)),
           _buildDesktopNavigation(context),
-          const SizedBox(width: 30),
-          _buildUserActions(context),
+          SizedBox(width: context.responsive(mobile: 16, desktop: 24)),
+          _buildWhatsAppButton(context),
         ],
       );
 
 // --- ARAMA ÇUBUĞU (Tıklanabilir + GoRouter) ---
   Widget _buildSearchBar(final BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(30),
       onTap: () => NavigationHandler.goToSearch(context),
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: context.responsive(
-            mobile: 100.0,
-            tablet: 140.0,
-            desktop: 180.0,
-          ),
-        ),
-        height: 38,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        constraints: const BoxConstraints(maxWidth: 520),
+        height: context.responsive(mobile: 40.0, desktop: 48.0),
+        padding: const EdgeInsets.only(left: 20, right: 6),
         decoration: BoxDecoration(
           color: AppColors.background,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.border.withOpacity(0.5)),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.search_rounded,
-                size: 16, color: AppColors.textTertiary),
-            const SizedBox(width: 6),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  context.l10n.searchHint,
-                  style: const TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: 13,
-                  ),
-                ),
+                size: 18, color: AppColors.textTertiary),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                context.l10n.searchHint,
+                style: const TextStyle(
+                    color: AppColors.textTertiary, fontSize: 14),
+                overflow: TextOverflow.ellipsis,
               ),
+            ),
+            Container(
+              width: context.responsive(mobile: 30.0, desktop: 36.0),
+              height: context.responsive(mobile: 30.0, desktop: 36.0),
+              decoration:
+                  const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+              child: const Icon(Icons.arrow_forward_rounded,
+                  color: Colors.white, size: 16),
             ),
           ],
         ),
@@ -163,8 +165,9 @@ class CustomAppHeader extends StatelessWidget {
                 child: Text(
                   'Sağlam Spot',
                   style: TextStyle(
+                    fontFamily: 'Fraunces',
                     fontSize: context.responsive(mobile: 18.0, desktop: 22.0),
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                   ),
                 ),
@@ -186,7 +189,7 @@ class CustomAppHeader extends StatelessWidget {
     return Row(
       children: List.generate(labels.length, (final i) {
         final active = i == currentIndex;
-        return _HeaderNavLink(
+        return _NavLink(
           label: labels[i],
           active: active,
           onTap: () => onNavigate(i),
@@ -195,23 +198,21 @@ class CustomAppHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildUserActions(final BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min, // Sadece içerik kadar yer kaplar
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildSearchBar(context),
-          const SizedBox(width: 15),
-          // Great Showman ferahlığı için artırılmış boşluk
-
-          // Profil Butonu - En sondaki eleman
-          _buildActionButton(
-            context: context,
-            icon: Icons.person_outline_rounded,
-            onPressed: () {
-              // Profil işlemleri
-            },
+  // Showcase sitesinde kullanıcı hesabı/sepeti yok — üst çubuğun son
+  // eylemi her zaman doğrudan WhatsApp ile iletişim.
+  Widget _buildWhatsAppButton(final BuildContext context) => Material(
+        color: AppColors.accent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: SaglamSpotCommunication.launchWhatsApp,
+          child: SizedBox(
+            width: context.responsive(mobile: 40.0, desktop: 44.0),
+            height: context.responsive(mobile: 40.0, desktop: 44.0),
+            child: const Icon(Icons.chat_bubble_outline_rounded,
+                color: Colors.white, size: 20),
           ),
-        ],
+        ),
       );
 
   Widget _buildActionButton({
@@ -231,31 +232,31 @@ class CustomAppHeader extends StatelessWidget {
   }
 }
 
-/// Masaüstü nav bağlantısı — hover'da yumuşak bir renk geçişi ve altı çizili
-/// vurgu ile tıklanabilirliği belli eder (Emil Kowalski: her etkileşimin
-/// amaçlı, sübtil bir geri bildirimi olmalı).
-class _HeaderNavLink extends StatefulWidget {
+/// Masaüstü menü bağlantısı — hover'da yumuşak renk geçişi, aktif
+/// sekmenin altında beliren ince bir vurgu çizgisi.
+class _NavLink extends StatefulWidget {
+
   final String label;
   final bool active;
   final VoidCallback onTap;
 
-  const _HeaderNavLink(
+  const _NavLink(
       {required this.label, required this.active, required this.onTap});
 
   @override
-  State<_HeaderNavLink> createState() => _HeaderNavLinkState();
+  State<_NavLink> createState() => _NavLinkState();
 }
 
-class _HeaderNavLinkState extends State<_HeaderNavLink> {
-  bool _hovered = false;
+class _NavLinkState extends State<_NavLink> {
+  bool _isHovered = false;
 
   @override
   Widget build(final BuildContext context) {
-    final highlighted = widget.active || _hovered;
+    final bool highlighted = widget.active || _isHovered;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      onEnter: (final _) => setState(() => _hovered = true),
-      onExit: (final _) => setState(() => _hovered = false),
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTap: widget.onTap,
         child: Padding(
@@ -264,22 +265,24 @@ class _HeaderNavLinkState extends State<_HeaderNavLink> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 180),
                 style: TextStyle(
-                  fontWeight: widget.active ? FontWeight.bold : FontWeight.w500,
+                  fontSize: 14.5,
+                  letterSpacing: 0.3,
+                  fontWeight: widget.active ? FontWeight.w700 : FontWeight.w500,
                   color: highlighted
-                      ? AppColors.accentDark
+                      ? AppColors.accent
+
                       : AppColors.textPrimary,
                 ),
                 child: Text(widget.label),
               ),
               const SizedBox(height: 4),
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOut,
+                duration: const Duration(milliseconds: 180),
                 height: 2,
                 width: highlighted ? 16 : 0,
-                color: AppColors.accentDark,
+                color: AppColors.accent,
               ),
             ],
           ),
@@ -289,50 +292,3 @@ class _HeaderNavLinkState extends State<_HeaderNavLink> {
   }
 }
 
-/// İkon aksiyon butonu — hover'da hafif zeminle ve kenarlıkla kendini belli
-/// eder.
-class _HeaderActionButton extends StatefulWidget {
-  final double size;
-  final double iconSize;
-  final double borderRadius;
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const _HeaderActionButton({
-    required this.size,
-    required this.iconSize,
-    required this.borderRadius,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  @override
-  State<_HeaderActionButton> createState() => _HeaderActionButtonState();
-}
-
-class _HeaderActionButtonState extends State<_HeaderActionButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(final BuildContext context) => MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (final _) => setState(() => _hovered = true),
-        onExit: (final _) => setState(() => _hovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: widget.size,
-          height: widget.size,
-          decoration: BoxDecoration(
-            color: _hovered ? AppColors.secondary : AppColors.surface,
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            border: Border.all(
-                color: _hovered ? AppColors.accentDark : AppColors.border),
-          ),
-          child: IconButton(
-              icon: Icon(widget.icon, size: widget.iconSize),
-              onPressed: widget.onPressed,
-              color: _hovered ? AppColors.accentDark : AppColors.textSecondary,
-              padding: EdgeInsets.zero),
-        ),
-      );
-}

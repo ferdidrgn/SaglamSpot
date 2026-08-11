@@ -60,15 +60,17 @@ class _NewsletterSectionState extends State<NewsletterSection> {
                   const Text(
                     'Yeni Ürünlerden İlk Siz Haberdar Olun',
                     style: TextStyle(
+                        fontFamily: 'Fraunces',
                         color: Colors.white,
                         fontSize: 24,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                         height: 1.2),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     'Spot fırsatlar, yeni koleksiyonlar ve kampanyalar e-posta kutunuza gelsin. Spam yok, sadece işinize yarayacak fırsatlar.',
-                    style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                    style: TextStyle(
+                        fontFamily: 'Inter', color: Colors.white.withOpacity(0.7)),
                   ),
                 ],
               ),

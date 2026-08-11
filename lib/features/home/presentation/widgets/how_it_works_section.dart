@@ -43,8 +43,9 @@ class HowItWorksSection extends StatelessWidget {
           children: [
             Text('Nasıl Çalışır?',
                 style: TextStyle(
+                    fontFamily: 'Fraunces',
                     fontSize: context.h2Size,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     color: context.primaryColor)),
             const SizedBox(height: 4),
             Container(height: 3, width: 40, color: AppColors.accent),
@@ -88,68 +89,87 @@ class _Step {
   const _Step({required this.icon, required this.title, required this.desc});
 }
 
-class _StepCard extends StatelessWidget {
+class _StepCard extends StatefulWidget {
   final _Step step;
   final int index;
 
   const _StepCard({required this.step, required this.index});
 
   @override
+  State<_StepCard> createState() => _StepCardState();
+}
+
+class _StepCardState extends State<_StepCard> {
+  bool _isHovered = false;
+
+  @override
   Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 18,
-              offset: const Offset(0, 8)),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient: AppColors.accentGradient,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(step.icon, color: Colors.white, size: 24),
-              ),
-              Positioned(
-                right: -6,
-                top: -6,
-                child: Container(
-                  width: 22,
-                  height: 22,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
+    final step = widget.step;
+    final index = widget.index;
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        transform: _isHovered
+            ? (Matrix4.identity()..translate(0.0, -4.0))
+            : Matrix4.identity(),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.09 : 0.04),
+                blurRadius: _isHovered ? 26 : 18,
+                offset: Offset(0, _isHovered ? 12 : 8)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: AppColors.accentGradient,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Text('$index',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800)),
+                  child: Icon(step.icon, color: Colors.white, size: 24),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(step.title,
-              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
-          const SizedBox(height: 6),
-          Text(step.desc,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 13, height: 1.4)),
-        ],
+                Positioned(
+                  right: -6,
+                  top: -6,
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text('$index',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800)),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(step.title,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+            const SizedBox(height: 6),
+            Text(step.desc,
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 13, height: 1.4)),
+          ],
+        ),
       ),
     );
   }

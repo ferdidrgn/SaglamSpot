@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../common/extentions/app_context_ui_extension.dart';
 import '../localization/locale_provider.dart';
+import '../theme/app_colors.dart';
 
 class LanguageSelector extends ConsumerWidget {
   final bool isDrawer;
@@ -57,20 +58,43 @@ class LanguageSelector extends ConsumerWidget {
     }
 
     // --- APPBAR TASARIMI (Üst Menü - Popup) ---
+    // Artık jenerik bir "çeviri" ikonu yerine, seçili dilin bayrağı ve kodu
+    // görünüyor — kullanıcı menüyü açmadan hangi dilde olduğunu görür.
+    final current =
+        languages.firstWhere((final e) => e.locale == currentLocale);
     return PopupMenuButton<Locale>(
       tooltip: 'Language',
-      offset: const Offset(0, 45), // Menüyü butonun biraz altına indirir
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      offset: const Offset(0, 46),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      color: AppColors.surface,
       icon: Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: context.colors.primary.withOpacity(0.1),
-          shape: BoxShape.circle,
+          color: AppColors.secondary,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.border),
         ),
-        child: Icon(
-          Icons.translate_rounded,
-          color: context.colors.primary,
-          size: context.responsive(mobile: 22, tablet: 24, desktop: 26),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(current.flag,
+                style: TextStyle(
+                    fontSize:
+                        context.responsive(mobile: 15, tablet: 16, desktop: 17))),
+            const SizedBox(width: 5),
+            Text(current.locale.languageCode.toUpperCase(),
+                style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: context.responsive(mobile: 11, desktop: 12))),
+            const SizedBox(width: 2),
+            Icon(Icons.keyboard_arrow_down_rounded,
+                color: AppColors.textSecondary,
+                size: context.responsive(mobile: 16, desktop: 18)),
+          ],
         ),
       ),
       onSelected: (final Locale locale) {
@@ -80,22 +104,33 @@ class LanguageSelector extends ConsumerWidget {
         final isSelected = currentLocale == lang.locale;
         return PopupMenuItem<Locale>(
           value: lang.locale,
-          child: Row(
-            children: [
-              Text(lang.flag, style: const TextStyle(fontSize: 18)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  lang.label,
-                  style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected ? context.colors.primary : null,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.accent.withOpacity(0.1) : null,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Text(lang.flag, style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    lang.label,
+                    style: TextStyle(
+                      fontWeight:
+                          isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected
+                          ? AppColors.accentDark
+                          : AppColors.textPrimary,
+                    ),
                   ),
                 ),
-              ),
-              if (isSelected)
-                Icon(Icons.check_rounded, color: context.colors.primary, size: 18),
-            ],
+                if (isSelected)
+                  const Icon(Icons.check_rounded,
+                      color: AppColors.accentDark, size: 18),
+              ],
+            ),
           ),
         );
       }).toList(),

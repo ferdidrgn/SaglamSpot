@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
+import '../../../../core/ads/widgets/platform_bottom_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
@@ -106,6 +107,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   if (similar.isNotEmpty)
                     SliverToBoxAdapter(
                         child: _buildSimilarSection(context, similar)),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: context.pagePadding.copyWith(
+                          top: context.spacingLarge, bottom: 0),
+                      child: const PlatformBottomBanner(),
+                    ),
+                  ),
                   SliverToBoxAdapter(
                       child:
                           SizedBox(height: context.isMobile ? 110 : 60)),

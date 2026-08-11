@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
-import '../../../../core/ads/widgets/web_ad_product_card.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
@@ -196,12 +196,13 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                               Text(
                                 'Fırsat\nÜrünleri',
                                 style: TextStyle(
+                                  fontFamily: 'Fraunces',
                                   fontSize: context.responsive(
                                     mobile: 48,
                                     tablet: 64,
                                     desktop: 80,
                                   ),
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w600,
                                   height: 0.95,
                                   color: AppColors.textPrimary,
                                   letterSpacing: -2,
@@ -919,8 +920,6 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
       );
     }
 
-    final int itemCount = products.length + (products.length ~/ 8);
-
     return SliverPadding(
       padding: context.sectionPadding,
       sliver: SliverGrid(
@@ -941,14 +940,12 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
-            if (index > 0 && (index + 1) % 9 == 0) {
-              return const WebAdProductCard();
-            }
-            final realIndex = index - (index ~/ 9);
+            if (isAdSlot(index, products.length)) return const NativeAdCard();
+            final realIndex = realIndexForAdGrid(index, products.length);
             if (realIndex >= products.length) return const SizedBox.shrink();
             return _buildSpotProductCard(context, products[realIndex]);
           },
-          childCount: itemCount,
+          childCount: paddedItemCountForAds(products.length),
         ),
       ),
     );

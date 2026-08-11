@@ -229,7 +229,7 @@ class _SSSPageState extends State<SSSPage> {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.accentDark, AppColors.accent],
+            colors: [AppColors.sage, AppColors.sageDark],
           ),
         ),
         child: Stack(
@@ -269,9 +269,10 @@ class _SSSPageState extends State<SSSPage> {
                   const SizedBox(height: 24),
                   Text('Sıkça Sorulan\nSorular',
                       style: TextStyle(
+                          fontFamily: 'Fraunces',
                           color: Colors.white,
                           fontSize: context.responsive(mobile: 32, desktop: 52),
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           height: 1.1,
                           letterSpacing: -1)),
                   const SizedBox(height: 20),

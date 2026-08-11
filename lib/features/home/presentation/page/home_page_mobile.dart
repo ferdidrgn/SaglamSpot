@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
-import '../../../../core/ads/widgets/native_ad_product_card.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
@@ -263,10 +263,10 @@ class _ProductGrid extends StatelessWidget {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
-      itemCount: products.length + (products.length ~/ 5),
+      itemCount: paddedItemCountForAds(products.length),
       itemBuilder: (final context, final index) {
-        if (index > 0 && (index + 1) % 6 == 0) return const NativeAdProductCard();
-        final realIndex = index - (index ~/ 6);
+        if (isAdSlot(index, products.length)) return const NativeAdCard();
+        final realIndex = realIndexForAdGrid(index, products.length);
         if (realIndex >= products.length) return const SizedBox.shrink();
         return TweenAnimationBuilder<double>(
           key: ValueKey(products[realIndex].id),

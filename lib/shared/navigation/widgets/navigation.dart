@@ -106,8 +106,9 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
         Text(
           context.l10n.brand,
           style: TextStyle(
+            fontFamily: 'Fraunces',
             color: AppColors.textPrimary,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w600,
             fontSize: context.responsive(mobile: 14, tablet: 18, desktop: 20),
             letterSpacing: context.responsive(mobile: 1, tablet: 1.5, desktop: 2),
           ),
@@ -220,12 +221,27 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
             splashColor: Colors.transparent,
             child: _buildLogo(),
           ),
-          const Spacer(),
-          ..._navItems.map((final item) => _DesktopNavItem(
-            item: item,
-            isActive: currentIndex == item.index,
-            onTap: () => _onItemTapped(item.index),
-          )),
+          // Nav öğeleri sabit genişlikte bir Row olarak Spacer'ın yanına
+          // konulunca, 1024-1200px aralığındaki laptop pencerelerinde
+          // toplam genişlik taşıp RenderFlex overflow hatası veriyordu.
+          // Expanded + yatay kaydırma bunu kalıcı olarak imkansız kılar:
+          // sığdığında ortalanır, sığmadığında sessizce kayar.
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _navItems
+                    .map((final item) => _DesktopNavItem(
+                          item: item,
+                          isActive: currentIndex == item.index,
+                          onTap: () => _onItemTapped(item.index),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
           SizedBox(width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
           const LanguageSelector(),
           const SizedBox(width: 12),
@@ -290,7 +306,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   }
 }
 
-class _DesktopNavItem extends StatelessWidget {
+class _DesktopNavItem extends StatefulWidget {
   final NavigationItem item;
   final bool isActive;
   final VoidCallback onTap;
@@ -298,43 +314,55 @@ class _DesktopNavItem extends StatelessWidget {
   const _DesktopNavItem({required this.item, required this.isActive, required this.onTap});
 
   @override
+  State<_DesktopNavItem> createState() => _DesktopNavItemState();
+}
+
+class _DesktopNavItemState extends State<_DesktopNavItem> {
+  bool _isHovered = false;
+
+  @override
   Widget build(final BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(context.borderRadius()),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: EdgeInsets.symmetric(
-          horizontal: context.responsive(mobile: 12, tablet: 14, desktop: 16),
-          vertical: context.responsive(mobile: 8, tablet: 10, desktop: 12),
-        ),
-        decoration: BoxDecoration(
-          border: isActive
-              ? Border(
-            bottom: BorderSide(
-              color: AppColors.primary,
-              width: context.responsive(mobile: 2, tablet: 2.5, desktop: 3),
-            ),
-          )
-              : null,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              item.icon,
-              size: context.responsive(mobile: 16, tablet: 17, desktop: 18),
-              color: isActive ? AppColors.primary : AppColors.textPrimary,
-            ),
-            SizedBox(width: context.responsive(mobile: 4, tablet: 6, desktop: 8)),
-            Text(
-              item.label,
-              style: TextStyle(
-                color: isActive ? AppColors.primary : AppColors.textPrimary,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-                fontSize: context.responsive(mobile: 12, tablet: 13, desktop: 15),
+    // Eski ince alt çizgi yerine, hover/aktif durumda beliren yumuşak bir
+    // "hap" arka planı — daha modern ve sıcak paletle bütünleşen bir his.
+    final highlighted = widget.isActive || _isHovered;
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _isHovered = true),
+      onExit: (final _) => setState(() => _isHovered = false),
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(30),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(mobile: 12, tablet: 14, desktop: 18),
+            vertical: context.responsive(mobile: 8, tablet: 9, desktop: 10),
+          ),
+          decoration: BoxDecoration(
+            color: widget.isActive
+                ? AppColors.primary.withOpacity(0.09)
+                : (_isHovered ? AppColors.secondary : Colors.transparent),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                widget.item.icon,
+                size: context.responsive(mobile: 16, tablet: 17, desktop: 18),
+                color: highlighted ? AppColors.primary : AppColors.textSecondary,
               ),
-            ),
-          ],
+              SizedBox(width: context.responsive(mobile: 4, tablet: 6, desktop: 8)),
+              Text(
+                widget.item.label,
+                style: TextStyle(
+                  color: highlighted ? AppColors.primary : AppColors.textPrimary,
+                  fontWeight: widget.isActive ? FontWeight.w700 : FontWeight.w600,
+                  fontSize: context.responsive(mobile: 12, tablet: 13, desktop: 15),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
