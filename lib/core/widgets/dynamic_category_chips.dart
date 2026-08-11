@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../common/enum/enums.dart';
 import '../common/extentions/app_context_ui_extension.dart';
 import '../common/extentions/product_category_ex.dart';
-import '../util/responsive_utils.dart';
-import '../../features/products/data/models/category_meta.dart';
 import '../../features/products/presentation/providers/category_meta_provider.dart';
 
 /// Firebase 'CategoryMeta' koleksiyonundan beslenen, canlı renkli, gölgeli,

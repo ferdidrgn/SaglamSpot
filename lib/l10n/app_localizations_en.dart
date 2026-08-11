@@ -510,4 +510,785 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get logoutConfirm =>
       'Are you sure you want to safely log out of your account?';
+
+  @override
+  String get testimonialsHeading => 'What Our Customers Say';
+
+  @override
+  String get testimonialsSubheading =>
+      'For over 20 years we\'ve touched thousands of homes in İçerenköy and beyond';
+
+  @override
+  String get testimonial1Comment =>
+      'We got the sofa set at a great price, almost like new. Delivered the same day, hand to hand — the trust of a real local business was there from the start.';
+
+  @override
+  String get testimonial2Comment =>
+      'I bought the bedroom set at spot price here. It matched the product description exactly, no surprises at all. I definitely recommend it.';
+
+  @override
+  String get testimonial3Comment =>
+      'We did a bulk furniture purchase for our office, and both the price and quality exceeded our expectations. A caring, patient team — thank you, Sağlam Spot.';
+
+  @override
+  String get testimonial4Comment =>
+      'We bought the dining table set at an honest, no-haggling price. They also helped with transport — we shopped with real peace of mind.';
+
+  @override
+  String get testimonial5Comment =>
+      'We were looking for a second-hand wardrobe and found something sturdy and stylish. Best value for money on the market.';
+
+  @override
+  String get testimonial6Comment =>
+      'We got to see the products in person during our showroom visit, which built even more trust. They\'ve always stayed reachable after the sale too.';
+
+  @override
+  String get howItWorksHeading => 'How It Works';
+
+  @override
+  String get step1Title => 'Browse & Filter';
+
+  @override
+  String get step1Desc =>
+      'Find what you love among thousands of products by category and price range.';
+
+  @override
+  String get step2Title => 'Reach Out to Us';
+
+  @override
+  String get step2Desc =>
+      'Get in touch with our team on WhatsApp or by phone straight from the product page.';
+
+  @override
+  String get step3Title => 'Confirm the Price';
+
+  @override
+  String get step3Desc =>
+      'See it at our showroom or confirm it with photos, then agree on a fair, honest price.';
+
+  @override
+  String get step4Title => 'Delivered to Your Door';
+
+  @override
+  String get step4Desc =>
+      'Fast, insured delivery to İçerenköy and the Anatolian side gets your furniture home safely.';
+
+  @override
+  String get tipsEyebrow => 'TIPS';
+
+  @override
+  String get tipsHeading => 'Care Tips From Our Expert';
+
+  @override
+  String get tip1Title => 'Make Your Living Room Lovable';
+
+  @override
+  String get tip1Desc =>
+      'Leave a 1-2 cm gap between your sofa and the wall — it helps air circulate and makes the room feel airier.';
+
+  @override
+  String get tip1Category => 'Placement';
+
+  @override
+  String get tip2Title => 'A Desk That Always Looks Clean';
+
+  @override
+  String get tip2Desc =>
+      'Tidy cables with organizers and wipe with a microfiber cloth in circular motions — your desk stays looking new.';
+
+  @override
+  String get tip2Category => 'Cleaning';
+
+  @override
+  String get tip3Title => 'A Kitchen Setup You\'ll Enjoy';
+
+  @override
+  String get tip3Desc =>
+      'Put heavy items on lower shelves and everyday items at eye level — both practical and safe.';
+
+  @override
+  String get tip3Category => 'Organization';
+
+  @override
+  String get tip4Title => 'Set Up a Comfortable Sleep Corner';
+
+  @override
+  String get tip4Desc =>
+      'Position the headboard away from the window to minimize light — a small change for noticeably deeper sleep.';
+
+  @override
+  String get tip4Category => 'Comfort';
+
+  @override
+  String get tip5Title => 'Freshen Up Your Closet';
+
+  @override
+  String get tip5Desc =>
+      'Separate seasonal clothes and hang everything facing the same way — it saves space and makes picking outfits easier every morning.';
+
+  @override
+  String get tip5Category => 'Organization';
+
+  @override
+  String get tip6Title => 'Add Years to Your Wood Furniture';
+
+  @override
+  String get tip6Desc =>
+      'Keep it out of direct sunlight and wipe with a nourishing oil a few times a year — the most effective care against scratches and fading.';
+
+  @override
+  String get tip6Category => 'Care';
+
+  @override
+  String get tip7Title => 'Make Fabric Sofas Last Longer';
+
+  @override
+  String get tip7Desc =>
+      'Vacuum weekly and blot stains immediately with a damp cloth — waiting lets stains set into the fabric.';
+
+  @override
+  String get tip7Category => 'Care';
+
+  @override
+  String get tip8Title => 'Choose the Right Lighting';
+
+  @override
+  String get tip8Desc =>
+      'Use layered lighting instead of a single ceiling lamp: ambient, task, and accent light together make a room feel warmer.';
+
+  @override
+  String get tip8Category => 'Lighting';
+
+  @override
+  String get tip9Title => 'Make Smart Use of Small Spaces';
+
+  @override
+  String get tip9Desc =>
+      'Choose foldable, multi-purpose furniture; wall-mounted shelves free up floor space.';
+
+  @override
+  String get tip9Category => 'Organization';
+
+  @override
+  String get tip10Title => 'Turn Your Balcony Into a Living Space';
+
+  @override
+  String get tip10Desc =>
+      'A weather-resistant seating set and a few potted plants make the balcony the coziest corner of the home.';
+
+  @override
+  String get tip10Category => 'Outdoor';
+
+  @override
+  String get popularCategoriesHeading => 'Popular Categories';
+
+  @override
+  String get popularCategoriesSub => 'Find the furniture you need in one click';
+
+  @override
+  String categoryProductCount(int count) {
+    return '$count items';
+  }
+
+  @override
+  String get newsletterSubscribeSuccess =>
+      'You\'ve successfully subscribed to our newsletter!';
+
+  @override
+  String get newsletterHeading => 'Be the First to Know About New Products';
+
+  @override
+  String get newsletterDesc =>
+      'Get spot deals, new collections and campaigns straight to your inbox. No spam, just deals worth your time.';
+
+  @override
+  String get emailHint => 'Your email address';
+
+  @override
+  String get emailRequired => 'Email is required';
+
+  @override
+  String get emailInvalid => 'Enter a valid email address';
+
+  @override
+  String get whyUsHeading => 'Why Sağlam Spot?';
+
+  @override
+  String get usp1Title => '20 Years of Trusted Local Business';
+
+  @override
+  String get usp1Desc =>
+      'Over twenty years as a local business in İçerenköy, and thousands of happy customers.';
+
+  @override
+  String get usp2Title => 'Below-Market Pricing';
+
+  @override
+  String get usp2Desc =>
+      'With no middlemen, we offer the best prices on spot and new furniture.';
+
+  @override
+  String get usp3Title => 'Checked Product Quality';
+
+  @override
+  String get usp3Desc =>
+      'Every product goes through a structural and fabric/finish check before it goes on sale.';
+
+  @override
+  String get usp4Title => 'After-Sales Support';
+
+  @override
+  String get usp4Desc =>
+      'A real team you can reach even after delivery, that solves your problem.';
+
+  @override
+  String get socialShowcaseEyebrow => 'SHARE';
+
+  @override
+  String get socialShowcaseHeading => 'Share Your Setup with #SağlamSpot';
+
+  @override
+  String productsLoadError(String error) {
+    return 'An error occurred while loading products: $error';
+  }
+
+  @override
+  String get viewAllButton => 'View All';
+
+  @override
+  String get showcaseEyebrow => 'SHOWCASE';
+
+  @override
+  String get exploreButton => 'Explore';
+
+  @override
+  String get visitUsEyebrow => 'VISIT US';
+
+  @override
+  String get visitUsHeading => 'Just Say Hello';
+
+  @override
+  String visitUsOpenLine(String hours) {
+    return 'Our door is always open. $hours';
+  }
+
+  @override
+  String get directionsButton => 'Get Directions';
+
+  @override
+  String get freeDeliveryLabel => 'Free Delivery';
+
+  @override
+  String get busLinesLabel => 'Bus Lines';
+
+  @override
+  String get statYearsSuffix => '+ Years';
+
+  @override
+  String get storeAddress => 'İçerenköy, Ataşehir/İstanbul';
+
+  @override
+  String get stayUpdated => 'Stay Updated';
+
+  @override
+  String get viewButton => 'View';
+
+  @override
+  String get heroSlide2Eyebrow => 'SECOND-HAND';
+
+  @override
+  String get heroSlide2Title => 'Furniture With a Story';
+
+  @override
+  String get heroSlide2Subtitle =>
+      'Carefully selected, sturdy second-hand pieces with character.';
+
+  @override
+  String get heroSlide3Title => 'Explore the Whole Collection';
+
+  @override
+  String get aboutBadge => 'WITH YOU SINCE 2012';
+
+  @override
+  String get aboutHeroTitle => 'Sağlam Spot\nThe Trust You Know';
+
+  @override
+  String get aboutHeroSubtitle =>
+      'We serve our neighborhood with love and care in everything we do.';
+
+  @override
+  String get aboutStoryHeading => 'Who Are We? (Our Story)';
+
+  @override
+  String get aboutStoryPara1 =>
+      'Our goal is to help you find quality furniture that brings warmth to your home and truly feels right. Beautifying your living spaces is our job.';
+
+  @override
+  String get aboutStoryPara2 =>
+      'It all started in 2012, in this very shop in İçerenköy. Since then, the number of homes we\'ve been welcomed into has only grown.';
+
+  @override
+  String get aboutStoryPara3 =>
+      'Today, with both new and carefully selected second-hand pieces, we\'ve become guests in thousands of our neighbors\' homes. We grow through your trust.';
+
+  @override
+  String get aboutStoryStartLabel => 'Founded';
+
+  @override
+  String get aboutStoryExperienceLabel => 'Years of Experience';
+
+  @override
+  String get aboutStorySmilesLabel => 'Happy Faces';
+
+  @override
+  String get aboutValuesHeading => 'Our Principles';
+
+  @override
+  String get aboutValuesSubheading =>
+      'The principles we never compromise on as a local business';
+
+  @override
+  String get aboutValue1Title => 'Quality & Care';
+
+  @override
+  String get aboutValue1Desc =>
+      'Whether new or second-hand, we choose carefully and present it to you just the same way.';
+
+  @override
+  String get aboutValue2Title => 'Happy Faces';
+
+  @override
+  String get aboutValue2Desc =>
+      'For us, the greatest reward is a neighbor leaving the shop happy. Your satisfaction comes before anything else.';
+
+  @override
+  String get aboutValue3Title => 'Respect for Craftsmanship';
+
+  @override
+  String get aboutValue3Desc =>
+      'Furniture is valuable labor. By giving second-hand pieces new life, we protect both your budget and the environment.';
+
+  @override
+  String get aboutValue4Title => 'Honesty & Trust';
+
+  @override
+  String get aboutValue4Desc =>
+      'Transparent, honest local business is our greatest value. We\'ve been with you in the same location for years.';
+
+  @override
+  String get aboutMasterHeading => 'Meet Our Craftsman';
+
+  @override
+  String get aboutMasterBody =>
+      'Our craftsman has been active in this trade since 1995 — more than a quarter century. He\'s seen it all, having worked at leading brands (İstikbal), gaining deep knowledge of furniture features, parts, and the finer details.\n\nFrom driving deliveries to assembly to customer service, he\'s worked hands-on in every role, building all-round experience. In 2012, deciding it was time for \'my own shop,\' he brought that experience to Sağlam Spot.\n\nHis goal is to combine the quality he learned at those big companies with the warmth and care of a neighborhood business, to give you the best possible service.';
+
+  @override
+  String get aboutDeliveryHeading => 'Our Delivery & Assembly Service';
+
+  @override
+  String get aboutDeliveryFreeTitle => 'Free Delivery & Assembly';
+
+  @override
+  String get aboutDeliveryZonesLabel => 'Our Free Service Areas:';
+
+  @override
+  String get aboutDeliveryZonesList =>
+      '• Our İçerenköy neighborhood\n• Fındıklı, Kayışdağı, Küçükbakkalköy\n• Nearby neighbors like İnönü and Bostancı Sanayi';
+
+  @override
+  String get aboutDeliveryNote =>
+      'Important Note: To protect our craftsman\'s health, we unfortunately cannot carry items up to high floors in buildings without an elevator. Thank you for your understanding.';
+
+  @override
+  String get aboutDeliveryPunctual =>
+      '⏰ We\'re at your door at the time we agreed on!';
+
+  @override
+  String get aboutTransportHeading => 'How to Reach Our Shop';
+
+  @override
+  String get aboutTransportBusIntro => 'If You\'re Coming by Bus:';
+
+  @override
+  String get aboutBusStop1 => 'Ziyapaşa Stop (Towards Kadıköy):';
+
+  @override
+  String get aboutBusStop2 => 'İçerenköy Stop (Towards Kayışdağı):';
+
+  @override
+  String get aboutBusStop3 => 'İçerenköy Stop (Yeniyol):';
+
+  @override
+  String get aboutContactPhoneLabel => 'Phone (Quick Answers)';
+
+  @override
+  String get aboutContactAddressLabel => 'Address (Come for Tea)';
+
+  @override
+  String get aboutContactAddressValue =>
+      'İçerenköy Mahallesi\nBuket Sokak No:6';
+
+  @override
+  String get aboutContactHoursLabel => 'Our Working Hours';
+
+  @override
+  String get aboutContactHoursValue =>
+      'Mon-Sat: 09:00 - 22:00\nSun: 10:00 - 20:00';
+
+  @override
+  String get aboutContactHeading => 'Get in Touch';
+
+  @override
+  String get aboutCallNowButton => 'Call Now';
+
+  @override
+  String get aboutViewMapButton => 'View on Map';
+
+  @override
+  String get aboutMapHeading => 'Our Shop Is Right Here';
+
+  @override
+  String get aboutMapSubtext => 'Tap the map for directions';
+
+  @override
+  String get newProductsBadgeEyebrow => 'NEW COLLECTION';
+
+  @override
+  String get newProductsTitle => 'New\nCollection';
+
+  @override
+  String get productsBadgeLabel => 'PRODUCTS';
+
+  @override
+  String get breadcrumbHome => 'Home';
+
+  @override
+  String get statTotalProducts => 'TOTAL PRODUCTS';
+
+  @override
+  String get statCategoryLabel => 'CATEGORIES';
+
+  @override
+  String get statConditionValueNew => 'NEW';
+
+  @override
+  String get statConditionLabel => 'CONDITION';
+
+  @override
+  String get statRatingLabel => 'RATING';
+
+  @override
+  String get searchBarRichPrefix => 'For a detailed product search press ';
+
+  @override
+  String get searchBarRichOr => ' or click ';
+
+  @override
+  String get searchBarRichHereLink => 'HERE';
+
+  @override
+  String get searchBarRichSuffix => '.';
+
+  @override
+  String get sortNewProductsDefault => 'Newest';
+
+  @override
+  String get sortSpotProductsDefault => 'Newest';
+
+  @override
+  String get sortPriceLowHigh => 'Price: Low to High';
+
+  @override
+  String get sortPriceHighLow => 'Price: High to Low';
+
+  @override
+  String get sortMostPopular => 'Most Popular';
+
+  @override
+  String get spotBadgeEyebrow => 'SPOT PRODUCTS';
+
+  @override
+  String get spotHeroTitle => 'Deal\nProducts';
+
+  @override
+  String get spotDiscountLabel => 'DISCOUNT';
+
+  @override
+  String get statSpotProductLabel => 'Spot Products';
+
+  @override
+  String get statDiscountLabel => 'Discount';
+
+  @override
+  String get statSupportLabel => 'Support';
+
+  @override
+  String get statFreeLabel => 'Free';
+
+  @override
+  String get statFreeShippingNote => 'For Nearby Areas Only, Shipping';
+
+  @override
+  String get statFreeShippingShort => 'Shipping';
+
+  @override
+  String get filtersPanelTitle => 'FILTERS';
+
+  @override
+  String get priceRangeSectionTitle => 'PRICE RANGE';
+
+  @override
+  String get clearFiltersButton => 'CLEAR FILTERS';
+
+  @override
+  String get tryDifferentFiltersShort => 'You can try different filters';
+
+  @override
+  String get spotBadgeTag => 'SPOT';
+
+  @override
+  String productLoadError(String error) {
+    return 'Product could not be loaded: $error';
+  }
+
+  @override
+  String get productSpecConditionNew => 'New Product';
+
+  @override
+  String get productLocationValue => 'İçerenköy, İstanbul';
+
+  @override
+  String get sortFeatured => 'Featured';
+
+  @override
+  String get sortPriceAsc => 'Price: Ascending';
+
+  @override
+  String get sortPriceDesc => 'Price: Descending';
+
+  @override
+  String get languageSelectorTitle => 'Language';
+
+  @override
+  String get languageTooltip => 'Language';
+
+  @override
+  String get galleryEmptyMessage =>
+      'No photos have been added to this product yet.';
+
+  @override
+  String get productCardNewBadge => 'NEW';
+
+  @override
+  String get sssHelpCenterBadge => 'HELP CENTER';
+
+  @override
+  String get sssHeroTitle => 'Frequently Asked\nQuestions';
+
+  @override
+  String get sssHeroSubtitle => 'Answers to everything you\'re curious about';
+
+  @override
+  String get sssCategoryAll => 'All';
+
+  @override
+  String get sssCategoryGeneral => 'General';
+
+  @override
+  String get sssCategoryProductService => 'Product & Service';
+
+  @override
+  String get sssCategoryDelivery => 'Delivery & Assembly';
+
+  @override
+  String get sssCategoryPayment => 'Payment & Orders';
+
+  @override
+  String get sssCategoryReturns => 'Returns & Warranty';
+
+  @override
+  String get sssCategorySecondHandBuying => 'Second-Hand Buying Process';
+
+  @override
+  String get sssPhoneSupportTitle => 'Phone Support';
+
+  @override
+  String get sssWorkingHoursTitle => 'Working Hours';
+
+  @override
+  String get sssWorkingHoursValue => '09:00 - 22:00';
+
+  @override
+  String get sssStoreAddressTitle => 'Store Address';
+
+  @override
+  String get sssStoreAddressValue => 'İçerenköy Mahallesi Buket Sok. No:6';
+
+  @override
+  String get sssNoAnswerTitle => 'Didn\'t Find Your Answer?';
+
+  @override
+  String get sssNoAnswerSubtitle => 'You Can Reach Us';
+
+  @override
+  String get sssVisitStoreButton => 'Visit the Store';
+
+  @override
+  String get sssQ1 =>
+      'Can you tell us about the craftsman\'s work life and experience?';
+
+  @override
+  String get sssA1 =>
+      'Our craftsman has been actively working in this trade since 1995. He has kept developing continuously since his very first steps in his career. Throughout his working life, he\'s held many roles — driving for deliveries, transport, assembly, customer greeting — gaining well-rounded experience. He worked at İstikbal until 2010 in particular, and during that time gained deep knowledge of product features, parts, and finer details. After 2010, he worked at nearby Işık Çeyiz, further sharpening his skills in the trade. In 2012, he decided to open his own local shop, and since then he\'s aimed to put quality service first and pass on his industry experience to customers in the best possible way.';
+
+  @override
+  String get sssQ2 => 'Is Sağlam Spot reliable?';
+
+  @override
+  String get sssA2 =>
+      'We\'ve been serving our neighbors in İçerenköy since 2012. We\'ve been welcomed into countless homes, and we still are.';
+
+  @override
+  String get sssQ3 => 'Can I come to your store to look at the products?';
+
+  @override
+  String get sssA3 =>
+      'Of course! In fact, we especially recommend it. Seeing the products in person over a cup of tea, touching them, and making sure they feel right is the healthiest way. We always welcome you to our shop in İçerenköy Mahallesi.';
+
+  @override
+  String get sssQ4 => 'How is the condition of second-hand products checked?';
+
+  @override
+  String get sssA4 =>
+      'To us, second-hand doesn\'t mean second-rate. Every product goes through our craftsman\'s careful inspection — cleaning, maintenance and any needed repairs are done in full. What you see in the photos is what you get, but we still say \'come see it for yourself.\' Seeing it with your own eyes is always best.';
+
+  @override
+  String get sssQ5 => 'What is the material quality of the furniture?';
+
+  @override
+  String get sssA5 =>
+      'We care about transparency. Every product has its own story and materials. That\'s why we clearly write out all the details, material quality and features in the product description. If anything\'s on your mind, don\'t hesitate to ask.';
+
+  @override
+  String get sssQ6 => 'How are product prices determined?';
+
+  @override
+  String get sssA6 =>
+      'When setting our prices, we look fairly at both the product\'s quality and market conditions. Our goal is to help you get quality, long-lasting products without straining your budget. We charge what\'s fair, nothing more.';
+
+  @override
+  String get sssQ7 => 'Do your products come in color options?';
+
+  @override
+  String get sssA7 =>
+      'Since our products are usually one-off, single pieces, we offer them in whatever color they come in. Unfortunately we can\'t offer different color options. The color you see is the color you get.';
+
+  @override
+  String get sssQ8 => 'Do you take custom orders?';
+
+  @override
+  String get sssA8 =>
+      'We wish we could! But we focus mainly on our existing, carefully selected products. We unfortunately can\'t take custom manufacturing or design orders at the moment. We recommend browsing what we already have in stock.';
+
+  @override
+  String get sssQ9 => 'What should I pay attention to in product descriptions?';
+
+  @override
+  String get sssA9 =>
+      'Our most important tip: grab a tape measure! Please carefully compare the measurements in the product description with the spot you plan to put it in at home. Solving the \'will it fit?\' question upfront prevents headaches later. Also, don\'t forget the hallway when measuring — measure not just where the furniture will go, but how it will get through the door, hallway, and stairs. Also make sure to read the material and condition details.';
+
+  @override
+  String get sssQ10 =>
+      'Do you deliver to buildings without an elevator or to high floors?';
+
+  @override
+  String get sssA10 =>
+      'This is one of the most sensitive and important topics for us. We\'re a small local business that does the work ourselves. Since our craftsman isn\'t getting any younger after years of experience, we also have to think about his health. With your understanding, we simply cannot carry items up or down high floors (for example, 2nd floor and above) in buildings without an elevator. Please let\'s clarify this before you place your order — we don\'t want to leave you disappointed.';
+
+  @override
+  String get sssQ11 => 'Do you provide a transport service?';
+
+  @override
+  String get sssA11 =>
+      'Of course, we help our neighbors out. We offer free delivery to nearby areas, especially İçerenköy, as well as Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü and Bostancı Sanayi. (Except for some parts of Bostancı and Kozyatağı, and due to our craftsman\'s age we can\'t carry items up high floors without an elevator — we\'ll discuss that separately.)';
+
+  @override
+  String get sssQ12 => 'How long does delivery take?';
+
+  @override
+  String get sssA12 =>
+      'The moment you place an order, we get in touch with you. We ask \'when works for you?\' and agree on a time that suits us both. We usually complete delivery and assembly within 1-3 days, at the time we agreed on.';
+
+  @override
+  String get sssQ13 => 'Do you provide an assembly service?';
+
+  @override
+  String get sssA13 =>
+      'Of course. Dropping furniture off at your door isn\'t our style. Our craftsman personally assembles all large items, and we don\'t charge extra for this service. You just show us where it goes — the rest is on us.';
+
+  @override
+  String get sssQ14 => 'How long does it take to deliver a furniture order?';
+
+  @override
+  String get sssA14 =>
+      'If the product is ready, we\'re at your door as soon as possible, at a time we agree on together. Don\'t worry about assembly either — we set it up just as we brought it and deliver it that way. Usually everything is done within the same day.';
+
+  @override
+  String get sssQ15 => 'Can I order on credit / pay later?';
+
+  @override
+  String get sssA15 =>
+      'We ask for your understanding on this. As a local business, to stay afloat we unfortunately can\'t work with \'buy now, pay later\' or similar methods. We need to receive the agreed amount in cash when the product is delivered. We prefer to state this rule upfront so there\'s no awkwardness later.';
+
+  @override
+  String get sssQ16 => 'How can I place an order?';
+
+  @override
+  String get sssA16 =>
+      'The most reliable way is always in person. Note down the product you like on the site, then come to our shop. See the product in person, ask any questions on your mind, and if it feels right, let\'s complete your order there. That way there\'s no doubt left.';
+
+  @override
+  String get sssQ17 => 'What is your return policy?';
+
+  @override
+  String get sssA17 =>
+      'Due to the nature of second-hand products and the way local businesses operate, we unfortunately cannot accept returns. That\'s why we insist you \'come, see it, have some tea with us.\' It\'s best to examine the product closely and measure it carefully before buying. Let\'s not complete a purchase unless you\'re sure.';
+
+  @override
+  String get sssQ18 => 'Do the products come with a warranty period?';
+
+  @override
+  String get sssA18 =>
+      'Since our products are second-hand, we unfortunately don\'t offer an official warranty period like a brand would. But we\'re not the type to say \'sold, done.\' We make sure everything works properly during delivery and assembly.';
+
+  @override
+  String get sssQ19 =>
+      'I want to sell items from my home — do you buy second-hand?';
+
+  @override
+  String get sssA19 =>
+      'Yes, we buy select items that are clean and resellable, ones we believe we can display in our shop. However, since our shop space is genuinely very small, we unfortunately have to be quite selective about this.\n\nWe like to be upfront about this: the offer you get from us may be somewhat lower than what you could get selling it yourself on platforms like Letgo. Here\'s why: as a local business, we spend fuel to pick it up, put in effort to transport it, and — most importantly — we handle the entire customer process of displaying and selling it in our shop (haggling, questions, etc.).\n\nWhen you sell on those platforms yourself, you take on all of that yourself. We\'re taking that hassle off your hands instead. Our offer reflects that service too. Thank you for your understanding.';
+
+  @override
+  String get sssQ20 =>
+      'Do you buy complete furniture sets (bedroom, living room set, etc.)?';
+
+  @override
+  String get sssA20 =>
+      'Because our shop is small, we unfortunately can\'t take complete sets like a full bedroom or living room set — big sets. Our space is very limited. We focus more on single pieces that are easier to sell, like consoles, wardrobes, tables, and chairs.';
+
+  @override
+  String get sssQ21 =>
+      'My items are on a high floor and the building has no elevator. Would you still buy them?';
+
+  @override
+  String get sssA21 =>
+      'Just like with delivery, this is our clearest rule. Due to our craftsman\'s health, we simply cannot carry items down from high floors in buildings without an elevator. We can only consider it if your items are near the ground/entrance floor, or if the building has a freight elevator.';
+
+  @override
+  String get sssQ22 => 'Do you always buy items?';
+
+  @override
+  String get sssA22 =>
+      'It entirely depends on the space we have in our shop at the time. Since our shop is small, we operate on a \'sell one, buy one\' balance. Sometimes we really like an item but can\'t take it because we don\'t have room. The best approach is to send us photos of what you\'d like to sell — we\'ll honestly tell you whether \'we have room right now\' or \'unfortunately we\'re full at the moment.\'';
 }
