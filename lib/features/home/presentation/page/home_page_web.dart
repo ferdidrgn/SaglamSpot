@@ -41,7 +41,32 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
+
   final ScrollController _scrollController = ScrollController();
+
+  // Hero arka planında yavaşça birbirine geçen ürün/atmosfer görselleri —
+  // gerçek video yerine Ken Burns (zoom+pan) hissi veren bir crossfade.
+  static const List<String> _heroImages = [
+    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
+    "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
+    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
+  ];
+  static const Duration _heroSlideDuration = Duration(seconds: 9);
+  static const double _heroCrossfade = 0.35; // geçiş genişliği (slot birimi)
+
+  late final List<_DustSpeck> _dustSpecks = List.generate(
+    20,
+    (final i) {
+      final rnd = math.Random(i * 7919 + 13);
+      return _DustSpeck(
+        dx: rnd.nextDouble(),
+        radius: 0.8 + rnd.nextDouble() * 1.6,
+        speed: 0.35 + rnd.nextDouble() * 0.5,
+        drift: (rnd.nextDouble() - 0.5) * 0.05,
+        phase: rnd.nextDouble(),
+      );
+    },
+  );
 
   @override
   void dispose() {
@@ -275,6 +300,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           const SizedBox(width: 10),
           Flexible(
             child: Text(text,
+
                 style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w700,
@@ -1686,4 +1712,51 @@ class _NewsletterFieldState extends State<_NewsletterField> {
       ),
     );
   }
+}
+
+/// Hero arka planındaki tek bir toz/ışık zerreciğinin sabit özellikleri.
+class _DustSpeck {
+  final double dx; // 0..1 yatay taban konumu
+  final double radius;
+  final double speed; // dikey süzülme hızı çarpanı
+  final double drift; // yatay salınım genliği (ekran genişliğine oran)
+  final double phase; // döngü içindeki başlangıç fazı
+
+  const _DustSpeck({
+    required this.dx,
+    required this.radius,
+    required this.speed,
+    required this.drift,
+    required this.phase,
+  });
+}
+
+/// Hero'nun üzerinde çok sübtil, yavaş yukarı süzülen ışık/toz katmanı.
+/// Gerçek video hissini tamamlar ama dikkat dağıtmaması için opaklık düşük
+/// tutulur.
+class _DustParticlesPainter extends CustomPainter {
+  final double progress;
+  final List<_DustSpeck> specks;
+
+  _DustParticlesPainter({required this.progress, required this.specks});
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final paint = Paint();
+    for (final s in specks) {
+      final t = (progress * s.speed + s.phase) % 1.0;
+      final y = size.height * (1 - t);
+      final x = size.width * s.dx +
+          math.sin((progress * 2 * math.pi) + s.phase * 10) *
+              size.width *
+              s.drift;
+      final fade = math.sin(t * math.pi).clamp(0.0, 1.0);
+      paint.color = Colors.white.withOpacity(fade * 0.28);
+      canvas.drawCircle(Offset(x, y), s.radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant final _DustParticlesPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }

@@ -222,20 +222,12 @@ class CustomAppHeader extends StatelessWidget {
   }) {
     final double size = context.responsive(mobile: 40.0, desktop: 40.0);
 
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(
-              context.responsive(mobile: 10.0, desktop: 12.0)),
-          border: Border.all(color: AppColors.border)),
-      child: IconButton(
-          icon:
-              Icon(icon, size: context.responsive(mobile: 20.0, desktop: 20.0)),
-          onPressed: onPressed,
-          color: AppColors.textSecondary,
-          padding: EdgeInsets.zero),
+    return _HeaderActionButton(
+      size: size,
+      icon: icon,
+      iconSize: context.responsive(mobile: 20.0, desktop: 20.0),
+      borderRadius: context.responsive(mobile: 10.0, desktop: 12.0),
+      onPressed: onPressed,
     );
   }
 }
@@ -243,6 +235,7 @@ class CustomAppHeader extends StatelessWidget {
 /// Masaüstü menü bağlantısı — hover'da yumuşak renk geçişi, aktif
 /// sekmenin altında beliren ince bir vurgu çizgisi.
 class _NavLink extends StatefulWidget {
+
   final String label;
   final bool active;
   final VoidCallback onTap;
@@ -279,6 +272,7 @@ class _NavLinkState extends State<_NavLink> {
                   fontWeight: widget.active ? FontWeight.w700 : FontWeight.w500,
                   color: highlighted
                       ? AppColors.accent
+
                       : AppColors.textPrimary,
                 ),
                 child: Text(widget.label),
@@ -297,3 +291,4 @@ class _NavLinkState extends State<_NavLink> {
     );
   }
 }
+

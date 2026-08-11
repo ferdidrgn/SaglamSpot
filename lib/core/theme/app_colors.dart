@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// "Sıcak & Doğal" palet — ahşap tonları, ekru ve organik yeşil üzerine
-/// kurulu köklü bir renk değişimi. Tüm sabit isimler (primary, secondary,
-/// accent, background, surface...) AYNI kaldı; sadece DEĞERLER değişti.
-/// Bu sayede bu isimlere bağlı onlarca dosya (ColorScheme, tema, kartlar,
-/// butonlar) hiçbir kod değişikliği gerektirmeden yeni paleti otomatik
-/// olarak alır.
-///
-/// Önceki palet: Sıcak krem & kömür + amber/terracotta vurgu.
-/// Yeni palet: Sıcak ekru zemin + espresso kahvesi metin + ceviz/tarçın
-/// vurgu + yumuşak adaçayı yeşili ikinci aksan.
 class AppColors {
   // --- ANA PALET (Sıcak Ekru & Espresso Temelli) ---
   static const Color primary = Color(0xFF3E2F23); // koyu espresso kahve (ana metin/koyu zemin)
@@ -68,7 +58,6 @@ class AppColors {
   static const Color accent = Color(0xFFA9714B);
   static const Color accentDark = Color(0xFF8B5A3A);
   static const Color accentLight = Color(0xFFC79868);
-
   // --- NEUTRAL UI ---
   static const Color card = Color(0xFFFFFDF9);
 
