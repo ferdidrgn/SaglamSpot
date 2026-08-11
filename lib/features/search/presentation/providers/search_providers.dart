@@ -1,6 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/enum/enums.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/util/date_formatter.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_provider.dart';
@@ -10,16 +12,16 @@ part 'search_providers.g.dart';
 enum SortOption { featured, priceAsc, priceDesc, newest }
 
 extension SortOptionLabel on SortOption {
-  String get label {
+  String label(final BuildContext context) {
     switch (this) {
       case SortOption.featured:
-        return 'Öne Çıkanlar';
+        return context.l10n.sortFeatured;
       case SortOption.priceAsc:
-        return 'Fiyat: Artan';
+        return context.l10n.sortPriceAsc;
       case SortOption.priceDesc:
-        return 'Fiyat: Azalan';
+        return context.l10n.sortPriceDesc;
       case SortOption.newest:
-        return 'En Yeni';
+        return context.l10n.sortSpotProductsDefault;
     }
   }
 }

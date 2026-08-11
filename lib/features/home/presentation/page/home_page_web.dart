@@ -67,7 +67,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
         error: (final err, final stack) =>
-            Center(child: Text('Ürünler yüklenirken hata oluştu: $err')),
+            Center(child: Text(context.l10n.productsLoadError('$err'))),
         data: (final _) => Stack(
           children: [
             ResponsiveUtils.maxWidthContainer(
@@ -188,8 +188,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    child: const Text('Tümünü Gör',
-                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(context.l10n.viewAllButton,
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
                   ),
                 ),
               ),
@@ -293,7 +293,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               top: context.spacingLarge * 2, bottom: context.spacingLarge),
           child: Column(
             children: [
-              Text('VİTRİN',
+              Text(context.l10n.showcaseEyebrow,
                   style: TextStyle(
                       color: AppColors.accent,
                       fontWeight: FontWeight.w700,
@@ -400,8 +400,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   borderRadius: BorderRadius.circular(30)),
             ),
             icon: const Icon(Icons.explore_outlined, size: 16),
-            label: const Text('Keşfet',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+            label: Text(context.l10n.exploreButton,
+                style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -531,14 +531,14 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('BİZE UĞRA',
+                    Text(context.l10n.visitUsEyebrow,
                         style: TextStyle(
                             color: AppColors.accentLight,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 2,
                             fontSize: context.captionSize)),
                     const SizedBox(height: 12),
-                    Text('Bir Selam Ver, Yeter',
+                    Text(context.l10n.visitUsHeading,
                         style: TextStyle(
                             fontFamily: 'Fraunces',
                             color: Colors.white,
@@ -547,7 +547,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                             height: 1.2)),
                     const SizedBox(height: 14),
                     Text(
-                      'Kapımız her zaman açık. ${SaglamSpotCommunication.workingHours}',
+                      context.l10n.visitUsOpenLine(SaglamSpotCommunication.workingHours),
                       style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: context.bodySize,
@@ -586,7 +586,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30))),
                           icon: const Icon(Icons.north_east, size: 16),
-                          label: const Text('Yol Tarifi'),
+                          label: Text(context.l10n.directionsButton),
                         ),
                       ],
                     ),
@@ -609,12 +609,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     children: [
                       _visitInfoRow(
                           Icons.local_shipping_outlined,
-                          'Ücretsiz Teslimat',
+                          context.l10n.freeDeliveryLabel,
                           SaglamSpotCommunication.freeDeliveryZones.join(', ')),
                       const SizedBox(height: 16),
                       _visitInfoRow(
                           Icons.directions_bus_outlined,
-                          'Otobüs Hatları',
+                          context.l10n.busLinesLabel,
                           SaglamSpotCommunication.getBusLines()
                               .entries
                               .map((final e) =>
@@ -669,7 +669,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       {
         "target": 20.0,
         "decimals": 0,
-        "suffix": "+ Yıl",
+        "suffix": context.l10n.statYearsSuffix,
         "label": context.l10n.statExperience,
         "icon": Icons.workspace_premium_outlined
       },
@@ -782,8 +782,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           ? CrossAxisAlignment.center
                           : CrossAxisAlignment.start,
                       children: [
-                        const Text("SAĞLAM SPOT",
-                            style: TextStyle(
+                        Text(context.l10n.brand,
+                            style: const TextStyle(
                                 fontFamily: 'Fraunces',
                                 color: Colors.white,
                                 fontSize: 22,
@@ -830,11 +830,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     context.l10n.aboutUs: () =>
                         NavigationHandler.goToAbout(context),
                   }),
-                  _footerColumn('İletişim', {
+                  _footerColumn(context.l10n.contact, {
                     SaglamSpotCommunication.displayPhone:
                         SaglamSpotCommunication.makeCall,
-                    'WhatsApp\'tan Yaz': SaglamSpotCommunication.launchWhatsApp,
-                    'İçerenköy, Ataşehir/İstanbul':
+                    context.l10n.whatsappCta: SaglamSpotCommunication.launchWhatsApp,
+                    context.l10n.storeAddress:
                         SaglamSpotCommunication.openStoreLocation,
                     context.l10n.sss: () => NavigationHandler.goToSSS(context),
                   }),
@@ -846,8 +846,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           ? CrossAxisAlignment.center
                           : CrossAxisAlignment.start,
                       children: [
-                        const Text('Güncel Kalın',
-                            style: TextStyle(
+                        Text(context.l10n.stayUpdated,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13)),
@@ -993,14 +993,14 @@ class _RoomCardState extends State<_RoomCard> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text('İncele',
-                                  style: TextStyle(
+                            children: [
+                              Text(context.l10n.viewButton,
+                                  style: const TextStyle(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 12)),
-                              SizedBox(width: 4),
-                              Icon(Icons.arrow_forward_rounded,
+                              const SizedBox(width: 4),
+                              const Icon(Icons.arrow_forward_rounded,
                                   size: 14, color: AppColors.primary),
                             ],
                           ),
@@ -1070,14 +1070,14 @@ class _HeroBannerState extends State<_HeroBanner> {
         title: context.l10n.heroTitle,
         subtitle: context.l10n.featureArtisan,
       ),
-      const _HeroSlideContent(
-        eyebrow: 'İKİNCİ EL',
-        title: 'Öyküsü Olan Mobilyalar',
-        subtitle: 'Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.',
+      _HeroSlideContent(
+        eyebrow: context.l10n.heroSlide2Eyebrow,
+        title: context.l10n.heroSlide2Title,
+        subtitle: context.l10n.heroSlide2Subtitle,
       ),
       _HeroSlideContent(
-        eyebrow: 'VİTRİN',
-        title: 'Tüm Koleksiyonu Keşfedin',
+        eyebrow: context.l10n.showcaseEyebrow,
+        title: context.l10n.heroSlide3Title,
         subtitle: context.l10n.byRoomSub,
       ),
     ];
@@ -1213,7 +1213,7 @@ class _HeroBannerState extends State<_HeroBanner> {
                   ),
                   _HeroPillButton(
                     icon: Icons.explore_outlined,
-                    label: 'Keşfet',
+                    label: context.l10n.exploreButton,
                     variant: _HeroPillVariant.outline,
                     onTap: () => NavigationHandler.goToSearch(context),
                   ),
@@ -1556,16 +1556,16 @@ class _NumberedProductCard extends StatelessWidget {
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('İncele',
-                              style: TextStyle(
+                          Text(context.l10n.viewButton,
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 11)),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward_rounded,
+                          const SizedBox(width: 4),
+                          const Icon(Icons.arrow_forward_rounded,
                               color: Colors.white, size: 12),
                         ],
                       ),
@@ -1636,7 +1636,7 @@ class _NewsletterFieldState extends State<_NewsletterField> {
     if (!_formKey.currentState!.validate()) return;
     _controller.clear();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bültenimize başarıyla abone oldunuz!')),
+      SnackBar(content: Text(context.l10n.newsletterSubscribeSuccess)),
     );
   }
 
@@ -1654,7 +1654,7 @@ class _NewsletterFieldState extends State<_NewsletterField> {
                 style: const TextStyle(color: Colors.white, fontSize: 13),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: 'E-posta adresiniz',
+                  hintText: context.l10n.emailHint,
                   hintStyle: TextStyle(
                       color: Colors.white.withOpacity(0.4), fontSize: 12),
                   isDense: true,
@@ -1672,10 +1672,10 @@ class _NewsletterFieldState extends State<_NewsletterField> {
                           BorderSide(color: Colors.white.withOpacity(0.15))),
                 ),
                 validator: (final value) {
-                  if (value == null || value.isEmpty) return 'E-posta gerekli';
+                  if (value == null || value.isEmpty) return context.l10n.emailRequired;
                   final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
                   if (!regex.hasMatch(value))
-                    return 'Geçerli bir e-posta girin';
+                    return context.l10n.emailInvalid;
                   return null;
                 },
               ),

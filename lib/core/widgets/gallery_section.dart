@@ -36,7 +36,7 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
               ),
               const SizedBox(height: 16),
               Text(
-                "Bu oyuna ait henüz fotoğraf eklenmemiş.",
+                context.l10n.galleryEmptyMessage,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.4),
                   fontSize: 14,
@@ -47,11 +47,6 @@ class _GallerySectionState extends ConsumerState<GallerySection> {
           ),
         ),
       );
-
-    if (widget.photos.isEmpty)
-      return const Center(
-          child: Text("Henüz fotoğraf eklenmemiş.",
-              style: TextStyle(color: Colors.white30)));
 
     final isMobile = context.isMobile;
     final isTablet = context.isTablet;

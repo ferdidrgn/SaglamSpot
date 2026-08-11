@@ -48,14 +48,14 @@ class SocialShowcaseSection extends StatelessWidget {
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            Text('PAYLAŞIN',
+            Text(context.l10n.socialShowcaseEyebrow,
                 style: TextStyle(
                     color: AppColors.accent,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 3,
                     fontSize: context.captionSize)),
             const SizedBox(height: 8),
-            Text('#SağlamSpot ile Kurulumunuzu Paylaşın',
+            Text(context.l10n.socialShowcaseHeading,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: 'Fraunces',

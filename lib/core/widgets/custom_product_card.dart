@@ -115,16 +115,16 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('İncele',
-                                      style: TextStyle(
+                                  Text(context.l10n.viewButton,
+                                      style: const TextStyle(
                                           color: AppColors.primary,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 12.5)),
-                                  SizedBox(width: 6),
-                                  Icon(Icons.arrow_forward_rounded,
+                                  const SizedBox(width: 6),
+                                  const Icon(Icons.arrow_forward_rounded,
                                       size: 14, color: AppColors.primary),
                                 ],
                               ),
@@ -237,9 +237,9 @@ class _ConditionBadge extends StatelessWidget {
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(30),
         ),
-        child: const Text(
-          'SIFIR',
-          style: TextStyle(
+        child: Text(
+          context.l10n.productCardNewBadge,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -255,9 +255,9 @@ class _ConditionBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: AppColors.accentDark, width: 1.2),
       ),
-      child: const Text(
-        'İKİNCİ EL',
-        style: TextStyle(
+      child: Text(
+        context.l10n.usedProductBadge,
+        style: const TextStyle(
           color: AppColors.accentDark,
           fontSize: 11,
           fontWeight: FontWeight.w700,

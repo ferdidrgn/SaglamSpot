@@ -18,6 +18,8 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
+enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
+
 class SpotProductsPage extends ConsumerStatefulWidget {
   const SpotProductsPage({super.key});
 
@@ -32,7 +34,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
 
   ProductCategory? _selectedCategory;
   String _selectedCondition = 'all';
-  String _selectedSort = 'En Yeni';
+  _SortMode _selectedSort = _SortMode.newest;
   double _minPrice = 0;
   double _maxPrice = 50000;
   bool _showFilters = false;
@@ -171,7 +173,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                               color: AppColors.error, size: 16),
                           const SizedBox(width: 8),
                           Text(
-                            'SPOT ÜRÜNLER',
+                            context.l10n.spotBadgeEyebrow,
                             style: TextStyle(
                               fontSize: context.captionSize,
                               fontWeight: FontWeight.w800,
@@ -194,7 +196,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Fırsat\nÜrünleri',
+                                context.l10n.spotHeroTitle,
                                 style: TextStyle(
                                   fontFamily: 'Fraunces',
                                   fontSize: context.responsive(
@@ -213,7 +215,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                                 constraints:
                                     const BoxConstraints(maxWidth: 500),
                                 child: Text(
-                                  'Kaliteli ürünlerde inanılmaz fiyatlar',
+                                  context.l10n.spotProductsDesc,
                                   style: TextStyle(
                                     fontSize: context.responsive(
                                         mobile: 16, desktop: 20),
@@ -249,10 +251,10 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                                 ),
                               ],
                             ),
-                            child: const Column(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                   '%30',
                                   style: TextStyle(
                                     fontSize: 36,
@@ -261,8 +263,8 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                                   ),
                                 ),
                                 Text(
-                                  'İNDİRİM',
-                                  style: TextStyle(
+                                  context.l10n.spotDiscountLabel,
+                                  style: const TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white70,
@@ -327,7 +329,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
             size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
-          'Ana Sayfa',
+          context.l10n.breadcrumbHome,
           style: TextStyle(
             fontSize: context.captionSize,
             color: AppColors.textSecondary,
@@ -338,7 +340,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
             size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
-          'Spot Ürünler',
+          context.l10n.spotProducts,
           style: TextStyle(
             fontSize: context.captionSize,
             color: AppColors.error,
@@ -391,22 +393,22 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     return Row(
       children: [
         Expanded(
-            child: _buildStatCard(context, '${products.length}', 'Spot Ürün',
+            child: _buildStatCard(context, '${products.length}', context.l10n.statSpotProductLabel,
                 Icons.inventory_2_outlined, AppColors.error)),
         SizedBox(width: context.spacing),
         Expanded(
-            child: _buildStatCard(context, '%30', 'İndirim',
+            child: _buildStatCard(context, '%30', context.l10n.statDiscountLabel,
                 Icons.local_offer_outlined, AppColors.success)),
         SizedBox(width: context.spacing),
         Expanded(
-            child: _buildStatCard(context, '16/6', 'Destek',
+            child: _buildStatCard(context, '16/6', context.l10n.statSupportLabel,
                 Icons.support_agent_outlined, AppColors.info)),
         SizedBox(width: context.spacing),
         Expanded(
             child: _buildStatCard(
                 context,
-                'Ücretsiz',
-                'Maalesef Yakın Çevrelerimize, Kargo',
+                context.l10n.statFreeLabel,
+                context.l10n.statFreeShippingNote,
                 Icons.local_shipping_outlined,
                 AppColors.accent)),
       ],
@@ -421,10 +423,10 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
           children: [
             Expanded(
                 child: _buildStatCard(context, '${products.length}',
-                    'Spot Ürün', Icons.inventory_2_outlined, AppColors.error)),
+                    context.l10n.statSpotProductLabel, Icons.inventory_2_outlined, AppColors.error)),
             SizedBox(width: context.spacing),
             Expanded(
-                child: _buildStatCard(context, '%30', 'İndirim',
+                child: _buildStatCard(context, '%30', context.l10n.statDiscountLabel,
                     Icons.local_offer_outlined, AppColors.success)),
           ],
         ),
@@ -432,11 +434,11 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         Row(
           children: [
             Expanded(
-                child: _buildStatCard(context, '16/6', 'Destek',
+                child: _buildStatCard(context, '16/6', context.l10n.statSupportLabel,
                     Icons.support_agent_outlined, AppColors.info)),
             SizedBox(width: context.spacing),
             Expanded(
-                child: _buildStatCard(context, 'Ücretsiz', 'Kargo',
+                child: _buildStatCard(context, context.l10n.statFreeLabel, context.l10n.statFreeShippingShort,
                     Icons.local_shipping_outlined, AppColors.accent)),
           ],
         ),
@@ -514,8 +516,8 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                       color: AppColors.textSecondary,
                     ),
                     children: [
-                      const TextSpan(
-                        text: 'Detaylı ürün araması için ',
+                      TextSpan(
+                        text: context.l10n.searchBarRichPrefix,
                       ),
                       const TextSpan(
                         text: 'Ctrl + K',
@@ -525,11 +527,11 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                      const TextSpan(
-                        text: ' yapın ya da ',
+                      TextSpan(
+                        text: context.l10n.searchBarRichOr,
                       ),
                       TextSpan(
-                        text: 'BURADAKİ',
+                        text: context.l10n.searchBarRichHereLink,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: AppColors.accentDark,
@@ -538,8 +540,8 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => context.go('/search'),
                       ),
-                      const TextSpan(
-                        text: ' yazıya tıklayın.',
+                      TextSpan(
+                        text: context.l10n.searchBarRichSuffix,
                       ),
                     ],
                   ),
@@ -591,20 +593,31 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border, width: 1.5),
       ),
-      child: DropdownButton<String>(
+      child: DropdownButton<_SortMode>(
         value: _selectedSort,
         underline: const SizedBox(),
         icon:
             const Icon(Icons.keyboard_arrow_down, color: AppColors.textPrimary),
-        items: [
-          'En Yeni',
-          'Fiyat: Düşük-Yüksek',
-          'Fiyat: Yüksek-Düşük',
-          'En Popüler'
-        ].map((final e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+        items: _SortMode.values
+            .map((final mode) => DropdownMenuItem(
+                value: mode, child: Text(_sortLabel(context, mode))))
+            .toList(),
         onChanged: (final val) => setState(() => _selectedSort = val!),
       ),
     );
+  }
+
+  String _sortLabel(final BuildContext context, final _SortMode mode) {
+    switch (mode) {
+      case _SortMode.newest:
+        return context.l10n.sortSpotProductsDefault;
+      case _SortMode.priceLowHigh:
+        return context.l10n.sortPriceLowHigh;
+      case _SortMode.priceHighLow:
+        return context.l10n.sortPriceHighLow;
+      case _SortMode.popular:
+        return context.l10n.sortMostPopular;
+    }
   }
 
   // ════════════════════════════════════════════════════════════════
@@ -648,7 +661,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'FİLTRELER',
+                                context.l10n.filtersPanelTitle,
                                 style: TextStyle(
                                   fontSize: context.h4Size,
                                   fontWeight: FontWeight.w900,
@@ -759,9 +772,9 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'FİYAT ARALIĞI',
-          style: TextStyle(
+        Text(
+          context.l10n.priceRangeSectionTitle,
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w800,
             color: AppColors.textSecondary,
@@ -830,10 +843,10 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
             });
           },
           borderRadius: BorderRadius.circular(16),
-          child: const Center(
+          child: Center(
             child: Text(
-              'FİLTRELERİ TEMİZLE',
-              style: TextStyle(
+              context.l10n.clearFiltersButton,
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -887,7 +900,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
               ),
               const SizedBox(height: 16),
               Text(
-                'Ürün bulunamadı',
+                context.l10n.productNotFound,
                 style: TextStyle(
                   fontSize: context.h4Size,
                   color: AppColors.textSecondary,
@@ -896,7 +909,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
               ),
               const SizedBox(height: 8),
               Text(
-                'Farklı filtreler deneyebilirsiniz',
+                context.l10n.tryDifferentFiltersShort,
                 style: TextStyle(
                   color: AppColors.textSecondary.withOpacity(0.7),
                 ),
@@ -976,9 +989,9 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
                 ),
               ],
             ),
-            child: const Text(
-              'SPOT',
-              style: TextStyle(
+            child: Text(
+              context.l10n.spotBadgeTag,
+              style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
@@ -1018,7 +1031,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
           const Icon(Icons.error_outline, size: 80, color: AppColors.error),
           const SizedBox(height: 16),
           Text(
-            'Bir hata oluştu',
+            context.l10n.errorOccurred,
             style: TextStyle(
               fontSize: context.h4Size,
               fontWeight: FontWeight.bold,
@@ -1056,11 +1069,13 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
 
     // Sort
     switch (_selectedSort) {
-      case 'Fiyat: Düşük-Yüksek':
+      case _SortMode.priceLowHigh:
         filtered.sort((final a, final b) => a.price.compareTo(b.price));
         break;
-      case 'Fiyat: Yüksek-Düşük':
+      case _SortMode.priceHighLow:
         filtered.sort((final a, final b) => b.price.compareTo(a.price));
+        break;
+      default:
         break;
     }
 

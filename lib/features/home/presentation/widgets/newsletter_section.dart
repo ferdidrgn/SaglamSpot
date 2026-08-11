@@ -27,7 +27,7 @@ class _NewsletterSectionState extends State<NewsletterSection> {
     setState(() => _submitted = true);
     _emailController.clear();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bültenimize başarıyla abone oldunuz!')),
+      SnackBar(content: Text(context.l10n.newsletterSubscribeSuccess)),
     );
   }
 
@@ -57,9 +57,9 @@ class _NewsletterSectionState extends State<NewsletterSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Yeni Ürünlerden İlk Siz Haberdar Olun',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.newsletterHeading,
+                    style: const TextStyle(
                         fontFamily: 'Fraunces',
                         color: Colors.white,
                         fontSize: 24,
@@ -68,7 +68,7 @@ class _NewsletterSectionState extends State<NewsletterSection> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Spot fırsatlar, yeni koleksiyonlar ve kampanyalar e-posta kutunuza gelsin. Spam yok, sadece işinize yarayacak fırsatlar.',
+                    context.l10n.newsletterDesc,
                     style: TextStyle(
                         fontFamily: 'Inter', color: Colors.white.withOpacity(0.7)),
                   ),
@@ -88,7 +88,7 @@ class _NewsletterSectionState extends State<NewsletterSection> {
                         style: const TextStyle(color: Colors.white),
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: 'E-posta adresiniz',
+                          hintText: context.l10n.emailHint,
                           hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.08),
@@ -103,10 +103,10 @@ class _NewsletterSectionState extends State<NewsletterSection> {
                         ),
                         validator: (final value) {
                           if (value == null || value.isEmpty) {
-                            return 'E-posta gerekli';
+                            return context.l10n.emailRequired;
                           }
                           final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-                          if (!regex.hasMatch(value)) return 'Geçerli bir e-posta girin';
+                          if (!regex.hasMatch(value)) return context.l10n.emailInvalid;
                           return null;
                         },
                       ),

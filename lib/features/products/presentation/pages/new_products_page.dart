@@ -17,6 +17,8 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
+enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
+
 class NewProductsPage extends ConsumerStatefulWidget {
   const NewProductsPage({super.key});
 
@@ -29,7 +31,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   ProductCategory? _selectedCategory;
-  String _selectedSort = 'Yeniler';
+  _SortMode _selectedSort = _SortMode.newest;
   late AnimationController _filterAnimController;
 
   @override
@@ -149,7 +151,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'NEW COLLECTION',
+                                  context.l10n.newProductsBadgeEyebrow,
                                   style: TextStyle(
                                     fontSize: context.captionSize,
                                     letterSpacing: 4,
@@ -159,7 +161,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                                 ),
                                 SizedBox(height: context.spacing),
                                 Text(
-                                  'Yeni\nKoleksiyon',
+                                  context.l10n.newProductsTitle,
                                   style: TextStyle(
                                     fontFamily: 'Fraunces',
                                     fontSize: context.responsive(
@@ -204,9 +206,9 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  const Text(
-                                    'ÜRÜN',
-                                    style: TextStyle(
+                                  Text(
+                                    context.l10n.productsBadgeLabel,
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       letterSpacing: 2,
                                       color: Colors.white70,
@@ -260,7 +262,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
               size: 14, color: AppColors.textSecondary),
           const SizedBox(width: 8),
           Text(
-            'Ana Sayfa',
+            context.l10n.breadcrumbHome,
             style: TextStyle(
               fontSize: context.captionSize,
               color: AppColors.textSecondary,
@@ -271,7 +273,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
               size: 14, color: AppColors.textSecondary),
           const SizedBox(width: 8),
           Text(
-            'Yeni Koleksiyon',
+            context.l10n.newCollection,
             style: TextStyle(
               fontSize: context.captionSize,
               color: AppColors.primary,
@@ -319,14 +321,14 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
+          _buildStatItem(context, '${products.length}', context.l10n.statTotalProducts,
               Icons.inventory_2_outlined),
           _buildDivider(context),
-          _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
+          _buildStatItem(context, '5', context.l10n.statCategoryLabel, Icons.category_outlined),
           _buildDivider(context),
-          _buildStatItem(context, 'YENİ', 'DURUM', Icons.fiber_new_outlined),
+          _buildStatItem(context, context.l10n.statConditionValueNew, context.l10n.statConditionLabel, Icons.fiber_new_outlined),
           _buildDivider(context),
-          _buildStatItem(context, '⭐ 4.8', 'PUAN', Icons.star_outline),
+          _buildStatItem(context, '⭐ 4.8', context.l10n.statRatingLabel, Icons.star_outline),
         ],
       );
 
@@ -337,9 +339,9 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStatItem(context, '${products.length}', 'TOPLAM ÜRÜN',
+              _buildStatItem(context, '${products.length}', context.l10n.statTotalProducts,
                   Icons.inventory_2_outlined),
-              _buildStatItem(context, '5', 'KATEGORİ', Icons.category_outlined),
+              _buildStatItem(context, '5', context.l10n.statCategoryLabel, Icons.category_outlined),
             ],
           ),
           const SizedBox(height: 12),
@@ -347,8 +349,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildStatItem(
-                  context, 'YENİ', 'DURUM', Icons.fiber_new_outlined),
-              _buildStatItem(context, '⭐ 4.8', 'PUAN', Icons.star_outline),
+                  context, context.l10n.statConditionValueNew, context.l10n.statConditionLabel, Icons.fiber_new_outlined),
+              _buildStatItem(context, '⭐ 4.8', context.l10n.statRatingLabel, Icons.star_outline),
             ],
           ),
         ],
@@ -434,8 +436,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                       color: AppColors.textSecondary,
                     ),
                     children: [
-                      const TextSpan(
-                        text: 'Detaylı ürün araması için ',
+                      TextSpan(
+                        text: context.l10n.searchBarRichPrefix,
                       ),
                       const TextSpan(
                         text: 'Ctrl + K',
@@ -445,11 +447,11 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                      const TextSpan(
-                        text: ' yapın ya da ',
+                      TextSpan(
+                        text: context.l10n.searchBarRichOr,
                       ),
                       TextSpan(
-                        text: 'BURADAKİ',
+                        text: context.l10n.searchBarRichHereLink,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: AppColors.accentDark,
@@ -458,8 +460,8 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => context.go('/search'),
                       ),
-                      const TextSpan(
-                        text: ' yazıya tıklayın.',
+                      TextSpan(
+                        text: context.l10n.searchBarRichSuffix,
                       ),
                     ],
                   ),
@@ -478,22 +480,31 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.border, width: 1.5),
         ),
-        child: DropdownButton<String>(
+        child: DropdownButton<_SortMode>(
           value: _selectedSort,
           underline: const SizedBox(),
           icon: const Icon(Icons.keyboard_arrow_down,
               color: AppColors.textPrimary),
-          items: [
-            'Yeniler',
-            'Fiyat: Düşük-Yüksek',
-            'Fiyat: Yüksek-Düşük',
-            'En Popüler'
-          ]
-              .map((final e) => DropdownMenuItem(value: e, child: Text(e)))
+          items: _SortMode.values
+              .map((final mode) => DropdownMenuItem(
+                  value: mode, child: Text(_sortLabel(context, mode))))
               .toList(),
           onChanged: (final val) => setState(() => _selectedSort = val!),
         ),
       );
+
+  String _sortLabel(final BuildContext context, final _SortMode mode) {
+    switch (mode) {
+      case _SortMode.newest:
+        return context.l10n.sortNewProductsDefault;
+      case _SortMode.priceLowHigh:
+        return context.l10n.sortPriceLowHigh;
+      case _SortMode.priceHighLow:
+        return context.l10n.sortPriceHighLow;
+      case _SortMode.popular:
+        return context.l10n.sortMostPopular;
+    }
+  }
 
   Widget _buildViewToggle(final BuildContext context) {
     final mode = ref.watch(productViewModeProvider);
@@ -578,7 +589,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
               ),
               const SizedBox(height: 16),
               Text(
-                'Ürün bulunamadı',
+                context.l10n.productNotFound,
                 style: TextStyle(
                   fontSize: context.h4Size,
                   color: AppColors.textSecondary,
@@ -651,11 +662,13 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
 
     // Sort logic
     switch (_selectedSort) {
-      case 'Fiyat: Düşük-Yüksek':
+      case _SortMode.priceLowHigh:
         filtered.sort((final a, final b) => a.price.compareTo(b.price));
         break;
-      case 'Fiyat: Yüksek-Düşük':
+      case _SortMode.priceHighLow:
         filtered.sort((final a, final b) => b.price.compareTo(a.price));
+        break;
+      default:
         break;
     }
 
@@ -684,7 +697,7 @@ class _EnhancedNewProductsPageState extends ConsumerState<NewProductsPage>
             const Icon(Icons.error_outline, size: 80, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
-              'Bir hata oluştu',
+              context.l10n.errorOccurred,
               style: TextStyle(
                   fontSize: context.h4Size, fontWeight: FontWeight.bold),
             ),

@@ -5,6 +5,25 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 
+enum _FaqCategory {
+  all,
+  general,
+  productService,
+  delivery,
+  payment,
+  returns,
+  secondHandBuying,
+}
+
+class _Faq {
+  final _FaqCategory category;
+  final String question;
+  final String answer;
+
+  const _Faq(
+      {required this.category, required this.question, required this.answer});
+}
+
 class SSSPage extends StatefulWidget {
   const SSSPage({super.key});
 
@@ -14,179 +33,133 @@ class SSSPage extends StatefulWidget {
 
 class _SSSPageState extends State<SSSPage> {
   int? _expandedIndex;
-  String _selectedCategory = 'Tümü';
+  _FaqCategory _selectedCategory = _FaqCategory.all;
 
-  final List<String> _categories = [
-    'Tümü',
-    'Genel',
-    'Ürün & Hizmet',
-    'Teslimat & Montaj',
-    'Ödeme & Sipariş',
-    'İade & Garanti',
-    'İkinci El Alım Süreci'
-  ];
+  String _categoryLabel(final BuildContext context, final _FaqCategory cat) {
+    switch (cat) {
+      case _FaqCategory.all:
+        return context.l10n.sssCategoryAll;
+      case _FaqCategory.general:
+        return context.l10n.sssCategoryGeneral;
+      case _FaqCategory.productService:
+        return context.l10n.sssCategoryProductService;
+      case _FaqCategory.delivery:
+        return context.l10n.sssCategoryDelivery;
+      case _FaqCategory.payment:
+        return context.l10n.sssCategoryPayment;
+      case _FaqCategory.returns:
+        return context.l10n.sssCategoryReturns;
+      case _FaqCategory.secondHandBuying:
+        return context.l10n.sssCategorySecondHandBuying;
+    }
+  }
 
-  final List<Map<String, String>> _faqs = [
-    // GENEL SORULAR
-    {
-      'category': 'Genel',
-      'question':
-          'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?',
-      'answer': "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. "
-          "Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. "
-          "Çalışma hayatı boyunca, teslimatlar için sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. "
-          "Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. "
-          "2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır. "
-          "2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",
-    },
-    {
-      'category': 'Genel',
-      'question': 'Sağlam Spot güvenilir mi?',
-      'answer':
-          '2012 yılından beri İçerenköy\'de, komşularımıza hizmet veriyoruz. Sayısızca evlere konuk olduk ve hâlâ konuk olmaya devam ediyoruz.',
-    },
-    {
-      'category': 'Genel',
-      'question': 'Ürünleri incelemek için mağazanıza gelebilir miyim?',
-      'answer':
-          'Elbette! Hatta biz de özellikle bunu tavsiye ediyoruz. Çayımızı içerken ürünleri canlı canlı görmeniz, dokunmanız ve içinize sinmesi en sağlıklısı. İçerenköy Mahallesi\'ndeki dükkanımıza her zaman bekleriz.',
-    },
+  List<_Faq> _faqs(final BuildContext context) => [
+        // GENEL SORULAR
+        _Faq(
+            category: _FaqCategory.general,
+            question: context.l10n.sssQ1,
+            answer: context.l10n.sssA1),
+        _Faq(
+            category: _FaqCategory.general,
+            question: context.l10n.sssQ2,
+            answer: context.l10n.sssA2),
+        _Faq(
+            category: _FaqCategory.general,
+            question: context.l10n.sssQ3,
+            answer: context.l10n.sssA3),
 
-    // ÜRÜN & HİZMET SORULARI
-    {
-      'category': 'Ürün & Hizmet',
-      'question': 'İkinci el ürünlerin durumu nasıl kontrol ediliyor?',
-      'answer':
-          "Bizim için ikinci el, 'ikinci kalite' demek değildir. Her ürün ustamızın titiz kontrolünden geçer; temizliği, bakımı ve gerekli onarımları eksiksiz yapılır. Fotoğraflarda ne görüyorsanız o, ama biz yine de 'gelin, bir de siz görün' deriz. Gözünüzle görmeniz her zaman en iyisidir.",
-    },
-    {
-      'category': 'Ürün & Hizmet',
-      'question': 'Mobilyaların malzeme kalitesi nedir?',
-      'answer':
-          'Şeffaflığı önemsiyoruz. Her ürünün kendine ait bir hikayesi ve malzemesi var. Bu yüzden tüm detayları, malzeme kalitesini ve özelliklerini ürün açıklama bölümlerine net bir şekilde yazıyoruz. Aklınıza takılan bir şey olursa sormaktan çekinmeyin.',
-    },
-    {
-      'category': 'Ürün & Hizmet',
-      'question': 'Ürün fiyatları nasıl belirleniyor?',
-      'answer':
-          'Fiyatlarımızı belirlerken hem ürünün kalitesine hem de piyasa koşullarına adil bir şekilde bakıyoruz. Amacımız, bütçenizi zorlamadan, kaliteli ve uzun ömürlü ürünlere ulaşmanızı sağlamaktır. Hakkı neyse, o.',
-    },
-    {
-      'category': 'Ürün & Hizmet',
-      'question': 'Ürünlerinizde renk seçenekleri var mı?',
-      'answer':
-          'Ürünlerimiz genellikle anlık ve tek parçalar olduğu için, mevcut renkleri neyse o şekilde sunuyoruz. Maalesef farklı renk seçenekleri yapamıyoruz. Beğendiğiniz ürünün rengi, gördüğünüz renktir.',
-    },
-    {
-      'category': 'Ürün & Hizmet',
-      'question': 'Özel sipariş alıyor musunuz?',
-      'answer':
-          'Keşke yapabilsek! Ancak biz daha çok mevcut, özenle seçilmiş ürünlerimize odaklanıyoruz. Özel üretim veya tasarım siparişi şu an için maalesef alamıyoruz. Hazırdaki ürünlerimizi incelemenizi öneririz.',
-    },
-    {
-      'category': 'Ürün & Hizmet',
-      'question': 'Ürün açıklamalarında nelere dikkat etmeliyim?',
-      'answer':
-          'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Ayrıca ölçü Alırken Koridoru Unutmayın: Sadece mobilyayı koyacağınız yeri değil, o mobilyanın kapıdan, koridordan ve merdivenden nasıl geçeceğini de ölçün. Malzeme ve durum bilgilerini de mutlaka okuyun.',
-    },
+        // ÜRÜN & HİZMET SORULARI
+        _Faq(
+            category: _FaqCategory.productService,
+            question: context.l10n.sssQ4,
+            answer: context.l10n.sssA4),
+        _Faq(
+            category: _FaqCategory.productService,
+            question: context.l10n.sssQ5,
+            answer: context.l10n.sssA5),
+        _Faq(
+            category: _FaqCategory.productService,
+            question: context.l10n.sssQ6,
+            answer: context.l10n.sssA6),
+        _Faq(
+            category: _FaqCategory.productService,
+            question: context.l10n.sssQ7,
+            answer: context.l10n.sssA7),
+        _Faq(
+            category: _FaqCategory.productService,
+            question: context.l10n.sssQ8,
+            answer: context.l10n.sssA8),
+        _Faq(
+            category: _FaqCategory.productService,
+            question: context.l10n.sssQ9,
+            answer: context.l10n.sssA9),
 
-    // TESLİMAT & MONTAJ SORULARI
-    {
-      'category': 'Teslimat & Montaj',
-      'question':
-          'Asansör olmayan binalara veya yüksek katlara teslimat yapıyor musunuz?',
-      'answer':
-          "Bu, bizim için en hassas ve önemli konulardan biri. Biz, işini bizzat yapan küçük bir esnafız. Ustamız, yılların tecrübesiyle birlikte artık genç olmadığı için sağlığını da düşünmek zorundayız. Anlayışınıza sığınarak, asansör olmayan binalarda yüksek katlara (örneğin 2. kat ve üzeri) **eşya çıkarma ve indirme hizmeti kesinlikle veremiyoruz**. Lütfen siparişinizi vermeden önce bu konuyu netleştirelim, size mahcup olmak istemeyiz."
-    },
-    {
-      'category': 'Teslimat & Montaj',
-      'question': 'Taşıma hizmeti sağlıyor musunuz?',
-      'answer':
-          'Elbette, komşularımıza yardımcı oluyoruz. İçerenköy başta olmak üzere Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü ve Bostancı Sanayi gibi yakın çevremize ücretsiz nakliye hizmetimiz var. (Bostancı ve Kozyatağı\'nın bazı bölgeleri hariç, ve yaşlılık açısından yüksek katlara asansörsüz taşıyamıyoruz, onu ayrıca konuşuruz).',
-    },
-    {
-      'category': 'Teslimat & Montaj',
-      'question': 'Teslimat süresi ne kadar?',
-      'answer':
-          'Siparişi verdiğiniz an sizinle iletişime geçeriz. \'Ne zaman müsaitsiniz?\' diye sorarız. Hem size hem bize uyan en yakın vakit için sözleşiriz. Genellikle 1-3 gün içinde, anlaştığımız saatte teslimatı ve montajı tamamlamış oluruz.',
-    },
-    {
-      'category': 'Teslimat & Montaj',
-      'question': 'Montaj hizmeti veriyor musunuz?',
-      'answer':
-          'Tabii ki. Mobilyayı alıp kapıya bırakmak bizim tarzımız değil. Büyük ürünlerin hepsini ustamız bizzat kurar ve bu hizmet için ekstra bir ücret talep etmeyiz. Siz sadece yerini gösterin, gerisi bizde.',
-    },
-    {
-      'category': 'Teslimat & Montaj',
-      'question': 'Mobilya siparişi ne kadar sürede teslim edilir?',
-      'answer':
-          'Ürün hazırsa, sizinle ortak belirlediğimiz bir zamanda en kısa sürede kapınızdayız. Montajı da dert etmeyin; getirdiğimiz gibi kurar, öyle teslim ederiz. Genellikle aynı gün içinde her şey biter.',
-    },
+        // TESLİMAT & MONTAJ SORULARI
+        _Faq(
+            category: _FaqCategory.delivery,
+            question: context.l10n.sssQ10,
+            answer: context.l10n.sssA10),
+        _Faq(
+            category: _FaqCategory.delivery,
+            question: context.l10n.sssQ11,
+            answer: context.l10n.sssA11),
+        _Faq(
+            category: _FaqCategory.delivery,
+            question: context.l10n.sssQ12,
+            answer: context.l10n.sssA12),
+        _Faq(
+            category: _FaqCategory.delivery,
+            question: context.l10n.sssQ13,
+            answer: context.l10n.sssA13),
+        _Faq(
+            category: _FaqCategory.delivery,
+            question: context.l10n.sssQ14,
+            answer: context.l10n.sssA14),
 
-    // ÖDEME & SİPARİŞ SORULARI
-    {
-      'category': 'Ödeme & Sipariş',
-      'question': 'Veresiye sipariş verebilir miyim?',
-      'answer':
-          'Bu konuda anlayışınızı rica ediyoruz. Bir esnaf olarak ayakta kalabilmemiz için \'veresiye\' veya \'sonra ödeme\' gibi yöntemlerle maalesef çalışamıyoruz. Anlaştığımız ücreti, ürünü teslim ederken peşin olarak almamız gerekiyor. Size mahcup olmamak için bu kuralımızı baştan belirtmeyi tercih ediyoruz.',
-    },
-    {
-      'category': 'Ödeme & Sipariş',
-      'question': 'Nasıl sipariş verebilirim?',
-      'answer':
-          'En sağlıklı yöntem, her zaman yüz yüze olandır. Siteden beğendiğiniz ürünü not edin, sonra dükkanımıza gelin. Ürünü canlı görün, aklınızdaki soruları sorun, içinize sinerse siparişinizi orada tamamlayalım. Böylece hiçbir şüphe kalmaz.',
-    },
+        // ÖDEME & SİPARİŞ SORULARI
+        _Faq(
+            category: _FaqCategory.payment,
+            question: context.l10n.sssQ15,
+            answer: context.l10n.sssA15),
+        _Faq(
+            category: _FaqCategory.payment,
+            question: context.l10n.sssQ16,
+            answer: context.l10n.sssA16),
 
-    // İADE & GARANTİ SORULARI
-    {
-      'category': 'İade & Garanti',
-      'question': 'Ürün iade politikası nedir?',
-      'answer':
-          'İkinci el ürünlerin doğası gereği ve esnaf usulü çalıştığımız için maalesef iade kabul edemiyoruz. Bu yüzden \'gelin, görün, çayımızı için\' diye ısrar ediyoruz. Almadan önce ürünü detaylıca incelemeniz, ölçüp biçmeniz en doğrusu. Emin olmadan alışverişi tamamlamayalım.',
-    },
-    {
-      'category': 'İade & Garanti',
-      'question': 'Ürünlerin garanti süresi var mı?',
-      'answer':
-          'Ürünlerimiz ikinci el olduğu için, bir markanın sunduğu gibi resmi bir garanti süremiz maalesef yok. Ancak biz \'sattık, bitti\' diyenlerden değiliz. Teslimat ve montaj sırasında her şeyin düzgün çalıştığından emin oluruz.',
-    },
+        // İADE & GARANTİ SORULARI
+        _Faq(
+            category: _FaqCategory.returns,
+            question: context.l10n.sssQ17,
+            answer: context.l10n.sssA17),
+        _Faq(
+            category: _FaqCategory.returns,
+            question: context.l10n.sssQ18,
+            answer: context.l10n.sssA18),
 
-// === YENİ KATEGORİ: İKİNCİ EL ALIM SÜRECİ ===
-    {
-      'category': 'İkinci El Alım Süreci',
-      'question':
-          'Evimdeki eşyaları satmak istiyorum, ikinci el alımı yapıyor musunuz?',
-      'answer': 'Evet, dükkanımızda sergileyebileceğimize inandığımız, temiz ve yeniden satılabilir durumdaki seçili ürünleri alıyoruz. Ancak, dükkanımızın yeri gerçekten çok küçük olduğu için bu konuda maalesef çok seçici davranmak zorundayız. \n\n'
-          'Bu konuda baştan dürüst olmayı severiz: Bizden alacağınız teklif, muhtemelen Letgo gibi platformlarda kendinizin satabileceğiniz rakamdan biraz daha düşük olabilir. Bunun sebebi şudur: Biz esnaf olarak o eşyayı almak için **benzin yakıyor, taşıma için emek harcıyor** ve en önemlisi, onu satmak için **dükkanımızda sergileyip tüm müşteri süreciyle (pazarlık, sorular vs.) biz ilgileniyoruz.** \n\n'
-          'Siz o platformlarda satarken bu süreçlerin tamamını kendiniz üstlenirsiniz. Biz ise sizden bu zahmeti de devralmış oluyoruz. Teklifimizi bu hizmeti de içerecek şekilde veriyoruz. Anlayışınız için teşekkür ederiz.',
-    },
-    {
-      'category': 'İkinci El Alım Süreci',
-      'question':
-          'Komple takım mobilyaları (Yatak odası, salon takımı vb.) alıyor musunuz?',
-      'answer':
-          'Dükkanımızın küçük olmasından dolayı, maalesef komple yatak odası, koltuk takımı gibi **büyük setleri alamıyoruz**. Yerimiz çok kısıtlı. Biz daha çok tek parça, satışı daha kolay olan (konsol, dolap, masa, sandalye gibi) ürünlere odaklanıyoruz.'
-    },
-    {
-      'category': 'İkinci El Alım Süreci',
-      'question':
-          'Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?',
-      'answer':
-          'Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda **yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz**. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.'
-    },
-    {
-      'category': 'İkinci El Alım Süreci',
-      'question': 'Her zaman eşya alımı yapıyor musunuz?',
-      'answer':
-          'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.'
-    },
-  ];
+        // İKİNCİ EL ALIM SÜRECİ
+        _Faq(
+            category: _FaqCategory.secondHandBuying,
+            question: context.l10n.sssQ19,
+            answer: context.l10n.sssA19),
+        _Faq(
+            category: _FaqCategory.secondHandBuying,
+            question: context.l10n.sssQ20,
+            answer: context.l10n.sssA20),
+        _Faq(
+            category: _FaqCategory.secondHandBuying,
+            question: context.l10n.sssQ21,
+            answer: context.l10n.sssA21),
+        _Faq(
+            category: _FaqCategory.secondHandBuying,
+            question: context.l10n.sssQ22,
+            answer: context.l10n.sssA22),
+      ];
 
-  List<Map<String, String>> get _filteredFaqs {
-    if (_selectedCategory == 'Tümü') return _faqs;
-    return _faqs
-        .where((final faq) => faq['category'] == _selectedCategory)
-        .toList();
+  List<_Faq> _filteredFaqs(final BuildContext context) {
+    final all = _faqs(context);
+    if (_selectedCategory == _FaqCategory.all) return all;
+    return all.where((final faq) => faq.category == _selectedCategory).toList();
   }
 
   @override
@@ -258,7 +231,7 @@ class _SSSPageState extends State<SSSPage> {
                     decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(24)),
-                    child: Text('YARDIM MERKEZİ',
+                    child: Text(context.l10n.sssHelpCenterBadge,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize:
@@ -267,7 +240,7 @@ class _SSSPageState extends State<SSSPage> {
                             letterSpacing: 1.5)),
                   ),
                   const SizedBox(height: 24),
-                  Text('Sıkça Sorulan\nSorular',
+                  Text(context.l10n.sssHeroTitle,
                       style: TextStyle(
                           fontFamily: 'Fraunces',
                           color: Colors.white,
@@ -276,7 +249,7 @@ class _SSSPageState extends State<SSSPage> {
                           height: 1.1,
                           letterSpacing: -1)),
                   const SizedBox(height: 20),
-                  Text('Merak ettiğiniz her şeyin cevabı burada',
+                  Text(context.l10n.sssHeroSubtitle,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: context.responsive(mobile: 16, desktop: 20),
@@ -317,17 +290,18 @@ class _SSSPageState extends State<SSSPage> {
         child: Wrap(
           spacing: 12,
           runSpacing: 12,
-          children: _categories.map((final category) {
+          children: _FaqCategory.values.map((final category) {
             final isSelected = _selectedCategory == category;
-            final count = category == context.l10n.conditionAll
-                ? _faqs.length
-                : _faqs.where((final f) => f['category'] == category).length;
+            final allFaqs = _faqs(context);
+            final count = category == _FaqCategory.all
+                ? allFaqs.length
+                : allFaqs.where((final f) => f.category == category).length;
 
             return FilterChip(
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(category),
+                  Text(_categoryLabel(context, category)),
                   const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -392,7 +366,7 @@ class _SSSPageState extends State<SSSPage> {
         child: _buildQuickHelpCard(
           context,
           Icons.phone_outlined,
-          'Telefon Desteği',
+          context.l10n.sssPhoneSupportTitle,
           '+90 5392019961',
           AppColors.success,
         ),
@@ -405,8 +379,8 @@ class _SSSPageState extends State<SSSPage> {
         child: _buildQuickHelpCard(
           context,
           Icons.access_time_outlined,
-          'Çalışma Saatleri',
-          '09:00 - 22:00',
+          context.l10n.sssWorkingHoursTitle,
+          context.l10n.sssWorkingHoursValue,
           AppColors.info,
         ),
       ),
@@ -418,8 +392,8 @@ class _SSSPageState extends State<SSSPage> {
         child: _buildQuickHelpCard(
           context,
           Icons.location_on_outlined,
-          'Mağaza Adresi',
-          'İçerenköy Mahallesi Buket Sok. No:6',
+          context.l10n.sssStoreAddressTitle,
+          context.l10n.sssStoreAddressValue,
           AppColors.secondary,
         ),
       ),
@@ -504,7 +478,7 @@ class _SSSPageState extends State<SSSPage> {
   }
 
   Widget _buildFAQList(final BuildContext context) {
-    final filteredFaqs = _filteredFaqs;
+    final filteredFaqs = _filteredFaqs(context);
 
     return SliverPadding(
       padding: context.responsive(
@@ -562,23 +536,23 @@ class _SSSPageState extends State<SSSPage> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: _getCategoryColor(faq['category']!)
+                              color: _getCategoryColor(faq.category)
                                   .withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              faq['category']!,
+                              _categoryLabel(context, faq.category),
                               style: TextStyle(
                                 fontSize: context.captionSize,
                                 fontWeight: FontWeight.w600,
-                                color: _getCategoryColor(faq['category']!),
+                                color: _getCategoryColor(faq.category),
                               ),
                             ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
-                              faq['question']!,
+                              faq.question,
                               style: TextStyle(
                                 fontSize: context.titleSize,
                                 fontWeight: FontWeight.w600,
@@ -613,7 +587,7 @@ class _SSSPageState extends State<SSSPage> {
                           const Divider(height: 1),
                           const SizedBox(height: 20),
                           Text(
-                            faq['answer']!,
+                            faq.answer,
                             style: TextStyle(
                               fontSize: context.bodySize,
                               color: AppColors.textSecondary,
@@ -683,7 +657,7 @@ class _SSSPageState extends State<SSSPage> {
             const Icon(Icons.map_outlined),
             const SizedBox(width: 12),
             Text(
-              'Mağazaya Gel',
+              context.l10n.sssVisitStoreButton,
               style: buttonTextStyle.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
@@ -716,7 +690,7 @@ class _SSSPageState extends State<SSSPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Sorunuz Yanıt Bulamadı mı?',
+              context.l10n.sssNoAnswerTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: context.responsive(mobile: 24, desktop: 32),
@@ -726,7 +700,7 @@ class _SSSPageState extends State<SSSPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Bize Ulaşabilirsiniz',
+              context.l10n.sssNoAnswerSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: context.responsive(mobile: 16, desktop: 18),
@@ -758,21 +732,21 @@ class _SSSPageState extends State<SSSPage> {
     await SaglamSpotCommunication.openStoreLocation();
   }
 
-  Color _getCategoryColor(final String category) {
+  Color _getCategoryColor(final _FaqCategory category) {
     switch (category) {
-      case 'Genel':
+      case _FaqCategory.general:
         return AppColors.primary;
-      case 'Ürün & Hizmet':
+      case _FaqCategory.productService:
         return AppColors.info;
-      case 'Teslimat & Montaj':
+      case _FaqCategory.delivery:
         return AppColors.success;
-      case 'Ödeme & Sipariş':
+      case _FaqCategory.payment:
         return AppColors.warning;
-      case 'İade & Garanti':
+      case _FaqCategory.returns:
         return AppColors.secondary;
-      case 'İkinci El Alım Süreci':
+      case _FaqCategory.secondHandBuying:
         return AppColors.textPrimary;
-      default:
+      case _FaqCategory.all:
         return AppColors.textSecondary;
     }
   }
