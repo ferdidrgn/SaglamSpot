@@ -90,8 +90,8 @@ class CustomAppHeader extends StatelessWidget {
             Container(
               width: context.responsive(mobile: 30.0, desktop: 36.0),
               height: context.responsive(mobile: 30.0, desktop: 36.0),
-              decoration:
-                  const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+              decoration: const BoxDecoration(
+                  color: AppColors.accent, shape: BoxShape.circle),
               child: const Icon(Icons.arrow_forward_rounded,
                   color: Colors.white, size: 16),
             ),
@@ -149,9 +149,11 @@ class CustomAppHeader extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/saglam_spot_logo.png',
                   fit: BoxFit.cover,
-                  errorBuilder: (final context, final error, final stackTrace) =>
-                      Icon(Icons.auto_awesome,
-                          size: context.iconSmall, color: AppColors.accentLight),
+                  errorBuilder:
+                      (final context, final error, final stackTrace) => Icon(
+                          Icons.auto_awesome,
+                          size: context.iconSmall,
+                          color: AppColors.accentLight),
                 ),
               ),
             ),
@@ -222,12 +224,20 @@ class CustomAppHeader extends StatelessWidget {
   }) {
     final double size = context.responsive(mobile: 40.0, desktop: 40.0);
 
-    return _HeaderActionButton(
-      size: size,
-      icon: icon,
-      iconSize: context.responsive(mobile: 20.0, desktop: 20.0),
-      borderRadius: context.responsive(mobile: 10.0, desktop: 12.0),
-      onPressed: onPressed,
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(
+              context.responsive(mobile: 10.0, desktop: 12.0)),
+          border: Border.all(color: AppColors.border)),
+      child: IconButton(
+          icon:
+              Icon(icon, size: context.responsive(mobile: 20.0, desktop: 20.0)),
+          onPressed: onPressed,
+          color: AppColors.textSecondary,
+          padding: EdgeInsets.zero),
     );
   }
 }
@@ -235,7 +245,6 @@ class CustomAppHeader extends StatelessWidget {
 /// Masaüstü menü bağlantısı — hover'da yumuşak renk geçişi, aktif
 /// sekmenin altında beliren ince bir vurgu çizgisi.
 class _NavLink extends StatefulWidget {
-
   final String label;
   final bool active;
   final VoidCallback onTap;
@@ -270,10 +279,7 @@ class _NavLinkState extends State<_NavLink> {
                   fontSize: 14.5,
                   letterSpacing: 0.3,
                   fontWeight: widget.active ? FontWeight.w700 : FontWeight.w500,
-                  color: highlighted
-                      ? AppColors.accent
-
-                      : AppColors.textPrimary,
+                  color: highlighted ? AppColors.accent : AppColors.textPrimary,
                 ),
                 child: Text(widget.label),
               ),
@@ -291,4 +297,3 @@ class _NavLinkState extends State<_NavLink> {
     );
   }
 }
-
