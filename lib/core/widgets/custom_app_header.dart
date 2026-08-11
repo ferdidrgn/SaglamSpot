@@ -292,3 +292,50 @@ class _NavLinkState extends State<_NavLink> {
   }
 }
 
+/// Arama/menü ikon düğmesi — hover'da hafif bir zemin ve kenarlık rengi
+/// geçişiyle tıklanabilirliğini belli eder.
+class _HeaderActionButton extends StatefulWidget {
+  final double size;
+  final double iconSize;
+  final double borderRadius;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _HeaderActionButton({
+    required this.size,
+    required this.iconSize,
+    required this.borderRadius,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  State<_HeaderActionButton> createState() => _HeaderActionButtonState();
+}
+
+class _HeaderActionButtonState extends State<_HeaderActionButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(final BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (final _) => setState(() => _hovered = true),
+        onExit: (final _) => setState(() => _hovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            color: _hovered ? AppColors.secondary : AppColors.surface,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            border: Border.all(
+                color: _hovered ? AppColors.accentDark : AppColors.border),
+          ),
+          child: IconButton(
+              icon: Icon(widget.icon, size: widget.iconSize),
+              onPressed: widget.onPressed,
+              color: _hovered ? AppColors.accentDark : AppColors.textSecondary,
+              padding: EdgeInsets.zero),
+        ),
+      );
+}
