@@ -99,4 +99,39 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [background, secondary], // ekruden ahşap beje
   );
+
+  // ================================================================
+  // MOBİL UYGULAMA PALETİ — Web'in sıcak espresso/ekru kimliğinden
+  // bilinçli olarak ayrışan, yönetici panelinin kendine has rengi.
+  // Koyu petrol yeşili + canlı zümrüt vurgu.
+  // ================================================================
+  static const Color mobilePrimary = Color(0xFF0F3D3E); // koyu petrol yeşili
+  static const Color mobilePrimaryDark = Color(0xFF0A2A2B);
+  static const Color mobilePrimaryLight = Color(0xFF1D5D5E);
+
+  static const Color mobileAccent = Color(0xFF1FA97D); // canlı zümrüt vurgu
+  static const Color mobileAccentDark = Color(0xFF158462);
+  static const Color mobileAccentLight = Color(0xFF5FD1A6);
+
+  static const Color mobileBackground = Color(0xFFF2F7F5); // soğuk mint-gri zemin
+  static const Color mobileSurface = white;
+  static const Color mobileCardBg = white;
+  static const Color mobileSecondaryBg = Color(0xFFE4EEEA); // yumuşak mint ikincil zemin
+
+  static const Color mobileTextPrimary = Color(0xFF0D2624);
+  static const Color mobileTextSecondary = Color(0xFF4C6663);
+  static const Color mobileTextTertiary = Color(0xFF7E9491);
+  static const Color mobileBorder = Color(0xFFD7E5E1);
+
+  static const Gradient mobileAccentGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [mobileAccent, mobileAccentDark],
+  );
+
+  static const Gradient mobilePrimaryGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [mobilePrimaryLight, mobilePrimary],
+  );
 }

@@ -116,9 +116,6 @@ android {
 }
 
 dependencies {
-    // MultiDex
-    implementation("com.android.support:multidex:1.0.3")
-
     // AndroidX Core — Uçtan Uca ekran için güncel yerel kütüphaneler
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

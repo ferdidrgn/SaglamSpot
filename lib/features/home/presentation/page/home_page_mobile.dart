@@ -54,11 +54,11 @@ class _HomePageState extends ConsumerState<HomePage>
         : list.where((final p) => p.category == _selectedCategory).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.mobileBackground,
       appBar: _buildAppBar(context),
       body: productsAsync.when(
         loading: () =>
-            const Center(child: CircularProgressIndicator(color: AppColors.accent)),
+            const Center(child: CircularProgressIndicator(color: AppColors.mobileAccent)),
         error: (final e, final _) => Center(child: Text('Hata: $e')),
         data: (final _) => Column(
           children: [
@@ -90,7 +90,7 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   PreferredSizeWidget _buildAppBar(final BuildContext context) => AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.mobileBackground,
         elevation: 0,
         centerTitle: false,
         title: Padding(
@@ -98,7 +98,7 @@ class _HomePageState extends ConsumerState<HomePage>
           child: Text(
             context.l10n.adminPanelTitle,
             style: const TextStyle(
-              color: AppColors.textPrimary,
+              color: AppColors.mobileTextPrimary,
               fontWeight: FontWeight.w900,
               fontSize: 24,
               letterSpacing: -0.5,
@@ -123,7 +123,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     label: context.l10n.sold,
                     value: '$sold',
                     icon: Icons.check_circle_rounded,
-                    color: AppColors.accentDark)),
+                    color: AppColors.mobileAccentDark)),
             const SizedBox(width: 10),
             Expanded(
                 child: _StatCard(
@@ -153,11 +153,11 @@ class _HomePageState extends ConsumerState<HomePage>
             controller: _tabController,
             indicatorSize: TabBarIndicatorSize.tab,
             indicator: BoxDecoration(
-              gradient: AppColors.accentGradient,
+              gradient: AppColors.mobileAccentGradient,
               borderRadius: BorderRadius.circular(16),
             ),
             labelColor: Colors.white,
-            unselectedLabelColor: AppColors.textSecondary,
+            unselectedLabelColor: AppColors.mobileTextSecondary,
             labelStyle: const TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 0.5),
             unselectedLabelStyle:
@@ -192,7 +192,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _buildAddButton(final BuildContext context) => FloatingActionButton.extended(
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (final _) => const AddProductPage())),
-        backgroundColor: AppColors.accent,
+        backgroundColor: AppColors.mobileAccent,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: Text(context.l10n.addProductFab,
             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -217,7 +217,7 @@ class _StatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: AppColors.mobileBorder),
         ),
         child: Column(
           children: [
@@ -226,9 +226,9 @@ class _StatCard extends StatelessWidget {
             Text(value,
                 style: const TextStyle(
                     fontSize: 17, fontWeight: FontWeight.w900,
-                    color: AppColors.textPrimary)),
+                    color: AppColors.mobileTextPrimary)),
             Text(label,
-                style: const TextStyle(fontSize: 10.5, color: AppColors.textTertiary)),
+                style: const TextStyle(fontSize: 10.5, color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -246,10 +246,10 @@ class _ProductGrid extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.textTertiary),
+            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.mobileTextTertiary),
             const SizedBox(height: 10),
             Text(context.l10n.emptyCategoryProducts,
-                style: const TextStyle(color: AppColors.textTertiary)),
+                style: const TextStyle(color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -310,11 +310,11 @@ class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
         child: Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: AppColors.mobileCardBg,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-              color: AppColors.textPrimary.withOpacity(0.06),
+              color: AppColors.mobileTextPrimary.withOpacity(0.06),
               blurRadius: 18,
               offset: const Offset(0, 8)),
         ],
@@ -370,9 +370,9 @@ class _ImageArea extends ConsumerWidget {
                 : Container(
                     width: double.infinity,
                     height: double.infinity,
-                    color: AppColors.darkSurface,
+                    color: AppColors.mobileSecondaryBg,
                     child: const Icon(Icons.chair_alt_rounded,
-                        size: 48, color: AppColors.textTertiary),
+                        size: 48, color: AppColors.mobileTextTertiary),
                   ),
           ),
           Positioned(top: 10, left: 10, child: _StatusBadge(product: product)),
@@ -398,7 +398,7 @@ class _InfoArea extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+              fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
         ),
         const SizedBox(height: 4),
         Row(
@@ -415,7 +415,7 @@ class _InfoArea extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: meta?.color ?? AppColors.textSecondary),
+                    color: meta?.color ?? AppColors.mobileTextSecondary),
               ),
             ),
           ],
@@ -435,9 +435,9 @@ class _ActionBar extends ConsumerWidget {
     return Container(
       height: 44,
       decoration: BoxDecoration(
-        color: AppColors.background.withOpacity(0.5),
+        color: AppColors.mobileBackground.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.mobileBorder),
       ),
       child: Row(
         children: [
@@ -452,7 +452,7 @@ class _ActionBar extends ConsumerWidget {
                         EditProductPage(productId: product.id, product: product),
                   )),
             ),
-            Container(width: 1, color: AppColors.border),
+            Container(width: 1, color: AppColors.mobileBorder),
           ],
           _actionBtn(
             icon: Icons.delete_forever_rounded,
@@ -512,8 +512,8 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         gradient: product.isSold
-            ? AppColors.secondaryGradient
-            : AppColors.accentGradient,
+            ? AppColors.mobilePrimaryGradient
+            : AppColors.mobileAccentGradient,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
