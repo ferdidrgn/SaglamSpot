@@ -107,11 +107,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
         Text(
           context.l10n.brand,
           style: TextStyle(
-            fontFamily: 'Fraunces',
             color: kIsWeb ? AppColors.textPrimary : AppColors.mobileTextPrimary,
-            fontWeight: FontWeight.w600,
-            fontSize: context.responsive(mobile: 14, tablet: 18, desktop: 20),
-            letterSpacing: context.responsive(mobile: 1, tablet: 1.5, desktop: 2),
+            fontWeight: FontWeight.w900,
+            fontSize: context.responsive(mobile: 15, tablet: 19, desktop: 22),
+            letterSpacing: -0.2,
+            height: 1,
           ),
         ),
       ],

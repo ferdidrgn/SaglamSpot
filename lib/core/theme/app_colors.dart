@@ -1,59 +1,61 @@
 import 'package:flutter/material.dart';
 
-/// TEK MARKA PALETİ — "Furnishify" referansından: koyu petrol-teal +
-/// sıcak amber vurgu. Web ve native mobil artık AYNI paleti kullanır.
-/// Eski sıcak espresso/ahşap palet tamamen kaldırıldı; aşağıdaki eski
-/// isimler (primary, background, textPrimary, mobilePrimary, vb.) hâlâ
-/// var ama hepsi aynı tek palete işaret ediyor — böylece uygulama
-/// genelindeki yüzlerce çağrı noktasını tek tek değiştirmeden renk
-/// tutarlılığı sağlanıyor.
+/// TEK MARKA PALETİ — "Sağlam Spot" logosundaki ahşap/bronz kurdele
+/// amblemine göre: sıcak ekru zemin + espresso kahvesi metin + ceviz/
+/// tarçın bronz vurgu. Web ve native mobil AYNI paleti kullanır.
+/// Önceki turdaki soğuk teal palet tamamen terk edildi; kullanıcının
+/// paylaştığı logo referanslarındaki sıcak, "mobilya butiği" hissi
+/// esas alındı. Aşağıdaki eski isimler (primary, mobilePrimary, vb.)
+/// hâlâ var ama hepsi aynı tek palete işaret ediyor — böylece uygulama
+/// genelindeki yüzlerce çağrı noktası tek tek değiştirilmeden tutarlı
+/// renk alır.
 class AppColors {
   // ================================================================
   // KANONİK RENKLER — tüm diğer isimler bunlara işaret eder.
   // ================================================================
   static const Color white = Colors.white;
 
-  static const Color primary = Color(0xFF2F4B4E); // koyu teal
-  static const Color primaryDark = Color(0xFF152223); // neredeyse siyah teal
-  static const Color primaryLight = Color(0xFF3F6367); // hover/basılı durum
+  static const Color primary = Color(0xFF3E2F23); // koyu espresso kahve
+  static const Color primaryDark = Color(0xFF241A13); // en koyu espresso
+  static const Color primaryLight = Color(0xFF6B5744); // hover/basılı durum
 
-  static const Color accent = Color(0xFFE2A54B); // sıcak amber vurgu
-  static const Color accentDark = Color(0xFFC98A34);
-  static const Color accentLight = Color(0xFFEDC080);
+  static const Color accent = Color(0xFFA9714B); // ceviz/tarçın bronz vurgu (logo rengi)
+  static const Color accentDark = Color(0xFF8B5A3A);
+  static const Color accentLight = Color(0xFFC79868);
 
-  static const Color background = white;
-  static const Color surface = white;
-  static const Color secondary = Color(0xFFF3F5F5); // açık gri-teal ikincil zemin
-  static const Color secondaryVariant = Color(0xFFEFF2F2);
+  static const Color background = Color(0xFFF5EFE6); // sıcak ekru/krem zemin
+  static const Color surface = Color(0xFFFFFDF9); // kırık beyaz kart zemini
+  static const Color secondary = Color(0xFFEDE3D3); // açık ahşap bej ikincil zemin
+  static const Color secondaryVariant = Color(0xFFE0D3BC); // koyu ahşap bej
 
-  static const Color muted = Color(0xFFBFC7C8); // adaçayı grisi
-  static const Color mutedDark = Color(0xFFA5B3B4); // kenarlık/pasif ikon
+  static const Color muted = Color(0xFFCFC0A8); // sıcak gri-bej
+  static const Color mutedDark = Color(0xFFB5A488); // kenarlık/pasif ikon
 
-  static const Color textPrimary = Color(0xFF152223);
-  static const Color textSecondary = Color(0xFF3A4D4E);
-  static const Color textTertiary = Color(0xFF6B7B7C);
+  static const Color textPrimary = Color(0xFF3E2F23);
+  static const Color textSecondary = Color(0xFF6B5744);
+  static const Color textTertiary = Color(0xFF8F7D6B);
   static const Color textLight = white;
 
-  static const Color border = Color(0xFFDCDEDE);
-  static const Color divider = Color(0xFFDCDEDE);
+  static const Color border = Color(0xFFE0D3BC);
+  static const Color divider = Color(0xFFEDE3D3);
 
-  static const Color black = primaryDark;
+  static const Color black = Color(0xFF2A1F17);
 
   // --- SEMANTİK RENKLER (durum bildirimi — markadan bağımsız) ---
-  static const Color error = Color(0xFFC0533F);
+  static const Color error = Color(0xFFB4543A);
   static const Color onError = Color(0xFFE0917A);
-  static const Color success = Color(0xFF3F7D5C);
-  static const Color warning = accentDark;
-  static const Color info = primaryLight;
+  static const Color success = Color(0xFF7C8B6F);
+  static const Color warning = Color(0xFFC98A4B);
+  static const Color info = Color(0xFF6E7D8F);
 
   static const Color sage = success;
-  static const Color sageDark = Color(0xFF2E5A41);
-  static const Color sageLight = Color(0xFF6FA381);
+  static const Color sageDark = Color(0xFF62705A);
+  static const Color sageLight = Color(0xFFA3AE97);
 
   static const Gradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [primaryLight, primary],
+    colors: [Color(0xFF4A3A2C), primary],
   );
 
   static const Gradient secondaryGradient = LinearGradient(
@@ -81,12 +83,12 @@ class AppColors {
   );
 
   // ================================================================
-  // GERİYE DÖNÜK İSİMLER — bu proje aylardır "sıcak espresso" adlarıyla
-  // yazıldığı için (primaryVariant, onPrimary, lightGrey, darkGrey vb.)
-  // yüzlerce dosyada bu adlar geçiyor. Hepsini tek tek değiştirmek yerine
-  // burada tek palete alias'lanıyorlar.
+  // GERİYE DÖNÜK İSİMLER — bu proje aylardır bu adlarla (primaryVariant,
+  // onPrimary, lightGrey, darkGrey vb.) yazıldığı için yüzlerce dosyada
+  // bu adlar geçiyor. Hepsini tek tek değiştirmek yerine burada tek
+  // palete alias'lanıyorlar.
   // ================================================================
-  static const Color primaryVariant = primaryDark;
+  static const Color primaryVariant = Color(0xFF2A1F17);
   static const Color onPrimary = accent;
   static const Color onSecondary = primary;
   static const Color onSurface = textPrimary;
@@ -96,20 +98,20 @@ class AppColors {
   static const Color darkGrey = textSecondary;
 
   static const Color backgroundLight = white;
-  static const Color backgroundDark = primaryDark;
+  static const Color backgroundDark = Color(0xFF241A13);
 
-  static const Color secondaryDark = mutedDark;
-  static const Color secondaryLight = muted;
+  static const Color secondaryDark = Color(0xFF8B5A3A);
+  static const Color secondaryLight = Color(0xFFC79868);
 
-  static const Color card = white;
+  static const Color card = surface;
 
   // Dark mode (uygulama ThemeMode.light'a sabitli, şu an pasif)
-  static const Color darkBackground = primaryDark;
-  static const Color darkSurface = Color(0xFF1E3436);
-  static const Color darkCard = Color(0xFF23393B);
-  static const Color darkTextPrimary = Color(0xFFDCDEDE);
-  static const Color darkTextSecondary = muted;
-  static const Color darkBorder = primaryLight;
+  static const Color darkBackground = Color(0xFF241A13);
+  static const Color darkSurface = Color(0xFF32251C);
+  static const Color darkCard = Color(0xFF3D2D22);
+  static const Color darkTextPrimary = Color(0xFFEDE3D3);
+  static const Color darkTextSecondary = Color(0xFFC2B29B);
+  static const Color darkBorder = Color(0xFF4A3A2C);
 
   // ================================================================
   // "mobile*" İSİMLERİ — geriye dönük uyumluluk için korunuyor. Artık

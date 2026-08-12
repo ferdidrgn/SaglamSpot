@@ -88,6 +88,7 @@ flutter:
 
   assets:
     - assets/images/saglam_spot_logo_mark.png
+    - assets/images/saglam_spot_logo_full.png
     - assets/images/saglam_spot_logo.jpeg
     - assets/images/saglam_spot_logo_2.jpeg
     - assets/images/bicycle_france.jpg
@@ -102,19 +103,19 @@ flutter:
 # NATIVE SPLASH SCREEN CONFIGURATION
 # ================================================
 flutter_native_splash:
-  color: "#2F4B4E" #
-  image: "assets/images/saglam_spot_logo_mark.png" #
+  color: "#F5EFE6" #
+  image: "assets/images/saglam_spot_logo_full.png" #
 
   android_12:
-    image: "assets/images/saglam_spot_logo_mark.png" #
-    color: "#2F4B4E" #
-    image_dark: "assets/images/saglam_spot_logo_mark.png" #
-    color_dark: "#152223" #
-    icon_background_color: "#2F4B4E" #
+    image: "assets/images/saglam_spot_logo_full.png" #
+    color: "#F5EFE6" #
+    image_dark: "assets/images/saglam_spot_logo_full.png" #
+    color_dark: "#241A13" #
+    icon_background_color: "#F5EFE6" #
 
-  color_dark: "#152223" #
-  image_dark: "assets/images/saglam_spot_logo_mark.png" #
-  android_navbar_color: "#2F4B4E" #
+  color_dark: "#241A13" #
+  image_dark: "assets/images/saglam_spot_logo_full.png" #
+  android_navbar_color: "#F5EFE6" #
 
   android: true #
   ios: true #
