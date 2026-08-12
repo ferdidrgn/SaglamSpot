@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -107,7 +108,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           context.l10n.brand,
           style: TextStyle(
             fontFamily: 'Fraunces',
-            color: AppColors.textPrimary,
+            color: kIsWeb ? AppColors.textPrimary : AppColors.mobileTextPrimary,
             fontWeight: FontWeight.w600,
             fontSize: context.responsive(mobile: 14, tablet: 18, desktop: 20),
             letterSpacing: context.responsive(mobile: 1, tablet: 1.5, desktop: 2),
@@ -127,7 +128,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           Icons.search_rounded,
           size: context.responsive(mobile: 22, tablet: 24, desktop: 26),
         ),
-        color: AppColors.textPrimary,
+        color: kIsWeb ? AppColors.textPrimary : AppColors.mobileTextPrimary,
       );
     }
 
@@ -172,7 +173,8 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   // 1. DÜZELTME: Dönüş tipi PreferredSizeWidget yerine 'Widget' (AppBar) yapıldı
   Widget _buildMobileAppBar() {
     return AppBar(
-      backgroundColor: AppColors.background.withOpacity(0.85),
+      backgroundColor:
+          (kIsWeb ? AppColors.background : AppColors.mobileBackground).withOpacity(0.85),
       elevation: 0,
       flexibleSpace: ClipRect(
         child: BackdropFilter(
@@ -224,21 +226,30 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           // Nav öğeleri sabit genişlikte bir Row olarak Spacer'ın yanına
           // konulunca, 1024-1200px aralığındaki laptop pencerelerinde
           // toplam genişlik taşıp RenderFlex overflow hatası veriyordu.
-          // Expanded + yatay kaydırma bunu kalıcı olarak imkansız kılar:
-          // sığdığında ortalanır, sığmadığında sessizce kayar.
+          // Expanded + yatay kaydırma bunu kalıcı olarak imkansız kılar.
+          // ÖNEMLİ: SingleChildScrollView içindeki Row'a "mainAxisSize.min"
+          // verilirse mainAxisAlignment.center etkisiz kalır (Row zaten
+          // içeriği kadar dar olur) — öğeler sola yapışık görünür. Bunun
+          // yerine LayoutBuilder ile ölçülen genişlik kadar bir minWidth
+          // dayatılıyor: sığdığında gerçekten ortalanır, sığmadığında
+          // içerik kendi genişliğini alıp sessizce kayar.
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _navItems
-                    .map((final item) => _DesktopNavItem(
-                          item: item,
-                          isActive: currentIndex == item.index,
-                          onTap: () => _onItemTapped(item.index),
-                        ))
-                    .toList(),
+            child: LayoutBuilder(
+              builder: (final context, final constraints) => SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _navItems
+                        .map((final item) => _DesktopNavItem(
+                              item: item,
+                              isActive: currentIndex == item.index,
+                              onTap: () => _onItemTapped(item.index),
+                            ))
+                        .toList(),
+                  ),
+                ),
               ),
             ),
           ),
@@ -278,7 +289,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           autofocus: true,
           child: Scaffold(
             key: _scaffoldKey,
-            backgroundColor: AppColors.background,
+            backgroundColor: kIsWeb ? AppColors.background : AppColors.mobileBackground,
 
             // 3. KESİN ÇÖZÜM: Hata veren alan PreferredSize sarmalayıcısı ile tip uyuşmazlığından arındırıldı
             appBar: PreferredSize(
@@ -389,8 +400,8 @@ class _MobileDrawer extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.surface,
-      shadowColor: AppColors.accentDark,
+      backgroundColor: kIsWeb ? AppColors.surface : AppColors.mobileSurface,
+      shadowColor: kIsWeb ? AppColors.accentDark : AppColors.mobileAccentDark,
       child: SafeArea(
         child: Column(
           children: [
@@ -421,7 +432,9 @@ class _MobileDrawer extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     leading: Icon(
                       item.icon,
-                      color: currentIndex == item.index ? AppColors.primary : null,
+                      color: currentIndex == item.index
+                          ? (kIsWeb ? AppColors.primary : AppColors.mobilePrimary)
+                          : null,
                     ),
                     title: Text(
                       item.label,
@@ -430,7 +443,8 @@ class _MobileDrawer extends StatelessWidget {
                       ),
                     ),
                     selected: currentIndex == item.index,
-                    selectedTileColor: AppColors.primary.withOpacity(0.08),
+                    selectedTileColor:
+                        (kIsWeb ? AppColors.primary : AppColors.mobilePrimary).withOpacity(0.08),
                     onTap: () => onItemTapped(item.index),
                   );
                 },
@@ -482,7 +496,7 @@ class _DrawerFooter extends StatelessWidget {
                 double.infinity,
                 context.responsive(mobile: 45, tablet: 50, desktop: 55),
               ),
-              backgroundColor: AppColors.primary,
+              backgroundColor: kIsWeb ? AppColors.primary : AppColors.mobilePrimary,
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

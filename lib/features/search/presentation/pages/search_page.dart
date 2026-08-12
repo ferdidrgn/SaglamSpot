@@ -356,7 +356,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ref.read(sortOptionProvider.notifier).set(option),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       itemBuilder: (final context) => SortOption.values
-          .map((final o) => PopupMenuItem(value: o, child: Text(o.label)))
+          .map((final o) => PopupMenuItem(value: o, child: Text(o.label(context))))
           .toList(),
       child: Container(
         height: context.responsive(mobile: 46.0, desktop: 50.0),
@@ -373,7 +373,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 size: 18, color: AppColors.textSecondary),
             if (!context.isMobile) ...[
               const SizedBox(width: 6),
-              Text(current.label,
+              Text(current.label(context),
                   style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,

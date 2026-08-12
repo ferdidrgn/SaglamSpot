@@ -46,7 +46,7 @@ class PopularCategoriesShowcase extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Popüler Kategoriler',
+            Text(context.l10n.popularCategoriesHeading,
                 style: TextStyle(
                     fontFamily: 'Fraunces',
                     fontSize: context.h2Size,
@@ -55,7 +55,7 @@ class PopularCategoriesShowcase extends ConsumerWidget {
             const SizedBox(height: 4),
             Container(height: 3, width: 40, color: AppColors.accent),
             const SizedBox(height: 8),
-            Text('İhtiyacına uygun mobilyayı tek tıkla bul',
+            Text(context.l10n.popularCategoriesSub,
                 style: TextStyle(
                     color: context.primaryColor.withOpacity(0.5),
                     fontSize: context.captionSize)),
@@ -178,7 +178,7 @@ class _CategoryTileState extends State<_CategoryTile> {
                               fontWeight: FontWeight.w800,
                               fontSize: 16)),
                       const SizedBox(height: 2),
-                      Text('${widget.count} ürün',
+                      Text(context.l10n.categoryProductCount(widget.count),
                           style: TextStyle(
                               color: Colors.white.withOpacity(0.75),
                               fontSize: 12,

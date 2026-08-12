@@ -81,7 +81,7 @@ class _AboutPageState extends State<AboutPage> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
-                      '2012\'DEN BERİ SİZİNLE',
+                      context.l10n.aboutBadge,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: context.responsive(mobile: 12, desktop: 14),
@@ -92,7 +92,7 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Sağlam Spot\nBildiğiniz Güven',
+                    context.l10n.aboutHeroTitle,
                     style: TextStyle(
                       fontFamily: 'Fraunces',
                       color: Colors.white,
@@ -104,7 +104,7 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'İşimizi sevgi ve titizlikle yaparak\nmahallemize hizmet veriyoruz.',
+                    context.l10n.aboutHeroSubtitle,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: context.responsive(mobile: 16, desktop: 20),
@@ -154,7 +154,7 @@ class _AboutPageState extends State<AboutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Biz Kimiz? (Hikayemiz)',
+          context.l10n.aboutStoryHeading,
           style: TextStyle(
             fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 28, desktop: 42),
@@ -164,7 +164,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 24),
         Text(
-          'Amacımız, evinize sıcaklık katacak, kaliteli ve içinize sinen mobilyaları bulmanıza yardımcı olmak. Yaşam alanlarınızı güzelleştirmek bizim işimiz.',
+          context.l10n.aboutStoryPara1,
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -173,7 +173,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 20),
         Text(
-          'Her şey 2012\'de, İçerenköy\'deki bu dükkanda başladı. O günden beri konuk olduğumuz ev sayısı daha da arttı.',
+          context.l10n.aboutStoryPara2,
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -182,7 +182,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 20),
         Text(
-          'Bugün, hem sıfır hem de özenle seçtiğimiz ikinci el ürünlerimizle, binlerce komşumuzun evine konuk olduk. Sizin güveninizle büyüyoruz.',
+          context.l10n.aboutStoryPara3,
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.textSecondary,
@@ -194,9 +194,9 @@ class _AboutPageState extends State<AboutPage> {
           spacing: 32,
           runSpacing: 24,
           children: [
-            _buildStoryHighlight('2012', 'Başlangıç'),
-            _buildStoryHighlight('30+', 'Yıllık Tecrübe'),
-            _buildStoryHighlight('5K+', 'Gülen Yüz'),
+            _buildStoryHighlight('2012', context.l10n.aboutStoryStartLabel),
+            _buildStoryHighlight('30+', context.l10n.aboutStoryExperienceLabel),
+            _buildStoryHighlight('5K+', context.l10n.aboutStorySmilesLabel),
           ],
         ),
       ],
@@ -257,29 +257,29 @@ class _AboutPageState extends State<AboutPage> {
     final value1 = _buildValueCard(
       context,
       Icons.verified_outlined,
-      'Kalite ve Titizlik',
-      'İster sıfır ister ikinci el olsun titizlikle seçer, size öyle sunarız.',
+      context.l10n.aboutValue1Title,
+      context.l10n.aboutValue1Desc,
       AppColors.primary,
     );
     final value2 = _buildValueCard(
       context,
       Icons.favorite_outline,
-      'Gülen Yüz',
-      'Bizim için en büyük kazanç, dükkandan mutlu ayrılan bir komşumuzdur. Memnuniyetiniz her şeyden önce gelir.',
+      context.l10n.aboutValue2Title,
+      context.l10n.aboutValue2Desc,
       AppColors.secondary,
     );
     final value3 = _buildValueCard(
       context,
       Icons.eco_outlined,
-      'Emeğe Saygı',
-      'Mobilya kıymetli bir emektir. İkinci el ürünlere yeniden hayat vererek hem bütçenizi hem de doğayı koruruz.',
+      context.l10n.aboutValue3Title,
+      context.l10n.aboutValue3Desc,
       AppColors.success,
     );
     final value4 = _buildValueCard(
       context,
       Icons.handshake_outlined,
-      'Dürüstlük ve Güven',
-      'Şeffaf ve dürüst esnaflık en büyük değerimizdir. Yıllardır aynı konumumuzda sizlerle birlikteyiz.',
+      context.l10n.aboutValue4Title,
+      context.l10n.aboutValue4Desc,
       AppColors.info,
     );
 
@@ -329,7 +329,7 @@ class _AboutPageState extends State<AboutPage> {
         child: Column(
           children: [
             Text(
-              'İlkelerimiz',
+              context.l10n.aboutValuesHeading,
               style: TextStyle(
                 fontFamily: 'Fraunces',
                 fontSize: context.responsive(mobile: 28, desktop: 42),
@@ -339,7 +339,7 @@ class _AboutPageState extends State<AboutPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Esnaflıktan ödün vermediğimiz prensiplerimiz',
+              context.l10n.aboutValuesSubheading,
               style: TextStyle(
                 fontSize: context.responsive(mobile: 16, desktop: 18),
                 color: AppColors.textSecondary,
@@ -434,7 +434,7 @@ class _AboutPageState extends State<AboutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ustamızı Tanıyın',
+          context.l10n.aboutMasterHeading,
           style: TextStyle(
             fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 22, desktop: 28),
@@ -444,9 +444,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          "Ustamız, 1995\'ten beri, yani çeyrek asırdan fazladır bu işin içinde. Sektörün tozunu yutmuş, en iyi markalarda (İstikbal) çalışarak mobilyanın 'püf noktalarını' öğrenmiş biridir.\n\n"
-          "Sürücülükten montaja, müşteri karşılamadan taşımaya kadar her alanda bizzat çalışarak tam bir tecrübe kazanmıştır. 2012'de ise 'artık kendi dükkanım' diyerek bu tecrübesini Sağlam Spot'a taşımıştır.\n\n"
-          "Amacı, o büyük firmalarda öğrendiği kaliteyi, mahalle esnafının samimiyeti ve titizliğiyle birleştirip size en iyi hizmeti sunmaktır.",
+          context.l10n.aboutMasterBody,
           style: TextStyle(
             fontSize: context.responsive(mobile: 15, desktop: 16),
             color: AppColors.textSecondary,
@@ -513,7 +511,7 @@ class _AboutPageState extends State<AboutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Nakliye ve Montaj Hizmetimiz',
+          context.l10n.aboutDeliveryHeading,
           style: TextStyle(
             fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 22, desktop: 28),
@@ -523,7 +521,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Ücretsiz Nakliye ve Montaj',
+          context.l10n.aboutDeliveryFreeTitle,
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             color: AppColors.accent,
@@ -532,7 +530,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 12),
         Text(
-          'Ücretsiz Hizmet Bölgelerimiz:',
+          context.l10n.aboutDeliveryZonesLabel,
           style: TextStyle(
             fontSize: context.responsive(mobile: 15, desktop: 16),
             fontWeight: FontWeight.w600,
@@ -541,7 +539,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 8),
         Text(
-          '• İçerenköy Mahallemiz\n• Fındıklı, Kayışdağı, Küçükbakkalköy\n• İnönü ve Bostancı Sanayi gibi yakın komşularımız',
+          context.l10n.aboutDeliveryZonesList,
           style: TextStyle(
             fontSize: context.responsive(mobile: 15, desktop: 16),
             color: AppColors.textSecondary,
@@ -550,7 +548,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Önemli Not: Ustamızın sağlığını korumak için, asansör olmayan binalarda yüksek katlara maalesef hizmet veremiyoruz. Anlayışınız için teşekkür ederiz.',
+          context.l10n.aboutDeliveryNote,
           style: TextStyle(
             fontSize: context.responsive(mobile: 14, desktop: 15),
             color: AppColors.textSecondary,
@@ -560,7 +558,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          '⏰ Sizinle sözleştiğimiz saatte kapınızdayız!',
+          context.l10n.aboutDeliveryPunctual,
           style: TextStyle(
             fontSize: context.responsive(mobile: 14, desktop: 14),
             color: AppColors.textTertiary,
@@ -622,7 +620,7 @@ class _AboutPageState extends State<AboutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Dükkanımıza Nasıl Gelirsiniz?',
+          context.l10n.aboutTransportHeading,
           style: TextStyle(
             fontFamily: 'Fraunces',
             fontSize: context.responsive(mobile: 22, desktop: 28),
@@ -632,7 +630,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Otobüsle Gelirseniz:',
+          context.l10n.aboutTransportBusIntro,
           style: TextStyle(
             fontSize: context.responsive(mobile: 16, desktop: 18),
             fontWeight: FontWeight.w600,
@@ -642,17 +640,17 @@ class _AboutPageState extends State<AboutPage> {
         const SizedBox(height: 12),
         _buildBusInfo(
           context,
-          'Ziyapaşa Durağı (Kadıköy Yönü):',
+          context.l10n.aboutBusStop1,
           '19, 19F, 19FB, 14KS, 18UK, KM46-1',
         ),
         _buildBusInfo(
           context,
-          'İçerenköy Durağı (Kayışdağı Yönü):',
+          context.l10n.aboutBusStop2,
           '19, 19F, 19FB, 14KS, 18UK, KM46-1',
         ),
         _buildBusInfo(
           context,
-          'İçerenköy Durağı (Yeniyol):',
+          context.l10n.aboutBusStop3,
           '10, 319, KM46, 13AB, 14T',
         ),
       ],
@@ -723,20 +721,20 @@ class _AboutPageState extends State<AboutPage> {
     final item1 = _buildContactItem(
       context,
       Icons.phone_outlined,
-      'Telefon (Hızlı Çözüm)',
+      context.l10n.aboutContactPhoneLabel,
       '+90 539 201 9961',
     );
     final item2 = _buildContactItem(
       context,
       Icons.location_on_outlined,
-      'Adres (Çaya Bekleriz)',
-      'İçerenköy Mahallesi\nBuket Sokak No:6',
+      context.l10n.aboutContactAddressLabel,
+      context.l10n.aboutContactAddressValue,
     );
     final item3 = _buildContactItem(
       context,
       Icons.access_time_outlined,
-      'Çalışma Saatlerimiz',
-      'Pzt-Cmt: 09:00 - 22:00\nPazar: 10:00 - 20:00',
+      context.l10n.aboutContactHoursLabel,
+      context.l10n.aboutContactHoursValue,
     );
 
     final itemsDesktop = [
@@ -775,7 +773,7 @@ class _AboutPageState extends State<AboutPage> {
             const Icon(Icons.phone),
             const SizedBox(width: 8),
             Text(
-              'Hemen Ara',
+              context.l10n.aboutCallNowButton,
               style: TextStyle(
                 fontSize: context.responsive(mobile: 16, desktop: 18),
                 fontWeight: FontWeight.bold,
@@ -807,7 +805,7 @@ class _AboutPageState extends State<AboutPage> {
             const Icon(Icons.map),
             const SizedBox(width: 8),
             Text(
-              'Haritada Gör',
+              context.l10n.aboutViewMapButton,
               style: TextStyle(
                 fontSize: context.responsive(mobile: 16, desktop: 18),
                 fontWeight: FontWeight.bold,
@@ -837,7 +835,7 @@ class _AboutPageState extends State<AboutPage> {
         child: Column(
           children: [
             Text(
-              'Bize Ulaşın',
+              context.l10n.aboutContactHeading,
               style: TextStyle(
                 fontFamily: 'Fraunces',
                 fontSize: context.responsive(mobile: 28, desktop: 42),
@@ -951,7 +949,7 @@ class _AboutPageState extends State<AboutPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Dükkanımız Tam Burada',
+                      context.l10n.aboutMapHeading,
                       style: TextStyle(
                         fontSize: context.responsive(mobile: 18, desktop: 20),
                         fontWeight: FontWeight.w600,
@@ -959,9 +957,9 @@ class _AboutPageState extends State<AboutPage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Yol tarifi almak için haritaya dokunun',
-                      style: TextStyle(
+                    Text(
+                      context.l10n.aboutMapSubtext,
+                      style: const TextStyle(
                         color: AppColors.textTertiary,
                       ),
                     ),

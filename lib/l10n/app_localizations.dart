@@ -1063,6 +1063,1410 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Hesabınızdan güvenli bir şekilde çıkış yapmak istediğinize emin misiniz?'**
   String get logoutConfirm;
+
+  /// No description provided for @testimonialsHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Müşterilerimiz Ne Diyor?'**
+  String get testimonialsHeading;
+
+  /// No description provided for @testimonialsSubheading.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 yılı aşkın süredir İçerenköy ve çevresinde binlerce eve dokunduk'**
+  String get testimonialsSubheading;
+
+  /// No description provided for @testimonial1Comment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koltuk takımını çok uygun fiyata aldık, hem de sıfır gibi. Teslimat aynı gün elden ele yapıldı, esnaf usulü güven tam anlamıyla buradaydı.'**
+  String get testimonial1Comment;
+
+  /// No description provided for @testimonial2Comment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatak odası takımını spot fiyatına buradan aldım. Ürün açıklamasıyla birebir aynıydı, hiçbir sürpriz yaşamadım. Kesinlikle tavsiye ederim.'**
+  String get testimonial2Comment;
+
+  /// No description provided for @testimonial3Comment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ofis için toplu mobilya alımı yaptık, hem fiyat hem kalite beklentimizin üzerindeydi. İlgili ve sabırlı bir ekip, teşekkürler Sağlam Spot.'**
+  String get testimonial3Comment;
+
+  /// No description provided for @testimonial4Comment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yemek masası setini pazarlıksız, dürüst bir fiyata satın aldık. Nakliye konusunda da yardımcı oldular, gönül rahatlığıyla alışveriş yaptık.'**
+  String get testimonial4Comment;
+
+  /// No description provided for @testimonial5Comment.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci el gardırop aradık, hem sağlam hem şık bir ürün bulduk. Fiyat/performans olarak piyasadaki en iyi seçenekti.'**
+  String get testimonial5Comment;
+
+  /// No description provided for @testimonial6Comment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Showroom ziyaretimizde ürünleri yerinde görme şansımız oldu, bu güveni artırdı. Satış sonrası da bize her zaman ulaşılabilir oldular.'**
+  String get testimonial6Comment;
+
+  /// No description provided for @howItWorksHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nasıl Çalışır?'**
+  String get howItWorksHeading;
+
+  /// No description provided for @step1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gözat & Filtrele'**
+  String get step1Title;
+
+  /// No description provided for @step1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategoriler ve fiyat aralığına göre binlerce ürün arasından beğendiğini bul.'**
+  String get step1Desc;
+
+  /// No description provided for @step2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bizimle İletişime Geç'**
+  String get step2Title;
+
+  /// No description provided for @step2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün sayfasından tek tıkla WhatsApp veya telefonla ekibimize ulaş.'**
+  String get step2Desc;
+
+  /// No description provided for @step3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyatı Netleştir'**
+  String get step3Title;
+
+  /// No description provided for @step3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünü showroomda gör veya fotoğraflarla teyit et, esnaf usulü net fiyat al.'**
+  String get step3Desc;
+
+  /// No description provided for @step4Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapına Teslim'**
+  String get step4Title;
+
+  /// No description provided for @step4Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy ve Anadolu Yakası\'na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.'**
+  String get step4Desc;
+
+  /// No description provided for @tipsEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'İPUÇLARI'**
+  String get tipsEyebrow;
+
+  /// No description provided for @tipsHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uzmanından Bakım Önerileri'**
+  String get tipsHeading;
+
+  /// No description provided for @tip1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oturma Odasını Sevilesi Hale Getirin'**
+  String get tip1Title;
+
+  /// No description provided for @tip1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koltuk yerleşimini duvardan 1-2 cm boşluk bırakarak yapın; hem hava sirkülasyonu sağlar hem de odayı ferahlatır.'**
+  String get tip1Desc;
+
+  /// No description provided for @tip1Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yerleştirme'**
+  String get tip1Category;
+
+  /// No description provided for @tip2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Temiz Görünen Bir Çalışma Alanı'**
+  String get tip2Title;
+
+  /// No description provided for @tip2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kabloları toplayıcılarla düzenleyin, mikrofiber bezle dairesel hareketlerle silin — masanız hep yeni gibi kalsın.'**
+  String get tip2Desc;
+
+  /// No description provided for @tip2Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Temizlik'**
+  String get tip2Category;
+
+  /// No description provided for @tip3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mutfakta Keyifli Bir Kurulum'**
+  String get tip3Title;
+
+  /// No description provided for @tip3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ağır malzemeleri alt raflara, sık kullandıklarınızı göz hizasına yerleştirin — hem pratik hem güvenli.'**
+  String get tip3Desc;
+
+  /// No description provided for @tip3Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzen'**
+  String get tip3Category;
+
+  /// No description provided for @tip4Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahat Bir Uyku Köşesi Kurun'**
+  String get tip4Title;
+
+  /// No description provided for @tip4Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatak başlığını pencereden uzağa, ışığı en aza indirecek şekilde konumlandırın — daha derin bir uyku için küçük ama etkili bir değişiklik.'**
+  String get tip4Desc;
+
+  /// No description provided for @tip4Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konfor'**
+  String get tip4Category;
+
+  /// No description provided for @tip5Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dolabınızı Ferahlatın'**
+  String get tip5Title;
+
+  /// No description provided for @tip5Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sezonluk kıyafetleri ayırın, askı yönünü tek taraflı tutun — hem yer kazanır hem de her sabah seçim yapmak kolaylaşır.'**
+  String get tip5Desc;
+
+  /// No description provided for @tip5Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Organizasyon'**
+  String get tip5Category;
+
+  /// No description provided for @tip6Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ahşap Mobilyaya Ömür Katın'**
+  String get tip6Title;
+
+  /// No description provided for @tip6Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Doğrudan güneş ışığından koruyun, yılda birkaç kez besleyici yağ ile silin — çizik ve solmaya karşı en etkili bakım budur.'**
+  String get tip6Desc;
+
+  /// No description provided for @tip6Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bakım'**
+  String get tip6Category;
+
+  /// No description provided for @tip7Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kumaş Koltukları Uzun Ömürlü Kılın'**
+  String get tip7Title;
+
+  /// No description provided for @tip7Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haftada bir vakumlayın, lekeleri hemen nemli bezle tamponlayın — beklemek lekenin kumaşa işlemesine sebep olur.'**
+  String get tip7Desc;
+
+  /// No description provided for @tip7Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bakım'**
+  String get tip7Category;
+
+  /// No description provided for @tip8Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Doğru Aydınlatmayı Seçin'**
+  String get tip8Title;
+
+  /// No description provided for @tip8Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tek bir tavan lambası yerine kat kat aydınlatma kullanın: genel, görev ve atmosfer ışığı bir arada odayı daha sıcak gösterir.'**
+  String get tip8Desc;
+
+  /// No description provided for @tip8Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aydınlatma'**
+  String get tip8Category;
+
+  /// No description provided for @tip9Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Küçük Alanları Akıllıca Kullanın'**
+  String get tip9Title;
+
+  /// No description provided for @tip9Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Katlanabilir ve çok amaçlı mobilyalar tercih edin; duvara monte raflar zemin alanını özgür bırakır.'**
+  String get tip9Desc;
+
+  /// No description provided for @tip9Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzen'**
+  String get tip9Category;
+
+  /// No description provided for @tip10Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Balkonunuzu Yaşam Alanına Dönüştürün'**
+  String get tip10Title;
+
+  /// No description provided for @tip10Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hava koşullarına dayanıklı bir koltuk takımı ve birkaç saksı bitkiyle balkon, evin en sevilen köşesi haline gelir.'**
+  String get tip10Desc;
+
+  /// No description provided for @tip10Category.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dış Mekan'**
+  String get tip10Category;
+
+  /// No description provided for @popularCategoriesHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Popüler Kategoriler'**
+  String get popularCategoriesHeading;
+
+  /// No description provided for @popularCategoriesSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'İhtiyacına uygun mobilyayı tek tıkla bul'**
+  String get popularCategoriesSub;
+
+  /// No description provided for @categoryProductCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ürün'**
+  String categoryProductCount(int count);
+
+  /// No description provided for @newsletterSubscribeSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bültenimize başarıyla abone oldunuz!'**
+  String get newsletterSubscribeSuccess;
+
+  /// No description provided for @newsletterHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Ürünlerden İlk Siz Haberdar Olun'**
+  String get newsletterHeading;
+
+  /// No description provided for @newsletterDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot fırsatlar, yeni koleksiyonlar ve kampanyalar e-posta kutunuza gelsin. Spam yok, sadece işinize yarayacak fırsatlar.'**
+  String get newsletterDesc;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta adresiniz'**
+  String get emailHint;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta gerekli'**
+  String get emailRequired;
+
+  /// No description provided for @emailInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli bir e-posta girin'**
+  String get emailInvalid;
+
+  /// No description provided for @whyUsHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Neden Sağlam Spot?'**
+  String get whyUsHeading;
+
+  /// No description provided for @usp1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 Yıllık Esnaf Güvencesi'**
+  String get usp1Title;
+
+  /// No description provided for @usp1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy\'de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.'**
+  String get usp1Desc;
+
+  /// No description provided for @usp2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Piyasanın Altında Fiyat'**
+  String get usp2Title;
+
+  /// No description provided for @usp2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.'**
+  String get usp2Desc;
+
+  /// No description provided for @usp3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrollü Ürün Kalitesi'**
+  String get usp3Title;
+
+  /// No description provided for @usp3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.'**
+  String get usp3Desc;
+
+  /// No description provided for @usp4Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satış Sonrası Destek'**
+  String get usp4Title;
+
+  /// No description provided for @usp4Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.'**
+  String get usp4Desc;
+
+  /// No description provided for @socialShowcaseEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'PAYLAŞIN'**
+  String get socialShowcaseEyebrow;
+
+  /// No description provided for @socialShowcaseHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'#SağlamSpot ile Kurulumunuzu Paylaşın'**
+  String get socialShowcaseHeading;
+
+  /// No description provided for @productsLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünler yüklenirken hata oluştu: {error}'**
+  String productsLoadError(String error);
+
+  /// No description provided for @viewAllButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümünü Gör'**
+  String get viewAllButton;
+
+  /// No description provided for @showcaseEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'VİTRİN'**
+  String get showcaseEyebrow;
+
+  /// No description provided for @exploreButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Keşfet'**
+  String get exploreButton;
+
+  /// No description provided for @visitUsEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİZE UĞRA'**
+  String get visitUsEyebrow;
+
+  /// No description provided for @visitUsHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir Selam Ver, Yeter'**
+  String get visitUsHeading;
+
+  /// No description provided for @visitUsOpenLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapımız her zaman açık. {hours}'**
+  String visitUsOpenLine(String hours);
+
+  /// No description provided for @directionsButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yol Tarifi'**
+  String get directionsButton;
+
+  /// No description provided for @freeDeliveryLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ücretsiz Teslimat'**
+  String get freeDeliveryLabel;
+
+  /// No description provided for @busLinesLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Otobüs Hatları'**
+  String get busLinesLabel;
+
+  /// No description provided for @statYearsSuffix.
+  ///
+  /// In tr, this message translates to:
+  /// **'+ Yıl'**
+  String get statYearsSuffix;
+
+  /// No description provided for @storeAddress.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy, Ataşehir/İstanbul'**
+  String get storeAddress;
+
+  /// No description provided for @stayUpdated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güncel Kalın'**
+  String get stayUpdated;
+
+  /// No description provided for @viewButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'İncele'**
+  String get viewButton;
+
+  /// No description provided for @heroSlide2Eyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'İKİNCİ EL'**
+  String get heroSlide2Eyebrow;
+
+  /// No description provided for @heroSlide2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Öyküsü Olan Mobilyalar'**
+  String get heroSlide2Title;
+
+  /// No description provided for @heroSlide2Subtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.'**
+  String get heroSlide2Subtitle;
+
+  /// No description provided for @heroSlide3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm Koleksiyonu Keşfedin'**
+  String get heroSlide3Title;
+
+  /// No description provided for @aboutBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'2012\'DEN BERİ SİZİNLE'**
+  String get aboutBadge;
+
+  /// No description provided for @aboutHeroTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağlam Spot\nBildiğiniz Güven'**
+  String get aboutHeroTitle;
+
+  /// No description provided for @aboutHeroSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşimizi sevgi ve titizlikle yaparak\nmahallemize hizmet veriyoruz.'**
+  String get aboutHeroSubtitle;
+
+  /// No description provided for @aboutStoryHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biz Kimiz? (Hikayemiz)'**
+  String get aboutStoryHeading;
+
+  /// No description provided for @aboutStoryPara1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Amacımız, evinize sıcaklık katacak, kaliteli ve içinize sinen mobilyaları bulmanıza yardımcı olmak. Yaşam alanlarınızı güzelleştirmek bizim işimiz.'**
+  String get aboutStoryPara1;
+
+  /// No description provided for @aboutStoryPara2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her şey 2012\'de, İçerenköy\'deki bu dükkanda başladı. O günden beri konuk olduğumuz ev sayısı daha da arttı.'**
+  String get aboutStoryPara2;
+
+  /// No description provided for @aboutStoryPara3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün, hem sıfır hem de özenle seçtiğimiz ikinci el ürünlerimizle, binlerce komşumuzun evine konuk olduk. Sizin güveninizle büyüyoruz.'**
+  String get aboutStoryPara3;
+
+  /// No description provided for @aboutStoryStartLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlangıç'**
+  String get aboutStoryStartLabel;
+
+  /// No description provided for @aboutStoryExperienceLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yıllık Tecrübe'**
+  String get aboutStoryExperienceLabel;
+
+  /// No description provided for @aboutStorySmilesLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gülen Yüz'**
+  String get aboutStorySmilesLabel;
+
+  /// No description provided for @aboutValuesHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlkelerimiz'**
+  String get aboutValuesHeading;
+
+  /// No description provided for @aboutValuesSubheading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Esnaflıktan ödün vermediğimiz prensiplerimiz'**
+  String get aboutValuesSubheading;
+
+  /// No description provided for @aboutValue1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalite ve Titizlik'**
+  String get aboutValue1Title;
+
+  /// No description provided for @aboutValue1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İster sıfır ister ikinci el olsun titizlikle seçer, size öyle sunarız.'**
+  String get aboutValue1Desc;
+
+  /// No description provided for @aboutValue2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gülen Yüz'**
+  String get aboutValue2Title;
+
+  /// No description provided for @aboutValue2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bizim için en büyük kazanç, dükkandan mutlu ayrılan bir komşumuzdur. Memnuniyetiniz her şeyden önce gelir.'**
+  String get aboutValue2Desc;
+
+  /// No description provided for @aboutValue3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Emeğe Saygı'**
+  String get aboutValue3Title;
+
+  /// No description provided for @aboutValue3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobilya kıymetli bir emektir. İkinci el ürünlere yeniden hayat vererek hem bütçenizi hem de doğayı koruruz.'**
+  String get aboutValue3Desc;
+
+  /// No description provided for @aboutValue4Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dürüstlük ve Güven'**
+  String get aboutValue4Title;
+
+  /// No description provided for @aboutValue4Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şeffaf ve dürüst esnaflık en büyük değerimizdir. Yıllardır aynı konumumuzda sizlerle birlikteyiz.'**
+  String get aboutValue4Desc;
+
+  /// No description provided for @aboutMasterHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ustamızı Tanıyın'**
+  String get aboutMasterHeading;
+
+  /// No description provided for @aboutMasterBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ustamız, 1995\'ten beri, yani çeyrek asırdan fazladır bu işin içinde. Sektörün tozunu yutmuş, en iyi markalarda (İstikbal) çalışarak mobilyanın \'püf noktalarını\' öğrenmiş biridir.\n\nSürücülükten montaja, müşteri karşılamadan taşımaya kadar her alanda bizzat çalışarak tam bir tecrübe kazanmıştır. 2012\'de ise \'artık kendi dükkanım\' diyerek bu tecrübesini Sağlam Spot\'a taşımıştır.\n\nAmacı, o büyük firmalarda öğrendiği kaliteyi, mahalle esnafının samimiyeti ve titizliğiyle birleştirip size en iyi hizmeti sunmaktır.'**
+  String get aboutMasterBody;
+
+  /// No description provided for @aboutDeliveryHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nakliye ve Montaj Hizmetimiz'**
+  String get aboutDeliveryHeading;
+
+  /// No description provided for @aboutDeliveryFreeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ücretsiz Nakliye ve Montaj'**
+  String get aboutDeliveryFreeTitle;
+
+  /// No description provided for @aboutDeliveryZonesLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ücretsiz Hizmet Bölgelerimiz:'**
+  String get aboutDeliveryZonesLabel;
+
+  /// No description provided for @aboutDeliveryZonesList.
+  ///
+  /// In tr, this message translates to:
+  /// **'• İçerenköy Mahallemiz\n• Fındıklı, Kayışdağı, Küçükbakkalköy\n• İnönü ve Bostancı Sanayi gibi yakın komşularımız'**
+  String get aboutDeliveryZonesList;
+
+  /// No description provided for @aboutDeliveryNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önemli Not: Ustamızın sağlığını korumak için, asansör olmayan binalarda yüksek katlara maalesef hizmet veremiyoruz. Anlayışınız için teşekkür ederiz.'**
+  String get aboutDeliveryNote;
+
+  /// No description provided for @aboutDeliveryPunctual.
+  ///
+  /// In tr, this message translates to:
+  /// **'⏰ Sizinle sözleştiğimiz saatte kapınızdayız!'**
+  String get aboutDeliveryPunctual;
+
+  /// No description provided for @aboutTransportHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dükkanımıza Nasıl Gelirsiniz?'**
+  String get aboutTransportHeading;
+
+  /// No description provided for @aboutTransportBusIntro.
+  ///
+  /// In tr, this message translates to:
+  /// **'Otobüsle Gelirseniz:'**
+  String get aboutTransportBusIntro;
+
+  /// No description provided for @aboutBusStop1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ziyapaşa Durağı (Kadıköy Yönü):'**
+  String get aboutBusStop1;
+
+  /// No description provided for @aboutBusStop2.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy Durağı (Kayışdağı Yönü):'**
+  String get aboutBusStop2;
+
+  /// No description provided for @aboutBusStop3.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy Durağı (Yeniyol):'**
+  String get aboutBusStop3;
+
+  /// No description provided for @aboutContactPhoneLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon (Hızlı Çözüm)'**
+  String get aboutContactPhoneLabel;
+
+  /// No description provided for @aboutContactAddressLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adres (Çaya Bekleriz)'**
+  String get aboutContactAddressLabel;
+
+  /// No description provided for @aboutContactAddressValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy Mahallesi\nBuket Sokak No:6'**
+  String get aboutContactAddressValue;
+
+  /// No description provided for @aboutContactHoursLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çalışma Saatlerimiz'**
+  String get aboutContactHoursLabel;
+
+  /// No description provided for @aboutContactHoursValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pzt-Cmt: 09:00 - 22:00\nPazar: 10:00 - 20:00'**
+  String get aboutContactHoursValue;
+
+  /// No description provided for @aboutContactHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bize Ulaşın'**
+  String get aboutContactHeading;
+
+  /// No description provided for @aboutCallNowButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hemen Ara'**
+  String get aboutCallNowButton;
+
+  /// No description provided for @aboutViewMapButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haritada Gör'**
+  String get aboutViewMapButton;
+
+  /// No description provided for @aboutMapHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dükkanımız Tam Burada'**
+  String get aboutMapHeading;
+
+  /// No description provided for @aboutMapSubtext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yol tarifi almak için haritaya dokunun'**
+  String get aboutMapSubtext;
+
+  /// No description provided for @newProductsBadgeEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'NEW COLLECTION'**
+  String get newProductsBadgeEyebrow;
+
+  /// No description provided for @newProductsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni\nKoleksiyon'**
+  String get newProductsTitle;
+
+  /// No description provided for @productsBadgeLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'ÜRÜN'**
+  String get productsBadgeLabel;
+
+  /// No description provided for @breadcrumbHome.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana Sayfa'**
+  String get breadcrumbHome;
+
+  /// No description provided for @statTotalProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'TOPLAM ÜRÜN'**
+  String get statTotalProducts;
+
+  /// No description provided for @statCategoryLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'KATEGORİ'**
+  String get statCategoryLabel;
+
+  /// No description provided for @statConditionValueNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'YENİ'**
+  String get statConditionValueNew;
+
+  /// No description provided for @statConditionLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'DURUM'**
+  String get statConditionLabel;
+
+  /// No description provided for @statRatingLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'PUAN'**
+  String get statRatingLabel;
+
+  /// No description provided for @searchBarRichPrefix.
+  ///
+  /// In tr, this message translates to:
+  /// **'Detaylı ürün araması için '**
+  String get searchBarRichPrefix;
+
+  /// No description provided for @searchBarRichOr.
+  ///
+  /// In tr, this message translates to:
+  /// **' yapın ya da '**
+  String get searchBarRichOr;
+
+  /// No description provided for @searchBarRichHereLink.
+  ///
+  /// In tr, this message translates to:
+  /// **'BURADAKİ'**
+  String get searchBarRichHereLink;
+
+  /// No description provided for @searchBarRichSuffix.
+  ///
+  /// In tr, this message translates to:
+  /// **' yazıya tıklayın.'**
+  String get searchBarRichSuffix;
+
+  /// No description provided for @sortNewProductsDefault.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeniler'**
+  String get sortNewProductsDefault;
+
+  /// No description provided for @sortSpotProductsDefault.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Yeni'**
+  String get sortSpotProductsDefault;
+
+  /// No description provided for @sortPriceLowHigh.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat: Düşük-Yüksek'**
+  String get sortPriceLowHigh;
+
+  /// No description provided for @sortPriceHighLow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat: Yüksek-Düşük'**
+  String get sortPriceHighLow;
+
+  /// No description provided for @sortMostPopular.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Popüler'**
+  String get sortMostPopular;
+
+  /// No description provided for @spotBadgeEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'SPOT ÜRÜNLER'**
+  String get spotBadgeEyebrow;
+
+  /// No description provided for @spotHeroTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fırsat\nÜrünleri'**
+  String get spotHeroTitle;
+
+  /// No description provided for @spotDiscountLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'İNDİRİM'**
+  String get spotDiscountLabel;
+
+  /// No description provided for @statSpotProductLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot Ürün'**
+  String get statSpotProductLabel;
+
+  /// No description provided for @statDiscountLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndirim'**
+  String get statDiscountLabel;
+
+  /// No description provided for @statSupportLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Destek'**
+  String get statSupportLabel;
+
+  /// No description provided for @statFreeLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ücretsiz'**
+  String get statFreeLabel;
+
+  /// No description provided for @statFreeShippingNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Maalesef Yakın Çevrelerimize, Kargo'**
+  String get statFreeShippingNote;
+
+  /// No description provided for @statFreeShippingShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kargo'**
+  String get statFreeShippingShort;
+
+  /// No description provided for @filtersPanelTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'FİLTRELER'**
+  String get filtersPanelTitle;
+
+  /// No description provided for @priceRangeSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'FİYAT ARALIĞI'**
+  String get priceRangeSectionTitle;
+
+  /// No description provided for @clearFiltersButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'FİLTRELERİ TEMİZLE'**
+  String get clearFiltersButton;
+
+  /// No description provided for @tryDifferentFiltersShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farklı filtreler deneyebilirsiniz'**
+  String get tryDifferentFiltersShort;
+
+  /// No description provided for @spotBadgeTag.
+  ///
+  /// In tr, this message translates to:
+  /// **'SPOT'**
+  String get spotBadgeTag;
+
+  /// No description provided for @productLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün yüklenemedi: {error}'**
+  String productLoadError(String error);
+
+  /// No description provided for @productSpecConditionNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfır Ürün'**
+  String get productSpecConditionNew;
+
+  /// No description provided for @productLocationValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy, İstanbul'**
+  String get productLocationValue;
+
+  /// No description provided for @sortFeatured.
+  ///
+  /// In tr, this message translates to:
+  /// **'Öne Çıkanlar'**
+  String get sortFeatured;
+
+  /// No description provided for @sortPriceAsc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat: Artan'**
+  String get sortPriceAsc;
+
+  /// No description provided for @sortPriceDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat: Azalan'**
+  String get sortPriceDesc;
+
+  /// No description provided for @languageSelectorTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dil Seçimi'**
+  String get languageSelectorTitle;
+
+  /// No description provided for @languageTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dil'**
+  String get languageTooltip;
+
+  /// No description provided for @galleryEmptyMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu ürüne ait henüz fotoğraf eklenmemiş.'**
+  String get galleryEmptyMessage;
+
+  /// No description provided for @productCardNewBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIFIR'**
+  String get productCardNewBadge;
+
+  /// No description provided for @sssHelpCenterBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'YARDIM MERKEZİ'**
+  String get sssHelpCenterBadge;
+
+  /// No description provided for @sssHeroTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıkça Sorulan\nSorular'**
+  String get sssHeroTitle;
+
+  /// No description provided for @sssHeroSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Merak ettiğiniz her şeyin cevabı burada'**
+  String get sssHeroSubtitle;
+
+  /// No description provided for @sssCategoryAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümü'**
+  String get sssCategoryAll;
+
+  /// No description provided for @sssCategoryGeneral.
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel'**
+  String get sssCategoryGeneral;
+
+  /// No description provided for @sssCategoryProductService.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün & Hizmet'**
+  String get sssCategoryProductService;
+
+  /// No description provided for @sssCategoryDelivery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Teslimat & Montaj'**
+  String get sssCategoryDelivery;
+
+  /// No description provided for @sssCategoryPayment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödeme & Sipariş'**
+  String get sssCategoryPayment;
+
+  /// No description provided for @sssCategoryReturns.
+  ///
+  /// In tr, this message translates to:
+  /// **'İade & Garanti'**
+  String get sssCategoryReturns;
+
+  /// No description provided for @sssCategorySecondHandBuying.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci El Alım Süreci'**
+  String get sssCategorySecondHandBuying;
+
+  /// No description provided for @sssPhoneSupportTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon Desteği'**
+  String get sssPhoneSupportTitle;
+
+  /// No description provided for @sssWorkingHoursTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çalışma Saatleri'**
+  String get sssWorkingHoursTitle;
+
+  /// No description provided for @sssWorkingHoursValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'09:00 - 22:00'**
+  String get sssWorkingHoursValue;
+
+  /// No description provided for @sssStoreAddressTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mağaza Adresi'**
+  String get sssStoreAddressTitle;
+
+  /// No description provided for @sssStoreAddressValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerenköy Mahallesi Buket Sok. No:6'**
+  String get sssStoreAddressValue;
+
+  /// No description provided for @sssNoAnswerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sorunuz Yanıt Bulamadı mı?'**
+  String get sssNoAnswerTitle;
+
+  /// No description provided for @sssNoAnswerSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bize Ulaşabilirsiniz'**
+  String get sssNoAnswerSubtitle;
+
+  /// No description provided for @sssVisitStoreButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mağazaya Gel'**
+  String get sssVisitStoreButton;
+
+  /// No description provided for @sssQ1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?'**
+  String get sssQ1;
+
+  /// No description provided for @sssA1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. Çalışma hayatı boyunca, teslimatlar için sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. Özellikle 2010 yılına kadar İstikbal\'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. 2010\'dan sonra, yakın civardaki Işık Çeyiz\'de çalışarak sektördeki yetkinliğini artırmıştır. 2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.'**
+  String get sssA1;
+
+  /// No description provided for @sssQ2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağlam Spot güvenilir mi?'**
+  String get sssQ2;
+
+  /// No description provided for @sssA2.
+  ///
+  /// In tr, this message translates to:
+  /// **'2012 yılından beri İçerenköy\'de, komşularımıza hizmet veriyoruz. Sayısızca evlere konuk olduk ve hâlâ konuk olmaya devam ediyoruz.'**
+  String get sssA2;
+
+  /// No description provided for @sssQ3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünleri incelemek için mağazanıza gelebilir miyim?'**
+  String get sssQ3;
+
+  /// No description provided for @sssA3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elbette! Hatta biz de özellikle bunu tavsiye ediyoruz. Çayımızı içerken ürünleri canlı canlı görmeniz, dokunmanız ve içinize sinmesi en sağlıklısı. İçerenköy Mahallesi\'ndeki dükkanımıza her zaman bekleriz.'**
+  String get sssA3;
+
+  /// No description provided for @sssQ4.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci el ürünlerin durumu nasıl kontrol ediliyor?'**
+  String get sssQ4;
+
+  /// No description provided for @sssA4.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bizim için ikinci el, \'ikinci kalite\' demek değildir. Her ürün ustamızın titiz kontrolünden geçer; temizliği, bakımı ve gerekli onarımları eksiksiz yapılır. Fotoğraflarda ne görüyorsanız o, ama biz yine de \'gelin, bir de siz görün\' deriz. Gözünüzle görmeniz her zaman en iyisidir.'**
+  String get sssA4;
+
+  /// No description provided for @sssQ5.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobilyaların malzeme kalitesi nedir?'**
+  String get sssQ5;
+
+  /// No description provided for @sssA5.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şeffaflığı önemsiyoruz. Her ürünün kendine ait bir hikayesi ve malzemesi var. Bu yüzden tüm detayları, malzeme kalitesini ve özelliklerini ürün açıklama bölümlerine net bir şekilde yazıyoruz. Aklınıza takılan bir şey olursa sormaktan çekinmeyin.'**
+  String get sssA5;
+
+  /// No description provided for @sssQ6.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün fiyatları nasıl belirleniyor?'**
+  String get sssQ6;
+
+  /// No description provided for @sssA6.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyatlarımızı belirlerken hem ürünün kalitesine hem de piyasa koşullarına adil bir şekilde bakıyoruz. Amacımız, bütçenizi zorlamadan, kaliteli ve uzun ömürlü ürünlere ulaşmanızı sağlamaktır. Hakkı neyse, o.'**
+  String get sssA6;
+
+  /// No description provided for @sssQ7.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünlerinizde renk seçenekleri var mı?'**
+  String get sssQ7;
+
+  /// No description provided for @sssA7.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünlerimiz genellikle anlık ve tek parçalar olduğu için, mevcut renkleri neyse o şekilde sunuyoruz. Maalesef farklı renk seçenekleri yapamıyoruz. Beğendiğiniz ürünün rengi, gördüğünüz renktir.'**
+  String get sssA7;
+
+  /// No description provided for @sssQ8.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel sipariş alıyor musunuz?'**
+  String get sssQ8;
+
+  /// No description provided for @sssA8.
+  ///
+  /// In tr, this message translates to:
+  /// **'Keşke yapabilsek! Ancak biz daha çok mevcut, özenle seçilmiş ürünlerimize odaklanıyoruz. Özel üretim veya tasarım siparişi şu an için maalesef alamıyoruz. Hazırdaki ürünlerimizi incelemenizi öneririz.'**
+  String get sssA8;
+
+  /// No description provided for @sssQ9.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün açıklamalarında nelere dikkat etmeliyim?'**
+  String get sssQ9;
+
+  /// No description provided for @sssA9.
+  ///
+  /// In tr, this message translates to:
+  /// **'En önemli tavsiyemiz: Mezura! Lütfen ürün açıklamasındaki ölçüleri, evinize koyacağınız yerle dikkatlice karşılaştırın. \'Acaba sığar mı?\' sorusunu en başta çözmek, sonradan yaşanacak sıkıntıları önler. Ayrıca ölçü Alırken Koridoru Unutmayın: Sadece mobilyayı koyacağınız yeri değil, o mobilyanın kapıdan, koridordan ve merdivenden nasıl geçeceğini de ölçün. Malzeme ve durum bilgilerini de mutlaka okuyun.'**
+  String get sssA9;
+
+  /// No description provided for @sssQ10.
+  ///
+  /// In tr, this message translates to:
+  /// **'Asansör olmayan binalara veya yüksek katlara teslimat yapıyor musunuz?'**
+  String get sssQ10;
+
+  /// No description provided for @sssA10.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu, bizim için en hassas ve önemli konulardan biri. Biz, işini bizzat yapan küçük bir esnafız. Ustamız, yılların tecrübesiyle birlikte artık genç olmadığı için sağlığını da düşünmek zorundayız. Anlayışınıza sığınarak, asansör olmayan binalarda yüksek katlara (örneğin 2. kat ve üzeri) eşya çıkarma ve indirme hizmeti kesinlikle veremiyoruz. Lütfen siparişinizi vermeden önce bu konuyu netleştirelim, size mahcup olmak istemeyiz.'**
+  String get sssA10;
+
+  /// No description provided for @sssQ11.
+  ///
+  /// In tr, this message translates to:
+  /// **'Taşıma hizmeti sağlıyor musunuz?'**
+  String get sssQ11;
+
+  /// No description provided for @sssA11.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elbette, komşularımıza yardımcı oluyoruz. İçerenköy başta olmak üzere Fındıklı, Kayışdağı, Küçükbakkalköy, İnönü ve Bostancı Sanayi gibi yakın çevremize ücretsiz nakliye hizmetimiz var. (Bostancı ve Kozyatağı\'nın bazı bölgeleri hariç, ve yaşlılık açısından yüksek katlara asansörsüz taşıyamıyoruz, onu ayrıca konuşuruz).'**
+  String get sssA11;
+
+  /// No description provided for @sssQ12.
+  ///
+  /// In tr, this message translates to:
+  /// **'Teslimat süresi ne kadar?'**
+  String get sssQ12;
+
+  /// No description provided for @sssA12.
+  ///
+  /// In tr, this message translates to:
+  /// **'Siparişi verdiğiniz an sizinle iletişime geçeriz. \'Ne zaman müsaitsiniz?\' diye sorarız. Hem size hem bize uyan en yakın vakit için sözleşiriz. Genellikle 1-3 gün içinde, anlaştığımız saatte teslimatı ve montajı tamamlamış oluruz.'**
+  String get sssA12;
+
+  /// No description provided for @sssQ13.
+  ///
+  /// In tr, this message translates to:
+  /// **'Montaj hizmeti veriyor musunuz?'**
+  String get sssQ13;
+
+  /// No description provided for @sssA13.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tabii ki. Mobilyayı alıp kapıya bırakmak bizim tarzımız değil. Büyük ürünlerin hepsini ustamız bizzat kurar ve bu hizmet için ekstra bir ücret talep etmeyiz. Siz sadece yerini gösterin, gerisi bizde.'**
+  String get sssA13;
+
+  /// No description provided for @sssQ14.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobilya siparişi ne kadar sürede teslim edilir?'**
+  String get sssQ14;
+
+  /// No description provided for @sssA14.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün hazırsa, sizinle ortak belirlediğimiz bir zamanda en kısa sürede kapınızdayız. Montajı da dert etmeyin; getirdiğimiz gibi kurar, öyle teslim ederiz. Genellikle aynı gün içinde her şey biter.'**
+  String get sssA14;
+
+  /// No description provided for @sssQ15.
+  ///
+  /// In tr, this message translates to:
+  /// **'Veresiye sipariş verebilir miyim?'**
+  String get sssQ15;
+
+  /// No description provided for @sssA15.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu konuda anlayışınızı rica ediyoruz. Bir esnaf olarak ayakta kalabilmemiz için \'veresiye\' veya \'sonra ödeme\' gibi yöntemlerle maalesef çalışamıyoruz. Anlaştığımız ücreti, ürünü teslim ederken peşin olarak almamız gerekiyor. Size mahcup olmamak için bu kuralımızı baştan belirtmeyi tercih ediyoruz.'**
+  String get sssA15;
+
+  /// No description provided for @sssQ16.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nasıl sipariş verebilirim?'**
+  String get sssQ16;
+
+  /// No description provided for @sssA16.
+  ///
+  /// In tr, this message translates to:
+  /// **'En sağlıklı yöntem, her zaman yüz yüze olandır. Siteden beğendiğiniz ürünü not edin, sonra dükkanımıza gelin. Ürünü canlı görün, aklınızdaki soruları sorun, içinize sinerse siparişinizi orada tamamlayalım. Böylece hiçbir şüphe kalmaz.'**
+  String get sssA16;
+
+  /// No description provided for @sssQ17.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün iade politikası nedir?'**
+  String get sssQ17;
+
+  /// No description provided for @sssA17.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci el ürünlerin doğası gereği ve esnaf usulü çalıştığımız için maalesef iade kabul edemiyoruz. Bu yüzden \'gelin, görün, çayımızı için\' diye ısrar ediyoruz. Almadan önce ürünü detaylıca incelemeniz, ölçüp biçmeniz en doğrusu. Emin olmadan alışverişi tamamlamayalım.'**
+  String get sssA17;
+
+  /// No description provided for @sssQ18.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünlerin garanti süresi var mı?'**
+  String get sssQ18;
+
+  /// No description provided for @sssA18.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünlerimiz ikinci el olduğu için, bir markanın sunduğu gibi resmi bir garanti süremiz maalesef yok. Ancak biz \'sattık, bitti\' diyenlerden değiliz. Teslimat ve montaj sırasında her şeyin düzgün çalıştığından emin oluruz.'**
+  String get sssA18;
+
+  /// No description provided for @sssQ19.
+  ///
+  /// In tr, this message translates to:
+  /// **'Evimdeki eşyaları satmak istiyorum, ikinci el alımı yapıyor musunuz?'**
+  String get sssQ19;
+
+  /// No description provided for @sssA19.
+  ///
+  /// In tr, this message translates to:
+  /// **'Evet, dükkanımızda sergileyebileceğimize inandığımız, temiz ve yeniden satılabilir durumdaki seçili ürünleri alıyoruz. Ancak, dükkanımızın yeri gerçekten çok küçük olduğu için bu konuda maalesef çok seçici davranmak zorundayız.\n\nBu konuda baştan dürüst olmayı severiz: Bizden alacağınız teklif, muhtemelen Letgo gibi platformlarda kendinizin satabileceğiniz rakamdan biraz daha düşük olabilir. Bunun sebebi şudur: Biz esnaf olarak o eşyayı almak için benzin yakıyor, taşıma için emek harcıyor ve en önemlisi, onu satmak için dükkanımızda sergileyip tüm müşteri süreciyle (pazarlık, sorular vs.) biz ilgileniyoruz.\n\nSiz o platformlarda satarken bu süreçlerin tamamını kendiniz üstlenirsiniz. Biz ise sizden bu zahmeti de devralmış oluyoruz. Teklifimizi bu hizmeti de içerecek şekilde veriyoruz. Anlayışınız için teşekkür ederiz.'**
+  String get sssA19;
+
+  /// No description provided for @sssQ20.
+  ///
+  /// In tr, this message translates to:
+  /// **'Komple takım mobilyaları (Yatak odası, salon takımı vb.) alıyor musunuz?'**
+  String get sssQ20;
+
+  /// No description provided for @sssA20.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dükkanımızın küçük olmasından dolayı, maalesef komple yatak odası, koltuk takımı gibi büyük setleri alamıyoruz. Yerimiz çok kısıtlı. Biz daha çok tek parça, satışı daha kolay olan (konsol, dolap, masa, sandalye gibi) ürünlere odaklanıyoruz.'**
+  String get sssA20;
+
+  /// No description provided for @sssQ21.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?'**
+  String get sssQ21;
+
+  /// No description provided for @sssA21.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.'**
+  String get sssA21;
+
+  /// No description provided for @sssQ22.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her zaman eşya alımı yapıyor musunuz?'**
+  String get sssQ22;
+
+  /// No description provided for @sssA22.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.'**
+  String get sssA22;
 }
 
 class _AppLocalizationsDelegate

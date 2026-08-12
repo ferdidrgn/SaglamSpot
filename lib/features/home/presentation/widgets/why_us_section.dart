@@ -7,29 +7,29 @@ import '../../../../core/theme/app_colors.dart';
 class WhyUsSection extends StatelessWidget {
   const WhyUsSection({super.key});
 
-  static const List<_Usp> _items = [
+  List<_Usp> _items(final BuildContext context) => [
     _Usp(
       icon: Icons.verified_user_rounded,
-      title: '20 Yıllık Esnaf Güvencesi',
-      desc: 'İçerenköy’de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.',
+      title: context.l10n.usp1Title,
+      desc: context.l10n.usp1Desc,
       color: AppColors.sage,
     ),
     _Usp(
       icon: Icons.savings_rounded,
-      title: 'Piyasanın Altında Fiyat',
-      desc: 'Aracısız çalışma modelimizle spot ve sıfır mobilyada en uygun fiyatlar bizde.',
+      title: context.l10n.usp2Title,
+      desc: context.l10n.usp2Desc,
       color: AppColors.accent,
     ),
     _Usp(
       icon: Icons.fact_check_rounded,
-      title: 'Kontrollü Ürün Kalitesi',
-      desc: 'Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.',
+      title: context.l10n.usp3Title,
+      desc: context.l10n.usp3Desc,
       color: AppColors.primary,
     ),
     _Usp(
       icon: Icons.support_agent_rounded,
-      title: 'Satış Sonrası Destek',
-      desc: 'Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.',
+      title: context.l10n.usp4Title,
+      desc: context.l10n.usp4Desc,
       color: AppColors.sageDark,
     ),
   ];
@@ -37,6 +37,7 @@ class WhyUsSection extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 900;
+    final items = _items(context);
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -51,7 +52,7 @@ class WhyUsSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Neden Sağlam Spot?',
+              Text(context.l10n.whyUsHeading,
                   style: TextStyle(
                       fontFamily: 'Fraunces',
                       fontSize: context.h2Size,
@@ -69,9 +70,9 @@ class WhyUsSection extends StatelessWidget {
                   mainAxisSpacing: 20,
                   mainAxisExtent: 140,
                 ),
-                itemCount: _items.length,
+                itemCount: items.length,
                 itemBuilder: (final context, final index) =>
-                    _UspCard(item: _items[index]),
+                    _UspCard(item: items[index]),
               ),
             ],
           ),

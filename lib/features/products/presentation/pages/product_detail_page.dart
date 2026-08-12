@@ -77,7 +77,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         backgroundColor: AppColors.background,
         appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
         body: Center(
-          child: Text('Ürün yüklenemedi: $e',
+          child: Text(context.l10n.productLoadError('$e'),
               style: const TextStyle(color: AppColors.textPrimary)),
         ),
       ),
@@ -294,7 +294,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                       child: Container(
                         color: Colors.black.withOpacity(0.45),
                         alignment: Alignment.center,
-                        child: const Text('SATILDI',
+                        child: Text(context.l10n.sold,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,
@@ -513,16 +513,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildSpecs(final BuildContext context, final Product product) {
     final specs = [
-      (Icons.category_rounded, 'Kategori', product.category.label(context)),
+      (Icons.category_rounded, context.l10n.category, product.category.label(context)),
       (
         product.isSpotProduct
             ? Icons.inventory_2_rounded
             : Icons.new_releases_rounded,
-        'Durum',
-        product.isSpotProduct ? 'İkinci El' : 'Sıfır Ürün',
+        context.l10n.condition,
+        product.isSpotProduct ? context.l10n.conditionUsed : context.l10n.productSpecConditionNew,
       ),
       (Icons.local_shipping_rounded, context.l10n.specDelivery, context.l10n.specDeliveryValue),
-      (Icons.location_on_rounded, context.l10n.specLocation, 'İçerenköy, İstanbul'),
+      (Icons.location_on_rounded, context.l10n.specLocation, context.l10n.productLocationValue),
     ];
 
     return GridView.builder(

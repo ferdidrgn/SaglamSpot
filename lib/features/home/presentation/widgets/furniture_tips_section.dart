@@ -20,20 +20,22 @@ class FurnitureTipsSection extends StatelessWidget {
     // genişliği ne olursa olsun içerik tam sığıyor.
     final cardHeight = cardWidth * 0.75 + 150;
 
+    final tips = _tips(context);
+
     return SliverPadding(
       padding: context.pagePadding.copyWith(
           top: context.spacingLarge * 2, bottom: context.spacingLarge * 2),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            Text('İPUÇLARI',
+            Text(context.l10n.tipsEyebrow,
                 style: TextStyle(
                     color: AppColors.accent,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 3,
                     fontSize: context.captionSize)),
             const SizedBox(height: 8),
-            Text('Uzmanından Bakım Önerileri',
+            Text(context.l10n.tipsHeading,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: 'Fraunces',
@@ -46,12 +48,12 @@ class FurnitureTipsSection extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
-                itemCount: _tips.length,
+                itemCount: tips.length,
                 separatorBuilder: (final _, final __) =>
                     const SizedBox(width: 20),
                 itemBuilder: (final context, final index) => SizedBox(
                   width: cardWidth,
-                  child: _TipCard(tip: _tips[index]),
+                  child: _TipCard(tip: tips[index]),
                 ),
               ),
             ),
@@ -179,85 +181,75 @@ class FurnitureTip {
   });
 }
 
-const List<FurnitureTip> _tips = [
+List<FurnitureTip> _tips(final BuildContext context) => [
   FurnitureTip(
     icon: Icons.weekend_rounded,
-    title: 'Oturma Odasını Sevilesi Hale Getirin',
-    description:
-        'Koltuk yerleşimini duvardan 1-2 cm boşluk bırakarak yapın; hem hava sirkülasyonu sağlar hem de odayı ferahlatır.',
-    category: 'Yerleştirme',
+    title: context.l10n.tip1Title,
+    description: context.l10n.tip1Desc,
+    category: context.l10n.tip1Category,
     image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.cleaning_services_rounded,
-    title: 'Temiz Görünen Bir Çalışma Alanı',
-    description:
-        'Kabloları toplayıcılarla düzenleyin, mikrofiber bezle dairesel hareketlerle silin — masanız hep yeni gibi kalsın.',
-    category: 'Temizlik',
+    title: context.l10n.tip2Title,
+    description: context.l10n.tip2Desc,
+    category: context.l10n.tip2Category,
     image: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.kitchen_rounded,
-    title: 'Mutfakta Keyifli Bir Kurulum',
-    description:
-        'Ağır malzemeleri alt raflara, sık kullandıklarınızı göz hizasına yerleştirin — hem pratik hem güvenli.',
-    category: 'Düzen',
+    title: context.l10n.tip3Title,
+    description: context.l10n.tip3Desc,
+    category: context.l10n.tip3Category,
     image: 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.bed_rounded,
-    title: 'Rahat Bir Uyku Köşesi Kurun',
-    description:
-        'Yatak başlığını pencereden uzağa, ışığı en aza indirecek şekilde konumlandırın — daha derin bir uyku için küçük ama etkili bir değişiklik.',
-    category: 'Konfor',
+    title: context.l10n.tip4Title,
+    description: context.l10n.tip4Desc,
+    category: context.l10n.tip4Category,
     image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.checkroom_rounded,
-    title: 'Dolabınızı Ferahlatın',
-    description:
-        'Sezonluk kıyafetleri ayırın, askı yönünü tek taraflı tutun — hem yer kazanır hem de her sabah seçim yapmak kolaylaşır.',
-    category: 'Organizasyon',
+    title: context.l10n.tip5Title,
+    description: context.l10n.tip5Desc,
+    category: context.l10n.tip5Category,
     image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.forest_rounded,
-    title: 'Ahşap Mobilyaya Ömür Katın',
-    description:
-        'Doğrudan güneş ışığından koruyun, yılda birkaç kez besleyici yağ ile silin — çizik ve solmaya karşı en etkili bakım budur.',
-    category: 'Bakım',
+    title: context.l10n.tip6Title,
+    description: context.l10n.tip6Desc,
+    category: context.l10n.tip6Category,
     image: 'https://images.unsplash.com/photo-1601057483204-3b0a4c50d4ac?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.dry_cleaning_rounded,
-    title: 'Kumaş Koltukları Uzun Ömürlü Kılın',
-    description:
-        'Haftada bir vakumlayın, lekeleri hemen nemli bezle tamponlayın — beklemek lekenin kumaşa işlemesine sebep olur.',
-    category: 'Bakım',
+    title: context.l10n.tip7Title,
+    description: context.l10n.tip7Desc,
+    category: context.l10n.tip7Category,
     image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.lightbulb_rounded,
-    title: 'Doğru Aydınlatmayı Seçin',
-    description:
-        'Tek bir tavan lambası yerine kat kat aydınlatma kullanın: genel, görev ve atmosfer ışığı bir arada odayı daha sıcak gösterir.',
-    category: 'Aydınlatma',
+    title: context.l10n.tip8Title,
+    description: context.l10n.tip8Desc,
+    category: context.l10n.tip8Category,
     image: 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.space_dashboard_rounded,
-    title: 'Küçük Alanları Akıllıca Kullanın',
-    description:
-        'Katlanabilir ve çok amaçlı mobilyalar tercih edin; duvara monte raflar zemin alanını özgür bırakır.',
-    category: 'Düzen',
+    title: context.l10n.tip9Title,
+    description: context.l10n.tip9Desc,
+    category: context.l10n.tip9Category,
     image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800',
   ),
   FurnitureTip(
     icon: Icons.deck_rounded,
-    title: 'Balkonunuzu Yaşam Alanına Dönüştürün',
-    description:
-        'Hava koşullarına dayanıklı bir koltuk takımı ve birkaç saksı bitkiyle balkon, evin en sevilen köşesi haline gelir.',
-    category: 'Dış Mekan',
+    title: context.l10n.tip10Title,
+    description: context.l10n.tip10Desc,
+    category: context.l10n.tip10Category,
     image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=800',
   ),
 ];

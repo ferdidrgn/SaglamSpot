@@ -8,6 +8,7 @@ class TestimonialsSection extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 900;
+    final testimonials = _testimonials(context);
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -16,7 +17,7 @@ class TestimonialsSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Müşterilerimiz Ne Diyor?',
+            Text(context.l10n.testimonialsHeading,
                 style: TextStyle(
                     fontFamily: 'Fraunces',
                     fontSize: context.h2Size,
@@ -26,7 +27,7 @@ class TestimonialsSection extends StatelessWidget {
             Container(height: 3, width: 40, color: AppColors.accent),
             const SizedBox(height: 8),
             Text(
-              '20 yılı aşkın süredir İçerenköy ve çevresinde binlerce eve dokunduk',
+              context.l10n.testimonialsSubheading,
               style: TextStyle(
                   color: context.primaryColor.withOpacity(0.5),
                   fontSize: context.captionSize),
@@ -41,9 +42,9 @@ class TestimonialsSection extends StatelessWidget {
                 mainAxisSpacing: 24,
                 mainAxisExtent: 240,
               ),
-              itemCount: _testimonials.length,
+              itemCount: testimonials.length,
               itemBuilder: (final context, final index) =>
-                  _TestimonialCard(data: _testimonials[index]),
+                  _TestimonialCard(data: testimonials[index]),
             ),
           ],
         ),
@@ -141,47 +142,41 @@ class _Testimonial {
   });
 }
 
-const List<_Testimonial> _testimonials = [
+List<_Testimonial> _testimonials(final BuildContext context) => [
   _Testimonial(
     name: 'Elif Yıldız',
     location: 'İçerenköy, Ataşehir',
-    comment:
-        'Koltuk takımını çok uygun fiyata aldık, hem de sıfır gibi. Teslimat aynı gün elden ele yapıldı, esnaf usulü güven tam anlamıyla buradaydı.',
+    comment: context.l10n.testimonial1Comment,
     rating: 5,
   ),
   _Testimonial(
     name: 'Mehmet Kaya',
     location: 'Kayışdağı, Ataşehir',
-    comment:
-        'Yatak odası takımını spot fiyatına buradan aldım. Ürün açıklamasıyla birebir aynıydı, hiçbir sürpriz yaşamadım. Kesinlikle tavsiye ederim.',
+    comment: context.l10n.testimonial2Comment,
     rating: 5,
   ),
   _Testimonial(
     name: 'Ayşe Demir',
     location: 'Küçükbakkalköy, Ataşehir',
-    comment:
-        'Ofis için toplu mobilya alımı yaptık, hem fiyat hem kalite beklentimizin üzerindeydi. İlgili ve sabırlı bir ekip, teşekkürler Sağlam Spot.',
+    comment: context.l10n.testimonial3Comment,
     rating: 4,
   ),
   _Testimonial(
     name: 'Burak Şahin',
     location: 'Bostancı, Kadıköy',
-    comment:
-        'Yemek masası setini pazarlıksız, dürüst bir fiyata satın aldık. Nakliye konusunda da yardımcı oldular, gönül rahatlığıyla alışveriş yaptık.',
+    comment: context.l10n.testimonial4Comment,
     rating: 5,
   ),
   _Testimonial(
     name: 'Zeynep Arslan',
     location: 'Fındıklı, Ataşehir',
-    comment:
-        'İkinci el gardırop aradık, hem sağlam hem şık bir ürün bulduk. Fiyat/performans olarak piyasadaki en iyi seçenekti.',
+    comment: context.l10n.testimonial5Comment,
     rating: 5,
   ),
   _Testimonial(
     name: 'Can Öztürk',
     location: 'Kozyatağı, Kadıköy',
-    comment:
-        'Showroom ziyaretimizde ürünleri yerinde görme şansımız oldu, bu güveni artırdı. Satış sonrası da bize her zaman ulaşılabilir oldular.',
+    comment: context.l10n.testimonial6Comment,
     rating: 4,
   ),
 ];

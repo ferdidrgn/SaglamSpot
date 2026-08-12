@@ -34,7 +34,7 @@ class LanguageSelector extends ConsumerWidget {
       return ExpansionTile(
         leading: Icon(Icons.translate_rounded, color: context.colors.primary),
         title: Text(
-          currentLocale.languageCode == 'tr' ? 'Dil Seçimi' : 'Language',
+          context.l10n.languageSelectorTitle,
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
@@ -63,7 +63,7 @@ class LanguageSelector extends ConsumerWidget {
     final current =
         languages.firstWhere((final e) => e.locale == currentLocale);
     return PopupMenuButton<Locale>(
-      tooltip: 'Language',
+      tooltip: context.l10n.languageTooltip,
       offset: const Offset(0, 46),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),

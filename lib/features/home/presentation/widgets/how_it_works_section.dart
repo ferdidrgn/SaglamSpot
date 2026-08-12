@@ -7,32 +7,33 @@ import '../../../../core/theme/app_colors.dart';
 class HowItWorksSection extends StatelessWidget {
   const HowItWorksSection({super.key});
 
-  static const List<_Step> _steps = [
+  List<_Step> _steps(final BuildContext context) => [
     _Step(
       icon: Icons.travel_explore_rounded,
-      title: 'Gözat & Filtrele',
-      desc: 'Kategoriler ve fiyat aralığına göre binlerce ürün arasından beğendiğini bul.',
+      title: context.l10n.step1Title,
+      desc: context.l10n.step1Desc,
     ),
     _Step(
       icon: Icons.chat_bubble_rounded,
-      title: 'Bizimle İletişime Geç',
-      desc: 'Ürün sayfasından tek tıkla WhatsApp veya telefonla ekibimize ulaş.',
+      title: context.l10n.step2Title,
+      desc: context.l10n.step2Desc,
     ),
     _Step(
       icon: Icons.handshake_rounded,
-      title: 'Fiyatı Netleştir',
-      desc: 'Ürünü showroom’da gör veya fotoğraflarla teyit et, esnaf usulü net fiyat al.',
+      title: context.l10n.step3Title,
+      desc: context.l10n.step3Desc,
     ),
     _Step(
       icon: Icons.local_shipping_rounded,
-      title: 'Kapına Teslim',
-      desc: 'İçerenköy ve Anadolu Yakası’na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.',
+      title: context.l10n.step4Title,
+      desc: context.l10n.step4Desc,
     ),
   ];
 
   @override
   Widget build(final BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 900;
+    final steps = _steps(context);
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -41,7 +42,7 @@ class HowItWorksSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nasıl Çalışır?',
+            Text(context.l10n.howItWorksHeading,
                 style: TextStyle(
                     fontFamily: 'Fraunces',
                     fontSize: context.h2Size,
@@ -53,19 +54,19 @@ class HowItWorksSection extends StatelessWidget {
             isMobile
                 ? Column(
                     children: [
-                      for (int i = 0; i < _steps.length; i++)
+                      for (int i = 0; i < steps.length; i++)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16),
-                          child: _StepCard(step: _steps[i], index: i + 1),
+                          child: _StepCard(step: steps[i], index: i + 1),
                         ),
                     ],
                   )
                 : Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (int i = 0; i < _steps.length; i++) ...[
-                        Expanded(child: _StepCard(step: _steps[i], index: i + 1)),
-                        if (i != _steps.length - 1)
+                      for (int i = 0; i < steps.length; i++) ...[
+                        Expanded(child: _StepCard(step: steps[i], index: i + 1)),
+                        if (i != steps.length - 1)
                           Padding(
                             padding: const EdgeInsets.only(top: 40),
                             child: Icon(Icons.arrow_forward_rounded,

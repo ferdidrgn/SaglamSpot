@@ -41,32 +41,14 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
-
   final ScrollController _scrollController = ScrollController();
 
-  // Hero arka planında yavaşça birbirine geçen ürün/atmosfer görselleri —
-  // gerçek video yerine Ken Burns (zoom+pan) hissi veren bir crossfade.
+  // Hero arka planında sırayla gösterilen fotoğraflar.
   static const List<String> _heroImages = [
     "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
     "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
     "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
   ];
-  static const Duration _heroSlideDuration = Duration(seconds: 9);
-  static const double _heroCrossfade = 0.35; // geçiş genişliği (slot birimi)
-
-  late final List<_DustSpeck> _dustSpecks = List.generate(
-    20,
-    (final i) {
-      final rnd = math.Random(i * 7919 + 13);
-      return _DustSpeck(
-        dx: rnd.nextDouble(),
-        radius: 0.8 + rnd.nextDouble() * 1.6,
-        speed: 0.35 + rnd.nextDouble() * 0.5,
-        drift: (rnd.nextDouble() - 0.5) * 0.05,
-        phase: rnd.nextDouble(),
-      );
-    },
-  );
 
   @override
   void dispose() {
@@ -85,7 +67,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
         error: (final err, final stack) =>
-            Center(child: Text('Ürünler yüklenirken hata oluştu: $err')),
+            Center(child: Text(context.l10n.productsLoadError('$err'))),
         data: (final _) => Stack(
           children: [
             ResponsiveUtils.maxWidthContainer(
@@ -107,9 +89,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   ),
                   const SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: AdsenseBanner(
-                          type: AdUnitType.display, height: 250),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child:
+                          AdsenseBanner(type: AdUnitType.display, height: 250),
                     ),
                   ),
                   _buildRoomsInspirationBanner(),
@@ -121,7 +104,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   // Alanına Göre" panelinde kullanılıyor. ---
                   const SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: AdsenseBanner(
                           type: AdUnitType.inArticle, height: 300),
                     ),
@@ -138,7 +122,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   // bir kazanım fırsatı olsun diye.
                   const SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: AdsenseBanner(
                           type: AdUnitType.multiplex, height: 250),
                     ),
@@ -157,8 +142,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // Referans tasarımdaki gibi: en fazla 2 sıra (8 kart) gösterilir, devamı
   // için altta ortalanmış bir "Tümünü Gör" hapı bulunur — sonsuz kaydırma
   // yerine bilinçli, sakin bir vitrin.
-  Widget _buildDynamicFeaturedGrid(
-      final List<Product> availableProducts, final ProductCategory? selectedCategory) {
+  Widget _buildDynamicFeaturedGrid(final List<Product> availableProducts,
+      final ProductCategory? selectedCategory) {
     final visibleProducts = availableProducts.take(8).toList();
 
     return SliverPadding(
@@ -203,8 +188,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    child: const Text('Tümünü Gör',
-                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(context.l10n.viewAllButton,
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
                   ),
                 ),
               ),
@@ -213,12 +198,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       ),
     );
   }
-
-  static const List<String> _heroImages = [
-    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
-    "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
-    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
-  ];
 
   // Tek parça, geniş banner hero: arka planda kaydırılabilir (ok + nokta
   // göstergeli) fotoğraflar, solda başlık + tek bir "keşfet" CTA'sı, sağ
@@ -235,7 +214,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           // kırılım noktasında içeriğin rahatça sığdığı bir yüksekliğe
           // bağlandı — kısa/geniş pencerelerde metnin taşmasını önler.
           height: context.responsive(
-              mobile: 460.0, tablet: 500.0, desktop: 560.0, largeDesktop: 620.0),
+              mobile: 460.0,
+              tablet: 500.0,
+              desktop: 560.0,
+              largeDesktop: 620.0),
           child: _HeroBanner(images: _heroImages, featuredPool: featuredPool),
         ),
       ),
@@ -244,14 +226,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
   Widget _buildTrustBar() {
     final items = [
+      _trustItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan),
+      _trustItem(Icons.verified_user_rounded, context.l10n.featureDelivery),
       _trustItem(
-          Icons.volunteer_activism_rounded, context.l10n.featureArtisan),
-      _trustItem(
-          Icons.verified_user_rounded, context.l10n.featureDelivery),
-      _trustItem(Icons.sentiment_very_satisfied_rounded,
-          context.l10n.featureService),
-      _trustItem(
-          Icons.local_shipping_rounded, context.l10n.featureShipping),
+          Icons.sentiment_very_satisfied_rounded, context.l10n.featureService),
+      _trustItem(Icons.local_shipping_rounded, context.l10n.featureShipping),
     ];
 
     return SliverToBoxAdapter(
@@ -300,7 +279,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           const SizedBox(width: 10),
           Flexible(
             child: Text(text,
-
                 style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w700,
@@ -315,7 +293,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               top: context.spacingLarge * 2, bottom: context.spacingLarge),
           child: Column(
             children: [
-              Text('VİTRİN',
+              Text(context.l10n.showcaseEyebrow,
                   style: TextStyle(
                       color: AppColors.accent,
                       fontWeight: FontWeight.w700,
@@ -340,9 +318,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         margin: const EdgeInsets.symmetric(vertical: 20),
         child: DynamicCategoryChips(
           selected: ref.watch(searchFiltersProvider).category,
-          onSelect: (final category) => ref
-              .read(searchFiltersProvider.notifier)
-              .setCategory(category),
+          onSelect: (final category) =>
+              ref.read(searchFiltersProvider.notifier).setCategory(category),
           padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
         ),
       ),
@@ -418,14 +395,13 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
               side: const BorderSide(color: AppColors.primary),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
             ),
             icon: const Icon(Icons.explore_outlined, size: 16),
-            label: const Text('Keşfet',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+            label: Text(context.l10n.exploreButton,
+                style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -555,14 +531,14 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('BİZE UĞRA',
+                    Text(context.l10n.visitUsEyebrow,
                         style: TextStyle(
                             color: AppColors.accentLight,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 2,
                             fontSize: context.captionSize)),
                     const SizedBox(height: 12),
-                    Text('Bir Selam Ver, Yeter',
+                    Text(context.l10n.visitUsHeading,
                         style: TextStyle(
                             fontFamily: 'Fraunces',
                             color: Colors.white,
@@ -571,7 +547,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                             height: 1.2)),
                     const SizedBox(height: 14),
                     Text(
-                      'Kapımız her zaman açık. ${SaglamSpotCommunication.workingHours}',
+                      context.l10n.visitUsOpenLine(SaglamSpotCommunication.workingHours),
                       style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: context.bodySize,
@@ -610,7 +586,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30))),
                           icon: const Icon(Icons.north_east, size: 16),
-                          label: const Text('Yol Tarifi'),
+                          label: Text(context.l10n.directionsButton),
                         ),
                       ],
                     ),
@@ -631,16 +607,18 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _visitInfoRow(Icons.local_shipping_outlined,
-                          'Ücretsiz Teslimat',
+                      _visitInfoRow(
+                          Icons.local_shipping_outlined,
+                          context.l10n.freeDeliveryLabel,
                           SaglamSpotCommunication.freeDeliveryZones.join(', ')),
                       const SizedBox(height: 16),
                       _visitInfoRow(
                           Icons.directions_bus_outlined,
-                          'Otobüs Hatları',
+                          context.l10n.busLinesLabel,
                           SaglamSpotCommunication.getBusLines()
                               .entries
-                              .map((final e) => '${e.key}: ${e.value.join(', ')}')
+                              .map((final e) =>
+                                  '${e.key}: ${e.value.join(', ')}')
                               .join('\n')),
                     ],
                   ),
@@ -651,7 +629,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ),
       );
 
-  Widget _visitInfoRow(final IconData icon, final String title, final String detail) =>
+  Widget _visitInfoRow(
+          final IconData icon, final String title, final String detail) =>
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -669,7 +648,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 const SizedBox(height: 4),
                 Text(detail,
                     style: TextStyle(
-                        color: Colors.white.withOpacity(0.6), fontSize: 12, height: 1.4)),
+                        color: Colors.white.withOpacity(0.6),
+                        fontSize: 12,
+                        height: 1.4)),
               ],
             ),
           ),
@@ -688,7 +669,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       {
         "target": 20.0,
         "decimals": 0,
-        "suffix": "+ Yıl",
+        "suffix": context.l10n.statYearsSuffix,
         "label": context.l10n.statExperience,
         "icon": Icons.workspace_premium_outlined
       },
@@ -801,8 +782,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           ? CrossAxisAlignment.center
                           : CrossAxisAlignment.start,
                       children: [
-                        const Text("SAĞLAM SPOT",
-                            style: TextStyle(
+                        Text(context.l10n.brand,
+                            style: const TextStyle(
                                 fontFamily: 'Fraunces',
                                 color: Colors.white,
                                 fontSize: 22,
@@ -840,7 +821,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     ),
                   ),
                   _footerColumn(context.l10n.explore, {
-                    context.l10n.home: () => NavigationHandler.goToHome(context),
+                    context.l10n.home: () =>
+                        NavigationHandler.goToHome(context),
                     context.l10n.collections: () =>
                         NavigationHandler.goToSearch(context),
                     context.l10n.spotProducts: () =>
@@ -848,11 +830,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     context.l10n.aboutUs: () =>
                         NavigationHandler.goToAbout(context),
                   }),
-                  _footerColumn('İletişim', {
+                  _footerColumn(context.l10n.contact, {
                     SaglamSpotCommunication.displayPhone:
                         SaglamSpotCommunication.makeCall,
-                    'WhatsApp\'tan Yaz': SaglamSpotCommunication.launchWhatsApp,
-                    'İçerenköy, Ataşehir/İstanbul':
+                    context.l10n.whatsappCta: SaglamSpotCommunication.launchWhatsApp,
+                    context.l10n.storeAddress:
                         SaglamSpotCommunication.openStoreLocation,
                     context.l10n.sss: () => NavigationHandler.goToSSS(context),
                   }),
@@ -864,8 +846,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           ? CrossAxisAlignment.center
                           : CrossAxisAlignment.start,
                       children: [
-                        const Text('Güncel Kalın',
-                            style: TextStyle(
+                        Text(context.l10n.stayUpdated,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13)),
@@ -904,7 +886,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     onTap: entry.value,
                     child: Text(entry.key,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.3), fontSize: 13)),
+                            color: Colors.white.withOpacity(0.3),
+                            fontSize: 13)),
                   ),
                 )),
           ],
@@ -1010,14 +993,14 @@ class _RoomCardState extends State<_RoomCard> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text('İncele',
-                                  style: TextStyle(
+                            children: [
+                              Text(context.l10n.viewButton,
+                                  style: const TextStyle(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 12)),
-                              SizedBox(width: 4),
-                              Icon(Icons.arrow_forward_rounded,
+                              const SizedBox(width: 4),
+                              const Icon(Icons.arrow_forward_rounded,
                                   size: 14, color: AppColors.primary),
                             ],
                           ),
@@ -1087,14 +1070,14 @@ class _HeroBannerState extends State<_HeroBanner> {
         title: context.l10n.heroTitle,
         subtitle: context.l10n.featureArtisan,
       ),
-      const _HeroSlideContent(
-        eyebrow: 'İKİNCİ EL',
-        title: 'Öyküsü Olan Mobilyalar',
-        subtitle: 'Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.',
+      _HeroSlideContent(
+        eyebrow: context.l10n.heroSlide2Eyebrow,
+        title: context.l10n.heroSlide2Title,
+        subtitle: context.l10n.heroSlide2Subtitle,
       ),
       _HeroSlideContent(
-        eyebrow: 'VİTRİN',
-        title: 'Tüm Koleksiyonu Keşfedin',
+        eyebrow: context.l10n.showcaseEyebrow,
+        title: context.l10n.heroSlide3Title,
         subtitle: context.l10n.byRoomSub,
       ),
     ];
@@ -1123,181 +1106,180 @@ class _HeroBannerState extends State<_HeroBanner> {
       fit: StackFit.expand,
       children: [
         PageView.builder(
-            controller: _pageController,
-            itemCount: widget.images.length,
-            onPageChanged: (final i) => setState(() => _page = i),
-            itemBuilder: (final context, final i) => Image.network(
-              widget.images[i],
-              fit: BoxFit.cover,
-              errorBuilder: (final c, final e, final s) =>
-                  Container(color: AppColors.secondary),
-            ),
+          controller: _pageController,
+          itemCount: widget.images.length,
+          onPageChanged: (final i) => setState(() => _page = i),
+          itemBuilder: (final context, final i) => Image.network(
+            widget.images[i],
+            fit: BoxFit.cover,
+            errorBuilder: (final c, final e, final s) =>
+                Container(color: AppColors.secondary),
           ),
-          IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    AppColors.primaryVariant.withOpacity(0.78),
-                    Colors.transparent,
-                  ],
-                  stops: const [0.0, 0.68],
-                ),
+        ),
+        IgnorePointer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  AppColors.primaryVariant.withOpacity(0.78),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.68],
               ),
             ),
           ),
-          Padding(
-            padding:
-                EdgeInsets.all(context.responsive(mobile: 22, desktop: 56)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AnimatedSwitcher(
+        ),
+        Padding(
+          padding: EdgeInsets.all(context.responsive(mobile: 22, desktop: 56)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 450),
+                child: Container(
+                  key: ValueKey('eyebrow-$_page'),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: context.responsive(mobile: 10, desktop: 14),
+                      vertical: context.responsive(mobile: 5, desktop: 7)),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: AppColors.accentLight.withOpacity(0.7)),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(slide.eyebrow,
+                      style: TextStyle(
+                          color: AppColors.accentLight,
+                          letterSpacing: context.isMobile ? 2 : 3,
+                          fontWeight: FontWeight.w700,
+                          fontSize:
+                              context.responsive(mobile: 9, desktop: 12))),
+                ),
+              ),
+              const SizedBox(height: 14),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: context.responsive(
+                        mobile: 320, tablet: 380, desktop: 480)),
+                child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 450),
-                  child: Container(
-                    key: ValueKey('eyebrow-$_page'),
-                    padding: EdgeInsets.symmetric(
-                        horizontal:
-                            context.responsive(mobile: 10, desktop: 14),
-                        vertical: context.responsive(mobile: 5, desktop: 7)),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: AppColors.accentLight.withOpacity(0.7)),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(slide.eyebrow,
-                        style: TextStyle(
-                            color: AppColors.accentLight,
-                            letterSpacing: context.isMobile ? 2 : 3,
-                            fontWeight: FontWeight.w700,
-                            fontSize:
-                                context.responsive(mobile: 9, desktop: 12))),
+                  child: Text(slide.title,
+                      key: ValueKey('title-$_page'),
+                      style: TextStyle(
+                          fontFamily: 'Fraunces',
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: context.heroSize * 0.72,
+                          height: 1.12)),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: context.responsive(mobile: 280, desktop: 420)),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 450),
+                  child: Text(slide.subtitle,
+                      key: ValueKey('subtitle-$_page'),
+                      style: TextStyle(
+                          fontFamily: 'Inter',
+                          color: Colors.white.withOpacity(0.78),
+                          fontSize:
+                              context.responsive(mobile: 13, desktop: 16))),
+                ),
+              ),
+              SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
+              // Üç eylem her zaman birlikte, yan yana duruyor — slayta
+              // göre tek bir dinamik CTA yerine, referans tasarımdaki
+              // şık "üç buton" şeridinin karşılığı. Wrap kullanılıyor ki
+              // dar ekranlarda taşma yerine ikinci satıra sarsın.
+              Wrap(
+                spacing: context.responsive(mobile: 8, desktop: 12),
+                runSpacing: 10,
+                children: [
+                  _HeroPillButton(
+                    icon: Icons.new_releases_rounded,
+                    label: context.l10n.conditionNew,
+                    variant: _HeroPillVariant.solidLight,
+                    onTap: () => NavigationHandler.goToNewProducts(context),
                   ),
-                ),
-                const SizedBox(height: 14),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: context.responsive(
-                          mobile: 320, tablet: 380, desktop: 480)),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 450),
-                    child: Text(slide.title,
-                        key: ValueKey('title-$_page'),
-                        style: TextStyle(
-                            fontFamily: 'Fraunces',
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                            fontSize: context.heroSize * 0.72,
-                            height: 1.12)),
+                  _HeroPillButton(
+                    icon: Icons.history_rounded,
+                    label: context.l10n.conditionUsed,
+                    variant: _HeroPillVariant.solidAccent,
+                    onTap: () => NavigationHandler.goToSpotProducts(context),
                   ),
-                ),
-                const SizedBox(height: 10),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: context.responsive(mobile: 280, desktop: 420)),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 450),
-                    child: Text(slide.subtitle,
-                        key: ValueKey('subtitle-$_page'),
-                        style: TextStyle(
-                            fontFamily: 'Inter',
-                            color: Colors.white.withOpacity(0.78),
-                            fontSize:
-                                context.responsive(mobile: 13, desktop: 16))),
+                  _HeroPillButton(
+                    icon: Icons.explore_outlined,
+                    label: context.l10n.exploreButton,
+                    variant: _HeroPillVariant.outline,
+                    onTap: () => NavigationHandler.goToSearch(context),
                   ),
-                ),
-                SizedBox(height: context.responsive(mobile: 18, desktop: 26)),
-                // Üç eylem her zaman birlikte, yan yana duruyor — slayta
-                // göre tek bir dinamik CTA yerine, referans tasarımdaki
-                // şık "üç buton" şeridinin karşılığı. Wrap kullanılıyor ki
-                // dar ekranlarda taşma yerine ikinci satıra sarsın.
-                Wrap(
-                  spacing: context.responsive(mobile: 8, desktop: 12),
-                  runSpacing: 10,
-                  children: [
-                    _HeroPillButton(
-                      icon: Icons.new_releases_rounded,
-                      label: context.l10n.conditionNew,
-                      variant: _HeroPillVariant.solidLight,
-                      onTap: () => NavigationHandler.goToNewProducts(context),
-                    ),
-                    _HeroPillButton(
-                      icon: Icons.history_rounded,
-                      label: context.l10n.conditionUsed,
-                      variant: _HeroPillVariant.solidAccent,
-                      onTap: () => NavigationHandler.goToSpotProducts(context),
-                    ),
-                    _HeroPillButton(
-                      icon: Icons.explore_outlined,
-                      label: 'Keşfet',
-                      variant: _HeroPillVariant.outline,
-                      onTap: () => NavigationHandler.goToSearch(context),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (widget.images.length > 1) ...[
+          Positioned(
+            left: 12,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _HeroArrowButton(
+                icon: Icons.chevron_left_rounded,
+                onTap: () => _goTo(
+                    (_page - 1 + widget.images.length) % widget.images.length),
+              ),
             ),
           ),
-          if (widget.images.length > 1) ...[
-            Positioned(
-              left: 12,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: _HeroArrowButton(
-                  icon: Icons.chevron_left_rounded,
-                  onTap: () => _goTo(
-                      (_page - 1 + widget.images.length) % widget.images.length),
-                ),
+          Positioned(
+            right: 12,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _HeroArrowButton(
+                icon: Icons.chevron_right_rounded,
+                onTap: () => _goTo((_page + 1) % widget.images.length),
               ),
             ),
-            Positioned(
-              right: 12,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: _HeroArrowButton(
-                  icon: Icons.chevron_right_rounded,
-                  onTap: () => _goTo((_page + 1) % widget.images.length),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(widget.images.length, (final i) {
-                  final active = i == _page;
-                  return GestureDetector(
-                    onTap: () => _goTo(i),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 220),
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                      width: active ? 18 : 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: active ? Colors.white : Colors.white.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.images.length, (final i) {
+                final active = i == _page;
+                return GestureDetector(
+                  onTap: () => _goTo(i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: active ? 18 : 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color:
+                          active ? Colors.white : Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  );
-                }),
-              ),
+                  ),
+                );
+              }),
             ),
-          ],
-          if (showSideCards)
-            Positioned(
-              right: 88,
-              top: 90,
-              child: _FloatingFeaturedStack(products: widget.featuredPool),
-            ),
+          ),
         ],
-      );
+        if (showSideCards)
+          Positioned(
+            right: 88,
+            top: 90,
+            child: _FloatingFeaturedStack(products: widget.featuredPool),
+          ),
+      ],
+    );
   }
 }
 
@@ -1374,7 +1356,9 @@ class _HeroPillButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: context.responsive(mobile: 14, desktop: 16), color: foreground),
+              Icon(icon,
+                  size: context.responsive(mobile: 14, desktop: 16),
+                  color: foreground),
               SizedBox(width: context.responsive(mobile: 5, desktop: 7)),
               Text(label,
                   style: TextStyle(
@@ -1468,9 +1452,9 @@ class _FloatingFeaturedStackState extends State<_FloatingFeaturedStack> {
         switchInCurve: Curves.easeOutCubic,
         switchOutCurve: Curves.easeInCubic,
         transitionBuilder: (final child, final animation) => SlideTransition(
-          position: Tween<Offset>(
-                  begin: const Offset(0.18, -0.06), end: Offset.zero)
-              .animate(animation),
+          position:
+              Tween<Offset>(begin: const Offset(0.18, -0.06), end: Offset.zero)
+                  .animate(animation),
           child: FadeTransition(opacity: animation, child: child),
         ),
         child: Column(
@@ -1572,16 +1556,16 @@ class _NumberedProductCard extends StatelessWidget {
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('İncele',
-                              style: TextStyle(
+                          Text(context.l10n.viewButton,
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 11)),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward_rounded,
+                          const SizedBox(width: 4),
+                          const Icon(Icons.arrow_forward_rounded,
                               color: Colors.white, size: 12),
                         ],
                       ),
@@ -1652,7 +1636,7 @@ class _NewsletterFieldState extends State<_NewsletterField> {
     if (!_formKey.currentState!.validate()) return;
     _controller.clear();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bültenimize başarıyla abone oldunuz!')),
+      SnackBar(content: Text(context.l10n.newsletterSubscribeSuccess)),
     );
   }
 
@@ -1670,9 +1654,9 @@ class _NewsletterFieldState extends State<_NewsletterField> {
                 style: const TextStyle(color: Colors.white, fontSize: 13),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: 'E-posta adresiniz',
-                  hintStyle:
-                      TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12),
+                  hintText: context.l10n.emailHint,
+                  hintStyle: TextStyle(
+                      color: Colors.white.withOpacity(0.4), fontSize: 12),
                   isDense: true,
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -1680,15 +1664,18 @@ class _NewsletterFieldState extends State<_NewsletterField> {
                   fillColor: Colors.white.withOpacity(0.06),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.white.withOpacity(0.15))),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.15))),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.white.withOpacity(0.15))),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.15))),
                 ),
                 validator: (final value) {
-                  if (value == null || value.isEmpty) return 'E-posta gerekli';
+                  if (value == null || value.isEmpty) return context.l10n.emailRequired;
                   final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-                  if (!regex.hasMatch(value)) return 'Geçerli bir e-posta girin';
+                  if (!regex.hasMatch(value))
+                    return context.l10n.emailInvalid;
                   return null;
                 },
               ),
@@ -1712,51 +1699,4 @@ class _NewsletterFieldState extends State<_NewsletterField> {
       ),
     );
   }
-}
-
-/// Hero arka planındaki tek bir toz/ışık zerreciğinin sabit özellikleri.
-class _DustSpeck {
-  final double dx; // 0..1 yatay taban konumu
-  final double radius;
-  final double speed; // dikey süzülme hızı çarpanı
-  final double drift; // yatay salınım genliği (ekran genişliğine oran)
-  final double phase; // döngü içindeki başlangıç fazı
-
-  const _DustSpeck({
-    required this.dx,
-    required this.radius,
-    required this.speed,
-    required this.drift,
-    required this.phase,
-  });
-}
-
-/// Hero'nun üzerinde çok sübtil, yavaş yukarı süzülen ışık/toz katmanı.
-/// Gerçek video hissini tamamlar ama dikkat dağıtmaması için opaklık düşük
-/// tutulur.
-class _DustParticlesPainter extends CustomPainter {
-  final double progress;
-  final List<_DustSpeck> specks;
-
-  _DustParticlesPainter({required this.progress, required this.specks});
-
-  @override
-  void paint(final Canvas canvas, final Size size) {
-    final paint = Paint();
-    for (final s in specks) {
-      final t = (progress * s.speed + s.phase) % 1.0;
-      final y = size.height * (1 - t);
-      final x = size.width * s.dx +
-          math.sin((progress * 2 * math.pi) + s.phase * 10) *
-              size.width *
-              s.drift;
-      final fade = math.sin(t * math.pi).clamp(0.0, 1.0);
-      paint.color = Colors.white.withOpacity(fade * 0.28);
-      canvas.drawCircle(Offset(x, y), s.radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant final _DustParticlesPainter oldDelegate) =>
-      oldDelegate.progress != progress;
 }
