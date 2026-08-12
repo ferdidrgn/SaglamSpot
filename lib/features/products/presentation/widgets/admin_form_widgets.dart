@@ -19,9 +19,13 @@ class AdminFormSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-                color: AppColors.textPrimary.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 8)),
+                color: AppColors.primary.withOpacity(0.07),
+                blurRadius: 28,
+                offset: const Offset(0, 14)),
+            BoxShadow(
+                color: AppColors.textPrimary.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2)),
           ],
         ),
         child: Column(
@@ -29,8 +33,15 @@ class AdminFormSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, size: 18, color: AppColors.accentDark),
-                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.accentGradient,
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Icon(icon, size: 14, color: Colors.white),
+                ),
+                const SizedBox(width: 10),
                 Text(title,
                     style: const TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w800,
@@ -144,11 +155,21 @@ class AdminSubmitButton extends StatelessWidget {
       {super.key, required this.label, required this.isLoading, required this.onTap});
 
   @override
-  Widget build(final BuildContext context) => SizedBox(
+  Widget build(final BuildContext context) => Container(
         width: double.infinity,
         height: 54,
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+                color: AppColors.primary.withOpacity(0.35),
+                blurRadius: 22,
+                offset: const Offset(0, 10)),
+          ],
+        ),
         child: Material(
-          color: AppColors.primary,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           child: InkWell(
             onTap: isLoading ? null : onTap,

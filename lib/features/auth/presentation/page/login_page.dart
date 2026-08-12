@@ -154,11 +154,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         );
   }
 
-  Widget _buildSubmitButton(final bool isLoading) => SizedBox(
+  Widget _buildSubmitButton(final bool isLoading) => Container(
         width: double.infinity,
         height: 54,
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+                color: AppColors.primary.withOpacity(0.35),
+                blurRadius: 22,
+                offset: const Offset(0, 10)),
+          ],
+        ),
         child: Material(
-          color: AppColors.primary,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           child: InkWell(
             onTap: isLoading ? null : _submit,

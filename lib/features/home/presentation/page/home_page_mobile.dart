@@ -259,7 +259,12 @@ class _StatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.mobileBorder),
+          boxShadow: [
+            BoxShadow(
+                color: color.withOpacity(0.16),
+                blurRadius: 18,
+                offset: const Offset(0, 8)),
+          ],
         ),
         child: Column(
           children: [
@@ -267,10 +272,14 @@ class _StatCard extends StatelessWidget {
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [color.withOpacity(0.85), color],
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 17, color: color),
+              child: Icon(icon, size: 17, color: Colors.white),
             ),
             const SizedBox(height: 8),
             Text(value,
@@ -364,9 +373,13 @@ class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-              color: AppColors.mobileTextPrimary.withOpacity(0.06),
-              blurRadius: 18,
-              offset: const Offset(0, 8)),
+              color: AppColors.mobilePrimary.withOpacity(0.10),
+              blurRadius: 24,
+              offset: const Offset(0, 12)),
+          BoxShadow(
+              color: AppColors.mobileTextPrimary.withOpacity(0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 2)),
         ],
       ),
       child: Column(
