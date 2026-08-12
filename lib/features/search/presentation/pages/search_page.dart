@@ -279,9 +279,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final available = ref.watch(availableProductsProvider);
 
     return SizedBox(
-      width: 288,
+      width: 236,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 20, 20, 32),
+        padding: const EdgeInsets.fromLTRB(18, 20, 16, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

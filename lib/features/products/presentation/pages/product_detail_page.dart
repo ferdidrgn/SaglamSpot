@@ -19,13 +19,12 @@ import '../providers/product_provider.dart';
 import '../providers/recently_viewed_provider.dart';
 import '../widgets/product_color_section.dart';
 
-/// Bu sayfa hem web hem native mobil tarafından paylaşılır (layout
-/// context.isMobile ile dallanır) ama İKİ FARKLI marka paleti kullanır —
-/// web sıcak espresso/ekru, native mobil teal/sage. Tek tek renk
-/// belirtmek yerine bu küçük yardımcı ile her renk çağrısı platforma
-/// göre otomatik seçilir.
-Color _pc(final BuildContext context,
-        {required final Color mobile, required final Color web}) =>
+/// Uygulama artık TEK bir marka paleti kullanıyor (teal/sage — eski sıcak
+/// espresso/ahşap palet kaldırıldı, bkz. app_colors.dart). Bu yardımcı
+/// jenerik bırakıldı (Color VEYA Gradient dönebilir) — mobile/web kolları
+/// artık aynı değeri döndürse de çağrı yerlerini tek tek değiştirmemek
+/// için korunuyor.
+T _pc<T>(final BuildContext context, {required final T mobile, required final T web}) =>
     context.isMobile ? mobile : web;
 
 /// Ürün Detay Sayfası — sıfırdan, sade ve premium bir tasarım anlayışıyla
