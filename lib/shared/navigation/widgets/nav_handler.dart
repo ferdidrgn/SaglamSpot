@@ -97,6 +97,12 @@ class NavigationHandler {
   /// Yönetici paneline git (giriş gerektirir, redirect kapısı app_router'da)
   static void goToAdmin(final BuildContext context) => context.go('/admin');
 
+  /// Gizlilik Politikası sayfasına git
+  static void goToPrivacyPolicy(final BuildContext context) => context.go('/privacy');
+
+  /// Kullanım Koşulları sayfasına git
+  static void goToTerms(final BuildContext context) => context.go('/terms');
+
   // ✅ MOBİL TAB NAVIGATION (ROUTER)
   static void goToDiscoverWithCategory(
           final BuildContext context, final String category) =>

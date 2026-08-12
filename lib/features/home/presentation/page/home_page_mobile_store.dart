@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
@@ -10,6 +11,7 @@ import '../../../../features/products/data/models/category_meta.dart';
 import '../../../../features/products/domain/entites/product.dart';
 import '../../../../features/products/presentation/providers/category_meta_provider.dart';
 import '../../../../features/products/presentation/providers/product_filters_provider.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
@@ -29,7 +31,7 @@ class HomeStorePage extends ConsumerWidget {
     final available = ref.watch(availableProductsProvider);
     final featured = available.take(8).toList();
 
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: const MobileBottomNav(),
       body: SafeArea(
@@ -72,6 +74,8 @@ class HomeStorePage extends ConsumerWidget {
         ),
       ),
     );
+
+    return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
 
   Widget _buildHeader(final BuildContext context) => Padding(

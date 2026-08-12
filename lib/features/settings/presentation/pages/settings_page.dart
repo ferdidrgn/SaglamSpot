@@ -1,23 +1,37 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/language_selector.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
 /// Profil / Ayarlar sayfası. Uygulamada müşteri hesap sistemi yok —
 /// bu yüzden giriş/kayıt gerektirmez; dil, iletişim, kurumsal sayfalar
-/// (Hakkımızda/SSS) ve yönetici girişine erişim sağlar.
-class SettingsPage extends StatelessWidget {
+/// (Hakkımızda/SSS), yasal metinler ve uygulama değerlendirme/paylaşım
+/// erişimi sağlar.
+///
+/// GÜVENLİK NOTU: "Yönetici Girişi" burada ARTIK GÖRÜNÜR bir buton değil
+/// — herkese açık bir sayfada admin girişini öne çıkarmak istenmeyen bir
+/// hedef oluşturur. Zaten oturum açmış bir yönetici için küçük bir "Panele
+/// Dön" kısayolu gösterilir; oturum yoksa girişe ulaşmanın tek yolu alt
+/// bilgideki sürüm metnine UZUN BASMAK (bkz. _AppVersionFooter).
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   static const String _appVersion = '1.0.0';
 
   @override
-  Widget build(final BuildContext context) {
-    return Scaffold(
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final authState = ref.watch(authProvider);
+    final bool isAdminLoggedIn = authState.value != null && !authState.isLoading;
+
+    final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
@@ -40,11 +54,12 @@ class SettingsPage extends StatelessWidget {
             _SettingsCard(
               children: [
                 const _LanguageTile(),
-                _SettingsTile(
-                  icon: Icons.admin_panel_settings_rounded,
-                  label: context.l10n.settingsAdminLogin,
-                  onTap: () => NavigationHandler.goToAdmin(context),
-                ),
+                if (isAdminLoggedIn)
+                  _SettingsTile(
+                    icon: Icons.admin_panel_settings_rounded,
+                    label: context.l10n.settingsAdminLogin,
+                    onTap: () => NavigationHandler.goToAdmin(context),
+                  ),
               ],
             ),
             const SizedBox(height: 24),
@@ -75,16 +90,47 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            Center(
-              child: Text(
-                '${context.l10n.settingsAppVersion}: $_appVersion',
-                style: const TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
-              ),
+            _SectionLabel(context.l10n.settingsAppSection),
+            const SizedBox(height: 10),
+            _SettingsCard(
+              children: [
+                _SettingsTile(
+                  icon: Icons.star_rounded,
+                  label: context.l10n.settingsRateApp,
+                  onTap: FurnitureShareService.openStoreListingForReview,
+                ),
+                _SettingsTile(
+                  icon: Icons.ios_share_rounded,
+                  label: context.l10n.settingsShareApp,
+                  onTap: FurnitureShareService.shareApp,
+                ),
+              ],
             ),
+            const SizedBox(height: 24),
+            _SectionLabel(context.l10n.settingsLegalSection),
+            const SizedBox(height: 10),
+            _SettingsCard(
+              children: [
+                _SettingsTile(
+                  icon: Icons.privacy_tip_rounded,
+                  label: context.l10n.settingsPrivacyPolicy,
+                  onTap: () => NavigationHandler.goToPrivacyPolicy(context),
+                ),
+                _SettingsTile(
+                  icon: Icons.description_rounded,
+                  label: context.l10n.settingsTerms,
+                  onTap: () => NavigationHandler.goToTerms(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const _AppVersionFooter(version: _appVersion),
           ],
         ),
       ),
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   Widget _buildProfileHeader(final BuildContext context) => Container(
@@ -151,22 +197,25 @@ class _SettingsCard extends StatelessWidget {
   const _SettingsCard({required this.children});
 
   @override
-  Widget build(final BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.mobileBorder),
-        ),
-        child: Column(
-          children: [
-            for (int i = 0; i < children.length; i++) ...[
-              children[i],
-              if (i != children.length - 1)
-                const Divider(height: 1, color: AppColors.mobileBorder, indent: 52),
-            ],
+  Widget build(final BuildContext context) {
+    if (children.isEmpty) return const SizedBox.shrink();
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.mobileBorder),
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i != children.length - 1)
+              const Divider(height: 1, color: AppColors.mobileBorder, indent: 52),
           ],
-        ),
-      );
+        ],
+      ),
+    );
+  }
 }
 
 class _SettingsTile extends StatelessWidget {
@@ -194,5 +243,28 @@ class _LanguageTile extends StatelessWidget {
   Widget build(final BuildContext context) => Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: const LanguageSelector(isDrawer: true),
+      );
+}
+
+/// Sürüm metni — normal kullanıcılar için sade bir bilgi satırı. Buraya
+/// UZUN BASMAK yönetici giriş sayfasını açar; bilerek keşfedilmesi zor,
+/// ama yöneticinin bildiği bir "gizli kapı".
+class _AppVersionFooter extends StatelessWidget {
+  final String version;
+
+  const _AppVersionFooter({required this.version});
+
+  @override
+  Widget build(final BuildContext context) => Center(
+        child: GestureDetector(
+          onLongPress: () => NavigationHandler.goToLogin(context),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              '${context.l10n.settingsAppVersion}: $version',
+              style: const TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
+            ),
+          ),
+        ),
       );
 }

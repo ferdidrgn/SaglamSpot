@@ -12,7 +12,7 @@ import '../../../core/common/enum/enums.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/language_selector.dart';
-import '../../../../features/auth/presentation/provider/auth_provider_notifier.dart';
+import '../../../features/auth/presentation/provider/auth_provider_notifier.dart';
 
 class SearchIntent extends Intent {
   const SearchIntent();
@@ -97,7 +97,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           child: Image.asset(
-            'assets/images/saglam_spot_logo.png',
+            'assets/images/saglam_spot_logo_mark.png',
             width: 90,
             height: 90,
             fit: BoxFit.contain,

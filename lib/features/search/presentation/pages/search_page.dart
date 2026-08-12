@@ -17,6 +17,7 @@ import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
@@ -82,7 +83,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     // tablet/laptop pencerelerinde sonuç alanını sıkıştırmasın.
     final showSidebar = context.isDesktop;
 
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
@@ -172,6 +173,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       ),
       floatingActionButton: !showSidebar ? _buildFloatingFilter(context) : null,
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   // ─────────────────────────────────────────────────────────────

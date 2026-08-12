@@ -448,5 +448,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "Αξιολογήστε την εφαρμογή",
+  "settingsShareApp": "Κοινοποίηση εφαρμογής",
+  "settingsPrivacyPolicy": "Πολιτική Απορρήτου",
+  "settingsTerms": "Όροι Χρήσης",
+  "legalContentTurkishOnly": "Αυτό το περιεχόμενο είναι προς το παρόν διαθέσιμο μόνο στα τουρκικά.",
+  "doubleBackToExit": "Πατήστε ξανά πίσω για έξοδο",
+  "productLinkLabel": "Σύνδεσμος προϊόντος",
+  "settingsAppSection": "Εφαρμογή",
+  "settingsLegalSection": "Νομικά"
 }

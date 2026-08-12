@@ -476,5 +476,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "Uygulamayı Değerlendir",
+  "settingsShareApp": "Uygulamayı Paylaş",
+  "settingsPrivacyPolicy": "Gizlilik Politikası",
+  "settingsTerms": "Kullanım Koşulları",
+  "legalContentTurkishOnly": "Bu içerik şu anda yalnızca Türkçe olarak sunulmaktadır.",
+  "doubleBackToExit": "Çıkmak için tekrar geri tuşuna basın",
+  "productLinkLabel": "Ürün linki",
+  "settingsAppSection": "Uygulama",
+  "settingsLegalSection": "Yasal"
 }

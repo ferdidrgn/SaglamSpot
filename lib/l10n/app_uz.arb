@@ -448,5 +448,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "Ilovani baholang",
+  "settingsShareApp": "Ilovani ulashish",
+  "settingsPrivacyPolicy": "Maxfiylik siyosati",
+  "settingsTerms": "Foydalanish shartlari",
+  "legalContentTurkishOnly": "Ushbu kontent hozircha faqat turk tilida mavjud.",
+  "doubleBackToExit": "Chiqish uchun yana orqaga bosing",
+  "productLinkLabel": "Mahsulot havolasi",
+  "settingsAppSection": "Ilova",
+  "settingsLegalSection": "Huquqiy"
 }

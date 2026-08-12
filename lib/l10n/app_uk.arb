@@ -448,5 +448,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "Оцінити застосунок",
+  "settingsShareApp": "Поділитися застосунком",
+  "settingsPrivacyPolicy": "Політика конфіденційності",
+  "settingsTerms": "Умови використання",
+  "legalContentTurkishOnly": "Цей вміст наразі доступний лише турецькою мовою.",
+  "doubleBackToExit": "Натисніть назад ще раз, щоб вийти",
+  "productLinkLabel": "Посилання на товар",
+  "settingsAppSection": "Застосунок",
+  "settingsLegalSection": "Правова інформація"
 }

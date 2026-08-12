@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
+import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../domain/entities/cart_item.dart';
@@ -20,12 +22,16 @@ class CartPage extends ConsumerWidget {
   void _sendCartToWhatsApp(final List<CartItem> items) {
     final buffer = StringBuffer('Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n');
     for (final item in items) {
+      final String link =
+          FurnitureShareService.generateProductUrl(item.product.id, item.product.name);
       buffer.write('• ${item.product.name}');
       if (item.quantity > 1) buffer.write(' (x${item.quantity})');
       buffer.write(' — ${item.subtotal.toStringAsFixed(0)}₺\n');
+      buffer.write('  $link\n\n');
     }
     final total = items.fold<double>(0, (final sum, final item) => sum + item.subtotal);
-    buffer.write('\nToplam: ${total.toStringAsFixed(0)}₺');
+    buffer.write('Toplam: ${total.toStringAsFixed(0)}₺\n\n');
+    buffer.write('Tüm ürünler: ${FurnitureShareService.storeUrl}');
     SaglamSpotCommunication.launchWhatsApp(message: buffer.toString());
   }
 
@@ -34,7 +40,7 @@ class CartPage extends ConsumerWidget {
     final items = ref.watch(cartProvider);
     final total = ref.watch(cartTotalProvider);
 
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
@@ -57,6 +63,8 @@ class CartPage extends ConsumerWidget {
         ),
       ),
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   Widget _buildHeader(final BuildContext context) => Padding(

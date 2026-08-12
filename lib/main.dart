@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'core/config/app_initializer.dart';
 import 'core/config/app_router.dart';
 import 'core/localization/locale_provider.dart';
+import 'core/services/admin_session_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
@@ -52,6 +53,10 @@ void main() async {
 
   // 3. Arka plan servis ağını arayüz çizimini engellemeyecek şekilde asenkron olarak ayağa kaldır
   await AppInitializer.init(binding);
+
+  // 4. Bu cihazda daha önce yönetici girişi yapılmış mı — router'ın ilk
+  // yönlendirme kararını senkron verebilmesi için runApp'ten önce yüklenir
+  await AdminSessionCache.load();
 
   runApp(
       const ProviderScope(observers: [], child: MyApp())

@@ -448,5 +448,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "Колдонмону баалоо",
+  "settingsShareApp": "Колдонмону бөлүшүү",
+  "settingsPrivacyPolicy": "Купуялык саясаты",
+  "settingsTerms": "Колдонуу шарттары",
+  "legalContentTurkishOnly": "Бул мазмун азырынча тек гана түрк тилинде жеткиликтүү.",
+  "doubleBackToExit": "Чыгуу үчүн кайра артка басыңыз",
+  "productLinkLabel": "Заттын шилтемеси",
+  "settingsAppSection": "Колдонмо",
+  "settingsLegalSection": "Юридикалык"
 }

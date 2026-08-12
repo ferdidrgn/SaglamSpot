@@ -448,5 +448,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "Оценить приложение",
+  "settingsShareApp": "Поделиться приложением",
+  "settingsPrivacyPolicy": "Политика конфиденциальности",
+  "settingsTerms": "Условия использования",
+  "legalContentTurkishOnly": "Этот контент пока доступен только на турецком языке.",
+  "doubleBackToExit": "Нажмите назад еще раз, чтобы выйти",
+  "productLinkLabel": "Ссылка на товар",
+  "settingsAppSection": "Приложение",
+  "settingsLegalSection": "Правовая информация"
 }

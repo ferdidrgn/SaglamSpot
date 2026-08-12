@@ -28,6 +28,7 @@ dependencies:
   # Network & Storage
   dio:
   flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.2
   connectivity_plus: ^6.0.3
   cached_network_image:
 
@@ -85,6 +86,7 @@ flutter:
   generate: true
 
   assets:
+    - assets/images/saglam_spot_logo_mark.png
     - assets/images/saglam_spot_logo.jpeg
     - assets/images/saglam_spot_logo_2.jpeg
     - assets/images/bicycle_france.jpg
@@ -100,19 +102,17 @@ flutter:
 # ================================================
 flutter_native_splash:
   color: "#0A1628" #
-  background_image: "assets/images/saglam_spot_logo.png" #
-  image: "assets/images/saglam_spot_logo.png" #
+  image: "assets/images/saglam_spot_logo_mark.png" #
 
   android_12:
-    image: "assets/images/saglam_spot_logo.png" #
+    image: "assets/images/saglam_spot_logo_mark.png" #
     color: "#0A1628" #
-    image_dark: "assets/images/saglam_spot_logo.png" #
+    image_dark: "assets/images/saglam_spot_logo_mark.png" #
     color_dark: "#0A1628" #
     icon_background_color: "#0A1628" #
 
   color_dark: "#0A1628" #
-  background_image_dark: "assets/images/saglam_spot_logo.png" #
-  image_dark: "assets/images/saglam_spot_logo.png" #
+  image_dark: "assets/images/saglam_spot_logo_mark.png" #
   android_navbar_color: "#0A1628" #
 
   android: true #

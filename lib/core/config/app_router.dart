@@ -13,12 +13,15 @@ import '../../features/cart/presentation/pages/cart_page.dart';
 import '../../features/home/presentation/page/home_page_mobile.dart' as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/info/presentation/pages/about_page.dart';
+import '../../features/legal/presentation/pages/privacy_policy_page.dart';
+import '../../features/legal/presentation/pages/terms_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
+import '../services/admin_session_cache.dart';
 import '../services/deeplink/deeplink_service.dart';
 
 mixin DeepLinkSecurityEngine {
@@ -50,6 +53,10 @@ mixin DeepLinkSecurityEngine {
 
 final appRouterProvider = Provider<GoRouter>((final Ref ref) {
   final routerNotifier = _AuthRouterNotifier(ref);
+  // Uygulama açılışında (bu GoRouter örneği yaşadığı sürece) EN FAZLA BİR
+  // KEZ tetiklenir — yönetici bilinçli olarak müşteri sayfalarına geçtiğinde
+  // her '/' ziyaretinde geri panele fırlatılmasın diye.
+  bool didAutoRedirectToAdmin = false;
 
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
@@ -73,6 +80,19 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
 
       if (!requiresAuth) {
         if (isLoggedIn && isOnLoginPage) return '/';
+
+        // Bu cihazda daha önce bir yönetici giriş yaptıysa ve oturumu hâlâ
+        // geçerliyse, uygulama açılışında doğrudan panele gönder — ama
+        // sadece İLK ziyarette; yönetici sonradan bilerek müşteri
+        // sayfalarına geçerse bir daha buraya geri fırlatılmaz.
+        if (!kIsWeb &&
+            !didAutoRedirectToAdmin &&
+            currentPath == '/' &&
+            isLoggedIn &&
+            AdminSessionCache.wasAdminLoggedIn) {
+          didAutoRedirectToAdmin = true;
+          return '/admin';
+        }
         return null;
       }
 
@@ -199,6 +219,26 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SettingsPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/privacy',
+        name: 'privacy',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const PrivacyPolicyPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/terms',
+        name: 'terms',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const TermsPage(),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),

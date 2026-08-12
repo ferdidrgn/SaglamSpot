@@ -448,5 +448,14 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsRateApp": "App bewerten",
+  "settingsShareApp": "App teilen",
+  "settingsPrivacyPolicy": "Datenschutzrichtlinie",
+  "settingsTerms": "Allgemeine Geschäftsbedingungen",
+  "legalContentTurkishOnly": "Dieser Inhalt ist derzeit nur auf Türkisch verfügbar.",
+  "doubleBackToExit": "Drücken Sie erneut zurück, um zu beenden",
+  "productLinkLabel": "Produktlink",
+  "settingsAppSection": "App",
+  "settingsLegalSection": "Rechtliches"
 }
