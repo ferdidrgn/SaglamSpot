@@ -1331,7 +1331,9 @@ class _MobileContactRow extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(value,
                         style: const TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w600)),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.mobileTextPrimary)),
                   ],
                 ),
               ),

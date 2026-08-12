@@ -122,8 +122,12 @@ class AppColors {
   static const Color mobileMutedDark = Color(0xFFA5B3B4); // kenarlık/ayraç/pasif nav ikonu
 
   static const Color mobileTextPrimary = Color(0xFF152223);
-  static const Color mobileTextSecondary = Color(0xFF5C7071);
-  static const Color mobileTextTertiary = Color(0xFFA5B3B4);
+  // Okunabilirlik için koyulaştırıldı — eski ton (#5C7071) beyaz zeminde
+  // bazı ekranlarda/parlak ortamlarda çok soluk kalıyordu.
+  static const Color mobileTextSecondary = Color(0xFF3A4D4E);
+  // SADECE gerçekten ikincil/etiket niteliğindeki küçük metinler için
+  // (örn. "Fiyat", tarih damgası) — ana okunur içerik için KULLANILMAZ.
+  static const Color mobileTextTertiary = Color(0xFF6B7B7C);
   static const Color mobileBorder = Color(0xFFDCDEDE);
 
   static const Gradient mobileAccentGradient = LinearGradient(

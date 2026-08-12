@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -23,8 +24,6 @@ import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 /// bilgideki sürüm metnine UZUN BASMAK (bkz. _AppVersionFooter).
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
-
-  static const String _appVersion = '1.0.0';
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -70,21 +69,25 @@ class SettingsPage extends ConsumerWidget {
                 _SettingsTile(
                   icon: Icons.storefront_rounded,
                   label: context.l10n.aboutUs,
+                  accent: AppColors.mobilePrimary,
                   onTap: () => NavigationHandler.goToAbout(context),
                 ),
                 _SettingsTile(
                   icon: Icons.quiz_rounded,
                   label: context.l10n.sss,
+                  accent: AppColors.mobileAccentDark,
                   onTap: () => NavigationHandler.goToSSS(context),
                 ),
                 _SettingsTile(
                   icon: Icons.call_rounded,
                   label: context.l10n.settingsCallUs,
+                  accent: AppColors.success,
                   onTap: SaglamSpotCommunication.makeCall,
                 ),
                 _SettingsTile(
                   icon: Icons.chat_bubble_rounded,
                   label: context.l10n.whatsappCta,
+                  accent: AppColors.success,
                   onTap: () => SaglamSpotCommunication.launchWhatsApp(),
                 ),
               ],
@@ -97,11 +100,13 @@ class SettingsPage extends ConsumerWidget {
                 _SettingsTile(
                   icon: Icons.star_rounded,
                   label: context.l10n.settingsRateApp,
+                  accent: AppColors.mobileAccent,
                   onTap: FurnitureShareService.openStoreListingForReview,
                 ),
                 _SettingsTile(
                   icon: Icons.ios_share_rounded,
                   label: context.l10n.settingsShareApp,
+                  accent: AppColors.mobilePrimaryLight,
                   onTap: FurnitureShareService.shareApp,
                 ),
               ],
@@ -114,17 +119,19 @@ class SettingsPage extends ConsumerWidget {
                 _SettingsTile(
                   icon: Icons.privacy_tip_rounded,
                   label: context.l10n.settingsPrivacyPolicy,
+                  accent: AppColors.mobilePrimaryDark,
                   onTap: () => NavigationHandler.goToPrivacyPolicy(context),
                 ),
                 _SettingsTile(
                   icon: Icons.description_rounded,
                   label: context.l10n.settingsTerms,
+                  accent: AppColors.mobilePrimaryDark,
                   onTap: () => NavigationHandler.goToTerms(context),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            const _AppVersionFooter(version: _appVersion),
+            const _AppVersionFooter(),
           ],
         ),
       ),
@@ -222,18 +229,36 @@ class _SettingsTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final Color? accent;
 
-  const _SettingsTile({required this.icon, required this.label, required this.onTap});
+  const _SettingsTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.accent,
+  });
 
   @override
-  Widget build(final BuildContext context) => ListTile(
-        onTap: onTap,
-        leading: Icon(icon, size: 20, color: AppColors.mobilePrimary),
-        title: Text(label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-        trailing: const Icon(Icons.chevron_right_rounded,
-            size: 20, color: AppColors.mobileTextTertiary),
-      );
+  Widget build(final BuildContext context) {
+    final Color color = accent ?? AppColors.mobilePrimary;
+    return ListTile(
+      onTap: onTap,
+      leading: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, size: 18, color: color),
+      ),
+      title: Text(label,
+          style: const TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextPrimary)),
+      trailing: const Icon(Icons.chevron_right_rounded,
+          size: 20, color: AppColors.mobileTextTertiary),
+    );
+  }
 }
 
 class _LanguageTile extends StatelessWidget {
@@ -253,9 +278,7 @@ class _LanguageTile extends StatelessWidget {
 /// router'daki "zaten girişliyken login'e gidersen anasayfaya dön"
 /// kuralına takılıp onu sessizce ana sayfaya geri fırlatırdı.
 class _AppVersionFooter extends ConsumerWidget {
-  final String version;
-
-  const _AppVersionFooter({required this.version});
+  const _AppVersionFooter();
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -269,9 +292,17 @@ class _AppVersionFooter extends ConsumerWidget {
               : NavigationHandler.goToLoginForAdmin(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              '${context.l10n.settingsAppVersion}: $version',
-              style: const TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (final context, final snapshot) {
+                final String version = snapshot.hasData
+                    ? '${snapshot.data!.version}+${snapshot.data!.buildNumber}'
+                    : '…';
+                return Text(
+                  '${context.l10n.settingsAppVersion}: $version',
+                  style: const TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
+                );
+              },
             ),
           ),
         ),

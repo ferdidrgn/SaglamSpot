@@ -62,12 +62,12 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     final mutationState = ref.watch(productMutationProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.mobileBackground,
       appBar: AppBar(
         title: Text(context.l10n.addNewProduct,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-        backgroundColor: AppColors.background,
-        foregroundColor: AppColors.textPrimary,
+        backgroundColor: AppColors.mobileBackground,
+        foregroundColor: AppColors.mobileTextPrimary,
         elevation: 0,
       ),
       body: SafeArea(
@@ -205,13 +205,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                   height: 100,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.secondary,
+                    color: AppColors.mobileCardBg,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                        color: AppColors.border, style: BorderStyle.solid),
+                        color: AppColors.mobileBorder, style: BorderStyle.solid),
                   ),
                   child: Text(context.l10n.noImagesYet,
-                      style: TextStyle(color: AppColors.textTertiary)),
+                      style: TextStyle(color: AppColors.mobileTextTertiary)),
                 )
               : SizedBox(
                   height: 100,
@@ -252,8 +252,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               icon: const Icon(Icons.add_a_photo_rounded, size: 18),
               label: Text(context.l10n.addImage),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.accentDark,
-                side: const BorderSide(color: AppColors.accent),
+                foregroundColor: AppColors.mobileAccentDark,
+                side: const BorderSide(color: AppColors.mobileAccent),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape:
                     RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,9 +25,6 @@ import '../../../../shared/navigation/widgets/nav_handler.dart';
 class HomeStorePage extends ConsumerWidget {
   const HomeStorePage({super.key});
 
-  static const String _heroImage =
-      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200';
-
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final available = ref.watch(availableProductsProvider);
@@ -40,7 +39,7 @@ class HomeStorePage extends ConsumerWidget {
           slivers: [
             SliverToBoxAdapter(child: _buildHeader(context)),
             SliverToBoxAdapter(child: _buildSearchBar(context)),
-            SliverToBoxAdapter(child: _buildHeroBanner(context)),
+            const SliverToBoxAdapter(child: _HomeHeroSlider()),
             SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
             SliverToBoxAdapter(child: _CategoryRow()),
             SliverToBoxAdapter(
@@ -144,69 +143,6 @@ class HomeStorePage extends ConsumerWidget {
         ),
       );
 
-  Widget _buildHeroBanner(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
-            children: [
-              OptimizedCachedImage(
-                imageUrl: _heroImage,
-                height: 170,
-                width: double.infinity,
-                borderRadius: 24,
-              ),
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: [
-                        AppColors.mobilePrimaryDark.withOpacity(0.75),
-                        AppColors.mobilePrimaryDark.withOpacity(0.05),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                right: 20,
-                bottom: 18,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.storeHeroEyebrow,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.85),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      context.l10n.storeHeroSubtitle,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
   Widget _buildSectionTitle(final BuildContext context, final String title,
       {final VoidCallback? onSeeAll}) {
     return Padding(
@@ -238,6 +174,141 @@ class HomeStorePage extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Otomatik ilerleyen görsel slider — web'deki hero banner'ın (aynı 3
+/// fotoğraf, aynı 6 saniyelik döngü) mobil karşılığı. PageView + Timer
+/// ile web'deki `_HeroBanner` deseniyle birebir aynı mantığı kullanır.
+class _HomeHeroSlider extends StatefulWidget {
+  const _HomeHeroSlider();
+
+  static const List<String> _images = [
+    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200',
+    'https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1200',
+    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200',
+  ];
+
+  @override
+  State<_HomeHeroSlider> createState() => _HomeHeroSliderState();
+}
+
+class _HomeHeroSliderState extends State<_HomeHeroSlider> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 6), (final _) {
+      if (!mounted) return;
+      final next = (_currentPage + 1) % _HomeHeroSlider._images.length;
+      _pageController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOutCubic,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: SizedBox(
+            height: 170,
+            child: Stack(
+              children: [
+                PageView.builder(
+                  controller: _pageController,
+                  itemCount: _HomeHeroSlider._images.length,
+                  onPageChanged: (final index) => setState(() => _currentPage = index),
+                  itemBuilder: (final context, final index) => OptimizedCachedImage(
+                    imageUrl: _HomeHeroSlider._images[index],
+                    height: 170,
+                    width: double.infinity,
+                    borderRadius: 0,
+                  ),
+                ),
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                          colors: [
+                            AppColors.mobilePrimaryDark.withOpacity(0.75),
+                            AppColors.mobilePrimaryDark.withOpacity(0.05),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 20,
+                  right: 20,
+                  bottom: 30,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.l10n.storeHeroEyebrow,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.85),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        context.l10n.storeHeroSubtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 16,
+                  bottom: 12,
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < _HomeHeroSlider._images.length; i++)
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          margin: const EdgeInsets.only(left: 5),
+                          width: i == _currentPage ? 16 : 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(i == _currentPage ? 0.95 : 0.5),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
 class _CategoryRow extends ConsumerWidget {

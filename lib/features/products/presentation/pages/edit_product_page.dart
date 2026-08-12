@@ -88,7 +88,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   Widget build(final BuildContext context) {
     if (_currentProduct == null) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.mobileBackground,
         body: Center(child: Text(context.l10n.productNotFound)),
       );
     }
@@ -96,12 +96,12 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     final mutationState = ref.watch(productMutationProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.mobileBackground,
       appBar: AppBar(
         title: Text(context.l10n.editProductTitle,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-        backgroundColor: AppColors.background,
-        foregroundColor: AppColors.textPrimary,
+        backgroundColor: AppColors.mobileBackground,
+        foregroundColor: AppColors.mobileTextPrimary,
         elevation: 0,
       ),
       body: Column(
@@ -211,7 +211,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       height: 120,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.secondary,
+        color: AppColors.mobileCardBg,
         borderRadius: BorderRadius.circular(16),
       ),
       child: _newSelectedImages.isNotEmpty
@@ -244,7 +244,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                 )
               : Center(
                   child: Text(context.l10n.noImages,
-                      style: const TextStyle(color: AppColors.textTertiary)))),
+                      style: const TextStyle(color: AppColors.mobileTextTertiary)))),
     );
   }
 
@@ -259,8 +259,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
         icon: const Icon(Icons.add_a_photo_outlined, size: 18),
         label: Text(context.l10n.changeImages),
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.accentDark,
-          side: const BorderSide(color: AppColors.accent),
+          foregroundColor: AppColors.mobileAccentDark,
+          side: const BorderSide(color: AppColors.mobileAccent),
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
