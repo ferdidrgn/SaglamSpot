@@ -16,6 +16,7 @@ import '../../data/models/category_meta.dart';
 import '../providers/gallery_provider.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
+import '../providers/recently_viewed_provider.dart';
 import '../widgets/product_color_section.dart';
 
 /// Bu sayfa hem web hem native mobil tarafından paylaşılır (layout
@@ -46,6 +47,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   bool _showFullDescription = false;
   final ScrollController _scrollController = ScrollController();
   bool _isAppBarSolid = false;
+  String? _trackedProductId;
 
   late final AnimationController _entrance = AnimationController(
     vsync: this,
@@ -102,6 +104,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           category: product.category.name,
           currentProductId: product.id,
         ));
+
+        if (_trackedProductId != product.id) {
+          _trackedProductId = product.id;
+          WidgetsBinding.instance.addPostFrameCallback(
+              (final _) => ref.read(recentlyViewedProvider.notifier).track(product));
+        }
 
         return Scaffold(
           backgroundColor: _pc(context, mobile: AppColors.mobileBackground, web: AppColors.background),

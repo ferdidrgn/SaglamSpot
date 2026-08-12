@@ -457,5 +457,6 @@
   "doubleBackToExit": "Нажмите назад еще раз, чтобы выйти",
   "productLinkLabel": "Ссылка на товар",
   "settingsAppSection": "Приложение",
-  "settingsLegalSection": "Правовая информация"
+  "settingsLegalSection": "Правовая информация",
+  "recentlyViewedTitle": "Недавно просмотренные"
 }

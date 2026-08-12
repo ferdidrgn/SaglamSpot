@@ -457,5 +457,6 @@
   "doubleBackToExit": "再次按返回键退出",
   "productLinkLabel": "商品链接",
   "settingsAppSection": "应用",
-  "settingsLegalSection": "法律信息"
+  "settingsLegalSection": "法律信息",
+  "recentlyViewedTitle": "最近浏览"
 }

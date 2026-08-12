@@ -255,7 +255,7 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
@@ -263,8 +263,16 @@ class _StatCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(icon, size: 18, color: color),
-            const SizedBox(height: 6),
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, size: 17, color: color),
+            ),
+            const SizedBox(height: 8),
             Text(value,
                 style: const TextStyle(
                     fontSize: 17, fontWeight: FontWeight.w900,
@@ -418,8 +426,6 @@ class _ImageArea extends ConsumerWidget {
                   ),
           ),
           Positioned(top: 10, left: 10, child: _StatusBadge(product: product)),
-          Positioned(
-              bottom: 10, right: 10, child: _PriceBadge(price: product.price)),
         ],
       );
 }
@@ -462,6 +468,12 @@ class _InfoArea extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 6),
+        Text(
+          '${product.price.toStringAsFixed(0)} ₺',
+          style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
+        ),
       ],
     );
   }
@@ -474,35 +486,28 @@ class _ActionBar extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    return Container(
-      height: 44,
-      decoration: BoxDecoration(
-        color: AppColors.mobileBackground.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.mobileBorder),
-      ),
-      child: Row(
-        children: [
-          if (!product.isSold) ...[
-            _actionBtn(
-              icon: Icons.edit_rounded,
-              color: AppColors.info,
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (final _) =>
-                        EditProductPage(productId: product.id, product: product),
-                  )),
-            ),
-            Container(width: 1, color: AppColors.mobileBorder),
-          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (!product.isSold) ...[
           _actionBtn(
-            icon: Icons.delete_forever_rounded,
-            color: AppColors.error,
-            onTap: () => _confirmDelete(context, ref),
+            icon: Icons.edit_rounded,
+            color: AppColors.mobilePrimary,
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (final _) =>
+                      EditProductPage(productId: product.id, product: product),
+                )),
           ),
+          const SizedBox(width: 8),
         ],
-      ),
+        _actionBtn(
+          icon: Icons.delete_rounded,
+          color: AppColors.error,
+          onTap: () => _confirmDelete(context, ref),
+        ),
+      ],
     );
   }
 
@@ -510,11 +515,17 @@ class _ActionBar extends ConsumerWidget {
       {required final IconData icon,
       required final Color color,
       required final VoidCallback onTap}) {
-    return Expanded(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Icon(icon, color: color, size: 20),
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: color, size: 15),
       ),
     );
   }
@@ -563,26 +574,6 @@ class _StatusBadge extends StatelessWidget {
         style: const TextStyle(
             color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
       ),
-    );
-  }
-}
-
-class _PriceBadge extends StatelessWidget {
-  final num price;
-
-  const _PriceBadge({required this.price});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text('$price ₺',
-          style: const TextStyle(
-              color: Colors.white, fontSize: 12, fontWeight: FontWeight.w900)),
     );
   }
 }

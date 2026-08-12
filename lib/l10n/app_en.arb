@@ -485,5 +485,6 @@
   "doubleBackToExit": "Press back again to exit",
   "productLinkLabel": "Product link",
   "settingsAppSection": "App",
-  "settingsLegalSection": "Legal"
+  "settingsLegalSection": "Legal",
+  "recentlyViewedTitle": "Recently Viewed"
 }

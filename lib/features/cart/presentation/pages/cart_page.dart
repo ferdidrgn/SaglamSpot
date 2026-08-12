@@ -7,6 +7,8 @@ import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../../features/products/domain/entites/product.dart';
+import '../../../../features/products/presentation/providers/recently_viewed_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -14,10 +16,63 @@ import '../../domain/entities/cart_item.dart';
 import '../providers/cart_provider.dart';
 
 /// Sepet ekranı — gerçek bir ödeme akışı yok. Müşteri beğendiği ürünleri
-/// buraya ekler, ardından tek bir mesajla mağazadan hepsi hakkında bilgi
-/// ister (mevcut "ara/WhatsApp'tan sor" iş modeliyle uyumlu).
-class CartPage extends ConsumerWidget {
+/// buraya ekler, hangilerini soracağını onay kutularıyla seçer, ardından
+/// tek bir mesajla mağazadan hepsi hakkında bilgi ister (mevcut
+/// "ara/WhatsApp'tan sor" iş modeliyle uyumlu). "Son Görüntülenenler"
+/// bölümü ürün detayına her girişte otomatik güncellenen ayrı bir
+/// provider'dan (recentlyViewedProvider) beslenir.
+class CartPage extends ConsumerStatefulWidget {
   const CartPage({super.key});
+
+  @override
+  ConsumerState<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends ConsumerState<CartPage> {
+  // Boş küme = hepsi seçili (varsayılan). Sepete yeni eklenen bir ürün
+  // otomatik olarak seçili başlar — burada ayrıca bir şey yapmaya gerek
+  // yok, sadece "işareti kaldırılanlar" tutuluyor.
+  final Set<String> _uncheckedIds = {};
+
+  bool _isSelected(final String productId) => !_uncheckedIds.contains(productId);
+
+  void _toggle(final String productId) {
+    setState(() {
+      if (_uncheckedIds.contains(productId)) {
+        _uncheckedIds.remove(productId);
+      } else {
+        _uncheckedIds.add(productId);
+      }
+    });
+  }
+
+  Future<void> _confirmClearCart(final List<CartItem> items) async {
+    if (items.isEmpty) return;
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (final context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(context.l10n.cartTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(context.l10n.cartEmptyDesc),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(context.l10n.cancel, style: const TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Text(context.l10n.clear),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) ref.read(cartProvider.notifier).clear();
+  }
 
   void _sendCartToWhatsApp(final List<CartItem> items) {
     final buffer = StringBuffer('Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n');
@@ -36,9 +91,14 @@ class CartPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
+  Widget build(final BuildContext context) {
     final items = ref.watch(cartProvider);
-    final total = ref.watch(cartTotalProvider);
+    final selectedItems = items.where((final i) => _isSelected(i.product.id)).toList();
+    final double selectedTotal =
+        selectedItems.fold<double>(0, (final sum, final item) => sum + item.subtotal);
+    final int selectedCount =
+        selectedItems.fold<int>(0, (final sum, final item) => sum + item.quantity);
+    final recentlyViewed = ref.watch(recentlyViewedProvider);
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
@@ -46,19 +106,30 @@ class CartPage extends ConsumerWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context),
+            _buildHeader(context, items),
             Expanded(
               child: items.isEmpty
                   ? _buildEmptyState(context)
-                  : ListView.separated(
+                  : ListView(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                      itemCount: items.length,
-                      separatorBuilder: (final _, final __) => const SizedBox(height: 12),
-                      itemBuilder: (final context, final index) =>
-                          _CartItemCard(item: items[index]),
+                      children: [
+                        for (final item in items) ...[
+                          _CartItemCard(
+                            item: item,
+                            isSelected: _isSelected(item.product.id),
+                            onToggleSelected: () => _toggle(item.product.id),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                        if (recentlyViewed.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          _RecentlyViewedSection(products: recentlyViewed),
+                        ],
+                      ],
                     ),
             ),
-            if (items.isNotEmpty) _buildFooter(context, ref, items, total),
+            if (items.isNotEmpty)
+              _buildFooter(context, selectedItems, selectedCount, selectedTotal),
           ],
         ),
       ),
@@ -67,18 +138,29 @@ class CartPage extends ConsumerWidget {
     return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
-  Widget _buildHeader(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+  Widget _buildHeader(final BuildContext context, final List<CartItem> items) => Padding(
+        padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
         child: Row(
           children: [
-            Text(
-              context.l10n.cartTitle,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: AppColors.mobileTextPrimary,
+            IconButton(
+              onPressed: () => NavigationHandler.smartGoBack(context),
+              icon: const Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+            ),
+            Expanded(
+              child: Text(
+                context.l10n.cartTitle,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.mobileTextPrimary,
+                ),
               ),
             ),
+            if (items.isNotEmpty)
+              IconButton(
+                onPressed: () => _confirmClearCart(items),
+                icon: const Icon(Icons.delete_outline_rounded, color: AppColors.mobileTextSecondary),
+              ),
           ],
         ),
       );
@@ -92,7 +174,7 @@ class CartPage extends ConsumerWidget {
               Container(
                 width: 96,
                 height: 96,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.mobileCardBg,
                   shape: BoxShape.circle,
                 ),
@@ -136,8 +218,9 @@ class CartPage extends ConsumerWidget {
         ),
       );
 
-  Widget _buildFooter(final BuildContext context, final WidgetRef ref,
-      final List<CartItem> items, final double total) {
+  Widget _buildFooter(final BuildContext context, final List<CartItem> selectedItems,
+      final int selectedCount, final double selectedTotal) {
+    final bool hasSelection = selectedItems.isNotEmpty;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       decoration: BoxDecoration(
@@ -153,12 +236,12 @@ class CartPage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                context.l10n.cartTotalLabel,
+                context.l10n.cartItemsCount(selectedCount),
                 style: const TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextSecondary),
               ),
               Text(
-                '${total.toStringAsFixed(0)}₺',
+                '${selectedTotal.toStringAsFixed(0)}₺',
                 style: const TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
               ),
@@ -168,13 +251,14 @@ class CartPage extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () => _sendCartToWhatsApp(items),
+              onPressed: hasSelection ? () => _sendCartToWhatsApp(selectedItems) : null,
               icon: const Icon(Icons.chat_bubble_rounded, size: 18),
               label: Text(context.l10n.cartWhatsappCta,
                   style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14.5)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.mobilePrimary,
                 foregroundColor: Colors.white,
+                disabledBackgroundColor: AppColors.mobileMutedDark,
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 elevation: 0,
@@ -189,38 +273,75 @@ class CartPage extends ConsumerWidget {
 
 class _CartItemCard extends ConsumerWidget {
   final CartItem item;
+  final bool isSelected;
+  final VoidCallback onToggleSelected;
 
-  const _CartItemCard({required this.item});
+  const _CartItemCard({
+    required this.item,
+    required this.isSelected,
+    required this.onToggleSelected,
+  });
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final product = item.product;
     final notifier = ref.read(cartProvider.notifier);
 
-    return GestureDetector(
-      onTap: () => NavigationHandler.goToProduct(
-        context: context,
-        productId: product.id,
-        productSlug: product.name.toSlug(),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.mobileBorder),
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isSelected ? AppColors.mobilePrimary.withOpacity(0.4) : AppColors.mobileBorder,
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            OptimizedCachedImage(
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: onToggleSelected,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 24, right: 8),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.mobilePrimary : Colors.white,
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: isSelected ? AppColors.mobilePrimary : AppColors.mobileMutedDark,
+                    width: 1.6,
+                  ),
+                ),
+                child: isSelected
+                    ? const Icon(Icons.check_rounded, size: 14, color: Colors.white)
+                    : null,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => NavigationHandler.goToProduct(
+              context: context,
+              productId: product.id,
+              productSlug: product.name.toSlug(),
+            ),
+            child: OptimizedCachedImage(
               imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
-              width: 72,
-              height: 72,
+              width: 64,
+              height: 64,
               borderRadius: 14,
             ),
-            const SizedBox(width: 12),
-            Expanded(
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => NavigationHandler.goToProduct(
+                context: context,
+                productId: product.id,
+                productSlug: product.name.toSlug(),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -261,13 +382,13 @@ class _CartItemCard extends ConsumerWidget {
                 ],
               ),
             ),
-            IconButton(
-              onPressed: () => notifier.remove(product.id),
-              icon: const Icon(Icons.close_rounded, size: 18, color: AppColors.mobileMutedDark),
-              visualDensity: VisualDensity.compact,
-            ),
-          ],
-        ),
+          ),
+          IconButton(
+            onPressed: () => notifier.remove(product.id),
+            icon: const Icon(Icons.close_rounded, size: 18, color: AppColors.mobileMutedDark),
+            visualDensity: VisualDensity.compact,
+          ),
+        ],
       ),
     );
   }
@@ -293,4 +414,88 @@ class _QtyButton extends StatelessWidget {
           child: Icon(icon, size: 15, color: AppColors.mobileTextPrimary),
         ),
       );
+}
+
+class _RecentlyViewedSection extends StatelessWidget {
+  final List<Product> products;
+
+  const _RecentlyViewedSection({required this.products});
+
+  @override
+  Widget build(final BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.l10n.recentlyViewedTitle,
+          style: const TextStyle(
+              fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 150,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: products.length,
+            separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+            itemBuilder: (final context, final index) {
+              final product = products[index];
+              return GestureDetector(
+                onTap: () => NavigationHandler.goToProduct(
+                  context: context,
+                  productId: product.id,
+                  productSlug: product.name.toSlug(),
+                ),
+                child: Container(
+                  width: 110,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.mobileBorder),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        child: OptimizedCachedImage(
+                          imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                          width: 110,
+                          height: 90,
+                          borderRadius: 0,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${product.price.toStringAsFixed(0)}₺',
+                              style: const TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w900,
+                                  color: AppColors.mobilePrimary),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }
