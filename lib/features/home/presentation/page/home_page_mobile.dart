@@ -385,18 +385,17 @@ class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AspectRatio(aspectRatio: 0.9, child: _ImageArea(product: product)),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _InfoArea(product: product),
-                  const Spacer(),
-                  _ActionBar(product: product),
-                ],
-              ),
+          Expanded(child: _ImageArea(product: product)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _InfoArea(product: product),
+                const SizedBox(height: 8),
+                _ActionBar(product: product),
+              ],
             ),
           ),
         ],

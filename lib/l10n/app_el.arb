@@ -458,5 +458,32 @@
   "productLinkLabel": "Σύνδεσμος προϊόντος",
   "settingsAppSection": "Εφαρμογή",
   "settingsLegalSection": "Νομικά",
-  "recentlyViewedTitle": "Πρόσφατα Προβεβλημένα"
+  "recentlyViewedTitle": "Πρόσφατα Προβεβλημένα",
+  "productTrustBadgeVerified": "Επαληθευμένος Πωλητής",
+  "productTrustBadgeNegotiate": "Διαπραγμάτευση μέσω WhatsApp",
+  "productTrustBadgeDelivery": "Παράδοση επί τόπου",
+  "howToBuyTitle": "Πώς αγοράζω;",
+  "howToBuyStep1Title": "Γράψτε στο WhatsApp",
+  "howToBuyStep1Desc": "Αν σας αρέσει το προϊόν, επικοινωνήστε μαζί μας μέσω WhatsApp.",
+  "howToBuyStep2Title": "Συζητήστε την τιμή",
+  "howToBuyStep2Desc": "Συμφωνήστε μαζί για την τιμή και τις λεπτομέρειες παράδοσης.",
+  "howToBuyStep3Title": "Παραλάβετέ το",
+  "howToBuyStep3Desc": "Μετά τη συμφωνία, παραλάβετε το προϊόν σας με ασφάλεια.",
+  "listedToday": "Καταχωρήθηκε σήμερα",
+  "listedDaysAgo": "Καταχωρήθηκε πριν από {days} ημέρες",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "Καταχωρήθηκε πριν από {weeks} εβδομάδες",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

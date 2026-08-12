@@ -486,5 +486,32 @@
   "productLinkLabel": "Ürün linki",
   "settingsAppSection": "Uygulama",
   "settingsLegalSection": "Yasal",
-  "recentlyViewedTitle": "Son Görüntülenenler"
+  "recentlyViewedTitle": "Son Görüntülenenler",
+  "productTrustBadgeVerified": "Satıcı Onaylı",
+  "productTrustBadgeNegotiate": "WhatsApp'tan Pazarlık",
+  "productTrustBadgeDelivery": "Yerinde Teslim",
+  "howToBuyTitle": "Nasıl Satın Alırım?",
+  "howToBuyStep1Title": "WhatsApp'tan Yaz",
+  "howToBuyStep1Desc": "Ürünü beğendiyseniz WhatsApp üzerinden bize ulaşın.",
+  "howToBuyStep2Title": "Fiyatı Konuş",
+  "howToBuyStep2Desc": "Fiyat ve teslimat detaylarını birlikte görüşelim.",
+  "howToBuyStep3Title": "Teslim Alın",
+  "howToBuyStep3Desc": "Anlaştıktan sonra ürününüzü güvenle teslim alın.",
+  "listedToday": "Bugün eklendi",
+  "listedDaysAgo": "{days} gün önce eklendi",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "{weeks} hafta önce eklendi",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

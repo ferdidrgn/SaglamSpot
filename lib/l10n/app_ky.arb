@@ -458,5 +458,32 @@
   "productLinkLabel": "Заттын шилтемеси",
   "settingsAppSection": "Колдонмо",
   "settingsLegalSection": "Юридикалык",
-  "recentlyViewedTitle": "Жакында көрүлгөндөр"
+  "recentlyViewedTitle": "Жакында көрүлгөндөр",
+  "productTrustBadgeVerified": "Текшерилген Сатуучу",
+  "productTrustBadgeNegotiate": "WhatsApp аркылуу сүйлөшүү",
+  "productTrustBadgeDelivery": "Жеринде жеткирүү",
+  "howToBuyTitle": "Кантип сатып алам?",
+  "howToBuyStep1Title": "WhatsApp'ка жазыңыз",
+  "howToBuyStep1Desc": "Буюм жаккан болсо, бизге WhatsApp аркылуу кайрылыңыз.",
+  "howToBuyStep2Title": "Баасын сүйлөшүңүз",
+  "howToBuyStep2Desc": "Баасын жана жеткирүү деталдарын биргеликте макулдашыңыз.",
+  "howToBuyStep3Title": "Буюмду алыңыз",
+  "howToBuyStep3Desc": "Макулдашкандан кийин буюмуңузду коопсуз алыңыз.",
+  "listedToday": "Бүгүн кошулду",
+  "listedDaysAgo": "{days} күн мурун кошулду",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "{weeks} жума мурун кошулду",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

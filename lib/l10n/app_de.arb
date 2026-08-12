@@ -458,5 +458,32 @@
   "productLinkLabel": "Produktlink",
   "settingsAppSection": "App",
   "settingsLegalSection": "Rechtliches",
-  "recentlyViewedTitle": "Zuletzt angesehen"
+  "recentlyViewedTitle": "Zuletzt angesehen",
+  "productTrustBadgeVerified": "Verifizierter Verkäufer",
+  "productTrustBadgeNegotiate": "Verhandeln über WhatsApp",
+  "productTrustBadgeDelivery": "Lieferung vor Ort",
+  "howToBuyTitle": "Wie kaufe ich?",
+  "howToBuyStep1Title": "Auf WhatsApp schreiben",
+  "howToBuyStep1Desc": "Wenn Ihnen der Artikel gefällt, kontaktieren Sie uns über WhatsApp.",
+  "howToBuyStep2Title": "Preis besprechen",
+  "howToBuyStep2Desc": "Vereinbaren Sie gemeinsam Preis und Lieferdetails.",
+  "howToBuyStep3Title": "Abholen",
+  "howToBuyStep3Desc": "Nach der Einigung erhalten Sie Ihren Artikel sicher.",
+  "listedToday": "Heute eingestellt",
+  "listedDaysAgo": "Vor {days} Tagen eingestellt",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "Vor {weeks} Wochen eingestellt",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -458,5 +458,32 @@
   "productLinkLabel": "Mahsulot havolasi",
   "settingsAppSection": "Ilova",
   "settingsLegalSection": "Huquqiy",
-  "recentlyViewedTitle": "Yaqinda ko'rilganlar"
+  "recentlyViewedTitle": "Yaqinda ko'rilganlar",
+  "productTrustBadgeVerified": "Tasdiqlangan Sotuvchi",
+  "productTrustBadgeNegotiate": "WhatsApp orqali kelishish",
+  "productTrustBadgeDelivery": "Joyida yetkazib berish",
+  "howToBuyTitle": "Qanday sotib olaman?",
+  "howToBuyStep1Title": "WhatsApp'ga yozing",
+  "howToBuyStep1Desc": "Mahsulot yoqqan bo'lsa, biz bilan WhatsApp orqali bog'laning.",
+  "howToBuyStep2Title": "Narxni muhokama qiling",
+  "howToBuyStep2Desc": "Narx va yetkazib berish tafsilotlarini birga kelishing.",
+  "howToBuyStep3Title": "Mahsulotni oling",
+  "howToBuyStep3Desc": "Kelishuvdan so'ng mahsulotingizni xavfsiz oling.",
+  "listedToday": "Bugun qo'shildi",
+  "listedDaysAgo": "{days} kun oldin qo'shildi",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "{weeks} hafta oldin qo'shildi",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

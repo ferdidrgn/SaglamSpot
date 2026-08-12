@@ -458,5 +458,32 @@
   "productLinkLabel": "商品链接",
   "settingsAppSection": "应用",
   "settingsLegalSection": "法律信息",
-  "recentlyViewedTitle": "最近浏览"
+  "recentlyViewedTitle": "最近浏览",
+  "productTrustBadgeVerified": "认证卖家",
+  "productTrustBadgeNegotiate": "通过WhatsApp议价",
+  "productTrustBadgeDelivery": "现场交货",
+  "howToBuyTitle": "如何购买？",
+  "howToBuyStep1Title": "在WhatsApp上留言",
+  "howToBuyStep1Desc": "如果您喜欢该商品，请通过WhatsApp联系我们。",
+  "howToBuyStep2Title": "商议价格",
+  "howToBuyStep2Desc": "一起商定价格和交货细节。",
+  "howToBuyStep3Title": "取货",
+  "howToBuyStep3Desc": "达成一致后，安全取走您的商品。",
+  "listedToday": "今天发布",
+  "listedDaysAgo": "{days}天前发布",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "{weeks}周前发布",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

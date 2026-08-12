@@ -458,5 +458,32 @@
   "productLinkLabel": "رابط المنتج",
   "settingsAppSection": "التطبيق",
   "settingsLegalSection": "قانوني",
-  "recentlyViewedTitle": "شوهد مؤخرًا"
+  "recentlyViewedTitle": "شوهد مؤخرًا",
+  "productTrustBadgeVerified": "بائع موثّق",
+  "productTrustBadgeNegotiate": "التفاوض عبر واتساب",
+  "productTrustBadgeDelivery": "التسليم في الموقع",
+  "howToBuyTitle": "كيف أشتري؟",
+  "howToBuyStep1Title": "راسلنا عبر واتساب",
+  "howToBuyStep1Desc": "إذا أعجبك المنتج، تواصل معنا عبر واتساب.",
+  "howToBuyStep2Title": "ناقش السعر",
+  "howToBuyStep2Desc": "اتفقا معًا على السعر وتفاصيل التسليم.",
+  "howToBuyStep3Title": "استلم المنتج",
+  "howToBuyStep3Desc": "بعد الاتفاق، استلم منتجك بأمان.",
+  "listedToday": "أُضيف اليوم",
+  "listedDaysAgo": "أُضيف قبل {days} أيام",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "أُضيف قبل {weeks} أسابيع",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

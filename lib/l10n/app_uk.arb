@@ -458,5 +458,32 @@
   "productLinkLabel": "Посилання на товар",
   "settingsAppSection": "Застосунок",
   "settingsLegalSection": "Правова інформація",
-  "recentlyViewedTitle": "Нещодавно переглянуті"
+  "recentlyViewedTitle": "Нещодавно переглянуті",
+  "productTrustBadgeVerified": "Перевірений продавець",
+  "productTrustBadgeNegotiate": "Торг через WhatsApp",
+  "productTrustBadgeDelivery": "Доставка на місці",
+  "howToBuyTitle": "Як купити?",
+  "howToBuyStep1Title": "Написати у WhatsApp",
+  "howToBuyStep1Desc": "Якщо товар сподобався, зв'яжіться з нами через WhatsApp.",
+  "howToBuyStep2Title": "Обговоріть ціну",
+  "howToBuyStep2Desc": "Узгодьте ціну та деталі доставки разом.",
+  "howToBuyStep3Title": "Отримайте товар",
+  "howToBuyStep3Desc": "Після домовленості безпечно отримайте свій товар.",
+  "listedToday": "Додано сьогодні",
+  "listedDaysAgo": "Додано {days} дн. тому",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "Додано {weeks} тижн. тому",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }

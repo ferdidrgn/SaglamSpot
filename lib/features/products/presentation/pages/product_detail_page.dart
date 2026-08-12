@@ -488,6 +488,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             ),
             SizedBox(height: context.spacingLarge),
 
+            // Güven rozetleri + eklenme tarihi
+            _buildTrustRow(context, product),
+            SizedBox(height: context.spacingLarge),
+
             // Renk seçenekleri / tek parça bilgisi
             ProductColorSection(product: product),
             SizedBox(height: context.spacingLarge),
@@ -502,6 +506,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
             // Satıcı kartı
             _buildSellerCard(context),
+            SizedBox(height: context.spacingLarge),
+
+            // Nasıl satın alırım? (3 adımlık mini rehber)
+            _buildHowToBuy(context),
             SizedBox(height: context.spacingLarge),
 
             // Masaüstünde aksiyon butonları burada (mobilde sabit alt bar var)
@@ -626,6 +634,85 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           ),
         );
       },
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // GÜVEN ROZETLERİ + EKLENME TARİHİ
+  // ════════════════════════════════════════════════════════════
+
+  String? _listedLabel(final BuildContext context, final Product product) {
+    final parsed = DateTime.tryParse(product.createdAt);
+    if (parsed == null) return null;
+    final days = DateTime.now().difference(parsed).inDays;
+    if (days <= 0) return context.l10n.listedToday;
+    if (days < 7) return context.l10n.listedDaysAgo(days);
+    return context.l10n.listedWeeksAgo((days / 7).floor());
+  }
+
+  Widget _buildTrustRow(final BuildContext context, final Product product) {
+    final listed = _listedLabel(context, product);
+    return FadeTransition(
+      opacity: _stagger(0.22),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          _TrustChip(
+              icon: Icons.verified_rounded,
+              label: context.l10n.productTrustBadgeVerified),
+          _TrustChip(
+              icon: Icons.chat_bubble_rounded,
+              label: context.l10n.productTrustBadgeNegotiate),
+          _TrustChip(
+              icon: Icons.local_shipping_rounded,
+              label: context.l10n.productTrustBadgeDelivery),
+          if (listed != null)
+            _TrustChip(icon: Icons.schedule_rounded, label: listed, subtle: true),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // NASIL SATIN ALIRIM? — mini rehber
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildHowToBuy(final BuildContext context) {
+    final steps = [
+      (Icons.chat_bubble_rounded, context.l10n.howToBuyStep1Title, context.l10n.howToBuyStep1Desc),
+      (Icons.handshake_rounded, context.l10n.howToBuyStep2Title, context.l10n.howToBuyStep2Desc),
+      (Icons.local_shipping_rounded, context.l10n.howToBuyStep3Title, context.l10n.howToBuyStep3Desc),
+    ];
+
+    return FadeTransition(
+      opacity: _stagger(0.4),
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(context.l10n.howToBuyTitle,
+                style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                    color: _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+            const SizedBox(height: 14),
+            for (int i = 0; i < steps.length; i++) ...[
+              if (i != 0) const SizedBox(height: 12),
+              _HowToBuyStep(
+                  index: i + 1,
+                  icon: steps[i].$1,
+                  title: steps[i].$2,
+                  desc: steps[i].$3),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -888,6 +975,93 @@ class _PrimaryButton extends StatelessWidget {
             ),
           ),
         ),
+      );
+}
+
+class _TrustChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool subtle;
+
+  const _TrustChip({required this.icon, required this.label, this.subtle = false});
+
+  @override
+  Widget build(final BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: subtle
+              ? Colors.transparent
+              : _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+          borderRadius: BorderRadius.circular(30),
+          border: subtle
+              ? Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border))
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon,
+                size: 13,
+                color: subtle
+                    ? _pc(context, mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary)
+                    : _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary)),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: subtle
+                        ? _pc(context, mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary)
+                        : _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+          ],
+        ),
+      );
+}
+
+class _HowToBuyStep extends StatelessWidget {
+  final int index;
+  final IconData icon;
+  final String title;
+  final String desc;
+
+  const _HowToBuyStep(
+      {required this.index, required this.icon, required this.title, required this.desc});
+
+  @override
+  Widget build(final BuildContext context) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              gradient: _pc(context, mobile: AppColors.mobileAccentGradient, web: AppColors.accentGradient),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white, size: 16),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('$index. $title',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 13.5,
+                        color: _pc(context,
+                            mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                const SizedBox(height: 2),
+                Text(desc,
+                    style: TextStyle(
+                        fontSize: 12,
+                        height: 1.4,
+                        color: _pc(context,
+                            mobile: AppColors.mobileTextSecondary, web: AppColors.textSecondary))),
+              ],
+            ),
+          ),
+        ],
       );
 }
 

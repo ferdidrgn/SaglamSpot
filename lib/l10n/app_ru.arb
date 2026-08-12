@@ -458,5 +458,32 @@
   "productLinkLabel": "Ссылка на товар",
   "settingsAppSection": "Приложение",
   "settingsLegalSection": "Правовая информация",
-  "recentlyViewedTitle": "Недавно просмотренные"
+  "recentlyViewedTitle": "Недавно просмотренные",
+  "productTrustBadgeVerified": "Проверенный продавец",
+  "productTrustBadgeNegotiate": "Торг через WhatsApp",
+  "productTrustBadgeDelivery": "Доставка на месте",
+  "howToBuyTitle": "Как купить?",
+  "howToBuyStep1Title": "Написать в WhatsApp",
+  "howToBuyStep1Desc": "Если товар понравился, свяжитесь с нами через WhatsApp.",
+  "howToBuyStep2Title": "Обсудите цену",
+  "howToBuyStep2Desc": "Согласуйте цену и детали доставки вместе.",
+  "howToBuyStep3Title": "Заберите товар",
+  "howToBuyStep3Desc": "После договорённости безопасно заберите свой товар.",
+  "listedToday": "Добавлено сегодня",
+  "listedDaysAgo": "Добавлено {days} дн. назад",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "Добавлено {weeks} нед. назад",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  }
 }
