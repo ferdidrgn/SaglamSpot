@@ -101,27 +101,30 @@ class AppColors {
   );
 
   // ================================================================
-  // MOBİL UYGULAMA PALETİ — Web'in sıcak espresso/ekru kimliğinden
-  // bilinçli olarak ayrışan, yönetici panelinin kendine has rengi.
-  // Koyu petrol yeşili + canlı zümrüt vurgu.
+  // MOBİL UYGULAMA PALETİ — "Furnishify" referansından ilham alan,
+  // koyu petrol-teal + sıcak amber vurgulu müşteri deneyimi paleti.
+  // Web'in sıcak espresso/ekru kimliğinden bilinçli olarak ayrışır.
   // ================================================================
-  static const Color mobilePrimary = Color(0xFF0F3D3E); // koyu petrol yeşili
-  static const Color mobilePrimaryDark = Color(0xFF0A2A2B);
-  static const Color mobilePrimaryLight = Color(0xFF1D5D5E);
+  static const Color mobilePrimary = Color(0xFF2F4B4E); // koyu teal (butonlar, aktif nav, hero)
+  static const Color mobilePrimaryDark = Color(0xFF152223); // neredeyse siyah teal (başlıklar, koyu varyant)
+  static const Color mobilePrimaryLight = Color(0xFF3F6367); // hover/basılı durum
 
-  static const Color mobileAccent = Color(0xFF1FA97D); // canlı zümrüt vurgu
-  static const Color mobileAccentDark = Color(0xFF158462);
-  static const Color mobileAccentLight = Color(0xFF5FD1A6);
+  static const Color mobileAccent = Color(0xFFE2A54B); // sıcak amber vurgu (rozet, fiyat, rating)
+  static const Color mobileAccentDark = Color(0xFFC98A34);
+  static const Color mobileAccentLight = Color(0xFFEDC080);
 
-  static const Color mobileBackground = Color(0xFFF2F7F5); // soğuk mint-gri zemin
+  static const Color mobileBackground = white;
   static const Color mobileSurface = white;
-  static const Color mobileCardBg = white;
-  static const Color mobileSecondaryBg = Color(0xFFE4EEEA); // yumuşak mint ikincil zemin
+  static const Color mobileCardBg = Color(0xFFF3F5F5); // çok açık gri-teal kart zemini
+  static const Color mobileSecondaryBg = Color(0xFFEFF2F2); // yumuşak nötr ikincil zemin
 
-  static const Color mobileTextPrimary = Color(0xFF0D2624);
-  static const Color mobileTextSecondary = Color(0xFF4C6663);
-  static const Color mobileTextTertiary = Color(0xFF7E9491);
-  static const Color mobileBorder = Color(0xFFD7E5E1);
+  static const Color mobileMuted = Color(0xFFBFC7C8); // adaçayı grisi — ikincil metin/ikon (koyu zemin üstünde)
+  static const Color mobileMutedDark = Color(0xFFA5B3B4); // kenarlık/ayraç/pasif nav ikonu
+
+  static const Color mobileTextPrimary = Color(0xFF152223);
+  static const Color mobileTextSecondary = Color(0xFF5C7071);
+  static const Color mobileTextTertiary = Color(0xFFA5B3B4);
+  static const Color mobileBorder = Color(0xFFDCDEDE);
 
   static const Gradient mobileAccentGradient = LinearGradient(
     begin: Alignment.topLeft,

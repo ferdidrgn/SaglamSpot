@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/category_meta_provider.dart';
@@ -82,6 +84,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
         child: Column(
           children: [

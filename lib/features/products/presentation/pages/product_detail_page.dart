@@ -10,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/gallery_section.dart';
+import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../data/models/category_meta.dart';
 import '../providers/gallery_provider.dart';
@@ -33,7 +34,6 @@ class ProductDetailPage extends ConsumerStatefulWidget {
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     with TickerProviderStateMixin {
   int _selectedImageIndex = 0;
-  bool _isFavorite = false;
   bool _showFullDescription = false;
   final ScrollController _scrollController = ScrollController();
   bool _isAppBarSolid = false;
@@ -47,6 +47,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         parent: _entrance,
         curve: Interval(startAt.clamp(0.0, 0.9), 1.0, curve: Curves.easeOutCubic),
       );
+
+  bool _inCart(final Product product) =>
+      ref.watch(cartProvider).any((final i) => i.product.id == product.id);
 
   @override
   void initState() {
@@ -170,11 +173,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Padding(
             padding: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
             child: _RoundIconButton(
-              icon: _isFavorite
+              icon: _inCart(product)
                   ? Icons.favorite_rounded
                   : Icons.favorite_border_rounded,
-              iconColor: _isFavorite ? AppColors.error : AppColors.textPrimary,
-              onTap: () => setState(() => _isFavorite = !_isFavorite),
+              iconColor: _inCart(product) ? AppColors.error : AppColors.textPrimary,
+              onTap: () => ref.read(cartProvider.notifier).toggle(product),
             ),
           ),
         ],
@@ -636,6 +639,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildActionButtons(final Product product) {
     if (product.isSold) return const SizedBox.shrink();
+    final bool inCart = _inCart(product);
     return Row(
       children: [
         Expanded(
@@ -648,6 +652,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               price: product.price,
             ),
           ),
+        ),
+        const SizedBox(width: 12),
+        _RoundIconButton(
+          size: 52,
+          icon: inCart ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined,
+          filled: true,
+          onTap: () => ref.read(cartProvider.notifier).toggle(product),
         ),
         const SizedBox(width: 12),
         _RoundIconButton(
@@ -718,6 +729,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
         child: Row(
           children: [
+            _RoundIconButton(
+              size: 52,
+              icon: _inCart(product) ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined,
+              filled: true,
+              onTap: () => ref.read(cartProvider.notifier).toggle(product),
+            ),
+            const SizedBox(width: 12),
             _RoundIconButton(
               size: 52,
               icon: Icons.call_rounded,

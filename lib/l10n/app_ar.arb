@@ -158,7 +158,6 @@
   "loginBrand": "سالام سبوت",
   "logout": "تسجيل الخروج",
   "logoutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج بأمان من حسابك؟",
-
   "testimonialsHeading": "ماذا يقول عملاؤنا",
   "testimonialsSubheading": "منذ أكثر من 20 عامًا نلمس آلاف المنازل في إيچيرينكوي وما حولها",
   "testimonial1Comment": "اشترينا طقم الكنب بسعر ممتاز، وكأنه جديد تمامًا. تم التسليم في نفس اليوم يدًا بيد، وشعرنا بثقة الحرفي الحقيقي منذ البداية.",
@@ -167,7 +166,6 @@
   "testimonial4Comment": "اشترينا طقم طاولة الطعام بسعر عادل دون مساومة. كما ساعدونا في النقل، تسوقنا وقلوبنا مرتاحة.",
   "testimonial5Comment": "كنا نبحث عن خزانة ملابس مستعملة ووجدنا قطعة متينة وأنيقة. كانت أفضل قيمة مقابل السعر في السوق.",
   "testimonial6Comment": "خلال زيارتنا لصالة العرض، تمكنا من رؤية المنتجات بأنفسنا مما زاد ثقتنا. وكانوا دائمًا متاحين للتواصل بعد البيع أيضًا.",
-
   "howItWorksHeading": "كيف يعمل الموقع؟",
   "step1Title": "تصفح وصفِّ",
   "step1Desc": "اعثر على ما يعجبك من بين آلاف المنتجات حسب الفئة ونطاق السعر.",
@@ -177,7 +175,6 @@
   "step3Desc": "شاهد المنتج في صالة العرض أو تأكد منه بالصور، واتفق على سعر عادل وصريح.",
   "step4Title": "التوصيل حتى باب منزلك",
   "step4Desc": "نقل سريع ومؤمَّن إلى إيچيرينكوي والجانب الأناضولي يوصل أثاثك إلى منزلك بأمان.",
-
   "tipsEyebrow": "نصائح",
   "tipsHeading": "نصائح العناية من خبيرنا",
   "tip1Title": "اجعل غرفة الجلوس أكثر جاذبية",
@@ -210,18 +207,15 @@
   "tip10Title": "حوّل شرفتك إلى مساحة معيشة",
   "tip10Desc": "طقم جلوس مقاوم للطقس وبضع نباتات في أصص تجعل الشرفة أكثر ركن محبوب في المنزل.",
   "tip10Category": "الأماكن الخارجية",
-
   "popularCategoriesHeading": "الفئات الشائعة",
   "popularCategoriesSub": "اعثر على الأثاث المناسب لك بنقرة واحدة",
   "categoryProductCount": "{count} منتج",
-
   "newsletterSubscribeSuccess": "لقد اشتركت بنجاح في نشرتنا الإخبارية!",
   "newsletterHeading": "كن أول من يعرف عن المنتجات الجديدة",
   "newsletterDesc": "اجعل عروض السبوت والمجموعات الجديدة والحملات تصل إلى بريدك الإلكتروني. بدون بريد مزعج، فقط عروض تستحق وقتك.",
   "emailHint": "بريدك الإلكتروني",
   "emailRequired": "البريد الإلكتروني مطلوب",
   "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا",
-
   "whyUsHeading": "لماذا سالام سبوت؟",
   "usp1Title": "20 عامًا من الثقة الحرفية",
   "usp1Desc": "أكثر من عشرين عامًا كحرفي في إيچيرينكوي، وآلاف العملاء الراضين.",
@@ -231,10 +225,8 @@
   "usp3Desc": "يخضع كل منتج لفحص هيكلي وفحص للقماش/التشطيب قبل عرضه للبيع.",
   "usp4Title": "دعم بعد البيع",
   "usp4Desc": "فريق حقيقي يمكنك الوصول إليه حتى بعد التسليم، يحل مشكلتك.",
-
   "socialShowcaseEyebrow": "شاركنا",
   "socialShowcaseHeading": "شارك ديكور منزلك مع #SağlamSpot",
-
   "productsLoadError": "حدث خطأ أثناء تحميل المنتجات: {error}",
   "viewAllButton": "عرض الكل",
   "showcaseEyebrow": "الواجهة",
@@ -253,7 +245,6 @@
   "heroSlide2Title": "أثاث له قصة",
   "heroSlide2Subtitle": "قطع مستعملة متينة ومميزة تم اختيارها بعناية.",
   "heroSlide3Title": "استكشف المجموعة الكاملة",
-
   "aboutBadge": "معكم منذ 2012",
   "aboutHeroTitle": "سالام سبوت\nالثقة التي تعرفها",
   "aboutHeroSubtitle": "نخدم حينا بحب واهتمام في كل ما نقوم به.",
@@ -297,7 +288,6 @@
   "aboutViewMapButton": "عرض على الخريطة",
   "aboutMapHeading": "متجرنا هنا تمامًا",
   "aboutMapSubtext": "اضغط على الخريطة للحصول على الاتجاهات",
-
   "newProductsBadgeEyebrow": "مجموعة جديدة",
   "newProductsTitle": "مجموعة\nجديدة",
   "productsBadgeLabel": "منتج",
@@ -316,7 +306,6 @@
   "sortPriceLowHigh": "السعر: من الأقل للأعلى",
   "sortPriceHighLow": "السعر: من الأعلى للأقل",
   "sortMostPopular": "الأكثر شيوعًا",
-
   "spotBadgeEyebrow": "منتجات السبوت",
   "spotHeroTitle": "منتجات\nالعروض",
   "spotDiscountLabel": "خصم",
@@ -331,20 +320,16 @@
   "clearFiltersButton": "مسح الفلاتر",
   "tryDifferentFiltersShort": "يمكنك تجربة فلاتر مختلفة",
   "spotBadgeTag": "سبوت",
-
   "productLoadError": "تعذر تحميل المنتج: {error}",
   "productSpecConditionNew": "منتج جديد",
   "productLocationValue": "إيچيرينكوي، إسطنبول",
-
   "sortFeatured": "المميزة",
   "sortPriceAsc": "السعر: تصاعدي",
   "sortPriceDesc": "السعر: تنازلي",
-
   "languageSelectorTitle": "اختيار اللغة",
   "languageTooltip": "اللغة",
   "galleryEmptyMessage": "لم تتم إضافة صور لهذا المنتج بعد.",
   "productCardNewBadge": "جديد",
-
   "sssHelpCenterBadge": "مركز المساعدة",
   "sssHeroTitle": "الأسئلة\nالشائعة",
   "sssHeroSubtitle": "إجابات على كل ما يشغل بالك",
@@ -363,7 +348,6 @@
   "sssNoAnswerTitle": "لم تجد إجابة لسؤالك؟",
   "sssNoAnswerSubtitle": "يمكنك التواصل معنا",
   "sssVisitStoreButton": "زيارة المتجر",
-
   "sssQ1": "هل يمكنكم إخبارنا عن حياة الأستاذ المهنية وخبرته؟",
   "sssA1": "يعمل أستاذنا الحرفي بنشاط في هذا القطاع منذ عام 1995. أظهر تطورًا مستمرًا منذ أولى خطواته في مسيرته المهنية. خلال حياته العملية، عمل في مواقع عديدة مثل القيادة للتوصيل والنقل والتركيب واستقبال العملاء، مكتسبًا خبرة متعددة الجوانب. عمل بشكل خاص حتى عام 2010 في شركة İstikbal واكتسب خلالها معرفة عميقة بخصائص المنتجات وأجزائها وأسرارها. بعد عام 2010، عمل في متجر Işık Çeyiz القريب مما زاد من كفاءته في القطاع. وفي عام 2012 قرر افتتاح متجره الحرفي الخاص، وسعى منذ ذلك الحين لتقديم خدمة عالية الجودة ونقل خبرته في القطاع إلى عملائه بأفضل شكل ممكن.",
   "sssQ2": "هل سالام سبوت موثوق؟",
@@ -423,6 +407,42 @@
     }
   },
   "@pieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navDiscover": "استكشف",
+  "navCart": "السلة",
+  "navProfile": "الملف الشخصي",
+  "storeHeroEyebrow": "تشكيلة جديدة",
+  "storeHeroTitle": "أثاث يجعل بيتك\nأكثر دفئًا",
+  "storeHeroSubtitle": "أثاث جديد ومستعمل عالي الجودة، يصل إلى بابك بأسعار ستعجبك.",
+  "storeHeroCta": "ابدأ التسوق",
+  "sectionCategories": "الفئات",
+  "sectionBestSellers": "الأكثر مبيعًا",
+  "sectionNewArrivals": "وصل حديثًا",
+  "seeAll": "عرض الكل",
+  "cartTitle": "سلتي",
+  "cartEmptyTitle": "سلتك فارغة",
+  "cartEmptyDesc": "أضف المنتجات التي تعجبك، ثم استفسر عنها جميعًا برسالة واحدة.",
+  "cartTotalLabel": "الإجمالي",
+  "cartWhatsappCta": "إرسال السلة عبر واتساب",
+  "cartItemRemoved": "تمت الإزالة من السلة",
+  "addToCartCta": "أضف إلى السلة",
+  "addedToCartMessage": "تمت الإضافة إلى السلة",
+  "alreadyInCartMessage": "هذا المنتج موجود بالفعل في السلة",
+  "settingsTitle": "الإعدادات",
+  "settingsLanguageLabel": "اللغة",
+  "settingsAccountSection": "الحساب",
+  "settingsGeneralSection": "عام",
+  "settingsContact": "التواصل",
+  "settingsCallUs": "اتصل بنا",
+  "settingsAdminLogin": "دخول المسؤول",
+  "settingsAppVersion": "إصدار التطبيق",
+  "cartItemsCount": "{count, plural, =0{السلة فارغة} =1{منتج واحد} other{{count} منتج}}",
+  "@cartItemsCount": {
     "placeholders": {
       "count": {
         "type": "int"

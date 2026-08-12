@@ -158,7 +158,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "Chiqish",
   "logoutConfirm": "Hisobingizdan xavfsiz chiqishga ishonchingiz komilmi?",
-
   "testimonialsHeading": "Mijozlarimiz Nima Deydi",
   "testimonialsSubheading": "20 yildan ortiq vaqt davomida İçerenköy va atrofidagi minglab uylarga qo'l tekkizdik",
   "testimonial1Comment": "Divan to'plamini juda qulay narxda oldik, deyarli yangidek. Yetkazib berish o'sha kuniyoq qo'ldan-qo'lga bo'ldi, haqiqiy hunarmand ishonchi boshidanoq sezildi.",
@@ -167,7 +166,6 @@
   "testimonial4Comment": "Ovqat stoli to'plamini savdolashmasdan, halol narxda sotib oldik. Tashishda ham yordam berishdi, xotirjam xarid qildik.",
   "testimonial5Comment": "Ishlatilgan kiyim shkafi qidirayotgan edik, mustahkam va zamonaviy narsa topdik. Bozordagi eng yaxshi narx-sifat nisbati edi.",
   "testimonial6Comment": "Ko'rgazma zaliga tashrif chog'ida mahsulotlarni jonli ko'rishga muvaffaq bo'ldik, bu ishonchimizni yanada mustahkamladi. Sotuvdan keyin ham doim aloqada bo'lishdi.",
-
   "howItWorksHeading": "Qanday Ishlaydi",
   "step1Title": "Ko'rib Chiqing va Saralang",
   "step1Desc": "Kategoriya va narx oralig'i bo'yicha minglab mahsulotlar orasidan yoqqanini toping.",
@@ -177,7 +175,6 @@
   "step3Desc": "Ko'rgazma zalida ko'ring yoki suratlar bilan tasdiqlang, adolatli narxga kelishing.",
   "step4Title": "Eshigingizga Yetkazib Berish",
   "step4Desc": "İçerenköy va Anadolu tomoniga tez, sug'urtalangan tashish mebelingizni xavfsiz uyingizga yetkazadi.",
-
   "tipsEyebrow": "MASLAHATLAR",
   "tipsHeading": "Mutaxassisdan Parvarish Maslahatlari",
   "tip1Title": "Mehmonxonangizni Yoqimliroq Qiling",
@@ -210,18 +207,15 @@
   "tip10Title": "Balkoningizni Yashash Maydoniga Aylantiring",
   "tip10Desc": "Ob-havoga chidamli o'tirish to'plami va bir necha guldon o'simliklari balkonni uyning eng sevimli burchagiga aylantiradi.",
   "tip10Category": "Tashqi maydon",
-
   "popularCategoriesHeading": "Mashhur Toifalar",
   "popularCategoriesSub": "Sizga mos mebelni bir bosishda toping",
   "categoryProductCount": "{count} mahsulot",
-
   "newsletterSubscribeSuccess": "Siz bulletinimizga muvaffaqiyatli obuna bo'ldingiz!",
   "newsletterHeading": "Yangi Mahsulotlar Haqida Birinchi Bo'lib Biling",
   "newsletterDesc": "Aksiya takliflari, yangi kolleksiyalar va kampaniyalar to'g'ridan-to'g'ri elektron pochtangizga kelsin. Spam yo'q, faqat foydali takliflar.",
   "emailHint": "Elektron pochta manzilingiz",
   "emailRequired": "Elektron pochta talab qilinadi",
   "emailInvalid": "Haqiqiy elektron pochta manzilini kiriting",
-
   "whyUsHeading": "Nega Sağlam Spot?",
   "usp1Title": "20 Yillik Ishonchli Hunarmandchilik",
   "usp1Desc": "İçerenköy'da yigirma yildan ortiq hunarmandchilik tajribasi va minglab mamnun mijozlar.",
@@ -231,10 +225,8 @@
   "usp3Desc": "Har bir mahsulot sotuvga chiqishdan oldin tuzilishi va mato/qoplama tekshiruvidan o'tadi.",
   "usp4Title": "Sotuvdan Keyingi Yordam",
   "usp4Desc": "Yetkazib berishdan keyin ham murojaat qilishingiz mumkin bo'lgan, muammoingizni hal qiladigan haqiqiy jamoa.",
-
   "socialShowcaseEyebrow": "ULASHING",
   "socialShowcaseHeading": "Uyingizni #SağlamSpot Bilan Ulashing",
-
   "productsLoadError": "Mahsulotlarni yuklashda xatolik yuz berdi: {error}",
   "viewAllButton": "Barchasini Ko'rish",
   "showcaseEyebrow": "VITRINA",
@@ -253,7 +245,6 @@
   "heroSlide2Title": "O'z Hikoyasi Bor Mebel",
   "heroSlide2Subtitle": "Diqqat bilan tanlangan, mustahkam va xarakterli ishlatilgan buyumlar.",
   "heroSlide3Title": "Butun Kolleksiyani Kashf Eting",
-
   "aboutBadge": "2012-YILDAN BERI SIZLAR BILAN",
   "aboutHeroTitle": "Sağlam Spot\nSiz Biladigan Ishonch",
   "aboutHeroSubtitle": "Biz mahallamizga qilgan har bir ishimizda sevgi va g'amxo'rlik bilan xizmat qilamiz.",
@@ -297,7 +288,6 @@
   "aboutViewMapButton": "Xaritada Ko'rish",
   "aboutMapHeading": "Do'konimiz Aynan Shu Yerda",
   "aboutMapSubtext": "Yo'nalish olish uchun xaritaga bosing",
-
   "newProductsBadgeEyebrow": "YANGI KOLLEKSIYA",
   "newProductsTitle": "Yangi\nKolleksiya",
   "productsBadgeLabel": "MAHSULOT",
@@ -316,7 +306,6 @@
   "sortPriceLowHigh": "Narx: O'sish Bo'yicha",
   "sortPriceHighLow": "Narx: Kamayish Bo'yicha",
   "sortMostPopular": "Eng Mashhur",
-
   "spotBadgeEyebrow": "AKSIYA MAHSULOTLARI",
   "spotHeroTitle": "Aksiya\nMahsulotlari",
   "spotDiscountLabel": "CHEGIRMA",
@@ -331,20 +320,16 @@
   "clearFiltersButton": "FILTRLARNI TOZALASH",
   "tryDifferentFiltersShort": "Boshqa filtrlarni sinab ko'rishingiz mumkin",
   "spotBadgeTag": "AKSIYA",
-
   "productLoadError": "Mahsulot yuklanmadi: {error}",
   "productSpecConditionNew": "Yangi Mahsulot",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "Tavsiya Etilgan",
   "sortPriceAsc": "Narx: O'sish Bo'yicha",
   "sortPriceDesc": "Narx: Kamayish Bo'yicha",
-
   "languageSelectorTitle": "Til Tanlash",
   "languageTooltip": "Til",
   "galleryEmptyMessage": "Bu mahsulotga hali rasm qo'shilmagan.",
   "productCardNewBadge": "YANGI",
-
   "sssHelpCenterBadge": "YORDAM MARKAZI",
   "sssHeroTitle": "Tez-Tez Beriladigan\nSavollar",
   "sssHeroSubtitle": "Sizni qiziqtirgan hamma narsaga javoblar",
@@ -363,7 +348,6 @@
   "sssNoAnswerTitle": "Savolingizga Javob Topa Olmadingizmi?",
   "sssNoAnswerSubtitle": "Biz Bilan Bog'lanishingiz Mumkin",
   "sssVisitStoreButton": "Do'konga Tashrif Buyuring",
-
   "sssQ1": "Usta ish faoliyati va tajribasi haqida ma'lumot bera olasizmi?",
   "sssA1": "Ustamiz 1995-yildan beri bu sohada faol ishlab kelmoqda. Kasbiy faoliyatining birinchi qadamlaridan boshlab doimiy rivojlanish ko'rsatgan. Ish faoliyati davomida yetkazib berish uchun haydovchilik, tashish, yig'ish, mijozlarni kutib olish kabi ko'plab lavozimlarda ishlab, ko'p qirrali tajriba orttirgan. Xususan, 2010-yilgacha İstikbal'da ishlagan va bu davrda mahsulotlarning xususiyatlari, qismlari va nozik jihatlari haqida chuqur bilim olgan. 2010-yildan keyin yaqin atrofdagi Işık Çeyiz'da ishlab, sohadagi mahoratini oshirgan. 2012-yilda o'z hunarmandchilik do'konini ochish qarorini qabul qilib, o'shandan beri sifatli xizmatni birinchi o'ringa qo'yib, sohadagi tajribasini mijozlariga eng yaxshi tarzda yetkazishga intilgan.",
   "sssQ2": "Sağlam Spot ishonchlimi?",
@@ -423,6 +407,42 @@
     }
   },
   "@pieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navDiscover": "Kashf qilish",
+  "navCart": "Savat",
+  "navProfile": "Profil",
+  "storeHeroEyebrow": "YANGI KOLLEKSIYA",
+  "storeHeroTitle": "Uyingizga mos\nmebel",
+  "storeHeroSubtitle": "Sifatli yangi va ishlatilgan mebel, siz yoqtiradigan narxlarda uyingizga yetkaziladi.",
+  "storeHeroCta": "Xarid qilishni boshlash",
+  "sectionCategories": "Toifalar",
+  "sectionBestSellers": "Ko'p sotilganlar",
+  "sectionNewArrivals": "Yangi mahsulotlar",
+  "seeAll": "Barchasini ko'rish",
+  "cartTitle": "Mening savatim",
+  "cartEmptyTitle": "Savatingiz bo'sh",
+  "cartEmptyDesc": "Yoqqan mahsulotlarni savatga qo'shing, keyin barchasi haqida bitta xabar bilan so'rang.",
+  "cartTotalLabel": "Jami",
+  "cartWhatsappCta": "Savatni WhatsApp orqali yuborish",
+  "cartItemRemoved": "Savatdan olib tashlandi",
+  "addToCartCta": "Savatga qo'shish",
+  "addedToCartMessage": "Savatga qo'shildi",
+  "alreadyInCartMessage": "Allaqachon savatda",
+  "settingsTitle": "Sozlamalar",
+  "settingsLanguageLabel": "Til",
+  "settingsAccountSection": "Hisob",
+  "settingsGeneralSection": "Umumiy",
+  "settingsContact": "Aloqa",
+  "settingsCallUs": "Bizga qo'ng'iroq qiling",
+  "settingsAdminLogin": "Administrator kirishi",
+  "settingsAppVersion": "Ilova versiyasi",
+  "cartItemsCount": "{count, plural, =0{Savat bo'sh} =1{1 mahsulot} other{{count} mahsulot}}",
+  "@cartItemsCount": {
     "placeholders": {
       "count": {
         "type": "int"

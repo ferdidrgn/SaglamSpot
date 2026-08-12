@@ -158,7 +158,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "Esci",
   "logoutConfirm": "Sei sicuro di voler uscire in sicurezza dal tuo account?",
-
   "testimonialsHeading": "Cosa Dicono i Nostri Clienti",
   "testimonialsSubheading": "Da oltre 20 anni tocchiamo migliaia di case a İçerenköy e dintorni",
   "testimonial1Comment": "Abbiamo preso il divano a un ottimo prezzo, quasi come nuovo. Consegnato lo stesso giorno, di persona — si sentiva davvero la fiducia di un vero artigiano fin dall'inizio.",
@@ -167,7 +166,6 @@
   "testimonial4Comment": "Abbiamo comprato il set del tavolo da pranzo a un prezzo onesto, senza trattative. Ci hanno anche aiutato col trasporto, abbiamo fatto acquisti con serenità.",
   "testimonial5Comment": "Cercavamo un armadio usato e abbiamo trovato un pezzo solido ed elegante. Il miglior rapporto qualità-prezzo sul mercato.",
   "testimonial6Comment": "Durante la visita allo showroom abbiamo potuto vedere i prodotti dal vivo, il che ha rafforzato la nostra fiducia. Sono sempre stati raggiungibili anche dopo la vendita.",
-
   "howItWorksHeading": "Come Funziona",
   "step1Title": "Sfoglia e Filtra",
   "step1Desc": "Trova ciò che ti piace tra migliaia di prodotti per categoria e fascia di prezzo.",
@@ -177,7 +175,6 @@
   "step3Desc": "Vedilo nello showroom o confermalo con foto, e accordati su un prezzo giusto e onesto.",
   "step4Title": "Consegna a Casa Tua",
   "step4Desc": "Trasporto rapido e assicurato a İçerenköy e nel lato anatolico porta i tuoi mobili a casa in sicurezza.",
-
   "tipsEyebrow": "CONSIGLI",
   "tipsHeading": "Consigli di Cura dal Nostro Esperto",
   "tip1Title": "Rendi il Salotto più Accogliente",
@@ -210,18 +207,15 @@
   "tip10Title": "Trasforma il Tuo Balcone in uno Spazio Living",
   "tip10Desc": "Un set da esterno resistente alle intemperie e qualche pianta in vaso rendono il balcone l'angolo più amato della casa.",
   "tip10Category": "Esterni",
-
   "popularCategoriesHeading": "Categorie Popolari",
   "popularCategoriesSub": "Trova il mobile giusto per te in un click",
   "categoryProductCount": "{count} prodotti",
-
   "newsletterSubscribeSuccess": "Ti sei iscritto con successo alla nostra newsletter!",
   "newsletterHeading": "Scopri per Primo i Nuovi Prodotti",
   "newsletterDesc": "Ricevi offerte speciali, nuove collezioni e promozioni direttamente nella tua casella email. Niente spam, solo offerte utili.",
   "emailHint": "Il tuo indirizzo email",
   "emailRequired": "L'email è obbligatoria",
   "emailInvalid": "Inserisci un indirizzo email valido",
-
   "whyUsHeading": "Perché Sağlam Spot?",
   "usp1Title": "20 Anni di Artigianato di Fiducia",
   "usp1Desc": "Oltre vent'anni come artigiani a İçerenköy e migliaia di clienti soddisfatti.",
@@ -231,10 +225,8 @@
   "usp3Desc": "Ogni prodotto passa un controllo strutturale e del tessuto/finitura prima della vendita.",
   "usp4Title": "Assistenza Post-Vendita",
   "usp4Desc": "Un team reale, raggiungibile anche dopo la consegna, che risolve il tuo problema.",
-
   "socialShowcaseEyebrow": "CONDIVIDI",
   "socialShowcaseHeading": "Condividi il Tuo Setup con #SağlamSpot",
-
   "productsLoadError": "Si è verificato un errore durante il caricamento dei prodotti: {error}",
   "viewAllButton": "Vedi Tutti",
   "showcaseEyebrow": "VETRINA",
@@ -253,7 +245,6 @@
   "heroSlide2Title": "Mobili con una Storia",
   "heroSlide2Subtitle": "Pezzi usati solidi e caratteristici, selezionati con cura.",
   "heroSlide3Title": "Scopri l'Intera Collezione",
-
   "aboutBadge": "CON VOI DAL 2012",
   "aboutHeroTitle": "Sağlam Spot\nLa Fiducia che Conosci",
   "aboutHeroSubtitle": "Serviamo il nostro quartiere con amore e cura in tutto ciò che facciamo.",
@@ -297,7 +288,6 @@
   "aboutViewMapButton": "Vedi sulla Mappa",
   "aboutMapHeading": "Il Nostro Negozio è Proprio Qui",
   "aboutMapSubtext": "Tocca la mappa per le indicazioni",
-
   "newProductsBadgeEyebrow": "NUOVA COLLEZIONE",
   "newProductsTitle": "Nuova\nCollezione",
   "productsBadgeLabel": "PRODOTTI",
@@ -316,7 +306,6 @@
   "sortPriceLowHigh": "Prezzo: Crescente",
   "sortPriceHighLow": "Prezzo: Decrescente",
   "sortMostPopular": "Più Popolari",
-
   "spotBadgeEyebrow": "PRODOTTI IN OFFERTA",
   "spotHeroTitle": "Prodotti\nin Offerta",
   "spotDiscountLabel": "SCONTO",
@@ -331,20 +320,16 @@
   "clearFiltersButton": "AZZERA FILTRI",
   "tryDifferentFiltersShort": "Puoi provare filtri diversi",
   "spotBadgeTag": "OFFERTA",
-
   "productLoadError": "Impossibile caricare il prodotto: {error}",
   "productSpecConditionNew": "Prodotto Nuovo",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "In Evidenza",
   "sortPriceAsc": "Prezzo: Crescente",
   "sortPriceDesc": "Prezzo: Decrescente",
-
   "languageSelectorTitle": "Selezione Lingua",
   "languageTooltip": "Lingua",
   "galleryEmptyMessage": "Non sono ancora state aggiunte foto per questo prodotto.",
   "productCardNewBadge": "NUOVO",
-
   "sssHelpCenterBadge": "CENTRO ASSISTENZA",
   "sssHeroTitle": "Domande\nFrequenti",
   "sssHeroSubtitle": "Risposte a tutto ciò che vuoi sapere",
@@ -363,7 +348,6 @@
   "sssNoAnswerTitle": "Non Hai Trovato la Risposta?",
   "sssNoAnswerSubtitle": "Puoi Contattarci",
   "sssVisitStoreButton": "Visita il Negozio",
-
   "sssQ1": "Potete parlarci della vita lavorativa e dell'esperienza dell'artigiano?",
   "sssA1": "Il nostro artigiano lavora attivamente in questo settore dal 1995. Ha continuato a svilupparsi fin dai primi passi della sua carriera. Nel corso della sua vita lavorativa, ha ricoperto molti ruoli — guida per le consegne, trasporto, montaggio, accoglienza clienti — acquisendo un'esperienza a tutto tondo. In particolare, fino al 2010 ha lavorato presso İstikbal, dove ha acquisito una conoscenza approfondita delle caratteristiche, dei componenti e dei segreti dei prodotti. Dopo il 2010, ha lavorato presso il vicino Işık Çeyiz, affinando ulteriormente le sue competenze nel settore. Nel 2012 ha deciso di aprire il proprio negozio artigianale, e da allora ha puntato a mettere al primo posto un servizio di qualità, trasferendo al meglio la propria esperienza ai clienti.",
   "sssQ2": "Sağlam Spot è affidabile?",
@@ -423,6 +407,42 @@
     }
   },
   "@pieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navDiscover": "Scopri",
+  "navCart": "Carrello",
+  "navProfile": "Profilo",
+  "storeHeroEyebrow": "NUOVA COLLEZIONE",
+  "storeHeroTitle": "Mobili che sembrano\ncasa tua",
+  "storeHeroSubtitle": "Mobili nuovi e usati di qualità, consegnati a casa tua a prezzi che amerai.",
+  "storeHeroCta": "Inizia lo shopping",
+  "sectionCategories": "Categorie",
+  "sectionBestSellers": "Più Venduti",
+  "sectionNewArrivals": "Nuovi Arrivi",
+  "seeAll": "Vedi Tutto",
+  "cartTitle": "Il Mio Carrello",
+  "cartEmptyTitle": "Il carrello è vuoto",
+  "cartEmptyDesc": "Aggiungi i prodotti che ti piacciono, poi chiedi informazioni con un solo messaggio.",
+  "cartTotalLabel": "Totale",
+  "cartWhatsappCta": "Invia carrello su WhatsApp",
+  "cartItemRemoved": "Rimosso dal carrello",
+  "addToCartCta": "Aggiungi al Carrello",
+  "addedToCartMessage": "Aggiunto al carrello",
+  "alreadyInCartMessage": "Già nel carrello",
+  "settingsTitle": "Impostazioni",
+  "settingsLanguageLabel": "Lingua",
+  "settingsAccountSection": "Account",
+  "settingsGeneralSection": "Generale",
+  "settingsContact": "Contatti",
+  "settingsCallUs": "Chiamaci",
+  "settingsAdminLogin": "Accesso Amministratore",
+  "settingsAppVersion": "Versione App",
+  "cartItemsCount": "{count, plural, =0{Carrello vuoto} =1{1 articolo} other{{count} articoli}}",
+  "@cartItemsCount": {
     "placeholders": {
       "count": {
         "type": "int"

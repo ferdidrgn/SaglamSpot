@@ -11,15 +11,22 @@ final class FurnitureShareService {
   static const String _domain = "https://saglamspotcu.web.app";
   static const String _hmacSecret = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
 
-  /// 🛋️ Kriptografik İmzalı Güvenli Ürün Linki Oluşturucu
-  static String generateProductUrl(final String id, final String name) {
-    final slug = name.toSlug(); // SEO uyumlu isim
-
-    // Link manipülasyonunu engellemek için HMAC SHA-256 imzası üretilir
+  /// Tek kaynaktan HMAC imzası. Hem dışa paylaşılan linkler (bu dosya) hem
+  /// de router'daki (app_router.dart → DeepLinkSecurityEngine) doğrulama
+  /// hem de uygulama içi gezinme (NavigationHandler.goToProduct) AYNI bu
+  /// fonksiyonu ve aynı anahtarı kullanır — iki farklı anahtarla imzalanıp
+  /// asla doğrulanamayan linkler üretilmesin diye.
+  static String signProductId(final String id) {
     final key = utf8.encode(_hmacSecret);
     final bytes = utf8.encode(id);
     final hmac = Hmac(sha256, key);
-    final signature = hmac.convert(bytes).toString();
+    return hmac.convert(bytes).toString();
+  }
+
+  /// 🛋️ Kriptografik İmzalı Güvenli Ürün Linki Oluşturucu
+  static String generateProductUrl(final String id, final String name) {
+    final slug = name.toSlug(); // SEO uyumlu isim
+    final signature = signProductId(id);
 
     // URL parametreleri tarayıcı standartlarına göre encode edilir
     final safeSlugWithId = Uri.encodeComponent("$slug-$id");

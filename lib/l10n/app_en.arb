@@ -179,7 +179,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "Log Out",
   "logoutConfirm": "Are you sure you want to safely log out of your account?",
-
   "testimonialsHeading": "What Our Customers Say",
   "testimonialsSubheading": "For over 20 years we've touched thousands of homes in İçerenköy and beyond",
   "testimonial1Comment": "We got the sofa set at a great price, almost like new. Delivered the same day, hand to hand — the trust of a real local business was there from the start.",
@@ -188,7 +187,6 @@
   "testimonial4Comment": "We bought the dining table set at an honest, no-haggling price. They also helped with transport — we shopped with real peace of mind.",
   "testimonial5Comment": "We were looking for a second-hand wardrobe and found something sturdy and stylish. Best value for money on the market.",
   "testimonial6Comment": "We got to see the products in person during our showroom visit, which built even more trust. They've always stayed reachable after the sale too.",
-
   "howItWorksHeading": "How It Works",
   "step1Title": "Browse & Filter",
   "step1Desc": "Find what you love among thousands of products by category and price range.",
@@ -198,7 +196,6 @@
   "step3Desc": "See it at our showroom or confirm it with photos, then agree on a fair, honest price.",
   "step4Title": "Delivered to Your Door",
   "step4Desc": "Fast, insured delivery to İçerenköy and the Anatolian side gets your furniture home safely.",
-
   "tipsEyebrow": "TIPS",
   "tipsHeading": "Care Tips From Our Expert",
   "tip1Title": "Make Your Living Room Lovable",
@@ -231,7 +228,6 @@
   "tip10Title": "Turn Your Balcony Into a Living Space",
   "tip10Desc": "A weather-resistant seating set and a few potted plants make the balcony the coziest corner of the home.",
   "tip10Category": "Outdoor",
-
   "popularCategoriesHeading": "Popular Categories",
   "popularCategoriesSub": "Find the furniture you need in one click",
   "categoryProductCount": "{count} items",
@@ -242,14 +238,12 @@
       }
     }
   },
-
   "newsletterSubscribeSuccess": "You've successfully subscribed to our newsletter!",
   "newsletterHeading": "Be the First to Know About New Products",
   "newsletterDesc": "Get spot deals, new collections and campaigns straight to your inbox. No spam, just deals worth your time.",
   "emailHint": "Your email address",
   "emailRequired": "Email is required",
   "emailInvalid": "Enter a valid email address",
-
   "whyUsHeading": "Why Sağlam Spot?",
   "usp1Title": "20 Years of Trusted Local Business",
   "usp1Desc": "Over twenty years as a local business in İçerenköy, and thousands of happy customers.",
@@ -259,10 +253,8 @@
   "usp3Desc": "Every product goes through a structural and fabric/finish check before it goes on sale.",
   "usp4Title": "After-Sales Support",
   "usp4Desc": "A real team you can reach even after delivery, that solves your problem.",
-
   "socialShowcaseEyebrow": "SHARE",
   "socialShowcaseHeading": "Share Your Setup with #SağlamSpot",
-
   "productsLoadError": "An error occurred while loading products: {error}",
   "@productsLoadError": {
     "placeholders": {
@@ -295,7 +287,6 @@
   "heroSlide2Title": "Furniture With a Story",
   "heroSlide2Subtitle": "Carefully selected, sturdy second-hand pieces with character.",
   "heroSlide3Title": "Explore the Whole Collection",
-
   "aboutBadge": "WITH YOU SINCE 2012",
   "aboutHeroTitle": "Sağlam Spot\nThe Trust You Know",
   "aboutHeroSubtitle": "We serve our neighborhood with love and care in everything we do.",
@@ -339,7 +330,6 @@
   "aboutViewMapButton": "View on Map",
   "aboutMapHeading": "Our Shop Is Right Here",
   "aboutMapSubtext": "Tap the map for directions",
-
   "newProductsBadgeEyebrow": "NEW COLLECTION",
   "newProductsTitle": "New\nCollection",
   "productsBadgeLabel": "PRODUCTS",
@@ -358,7 +348,6 @@
   "sortPriceLowHigh": "Price: Low to High",
   "sortPriceHighLow": "Price: High to Low",
   "sortMostPopular": "Most Popular",
-
   "spotBadgeEyebrow": "SPOT PRODUCTS",
   "spotHeroTitle": "Deal\nProducts",
   "spotDiscountLabel": "DISCOUNT",
@@ -373,7 +362,6 @@
   "clearFiltersButton": "CLEAR FILTERS",
   "tryDifferentFiltersShort": "You can try different filters",
   "spotBadgeTag": "SPOT",
-
   "productLoadError": "Product could not be loaded: {error}",
   "@productLoadError": {
     "placeholders": {
@@ -384,16 +372,13 @@
   },
   "productSpecConditionNew": "New Product",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "Featured",
   "sortPriceAsc": "Price: Ascending",
   "sortPriceDesc": "Price: Descending",
-
   "languageSelectorTitle": "Language",
   "languageTooltip": "Language",
   "galleryEmptyMessage": "No photos have been added to this product yet.",
   "productCardNewBadge": "NEW",
-
   "sssHelpCenterBadge": "HELP CENTER",
   "sssHeroTitle": "Frequently Asked\nQuestions",
   "sssHeroSubtitle": "Answers to everything you're curious about",
@@ -412,7 +397,6 @@
   "sssNoAnswerTitle": "Didn't Find Your Answer?",
   "sssNoAnswerSubtitle": "You Can Reach Us",
   "sssVisitStoreButton": "Visit the Store",
-
   "sssQ1": "Can you tell us about the craftsman's work life and experience?",
   "sssA1": "Our craftsman has been actively working in this trade since 1995. He has kept developing continuously since his very first steps in his career. Throughout his working life, he's held many roles — driving for deliveries, transport, assembly, customer greeting — gaining well-rounded experience. He worked at İstikbal until 2010 in particular, and during that time gained deep knowledge of product features, parts, and finer details. After 2010, he worked at nearby Işık Çeyiz, further sharpening his skills in the trade. In 2012, he decided to open his own local shop, and since then he's aimed to put quality service first and pass on his industry experience to customers in the best possible way.",
   "sssQ2": "Is Sağlam Spot reliable?",
@@ -456,5 +440,41 @@
   "sssQ21": "My items are on a high floor and the building has no elevator. Would you still buy them?",
   "sssA21": "Just like with delivery, this is our clearest rule. Due to our craftsman's health, we simply cannot carry items down from high floors in buildings without an elevator. We can only consider it if your items are near the ground/entrance floor, or if the building has a freight elevator.",
   "sssQ22": "Do you always buy items?",
-  "sssA22": "It entirely depends on the space we have in our shop at the time. Since our shop is small, we operate on a 'sell one, buy one' balance. Sometimes we really like an item but can't take it because we don't have room. The best approach is to send us photos of what you'd like to sell — we'll honestly tell you whether 'we have room right now' or 'unfortunately we're full at the moment.'"
+  "sssA22": "It entirely depends on the space we have in our shop at the time. Since our shop is small, we operate on a 'sell one, buy one' balance. Sometimes we really like an item but can't take it because we don't have room. The best approach is to send us photos of what you'd like to sell — we'll honestly tell you whether 'we have room right now' or 'unfortunately we're full at the moment.'",
+  "navDiscover": "Discover",
+  "navCart": "Cart",
+  "navProfile": "Profile",
+  "storeHeroEyebrow": "NEW COLLECTION",
+  "storeHeroTitle": "Furniture That\nFeels Like Home",
+  "storeHeroSubtitle": "Quality new and second-hand furniture, delivered to your door at prices you'll love.",
+  "storeHeroCta": "Start Shopping",
+  "sectionCategories": "Categories",
+  "sectionBestSellers": "Best Sellers",
+  "sectionNewArrivals": "New Arrivals",
+  "seeAll": "See All",
+  "cartTitle": "My Cart",
+  "cartEmptyTitle": "Your Cart is Empty",
+  "cartEmptyDesc": "Add items you like, then ask about them all in one message.",
+  "cartTotalLabel": "Total",
+  "cartWhatsappCta": "Send Cart via WhatsApp",
+  "cartItemRemoved": "Removed from cart",
+  "addToCartCta": "Add to Cart",
+  "addedToCartMessage": "Added to cart",
+  "alreadyInCartMessage": "Already in your cart",
+  "settingsTitle": "Settings",
+  "settingsLanguageLabel": "Language",
+  "settingsAccountSection": "Account",
+  "settingsGeneralSection": "General",
+  "settingsContact": "Contact",
+  "settingsCallUs": "Call Us",
+  "settingsAdminLogin": "Admin Login",
+  "settingsAppVersion": "App Version",
+  "cartItemsCount": "{count, plural, =0{Cart is empty} =1{1 item} other{{count} items}}",
+  "@cartItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

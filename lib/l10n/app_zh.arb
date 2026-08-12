@@ -158,7 +158,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "退出登录",
   "logoutConfirm": "您确定要安全退出您的账户吗？",
-
   "testimonialsHeading": "客户怎么说",
   "testimonialsSubheading": "20多年来，我们已经走进了 İçerenköy 及周边数千个家庭",
   "testimonial1Comment": "我们以非常划算的价格买到了沙发套装，几乎和新的一样。当天就当面送货上门——从一开始就能感受到真正手艺人的诚信。",
@@ -167,7 +166,6 @@
   "testimonial4Comment": "我们以诚实的价格、不讨价还价买到了餐桌套装。他们还帮忙运输，购物过程非常安心。",
   "testimonial5Comment": "我们在找一个二手衣柜，找到了一件结实又有品位的家具。是市场上性价比最高的选择。",
   "testimonial6Comment": "在展厅参观时我们能亲眼看到产品，这增强了我们的信任。售后他们也一直保持联系。",
-
   "howItWorksHeading": "如何运作",
   "step1Title": "浏览与筛选",
   "step1Desc": "按类别和价格区间，在数千件产品中找到你喜欢的。",
@@ -177,7 +175,6 @@
   "step3Desc": "到展厅查看实物或通过照片确认，然后约定一个公道的价格。",
   "step4Title": "送货上门",
   "step4Desc": "快速、有保险的运输，将您的家具安全送达 İçerenköy 及安纳托利亚一侧的家中。",
-
   "tipsEyebrow": "小贴士",
   "tipsHeading": "专家护理建议",
   "tip1Title": "让客厅更讨人喜欢",
@@ -210,18 +207,15 @@
   "tip10Title": "把阳台变成生活空间",
   "tip10Desc": "一套耐候的座椅加上几盆盆栽，能让阳台成为家中最受欢迎的角落。",
   "tip10Category": "户外",
-
   "popularCategoriesHeading": "热门分类",
   "popularCategoriesSub": "一键找到适合你的家具",
   "categoryProductCount": "{count} 件商品",
-
   "newsletterSubscribeSuccess": "您已成功订阅我们的通讯！",
   "newsletterHeading": "第一时间了解新品",
   "newsletterDesc": "让特价优惠、新品系列和活动直接发送到您的邮箱。没有垃圾邮件，只有值得关注的优惠。",
   "emailHint": "您的电子邮箱",
   "emailRequired": "电子邮箱为必填项",
   "emailInvalid": "请输入有效的电子邮箱",
-
   "whyUsHeading": "为什么选择 Sağlam Spot？",
   "usp1Title": "20年值得信赖的手艺",
   "usp1Desc": "在 İçerenköy 从事手艺工作超过二十年，拥有数千名满意的客户。",
@@ -231,10 +225,8 @@
   "usp3Desc": "每件产品在上架销售前都会经过结构和面料/工艺检查。",
   "usp4Title": "售后支持",
   "usp4Desc": "一个真实的团队，即使在送货之后也能联系到，帮您解决问题。",
-
   "socialShowcaseEyebrow": "分享",
   "socialShowcaseHeading": "用 #SağlamSpot 分享您的家居布置",
-
   "productsLoadError": "加载产品时出错：{error}",
   "viewAllButton": "查看全部",
   "showcaseEyebrow": "精选展示",
@@ -253,7 +245,6 @@
   "heroSlide2Title": "有故事的家具",
   "heroSlide2Subtitle": "精心挑选、结实又有个性的二手家具。",
   "heroSlide3Title": "探索完整系列",
-
   "aboutBadge": "自2012年起与您同行",
   "aboutHeroTitle": "Sağlam Spot\n您熟悉的信任",
   "aboutHeroSubtitle": "我们用心去做每一件事，用爱与关怀服务我们的社区。",
@@ -297,7 +288,6 @@
   "aboutViewMapButton": "在地图上查看",
   "aboutMapHeading": "我们的店铺就在这里",
   "aboutMapSubtext": "点击地图获取路线",
-
   "newProductsBadgeEyebrow": "新品系列",
   "newProductsTitle": "新品\n系列",
   "productsBadgeLabel": "件产品",
@@ -316,7 +306,6 @@
   "sortPriceLowHigh": "价格：从低到高",
   "sortPriceHighLow": "价格：从高到低",
   "sortMostPopular": "最受欢迎",
-
   "spotBadgeEyebrow": "特价产品",
   "spotHeroTitle": "特价\n产品",
   "spotDiscountLabel": "折扣",
@@ -331,20 +320,16 @@
   "clearFiltersButton": "清除筛选",
   "tryDifferentFiltersShort": "您可以尝试不同的筛选条件",
   "spotBadgeTag": "特价",
-
   "productLoadError": "产品加载失败：{error}",
   "productSpecConditionNew": "全新产品",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "精选推荐",
   "sortPriceAsc": "价格：从低到高",
   "sortPriceDesc": "价格：从高到低",
-
   "languageSelectorTitle": "语言选择",
   "languageTooltip": "语言",
   "galleryEmptyMessage": "该产品暂未添加照片。",
   "productCardNewBadge": "全新",
-
   "sssHelpCenterBadge": "帮助中心",
   "sssHeroTitle": "常见\n问题",
   "sssHeroSubtitle": "解答您想知道的一切",
@@ -363,7 +348,6 @@
   "sssNoAnswerTitle": "没有找到您想要的答案？",
   "sssNoAnswerSubtitle": "您可以联系我们",
   "sssVisitStoreButton": "参观店铺",
-
   "sssQ1": "能介绍一下师傅的工作经历和经验吗？",
   "sssA1": "我们的师傅自1995年起就一直活跃在这个行业。从职业生涯的第一步起，他就不断成长。在他的职业生涯中，他曾担任送货司机、搬运、安装、接待客户等多个岗位，积累了全方位的经验。特别是直到2010年，他曾在 İstikbal 工作，在此期间对产品的特性、部件和诀窍有了深入的了解。2010年之后，他在附近的 Işık Çeyiz 工作，进一步提升了行业能力。2012年，他决定开设自己的手艺店铺，从那时起就致力于把优质服务放在首位，把行业经验以最好的方式传递给客户。",
   "sssQ2": "Sağlam Spot 可靠吗？",
@@ -423,6 +407,42 @@
     }
   },
   "@pieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navDiscover": "发现",
+  "navCart": "购物车",
+  "navProfile": "我的",
+  "storeHeroEyebrow": "新品系列",
+  "storeHeroTitle": "家的感觉\n从家具开始",
+  "storeHeroSubtitle": "优质全新及二手家具，以您满意的价格送到家门口。",
+  "storeHeroCta": "开始购物",
+  "sectionCategories": "分类",
+  "sectionBestSellers": "热销商品",
+  "sectionNewArrivals": "新品上架",
+  "seeAll": "查看全部",
+  "cartTitle": "我的购物车",
+  "cartEmptyTitle": "购物车是空的",
+  "cartEmptyDesc": "将喜欢的商品加入购物车，然后一条消息询问所有商品。",
+  "cartTotalLabel": "合计",
+  "cartWhatsappCta": "通过WhatsApp发送购物车",
+  "cartItemRemoved": "已从购物车移除",
+  "addToCartCta": "加入购物车",
+  "addedToCartMessage": "已加入购物车",
+  "alreadyInCartMessage": "该商品已在购物车中",
+  "settingsTitle": "设置",
+  "settingsLanguageLabel": "语言",
+  "settingsAccountSection": "账户",
+  "settingsGeneralSection": "通用",
+  "settingsContact": "联系方式",
+  "settingsCallUs": "致电我们",
+  "settingsAdminLogin": "管理员登录",
+  "settingsAppVersion": "应用版本",
+  "cartItemsCount": "{count, plural, =0{购物车是空的} =1{1件商品} other{{count}件商品}}",
+  "@cartItemsCount": {
     "placeholders": {
       "count": {
         "type": "int"

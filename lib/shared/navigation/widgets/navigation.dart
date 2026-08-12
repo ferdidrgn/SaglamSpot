@@ -274,6 +274,17 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
     // Responsive AppBar yüksekliğini güvenli ve sabit hesapla
     final double calculatedBarHeight = context.responsive(mobile: 60, tablet: 70, desktop: 80);
 
+    // Native mobil uygulamada Ana Sayfa dalı (index 0) artık kendi
+    // Scaffold'unu ve alt navigasyon çubuğunu (MobileBottomNav) taşıyan
+    // yeni müşteri deneyimi — bu durumda eski AppBar/Drawer kabuğunu hiç
+    // göstermiyoruz. Yeni/Spot dalları (1, 2) şimdilik eski davranışını
+    // (AppBar + Drawer) korur, herhangi bir regresyon riski almadan.
+    final bool isNativeHomeBranch = !kIsWeb && currentIndex == 0;
+
+    if (isNativeHomeBranch) {
+      return widget.navigationShell;
+    }
+
     return Shortcuts(
       shortcuts: <ShortcutActivator, Intent>{
         LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyK): const SearchIntent(),

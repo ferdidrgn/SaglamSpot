@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/enum/enums.dart';
@@ -9,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
@@ -93,6 +95,10 @@ class _HomePageState extends ConsumerState<HomePage>
         backgroundColor: AppColors.mobileBackground,
         elevation: 0,
         centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.go('/'),
+        ),
         title: Padding(
           padding: const EdgeInsets.only(left: 4),
           child: Text(
@@ -105,7 +111,43 @@ class _HomePageState extends ConsumerState<HomePage>
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+            onPressed: () => _confirmLogout(context),
+          ),
+        ],
       );
+
+  Future<void> _confirmLogout(final BuildContext context) async {
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (final context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(context.l10n.brand, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(context.l10n.logoutConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(context.l10n.cancel, style: const TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Text(context.l10n.logout),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      await ref.read(authProvider.notifier).signOut();
+      if (context.mounted) context.go('/');
+    }
+  }
 
   Widget _buildStatsRow(final int stock, final int sold) => Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
