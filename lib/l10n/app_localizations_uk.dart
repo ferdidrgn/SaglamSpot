@@ -1288,4 +1288,102 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get sssA22 =>
       'Це повністю залежить від того, скільки місця у нас є в магазині наразі. Оскільки наш магазин невеликий, ми працюємо за принципом балансу \'продати-купити\'. Іноді товар нам дуже подобається, але ми не можемо його взяти через відсутність місця. Найкраще надіслати нам фотографії товару, який ви хочете продати. Ми чесно повідомимо вам, чи є у нас зараз місце, чи ми, на жаль, зараз заповнені.';
+
+  @override
+  String get navDiscover => 'Огляд';
+
+  @override
+  String get navCart => 'Кошик';
+
+  @override
+  String get navProfile => 'Профіль';
+
+  @override
+  String get storeHeroEyebrow => 'НОВА КОЛЕКЦІЯ';
+
+  @override
+  String get storeHeroTitle => 'Меблі, з якими\nвдома затишно';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Якісні нові та вживані меблі з доставкою за цінами, які вам сподобаються.';
+
+  @override
+  String get storeHeroCta => 'Почати покупки';
+
+  @override
+  String get sectionCategories => 'Категорії';
+
+  @override
+  String get sectionBestSellers => 'Хіти продажів';
+
+  @override
+  String get sectionNewArrivals => 'Новинки';
+
+  @override
+  String get seeAll => 'Переглянути все';
+
+  @override
+  String get cartTitle => 'Мій кошик';
+
+  @override
+  String get cartEmptyTitle => 'Ваш кошик порожній';
+
+  @override
+  String get cartEmptyDesc =>
+      'Додайте товари, які вам сподобались, і запитайте про все одним повідомленням.';
+
+  @override
+  String get cartTotalLabel => 'Разом';
+
+  @override
+  String get cartWhatsappCta => 'Надіслати кошик у WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Видалено з кошика';
+
+  @override
+  String get addToCartCta => 'До кошика';
+
+  @override
+  String get addedToCartMessage => 'Додано до кошика';
+
+  @override
+  String get alreadyInCartMessage => 'Вже у кошику';
+
+  @override
+  String get settingsTitle => 'Налаштування';
+
+  @override
+  String get settingsLanguageLabel => 'Мова';
+
+  @override
+  String get settingsAccountSection => 'Обліковий запис';
+
+  @override
+  String get settingsGeneralSection => 'Загальні';
+
+  @override
+  String get settingsContact => 'Контакти';
+
+  @override
+  String get settingsCallUs => 'Зателефонуйте нам';
+
+  @override
+  String get settingsAdminLogin => 'Вхід адміністратора';
+
+  @override
+  String get settingsAppVersion => 'Версія додатку';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count товарів',
+      one: '1 товар',
+      zero: 'Кошик порожній',
+    );
+    return '$_temp0';
+  }
 }

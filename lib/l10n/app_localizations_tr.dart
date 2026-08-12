@@ -1284,4 +1284,102 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get sssA22 =>
       'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.';
+
+  @override
+  String get navDiscover => 'Keşfet';
+
+  @override
+  String get navCart => 'Sepet';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get storeHeroEyebrow => 'YENİ KOLEKSİYON';
+
+  @override
+  String get storeHeroTitle => 'Evinize Yakışan\nMobilyaları Keşfedin';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Kaliteli sıfır ve ikinci el mobilyalar, cebinize uygun fiyatlarla kapınızda.';
+
+  @override
+  String get storeHeroCta => 'Alışverişe Başla';
+
+  @override
+  String get sectionCategories => 'Kategoriler';
+
+  @override
+  String get sectionBestSellers => 'Çok Satanlar';
+
+  @override
+  String get sectionNewArrivals => 'Yeni Gelenler';
+
+  @override
+  String get seeAll => 'Tümünü Gör';
+
+  @override
+  String get cartTitle => 'Sepetim';
+
+  @override
+  String get cartEmptyTitle => 'Sepetiniz Boş';
+
+  @override
+  String get cartEmptyDesc =>
+      'Beğendiğiniz ürünleri sepete ekleyin, sonra tek mesajla bize sorun.';
+
+  @override
+  String get cartTotalLabel => 'Toplam';
+
+  @override
+  String get cartWhatsappCta => 'Sepeti WhatsApp\'tan Gönder';
+
+  @override
+  String get cartItemRemoved => 'Sepetten kaldırıldı';
+
+  @override
+  String get addToCartCta => 'Sepete Ekle';
+
+  @override
+  String get addedToCartMessage => 'Sepete eklendi';
+
+  @override
+  String get alreadyInCartMessage => 'Bu ürün zaten sepette';
+
+  @override
+  String get settingsTitle => 'Ayarlar';
+
+  @override
+  String get settingsLanguageLabel => 'Dil';
+
+  @override
+  String get settingsAccountSection => 'Hesap';
+
+  @override
+  String get settingsGeneralSection => 'Genel';
+
+  @override
+  String get settingsContact => 'İletişim';
+
+  @override
+  String get settingsCallUs => 'Bizi Arayın';
+
+  @override
+  String get settingsAdminLogin => 'Yönetici Girişi';
+
+  @override
+  String get settingsAppVersion => 'Uygulama Sürümü';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ürün',
+      one: '1 ürün',
+      zero: 'Sepet boş',
+    );
+    return '$_temp0';
+  }
 }

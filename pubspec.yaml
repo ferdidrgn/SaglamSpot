@@ -85,7 +85,7 @@ flutter:
   generate: true
 
   assets:
-    - assets/images/saglam_spot_logo.png
+    - assets/images/saglam_spot_logo.jpeg
     - assets/images/saglam_spot_logo_2.jpeg
     - assets/images/bicycle_france.jpg
     - assets/images/volvo_transport.jpg

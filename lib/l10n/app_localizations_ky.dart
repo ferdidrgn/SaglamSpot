@@ -1293,4 +1293,102 @@ class AppLocalizationsKy extends AppLocalizations {
   @override
   String get sssA22 =>
       'Бул толугу менен дүкөнүбүздөгү бош орунга байланыштуу. Дүкөнүбүз кичине болгондуктан, \'сат-ал\' балансы менен иштейбиз. Кээде продукт абдан жаксак дагы, орун жок болгондуктан ала албай калабыз. Эң туурасы — сатууну каалаган продуктуңуздун сүрөттөрүн бизге жиберүү. Сизге чынчылдык менен \'учурда орун бар\' же \'тилекке каршы, азыр толук\' деп маалымат беребиз.';
+
+  @override
+  String get navDiscover => 'Изилдөө';
+
+  @override
+  String get navCart => 'Себет';
+
+  @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get storeHeroEyebrow => 'ЖАҢЫ КОЛЛЕКЦИЯ';
+
+  @override
+  String get storeHeroTitle => 'Үйдөй жылуулук\nтартуулаган эмерек';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Сапаттуу жаңы жана колдонулган эмеректер, сиз жактырган баада эшигиңизге жеткирилет.';
+
+  @override
+  String get storeHeroCta => 'Соода баштоо';
+
+  @override
+  String get sectionCategories => 'Категориялар';
+
+  @override
+  String get sectionBestSellers => 'Көп сатылгандар';
+
+  @override
+  String get sectionNewArrivals => 'Жаңы келгендер';
+
+  @override
+  String get seeAll => 'Баарын көрүү';
+
+  @override
+  String get cartTitle => 'Себетим';
+
+  @override
+  String get cartEmptyTitle => 'Себетиңиз бош';
+
+  @override
+  String get cartEmptyDesc =>
+      'Жаккан заттарды себетке кошуп, баарын бир билдирүү менен сураштырыңыз.';
+
+  @override
+  String get cartTotalLabel => 'Жалпы';
+
+  @override
+  String get cartWhatsappCta => 'Себетти WhatsApp аркылуу жөнөтүү';
+
+  @override
+  String get cartItemRemoved => 'Себеттен алынып салынды';
+
+  @override
+  String get addToCartCta => 'Себетке кошуу';
+
+  @override
+  String get addedToCartMessage => 'Себетке кошулду';
+
+  @override
+  String get alreadyInCartMessage => 'Бул зат себетте бар';
+
+  @override
+  String get settingsTitle => 'Жөндөөлөр';
+
+  @override
+  String get settingsLanguageLabel => 'Тил';
+
+  @override
+  String get settingsAccountSection => 'Аккаунт';
+
+  @override
+  String get settingsGeneralSection => 'Жалпы';
+
+  @override
+  String get settingsContact => 'Байланыш';
+
+  @override
+  String get settingsCallUs => 'Бизге чалыңыз';
+
+  @override
+  String get settingsAdminLogin => 'Админ кирүүсү';
+
+  @override
+  String get settingsAppVersion => 'Колдонмонун версиясы';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count зат',
+      one: '1 зат',
+      zero: 'Себет бош',
+    );
+    return '$_temp0';
+  }
 }

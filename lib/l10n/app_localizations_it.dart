@@ -1298,4 +1298,102 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get sssA22 =>
       'Dipende interamente dallo spazio che abbiamo nel negozio in quel momento. Poiché il nostro negozio è piccolo, operiamo con un equilibrio \'vendi-compra\'. A volte un prodotto ci piace molto ma non possiamo prenderlo perché non abbiamo spazio. La cosa migliore è inviarci le foto del prodotto che volete vendere. Vi diremo onestamente se \'abbiamo spazio ora\' oppure se \'purtroppo siamo al completo in questo periodo\'.';
+
+  @override
+  String get navDiscover => 'Scopri';
+
+  @override
+  String get navCart => 'Carrello';
+
+  @override
+  String get navProfile => 'Profilo';
+
+  @override
+  String get storeHeroEyebrow => 'NUOVA COLLEZIONE';
+
+  @override
+  String get storeHeroTitle => 'Mobili che sembrano\ncasa tua';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Mobili nuovi e usati di qualità, consegnati a casa tua a prezzi che amerai.';
+
+  @override
+  String get storeHeroCta => 'Inizia lo shopping';
+
+  @override
+  String get sectionCategories => 'Categorie';
+
+  @override
+  String get sectionBestSellers => 'Più Venduti';
+
+  @override
+  String get sectionNewArrivals => 'Nuovi Arrivi';
+
+  @override
+  String get seeAll => 'Vedi Tutto';
+
+  @override
+  String get cartTitle => 'Il Mio Carrello';
+
+  @override
+  String get cartEmptyTitle => 'Il carrello è vuoto';
+
+  @override
+  String get cartEmptyDesc =>
+      'Aggiungi i prodotti che ti piacciono, poi chiedi informazioni con un solo messaggio.';
+
+  @override
+  String get cartTotalLabel => 'Totale';
+
+  @override
+  String get cartWhatsappCta => 'Invia carrello su WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Rimosso dal carrello';
+
+  @override
+  String get addToCartCta => 'Aggiungi al Carrello';
+
+  @override
+  String get addedToCartMessage => 'Aggiunto al carrello';
+
+  @override
+  String get alreadyInCartMessage => 'Già nel carrello';
+
+  @override
+  String get settingsTitle => 'Impostazioni';
+
+  @override
+  String get settingsLanguageLabel => 'Lingua';
+
+  @override
+  String get settingsAccountSection => 'Account';
+
+  @override
+  String get settingsGeneralSection => 'Generale';
+
+  @override
+  String get settingsContact => 'Contatti';
+
+  @override
+  String get settingsCallUs => 'Chiamaci';
+
+  @override
+  String get settingsAdminLogin => 'Accesso Amministratore';
+
+  @override
+  String get settingsAppVersion => 'Versione App';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articoli',
+      one: '1 articolo',
+      zero: 'Carrello vuoto',
+    );
+    return '$_temp0';
+  }
 }

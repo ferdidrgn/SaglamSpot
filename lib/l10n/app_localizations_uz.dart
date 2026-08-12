@@ -1296,4 +1296,102 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get sssA22 =>
       'Bu to\'liq do\'konimizdagi bo\'sh joyga bog\'liq. Do\'konimiz kichik bo\'lgani uchun \'sot-ol\' muvozanati bilan ishlaymiz. Ba\'zan mahsulot juda yoqib qolsa ham, joy yo\'qligi sababli ololmasligimiz mumkin. Eng to\'g\'risi — sotmoqchi bo\'lgan mahsulotingiz rasmlarini bizga yuborishingiz. Sizga \'hozir joyimiz bor\' yoki \'afsuski hozircha to\'liqmiz\' deb halol ma\'lumot beramiz.';
+
+  @override
+  String get navDiscover => 'Kashf qilish';
+
+  @override
+  String get navCart => 'Savat';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get storeHeroEyebrow => 'YANGI KOLLEKSIYA';
+
+  @override
+  String get storeHeroTitle => 'Uyingizga mos\nmebel';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Sifatli yangi va ishlatilgan mebel, siz yoqtiradigan narxlarda uyingizga yetkaziladi.';
+
+  @override
+  String get storeHeroCta => 'Xarid qilishni boshlash';
+
+  @override
+  String get sectionCategories => 'Toifalar';
+
+  @override
+  String get sectionBestSellers => 'Ko\'p sotilganlar';
+
+  @override
+  String get sectionNewArrivals => 'Yangi mahsulotlar';
+
+  @override
+  String get seeAll => 'Barchasini ko\'rish';
+
+  @override
+  String get cartTitle => 'Mening savatim';
+
+  @override
+  String get cartEmptyTitle => 'Savatingiz bo\'sh';
+
+  @override
+  String get cartEmptyDesc =>
+      'Yoqqan mahsulotlarni savatga qo\'shing, keyin barchasi haqida bitta xabar bilan so\'rang.';
+
+  @override
+  String get cartTotalLabel => 'Jami';
+
+  @override
+  String get cartWhatsappCta => 'Savatni WhatsApp orqali yuborish';
+
+  @override
+  String get cartItemRemoved => 'Savatdan olib tashlandi';
+
+  @override
+  String get addToCartCta => 'Savatga qo\'shish';
+
+  @override
+  String get addedToCartMessage => 'Savatga qo\'shildi';
+
+  @override
+  String get alreadyInCartMessage => 'Allaqachon savatda';
+
+  @override
+  String get settingsTitle => 'Sozlamalar';
+
+  @override
+  String get settingsLanguageLabel => 'Til';
+
+  @override
+  String get settingsAccountSection => 'Hisob';
+
+  @override
+  String get settingsGeneralSection => 'Umumiy';
+
+  @override
+  String get settingsContact => 'Aloqa';
+
+  @override
+  String get settingsCallUs => 'Bizga qo\'ng\'iroq qiling';
+
+  @override
+  String get settingsAdminLogin => 'Administrator kirishi';
+
+  @override
+  String get settingsAppVersion => 'Ilova versiyasi';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mahsulot',
+      one: '1 mahsulot',
+      zero: 'Savat bo\'sh',
+    );
+    return '$_temp0';
+  }
 }

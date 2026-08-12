@@ -1291,4 +1291,102 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sssA22 =>
       'It entirely depends on the space we have in our shop at the time. Since our shop is small, we operate on a \'sell one, buy one\' balance. Sometimes we really like an item but can\'t take it because we don\'t have room. The best approach is to send us photos of what you\'d like to sell — we\'ll honestly tell you whether \'we have room right now\' or \'unfortunately we\'re full at the moment.\'';
+
+  @override
+  String get navDiscover => 'Discover';
+
+  @override
+  String get navCart => 'Cart';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get storeHeroEyebrow => 'NEW COLLECTION';
+
+  @override
+  String get storeHeroTitle => 'Furniture That\nFeels Like Home';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Quality new and second-hand furniture, delivered to your door at prices you\'ll love.';
+
+  @override
+  String get storeHeroCta => 'Start Shopping';
+
+  @override
+  String get sectionCategories => 'Categories';
+
+  @override
+  String get sectionBestSellers => 'Best Sellers';
+
+  @override
+  String get sectionNewArrivals => 'New Arrivals';
+
+  @override
+  String get seeAll => 'See All';
+
+  @override
+  String get cartTitle => 'My Cart';
+
+  @override
+  String get cartEmptyTitle => 'Your Cart is Empty';
+
+  @override
+  String get cartEmptyDesc =>
+      'Add items you like, then ask about them all in one message.';
+
+  @override
+  String get cartTotalLabel => 'Total';
+
+  @override
+  String get cartWhatsappCta => 'Send Cart via WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Removed from cart';
+
+  @override
+  String get addToCartCta => 'Add to Cart';
+
+  @override
+  String get addedToCartMessage => 'Added to cart';
+
+  @override
+  String get alreadyInCartMessage => 'Already in your cart';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsLanguageLabel => 'Language';
+
+  @override
+  String get settingsAccountSection => 'Account';
+
+  @override
+  String get settingsGeneralSection => 'General';
+
+  @override
+  String get settingsContact => 'Contact';
+
+  @override
+  String get settingsCallUs => 'Call Us';
+
+  @override
+  String get settingsAdminLogin => 'Admin Login';
+
+  @override
+  String get settingsAppVersion => 'App Version';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'Cart is empty',
+    );
+    return '$_temp0';
+  }
 }

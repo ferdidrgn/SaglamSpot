@@ -1288,4 +1288,102 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get sssA22 =>
       'Это полностью зависит от того, сколько места у нас есть в магазине на данный момент. Поскольку наш магазин небольшой, мы работаем по принципу баланса \'продать-купить\'. Иногда товар нам очень нравится, но мы не можем его взять из-за отсутствия места. Лучше всего прислать нам фотографии товара, который вы хотите продать. Мы честно сообщим вам, есть ли у нас сейчас место или мы, к сожалению, сейчас заполнены.';
+
+  @override
+  String get navDiscover => 'Обзор';
+
+  @override
+  String get navCart => 'Корзина';
+
+  @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get storeHeroEyebrow => 'НОВАЯ КОЛЛЕКЦИЯ';
+
+  @override
+  String get storeHeroTitle => 'Мебель, в которой\nуютно, как дома';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Качественная новая и б/у мебель с доставкой по ценам, которые вам понравятся.';
+
+  @override
+  String get storeHeroCta => 'Начать покупки';
+
+  @override
+  String get sectionCategories => 'Категории';
+
+  @override
+  String get sectionBestSellers => 'Хиты продаж';
+
+  @override
+  String get sectionNewArrivals => 'Новинки';
+
+  @override
+  String get seeAll => 'Смотреть все';
+
+  @override
+  String get cartTitle => 'Моя корзина';
+
+  @override
+  String get cartEmptyTitle => 'Ваша корзина пуста';
+
+  @override
+  String get cartEmptyDesc =>
+      'Добавьте понравившиеся товары и уточните всё одним сообщением.';
+
+  @override
+  String get cartTotalLabel => 'Итого';
+
+  @override
+  String get cartWhatsappCta => 'Отправить корзину в WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Удалено из корзины';
+
+  @override
+  String get addToCartCta => 'В корзину';
+
+  @override
+  String get addedToCartMessage => 'Добавлено в корзину';
+
+  @override
+  String get alreadyInCartMessage => 'Уже в корзине';
+
+  @override
+  String get settingsTitle => 'Настройки';
+
+  @override
+  String get settingsLanguageLabel => 'Язык';
+
+  @override
+  String get settingsAccountSection => 'Аккаунт';
+
+  @override
+  String get settingsGeneralSection => 'Общее';
+
+  @override
+  String get settingsContact => 'Контакты';
+
+  @override
+  String get settingsCallUs => 'Позвонить нам';
+
+  @override
+  String get settingsAdminLogin => 'Вход для администратора';
+
+  @override
+  String get settingsAppVersion => 'Версия приложения';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count товаров',
+      one: '1 товар',
+      zero: 'Корзина пуста',
+    );
+    return '$_temp0';
+  }
 }

@@ -2467,6 +2467,180 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.'**
   String get sssA22;
+
+  /// No description provided for @navDiscover.
+  ///
+  /// In tr, this message translates to:
+  /// **'Keşfet'**
+  String get navDiscover;
+
+  /// No description provided for @navCart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepet'**
+  String get navCart;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Profil'**
+  String get navProfile;
+
+  /// No description provided for @storeHeroEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'YENİ KOLEKSİYON'**
+  String get storeHeroEyebrow;
+
+  /// No description provided for @storeHeroTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Evinize Yakışan\nMobilyaları Keşfedin'**
+  String get storeHeroTitle;
+
+  /// No description provided for @storeHeroSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaliteli sıfır ve ikinci el mobilyalar, cebinize uygun fiyatlarla kapınızda.'**
+  String get storeHeroSubtitle;
+
+  /// No description provided for @storeHeroCta.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alışverişe Başla'**
+  String get storeHeroCta;
+
+  /// No description provided for @sectionCategories.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategoriler'**
+  String get sectionCategories;
+
+  /// No description provided for @sectionBestSellers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok Satanlar'**
+  String get sectionBestSellers;
+
+  /// No description provided for @sectionNewArrivals.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Gelenler'**
+  String get sectionNewArrivals;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümünü Gör'**
+  String get seeAll;
+
+  /// No description provided for @cartTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepetim'**
+  String get cartTitle;
+
+  /// No description provided for @cartEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepetiniz Boş'**
+  String get cartEmptyTitle;
+
+  /// No description provided for @cartEmptyDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beğendiğiniz ürünleri sepete ekleyin, sonra tek mesajla bize sorun.'**
+  String get cartEmptyDesc;
+
+  /// No description provided for @cartTotalLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam'**
+  String get cartTotalLabel;
+
+  /// No description provided for @cartWhatsappCta.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepeti WhatsApp\'tan Gönder'**
+  String get cartWhatsappCta;
+
+  /// No description provided for @cartItemRemoved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepetten kaldırıldı'**
+  String get cartItemRemoved;
+
+  /// No description provided for @addToCartCta.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepete Ekle'**
+  String get addToCartCta;
+
+  /// No description provided for @addedToCartMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepete eklendi'**
+  String get addedToCartMessage;
+
+  /// No description provided for @alreadyInCartMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu ürün zaten sepette'**
+  String get alreadyInCartMessage;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsLanguageLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dil'**
+  String get settingsLanguageLabel;
+
+  /// No description provided for @settingsAccountSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesap'**
+  String get settingsAccountSection;
+
+  /// No description provided for @settingsGeneralSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel'**
+  String get settingsGeneralSection;
+
+  /// No description provided for @settingsContact.
+  ///
+  /// In tr, this message translates to:
+  /// **'İletişim'**
+  String get settingsContact;
+
+  /// No description provided for @settingsCallUs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bizi Arayın'**
+  String get settingsCallUs;
+
+  /// No description provided for @settingsAdminLogin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici Girişi'**
+  String get settingsAdminLogin;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama Sürümü'**
+  String get settingsAppVersion;
+
+  /// No description provided for @cartItemsCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{Sepet boş} =1{1 ürün} other{{count} ürün}}'**
+  String cartItemsCount(int count);
 }
 
 class _AppLocalizationsDelegate

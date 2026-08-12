@@ -1276,4 +1276,102 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get sssA22 =>
       'يعتمد هذا كليًا على المساحة المتوفرة في متجرنا. بما أن متجرنا صغير، نعمل وفق توازن \'بيع-شراء\'. أحيانًا نعجب كثيرًا بمنتج ما لكن لا نستطيع شراءه لعدم توفر المساحة. أفضل طريقة هي أن ترسلوا لنا صور المنتج الذي ترغبون في بيعه. سنخبركم بصدق إذا كان لدينا مساحة الآن أو أننا للأسف ممتلئون في هذه الفترة.';
+
+  @override
+  String get navDiscover => 'استكشف';
+
+  @override
+  String get navCart => 'السلة';
+
+  @override
+  String get navProfile => 'الملف الشخصي';
+
+  @override
+  String get storeHeroEyebrow => 'تشكيلة جديدة';
+
+  @override
+  String get storeHeroTitle => 'أثاث يجعل بيتك\nأكثر دفئًا';
+
+  @override
+  String get storeHeroSubtitle =>
+      'أثاث جديد ومستعمل عالي الجودة، يصل إلى بابك بأسعار ستعجبك.';
+
+  @override
+  String get storeHeroCta => 'ابدأ التسوق';
+
+  @override
+  String get sectionCategories => 'الفئات';
+
+  @override
+  String get sectionBestSellers => 'الأكثر مبيعًا';
+
+  @override
+  String get sectionNewArrivals => 'وصل حديثًا';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get cartTitle => 'سلتي';
+
+  @override
+  String get cartEmptyTitle => 'سلتك فارغة';
+
+  @override
+  String get cartEmptyDesc =>
+      'أضف المنتجات التي تعجبك، ثم استفسر عنها جميعًا برسالة واحدة.';
+
+  @override
+  String get cartTotalLabel => 'الإجمالي';
+
+  @override
+  String get cartWhatsappCta => 'إرسال السلة عبر واتساب';
+
+  @override
+  String get cartItemRemoved => 'تمت الإزالة من السلة';
+
+  @override
+  String get addToCartCta => 'أضف إلى السلة';
+
+  @override
+  String get addedToCartMessage => 'تمت الإضافة إلى السلة';
+
+  @override
+  String get alreadyInCartMessage => 'هذا المنتج موجود بالفعل في السلة';
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get settingsLanguageLabel => 'اللغة';
+
+  @override
+  String get settingsAccountSection => 'الحساب';
+
+  @override
+  String get settingsGeneralSection => 'عام';
+
+  @override
+  String get settingsContact => 'التواصل';
+
+  @override
+  String get settingsCallUs => 'اتصل بنا';
+
+  @override
+  String get settingsAdminLogin => 'دخول المسؤول';
+
+  @override
+  String get settingsAppVersion => 'إصدار التطبيق';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count منتج',
+      one: 'منتج واحد',
+      zero: 'السلة فارغة',
+    );
+    return '$_temp0';
+  }
 }

@@ -1300,4 +1300,102 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get sssA22 =>
       'Αυτό εξαρτάται εντελώς από τον χώρο που έχουμε διαθέσιμο στο κατάστημά μας. Επειδή το κατάστημά μας είναι μικρό, λειτουργούμε με ισορροπία \'πούλα-αγόρασε\'. Μερικές φορές μας αρέσει πολύ ένα προϊόν αλλά δεν μπορούμε να το πάρουμε επειδή δεν έχουμε χώρο. Το καλύτερο είναι να μας στείλετε φωτογραφίες του προϊόντος που θέλετε να πουλήσετε. Θα σας ενημερώσουμε ειλικρινά αν \'έχουμε χώρο τώρα\' ή αν \'δυστυχώς είμαστε γεμάτοι αυτή την περίοδο\'.';
+
+  @override
+  String get navDiscover => 'Ανακάλυψη';
+
+  @override
+  String get navCart => 'Καλάθι';
+
+  @override
+  String get navProfile => 'Προφίλ';
+
+  @override
+  String get storeHeroEyebrow => 'ΝΕΑ ΣΥΛΛΟΓΗ';
+
+  @override
+  String get storeHeroTitle => 'Έπιπλα που νιώθονται\nσαν σπίτι';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Ποιοτικά καινούργια και μεταχειρισμένα έπιπλα, στην πόρτα σας σε τιμές που θα αγαπήσετε.';
+
+  @override
+  String get storeHeroCta => 'Ξεκινήστε τις αγορές';
+
+  @override
+  String get sectionCategories => 'Κατηγορίες';
+
+  @override
+  String get sectionBestSellers => 'Δημοφιλή';
+
+  @override
+  String get sectionNewArrivals => 'Νέες Αφίξεις';
+
+  @override
+  String get seeAll => 'Δείτε Όλα';
+
+  @override
+  String get cartTitle => 'Το Καλάθι μου';
+
+  @override
+  String get cartEmptyTitle => 'Το καλάθι σας είναι άδειο';
+
+  @override
+  String get cartEmptyDesc =>
+      'Προσθέστε προϊόντα που σας αρέσουν και ρωτήστε για όλα με ένα μήνυμα.';
+
+  @override
+  String get cartTotalLabel => 'Σύνολο';
+
+  @override
+  String get cartWhatsappCta => 'Αποστολή καλαθιού μέσω WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Αφαιρέθηκε από το καλάθι';
+
+  @override
+  String get addToCartCta => 'Προσθήκη στο Καλάθι';
+
+  @override
+  String get addedToCartMessage => 'Προστέθηκε στο καλάθι';
+
+  @override
+  String get alreadyInCartMessage => 'Ήδη στο καλάθι σας';
+
+  @override
+  String get settingsTitle => 'Ρυθμίσεις';
+
+  @override
+  String get settingsLanguageLabel => 'Γλώσσα';
+
+  @override
+  String get settingsAccountSection => 'Λογαριασμός';
+
+  @override
+  String get settingsGeneralSection => 'Γενικά';
+
+  @override
+  String get settingsContact => 'Επικοινωνία';
+
+  @override
+  String get settingsCallUs => 'Καλέστε μας';
+
+  @override
+  String get settingsAdminLogin => 'Σύνδεση Διαχειριστή';
+
+  @override
+  String get settingsAppVersion => 'Έκδοση Εφαρμογής';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count προϊόντα',
+      one: '1 προϊόν',
+      zero: 'Το καλάθι είναι άδειο',
+    );
+    return '$_temp0';
+  }
 }

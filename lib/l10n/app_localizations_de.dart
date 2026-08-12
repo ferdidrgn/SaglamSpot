@@ -1301,4 +1301,102 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get sssA22 =>
       'Das hängt ganz davon ab, wie viel Platz wir gerade in unserem Laden haben. Da unser Laden klein ist, arbeiten wir nach dem Prinzip \'verkaufen-kaufen\'. Manchmal gefällt uns ein Produkt sehr, aber wir können es mangels Platz nicht annehmen. Am besten schicken Sie uns Fotos des Produkts, das Sie verkaufen möchten. Wir sagen Ihnen dann ehrlich, ob wir gerade Platz haben oder momentan leider ausgebucht sind.';
+
+  @override
+  String get navDiscover => 'Entdecken';
+
+  @override
+  String get navCart => 'Warenkorb';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get storeHeroEyebrow => 'NEUE KOLLEKTION';
+
+  @override
+  String get storeHeroTitle => 'Möbel, die sich\nwie Zuhause anfühlen';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Hochwertige neue und gebrauchte Möbel, geliefert zu Preisen, die Ihnen gefallen.';
+
+  @override
+  String get storeHeroCta => 'Jetzt einkaufen';
+
+  @override
+  String get sectionCategories => 'Kategorien';
+
+  @override
+  String get sectionBestSellers => 'Bestseller';
+
+  @override
+  String get sectionNewArrivals => 'Neuheiten';
+
+  @override
+  String get seeAll => 'Alle anzeigen';
+
+  @override
+  String get cartTitle => 'Mein Warenkorb';
+
+  @override
+  String get cartEmptyTitle => 'Ihr Warenkorb ist leer';
+
+  @override
+  String get cartEmptyDesc =>
+      'Fügen Sie Artikel hinzu und fragen Sie dann alle in einer Nachricht an.';
+
+  @override
+  String get cartTotalLabel => 'Gesamt';
+
+  @override
+  String get cartWhatsappCta => 'Warenkorb per WhatsApp senden';
+
+  @override
+  String get cartItemRemoved => 'Aus dem Warenkorb entfernt';
+
+  @override
+  String get addToCartCta => 'In den Warenkorb';
+
+  @override
+  String get addedToCartMessage => 'Zum Warenkorb hinzugefügt';
+
+  @override
+  String get alreadyInCartMessage => 'Bereits im Warenkorb';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get settingsLanguageLabel => 'Sprache';
+
+  @override
+  String get settingsAccountSection => 'Konto';
+
+  @override
+  String get settingsGeneralSection => 'Allgemein';
+
+  @override
+  String get settingsContact => 'Kontakt';
+
+  @override
+  String get settingsCallUs => 'Rufen Sie uns an';
+
+  @override
+  String get settingsAdminLogin => 'Admin-Anmeldung';
+
+  @override
+  String get settingsAppVersion => 'App-Version';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Artikel',
+      one: '1 Artikel',
+      zero: 'Warenkorb ist leer',
+    );
+    return '$_temp0';
+  }
 }
