@@ -18,8 +18,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.ferdidrgn.saglamspot"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = 37 //flutter.ndkVersion
+    compileSdk = 37 //flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     defaultConfig {
         applicationId = "com.ferdidrgn.saglamspot"
