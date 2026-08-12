@@ -2701,6 +2701,84 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Son Görüntülenenler'**
   String get recentlyViewedTitle;
+
+  /// No description provided for @productTrustBadgeVerified.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satıcı Onaylı'**
+  String get productTrustBadgeVerified;
+
+  /// No description provided for @productTrustBadgeNegotiate.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp\'tan Pazarlık'**
+  String get productTrustBadgeNegotiate;
+
+  /// No description provided for @productTrustBadgeDelivery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yerinde Teslim'**
+  String get productTrustBadgeDelivery;
+
+  /// No description provided for @howToBuyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nasıl Satın Alırım?'**
+  String get howToBuyTitle;
+
+  /// No description provided for @howToBuyStep1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp\'tan Yaz'**
+  String get howToBuyStep1Title;
+
+  /// No description provided for @howToBuyStep1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünü beğendiyseniz WhatsApp üzerinden bize ulaşın.'**
+  String get howToBuyStep1Desc;
+
+  /// No description provided for @howToBuyStep2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyatı Konuş'**
+  String get howToBuyStep2Title;
+
+  /// No description provided for @howToBuyStep2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat ve teslimat detaylarını birlikte görüşelim.'**
+  String get howToBuyStep2Desc;
+
+  /// No description provided for @howToBuyStep3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Teslim Alın'**
+  String get howToBuyStep3Title;
+
+  /// No description provided for @howToBuyStep3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anlaştıktan sonra ürününüzü güvenle teslim alın.'**
+  String get howToBuyStep3Desc;
+
+  /// No description provided for @listedToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün eklendi'**
+  String get listedToday;
+
+  /// No description provided for @listedDaysAgo.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days} gün önce eklendi'**
+  String listedDaysAgo(int days);
+
+  /// No description provided for @listedWeeksAgo.
+  ///
+  /// In tr, this message translates to:
+  /// **'{weeks} hafta önce eklendi'**
+  String listedWeeksAgo(int weeks);
 }
 
 class _AppLocalizationsDelegate

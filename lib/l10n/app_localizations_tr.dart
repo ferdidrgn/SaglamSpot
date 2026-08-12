@@ -1413,4 +1413,50 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Son Görüntülenenler';
+
+  @override
+  String get productTrustBadgeVerified => 'Satıcı Onaylı';
+
+  @override
+  String get productTrustBadgeNegotiate => 'WhatsApp\'tan Pazarlık';
+
+  @override
+  String get productTrustBadgeDelivery => 'Yerinde Teslim';
+
+  @override
+  String get howToBuyTitle => 'Nasıl Satın Alırım?';
+
+  @override
+  String get howToBuyStep1Title => 'WhatsApp\'tan Yaz';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Ürünü beğendiyseniz WhatsApp üzerinden bize ulaşın.';
+
+  @override
+  String get howToBuyStep2Title => 'Fiyatı Konuş';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Fiyat ve teslimat detaylarını birlikte görüşelim.';
+
+  @override
+  String get howToBuyStep3Title => 'Teslim Alın';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Anlaştıktan sonra ürününüzü güvenle teslim alın.';
+
+  @override
+  String get listedToday => 'Bugün eklendi';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days gün önce eklendi';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks hafta önce eklendi';
+  }
 }

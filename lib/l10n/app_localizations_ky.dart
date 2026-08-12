@@ -1422,4 +1422,50 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Жакында көрүлгөндөр';
+
+  @override
+  String get productTrustBadgeVerified => 'Текшерилген Сатуучу';
+
+  @override
+  String get productTrustBadgeNegotiate => 'WhatsApp аркылуу сүйлөшүү';
+
+  @override
+  String get productTrustBadgeDelivery => 'Жеринде жеткирүү';
+
+  @override
+  String get howToBuyTitle => 'Кантип сатып алам?';
+
+  @override
+  String get howToBuyStep1Title => 'WhatsApp\'ка жазыңыз';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Буюм жаккан болсо, бизге WhatsApp аркылуу кайрылыңыз.';
+
+  @override
+  String get howToBuyStep2Title => 'Баасын сүйлөшүңүз';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Баасын жана жеткирүү деталдарын биргеликте макулдашыңыз.';
+
+  @override
+  String get howToBuyStep3Title => 'Буюмду алыңыз';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Макулдашкандан кийин буюмуңузду коопсуз алыңыз.';
+
+  @override
+  String get listedToday => 'Бүгүн кошулду';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days күн мурун кошулду';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks жума мурун кошулду';
+  }
 }

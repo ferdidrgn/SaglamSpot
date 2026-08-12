@@ -1360,4 +1360,47 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => '最近浏览';
+
+  @override
+  String get productTrustBadgeVerified => '认证卖家';
+
+  @override
+  String get productTrustBadgeNegotiate => '通过WhatsApp议价';
+
+  @override
+  String get productTrustBadgeDelivery => '现场交货';
+
+  @override
+  String get howToBuyTitle => '如何购买？';
+
+  @override
+  String get howToBuyStep1Title => '在WhatsApp上留言';
+
+  @override
+  String get howToBuyStep1Desc => '如果您喜欢该商品，请通过WhatsApp联系我们。';
+
+  @override
+  String get howToBuyStep2Title => '商议价格';
+
+  @override
+  String get howToBuyStep2Desc => '一起商定价格和交货细节。';
+
+  @override
+  String get howToBuyStep3Title => '取货';
+
+  @override
+  String get howToBuyStep3Desc => '达成一致后，安全取走您的商品。';
+
+  @override
+  String get listedToday => '今天发布';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days天前发布';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks周前发布';
+  }
 }

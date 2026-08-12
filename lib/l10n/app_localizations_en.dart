@@ -1420,4 +1420,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Recently Viewed';
+
+  @override
+  String get productTrustBadgeVerified => 'Verified Seller';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Negotiate on WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'On-site Delivery';
+
+  @override
+  String get howToBuyTitle => 'How to Buy?';
+
+  @override
+  String get howToBuyStep1Title => 'Message on WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc => 'If you like the item, reach us on WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Discuss the Price';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Agree on price and delivery details together.';
+
+  @override
+  String get howToBuyStep3Title => 'Get It Delivered';
+
+  @override
+  String get howToBuyStep3Desc => 'Once agreed, receive your item safely.';
+
+  @override
+  String get listedToday => 'Listed today';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Listed $days days ago';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Listed $weeks weeks ago';
+  }
 }

@@ -1429,4 +1429,50 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Πρόσφατα Προβεβλημένα';
+
+  @override
+  String get productTrustBadgeVerified => 'Επαληθευμένος Πωλητής';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Διαπραγμάτευση μέσω WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'Παράδοση επί τόπου';
+
+  @override
+  String get howToBuyTitle => 'Πώς αγοράζω;';
+
+  @override
+  String get howToBuyStep1Title => 'Γράψτε στο WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Αν σας αρέσει το προϊόν, επικοινωνήστε μαζί μας μέσω WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Συζητήστε την τιμή';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Συμφωνήστε μαζί για την τιμή και τις λεπτομέρειες παράδοσης.';
+
+  @override
+  String get howToBuyStep3Title => 'Παραλάβετέ το';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Μετά τη συμφωνία, παραλάβετε το προϊόν σας με ασφάλεια.';
+
+  @override
+  String get listedToday => 'Καταχωρήθηκε σήμερα';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Καταχωρήθηκε πριν από $days ημέρες';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Καταχωρήθηκε πριν από $weeks εβδομάδες';
+  }
 }

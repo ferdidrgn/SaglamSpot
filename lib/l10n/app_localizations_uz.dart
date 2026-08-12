@@ -1425,4 +1425,50 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Yaqinda ko\'rilganlar';
+
+  @override
+  String get productTrustBadgeVerified => 'Tasdiqlangan Sotuvchi';
+
+  @override
+  String get productTrustBadgeNegotiate => 'WhatsApp orqali kelishish';
+
+  @override
+  String get productTrustBadgeDelivery => 'Joyida yetkazib berish';
+
+  @override
+  String get howToBuyTitle => 'Qanday sotib olaman?';
+
+  @override
+  String get howToBuyStep1Title => 'WhatsApp\'ga yozing';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Mahsulot yoqqan bo\'lsa, biz bilan WhatsApp orqali bog\'laning.';
+
+  @override
+  String get howToBuyStep2Title => 'Narxni muhokama qiling';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Narx va yetkazib berish tafsilotlarini birga kelishing.';
+
+  @override
+  String get howToBuyStep3Title => 'Mahsulotni oling';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Kelishuvdan so\'ng mahsulotingizni xavfsiz oling.';
+
+  @override
+  String get listedToday => 'Bugun qo\'shildi';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days kun oldin qo\'shildi';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks hafta oldin qo\'shildi';
+  }
 }

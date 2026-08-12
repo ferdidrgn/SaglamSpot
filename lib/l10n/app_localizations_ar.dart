@@ -1405,4 +1405,47 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'شوهد مؤخرًا';
+
+  @override
+  String get productTrustBadgeVerified => 'بائع موثّق';
+
+  @override
+  String get productTrustBadgeNegotiate => 'التفاوض عبر واتساب';
+
+  @override
+  String get productTrustBadgeDelivery => 'التسليم في الموقع';
+
+  @override
+  String get howToBuyTitle => 'كيف أشتري؟';
+
+  @override
+  String get howToBuyStep1Title => 'راسلنا عبر واتساب';
+
+  @override
+  String get howToBuyStep1Desc => 'إذا أعجبك المنتج، تواصل معنا عبر واتساب.';
+
+  @override
+  String get howToBuyStep2Title => 'ناقش السعر';
+
+  @override
+  String get howToBuyStep2Desc => 'اتفقا معًا على السعر وتفاصيل التسليم.';
+
+  @override
+  String get howToBuyStep3Title => 'استلم المنتج';
+
+  @override
+  String get howToBuyStep3Desc => 'بعد الاتفاق، استلم منتجك بأمان.';
+
+  @override
+  String get listedToday => 'أُضيف اليوم';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'أُضيف قبل $days أيام';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'أُضيف قبل $weeks أسابيع';
+  }
 }

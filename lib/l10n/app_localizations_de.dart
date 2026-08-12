@@ -1430,4 +1430,50 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Zuletzt angesehen';
+
+  @override
+  String get productTrustBadgeVerified => 'Verifizierter Verkäufer';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Verhandeln über WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'Lieferung vor Ort';
+
+  @override
+  String get howToBuyTitle => 'Wie kaufe ich?';
+
+  @override
+  String get howToBuyStep1Title => 'Auf WhatsApp schreiben';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Wenn Ihnen der Artikel gefällt, kontaktieren Sie uns über WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Preis besprechen';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Vereinbaren Sie gemeinsam Preis und Lieferdetails.';
+
+  @override
+  String get howToBuyStep3Title => 'Abholen';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Nach der Einigung erhalten Sie Ihren Artikel sicher.';
+
+  @override
+  String get listedToday => 'Heute eingestellt';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Vor $days Tagen eingestellt';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Vor $weeks Wochen eingestellt';
+  }
 }

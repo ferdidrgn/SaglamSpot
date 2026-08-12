@@ -1417,4 +1417,49 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get recentlyViewedTitle => 'Недавно просмотренные';
+
+  @override
+  String get productTrustBadgeVerified => 'Проверенный продавец';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Торг через WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'Доставка на месте';
+
+  @override
+  String get howToBuyTitle => 'Как купить?';
+
+  @override
+  String get howToBuyStep1Title => 'Написать в WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Если товар понравился, свяжитесь с нами через WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Обсудите цену';
+
+  @override
+  String get howToBuyStep2Desc => 'Согласуйте цену и детали доставки вместе.';
+
+  @override
+  String get howToBuyStep3Title => 'Заберите товар';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'После договорённости безопасно заберите свой товар.';
+
+  @override
+  String get listedToday => 'Добавлено сегодня';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Добавлено $days дн. назад';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Добавлено $weeks нед. назад';
+  }
 }
