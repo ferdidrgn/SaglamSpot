@@ -53,14 +53,22 @@ mixin DeepLinkSecurityEngine {
 
 final appRouterProvider = Provider<GoRouter>((final Ref ref) {
   final routerNotifier = _AuthRouterNotifier(ref);
-  // Uygulama açılışında (bu GoRouter örneği yaşadığı sürece) EN FAZLA BİR
-  // KEZ tetiklenir — yönetici bilinçli olarak müşteri sayfalarına geçtiğinde
-  // her '/' ziyaretinde geri panele fırlatılmasın diye.
-  bool didAutoRedirectToAdmin = false;
+
+  // Bu cihazda daha önce bir yönetici giriş yaptıysa uygulama doğrudan
+  // panelin rotasında (/admin) açılır. Bunu bir redirect kuralı yerine
+  // BAŞLANGIÇ KONUMU olarak yapmak kasıtlı: Firebase Auth'un kalıcı
+  // oturumu geri yüklemesi asenkron sürer, redirect ise ilk anda henüz
+  // "isLoggedIn=false" görebilir. initialLocation '/admin' olduğunda,
+  // oturum henüz geri yüklenmemişse aşağıdaki requiresAuth dalı onu
+  // '/login?redirect=/admin' üzerinden geçirir; oturum bir an sonra
+  // geri yüklenince aynı dal onu otomatik olarak panele gönderir —
+  // yarış durumuna karşı kendiliğinden dayanıklı.
+  final String initialLocation =
+      (!kIsWeb && AdminSessionCache.wasAdminLoggedIn) ? '/admin' : '/';
 
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
-    initialLocation: '/',
+    initialLocation: initialLocation,
     refreshListenable: routerNotifier,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
@@ -80,19 +88,6 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
 
       if (!requiresAuth) {
         if (isLoggedIn && isOnLoginPage) return '/';
-
-        // Bu cihazda daha önce bir yönetici giriş yaptıysa ve oturumu hâlâ
-        // geçerliyse, uygulama açılışında doğrudan panele gönder — ama
-        // sadece İLK ziyarette; yönetici sonradan bilerek müşteri
-        // sayfalarına geçerse bir daha buraya geri fırlatılmaz.
-        if (!kIsWeb &&
-            !didAutoRedirectToAdmin &&
-            currentPath == '/' &&
-            isLoggedIn &&
-            AdminSessionCache.wasAdminLoggedIn) {
-          didAutoRedirectToAdmin = true;
-          return '/admin';
-        }
         return null;
       }
 

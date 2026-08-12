@@ -62,6 +62,12 @@ class NavigationHandler {
 
   static void goToLogin(final BuildContext context) => context.go('/login');
 
+  /// Giriş sayfasına, başarılı girişten sonra DOĞRUDAN panele (/admin)
+  /// dönecek şekilde gider — düz goToLogin sonrası kullanıcı anasayfada
+  /// kalırdı çünkü login'e 'nereden geldiği' bilgisi olmadan gidiliyordu.
+  static void goToLoginForAdmin(final BuildContext context) =>
+      context.go('/login?redirect=${Uri.encodeComponent('/admin')}');
+
   /// Arama sayfasına git
   static void goToSearch(final BuildContext context) => context.go('/search');
 

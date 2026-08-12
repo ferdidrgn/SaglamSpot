@@ -248,16 +248,25 @@ class _LanguageTile extends StatelessWidget {
 
 /// Sürüm metni — normal kullanıcılar için sade bir bilgi satırı. Buraya
 /// UZUN BASMAK yönetici giriş sayfasını açar; bilerek keşfedilmesi zor,
-/// ama yöneticinin bildiği bir "gizli kapı".
-class _AppVersionFooter extends StatelessWidget {
+/// ama yöneticinin bildiği bir "gizli kapı". ÖNEMLİ: zaten oturumu açık
+/// bir yönetici içinse doğrudan panele (/admin) gider — /login'e gitmek
+/// router'daki "zaten girişliyken login'e gidersen anasayfaya dön"
+/// kuralına takılıp onu sessizce ana sayfaya geri fırlatırdı.
+class _AppVersionFooter extends ConsumerWidget {
   final String version;
 
   const _AppVersionFooter({required this.version});
 
   @override
-  Widget build(final BuildContext context) => Center(
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final authState = ref.read(authProvider);
+    final bool isAdminLoggedIn = authState.value != null && !authState.isLoading;
+
+    return Center(
         child: GestureDetector(
-          onLongPress: () => NavigationHandler.goToLogin(context),
+          onLongPress: () => isAdminLoggedIn
+              ? NavigationHandler.goToAdmin(context)
+              : NavigationHandler.goToLoginForAdmin(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
@@ -267,4 +276,5 @@ class _AppVersionFooter extends StatelessWidget {
           ),
         ),
       );
+  }
 }
