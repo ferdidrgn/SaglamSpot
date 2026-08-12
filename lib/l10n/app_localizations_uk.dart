@@ -1386,4 +1386,35 @@ class AppLocalizationsUk extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'Оцінити застосунок';
+
+  @override
+  String get settingsShareApp => 'Поділитися застосунком';
+
+  @override
+  String get settingsPrivacyPolicy => 'Політика конфіденційності';
+
+  @override
+  String get settingsTerms => 'Умови використання';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Цей вміст наразі доступний лише турецькою мовою.';
+
+  @override
+  String get doubleBackToExit => 'Натисніть назад ще раз, щоб вийти';
+
+  @override
+  String get productLinkLabel => 'Посилання на товар';
+
+  @override
+  String get settingsAppSection => 'Застосунок';
+
+  @override
+  String get settingsLegalSection => 'Правова інформація';
+
+  @override
+  String get recentlyViewedTitle => 'Нещодавно переглянуті';
 }

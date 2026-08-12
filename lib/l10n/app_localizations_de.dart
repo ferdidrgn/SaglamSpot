@@ -1399,4 +1399,35 @@ class AppLocalizationsDe extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'App bewerten';
+
+  @override
+  String get settingsShareApp => 'App teilen';
+
+  @override
+  String get settingsPrivacyPolicy => 'Datenschutzrichtlinie';
+
+  @override
+  String get settingsTerms => 'Allgemeine Geschäftsbedingungen';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Dieser Inhalt ist derzeit nur auf Türkisch verfügbar.';
+
+  @override
+  String get doubleBackToExit => 'Drücken Sie erneut zurück, um zu beenden';
+
+  @override
+  String get productLinkLabel => 'Produktlink';
+
+  @override
+  String get settingsAppSection => 'App';
+
+  @override
+  String get settingsLegalSection => 'Rechtliches';
+
+  @override
+  String get recentlyViewedTitle => 'Zuletzt angesehen';
 }

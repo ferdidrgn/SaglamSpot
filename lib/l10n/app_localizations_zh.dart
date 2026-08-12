@@ -1330,4 +1330,34 @@ class AppLocalizationsZh extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => '给应用评分';
+
+  @override
+  String get settingsShareApp => '分享应用';
+
+  @override
+  String get settingsPrivacyPolicy => '隐私政策';
+
+  @override
+  String get settingsTerms => '使用条款';
+
+  @override
+  String get legalContentTurkishOnly => '此内容目前仅提供土耳其语版本。';
+
+  @override
+  String get doubleBackToExit => '再次按返回键退出';
+
+  @override
+  String get productLinkLabel => '商品链接';
+
+  @override
+  String get settingsAppSection => '应用';
+
+  @override
+  String get settingsLegalSection => '法律信息';
+
+  @override
+  String get recentlyViewedTitle => '最近浏览';
 }

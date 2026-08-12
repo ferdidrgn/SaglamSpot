@@ -1394,4 +1394,35 @@ class AppLocalizationsUz extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'Ilovani baholang';
+
+  @override
+  String get settingsShareApp => 'Ilovani ulashish';
+
+  @override
+  String get settingsPrivacyPolicy => 'Maxfiylik siyosati';
+
+  @override
+  String get settingsTerms => 'Foydalanish shartlari';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Ushbu kontent hozircha faqat turk tilida mavjud.';
+
+  @override
+  String get doubleBackToExit => 'Chiqish uchun yana orqaga bosing';
+
+  @override
+  String get productLinkLabel => 'Mahsulot havolasi';
+
+  @override
+  String get settingsAppSection => 'Ilova';
+
+  @override
+  String get settingsLegalSection => 'Huquqiy';
+
+  @override
+  String get recentlyViewedTitle => 'Yaqinda ko\'rilganlar';
 }

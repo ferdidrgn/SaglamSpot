@@ -1389,4 +1389,35 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'Rate the App';
+
+  @override
+  String get settingsShareApp => 'Share the App';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsTerms => 'Terms & Conditions';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'This content is currently available in Turkish only.';
+
+  @override
+  String get doubleBackToExit => 'Press back again to exit';
+
+  @override
+  String get productLinkLabel => 'Product link';
+
+  @override
+  String get settingsAppSection => 'App';
+
+  @override
+  String get settingsLegalSection => 'Legal';
+
+  @override
+  String get recentlyViewedTitle => 'Recently Viewed';
 }

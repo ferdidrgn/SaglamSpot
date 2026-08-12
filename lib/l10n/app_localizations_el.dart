@@ -1398,4 +1398,35 @@ class AppLocalizationsEl extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'Αξιολογήστε την εφαρμογή';
+
+  @override
+  String get settingsShareApp => 'Κοινοποίηση εφαρμογής';
+
+  @override
+  String get settingsPrivacyPolicy => 'Πολιτική Απορρήτου';
+
+  @override
+  String get settingsTerms => 'Όροι Χρήσης';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Αυτό το περιεχόμενο είναι προς το παρόν διαθέσιμο μόνο στα τουρκικά.';
+
+  @override
+  String get doubleBackToExit => 'Πατήστε ξανά πίσω για έξοδο';
+
+  @override
+  String get productLinkLabel => 'Σύνδεσμος προϊόντος';
+
+  @override
+  String get settingsAppSection => 'Εφαρμογή';
+
+  @override
+  String get settingsLegalSection => 'Νομικά';
+
+  @override
+  String get recentlyViewedTitle => 'Πρόσφατα Προβεβλημένα';
 }

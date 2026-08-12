@@ -2641,6 +2641,66 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{count, plural, =0{Sepet boş} =1{1 ürün} other{{count} ürün}}'**
   String cartItemsCount(int count);
+
+  /// No description provided for @settingsRateApp.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamayı Değerlendir'**
+  String get settingsRateApp;
+
+  /// No description provided for @settingsShareApp.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamayı Paylaş'**
+  String get settingsShareApp;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik Politikası'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsTerms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Koşulları'**
+  String get settingsTerms;
+
+  /// No description provided for @legalContentTurkishOnly.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu içerik şu anda yalnızca Türkçe olarak sunulmaktadır.'**
+  String get legalContentTurkishOnly;
+
+  /// No description provided for @doubleBackToExit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çıkmak için tekrar geri tuşuna basın'**
+  String get doubleBackToExit;
+
+  /// No description provided for @productLinkLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün linki'**
+  String get productLinkLabel;
+
+  /// No description provided for @settingsAppSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama'**
+  String get settingsAppSection;
+
+  /// No description provided for @settingsLegalSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yasal'**
+  String get settingsLegalSection;
+
+  /// No description provided for @recentlyViewedTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son Görüntülenenler'**
+  String get recentlyViewedTitle;
 }
 
 class _AppLocalizationsDelegate

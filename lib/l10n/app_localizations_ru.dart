@@ -1386,4 +1386,35 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'Оценить приложение';
+
+  @override
+  String get settingsShareApp => 'Поделиться приложением';
+
+  @override
+  String get settingsPrivacyPolicy => 'Политика конфиденциальности';
+
+  @override
+  String get settingsTerms => 'Условия использования';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Этот контент пока доступен только на турецком языке.';
+
+  @override
+  String get doubleBackToExit => 'Нажмите назад еще раз, чтобы выйти';
+
+  @override
+  String get productLinkLabel => 'Ссылка на товар';
+
+  @override
+  String get settingsAppSection => 'Приложение';
+
+  @override
+  String get settingsLegalSection => 'Правовая информация';
+
+  @override
+  String get recentlyViewedTitle => 'Недавно просмотренные';
 }

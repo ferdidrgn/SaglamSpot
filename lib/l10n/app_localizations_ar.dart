@@ -1374,4 +1374,35 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'قيّم التطبيق';
+
+  @override
+  String get settingsShareApp => 'شارك التطبيق';
+
+  @override
+  String get settingsPrivacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get settingsTerms => 'الشروط والأحكام';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'هذا المحتوى متاح حاليًا باللغة التركية فقط.';
+
+  @override
+  String get doubleBackToExit => 'اضغط رجوع مرة أخرى للخروج';
+
+  @override
+  String get productLinkLabel => 'رابط المنتج';
+
+  @override
+  String get settingsAppSection => 'التطبيق';
+
+  @override
+  String get settingsLegalSection => 'قانوني';
+
+  @override
+  String get recentlyViewedTitle => 'شوهد مؤخرًا';
 }

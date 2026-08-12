@@ -1391,4 +1391,35 @@ class AppLocalizationsKy extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsRateApp => 'Колдонмону баалоо';
+
+  @override
+  String get settingsShareApp => 'Колдонмону бөлүшүү';
+
+  @override
+  String get settingsPrivacyPolicy => 'Купуялык саясаты';
+
+  @override
+  String get settingsTerms => 'Колдонуу шарттары';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Бул мазмун азырынча тек гана түрк тилинде жеткиликтүү.';
+
+  @override
+  String get doubleBackToExit => 'Чыгуу үчүн кайра артка басыңыз';
+
+  @override
+  String get productLinkLabel => 'Заттын шилтемеси';
+
+  @override
+  String get settingsAppSection => 'Колдонмо';
+
+  @override
+  String get settingsLegalSection => 'Юридикалык';
+
+  @override
+  String get recentlyViewedTitle => 'Жакында көрүлгөндөр';
 }
