@@ -92,7 +92,7 @@ class _Section extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15.5,
                 fontWeight: FontWeight.w800,
                 color: AppColors.mobileTextPrimary,
@@ -101,7 +101,7 @@ class _Section extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               body,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13.5,
                 color: AppColors.mobileTextSecondary,
                 height: 1.6,

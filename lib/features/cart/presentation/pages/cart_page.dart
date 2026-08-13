@@ -144,12 +144,12 @@ class _CartPageState extends ConsumerState<CartPage> {
           children: [
             IconButton(
               onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: const Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+              icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
             ),
             Expanded(
               child: Text(
                 context.l10n.cartTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: AppColors.mobileTextPrimary,
@@ -159,7 +159,7 @@ class _CartPageState extends ConsumerState<CartPage> {
             if (items.isNotEmpty)
               IconButton(
                 onPressed: () => _confirmClearCart(items),
-                icon: const Icon(Icons.delete_outline_rounded, color: AppColors.mobileTextSecondary),
+                icon: Icon(Icons.delete_outline_rounded, color: AppColors.mobileTextSecondary),
               ),
           ],
         ),
@@ -174,17 +174,17 @@ class _CartPageState extends ConsumerState<CartPage> {
               Container(
                 width: 96,
                 height: 96,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.mobileCardBg,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.shopping_bag_outlined,
+                child: Icon(Icons.shopping_bag_outlined,
                     size: 40, color: AppColors.mobileMutedDark),
               ),
               const SizedBox(height: 20),
               Text(
                 context.l10n.cartEmptyTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   color: AppColors.mobileTextPrimary,
@@ -194,7 +194,7 @@ class _CartPageState extends ConsumerState<CartPage> {
               Text(
                 context.l10n.cartEmptyDesc,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13.5,
                   color: AppColors.mobileTextSecondary,
                   height: 1.5,
@@ -237,12 +237,12 @@ class _CartPageState extends ConsumerState<CartPage> {
             children: [
               Text(
                 context.l10n.cartItemsCount(selectedCount),
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextSecondary),
               ),
               Text(
                 '${selectedTotal.toStringAsFixed(0)}₺',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
               ),
             ],
@@ -349,13 +349,13 @@ class _CartItemCard extends ConsumerWidget {
                     product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.mobileTextPrimary),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '${product.price.toStringAsFixed(0)}₺',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 14.5, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
                   ),
                   const SizedBox(height: 8),
@@ -385,7 +385,7 @@ class _CartItemCard extends ConsumerWidget {
           ),
           IconButton(
             onPressed: () => notifier.remove(product.id),
-            icon: const Icon(Icons.close_rounded, size: 18, color: AppColors.mobileMutedDark),
+            icon: Icon(Icons.close_rounded, size: 18, color: AppColors.mobileMutedDark),
             visualDensity: VisualDensity.compact,
           ),
         ],
@@ -428,7 +428,7 @@ class _RecentlyViewedSection extends StatelessWidget {
       children: [
         Text(
           context.l10n.recentlyViewedTitle,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
         ),
         const SizedBox(height: 10),
@@ -480,7 +480,7 @@ class _RecentlyViewedSection extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               '${product.price.toStringAsFixed(0)}₺',
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.w900,
                                   color: AppColors.mobilePrimary),

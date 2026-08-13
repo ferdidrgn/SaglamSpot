@@ -40,7 +40,7 @@ class SettingsPage extends ConsumerWidget {
           children: [
             Text(
               context.l10n.settingsTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
                 color: AppColors.mobileTextPrimary,
@@ -195,7 +195,7 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(final BuildContext context) => Text(
         text.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w800,
           letterSpacing: 1,
@@ -223,7 +223,7 @@ class _SettingsCard extends StatelessWidget {
           for (int i = 0; i < children.length; i++) ...[
             children[i],
             if (i != children.length - 1)
-              const Divider(height: 1, color: AppColors.mobileBorder, indent: 52),
+              Divider(height: 1, color: AppColors.mobileBorder, indent: 52),
           ],
         ],
       ),
@@ -237,7 +237,7 @@ class _SettingsTile extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _SettingsTile({
+  _SettingsTile({
     required this.icon,
     required this.label,
     required this.onTap,
@@ -258,9 +258,9 @@ class _SettingsTile extends StatelessWidget {
         child: Icon(icon, size: 17, color: accent),
       ),
       title: Text(label,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextPrimary)),
-      trailing: const Icon(Icons.chevron_right_rounded,
+      trailing: Icon(Icons.chevron_right_rounded,
           size: 20, color: AppColors.mobileTextTertiary),
     );
   }
@@ -366,7 +366,7 @@ class _AppVersionFooter extends ConsumerWidget {
                     : '…';
                 return Text(
                   '${context.l10n.settingsAppVersion}: $version',
-                  style: const TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
+                  style: TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
                 );
               },
             ),

@@ -53,7 +53,7 @@ class MobileBottomNav extends ConsumerWidget {
         top: false,
         child: Container(
           height: 62,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(top: BorderSide(color: AppColors.mobileBorder)),
           ),
           child: Row(

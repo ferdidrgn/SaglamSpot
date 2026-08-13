@@ -235,7 +235,7 @@ class WebOnboardingScreen extends StatelessWidget {
                         vertical:
                             context.responsive(mobile: 16.0, desktop: 20.0),
                       ),
-                      side: const BorderSide(color: AppColors.border, width: 2),
+                      side: BorderSide(color: AppColors.border, width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(context.borderRadius(0.7)),
@@ -306,7 +306,7 @@ class WebOnboardingScreen extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,

@@ -103,7 +103,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         automaticallyImplyLeading: false,
         flexibleSpace: FlexibleSpaceBar(
           background: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.secondary,
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
             ),
@@ -134,7 +134,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                         SizedBox(height: context.spacing),
                         Text(
                           context.l10n.spotBadgeEyebrow,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
                             letterSpacing: 3,
                             fontWeight: FontWeight.w800,
@@ -155,7 +155,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                         const SizedBox(height: 8),
                         Text(
                           context.l10n.productsFound(totalProducts),
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
                         ),
                         SizedBox(height: context.spacing),
@@ -185,15 +185,15 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   Widget _buildBreadcrumb(final BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.home_outlined, size: 13, color: AppColors.textTertiary),
+          Icon(Icons.home_outlined, size: 13, color: AppColors.textTertiary),
           const SizedBox(width: 6),
           Text(context.l10n.breadcrumbHome,
-              style: const TextStyle(fontSize: 12, color: AppColors.textTertiary)),
+              style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
           const SizedBox(width: 6),
-          const Icon(Icons.chevron_right_rounded, size: 14, color: AppColors.textTertiary),
+          Icon(Icons.chevron_right_rounded, size: 14, color: AppColors.textTertiary),
           const SizedBox(width: 6),
           Text(context.l10n.spotProducts,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 12, color: AppColors.error, fontWeight: FontWeight.w700)),
         ],
       );
@@ -233,7 +233,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           ),
           child: Row(
             children: [
-              const Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
+              Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
               const SizedBox(width: 10),
               Expanded(
                 child: RichText(
@@ -244,7 +244,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                       TextSpan(text: context.l10n.searchBarRichPrefix),
                       TextSpan(
                         text: context.l10n.searchBarRichHereLink,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: AppColors.error,
                             decoration: TextDecoration.underline),
@@ -295,7 +295,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
               const SizedBox(height: 8),
               Text(
                 '₺${temp.start.round()} - ₺${temp.end.round()}',
-                style: const TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.w900, fontSize: 20, color: AppColors.primary),
               ),
               RangeSlider(
@@ -356,7 +356,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         child: DropdownButtonHideUnderline(
           child: DropdownButton<_SortMode>(
             value: _selectedSort,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textPrimary),
+            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textPrimary),
             items: _SortMode.values
                 .map((final mode) =>
                     DropdownMenuItem(value: mode, child: Text(_sortLabel(context, mode))))
@@ -436,11 +436,11 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             Icon(Icons.search_off_rounded, size: 64, color: AppColors.textTertiary.withOpacity(0.6)),
             const SizedBox(height: 14),
             Text(context.l10n.productNotFound,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 16, color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
             const SizedBox(height: 6),
             Text(context.l10n.tryDifferentFiltersShort,
-                style: const TextStyle(fontSize: 13, color: AppColors.textTertiary)),
+                style: TextStyle(fontSize: 13, color: AppColors.textTertiary)),
           ],
         ),
       );
@@ -449,12 +449,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
+            Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
             const SizedBox(height: 14),
             Text(context.l10n.errorOccurred,
                 style: TextStyle(fontSize: context.h4Size, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            Text(error, style: const TextStyle(color: AppColors.textSecondary)),
+            Text(error, style: TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       );
@@ -486,7 +486,7 @@ class _TrustChip extends StatelessWidget {
   final String label;
   final Color accent;
 
-  const _TrustChip({required this.icon, required this.label, this.accent = AppColors.primary});
+  _TrustChip({required this.icon, required this.label, this.accent = AppColors.primary});
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -502,7 +502,7 @@ class _TrustChip extends StatelessWidget {
             Icon(icon, size: 13, color: accent),
             const SizedBox(width: 6),
             Text(label,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
           ],
         ),

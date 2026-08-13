@@ -44,7 +44,7 @@ class AdminFormSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w800,
                         color: AppColors.textPrimary)),
               ],
@@ -81,10 +81,10 @@ class AdminFormField extends StatelessWidget {
           maxLines: lines,
           keyboardType:
               numeric ? const TextInputType.numberWithOptions(decimal: true) : null,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14.5),
+          style: TextStyle(color: AppColors.textPrimary, fontSize: 14.5),
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: const TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
+            labelStyle: TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
             prefixIcon: Icon(icon, color: AppColors.onSecondary, size: 20),
             filled: true,
             fillColor: AppColors.secondary,
@@ -92,7 +92,7 @@ class AdminFormField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+              borderSide: BorderSide(color: AppColors.accent, width: 1.5),
             ),
           ),
         ),
@@ -130,7 +130,7 @@ class AdminFormSwitch extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(subtitle!,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 12, color: AppColors.textTertiary)),
                     ),
                 ],
@@ -229,7 +229,7 @@ class PhotoThumbnail extends StatelessWidget {
               child: InkWell(
                 onTap: onDelete,
                 customBorder: const CircleBorder(),
-                child: const SizedBox(
+                child: SizedBox(
                   width: 24,
                   height: 24,
                   child: Icon(Icons.close_rounded, size: 14, color: AppColors.error),
@@ -265,7 +265,7 @@ class AddPhotoTile extends StatelessWidget {
               Container(
                 width: 34,
                 height: 34,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: AppColors.accentGradient,
                   shape: BoxShape.circle,
                 ),
@@ -274,7 +274,7 @@ class AddPhotoTile extends StatelessWidget {
               const SizedBox(height: 6),
               Text(context.l10n.addImage,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 9.5, color: AppColors.accentDark, fontWeight: FontWeight.w700)),
+                  style: TextStyle(fontSize: 9.5, color: AppColors.accentDark, fontWeight: FontWeight.w700)),
             ],
           ),
         ),

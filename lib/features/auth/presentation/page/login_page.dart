@@ -73,7 +73,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const SizedBox(height: 24),
                   Text(
                     context.l10n.loginBrand,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 26,
                       fontWeight: FontWeight.w900,
@@ -83,7 +83,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const SizedBox(height: 6),
                   Text(
                     context.l10n.adminLoginSubtitle,
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 14.5),
+                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14.5),
                   ),
                   const SizedBox(height: 40),
 
@@ -203,12 +203,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
           child: Row(
             children: [
-              const Icon(Icons.error_outline_rounded,
+              Icon(Icons.error_outline_rounded,
                   color: AppColors.error, size: 18),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(message,
-                    style: const TextStyle(color: AppColors.error, fontSize: 13)),
+                    style: TextStyle(color: AppColors.error, fontSize: 13)),
               ),
             ],
           ),
@@ -233,12 +233,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         textInputAction: textInputAction,
         enabled: enabled,
         onSubmitted: onSubmitted,
-        style: const TextStyle(color: AppColors.textPrimary),
+        style: TextStyle(color: AppColors.textPrimary),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: AppColors.onSecondary, size: 20),
           suffixIcon: suffixIcon,
           labelText: label,
-          labelStyle: const TextStyle(color: AppColors.textTertiary),
+          labelStyle: TextStyle(color: AppColors.textTertiary),
           filled: true,
           fillColor: AppColors.secondary,
           border: OutlineInputBorder(
@@ -247,7 +247,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+            borderSide: BorderSide(color: AppColors.accent, width: 1.5),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),

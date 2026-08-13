@@ -1,143 +1,149 @@
 import 'package:flutter/material.dart';
 
-/// TEK MARKA PALETİ — "Sağlam Spot" logosundaki ahşap/bronz kurdele
-/// amblemine göre: sıcak ekru zemin + espresso kahvesi metin + ceviz/
-/// tarçın bronz vurgu. Web ve native mobil AYNI paleti kullanır.
-/// Önceki turdaki soğuk teal palet tamamen terk edildi; kullanıcının
-/// paylaştığı logo referanslarındaki sıcak, "mobilya butiği" hissi
-/// esas alındı. Aşağıdaki eski isimler (primary, mobilePrimary, vb.)
-/// hâlâ var ama hepsi aynı tek palete işaret ediyor — böylece uygulama
-/// genelindeki yüzlerce çağrı noktası tek tek değiştirilmeden tutarlı
-/// renk alır.
+/// TEK MARKA PALETİ — artık GERÇEK ANLAMDA DİNAMİK. Önceki sürümde tüm
+/// alanlar `static const` idi; bu, derleme zamanı sabitleri olduğu için
+/// hiçbir şekilde çalışma zamanında değişemezdi (Settings'teki Açık/Koyu
+/// seçici görsel olarak hiçbir şeyi etkilemiyordu). Şimdi her isim bir
+/// GETTER — o an aktif `Brightness`'a göre açık ya da koyu değeri döner.
+///
+/// `AppColors.setBrightness(...)` uygulama kökünde (main.dart) her tema
+/// değişiminde çağrılır; ardından kök widget'ı yeniden inşa ettirmek için
+/// bir `Key` değişikliği tetiklenir (statik bir değer değiştiğinde
+/// Flutter'ın kendiliğinden hiçbir widget'ı "kirli" işaretlemeyeceğini
+/// unutma — bu yüzden tam bir yeniden inşa tetiklemek gerekiyor).
 class AppColors {
+  AppColors._();
+
+  static Brightness _brightness = Brightness.light;
+
+  static void setBrightness(final Brightness value) => _brightness = value;
+
+  static bool get _dark => _brightness == Brightness.dark;
+
   // ================================================================
   // KANONİK RENKLER — tüm diğer isimler bunlara işaret eder.
   // ================================================================
   static const Color white = Colors.white;
-
-  static const Color primary = Color(0xFF3E2F23); // koyu espresso kahve
-  static const Color primaryDark = Color(0xFF241A13); // en koyu espresso
-  static const Color primaryLight = Color(0xFF6B5744); // hover/basılı durum
-
-  static const Color accent = Color(0xFFA9714B); // ceviz/tarçın bronz vurgu (logo rengi)
-  static const Color accentDark = Color(0xFF8B5A3A);
-  static const Color accentLight = Color(0xFFC79868);
-
-  static const Color background = Color(0xFFF5EFE6); // sıcak ekru/krem zemin
-  static const Color surface = Color(0xFFFFFDF9); // kırık beyaz kart zemini
-  static const Color secondary = Color(0xFFEDE3D3); // açık ahşap bej ikincil zemin
-  static const Color secondaryVariant = Color(0xFFE0D3BC); // koyu ahşap bej
-
-  static const Color muted = Color(0xFFCFC0A8); // sıcak gri-bej
-  static const Color mutedDark = Color(0xFFB5A488); // kenarlık/pasif ikon
-
-  static const Color textPrimary = Color(0xFF3E2F23);
-  static const Color textSecondary = Color(0xFF6B5744);
-  static const Color textTertiary = Color(0xFF8F7D6B);
+  static const Color black = Color(0xFF2A1F17);
   static const Color textLight = white;
 
-  static const Color border = Color(0xFFE0D3BC);
-  static const Color divider = Color(0xFFEDE3D3);
+  static Color get primary => _dark ? const Color(0xFFC79868) : const Color(0xFF3E2F23);
+  static Color get primaryDark => _dark ? const Color(0xFFA9714B) : const Color(0xFF241A13);
+  static Color get primaryLight => _dark ? const Color(0xFFDCC6A8) : const Color(0xFF6B5744);
 
-  static const Color black = Color(0xFF2A1F17);
+  static Color get accent => _dark ? const Color(0xFFE0A868) : const Color(0xFFA9714B);
+  static Color get accentDark => _dark ? const Color(0xFFC79868) : const Color(0xFF8B5A3A);
+  static Color get accentLight => _dark ? const Color(0xFFEDD4B0) : const Color(0xFFC79868);
+
+  static Color get background => _dark ? const Color(0xFF241A13) : const Color(0xFFF5EFE6);
+  static Color get surface => _dark ? const Color(0xFF2C2019) : const Color(0xFFFFFDF9);
+  static Color get secondary => _dark ? const Color(0xFF3D2D22) : const Color(0xFFEDE3D3);
+  static Color get secondaryVariant => _dark ? const Color(0xFF4A3A2C) : const Color(0xFFE0D3BC);
+
+  static Color get muted => _dark ? const Color(0xFF6B5744) : const Color(0xFFCFC0A8);
+  static Color get mutedDark => _dark ? const Color(0xFF8F7D6B) : const Color(0xFFB5A488);
+
+  static Color get textPrimary => _dark ? const Color(0xFFEDE3D3) : const Color(0xFF3E2F23);
+  static Color get textSecondary => _dark ? const Color(0xFFC2B29B) : const Color(0xFF6B5744);
+  static Color get textTertiary => _dark ? const Color(0xFF9C8B76) : const Color(0xFF8F7D6B);
+
+  static Color get border => _dark ? const Color(0xFF4A3A2C) : const Color(0xFFE0D3BC);
+  static Color get divider => _dark ? const Color(0xFF3D2D22) : const Color(0xFFEDE3D3);
 
   // --- SEMANTİK RENKLER (durum bildirimi — markadan bağımsız) ---
-  static const Color error = Color(0xFFB4543A);
-  static const Color onError = Color(0xFFE0917A);
-  static const Color success = Color(0xFF7C8B6F);
-  static const Color warning = Color(0xFFC98A4B);
-  static const Color info = Color(0xFF6E7D8F);
+  static Color get error => _dark ? const Color(0xFFD97B63) : const Color(0xFFB4543A);
+  static Color get onError => const Color(0xFFE0917A);
+  static Color get success => _dark ? const Color(0xFF9BAF8C) : const Color(0xFF7C8B6F);
+  static Color get warning => _dark ? const Color(0xFFDDAA6E) : const Color(0xFFC98A4B);
+  static Color get info => _dark ? const Color(0xFF8FA0B3) : const Color(0xFF6E7D8F);
 
-  static const Color sage = success;
-  static const Color sageDark = Color(0xFF62705A);
-  static const Color sageLight = Color(0xFFA3AE97);
+  static Color get sage => success;
+  static Color get sageDark => _dark ? const Color(0xFF7C8B6F) : const Color(0xFF62705A);
+  static Color get sageLight => _dark ? const Color(0xFFC3CDB8) : const Color(0xFFA3AE97);
 
-  static const Gradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF4A3A2C), primary],
-  );
+  static Gradient get primaryGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [primaryLight, primary],
+      );
 
-  static const Gradient secondaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [secondary, secondaryVariant],
-  );
+  static Gradient get secondaryGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [secondary, secondaryVariant],
+      );
 
-  static const Gradient accentGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [accent, accentDark],
-  );
+  static Gradient get accentGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [accent, accentDark],
+      );
 
-  static const Gradient sageGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [sage, sageDark],
-  );
+  static Gradient get sageGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [sage, sageDark],
+      );
 
-  static const Gradient backgroundGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [background, secondary],
-  );
+  static Gradient get backgroundGradient => LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [background, secondary],
+      );
 
   // ================================================================
-  // GERİYE DÖNÜK İSİMLER — bu proje aylardır bu adlarla (primaryVariant,
-  // onPrimary, lightGrey, darkGrey vb.) yazıldığı için yüzlerce dosyada
-  // bu adlar geçiyor. Hepsini tek tek değiştirmek yerine burada tek
-  // palete alias'lanıyorlar.
+  // GERİYE DÖNÜK İSİMLER
   // ================================================================
-  static const Color primaryVariant = Color(0xFF2A1F17);
-  static const Color onPrimary = accent;
-  static const Color onSecondary = primary;
-  static const Color onSurface = textPrimary;
+  static Color get primaryVariant => _dark ? const Color(0xFF1A120C) : const Color(0xFF2A1F17);
+  static Color get onPrimary => accent;
+  static Color get onSecondary => primary;
+  static Color get onSurface => textPrimary;
 
-  static const Color lightGrey = secondary;
-  static const Color mediumGrey = muted;
-  static const Color darkGrey = textSecondary;
+  static Color get lightGrey => secondary;
+  static Color get mediumGrey => muted;
+  static Color get darkGrey => textSecondary;
 
-  static const Color backgroundLight = white;
-  static const Color backgroundDark = Color(0xFF241A13);
+  static Color get backgroundLight => white;
+  static Color get backgroundDark => const Color(0xFF241A13);
 
-  static const Color secondaryDark = Color(0xFF8B5A3A);
-  static const Color secondaryLight = Color(0xFFC79868);
+  static Color get secondaryDark => _dark ? const Color(0xFFC79868) : const Color(0xFF8B5A3A);
+  static Color get secondaryLight => _dark ? const Color(0xFFEDD4B0) : const Color(0xFFC79868);
 
-  static const Color card = surface;
+  static Color get card => surface;
 
-  // Dark mode (uygulama ThemeMode.light'a sabitli, şu an pasif)
+  // Dark mode sabit referans değerleri (koyu tema AÇIKKEN de, parlaklıktan
+  // bağımsız olarak "kesin koyu" bir ton lazım olduğunda kullanılır).
   static const Color darkBackground = Color(0xFF241A13);
   static const Color darkSurface = Color(0xFF32251C);
   static const Color darkCard = Color(0xFF3D2D22);
   static const Color darkTextPrimary = Color(0xFFEDE3D3);
-  static const Color darkTextSecondary = Color(0xFFC2B29B);
+  static const Color darkTextSecondary = Color(0xFFCFC0A8);
   static const Color darkBorder = Color(0xFF4A3A2C);
 
   // ================================================================
-  // "mobile*" İSİMLERİ — geriye dönük uyumluluk için korunuyor. Artık
-  // yukarıdakiyle birebir aynı değerler; platforma göre farklı renk YOK.
+  // "mobile*" İSİMLERİ
   // ================================================================
-  static const Color mobilePrimary = primary;
-  static const Color mobilePrimaryDark = primaryDark;
-  static const Color mobilePrimaryLight = primaryLight;
+  static Color get mobilePrimary => primary;
+  static Color get mobilePrimaryDark => primaryDark;
+  static Color get mobilePrimaryLight => primaryLight;
 
-  static const Color mobileAccent = accent;
-  static const Color mobileAccentDark = accentDark;
-  static const Color mobileAccentLight = accentLight;
+  static Color get mobileAccent => accent;
+  static Color get mobileAccentDark => accentDark;
+  static Color get mobileAccentLight => accentLight;
 
-  static const Color mobileBackground = background;
-  static const Color mobileSurface = surface;
-  static const Color mobileCardBg = secondary;
-  static const Color mobileSecondaryBg = secondaryVariant;
+  static Color get mobileBackground => background;
+  static Color get mobileSurface => surface;
+  static Color get mobileCardBg => secondary;
+  static Color get mobileSecondaryBg => secondaryVariant;
 
-  static const Color mobileMuted = muted;
-  static const Color mobileMutedDark = mutedDark;
+  static Color get mobileMuted => muted;
+  static Color get mobileMutedDark => mutedDark;
 
-  static const Color mobileTextPrimary = textPrimary;
-  static const Color mobileTextSecondary = textSecondary;
-  static const Color mobileTextTertiary = textTertiary;
-  static const Color mobileBorder = border;
+  static Color get mobileTextPrimary => textPrimary;
+  static Color get mobileTextSecondary => textSecondary;
+  static Color get mobileTextTertiary => textTertiary;
+  static Color get mobileBorder => border;
 
-  static const Gradient mobileAccentGradient = accentGradient;
-  static const Gradient mobilePrimaryGradient = primaryGradient;
+  static Gradient get mobileAccentGradient => accentGradient;
+  static Gradient get mobilePrimaryGradient => primaryGradient;
 }

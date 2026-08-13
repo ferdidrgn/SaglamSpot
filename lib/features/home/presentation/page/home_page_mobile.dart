@@ -60,7 +60,7 @@ class _HomePageState extends ConsumerState<HomePage>
       appBar: _buildAppBar(context),
       body: productsAsync.when(
         loading: () =>
-            const Center(child: CircularProgressIndicator(color: AppColors.mobileAccent)),
+            Center(child: CircularProgressIndicator(color: AppColors.mobileAccent)),
         error: (final e, final _) => Center(child: Text('Hata: $e')),
         data: (final _) => Column(
           children: [
@@ -103,7 +103,7 @@ class _HomePageState extends ConsumerState<HomePage>
           padding: const EdgeInsets.only(left: 4),
           child: Text(
             context.l10n.adminPanelTitle,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.mobileTextPrimary,
               fontWeight: FontWeight.w900,
               fontSize: 24,
@@ -283,11 +283,11 @@ class _StatCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(value,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 17, fontWeight: FontWeight.w900,
                     color: AppColors.mobileTextPrimary)),
             Text(label,
-                style: const TextStyle(fontSize: 10.5, color: AppColors.mobileTextTertiary)),
+                style: TextStyle(fontSize: 10.5, color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -305,10 +305,10 @@ class _ProductGrid extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.mobileTextTertiary),
+            Icon(Icons.inbox_rounded, size: 48, color: AppColors.mobileTextTertiary),
             const SizedBox(height: 10),
             Text(context.l10n.emptyCategoryProducts,
-                style: const TextStyle(color: AppColors.mobileTextTertiary)),
+                style: TextStyle(color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -433,7 +433,7 @@ class _ImageArea extends ConsumerWidget {
                     width: double.infinity,
                     height: double.infinity,
                     color: AppColors.mobileSecondaryBg,
-                    child: const Icon(Icons.chair_alt_rounded,
+                    child: Icon(Icons.chair_alt_rounded,
                         size: 48, color: AppColors.mobileTextTertiary),
                   ),
           ),
@@ -457,7 +457,7 @@ class _InfoArea extends StatelessWidget {
           product.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
         ),
         const SizedBox(height: 4),
@@ -483,7 +483,7 @@ class _InfoArea extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           '${product.price.toStringAsFixed(0)} ₺',
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
         ),
       ],
@@ -560,7 +560,7 @@ class _ActionBar extends ConsumerWidget {
               Navigator.pop(context);
             },
             child: Text(context.l10n.yesDelete,
-                style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+                style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

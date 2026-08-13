@@ -101,14 +101,14 @@ class _AboutPageState extends State<AboutPage> {
         children: [
           IconButton(
             onPressed: () => NavigationHandler.smartGoBack(context),
-            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+            icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
           ),
           Expanded(
             child: Text(
               context.l10n.aboutHeroTitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
                 color: AppColors.mobileTextPrimary,
@@ -173,13 +173,13 @@ class _AboutPageState extends State<AboutPage> {
         children: [
           Text(
             context.l10n.aboutValuesHeading,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
           ),
           const SizedBox(height: 4),
           Text(
             context.l10n.aboutValuesSubheading,
-            style: const TextStyle(fontSize: 12.5, color: AppColors.mobileTextSecondary),
+            style: TextStyle(fontSize: 12.5, color: AppColors.mobileTextSecondary),
           ),
           const SizedBox(height: 14),
           for (final v in values)
@@ -207,7 +207,7 @@ class _AboutPageState extends State<AboutPage> {
                                 fontSize: 13, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 2),
                         Text(v.$3,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 12,
                                 color: AppColors.mobileTextSecondary,
                                 height: 1.4)),
@@ -234,7 +234,7 @@ class _AboutPageState extends State<AboutPage> {
           children: [
             Text(
               context.l10n.aboutContactHeading,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
             ),
             const SizedBox(height: 14),
@@ -260,7 +260,7 @@ class _AboutPageState extends State<AboutPage> {
                         style: const TextStyle(fontSize: 12.5)),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.mobilePrimary,
-                      side: const BorderSide(color: AppColors.mobilePrimary),
+                      side: BorderSide(color: AppColors.mobilePrimary),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
@@ -301,7 +301,7 @@ class _AboutPageState extends State<AboutPage> {
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [AppColors.primary, AppColors.primaryDark],
@@ -395,7 +395,7 @@ class _AboutPageState extends State<AboutPage> {
         borderRadius: BorderRadius.circular(24),
         child: Container(
           color: AppColors.accent.withOpacity(0.1),
-          child: const Center(
+          child: Center(
             child: Icon(
               Icons.store,
               size: 120,
@@ -491,7 +491,7 @@ class _AboutPageState extends State<AboutPage> {
       children: [
         Text(
           number,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 36,
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
@@ -500,7 +500,7 @@ class _AboutPageState extends State<AboutPage> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             color: AppColors.textSecondary,
           ),
@@ -1215,7 +1215,7 @@ class _AboutPageState extends State<AboutPage> {
                     const SizedBox(height: 8),
                     Text(
                       context.l10n.aboutMapSubtext,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textTertiary,
                       ),
                     ),
@@ -1278,7 +1278,7 @@ class _MobileSection extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w800,
                         color: AppColors.mobileTextPrimary),
@@ -1289,7 +1289,7 @@ class _MobileSection extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               body,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 12.5, color: AppColors.mobileTextSecondary, height: 1.55),
             ),
           ],
@@ -1326,11 +1326,11 @@ class _MobileContactRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(label,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 11.5, color: AppColors.mobileTextTertiary)),
                     const SizedBox(height: 2),
                     Text(value,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: AppColors.mobileTextPrimary)),

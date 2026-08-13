@@ -35,13 +35,13 @@ class LegalPageScaffold extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: onBack,
-                    icon: const Icon(Icons.arrow_back_rounded,
+                    icon: Icon(Icons.arrow_back_rounded,
                         color: AppColors.mobileTextPrimary),
                   ),
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                         color: AppColors.mobileTextPrimary,
@@ -61,13 +61,13 @@ class LegalPageScaffold extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline_rounded,
+                    Icon(Icons.info_outline_rounded,
                         size: 18, color: AppColors.mobileAccentDark),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         context.l10n.legalContentTurkishOnly,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 12.5, color: AppColors.mobileAccentDark),
                       ),
                     ),

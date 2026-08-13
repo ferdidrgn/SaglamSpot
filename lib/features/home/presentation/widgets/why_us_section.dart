@@ -151,7 +151,7 @@ class _UspCardState extends State<_UspCard> {
                           fontWeight: FontWeight.w800, fontSize: 14.5)),
                   const SizedBox(height: 6),
                   Text(widget.item.desc,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12.5,
                           height: 1.4)),

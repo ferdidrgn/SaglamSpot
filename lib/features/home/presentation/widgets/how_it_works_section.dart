@@ -148,7 +148,7 @@ class _StepCardState extends State<_StepCard> {
                     width: 22,
                     height: 22,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
@@ -167,7 +167,7 @@ class _StepCardState extends State<_StepCard> {
                     const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
             const SizedBox(height: 6),
             Text(step.desc,
-                style: const TextStyle(
+                style: TextStyle(
                     color: AppColors.textSecondary, fontSize: 13, height: 1.4)),
           ],
         ),

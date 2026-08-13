@@ -298,7 +298,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                             fit: BoxFit.contain,
                             width: double.infinity,
                             height: double.infinity,
-                            errorBuilder: (final c, final e, final s) => const Icon(
+                            errorBuilder: (final c, final e, final s) => Icon(
                                 Icons.chair_alt_rounded,
                                 size: 64,
                                 color: AppColors.textTertiary),
@@ -753,7 +753,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                                 color: _pc(context,
                                     mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
                         const SizedBox(width: 4),
-                        const Icon(Icons.verified_rounded,
+                        Icon(Icons.verified_rounded,
                             size: 14, color: AppColors.success),
                       ],
                     ),

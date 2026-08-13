@@ -87,7 +87,7 @@ class _ProductColorSectionState extends State<ProductColorSection> {
                 color: AppColors.success.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text('SIFIR ÜRÜN',
+              child: Text('SIFIR ÜRÜN',
                   style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,

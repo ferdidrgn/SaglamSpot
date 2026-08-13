@@ -20,7 +20,7 @@ class NotFoundPage extends StatelessWidget {
               Container(
                 width: 88,
                 height: 88,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: AppColors.accentGradient,
                   shape: BoxShape.circle,
                 ),
@@ -28,7 +28,7 @@ class NotFoundPage extends StatelessWidget {
                     size: 40, color: Colors.white),
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 '404 - Sayfa Bulunamadı',
                 style: TextStyle(
                     color: AppColors.textPrimary,
@@ -40,7 +40,7 @@ class NotFoundPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text('Yol: $errorPath',
-                      style: const TextStyle(color: AppColors.textTertiary),
+                      style: TextStyle(color: AppColors.textTertiary),
                       textAlign: TextAlign.center),
                 ),
               ],

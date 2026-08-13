@@ -233,12 +233,12 @@ class _SSSPageState extends State<SSSPage> {
           children: [
             IconButton(
               onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: const Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+              icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
             ),
             Expanded(
               child: Text(
                 context.l10n.sssHeroTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.w800,
                   color: AppColors.mobileTextPrimary,
@@ -343,7 +343,7 @@ class _SSSPageState extends State<SSSPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   faq.answer,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     color: AppColors.mobileTextSecondary,
                     height: 1.55,
@@ -428,7 +428,7 @@ class _SSSPageState extends State<SSSPage> {
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [AppColors.sage, AppColors.sageDark],

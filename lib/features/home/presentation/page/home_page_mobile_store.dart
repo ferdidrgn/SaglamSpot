@@ -85,7 +85,7 @@ class HomeStorePage extends ConsumerWidget {
             Expanded(
               child: Text(
                 context.l10n.storeHeroTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   height: 1.2,
@@ -100,7 +100,7 @@ class HomeStorePage extends ConsumerWidget {
               child: Container(
                 width: 44,
                 height: 44,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.mobilePrimary,
                   shape: BoxShape.circle,
                 ),
@@ -126,17 +126,17 @@ class HomeStorePage extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.search_rounded, color: AppColors.mobileTextTertiary, size: 20),
+                Icon(Icons.search_rounded, color: AppColors.mobileTextTertiary, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     context.l10n.searchHint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: AppColors.mobileTextTertiary, fontSize: 13.5),
+                    style: TextStyle(color: AppColors.mobileTextTertiary, fontSize: 13.5),
                   ),
                 ),
-                const Icon(Icons.tune_rounded, color: AppColors.mobileTextTertiary, size: 18),
+                Icon(Icons.tune_rounded, color: AppColors.mobileTextTertiary, size: 18),
               ],
             ),
           ),
@@ -152,7 +152,7 @@ class HomeStorePage extends ConsumerWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
               color: AppColors.mobileTextPrimary,
@@ -163,7 +163,7 @@ class HomeStorePage extends ConsumerWidget {
               onTap: onSeeAll,
               child: Text(
                 context.l10n.seeAll,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
                   color: AppColors.mobilePrimary,
@@ -344,7 +344,7 @@ class _CategoryRow extends ConsumerWidget {
                   meta.customLabel ?? meta.category.label(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.mobileTextSecondary),
                 ),
               ],
@@ -438,13 +438,13 @@ class _ProductCard extends ConsumerWidget {
                     product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.mobileTextPrimary),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     '${product.price.toStringAsFixed(0)}₺',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
                   ),
                 ],

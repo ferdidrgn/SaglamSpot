@@ -9,6 +9,7 @@ import 'core/localization/locale_provider.dart';
 import 'core/services/admin_session_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
 import 'core/services/theme_mode_cache.dart';
+import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_mode_provider.dart';
 import 'l10n/app_localizations.dart';
@@ -100,6 +101,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   Widget build(final BuildContext context) {
     final appTheme = ref.watch(appThemeProvider);
     final localeAsync = ref.watch(localeControllerProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -107,12 +109,28 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       scrollBehavior: MouseDragScrollBehavior(),
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,
-      themeMode: ref.watch(themeModeProvider),
+      themeMode: themeMode,
       locale: localeAsync.value ?? const Locale('tr'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: _router,
       builder: (final BuildContext context, final Widget? child) {
+        // AppColors.X sabitleri her yerde `static const` yerine artık birer
+        // GETTER — bu yüzden Flutter'ın kendiliğinden "bu widget'ları
+        // yeniden çiz" demesi için bir sebebi yok (statik bir değişkenin
+        // değişmesi hiçbir Element'i kirli işaretlemez). Görünüm her
+        // değiştiğinde tüm ağacı GERÇEKTEN yeniden inşa ettirmek için:
+        // 1) o anki efektif parlaklığı hesapla, 2) AppColors'a bildir,
+        // 3) alt ağacı o parlaklığa göre KEY'le — key değişince Flutter
+        // eski Element'leri atıp sıfırdan kurar, tüm AppColors.X
+        // çağrıları güncel değerle yeniden değerlendirilir.
+        final effectiveBrightness = switch (themeMode) {
+          ThemeMode.light => Brightness.light,
+          ThemeMode.dark => Brightness.dark,
+          ThemeMode.system => MediaQuery.platformBrightnessOf(context),
+        };
+        AppColors.setBrightness(effectiveBrightness);
+
         return MediaQuery(
           // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
           data: MediaQuery.of(context).copyWith(
@@ -133,7 +151,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
                   () => _router.go('/search'),
             },
-            child: child ?? const SizedBox.shrink(),
+            child: KeyedSubtree(
+              key: ValueKey(effectiveBrightness),
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         );
       },
