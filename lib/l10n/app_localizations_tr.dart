@@ -1471,4 +1471,38 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Koyu';
+
+  @override
+  String get notificationsTitle => 'Bildirimler';
+
+  @override
+  String get notificationsEmptyTitle => 'Henüz bildirim yok';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Yeni kampanya ve duyurular burada görünecek';
+
+  @override
+  String get markAllReadAction => 'Tümünü okundu işaretle';
+
+  @override
+  String get clearAllAction => 'Tümünü temizle';
+
+  @override
+  String get timeJustNow => 'Az önce';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes dakika önce';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours saat önce';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days gün önce';
+  }
 }

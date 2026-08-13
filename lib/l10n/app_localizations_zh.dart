@@ -1415,4 +1415,37 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsThemeDark => '深色';
+
+  @override
+  String get notificationsTitle => '通知';
+
+  @override
+  String get notificationsEmptyTitle => '暂无通知';
+
+  @override
+  String get notificationsEmptyDesc => '新活动和公告将显示在这里';
+
+  @override
+  String get markAllReadAction => '全部标为已读';
+
+  @override
+  String get clearAllAction => '清空全部';
+
+  @override
+  String get timeJustNow => '刚刚';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes分钟前';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours小时前';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days天前';
+  }
 }

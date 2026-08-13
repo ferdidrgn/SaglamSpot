@@ -1487,4 +1487,38 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Σκοτεινό';
+
+  @override
+  String get notificationsTitle => 'Ειδοποιήσεις';
+
+  @override
+  String get notificationsEmptyTitle => 'Δεν υπάρχουν ειδοποιήσεις ακόμα';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Νέες καμπάνιες και ανακοινώσεις θα εμφανίζονται εδώ';
+
+  @override
+  String get markAllReadAction => 'Σήμανση όλων ως αναγνωσμένων';
+
+  @override
+  String get clearAllAction => 'Εκκαθάριση όλων';
+
+  @override
+  String get timeJustNow => 'Μόλις τώρα';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return 'Πριν από $minutes λεπτά';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return 'Πριν από $hours ώρες';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return 'Πριν από $days ημέρες';
+  }
 }

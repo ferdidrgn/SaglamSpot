@@ -1460,4 +1460,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'داكن';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsEmptyTitle => 'لا توجد إشعارات بعد';
+
+  @override
+  String get notificationsEmptyDesc => 'ستظهر هنا العروض والإعلانات الجديدة';
+
+  @override
+  String get markAllReadAction => 'تعليم الكل كمقروء';
+
+  @override
+  String get clearAllAction => 'مسح الكل';
+
+  @override
+  String get timeJustNow => 'الآن';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return 'قبل $minutes دقيقة';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return 'قبل $hours ساعة';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return 'قبل $days يوم';
+  }
 }

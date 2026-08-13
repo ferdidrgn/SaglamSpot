@@ -2803,6 +2803,60 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Koyu'**
   String get settingsThemeDark;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bildirim yok'**
+  String get notificationsEmptyTitle;
+
+  /// No description provided for @notificationsEmptyDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni kampanya ve duyurular burada görünecek'**
+  String get notificationsEmptyDesc;
+
+  /// No description provided for @markAllReadAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümünü okundu işaretle'**
+  String get markAllReadAction;
+
+  /// No description provided for @clearAllAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümünü temizle'**
+  String get clearAllAction;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Az önce'**
+  String get timeJustNow;
+
+  /// No description provided for @timeMinutesAgo.
+  ///
+  /// In tr, this message translates to:
+  /// **'{minutes} dakika önce'**
+  String timeMinutesAgo(int minutes);
+
+  /// No description provided for @timeHoursAgo.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} saat önce'**
+  String timeHoursAgo(int hours);
+
+  /// No description provided for @timeDaysAgoGeneric.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days} gün önce'**
+  String timeDaysAgoGeneric(int days);
 }
 
 class _AppLocalizationsDelegate

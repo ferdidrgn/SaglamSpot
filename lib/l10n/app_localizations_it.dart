@@ -1485,4 +1485,38 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Scuro';
+
+  @override
+  String get notificationsTitle => 'Notifiche';
+
+  @override
+  String get notificationsEmptyTitle => 'Nessuna notifica ancora';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Nuove campagne e annunci appariranno qui';
+
+  @override
+  String get markAllReadAction => 'Segna tutte come lette';
+
+  @override
+  String get clearAllAction => 'Cancella tutto';
+
+  @override
+  String get timeJustNow => 'Proprio ora';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes min fa';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours ore fa';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days giorni fa';
+  }
 }

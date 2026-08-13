@@ -1480,4 +1480,38 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Караңгы';
+
+  @override
+  String get notificationsTitle => 'Билдирүүлөр';
+
+  @override
+  String get notificationsEmptyTitle => 'Азырынча билдирүү жок';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Жаңы акциялар жана жарыялар бул жерде көрүнөт';
+
+  @override
+  String get markAllReadAction => 'Баарын окулду деп белгилөө';
+
+  @override
+  String get clearAllAction => 'Баарын тазалоо';
+
+  @override
+  String get timeJustNow => 'Азыр эле';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes мүнөт мурун';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours саат мурун';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days күн мурун';
+  }
 }

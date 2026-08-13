@@ -1483,4 +1483,38 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Qorong\'u';
+
+  @override
+  String get notificationsTitle => 'Bildirishnomalar';
+
+  @override
+  String get notificationsEmptyTitle => 'Hozircha bildirishnoma yo\'q';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Yangi aksiyalar va e\'lonlar shu yerda ko\'rinadi';
+
+  @override
+  String get markAllReadAction => 'Barchasini o\'qilgan deb belgilash';
+
+  @override
+  String get clearAllAction => 'Barchasini tozalash';
+
+  @override
+  String get timeJustNow => 'Hozirgina';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes daqiqa oldin';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours soat oldin';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days kun oldin';
+  }
 }

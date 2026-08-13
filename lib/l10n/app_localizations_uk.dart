@@ -1474,4 +1474,38 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Темна';
+
+  @override
+  String get notificationsTitle => 'Сповіщення';
+
+  @override
+  String get notificationsEmptyTitle => 'Поки що немає сповіщень';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Нові акції та оголошення з\'являться тут';
+
+  @override
+  String get markAllReadAction => 'Позначити всі як прочитані';
+
+  @override
+  String get clearAllAction => 'Очистити все';
+
+  @override
+  String get timeJustNow => 'Щойно';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes хв тому';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours год тому';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days дн тому';
+  }
 }

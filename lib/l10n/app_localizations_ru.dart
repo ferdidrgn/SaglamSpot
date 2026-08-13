@@ -1474,4 +1474,38 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Тёмная';
+
+  @override
+  String get notificationsTitle => 'Уведомления';
+
+  @override
+  String get notificationsEmptyTitle => 'Пока нет уведомлений';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Новые акции и объявления появятся здесь';
+
+  @override
+  String get markAllReadAction => 'Отметить все как прочитанные';
+
+  @override
+  String get clearAllAction => 'Очистить всё';
+
+  @override
+  String get timeJustNow => 'Только что';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes мин. назад';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours ч. назад';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days дн. назад';
+  }
 }

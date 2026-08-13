@@ -1488,4 +1488,38 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Dunkel';
+
+  @override
+  String get notificationsTitle => 'Benachrichtigungen';
+
+  @override
+  String get notificationsEmptyTitle => 'Noch keine Benachrichtigungen';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Neue Kampagnen und Ankündigungen erscheinen hier';
+
+  @override
+  String get markAllReadAction => 'Alle als gelesen markieren';
+
+  @override
+  String get clearAllAction => 'Alle löschen';
+
+  @override
+  String get timeJustNow => 'Gerade eben';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return 'Vor $minutes Min.';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return 'Vor $hours Std.';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return 'Vor $days Tagen';
+  }
 }
