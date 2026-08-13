@@ -1448,4 +1448,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return 'أُضيف قبل $weeks أسابيع';
   }
+
+  @override
+  String get settingsAppearanceSection => 'المظهر';
+
+  @override
+  String get settingsThemeLight => 'فاتح';
+
+  @override
+  String get settingsThemeSystem => 'النظام';
+
+  @override
+  String get settingsThemeDark => 'داكن';
 }

@@ -1462,4 +1462,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return 'Додано $weeks тижн. тому';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Вигляд';
+
+  @override
+  String get settingsThemeLight => 'Світла';
+
+  @override
+  String get settingsThemeSystem => 'Системна';
+
+  @override
+  String get settingsThemeDark => 'Темна';
 }

@@ -1462,4 +1462,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return 'Добавлено $weeks нед. назад';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Внешний вид';
+
+  @override
+  String get settingsThemeLight => 'Светлая';
+
+  @override
+  String get settingsThemeSystem => 'Системная';
+
+  @override
+  String get settingsThemeDark => 'Тёмная';
 }

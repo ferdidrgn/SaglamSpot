@@ -1468,4 +1468,16 @@ class AppLocalizationsKy extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return '$weeks жума мурун кошулду';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Көрүнүш';
+
+  @override
+  String get settingsThemeLight => 'Жарык';
+
+  @override
+  String get settingsThemeSystem => 'Тутум';
+
+  @override
+  String get settingsThemeDark => 'Караңгы';
 }

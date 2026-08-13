@@ -2779,6 +2779,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{weeks} hafta önce eklendi'**
   String listedWeeksAgo(int weeks);
+
+  /// No description provided for @settingsAppearanceSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünüm'**
+  String get settingsAppearanceSection;
+
+  /// No description provided for @settingsThemeLight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık'**
+  String get settingsThemeLight;
+
+  /// No description provided for @settingsThemeSystem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sistem'**
+  String get settingsThemeSystem;
+
+  /// No description provided for @settingsThemeDark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koyu'**
+  String get settingsThemeDark;
 }
 
 class _AppLocalizationsDelegate

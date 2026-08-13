@@ -1471,4 +1471,16 @@ class AppLocalizationsUz extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return '$weeks hafta oldin qo\'shildi';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Ko\'rinish';
+
+  @override
+  String get settingsThemeLight => 'Yorug\'';
+
+  @override
+  String get settingsThemeSystem => 'Tizim';
+
+  @override
+  String get settingsThemeDark => 'Qorong\'u';
 }

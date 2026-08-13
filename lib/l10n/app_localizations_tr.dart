@@ -1459,4 +1459,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return '$weeks hafta önce eklendi';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Görünüm';
+
+  @override
+  String get settingsThemeLight => 'Açık';
+
+  @override
+  String get settingsThemeSystem => 'Sistem';
+
+  @override
+  String get settingsThemeDark => 'Koyu';
 }

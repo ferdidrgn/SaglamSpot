@@ -1403,4 +1403,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return '$weeks周前发布';
   }
+
+  @override
+  String get settingsAppearanceSection => '外观';
+
+  @override
+  String get settingsThemeLight => '浅色';
+
+  @override
+  String get settingsThemeSystem => '跟随系统';
+
+  @override
+  String get settingsThemeDark => '深色';
 }

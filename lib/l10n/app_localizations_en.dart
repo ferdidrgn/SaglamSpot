@@ -1464,4 +1464,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return 'Listed $weeks weeks ago';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Appearance';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeDark => 'Dark';
 }

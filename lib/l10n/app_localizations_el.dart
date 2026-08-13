@@ -1475,4 +1475,16 @@ class AppLocalizationsEl extends AppLocalizations {
   String listedWeeksAgo(int weeks) {
     return 'Καταχωρήθηκε πριν από $weeks εβδομάδες';
   }
+
+  @override
+  String get settingsAppearanceSection => 'Εμφάνιση';
+
+  @override
+  String get settingsThemeLight => 'Φωτεινό';
+
+  @override
+  String get settingsThemeSystem => 'Σύστημα';
+
+  @override
+  String get settingsThemeDark => 'Σκοτεινό';
 }
