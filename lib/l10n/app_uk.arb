@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Вигляд",
   "settingsThemeLight": "Світла",
   "settingsThemeSystem": "Системна",
-  "settingsThemeDark": "Темна"
+  "settingsThemeDark": "Темна",
+  "notificationsTitle": "Сповіщення",
+  "notificationsEmptyTitle": "Поки що немає сповіщень",
+  "notificationsEmptyDesc": "Нові акції та оголошення з'являться тут",
+  "markAllReadAction": "Позначити всі як прочитані",
+  "clearAllAction": "Очистити все",
+  "timeJustNow": "Щойно",
+  "timeMinutesAgo": "{minutes} хв тому",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} год тому",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} дн тому",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

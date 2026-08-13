@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Aspetto",
   "settingsThemeLight": "Chiaro",
   "settingsThemeSystem": "Sistema",
-  "settingsThemeDark": "Scuro"
+  "settingsThemeDark": "Scuro",
+  "notificationsTitle": "Notifiche",
+  "notificationsEmptyTitle": "Nessuna notifica ancora",
+  "notificationsEmptyDesc": "Nuove campagne e annunci appariranno qui",
+  "markAllReadAction": "Segna tutte come lette",
+  "clearAllAction": "Cancella tutto",
+  "timeJustNow": "Proprio ora",
+  "timeMinutesAgo": "{minutes} min fa",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} ore fa",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} giorni fa",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "المظهر",
   "settingsThemeLight": "فاتح",
   "settingsThemeSystem": "النظام",
-  "settingsThemeDark": "داكن"
+  "settingsThemeDark": "داكن",
+  "notificationsTitle": "الإشعارات",
+  "notificationsEmptyTitle": "لا توجد إشعارات بعد",
+  "notificationsEmptyDesc": "ستظهر هنا العروض والإعلانات الجديدة",
+  "markAllReadAction": "تعليم الكل كمقروء",
+  "clearAllAction": "مسح الكل",
+  "timeJustNow": "الآن",
+  "timeMinutesAgo": "قبل {minutes} دقيقة",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "قبل {hours} ساعة",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "قبل {days} يوم",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

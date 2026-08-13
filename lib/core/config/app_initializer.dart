@@ -8,6 +8,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../ads/ads_manager.dart';
 import '../services/app_check_service.dart';
+import '../services/notification_service.dart';
 import '../services/remote_config_service.dart';
 import '../util/date_formatter.dart';
 import '../util/platform_checker.dart';
@@ -31,6 +32,7 @@ abstract final class AppInitializer {
       unawaited(Future.wait([
         _safeInitializeRemoteConfig(),
         _safeInitializeAdEngine(),
+        _safeInitializeNotifications(),
       ]));
 
       debugPrint('🚀 Sağlam Spot Kurumsal Sistem Mimarisi Başarıyla Yüklendi.');
@@ -86,6 +88,14 @@ abstract final class AppInitializer {
       await AdManager.initialize();
       await MobileAds.instance.initialize();
     } catch (_) {}
+  }
+
+  static Future<void> _safeInitializeNotifications() async {
+    try {
+      await NotificationService.init();
+    } catch (e) {
+      debugPrint('🔕 Bildirim alt yapısı başlatılamadı: $e');
+    }
   }
 
   static void _setupCrashlyticsPipeline() {

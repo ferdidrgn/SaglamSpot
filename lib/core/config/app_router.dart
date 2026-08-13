@@ -18,6 +18,7 @@ import '../../features/legal/presentation/pages/terms_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
+import '../../features/notifications/presentation/pages/notifications_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
@@ -214,6 +215,16 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SettingsPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const NotificationsPage(),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),

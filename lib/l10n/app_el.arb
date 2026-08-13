@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Εμφάνιση",
   "settingsThemeLight": "Φωτεινό",
   "settingsThemeSystem": "Σύστημα",
-  "settingsThemeDark": "Σκοτεινό"
+  "settingsThemeDark": "Σκοτεινό",
+  "notificationsTitle": "Ειδοποιήσεις",
+  "notificationsEmptyTitle": "Δεν υπάρχουν ειδοποιήσεις ακόμα",
+  "notificationsEmptyDesc": "Νέες καμπάνιες και ανακοινώσεις θα εμφανίζονται εδώ",
+  "markAllReadAction": "Σήμανση όλων ως αναγνωσμένων",
+  "clearAllAction": "Εκκαθάριση όλων",
+  "timeJustNow": "Μόλις τώρα",
+  "timeMinutesAgo": "Πριν από {minutes} λεπτά",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "Πριν από {hours} ώρες",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "Πριν από {days} ημέρες",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

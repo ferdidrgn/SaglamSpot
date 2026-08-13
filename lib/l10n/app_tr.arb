@@ -517,5 +517,35 @@
   "settingsAppearanceSection": "Görünüm",
   "settingsThemeLight": "Açık",
   "settingsThemeSystem": "Sistem",
-  "settingsThemeDark": "Koyu"
+  "settingsThemeDark": "Koyu",
+  "notificationsTitle": "Bildirimler",
+  "notificationsEmptyTitle": "Henüz bildirim yok",
+  "notificationsEmptyDesc": "Yeni kampanya ve duyurular burada görünecek",
+  "markAllReadAction": "Tümünü okundu işaretle",
+  "clearAllAction": "Tümünü temizle",
+  "timeJustNow": "Az önce",
+  "timeMinutesAgo": "{minutes} dakika önce",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} saat önce",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} gün önce",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

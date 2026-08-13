@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Көрүнүш",
   "settingsThemeLight": "Жарык",
   "settingsThemeSystem": "Тутум",
-  "settingsThemeDark": "Караңгы"
+  "settingsThemeDark": "Караңгы",
+  "notificationsTitle": "Билдирүүлөр",
+  "notificationsEmptyTitle": "Азырынча билдирүү жок",
+  "notificationsEmptyDesc": "Жаңы акциялар жана жарыялар бул жерде көрүнөт",
+  "markAllReadAction": "Баарын окулду деп белгилөө",
+  "clearAllAction": "Баарын тазалоо",
+  "timeJustNow": "Азыр эле",
+  "timeMinutesAgo": "{minutes} мүнөт мурун",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} саат мурун",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} күн мурун",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

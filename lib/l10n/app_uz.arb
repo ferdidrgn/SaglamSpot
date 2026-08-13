@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Ko'rinish",
   "settingsThemeLight": "Yorug'",
   "settingsThemeSystem": "Tizim",
-  "settingsThemeDark": "Qorong'u"
+  "settingsThemeDark": "Qorong'u",
+  "notificationsTitle": "Bildirishnomalar",
+  "notificationsEmptyTitle": "Hozircha bildirishnoma yo'q",
+  "notificationsEmptyDesc": "Yangi aksiyalar va e'lonlar shu yerda ko'rinadi",
+  "markAllReadAction": "Barchasini o'qilgan deb belgilash",
+  "clearAllAction": "Barchasini tozalash",
+  "timeJustNow": "Hozirgina",
+  "timeMinutesAgo": "{minutes} daqiqa oldin",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} soat oldin",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} kun oldin",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

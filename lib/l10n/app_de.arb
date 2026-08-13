@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Erscheinungsbild",
   "settingsThemeLight": "Hell",
   "settingsThemeSystem": "System",
-  "settingsThemeDark": "Dunkel"
+  "settingsThemeDark": "Dunkel",
+  "notificationsTitle": "Benachrichtigungen",
+  "notificationsEmptyTitle": "Noch keine Benachrichtigungen",
+  "notificationsEmptyDesc": "Neue Kampagnen und Ankündigungen erscheinen hier",
+  "markAllReadAction": "Alle als gelesen markieren",
+  "clearAllAction": "Alle löschen",
+  "timeJustNow": "Gerade eben",
+  "timeMinutesAgo": "Vor {minutes} Min.",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "Vor {hours} Std.",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "Vor {days} Tagen",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

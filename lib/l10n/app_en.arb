@@ -517,5 +517,35 @@
   "settingsAppearanceSection": "Appearance",
   "settingsThemeLight": "Light",
   "settingsThemeSystem": "System",
-  "settingsThemeDark": "Dark"
+  "settingsThemeDark": "Dark",
+  "notificationsTitle": "Notifications",
+  "notificationsEmptyTitle": "No notifications yet",
+  "notificationsEmptyDesc": "New campaigns and announcements will appear here",
+  "markAllReadAction": "Mark all as read",
+  "clearAllAction": "Clear all",
+  "timeJustNow": "Just now",
+  "timeMinutesAgo": "{minutes} min ago",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} hr ago",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} days ago",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

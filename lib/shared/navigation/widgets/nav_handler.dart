@@ -100,6 +100,9 @@ class NavigationHandler {
   /// Profil/Ayarlar sayfasına git
   static void goToSettings(final BuildContext context) => context.go('/settings');
 
+  /// Bildirimler (push + uygulama içi gelen kutusu) sayfasına git
+  static void goToNotifications(final BuildContext context) => context.go('/notifications');
+
   /// Yönetici paneline git (giriş gerektirir, redirect kapısı app_router'da)
   static void goToAdmin(final BuildContext context) => context.go('/admin');
 

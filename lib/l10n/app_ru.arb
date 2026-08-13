@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "Внешний вид",
   "settingsThemeLight": "Светлая",
   "settingsThemeSystem": "Системная",
-  "settingsThemeDark": "Тёмная"
+  "settingsThemeDark": "Тёмная",
+  "notificationsTitle": "Уведомления",
+  "notificationsEmptyTitle": "Пока нет уведомлений",
+  "notificationsEmptyDesc": "Новые акции и объявления появятся здесь",
+  "markAllReadAction": "Отметить все как прочитанные",
+  "clearAllAction": "Очистить всё",
+  "timeJustNow": "Только что",
+  "timeMinutesAgo": "{minutes} мин. назад",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} ч. назад",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} дн. назад",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -489,5 +489,35 @@
   "settingsAppearanceSection": "外观",
   "settingsThemeLight": "浅色",
   "settingsThemeSystem": "跟随系统",
-  "settingsThemeDark": "深色"
+  "settingsThemeDark": "深色",
+  "notificationsTitle": "通知",
+  "notificationsEmptyTitle": "暂无通知",
+  "notificationsEmptyDesc": "新活动和公告将显示在这里",
+  "markAllReadAction": "全部标为已读",
+  "clearAllAction": "清空全部",
+  "timeJustNow": "刚刚",
+  "timeMinutesAgo": "{minutes}分钟前",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours}小时前",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days}天前",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

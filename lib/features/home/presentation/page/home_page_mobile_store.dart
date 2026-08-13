@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
+import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
@@ -37,7 +38,7 @@ class HomeStorePage extends ConsumerWidget {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverToBoxAdapter(child: _buildHeader(context)),
+            SliverToBoxAdapter(child: _buildHeader(context, ref)),
             SliverToBoxAdapter(child: _buildSearchBar(context)),
             const SliverToBoxAdapter(child: _HomeHeroSlider()),
             SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
@@ -77,7 +78,7 @@ class HomeStorePage extends ConsumerWidget {
     return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
 
-  Widget _buildHeader(final BuildContext context) => Padding(
+  Widget _buildHeader(final BuildContext context, final WidgetRef ref) => Padding(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,7 +94,12 @@ class HomeStorePage extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
+            _NotificationBellButton(
+              unreadCount: ref.watch(unreadNotificationCountProvider),
+              onTap: () => NavigationHandler.goToNotifications(context),
+            ),
+            const SizedBox(width: 10),
             InkWell(
               onTap: () => NavigationHandler.goToSettings(context),
               borderRadius: BorderRadius.circular(24),
@@ -455,4 +461,56 @@ class _ProductCard extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Ana sayfa başlığındaki bildirim (bell) ikonu — okunmamış sayısını
+/// gösteren kırmızı rozetle. NotificationsPage'e yönlendirir.
+class _NotificationBellButton extends StatelessWidget {
+  final int unreadCount;
+  final VoidCallback onTap;
+
+  const _NotificationBellButton({required this.unreadCount, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: AppColors.mobileCardBg,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.mobileBorder),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Center(
+                child: Icon(Icons.notifications_none_rounded,
+                    color: AppColors.mobileTextPrimary, size: 22),
+              ),
+              if (unreadCount > 0)
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    constraints: const BoxConstraints(minWidth: 15, minHeight: 15),
+                    decoration: BoxDecoration(
+                      color: AppColors.error,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      unreadCount > 9 ? '9+' : '$unreadCount',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.white, fontSize: 9, fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
 }
