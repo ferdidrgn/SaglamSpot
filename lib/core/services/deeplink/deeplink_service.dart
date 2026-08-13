@@ -1,6 +1,8 @@
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../common/extentions/reg_exp_extentions.dart'; //
 import '../../util/comminucation_actions.dart';
 
@@ -11,15 +13,26 @@ final class FurnitureShareService {
   static const String _domain = "https://saglamspotcu.web.app";
   static const String _hmacSecret = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
 
-  /// 🛋️ Kriptografik İmzalı Güvenli Ürün Linki Oluşturucu
-  static String generateProductUrl(final String id, final String name) {
-    final slug = name.toSlug(); // SEO uyumlu isim
+  /// Genel mağaza linki (tekil ürün değil) — sepet gibi toplu mesajlarda
+  /// "tüm ürünleri görmek isterseniz" şeklinde eklenir.
+  static String get storeUrl => _domain;
 
-    // Link manipülasyonunu engellemek için HMAC SHA-256 imzası üretilir
+  /// Tek kaynaktan HMAC imzası. Hem dışa paylaşılan linkler (bu dosya) hem
+  /// de router'daki (app_router.dart → DeepLinkSecurityEngine) doğrulama
+  /// hem de uygulama içi gezinme (NavigationHandler.goToProduct) AYNI bu
+  /// fonksiyonu ve aynı anahtarı kullanır — iki farklı anahtarla imzalanıp
+  /// asla doğrulanamayan linkler üretilmesin diye.
+  static String signProductId(final String id) {
     final key = utf8.encode(_hmacSecret);
     final bytes = utf8.encode(id);
     final hmac = Hmac(sha256, key);
-    final signature = hmac.convert(bytes).toString();
+    return hmac.convert(bytes).toString();
+  }
+
+  /// 🛋️ Kriptografik İmzalı Güvenli Ürün Linki Oluşturucu
+  static String generateProductUrl(final String id, final String name) {
+    final slug = name.toSlug(); // SEO uyumlu isim
+    final signature = signProductId(id);
 
     // URL parametreleri tarayıcı standartlarına göre encode edilir
     final safeSlugWithId = Uri.encodeComponent("$slug-$id");
@@ -45,6 +58,29 @@ final class FurnitureShareService {
   static Future<void> shareApp() async {
     await Share.share(
         "Eviniz için en kaliteli spot mobilyalar Sağlam Spot'ta! 🏠\nUygulamayı indir: $_domain"); //
+  }
+
+  // Google Play'deki gerçek paket adı — android/app/build.gradle.kts'teki
+  // applicationId ile birebir aynı olmalı.
+  static const String _androidPackageId = "com.ferdidrgn.saglamspot";
+
+  /// ⭐ Mağaza Sayfasını Aç (Uygulamayı Değerlendir)
+  /// Play Store uygulaması kuruluysa doğrudan içinde, değilse tarayıcıda açar.
+  static Future<void> openStoreListingForReview() async {
+    final Uri marketUri = Uri.parse("market://details?id=$_androidPackageId");
+    final Uri webUri = Uri.parse(
+        "https://play.google.com/store/apps/details?id=$_androidPackageId");
+
+    try {
+      if (defaultTargetPlatform == TargetPlatform.android &&
+          await canLaunchUrl(marketUri)) {
+        await launchUrl(marketUri, mode: LaunchMode.externalApplication);
+        return;
+      }
+      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+    }
   }
 
   // ─────────────────────────────────────────────────────────────

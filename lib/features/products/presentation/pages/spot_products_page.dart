@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
@@ -14,43 +15,33 @@ import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../../core/widgets/view_mode_toggle.dart';
-import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
+/// "Spot / İkinci El Ürünler" — köklü, sıfırdan yeniden tasarlandı. Eski
+/// sürümdeki dev animasyonlu arka plan deseni, sahte istatistik kutuları
+/// ve karmaşık, her zaman State'e bağlı filtre paneli kaldırıldı. Yerine:
+/// fırsat vurgulu sade bir başlık, gerçek ürün sayısı, alt sayfadan açılan
+/// hafif bir fiyat filtresi ve temiz bir ızgara/liste.
 enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
 
 class SpotProductsPage extends ConsumerStatefulWidget {
   const SpotProductsPage({super.key});
 
   @override
-  ConsumerState<SpotProductsPage> createState() =>
-      _EnhancedSpotProductsPageState();
+  ConsumerState<SpotProductsPage> createState() => _SpotProductsPageState();
 }
 
-class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
-    with SingleTickerProviderStateMixin {
+class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   final ScrollController _scrollController = ScrollController();
-
   ProductCategory? _selectedCategory;
-  String _selectedCondition = 'all';
   _SortMode _selectedSort = _SortMode.newest;
-  double _minPrice = 0;
-  double _maxPrice = 50000;
-  bool _showFilters = false;
-  late AnimationController _filterAnimController;
-
-  @override
-  void initState() {
-    super.initState();
-    _filterAnimController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-  }
+  RangeValues _priceRange = const RangeValues(0, 50000);
+  bool _priceFilterActive = false;
 
   @override
   void dispose() {
     _scrollController.dispose();
-    _filterAnimController.dispose();
     super.dispose();
   }
 
@@ -69,34 +60,30 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
 
           return Stack(
             children: [
-              _buildAnimatedBackground(context),
               CustomScrollView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  _buildDynamicHeader(context, products.length),
-                  _buildStatsAndFilters(context, products),
-                  _buildCategoryFilter(context),
+                  _buildHeader(context, products.length),
+                  _buildToolbar(context),
+                  SliverToBoxAdapter(
+                      child: DynamicCategoryChips(
+                    selected: _selectedCategory,
+                    onSelect: (final c) => setState(() => _selectedCategory = c),
+                    padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+                  )),
+                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge)),
+                  _buildProductGrid(context, filtered),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: context.pagePadding.left, vertical: 8),
-                      child: const Align(
-                        alignment: Alignment.centerRight,
-                        child: ViewModeToggle(),
-                      ),
+                      padding: context.sectionPadding,
+                      child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                      child: SizedBox(height: context.spacingLarge)),
-                  _buildProductGrid(context, filtered),
-                  _buildAdBanner(context, 100),
-                  SliverToBoxAdapter(
-                      child: SizedBox(height: context.spacingLarge * 3)),
+                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),
               ScrollUpButton(scrollController: _scrollController),
-              if (_showFilters) _buildFilterPanel(context),
             ],
           );
         },
@@ -104,445 +91,166 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     );
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // DYNAMIC HEADER WITH PARALLAX EFFECT
-  // ════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
+  // BAŞLIK — fırsat vurgulu panel + gerçek ürün sayısı
+  // ════════════════════════════════════════════════════════════
 
-  Widget _buildDynamicHeader(
-      final BuildContext context, final int totalProducts) {
-    return SliverAppBar(
-      pinned: true,
-      expandedHeight: context.responsive(
-        mobile: 320,
-        tablet: 400,
-        desktop: 480,
-      ),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Gradient Background with Animation
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.accent.withOpacity(0.15),
-                    AppColors.background,
-                    AppColors.secondary.withOpacity(0.3),
-                  ],
-                ),
-              ),
+  Widget _buildHeader(final BuildContext context, final int totalProducts) => SliverAppBar(
+        pinned: true,
+        expandedHeight: context.responsive(mobile: 232, tablet: 260, desktop: 288),
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        flexibleSpace: FlexibleSpaceBar(
+          background: Container(
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
             ),
-
-            // Animated Diagonal Lines Pattern
-            CustomPaint(
-              painter: _DiagonalLinesPainter(
-                  color: AppColors.primary.withOpacity(0.04)),
-            ),
-
-            // Content
-            SafeArea(
-              child: Padding(
-                padding: context.pagePadding,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Breadcrumb
-                    _buildBreadcrumb(context),
-                    SizedBox(height: context.spacingLarge),
-
-                    // Special Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.error.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border:
-                            Border.all(color: AppColors.error.withOpacity(0.3)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.local_fire_department,
-                              color: AppColors.error, size: 16),
-                          const SizedBox(width: 8),
-                          Text(
-                            context.l10n.spotBadgeEyebrow,
-                            style: TextStyle(
-                              fontSize: context.captionSize,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.error,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ],
+            child: Stack(
+              children: [
+                Positioned(
+                  right: -60,
+                  top: -60,
+                  child: Container(
+                    width: 220,
+                    height: 220,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [AppColors.error.withOpacity(0.16), Colors.transparent],
                       ),
                     ),
-
-                    SizedBox(height: context.spacing),
-
-                    // Main Title
-                    Row(
+                  ),
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: context.pagePadding,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.l10n.spotHeroTitle,
-                                style: TextStyle(
-                                  fontFamily: 'Fraunces',
-                                  fontSize: context.responsive(
-                                    mobile: 48,
-                                    tablet: 64,
-                                    desktop: 80,
-                                  ),
-                                  fontWeight: FontWeight.w600,
-                                  height: 0.95,
-                                  color: AppColors.textPrimary,
-                                  letterSpacing: -2,
-                                ),
-                              ),
-                              SizedBox(height: context.spacing),
-                              Container(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 500),
-                                child: Text(
-                                  context.l10n.spotProductsDesc,
-                                  style: TextStyle(
-                                    fontSize: context.responsive(
-                                        mobile: 16, desktop: 20),
-                                    color: AppColors.textSecondary,
-                                    height: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Circular Badge (Desktop)
-                        if (context.isDesktop)
-                          Container(
-                            width: 140,
-                            height: 140,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  AppColors.error,
-                                  AppColors.error.withOpacity(0.7),
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.error.withOpacity(0.4),
-                                  blurRadius: 40,
-                                  spreadRadius: 10,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '%30',
-                                  style: TextStyle(
-                                    fontSize: 36,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Text(
-                                  context.l10n.spotDiscountLabel,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white70,
-                                    letterSpacing: 1.5,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-
-                    SizedBox(height: context.spacingLarge),
-
-                    // Decorative Elements
-                    Row(
-                      children: [
-                        Container(
-                          width: context.responsive(mobile: 80, desktop: 140),
-                          height: 5,
-                          decoration: BoxDecoration(
+                        _buildBreadcrumb(context),
+                        SizedBox(height: context.spacing),
+                        Text(
+                          context.l10n.spotBadgeEyebrow,
+                          style: TextStyle(
+                            fontSize: 12,
+                            letterSpacing: 3,
+                            fontWeight: FontWeight.w800,
                             color: AppColors.error,
-                            borderRadius: BorderRadius.circular(3),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Container(
-                          width: 5,
-                          height: 5,
-                          decoration: const BoxDecoration(
-                            color: AppColors.accent,
-                            shape: BoxShape.circle,
+                        const SizedBox(height: 6),
+                        Text(
+                          context.l10n.spotProducts,
+                          style: TextStyle(
+                            fontSize: context.responsive(mobile: 30, tablet: 38, desktop: 44),
+                            fontWeight: FontWeight.w900,
+                            height: 1.05,
+                            color: AppColors.textPrimary,
+                            letterSpacing: -0.5,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 5,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.5),
-                            shape: BoxShape.circle,
-                          ),
+                        const SizedBox(height: 8),
+                        Text(
+                          context.l10n.productsFound(totalProducts),
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+                        ),
+                        SizedBox(height: context.spacing),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _TrustChip(
+                                icon: Icons.inventory_2_rounded,
+                                label: context.l10n.statSpotProductLabel,
+                                accent: AppColors.error),
+                            _TrustChip(
+                                icon: Icons.chat_bubble_rounded,
+                                label: context.l10n.productTrustBadgeNegotiate),
+                          ],
                         ),
                       ],
                     ),
-
-                    SizedBox(height: context.spacing),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBreadcrumb(final BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.home_outlined,
-            size: 14, color: AppColors.textSecondary),
-        const SizedBox(width: 8),
-        Text(
-          context.l10n.breadcrumbHome,
-          style: TextStyle(
-            fontSize: context.captionSize,
-            color: AppColors.textSecondary,
-          ),
-        ),
-        const SizedBox(width: 8),
-        const Icon(Icons.chevron_right,
-            size: 14, color: AppColors.textSecondary),
-        const SizedBox(width: 8),
-        Text(
-          context.l10n.spotProducts,
-          style: TextStyle(
-            fontSize: context.captionSize,
-            color: AppColors.error,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // STATS & FILTERS BAR
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildStatsAndFilters(
-      final BuildContext context, final List<Product> products) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
-        child: Column(
-          children: [
-            // Stats Cards
-            context.responsive(
-              mobile: _buildStatsColumn(context, products),
-              desktop: _buildStatsRow(context, products),
-            ),
-
-            SizedBox(height: context.spacingLarge),
-
-            // Filter & Search Bar
-            Row(
-              children: [
-                Expanded(child: _buildSearchBar(context)),
-                SizedBox(width: context.spacing),
-                _buildFilterButton(context),
-                if (context.isTablet || context.isDesktop) ...[
-                  SizedBox(width: context.spacing),
-                  _buildSortButton(context),
-                ],
               ],
             ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildStatsRow(
-      final BuildContext context, final List<Product> products) {
-    return Row(
-      children: [
-        Expanded(
-            child: _buildStatCard(context, '${products.length}', context.l10n.statSpotProductLabel,
-                Icons.inventory_2_outlined, AppColors.error)),
-        SizedBox(width: context.spacing),
-        Expanded(
-            child: _buildStatCard(context, '%30', context.l10n.statDiscountLabel,
-                Icons.local_offer_outlined, AppColors.success)),
-        SizedBox(width: context.spacing),
-        Expanded(
-            child: _buildStatCard(context, '16/6', context.l10n.statSupportLabel,
-                Icons.support_agent_outlined, AppColors.info)),
-        SizedBox(width: context.spacing),
-        Expanded(
-            child: _buildStatCard(
-                context,
-                context.l10n.statFreeLabel,
-                context.l10n.statFreeShippingNote,
-                Icons.local_shipping_outlined,
-                AppColors.accent)),
-      ],
-    );
-  }
-
-  Widget _buildStatsColumn(
-      final BuildContext context, final List<Product> products) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-                child: _buildStatCard(context, '${products.length}',
-                    context.l10n.statSpotProductLabel, Icons.inventory_2_outlined, AppColors.error)),
-            SizedBox(width: context.spacing),
-            Expanded(
-                child: _buildStatCard(context, '%30', context.l10n.statDiscountLabel,
-                    Icons.local_offer_outlined, AppColors.success)),
-          ],
-        ),
-        SizedBox(height: context.spacing),
-        Row(
-          children: [
-            Expanded(
-                child: _buildStatCard(context, '16/6', context.l10n.statSupportLabel,
-                    Icons.support_agent_outlined, AppColors.info)),
-            SizedBox(width: context.spacing),
-            Expanded(
-                child: _buildStatCard(context, context.l10n.statFreeLabel, context.l10n.statFreeShippingShort,
-                    Icons.local_shipping_outlined, AppColors.accent)),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(final BuildContext context, final String value,
-          final String label, final IconData icon, final Color color) =>
-      Container(
-        padding: EdgeInsets.all(context.responsive(mobile: 16, desktop: 24)),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border, width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            SizedBox(height: context.spacing),
-            Text(
-              value,
+  Widget _buildBreadcrumb(final BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.home_outlined, size: 13, color: AppColors.textTertiary),
+          const SizedBox(width: 6),
+          Text(context.l10n.breadcrumbHome,
+              style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
+          const SizedBox(width: 6),
+          Icon(Icons.chevron_right_rounded, size: 14, color: AppColors.textTertiary),
+          const SizedBox(width: 6),
+          Text(context.l10n.spotProducts,
               style: TextStyle(
-                fontSize: context.responsive(mobile: 20, desktop: 28),
-                fontWeight: FontWeight.w900,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: context.captionSize,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+                  fontSize: 12, color: AppColors.error, fontWeight: FontWeight.w700)),
+        ],
+      );
+
+  // ════════════════════════════════════════════════════════════
+  // ARAÇ ÇUBUĞU — arama + fiyat filtresi + sırala + görünüm
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildToolbar(final BuildContext context) => SliverToBoxAdapter(
+        child: Padding(
+          padding: context.sectionPadding,
+          child: Row(
+            children: [
+              Expanded(child: _buildSearchBar(context)),
+              SizedBox(width: context.spacing),
+              _buildPriceFilterButton(context),
+              SizedBox(width: context.spacing),
+              _buildSortPill(context),
+              if (context.isTablet || context.isDesktop) ...[
+                SizedBox(width: context.spacing),
+                const ViewModeToggle(),
+              ],
+            ],
+          ),
         ),
       );
 
   Widget _buildSearchBar(final BuildContext context) => GestureDetector(
         onTap: () => context.go('/search'),
         child: Container(
-          height: 56,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          height: 52,
+          padding: const EdgeInsets.symmetric(horizontal: 18),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border, width: 1.5),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.border),
           ),
           child: Row(
             children: [
-              const Icon(Icons.search, color: AppColors.textSecondary),
-              const SizedBox(width: 12),
+              Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
+              const SizedBox(width: 10),
               Expanded(
                 child: RichText(
+                  overflow: TextOverflow.ellipsis,
                   text: TextSpan(
-                    style: TextStyle(
-                      fontSize: context.bodySize,
-                      color: AppColors.textSecondary,
-                    ),
+                    style: TextStyle(fontSize: context.bodySize, color: AppColors.textSecondary),
                     children: [
-                      TextSpan(
-                        text: context.l10n.searchBarRichPrefix,
-                      ),
-                      const TextSpan(
-                        text: 'Ctrl + K',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.accentDark,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      TextSpan(
-                        text: context.l10n.searchBarRichOr,
-                      ),
+                      TextSpan(text: context.l10n.searchBarRichPrefix),
                       TextSpan(
                         text: context.l10n.searchBarRichHereLink,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.accentDark,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => context.go('/search'),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.error,
+                            decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()..onTap = () => context.go('/search'),
                       ),
-                      TextSpan(
-                        text: context.l10n.searchBarRichSuffix,
-                      ),
+                      TextSpan(text: context.l10n.searchBarRichSuffix),
                     ],
                   ),
                 ),
@@ -552,60 +260,111 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         ),
       );
 
-  Widget _buildFilterButton(final BuildContext context) {
-    return Material(
-      color: _showFilters ? AppColors.primary : AppColors.surface,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: () {
-          setState(() => _showFilters = !_showFilters);
-          if (_showFilters)
-            _filterAnimController.forward();
-          else
-            _filterAnimController.reverse();
-        },
-        borderRadius: BorderRadius.circular(16),
+  Widget _buildPriceFilterButton(final BuildContext context) => GestureDetector(
+        onTap: () => _openPriceFilterSheet(context),
         child: Container(
-          width: 56,
-          height: 56,
+          height: 52,
+          width: 52,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: _showFilters ? Colors.transparent : AppColors.border,
-              width: 1.5,
-            ),
+            color: _priceFilterActive ? AppColors.primary : AppColors.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: _priceFilterActive ? AppColors.primary : AppColors.border),
           ),
-          child: Icon(
-            Icons.tune,
-            color: _showFilters ? Colors.white : AppColors.textPrimary,
+          child: Icon(Icons.tune_rounded,
+              color: _priceFilterActive ? Colors.white : AppColors.textPrimary, size: 20),
+        ),
+      );
+
+  void _openPriceFilterSheet(final BuildContext context) {
+    RangeValues temp = _priceRange;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (final sheetContext) => StatefulBuilder(
+        builder: (final sheetContext, final setSheetState) => Padding(
+          padding: EdgeInsets.fromLTRB(24, 20, 24,
+              24 + MediaQuery.of(sheetContext).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.priceRangeSectionTitle,
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+              const SizedBox(height: 8),
+              Text(
+                '₺${temp.start.round()} - ₺${temp.end.round()}',
+                style: TextStyle(
+                    fontWeight: FontWeight.w900, fontSize: 20, color: AppColors.primary),
+              ),
+              RangeSlider(
+                values: temp,
+                min: 0,
+                max: 50000,
+                divisions: 50,
+                activeColor: AppColors.primary,
+                inactiveColor: AppColors.border,
+                onChanged: (final v) => setSheetState(() => temp = v),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          _priceRange = const RangeValues(0, 50000);
+                          _priceFilterActive = false;
+                        });
+                        Navigator.pop(sheetContext);
+                      },
+                      child: Text(context.l10n.clearFiltersButton),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
+                      onPressed: () {
+                        setState(() {
+                          _priceRange = temp;
+                          _priceFilterActive = temp.start > 0 || temp.end < 50000;
+                        });
+                        Navigator.pop(sheetContext);
+                      },
+                      child: Text(context.l10n.apply),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSortButton(final BuildContext context) {
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-      ),
-      child: DropdownButton<_SortMode>(
-        value: _selectedSort,
-        underline: const SizedBox(),
-        icon:
-            const Icon(Icons.keyboard_arrow_down, color: AppColors.textPrimary),
-        items: _SortMode.values
-            .map((final mode) => DropdownMenuItem(
-                value: mode, child: Text(_sortLabel(context, mode))))
-            .toList(),
-        onChanged: (final val) => setState(() => _selectedSort = val!),
-      ),
-    );
-  }
+  Widget _buildSortPill(final BuildContext context) => Container(
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<_SortMode>(
+            value: _selectedSort,
+            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textPrimary),
+            items: _SortMode.values
+                .map((final mode) =>
+                    DropdownMenuItem(value: mode, child: Text(_sortLabel(context, mode))))
+                .toList(),
+            onChanged: (final val) => setState(() => _selectedSort = val!),
+          ),
+        ),
+      );
 
   String _sortLabel(final BuildContext context, final _SortMode mode) {
     switch (mode) {
@@ -620,304 +379,13 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     }
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // FILTER PANEL (Animated Slide-in)
-  // ════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
+  // IZGARA / LİSTE
+  // ════════════════════════════════════════════════════════════
 
-  Widget _buildFilterPanel(final BuildContext context) {
-    return Positioned.fill(
-      child: GestureDetector(
-        onTap: () {
-          setState(() => _showFilters = false);
-          _filterAnimController.reverse();
-        },
-        child: Container(
-          color: Colors.black.withOpacity(0.5),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-              onTap: () {}, // Prevent closing when tapping panel
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(CurvedAnimation(
-                  parent: _filterAnimController,
-                  curve: Curves.easeOut,
-                )),
-                child: Container(
-                  width: context.responsive(
-                      mobile: context.screenWidth * 0.85, desktop: 400),
-                  height: double.infinity,
-                  color: AppColors.surface,
-                  child: SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header
-                        Padding(
-                          padding: EdgeInsets.all(context.spacingLarge),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                context.l10n.filtersPanelTitle,
-                                style: TextStyle(
-                                  fontSize: context.h4Size,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() => _showFilters = false);
-                                  _filterAnimController.reverse();
-                                },
-                                icon: const Icon(Icons.close),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(height: 1),
-
-                        // Filter Content
-                        Expanded(
-                          child: ListView(
-                            padding: EdgeInsets.all(context.spacingLarge),
-                            children: [
-                              _buildFilterSection(
-                                context.l10n.statusLabel.toUpperCase(),
-                                const ['all', 'new', 'used', 'showcase'],
-                                [
-                                  context.l10n.conditionAll,
-                                  context.l10n.conditionNew,
-                                  context.l10n.conditionUsed,
-                                  context.l10n.conditionShowcase,
-                                ],
-                                _selectedCondition,
-                                (final val) =>
-                                    setState(() => _selectedCondition = val),
-                              ),
-                              SizedBox(height: context.spacingLarge),
-                              _buildPriceRangeFilter(context),
-                              SizedBox(height: context.spacingLarge),
-                              _buildResetButton(context),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterSection(final String title, final List<String> values,
-      final List<String> labels, final String selected,
-      final Function(String) onSelect) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
-            color: AppColors.textSecondary,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: List.generate(values.length, (final i) {
-            final value = values[i];
-            final isSelected = selected == value;
-            return GestureDetector(
-              onTap: () => onSelect(value),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.error : AppColors.background,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected ? AppColors.error : AppColors.border,
-                    width: 1.5,
-                  ),
-                ),
-                child: Text(
-                  labels[i],
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : AppColors.textPrimary,
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPriceRangeFilter(final BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.priceRangeSectionTitle,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
-            color: AppColors.textSecondary,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: 12),
-        RangeSlider(
-          values: RangeValues(_minPrice, _maxPrice),
-          min: 0,
-          max: 50000,
-          divisions: 100,
-          activeColor: AppColors.error,
-          inactiveColor: AppColors.border,
-          labels: RangeLabels(
-            '₺${_minPrice.toInt()}',
-            '₺${_maxPrice.toInt()}',
-          ),
-          onChanged: (final values) {
-            setState(() {
-              _minPrice = values.start;
-              _maxPrice = values.end;
-            });
-          },
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '₺${_minPrice.toInt()}',
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            Text(
-              '₺${_maxPrice.toInt()}',
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildResetButton(final BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1.5),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            setState(() {
-              _selectedCondition = 'all';
-              _minPrice = 0;
-              _maxPrice = 50000;
-            });
-          },
-          borderRadius: BorderRadius.circular(16),
-          child: Center(
-            child: Text(
-              context.l10n.clearFiltersButton,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-                letterSpacing: 1,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // CATEGORY FILTER
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildCategoryFilter(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: DynamicCategoryChips(
-        selected: _selectedCategory,
-        onSelect: (final category) =>
-            setState(() => _selectedCategory = category),
-        padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-      ),
-    );
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // PRODUCT GRID
-  // ════════════════════════════════════════════════════════════════
-
-  Widget _buildProductGrid(
-      final BuildContext context, final List<Product> products) {
+  Widget _buildProductGrid(final BuildContext context, final List<Product> products) {
     if (products.isEmpty) {
-      return SliverToBoxAdapter(
-        child: Container(
-          height: 400,
-          margin: context.sectionPadding,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.search_off,
-                size: 80,
-                color: AppColors.textSecondary.withOpacity(0.5),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                context.l10n.productNotFound,
-                style: TextStyle(
-                  fontSize: context.h4Size,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                context.l10n.tryDifferentFiltersShort,
-                style: TextStyle(
-                  color: AppColors.textSecondary.withOpacity(0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      return SliverToBoxAdapter(child: _buildEmptyState(context));
     }
 
     if (ref.watch(productViewModeProvider) == ProductViewMode.list) {
@@ -925,8 +393,7 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
         padding: context.sectionPadding,
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
-            (final context, final index) =>
-                ProductListCard(product: products[index]),
+            (final context, final index) => ProductListCard(product: products[index]),
             childCount: products.length,
           ),
         ),
@@ -937,26 +404,17 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
       padding: context.sectionPadding,
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.responsive(
-            mobile: 2,
-            tablet: 3,
-            desktop: 4,
-            largeDesktop: 5,
-          ),
+          crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
           crossAxisSpacing: context.gridSpacing,
           mainAxisSpacing: context.gridSpacing,
-          childAspectRatio: context.responsive(
-            mobile: 0.65,
-            tablet: 0.70,
-            desktop: 0.73,
-          ),
+          childAspectRatio: context.responsive(mobile: 0.65, tablet: 0.70, desktop: 0.73),
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
             if (isAdSlot(index, products.length)) return const NativeAdCard();
             final realIndex = realIndexForAdGrid(index, products.length);
             if (realIndex >= products.length) return const SizedBox.shrink();
-            return _buildSpotProductCard(context, products[realIndex]);
+            return CustomProductCard(product: products[realIndex]);
           },
           childCount: paddedItemCountForAds(products.length),
         ),
@@ -964,110 +422,51 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
     );
   }
 
-  Widget _buildSpotProductCard(
-      final BuildContext context, final Product product) {
-    // Use CustomProductCard with special Spot styling overlay
-    return Stack(
-      children: [
-        CustomProductCard(product: product),
-
-        // Spot Badge Overlay
-        Positioned(
-          top: 12,
-          left: 12,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.error, AppColors.error.withOpacity(0.8)],
-              ),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.error.withOpacity(0.4),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: Text(
-              context.l10n.spotBadgeTag,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                letterSpacing: 1.5,
-              ),
-            ),
-          ),
+  Widget _buildEmptyState(final BuildContext context) => Container(
+        height: 360,
+        margin: context.sectionPadding,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppColors.border),
         ),
-      ],
-    );
-  }
-
-  Widget _buildAnimatedBackground(final BuildContext context) {
-    return Positioned.fill(
-      child: CustomPaint(
-        painter: _SpotPatternPainter(
-          color: AppColors.error.withOpacity(0.02),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off_rounded, size: 64, color: AppColors.textTertiary.withOpacity(0.6)),
+            const SizedBox(height: 14),
+            Text(context.l10n.productNotFound,
+                style: TextStyle(
+                    fontSize: 16, color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 6),
+            Text(context.l10n.tryDifferentFiltersShort,
+                style: TextStyle(fontSize: 13, color: AppColors.textTertiary)),
+          ],
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildAdBanner(final BuildContext context, final double height) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.sectionPadding,
-        child: AdsenseBanner(height: height,type: AdUnitType.multiplex),
-      ),
-    );
-  }
-
-  Widget _buildErrorState(final BuildContext context, final String error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 80, color: AppColors.error),
-          const SizedBox(height: 16),
-          Text(
-            context.l10n.errorOccurred,
-            style: TextStyle(
-              fontSize: context.h4Size,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: const TextStyle(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildErrorState(final BuildContext context, final String error) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
+            const SizedBox(height: 14),
+            Text(context.l10n.errorOccurred,
+                style: TextStyle(fontSize: context.h4Size, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(error, style: TextStyle(color: AppColors.textSecondary)),
+          ],
+        ),
+      );
 
   List<Product> _filterProducts(final List<Product> products) {
     var filtered = products;
-
-    // Category filter
     if (_selectedCategory != null) {
-      filtered =
-          filtered.where((final p) => p.category == _selectedCategory).toList();
+      filtered = filtered.where((final p) => p.category == _selectedCategory).toList();
     }
-
-    // Condition filter
-    if (_selectedCondition != 'all') {
-      // Add your condition logic here
-    }
-
-    // Price filter
     filtered = filtered
-        .where((final p) => p.price >= _minPrice && p.price <= _maxPrice)
+        .where((final p) => p.price >= _priceRange.start && p.price <= _priceRange.end)
         .toList();
-
-    // Sort
     switch (_selectedSort) {
       case _SortMode.priceLowHigh:
         filtered.sort((final a, final b) => a.price.compareTo(b.price));
@@ -1078,60 +477,34 @@ class _EnhancedSpotProductsPageState extends ConsumerState<SpotProductsPage>
       default:
         break;
     }
-
     return filtered;
   }
 }
 
-// ════════════════════════════════════════════════════════════════
-// CUSTOM PAINTERS
-// ════════════════════════════════════════════════════════════════
+class _TrustChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color? accent;
 
-class _DiagonalLinesPainter extends CustomPainter {
-  final Color color;
-
-  _DiagonalLinesPainter({required this.color});
+  const _TrustChip({required this.icon, required this.label, this.accent});
 
   @override
-  void paint(final Canvas canvas, final Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    for (double i = -size.height; i < size.width + size.height; i += 40) {
-      canvas.drawLine(
-        Offset(i, 0),
-        Offset(i + size.height, size.height),
-        paint,
+  Widget build(final BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 13, color: accent ?? AppColors.primary),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+          ],
+        ),
       );
-    }
-  }
-
-  @override
-  bool shouldRepaint(final _) => false;
-}
-
-class _SpotPatternPainter extends CustomPainter {
-  final Color color;
-
-  _SpotPatternPainter({required this.color});
-
-  @override
-  void paint(final Canvas canvas, final Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    for (double i = 0; i < size.width; i += 100) {
-      for (double j = 0; j < size.height; j += 100) {
-        if ((i + j) % 200 == 0) {
-          canvas.drawCircle(Offset(i, j), 5, paint);
-        }
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(final _) => false;
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, ChangeNotifier;
 import 'package:flutter/material.dart';
@@ -11,29 +9,32 @@ import 'package:saglamspot/features/products/presentation/pages/product_detail_p
 import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
 import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
+import '../../features/cart/presentation/pages/cart_page.dart';
+import '../../features/home/presentation/page/home_page_mobile.dart' as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/info/presentation/pages/about_page.dart';
+import '../../features/legal/presentation/pages/privacy_policy_page.dart';
+import '../../features/legal/presentation/pages/terms_page.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
+import '../../features/notifications/presentation/pages/notifications_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
+import '../services/admin_session_cache.dart';
+import '../services/deeplink/deeplink_service.dart';
 
 mixin DeepLinkSecurityEngine {
-  // Canlı üretim ortamında bu anahtar CI/CD süreçlerinden derleme anında (compile-time flag) enjekte edilmelidir
-  static const String _hmacSecret =
-      "SAGLAM_SPOT_CYBER_SECURE_FURNITURE_TOKEN_2026";
-
-  /// Gelen link imzasını sabit zamanlı (constant-time) algoritma döngüsü ile güvenli bir şekilde doğrular
+  /// Gelen link imzasını sabit zamanlı (constant-time) algoritma döngüsü ile güvenli bir şekilde doğrular.
+  /// İmza, FurnitureShareService.signProductId ile AYNI anahtar/algoritma
+  /// kullanılarak üretilir — tek kaynak, iki farklı sırrın birbirini asla
+  /// doğrulayamaması riskini ortadan kaldırır.
   static bool verifySignedIdentifier(
       final String rawId, final String signature) {
     if (rawId.isEmpty || signature.isEmpty) return false;
     try {
-      final List<int> keyBytes = utf8.encode(_hmacSecret);
-      final List<int> dataBytes = utf8.encode(rawId);
-      final Hmac hmac = Hmac(sha256, keyBytes);
-      final String calculatedSignature = hmac.convert(dataBytes).toString();
-
+      final String calculatedSignature = FurnitureShareService.signProductId(rawId);
       return _fixedTimeStringEquals(calculatedSignature, signature);
     } catch (_) {
       return false;
@@ -54,9 +55,21 @@ mixin DeepLinkSecurityEngine {
 final appRouterProvider = Provider<GoRouter>((final Ref ref) {
   final routerNotifier = _AuthRouterNotifier(ref);
 
+  // Bu cihazda daha önce bir yönetici giriş yaptıysa uygulama doğrudan
+  // panelin rotasında (/admin) açılır. Bunu bir redirect kuralı yerine
+  // BAŞLANGIÇ KONUMU olarak yapmak kasıtlı: Firebase Auth'un kalıcı
+  // oturumu geri yüklemesi asenkron sürer, redirect ise ilk anda henüz
+  // "isLoggedIn=false" görebilir. initialLocation '/admin' olduğunda,
+  // oturum henüz geri yüklenmemişse aşağıdaki requiresAuth dalı onu
+  // '/login?redirect=/admin' üzerinden geçirir; oturum bir an sonra
+  // geri yüklenince aynı dal onu otomatik olarak panele gönderir —
+  // yarış durumuna karşı kendiliğinden dayanıklı.
+  final String initialLocation =
+      (!kIsWeb && AdminSessionCache.wasAdminLoggedIn) ? '/admin' : '/';
+
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
-    initialLocation: '/',
+    initialLocation: initialLocation,
     refreshListenable: routerNotifier,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
@@ -69,9 +82,12 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
       final bool isLoggedIn = authState.value != null;
       final String currentPath = state.uri.path;
       final bool isOnLoginPage = currentPath == '/login';
+      // Sadece /admin (yönetici paneli) giriş gerektirir — müşteri sayfaları
+      // (ana sayfa, arama, ürün detay, sepet, ayarlar vb.) hem web'de hem
+      // native mobil uygulamada herkese açıktır.
+      final bool requiresAuth = currentPath.startsWith('/admin');
 
-      // Web platformunda halka açık mobilya listelerinin taranabilmesi için yönlendirme bypass mekanizması
-      if (kIsWeb) {
+      if (!requiresAuth) {
         if (isLoggedIn && isOnLoginPage) return '/';
         return null;
       }
@@ -179,6 +195,66 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SSSPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/cart',
+        name: 'cart',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const CartPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SettingsPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const NotificationsPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/privacy',
+        name: 'privacy',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const PrivacyPolicyPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/terms',
+        name: 'terms',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const TermsPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/admin',
+        name: 'admin',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const admin.HomePage(),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),

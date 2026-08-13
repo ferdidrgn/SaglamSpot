@@ -1300,4 +1300,225 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get sssA22 =>
       'Αυτό εξαρτάται εντελώς από τον χώρο που έχουμε διαθέσιμο στο κατάστημά μας. Επειδή το κατάστημά μας είναι μικρό, λειτουργούμε με ισορροπία \'πούλα-αγόρασε\'. Μερικές φορές μας αρέσει πολύ ένα προϊόν αλλά δεν μπορούμε να το πάρουμε επειδή δεν έχουμε χώρο. Το καλύτερο είναι να μας στείλετε φωτογραφίες του προϊόντος που θέλετε να πουλήσετε. Θα σας ενημερώσουμε ειλικρινά αν \'έχουμε χώρο τώρα\' ή αν \'δυστυχώς είμαστε γεμάτοι αυτή την περίοδο\'.';
+
+  @override
+  String get navDiscover => 'Ανακάλυψη';
+
+  @override
+  String get navCart => 'Καλάθι';
+
+  @override
+  String get navProfile => 'Προφίλ';
+
+  @override
+  String get storeHeroEyebrow => 'ΝΕΑ ΣΥΛΛΟΓΗ';
+
+  @override
+  String get storeHeroTitle => 'Έπιπλα που νιώθονται\nσαν σπίτι';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Ποιοτικά καινούργια και μεταχειρισμένα έπιπλα, στην πόρτα σας σε τιμές που θα αγαπήσετε.';
+
+  @override
+  String get storeHeroCta => 'Ξεκινήστε τις αγορές';
+
+  @override
+  String get sectionCategories => 'Κατηγορίες';
+
+  @override
+  String get sectionBestSellers => 'Δημοφιλή';
+
+  @override
+  String get sectionNewArrivals => 'Νέες Αφίξεις';
+
+  @override
+  String get seeAll => 'Δείτε Όλα';
+
+  @override
+  String get cartTitle => 'Το Καλάθι μου';
+
+  @override
+  String get cartEmptyTitle => 'Το καλάθι σας είναι άδειο';
+
+  @override
+  String get cartEmptyDesc =>
+      'Προσθέστε προϊόντα που σας αρέσουν και ρωτήστε για όλα με ένα μήνυμα.';
+
+  @override
+  String get cartTotalLabel => 'Σύνολο';
+
+  @override
+  String get cartWhatsappCta => 'Αποστολή καλαθιού μέσω WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Αφαιρέθηκε από το καλάθι';
+
+  @override
+  String get addToCartCta => 'Προσθήκη στο Καλάθι';
+
+  @override
+  String get addedToCartMessage => 'Προστέθηκε στο καλάθι';
+
+  @override
+  String get alreadyInCartMessage => 'Ήδη στο καλάθι σας';
+
+  @override
+  String get settingsTitle => 'Ρυθμίσεις';
+
+  @override
+  String get settingsLanguageLabel => 'Γλώσσα';
+
+  @override
+  String get settingsAccountSection => 'Λογαριασμός';
+
+  @override
+  String get settingsGeneralSection => 'Γενικά';
+
+  @override
+  String get settingsContact => 'Επικοινωνία';
+
+  @override
+  String get settingsCallUs => 'Καλέστε μας';
+
+  @override
+  String get settingsAdminLogin => 'Σύνδεση Διαχειριστή';
+
+  @override
+  String get settingsAppVersion => 'Έκδοση Εφαρμογής';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count προϊόντα',
+      one: '1 προϊόν',
+      zero: 'Το καλάθι είναι άδειο',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => 'Αξιολογήστε την εφαρμογή';
+
+  @override
+  String get settingsShareApp => 'Κοινοποίηση εφαρμογής';
+
+  @override
+  String get settingsPrivacyPolicy => 'Πολιτική Απορρήτου';
+
+  @override
+  String get settingsTerms => 'Όροι Χρήσης';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Αυτό το περιεχόμενο είναι προς το παρόν διαθέσιμο μόνο στα τουρκικά.';
+
+  @override
+  String get doubleBackToExit => 'Πατήστε ξανά πίσω για έξοδο';
+
+  @override
+  String get productLinkLabel => 'Σύνδεσμος προϊόντος';
+
+  @override
+  String get settingsAppSection => 'Εφαρμογή';
+
+  @override
+  String get settingsLegalSection => 'Νομικά';
+
+  @override
+  String get recentlyViewedTitle => 'Πρόσφατα Προβεβλημένα';
+
+  @override
+  String get productTrustBadgeVerified => 'Επαληθευμένος Πωλητής';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Διαπραγμάτευση μέσω WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'Παράδοση επί τόπου';
+
+  @override
+  String get howToBuyTitle => 'Πώς αγοράζω;';
+
+  @override
+  String get howToBuyStep1Title => 'Γράψτε στο WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Αν σας αρέσει το προϊόν, επικοινωνήστε μαζί μας μέσω WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Συζητήστε την τιμή';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Συμφωνήστε μαζί για την τιμή και τις λεπτομέρειες παράδοσης.';
+
+  @override
+  String get howToBuyStep3Title => 'Παραλάβετέ το';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Μετά τη συμφωνία, παραλάβετε το προϊόν σας με ασφάλεια.';
+
+  @override
+  String get listedToday => 'Καταχωρήθηκε σήμερα';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Καταχωρήθηκε πριν από $days ημέρες';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Καταχωρήθηκε πριν από $weeks εβδομάδες';
+  }
+
+  @override
+  String get settingsAppearanceSection => 'Εμφάνιση';
+
+  @override
+  String get settingsThemeLight => 'Φωτεινό';
+
+  @override
+  String get settingsThemeSystem => 'Σύστημα';
+
+  @override
+  String get settingsThemeDark => 'Σκοτεινό';
+
+  @override
+  String get notificationsTitle => 'Ειδοποιήσεις';
+
+  @override
+  String get notificationsEmptyTitle => 'Δεν υπάρχουν ειδοποιήσεις ακόμα';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Νέες καμπάνιες και ανακοινώσεις θα εμφανίζονται εδώ';
+
+  @override
+  String get markAllReadAction => 'Σήμανση όλων ως αναγνωσμένων';
+
+  @override
+  String get clearAllAction => 'Εκκαθάριση όλων';
+
+  @override
+  String get timeJustNow => 'Μόλις τώρα';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return 'Πριν από $minutes λεπτά';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return 'Πριν από $hours ώρες';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return 'Πριν από $days ημέρες';
+  }
 }

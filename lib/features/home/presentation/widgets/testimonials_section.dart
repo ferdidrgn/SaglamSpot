@@ -89,7 +89,7 @@ class _TestimonialCard extends StatelessWidget {
             Expanded(
               child: Text(
                 data.comment,
-                style: const TextStyle(
+                style: TextStyle(
                     color: AppColors.textSecondary, fontSize: 14, height: 1.5),
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
@@ -103,7 +103,7 @@ class _TestimonialCard extends StatelessWidget {
                   backgroundColor: AppColors.secondary,
                   child: Text(
                     data.name.characters.first,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: AppColors.primary, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -116,7 +116,7 @@ class _TestimonialCard extends StatelessWidget {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 13)),
                       Text(data.location,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: AppColors.textTertiary, fontSize: 11)),
                     ],
                   ),

@@ -1,137 +1,149 @@
 import 'package:flutter/material.dart';
 
+/// TEK MARKA PALETİ — artık GERÇEK ANLAMDA DİNAMİK. Önceki sürümde tüm
+/// alanlar `static const` idi; bu, derleme zamanı sabitleri olduğu için
+/// hiçbir şekilde çalışma zamanında değişemezdi (Settings'teki Açık/Koyu
+/// seçici görsel olarak hiçbir şeyi etkilemiyordu). Şimdi her isim bir
+/// GETTER — o an aktif `Brightness`'a göre açık ya da koyu değeri döner.
+///
+/// `AppColors.setBrightness(...)` uygulama kökünde (main.dart) her tema
+/// değişiminde çağrılır; ardından kök widget'ı yeniden inşa ettirmek için
+/// bir `Key` değişikliği tetiklenir (statik bir değer değiştiğinde
+/// Flutter'ın kendiliğinden hiçbir widget'ı "kirli" işaretlemeyeceğini
+/// unutma — bu yüzden tam bir yeniden inşa tetiklemek gerekiyor).
 class AppColors {
-  // --- ANA PALET (Sıcak Ekru & Espresso Temelli) ---
-  static const Color primary = Color(0xFF3E2F23); // koyu espresso kahve (ana metin/koyu zemin)
-  static const Color primaryVariant = Color(0xFF2A1F17); // daha koyu espresso
-  static const Color onPrimary = Color(0xFFA9714B); // sıcak ceviz/tarçın vurgu
+  AppColors._();
 
-  static const Color surface = Color(0xFFFFFDF9); // kırık beyaz kart zemini
-  static const Color onSurface = Color(0xFF3E2F23); // espresso metin
-  static const Color background = Color(0xFFF5EFE6); // sıcak ekru/krem zemin
+  static Brightness _brightness = Brightness.light;
 
-  static const Color secondary = Color(0xFFEDE3D3); // açık ahşap bej ikincil zemin
-  static const Color onSecondary = Color(0xFF3E2F23); // panel üstü metin/ikon
-  static const Color secondaryVariant = Color(0xFFE0D3BC); // koyu ahşap bej
+  static void setBrightness(final Brightness value) => _brightness = value;
 
-  // --- YARDIMCI VE SEMANTİK RENKLER ---
+  static bool get _dark => _brightness == Brightness.dark;
+
+  // ================================================================
+  // KANONİK RENKLER — tüm diğer isimler bunlara işaret eder.
+  // ================================================================
   static const Color white = Colors.white;
-  static const Color black = Color(0xFF2A1F17); // tam siyah yerine espresso
-  static const Color error = Color(0xFFB4543A); // sıcak, toprak tonu kırmızı
-  static const Color onError = Color(0xFFE0917A);
-  static const Color success = Color(0xFF7C8B6F); // yumuşak adaçayı yeşili
-  static const Color warning = Color(0xFFC98A4B);
-  static const Color info = Color(0xFF6E7D8F);
-
-  // --- İKİNCİ AKSAN (Adaçayı Yeşili — organik his) ---
-  static const Color sage = Color(0xFF7C8B6F);
-  static const Color sageDark = Color(0xFF62705A);
-  static const Color sageLight = Color(0xFFA3AE97);
-
-  // --- METİN VE SINIRLAR ---
-  static const Color textPrimary = Color(0xFF3E2F23); // ana başlıklar
-  static const Color textSecondary = Color(0xFF6B5744); // açıklama metinleri
-  static const Color textTertiary = Color(0xFF8F7D6B); // yardımcı/hint metin
+  static const Color black = Color(0xFF2A1F17);
   static const Color textLight = white;
 
-  static const Color border = Color(0xFFE0D3BC); // sıcak, ince sınırlar
-  static const Color divider = Color(0xFFEDE3D3); // hafif sıcak ayraçlar
+  static Color get primary => _dark ? const Color(0xFFC79868) : const Color(0xFF3E2F23);
+  static Color get primaryDark => _dark ? const Color(0xFFA9714B) : const Color(0xFF241A13);
+  static Color get primaryLight => _dark ? const Color(0xFFDCC6A8) : const Color(0xFF6B5744);
 
-  // --- GRİ TONLAMALARI (Neutral — sıcak ahşap tona kaydırıldı) ---
-  static const Color lightGrey = Color(0xFFEDE3D3);
-  static const Color mediumGrey = Color(0xFFCFC0A8);
-  static const Color darkGrey = Color(0xFF6B5744);
+  static Color get accent => _dark ? const Color(0xFFE0A868) : const Color(0xFFA9714B);
+  static Color get accentDark => _dark ? const Color(0xFFC79868) : const Color(0xFF8B5A3A);
+  static Color get accentLight => _dark ? const Color(0xFFEDD4B0) : const Color(0xFFC79868);
 
-  // --- ARKA PLANLAR ---
-  static const Color backgroundLight = white;
-  static const Color backgroundDark = Color(0xFF241A13); // koyu espresso zemin (footer, istatistik)
+  static Color get background => _dark ? const Color(0xFF241A13) : const Color(0xFFF5EFE6);
+  static Color get surface => _dark ? const Color(0xFF2C2019) : const Color(0xFFFFFDF9);
+  static Color get secondary => _dark ? const Color(0xFF3D2D22) : const Color(0xFFEDE3D3);
+  static Color get secondaryVariant => _dark ? const Color(0xFF4A3A2C) : const Color(0xFFE0D3BC);
 
-  // --- MODERN PRIMARY (espresso tonuyla uyumlu) ---
-  static const Color primaryDark = Color(0xFF241A13);
-  static const Color primaryLight = Color(0xFF6B5744);
+  static Color get muted => _dark ? const Color(0xFF6B5744) : const Color(0xFFCFC0A8);
+  static Color get mutedDark => _dark ? const Color(0xFF8F7D6B) : const Color(0xFFB5A488);
 
-  // --- SECONDARY (sıcak ceviz/tarçın) ---
-  static const Color secondaryDark = Color(0xFF8B5A3A);
-  static const Color secondaryLight = Color(0xFFC79868);
+  static Color get textPrimary => _dark ? const Color(0xFFEDE3D3) : const Color(0xFF3E2F23);
+  static Color get textSecondary => _dark ? const Color(0xFFC2B29B) : const Color(0xFF6B5744);
+  static Color get textTertiary => _dark ? const Color(0xFF9C8B76) : const Color(0xFF8F7D6B);
 
-  // --- ACCENT (Ceviz/Tarçın — markanın sıcak vurgusu) ---
-  static const Color accent = Color(0xFFA9714B);
-  static const Color accentDark = Color(0xFF8B5A3A);
-  static const Color accentLight = Color(0xFFC79868);
-  // --- NEUTRAL UI ---
-  static const Color card = Color(0xFFFFFDF9);
+  static Color get border => _dark ? const Color(0xFF4A3A2C) : const Color(0xFFE0D3BC);
+  static Color get divider => _dark ? const Color(0xFF3D2D22) : const Color(0xFFEDE3D3);
 
-  // --- DARK MODE PALETİ (uygulama ThemeMode.light'a sabitli, pasif) ---
+  // --- SEMANTİK RENKLER (durum bildirimi — markadan bağımsız) ---
+  static Color get error => _dark ? const Color(0xFFD97B63) : const Color(0xFFB4543A);
+  static Color get onError => const Color(0xFFE0917A);
+  static Color get success => _dark ? const Color(0xFF9BAF8C) : const Color(0xFF7C8B6F);
+  static Color get warning => _dark ? const Color(0xFFDDAA6E) : const Color(0xFFC98A4B);
+  static Color get info => _dark ? const Color(0xFF8FA0B3) : const Color(0xFF6E7D8F);
+
+  static Color get sage => success;
+  static Color get sageDark => _dark ? const Color(0xFF7C8B6F) : const Color(0xFF62705A);
+  static Color get sageLight => _dark ? const Color(0xFFC3CDB8) : const Color(0xFFA3AE97);
+
+  static Gradient get primaryGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [primaryLight, primary],
+      );
+
+  static Gradient get secondaryGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [secondary, secondaryVariant],
+      );
+
+  static Gradient get accentGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [accent, accentDark],
+      );
+
+  static Gradient get sageGradient => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [sage, sageDark],
+      );
+
+  static Gradient get backgroundGradient => LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [background, secondary],
+      );
+
+  // ================================================================
+  // GERİYE DÖNÜK İSİMLER
+  // ================================================================
+  static Color get primaryVariant => _dark ? const Color(0xFF1A120C) : const Color(0xFF2A1F17);
+  static Color get onPrimary => accent;
+  static Color get onSecondary => primary;
+  static Color get onSurface => textPrimary;
+
+  static Color get lightGrey => secondary;
+  static Color get mediumGrey => muted;
+  static Color get darkGrey => textSecondary;
+
+  static Color get backgroundLight => white;
+  static Color get backgroundDark => const Color(0xFF241A13);
+
+  static Color get secondaryDark => _dark ? const Color(0xFFC79868) : const Color(0xFF8B5A3A);
+  static Color get secondaryLight => _dark ? const Color(0xFFEDD4B0) : const Color(0xFFC79868);
+
+  static Color get card => surface;
+
+  // Dark mode sabit referans değerleri (koyu tema AÇIKKEN de, parlaklıktan
+  // bağımsız olarak "kesin koyu" bir ton lazım olduğunda kullanılır).
   static const Color darkBackground = Color(0xFF241A13);
   static const Color darkSurface = Color(0xFF32251C);
   static const Color darkCard = Color(0xFF3D2D22);
   static const Color darkTextPrimary = Color(0xFFEDE3D3);
-  static const Color darkTextSecondary = Color(0xFFC2B29B);
+  static const Color darkTextSecondary = Color(0xFFCFC0A8);
   static const Color darkBorder = Color(0xFF4A3A2C);
 
-  // --- GRADIENT YAPILARI ---
-  static const Gradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF4A3A2C), primary], // espresso geçişi
-  );
-
-  static const Gradient secondaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [secondary, secondaryVariant], // ahşap bej geçişi
-  );
-
-  static const Gradient accentGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [accent, accentDark], // ceviz/tarçın geçişi
-  );
-
-  static const Gradient sageGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [sage, sageDark], // adaçayı geçişi
-  );
-
-  static const Gradient backgroundGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [background, secondary], // ekruden ahşap beje
-  );
-
   // ================================================================
-  // MOBİL UYGULAMA PALETİ — Web'in sıcak espresso/ekru kimliğinden
-  // bilinçli olarak ayrışan, yönetici panelinin kendine has rengi.
-  // Koyu petrol yeşili + canlı zümrüt vurgu.
+  // "mobile*" İSİMLERİ
   // ================================================================
-  static const Color mobilePrimary = Color(0xFF0F3D3E); // koyu petrol yeşili
-  static const Color mobilePrimaryDark = Color(0xFF0A2A2B);
-  static const Color mobilePrimaryLight = Color(0xFF1D5D5E);
+  static Color get mobilePrimary => primary;
+  static Color get mobilePrimaryDark => primaryDark;
+  static Color get mobilePrimaryLight => primaryLight;
 
-  static const Color mobileAccent = Color(0xFF1FA97D); // canlı zümrüt vurgu
-  static const Color mobileAccentDark = Color(0xFF158462);
-  static const Color mobileAccentLight = Color(0xFF5FD1A6);
+  static Color get mobileAccent => accent;
+  static Color get mobileAccentDark => accentDark;
+  static Color get mobileAccentLight => accentLight;
 
-  static const Color mobileBackground = Color(0xFFF2F7F5); // soğuk mint-gri zemin
-  static const Color mobileSurface = white;
-  static const Color mobileCardBg = white;
-  static const Color mobileSecondaryBg = Color(0xFFE4EEEA); // yumuşak mint ikincil zemin
+  static Color get mobileBackground => background;
+  static Color get mobileSurface => surface;
+  static Color get mobileCardBg => secondary;
+  static Color get mobileSecondaryBg => secondaryVariant;
 
-  static const Color mobileTextPrimary = Color(0xFF0D2624);
-  static const Color mobileTextSecondary = Color(0xFF4C6663);
-  static const Color mobileTextTertiary = Color(0xFF7E9491);
-  static const Color mobileBorder = Color(0xFFD7E5E1);
+  static Color get mobileMuted => muted;
+  static Color get mobileMutedDark => mutedDark;
 
-  static const Gradient mobileAccentGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [mobileAccent, mobileAccentDark],
-  );
+  static Color get mobileTextPrimary => textPrimary;
+  static Color get mobileTextSecondary => textSecondary;
+  static Color get mobileTextTertiary => textTertiary;
+  static Color get mobileBorder => border;
 
-  static const Gradient mobilePrimaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [mobilePrimaryLight, mobilePrimary],
-  );
+  static Gradient get mobileAccentGradient => accentGradient;
+  static Gradient get mobilePrimaryGradient => primaryGradient;
 }

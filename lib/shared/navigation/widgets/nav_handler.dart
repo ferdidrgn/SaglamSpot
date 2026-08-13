@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/deeplink/deeplink_service.dart';
 import '../providers/navigation_keys.dart';
 
 /// 🧭 Global Navigation Handler
@@ -14,15 +15,20 @@ class NavigationHandler {
   // PRODUCT NAVIGATION
   // ═══════════════════════════════════════════════════════════════
 
-  /// Ürün detay sayfasına git (nereden geldiğini kaydet)
+  /// Ürün detay sayfasına git (nereden geldiğini kaydet). `sig`, router'daki
+  /// (app_router.dart → DeepLinkSecurityEngine) native mobil imza
+  /// doğrulamasını geçebilmek için FurnitureShareService ile AYNI anahtarla
+  /// üretilir — bu olmadan native uygulamada uygulama-içi ürün gezinmesi
+  /// güvenlik ekranına takılır.
   static void goToProduct({
     required final BuildContext context,
     required final String productId,
     required final String productSlug,
   }) {
     final String currentPath = GoRouterState.of(context).uri.path;
+    final String sig = FurnitureShareService.signProductId(productId);
     final String targetPath =
-        '/product/$productSlug-$productId?from=${Uri.encodeComponent(currentPath)}';
+        '/product/$productSlug-$productId?from=${Uri.encodeComponent(currentPath)}&sig=$sig';
 
     context.go(targetPath);
   }
@@ -56,6 +62,12 @@ class NavigationHandler {
 
   static void goToLogin(final BuildContext context) => context.go('/login');
 
+  /// Giriş sayfasına, başarılı girişten sonra DOĞRUDAN panele (/admin)
+  /// dönecek şekilde gider — düz goToLogin sonrası kullanıcı anasayfada
+  /// kalırdı çünkü login'e 'nereden geldiği' bilgisi olmadan gidiliyordu.
+  static void goToLoginForAdmin(final BuildContext context) =>
+      context.go('/login?redirect=${Uri.encodeComponent('/admin')}');
+
   /// Arama sayfasına git
   static void goToSearch(final BuildContext context) => context.go('/search');
 
@@ -81,6 +93,24 @@ class NavigationHandler {
 
   /// Sıkça Sorulan Sorular sayfasına git
   static void goToSSS(final BuildContext context) => context.go('/sss');
+
+  /// Sepet sayfasına git
+  static void goToCart(final BuildContext context) => context.go('/cart');
+
+  /// Profil/Ayarlar sayfasına git
+  static void goToSettings(final BuildContext context) => context.go('/settings');
+
+  /// Bildirimler (push + uygulama içi gelen kutusu) sayfasına git
+  static void goToNotifications(final BuildContext context) => context.go('/notifications');
+
+  /// Yönetici paneline git (giriş gerektirir, redirect kapısı app_router'da)
+  static void goToAdmin(final BuildContext context) => context.go('/admin');
+
+  /// Gizlilik Politikası sayfasına git
+  static void goToPrivacyPolicy(final BuildContext context) => context.go('/privacy');
+
+  /// Kullanım Koşulları sayfasına git
+  static void goToTerms(final BuildContext context) => context.go('/terms');
 
   // ✅ MOBİL TAB NAVIGATION (ROUTER)
   static void goToDiscoverWithCategory(

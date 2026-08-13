@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entites/product.dart';
 
@@ -34,18 +35,22 @@ class _ProductColorSectionState extends State<ProductColorSection> {
     final product = widget.product;
 
     // İkinci el / spot ürün: tek parça olduğunu netleştiren bir bilgi rozeti.
+    final bool isMobile = context.isMobile;
+    final Color accent = isMobile ? AppColors.mobileAccent : AppColors.accent;
+    final Color accentDark = isMobile ? AppColors.mobileAccentDark : AppColors.accentDark;
+    final Color textPrimary = isMobile ? AppColors.mobileTextPrimary : AppColors.textPrimary;
+
     if (product.isSpotProduct) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.accentLight.withOpacity(0.25),
+          color: accent.withOpacity(0.16),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+          border: Border.all(color: accent.withOpacity(0.3)),
         ),
         child: Row(
           children: [
-            const Icon(Icons.inventory_2_rounded,
-                color: AppColors.accentDark, size: 18),
+            Icon(Icons.inventory_2_rounded, color: accentDark, size: 18),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -53,7 +58,7 @@ class _ProductColorSectionState extends State<ProductColorSection> {
                 'renk ve görsel tamamen fotoğraflardaki gibidir.',
                 style: TextStyle(
                     fontSize: 12.5,
-                    color: AppColors.textPrimary.withOpacity(0.8),
+                    color: textPrimary.withOpacity(0.8),
                     height: 1.4,
                     fontWeight: FontWeight.w500),
               ),
@@ -72,8 +77,9 @@ class _ProductColorSectionState extends State<ProductColorSection> {
       children: [
         Row(
           children: [
-            const Text('Renk Seçenekleri',
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+            Text('Renk Seçenekleri',
+                style: TextStyle(
+                    fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary)),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -81,7 +87,7 @@ class _ProductColorSectionState extends State<ProductColorSection> {
                 color: AppColors.success.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text('SIFIR ÜRÜN',
+              child: Text('SIFIR ÜRÜN',
                   style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -138,7 +144,9 @@ class _ColorSwatch extends StatelessWidget {
           shape: BoxShape.circle,
           color: _color,
           border: Border.all(
-            color: isSelected ? AppColors.primary : Colors.white,
+            color: isSelected
+                ? (context.isMobile ? AppColors.mobilePrimary : AppColors.primary)
+                : Colors.white,
             width: isSelected ? 3 : 2,
           ),
           boxShadow: [

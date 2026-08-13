@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,8 @@ import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
+import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/category_meta_provider.dart';
@@ -80,21 +83,22 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     // tablet/laptop pencerelerinde sonuç alanını sıkıştırmasın.
     final showSidebar = context.isDesktop;
 
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: AppColors.background,
+      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
         child: Column(
           children: [
             _buildTopBar(context, searchQuery),
             if (!showSidebar) _buildCategoryStrip(currentFilters),
-            const Divider(height: 1, color: AppColors.border),
+            Divider(height: 1, color: AppColors.border),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (showSidebar) _buildSidebar(context, currentFilters),
                   if (showSidebar)
-                    const VerticalDivider(width: 1, color: AppColors.border),
+                    VerticalDivider(width: 1, color: AppColors.border),
                   Expanded(
                     child: Stack(
                       children: [
@@ -169,6 +173,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       ),
       floatingActionButton: !showSidebar ? _buildFloatingFilter(context) : null,
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -208,7 +214,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 onTap: () => setState(() => _showSearchFocus = true),
                 onTapOutside: (final _) =>
                     setState(() => _showSearchFocus = false),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14.5,
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w500,
@@ -219,11 +225,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       color: AppColors.textSecondary.withOpacity(0.5),
                       fontWeight: FontWeight.w400,
                       fontSize: 13.5),
-                  prefixIcon: const Icon(Icons.search_rounded,
+                  prefixIcon: Icon(Icons.search_rounded,
                       color: AppColors.textSecondary, size: 20),
                   suffixIcon: query.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.close_rounded,
+                          icon: Icon(Icons.close_rounded,
                               color: AppColors.textSecondary, size: 18),
                           onPressed: () {
                             _searchController.clear();
@@ -273,9 +279,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final available = ref.watch(availableProductsProvider);
 
     return SizedBox(
-      width: 288,
+      width: 236,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 20, 20, 32),
+        padding: const EdgeInsets.fromLTRB(18, 20, 16, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -304,13 +310,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     .setCategory(meta.category),
               ),
             const SizedBox(height: 20),
-            const Divider(color: AppColors.border, height: 1),
+            Divider(color: AppColors.border, height: 1),
             const SizedBox(height: 20),
             _sidebarTitle(context.l10n.condition),
             const SizedBox(height: 12),
             _SidebarConditionSelector(filters: filters),
             const SizedBox(height: 20),
-            const Divider(color: AppColors.border, height: 1),
+            Divider(color: AppColors.border, height: 1),
             const SizedBox(height: 20),
             _sidebarTitle(context.l10n.priceRange),
             const SizedBox(height: 14),
@@ -340,7 +346,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   Widget _sidebarTitle(final String title) => Text(
         title.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w800,
           letterSpacing: 1.2,
@@ -369,12 +375,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.swap_vert_rounded,
+            Icon(Icons.swap_vert_rounded,
                 size: 18, color: AppColors.textSecondary),
             if (!context.isMobile) ...[
               const SizedBox(width: 6),
               Text(current.label(context),
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary)),
@@ -459,7 +465,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             Icon(icon, size: 16, color: AppColors.textSecondary),
             const SizedBox(width: 6),
             Text(label,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
@@ -467,7 +473,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               const SizedBox(width: 6),
               GestureDetector(
                 onTap: onRemove,
-                child: const Icon(Icons.close_rounded,
+                child: Icon(Icons.close_rounded,
                     size: 15, color: AppColors.textSecondary),
               ),
             ],
@@ -543,7 +549,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       mobile: 110.0, tablet: 120.0, desktop: 130.0),
                   height: context.responsive(
                       mobile: 110.0, tablet: 120.0, desktop: 130.0),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.secondary,
                     shape: BoxShape.circle,
                   ),
@@ -623,14 +629,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   size: 80, color: AppColors.error.withOpacity(0.7)),
               const SizedBox(height: 20),
               Text(context.l10n.errorOccurred,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary)),
               const SizedBox(height: 8),
               Text(error,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 14, color: AppColors.textSecondary)),
             ],
           ),
@@ -827,7 +833,7 @@ class _RoundIconButton extends StatelessWidget {
         color: AppColors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AppColors.border),
+          side: BorderSide(color: AppColors.border),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -991,12 +997,12 @@ class _SidebarPriceRangeState extends ConsumerState<_SidebarPriceRange> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('₺${_localValues.start.toInt()}',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary)),
             Text('₺${_localValues.end.toInt()}${_localValues.end >= _cap ? '+' : ''}',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary)),

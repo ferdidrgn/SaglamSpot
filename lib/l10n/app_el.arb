@@ -158,7 +158,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "Αποσύνδεση",
   "logoutConfirm": "Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε με ασφάλεια από τον λογαριασμό σας;",
-
   "testimonialsHeading": "Τι Λένε οι Πελάτες μας",
   "testimonialsSubheading": "Εδώ και πάνω από 20 χρόνια έχουμε αγγίξει χιλιάδες σπίτια στο İçerenköy και τη γύρω περιοχή",
   "testimonial1Comment": "Πήραμε τον καναπέ σε πολύ καλή τιμή, σχεδόν σαν καινούριο. Η παράδοση έγινε αυθημερόν, από χέρι σε χέρι — η εμπιστοσύνη του πραγματικού τεχνίτη ήταν εμφανής από την αρχή.",
@@ -167,7 +166,6 @@
   "testimonial4Comment": "Αγοράσαμε το σετ τραπεζαρίας σε τίμια τιμή χωρίς παζάρια. Μας βοήθησαν και με τη μεταφορά, ψωνίσαμε με απόλυτη ηρεμία.",
   "testimonial5Comment": "Ψάχναμε μεταχειρισμένη ντουλάπα και βρήκαμε ένα στιβαρό και κομψό κομμάτι. Η καλύτερη σχέση ποιότητας-τιμής στην αγορά.",
   "testimonial6Comment": "Κατά την επίσκεψή μας στο κατάστημα είδαμε τα προϊόντα από κοντά, κάτι που ενίσχυσε την εμπιστοσύνη μας. Ήταν πάντα διαθέσιμοι και μετά την πώληση.",
-
   "howItWorksHeading": "Πώς Λειτουργεί",
   "step1Title": "Περιήγηση & Φιλτράρισμα",
   "step1Desc": "Βρες αυτό που σου αρέσει ανάμεσα σε χιλιάδες προϊόντα, ανά κατηγορία και εύρος τιμής.",
@@ -177,7 +175,6 @@
   "step3Desc": "Δες το στο κατάστημά μας ή επιβεβαίωσέ το με φωτογραφίες, και συμφωνήστε σε μια δίκαιη τιμή.",
   "step4Title": "Παράδοση στην Πόρτα σου",
   "step4Desc": "Γρήγορη, ασφαλισμένη μεταφορά στο İçerenköy και την ασιατική πλευρά φέρνει τα έπιπλά σου με ασφάλεια στο σπίτι σου.",
-
   "tipsEyebrow": "ΣΥΜΒΟΥΛΕΣ",
   "tipsHeading": "Συμβουλές Φροντίδας από τον Ειδικό",
   "tip1Title": "Κάντε το Σαλόνι σας Πιο Αγαπητό",
@@ -210,18 +207,15 @@
   "tip10Title": "Μετατρέψτε το Μπαλκόνι σας σε Χώρο Διαβίωσης",
   "tip10Desc": "Ένα ανθεκτικό στις καιρικές συνθήκες σετ καθιστικού και μερικά γλαστράκια κάνουν το μπαλκόνι την πιο αγαπημένη γωνιά του σπιτιού.",
   "tip10Category": "Εξωτερικός Χώρος",
-
   "popularCategoriesHeading": "Δημοφιλείς Κατηγορίες",
   "popularCategoriesSub": "Βρες το κατάλληλο έπιπλο με ένα κλικ",
   "categoryProductCount": "{count} προϊόντα",
-
   "newsletterSubscribeSuccess": "Εγγραφήκατε με επιτυχία στο newsletter μας!",
   "newsletterHeading": "Μάθετε Πρώτοι για τα Νέα Προϊόντα",
   "newsletterDesc": "Λάβετε προσφορές, νέες συλλογές και καμπάνιες απευθείας στο email σας. Χωρίς spam, μόνο ό,τι σας συμφέρει.",
   "emailHint": "Το email σας",
   "emailRequired": "Το email είναι υποχρεωτικό",
   "emailInvalid": "Εισάγετε ένα έγκυρο email",
-
   "whyUsHeading": "Γιατί Sağlam Spot;",
   "usp1Title": "20 Χρόνια Αξιόπιστης Τεχνογνωσίας",
   "usp1Desc": "Πάνω από είκοσι χρόνια τεχνίτης στο İçerenköy και χιλιάδες ικανοποιημένοι πελάτες.",
@@ -231,10 +225,8 @@
   "usp3Desc": "Κάθε προϊόν περνά από δομικό έλεγχο και έλεγχο υφάσματος/φινιρίσματος πριν διατεθεί προς πώληση.",
   "usp4Title": "Υποστήριξη Μετά την Πώληση",
   "usp4Desc": "Μια πραγματική ομάδα, προσβάσιμη ακόμη και μετά την παράδοση, που λύνει το πρόβλημά σας.",
-
   "socialShowcaseEyebrow": "ΜΟΙΡΑΣΟΥ",
   "socialShowcaseHeading": "Μοιράσου τον Χώρο σου με #SağlamSpot",
-
   "productsLoadError": "Παρουσιάστηκε σφάλμα κατά τη φόρτωση των προϊόντων: {error}",
   "viewAllButton": "Δείτε Όλα",
   "showcaseEyebrow": "ΒΙΤΡΙΝΑ",
@@ -253,7 +245,6 @@
   "heroSlide2Title": "Έπιπλα με Ιστορία",
   "heroSlide2Subtitle": "Προσεκτικά επιλεγμένα, στιβαρά μεταχειρισμένα κομμάτια με χαρακτήρα.",
   "heroSlide3Title": "Εξερευνήστε Όλη τη Συλλογή",
-
   "aboutBadge": "ΜΑΖΙ ΣΑΣ ΑΠΟ ΤΟ 2012",
   "aboutHeroTitle": "Sağlam Spot\nΗ Εμπιστοσύνη που Ξέρετε",
   "aboutHeroSubtitle": "Εξυπηρετούμε τη γειτονιά μας με αγάπη και φροντίδα σε ό,τι κάνουμε.",
@@ -297,7 +288,6 @@
   "aboutViewMapButton": "Προβολή στον Χάρτη",
   "aboutMapHeading": "Το Κατάστημά μας Είναι Ακριβώς Εδώ",
   "aboutMapSubtext": "Πατήστε τον χάρτη για οδηγίες",
-
   "newProductsBadgeEyebrow": "ΝΕΑ ΣΥΛΛΟΓΗ",
   "newProductsTitle": "Νέα\nΣυλλογή",
   "productsBadgeLabel": "ΠΡΟΪΟΝΤΑ",
@@ -316,7 +306,6 @@
   "sortPriceLowHigh": "Τιμή: Αύξουσα",
   "sortPriceHighLow": "Τιμή: Φθίνουσα",
   "sortMostPopular": "Πιο Δημοφιλή",
-
   "spotBadgeEyebrow": "ΠΡΟΪΟΝΤΑ ΠΡΟΣΦΟΡΑΣ",
   "spotHeroTitle": "Προϊόντα\nΠροσφοράς",
   "spotDiscountLabel": "ΕΚΠΤΩΣΗ",
@@ -331,20 +320,16 @@
   "clearFiltersButton": "ΚΑΘΑΡΙΣΜΟΣ ΦΙΛΤΡΩΝ",
   "tryDifferentFiltersShort": "Μπορείτε να δοκιμάσετε διαφορετικά φίλτρα",
   "spotBadgeTag": "ΠΡΟΣΦΟΡΑ",
-
   "productLoadError": "Το προϊόν δεν φορτώθηκε: {error}",
   "productSpecConditionNew": "Νέο Προϊόν",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "Προτεινόμενα",
   "sortPriceAsc": "Τιμή: Αύξουσα",
   "sortPriceDesc": "Τιμή: Φθίνουσα",
-
   "languageSelectorTitle": "Επιλογή Γλώσσας",
   "languageTooltip": "Γλώσσα",
   "galleryEmptyMessage": "Δεν έχουν προστεθεί ακόμη φωτογραφίες για αυτό το προϊόν.",
   "productCardNewBadge": "ΝΕΟ",
-
   "sssHelpCenterBadge": "ΚΕΝΤΡΟ ΒΟΗΘΕΙΑΣ",
   "sssHeroTitle": "Συχνές\nΕρωτήσεις",
   "sssHeroSubtitle": "Απαντήσεις σε ό,τι σας απασχολεί",
@@ -363,7 +348,6 @@
   "sssNoAnswerTitle": "Δεν Βρήκατε Απάντηση στην Ερώτησή σας;",
   "sssNoAnswerSubtitle": "Μπορείτε να Επικοινωνήσετε μαζί μας",
   "sssVisitStoreButton": "Επισκεφθείτε το Κατάστημα",
-
   "sssQ1": "Μπορείτε να μας πείτε για την εργασιακή ζωή και την εμπειρία του τεχνίτη;",
   "sssA1": "Ο τεχνίτης μας εργάζεται ενεργά σε αυτόν τον κλάδο από το 1995. Έχει δείξει συνεχή εξέλιξη από τα πρώτα του βήματα στην καριέρα του. Στη διάρκεια της εργασιακής του ζωής, εργάστηκε σε πολλές θέσεις όπως οδήγηση για παραδόσεις, μεταφορά, συναρμολόγηση, υποδοχή πελατών, αποκτώντας πολύπλευρη εμπειρία. Εργάστηκε ιδιαίτερα μέχρι το 2010 στην İstikbal, αποκτώντας βαθιά γνώση των χαρακτηριστικών, των εξαρτημάτων και των μυστικών των προϊόντων. Μετά το 2010, εργάστηκε στην κοντινή Işık Çeyiz, αυξάνοντας περαιτέρω την επάρκειά του στον κλάδο. Το 2012 αποφάσισε να ανοίξει το δικό του κατάστημα, θέτοντας από τότε την ποιοτική εξυπηρέτηση σε πρώτη προτεραιότητα και μεταφέροντας την εμπειρία του κλάδου στους πελάτες του με τον καλύτερο δυνατό τρόπο.",
   "sssQ2": "Είναι αξιόπιστο το Sağlam Spot;",
@@ -425,6 +409,113 @@
   "@pieces": {
     "placeholders": {
       "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navDiscover": "Ανακάλυψη",
+  "navCart": "Καλάθι",
+  "navProfile": "Προφίλ",
+  "storeHeroEyebrow": "ΝΕΑ ΣΥΛΛΟΓΗ",
+  "storeHeroTitle": "Έπιπλα που νιώθονται\nσαν σπίτι",
+  "storeHeroSubtitle": "Ποιοτικά καινούργια και μεταχειρισμένα έπιπλα, στην πόρτα σας σε τιμές που θα αγαπήσετε.",
+  "storeHeroCta": "Ξεκινήστε τις αγορές",
+  "sectionCategories": "Κατηγορίες",
+  "sectionBestSellers": "Δημοφιλή",
+  "sectionNewArrivals": "Νέες Αφίξεις",
+  "seeAll": "Δείτε Όλα",
+  "cartTitle": "Το Καλάθι μου",
+  "cartEmptyTitle": "Το καλάθι σας είναι άδειο",
+  "cartEmptyDesc": "Προσθέστε προϊόντα που σας αρέσουν και ρωτήστε για όλα με ένα μήνυμα.",
+  "cartTotalLabel": "Σύνολο",
+  "cartWhatsappCta": "Αποστολή καλαθιού μέσω WhatsApp",
+  "cartItemRemoved": "Αφαιρέθηκε από το καλάθι",
+  "addToCartCta": "Προσθήκη στο Καλάθι",
+  "addedToCartMessage": "Προστέθηκε στο καλάθι",
+  "alreadyInCartMessage": "Ήδη στο καλάθι σας",
+  "settingsTitle": "Ρυθμίσεις",
+  "settingsLanguageLabel": "Γλώσσα",
+  "settingsAccountSection": "Λογαριασμός",
+  "settingsGeneralSection": "Γενικά",
+  "settingsContact": "Επικοινωνία",
+  "settingsCallUs": "Καλέστε μας",
+  "settingsAdminLogin": "Σύνδεση Διαχειριστή",
+  "settingsAppVersion": "Έκδοση Εφαρμογής",
+  "cartItemsCount": "{count, plural, =0{Το καλάθι είναι άδειο} =1{1 προϊόν} other{{count} προϊόντα}}",
+  "@cartItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRateApp": "Αξιολογήστε την εφαρμογή",
+  "settingsShareApp": "Κοινοποίηση εφαρμογής",
+  "settingsPrivacyPolicy": "Πολιτική Απορρήτου",
+  "settingsTerms": "Όροι Χρήσης",
+  "legalContentTurkishOnly": "Αυτό το περιεχόμενο είναι προς το παρόν διαθέσιμο μόνο στα τουρκικά.",
+  "doubleBackToExit": "Πατήστε ξανά πίσω για έξοδο",
+  "productLinkLabel": "Σύνδεσμος προϊόντος",
+  "settingsAppSection": "Εφαρμογή",
+  "settingsLegalSection": "Νομικά",
+  "recentlyViewedTitle": "Πρόσφατα Προβεβλημένα",
+  "productTrustBadgeVerified": "Επαληθευμένος Πωλητής",
+  "productTrustBadgeNegotiate": "Διαπραγμάτευση μέσω WhatsApp",
+  "productTrustBadgeDelivery": "Παράδοση επί τόπου",
+  "howToBuyTitle": "Πώς αγοράζω;",
+  "howToBuyStep1Title": "Γράψτε στο WhatsApp",
+  "howToBuyStep1Desc": "Αν σας αρέσει το προϊόν, επικοινωνήστε μαζί μας μέσω WhatsApp.",
+  "howToBuyStep2Title": "Συζητήστε την τιμή",
+  "howToBuyStep2Desc": "Συμφωνήστε μαζί για την τιμή και τις λεπτομέρειες παράδοσης.",
+  "howToBuyStep3Title": "Παραλάβετέ το",
+  "howToBuyStep3Desc": "Μετά τη συμφωνία, παραλάβετε το προϊόν σας με ασφάλεια.",
+  "listedToday": "Καταχωρήθηκε σήμερα",
+  "listedDaysAgo": "Καταχωρήθηκε πριν από {days} ημέρες",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "Καταχωρήθηκε πριν από {weeks} εβδομάδες",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppearanceSection": "Εμφάνιση",
+  "settingsThemeLight": "Φωτεινό",
+  "settingsThemeSystem": "Σύστημα",
+  "settingsThemeDark": "Σκοτεινό",
+  "notificationsTitle": "Ειδοποιήσεις",
+  "notificationsEmptyTitle": "Δεν υπάρχουν ειδοποιήσεις ακόμα",
+  "notificationsEmptyDesc": "Νέες καμπάνιες και ανακοινώσεις θα εμφανίζονται εδώ",
+  "markAllReadAction": "Σήμανση όλων ως αναγνωσμένων",
+  "clearAllAction": "Εκκαθάριση όλων",
+  "timeJustNow": "Μόλις τώρα",
+  "timeMinutesAgo": "Πριν από {minutes} λεπτά",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "Πριν από {hours} ώρες",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "Πριν από {days} ημέρες",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
         "type": "int"
       }
     }

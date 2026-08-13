@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/common/enum/enums.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -15,6 +18,8 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(final BuildContext context) {
+    if (context.isMobile) return _buildMobileScaffold(context);
+
     return CustomScrollView(
       slivers: [
         _buildHeroSection(context),
@@ -32,6 +37,257 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
+  // ════════════════════════════════════════════════════════════
+  // MOBİL TASARIM — teal/sage paleti, gerçek Scaffold + geri butonu +
+  // alt navigasyon çubuğu, tek-sütun kompakt kart düzeni.
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildMobileScaffold(final BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.mobileBackground,
+      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
+      body: SafeArea(
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          children: [
+            _buildMobileHeader(context),
+            const SizedBox(height: 12),
+            _buildMobileHero(context),
+            const SizedBox(height: 20),
+            _MobileSection(
+              icon: Icons.auto_stories_rounded,
+              iconColor: AppColors.mobilePrimary,
+              title: context.l10n.aboutStoryHeading,
+              body:
+                  '${context.l10n.aboutStoryPara1}\n\n${context.l10n.aboutStoryPara2}\n\n${context.l10n.aboutStoryPara3}',
+            ),
+            const SizedBox(height: 14),
+            _buildMobileValues(context),
+            const SizedBox(height: 14),
+            _MobileSection(
+              icon: Icons.engineering_rounded,
+              iconColor: AppColors.mobileAccentDark,
+              title: context.l10n.aboutMasterHeading,
+              body: context.l10n.aboutMasterBody,
+            ),
+            const SizedBox(height: 14),
+            _MobileSection(
+              icon: Icons.local_shipping_rounded,
+              iconColor: AppColors.mobilePrimary,
+              title: context.l10n.aboutDeliveryHeading,
+              body:
+                  '${context.l10n.aboutDeliveryFreeTitle}\n\n${context.l10n.aboutDeliveryZonesLabel}: ${context.l10n.aboutDeliveryZonesList}\n\n${context.l10n.aboutDeliveryNote}',
+            ),
+            const SizedBox(height: 14),
+            _MobileSection(
+              icon: Icons.directions_bus_rounded,
+              iconColor: AppColors.mobileAccentDark,
+              title: context.l10n.aboutTransportHeading,
+              body:
+                  '${context.l10n.aboutBusStop1}: 19, 19F, 19FB, 14KS, 18UK, KM46-1\n'
+                  '${context.l10n.aboutBusStop2}: 19, 19F, 19FB, 14KS, 18UK, KM46-1\n'
+                  '${context.l10n.aboutBusStop3}: 10, 319, KM46, 13AB, 14T',
+            ),
+            const SizedBox(height: 18),
+            _buildMobileContactCard(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileHeader(final BuildContext context) => Row(
+        children: [
+          IconButton(
+            onPressed: () => NavigationHandler.smartGoBack(context),
+            icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+          ),
+          Expanded(
+            child: Text(
+              context.l10n.aboutHeroTitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppColors.mobileTextPrimary,
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildMobileHero(final BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: AppColors.mobilePrimaryGradient,
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.18),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                context.l10n.aboutBadge,
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w800),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              context.l10n.aboutHeroSubtitle,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.95),
+                fontSize: 13.5,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildMobileValues(final BuildContext context) {
+    final values = [
+      (Icons.verified_rounded, context.l10n.aboutValue1Title, context.l10n.aboutValue1Desc),
+      (Icons.favorite_rounded, context.l10n.aboutValue2Title, context.l10n.aboutValue2Desc),
+      (Icons.eco_rounded, context.l10n.aboutValue3Title, context.l10n.aboutValue3Desc),
+      (Icons.handshake_rounded, context.l10n.aboutValue4Title, context.l10n.aboutValue4Desc),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.mobileBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.aboutValuesHeading,
+            style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            context.l10n.aboutValuesSubheading,
+            style: TextStyle(fontSize: 12.5, color: AppColors.mobileTextSecondary),
+          ),
+          const SizedBox(height: 14),
+          for (final v in values)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.mobileCardBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(v.$1, size: 18, color: AppColors.mobilePrimary),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(v.$2,
+                            style: const TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 2),
+                        Text(v.$3,
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.mobileTextSecondary,
+                                height: 1.4)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileContactCard(final BuildContext context) => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.mobileBorder),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.aboutContactHeading,
+              style: TextStyle(
+                  fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
+            ),
+            const SizedBox(height: 14),
+            _MobileContactRow(
+              icon: Icons.location_on_rounded,
+              label: context.l10n.aboutContactAddressLabel,
+              value: context.l10n.aboutContactAddressValue,
+              onTap: () => _launchMaps(),
+            ),
+            _MobileContactRow(
+              icon: Icons.access_time_rounded,
+              label: context.l10n.aboutContactHoursLabel,
+              value: context.l10n.aboutContactHoursValue,
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _launchPhone(),
+                    icon: const Icon(Icons.call_rounded, size: 16),
+                    label: Text(context.l10n.aboutCallNowButton,
+                        style: const TextStyle(fontSize: 12.5)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.mobilePrimary,
+                      side: BorderSide(color: AppColors.mobilePrimary),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _launchMaps(),
+                    icon: const Icon(Icons.map_rounded, size: 16),
+                    label: Text(context.l10n.aboutViewMapButton,
+                        style: const TextStyle(fontSize: 12.5)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.mobilePrimary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
   // Hero Section
   Widget _buildHeroSection(final BuildContext context) {
     return SliverToBoxAdapter(
@@ -45,7 +301,7 @@ class _AboutPageState extends State<AboutPage> {
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [AppColors.primary, AppColors.primaryDark],
@@ -139,7 +395,7 @@ class _AboutPageState extends State<AboutPage> {
         borderRadius: BorderRadius.circular(24),
         child: Container(
           color: AppColors.accent.withOpacity(0.1),
-          child: const Center(
+          child: Center(
             child: Icon(
               Icons.store,
               size: 120,
@@ -235,7 +491,7 @@ class _AboutPageState extends State<AboutPage> {
       children: [
         Text(
           number,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 36,
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
@@ -244,7 +500,7 @@ class _AboutPageState extends State<AboutPage> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             color: AppColors.textSecondary,
           ),
@@ -959,7 +1215,7 @@ class _AboutPageState extends State<AboutPage> {
                     const SizedBox(height: 8),
                     Text(
                       context.l10n.aboutMapSubtext,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textTertiary,
                       ),
                     ),
@@ -980,4 +1236,109 @@ class _AboutPageState extends State<AboutPage> {
   Future<void> _launchMaps() async {
     await SaglamSpotCommunication.openStoreLocation();
   }
+}
+
+class _MobileSection extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String body;
+
+  const _MobileSection({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.body,
+  });
+
+  @override
+  Widget build(final BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.mobileBorder),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, size: 16, color: iconColor),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.mobileTextPrimary),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              body,
+              style: TextStyle(
+                  fontSize: 12.5, color: AppColors.mobileTextSecondary, height: 1.55),
+            ),
+          ],
+        ),
+      );
+}
+
+class _MobileContactRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final VoidCallback? onTap;
+
+  const _MobileContactRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.onTap,
+  });
+
+  @override
+  Widget build(final BuildContext context) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 18, color: AppColors.mobilePrimary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label,
+                        style: TextStyle(
+                            fontSize: 11.5, color: AppColors.mobileTextTertiary)),
+                    const SizedBox(height: 2),
+                    Text(value,
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.mobileTextPrimary)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }

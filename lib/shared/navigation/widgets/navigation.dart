@@ -12,7 +12,7 @@ import '../../../core/common/enum/enums.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/language_selector.dart';
-import '../../../../features/auth/presentation/provider/auth_provider_notifier.dart';
+import '../../../features/auth/presentation/provider/auth_provider_notifier.dart';
 
 class SearchIntent extends Intent {
   const SearchIntent();
@@ -97,7 +97,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           child: Image.asset(
-            'assets/images/saglam_spot_logo.png',
+            'assets/images/saglam_spot_logo_mark.png',
             width: 90,
             height: 90,
             fit: BoxFit.contain,
@@ -107,11 +107,11 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
         Text(
           context.l10n.brand,
           style: TextStyle(
-            fontFamily: 'Fraunces',
             color: kIsWeb ? AppColors.textPrimary : AppColors.mobileTextPrimary,
-            fontWeight: FontWeight.w600,
-            fontSize: context.responsive(mobile: 14, tablet: 18, desktop: 20),
-            letterSpacing: context.responsive(mobile: 1, tablet: 1.5, desktop: 2),
+            fontWeight: FontWeight.w900,
+            fontSize: context.responsive(mobile: 15, tablet: 19, desktop: 22),
+            letterSpacing: -0.2,
+            height: 1,
           ),
         ),
       ],
@@ -273,6 +273,17 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
 
     // Responsive AppBar yüksekliğini güvenli ve sabit hesapla
     final double calculatedBarHeight = context.responsive(mobile: 60, tablet: 70, desktop: 80);
+
+    // Native mobil uygulamada Ana Sayfa dalı (index 0) artık kendi
+    // Scaffold'unu ve alt navigasyon çubuğunu (MobileBottomNav) taşıyan
+    // yeni müşteri deneyimi — bu durumda eski AppBar/Drawer kabuğunu hiç
+    // göstermiyoruz. Yeni/Spot dalları (1, 2) şimdilik eski davranışını
+    // (AppBar + Drawer) korur, herhangi bir regresyon riski almadan.
+    final bool isNativeHomeBranch = !kIsWeb && currentIndex == 0;
+
+    if (isNativeHomeBranch) {
+      return widget.navigationShell;
+    }
 
     return Shortcuts(
       shortcuts: <ShortcutActivator, Intent>{

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/services/admin_session_cache.dart';
 import '../../../../core/services/firestore_provider.dart';
 
 /// Auth state için basit, öngörülebilir state machine.
@@ -76,7 +77,9 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
         return;
       }
 
-      // Başarılı giriş
+      // Başarılı giriş — bu cihazda bir yöneticinin oturum açtığını hatırla,
+      // uygulama bir sonraki açılışta doğrudan yönetici paneline gitsin.
+      await AdminSessionCache.setAdminLoggedIn(true);
       state = AsyncValue.data(user);
     } on FirebaseAuthException catch (e) {
       state = AsyncValue.error(
@@ -92,6 +95,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
     try {
       await _auth.signOut();
     } catch (_) {}
+    await AdminSessionCache.setAdminLoggedIn(false);
     state = const AsyncValue.data(null);
   }
 

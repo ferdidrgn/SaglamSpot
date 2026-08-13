@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 
 /// Ürün ekle/düzenle formlarında kullanılan ortak "kart bölüm" kabuğu.
@@ -19,9 +20,13 @@ class AdminFormSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-                color: AppColors.textPrimary.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 8)),
+                color: AppColors.primary.withOpacity(0.07),
+                blurRadius: 28,
+                offset: const Offset(0, 14)),
+            BoxShadow(
+                color: AppColors.textPrimary.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2)),
           ],
         ),
         child: Column(
@@ -29,10 +34,17 @@ class AdminFormSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, size: 18, color: AppColors.accentDark),
-                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.accentGradient,
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Icon(icon, size: 14, color: Colors.white),
+                ),
+                const SizedBox(width: 10),
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w800,
                         color: AppColors.textPrimary)),
               ],
@@ -69,10 +81,10 @@ class AdminFormField extends StatelessWidget {
           maxLines: lines,
           keyboardType:
               numeric ? const TextInputType.numberWithOptions(decimal: true) : null,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14.5),
+          style: TextStyle(color: AppColors.textPrimary, fontSize: 14.5),
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: const TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
+            labelStyle: TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
             prefixIcon: Icon(icon, color: AppColors.onSecondary, size: 20),
             filled: true,
             fillColor: AppColors.secondary,
@@ -80,7 +92,7 @@ class AdminFormField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+              borderSide: BorderSide(color: AppColors.accent, width: 1.5),
             ),
           ),
         ),
@@ -118,7 +130,7 @@ class AdminFormSwitch extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(subtitle!,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 12, color: AppColors.textTertiary)),
                     ),
                 ],
@@ -144,11 +156,21 @@ class AdminSubmitButton extends StatelessWidget {
       {super.key, required this.label, required this.isLoading, required this.onTap});
 
   @override
-  Widget build(final BuildContext context) => SizedBox(
+  Widget build(final BuildContext context) => Container(
         width: double.infinity,
         height: 54,
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+                color: AppColors.primary.withOpacity(0.35),
+                blurRadius: 22,
+                offset: const Offset(0, 10)),
+          ],
+        ),
         child: Material(
-          color: AppColors.primary,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           child: InkWell(
             onTap: isLoading ? null : onTap,
@@ -166,6 +188,94 @@ class AdminSubmitButton extends StatelessWidget {
                           fontSize: 15.5,
                           fontWeight: FontWeight.w800)),
             ),
+          ),
+        ),
+      );
+}
+
+/// Ürün fotoğrafı küçük resmi — yuvarlatılmış köşe + yumuşak gölge +
+/// dairesel silme rozeti. Ekle/düzenle formlarında ortak kullanılır.
+class PhotoThumbnail extends StatelessWidget {
+  final ImageProvider image;
+  final VoidCallback onDelete;
+
+  const PhotoThumbnail({super.key, required this.image, required this.onDelete});
+
+  @override
+  Widget build(final BuildContext context) => Stack(
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              image: DecorationImage(image: image, fit: BoxFit.cover),
+              boxShadow: [
+                BoxShadow(
+                    color: AppColors.textPrimary.withOpacity(0.10),
+                    blurRadius: 14,
+                    offset: const Offset(0, 6)),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 6,
+            right: 6,
+            child: Material(
+              color: Colors.white,
+              shape: const CircleBorder(),
+              elevation: 2,
+              shadowColor: AppColors.error.withOpacity(0.4),
+              child: InkWell(
+                onTap: onDelete,
+                customBorder: const CircleBorder(),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Icon(Icons.close_rounded, size: 14, color: AppColors.error),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+}
+
+/// Fotoğraf şeridinin sonuna eklenen dairesel "ekle" karosu.
+class AddPhotoTile extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const AddPhotoTile({super.key, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 96,
+          height: 96,
+          decoration: BoxDecoration(
+            color: AppColors.secondary,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+                color: AppColors.accent.withOpacity(0.5), width: 1.4),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  gradient: AppColors.accentGradient,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.add_rounded, color: Colors.white, size: 18),
+              ),
+              const SizedBox(height: 6),
+              Text(context.l10n.addImage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 9.5, color: AppColors.accentDark, fontWeight: FontWeight.w700)),
+            ],
           ),
         ),
       );

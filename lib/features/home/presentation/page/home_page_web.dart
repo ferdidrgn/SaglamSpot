@@ -182,7 +182,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         context, selectedCategory?.toFirestore()),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.textPrimary,
-                      side: const BorderSide(color: AppColors.border),
+                      side: BorderSide(color: AppColors.border),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 36, vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -257,7 +257,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     children: [
                       for (int i = 0; i < items.length; i++) ...[
                         if (i > 0)
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: VerticalDivider(
                                 color: AppColors.border, thickness: 1),
@@ -394,7 +394,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             onPressed: () => NavigationHandler.goToSearch(context),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
-              side: const BorderSide(color: AppColors.primary),
+              side: BorderSide(color: AppColors.primary),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)),
@@ -693,7 +693,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: context.hp(8)),
-        decoration: const BoxDecoration(color: AppColors.backgroundDark),
+        decoration: BoxDecoration(color: AppColors.backgroundDark),
         child: Center(
           child: Wrap(
             alignment: WrapAlignment.center,
@@ -995,12 +995,12 @@ class _RoomCardState extends State<_RoomCard> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(context.l10n.viewButton,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 12)),
                               const SizedBox(width: 4),
-                              const Icon(Icons.arrow_forward_rounded,
+                              Icon(Icons.arrow_forward_rounded,
                                   size: 14, color: AppColors.primary),
                             ],
                           ),
@@ -1526,7 +1526,7 @@ class _NumberedProductCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('$number.',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.accent,
                           fontWeight: FontWeight.w700,
                           fontSize: 11)),
@@ -1534,7 +1534,7 @@ class _NumberedProductCard extends StatelessWidget {
                   Text(product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontFamily: 'Fraunces',
                           fontWeight: FontWeight.w600,
                           fontSize: 13.5,
@@ -1544,7 +1544,7 @@ class _NumberedProductCard extends StatelessWidget {
                       '₺${product.price.toStringAsFixed(0)} · ${product.category.label(context)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.textTertiary, fontSize: 11)),
                   const SizedBox(height: 8),
                   Align(
@@ -1587,7 +1587,7 @@ class _FeaturedCardFallback extends StatelessWidget {
   @override
   Widget build(final BuildContext context) => Container(
       color: AppColors.secondary,
-      child: const Icon(Icons.chair_rounded,
+      child: Icon(Icons.chair_rounded,
           size: 18, color: AppColors.textTertiary));
 }
 

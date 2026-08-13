@@ -158,7 +158,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "Выйти",
   "logoutConfirm": "Вы уверены, что хотите безопасно выйти из своей учётной записи?",
-
   "testimonialsHeading": "Что Говорят Наши Клиенты",
   "testimonialsSubheading": "Более 20 лет мы прикоснулись к тысячам домов в İçerenköy и его окрестностях",
   "testimonial1Comment": "Купили диван по очень выгодной цене, почти как новый. Доставили в тот же день, из рук в руки — доверие настоящего мастера чувствовалось с самого начала.",
@@ -167,7 +166,6 @@
   "testimonial4Comment": "Купили обеденный гарнитур без торга, по честной цене. Помогли и с перевозкой, покупали с полным спокойствием.",
   "testimonial5Comment": "Искали подержанный шкаф и нашли крепкую, стильную вещь. Лучшее соотношение цены и качества на рынке.",
   "testimonial6Comment": "Во время визита в шоурум смогли увидеть товары вживую, это укрепило наше доверие. И после продажи они всегда оставались на связи.",
-
   "howItWorksHeading": "Как Это Работает",
   "step1Title": "Смотри и Фильтруй",
   "step1Desc": "Найди то, что тебе нравится, среди тысяч товаров по категории и ценовому диапазону.",
@@ -177,7 +175,6 @@
   "step3Desc": "Посмотри товар в шоуруме или подтверди по фото, договоритесь о честной цене.",
   "step4Title": "Доставка к Твоей Двери",
   "step4Desc": "Быстрая застрахованная доставка в İçerenköy и на Анатолийскую сторону благополучно доставит твою мебель домой.",
-
   "tipsEyebrow": "СОВЕТЫ",
   "tipsHeading": "Советы по Уходу от Мастера",
   "tip1Title": "Сделайте Гостиную Уютнее",
@@ -210,18 +207,15 @@
   "tip10Title": "Превратите Свой Балкон в Жилое Пространство",
   "tip10Desc": "Устойчивый к погоде комплект мебели и несколько горшечных растений сделают балкон самым любимым уголком дома.",
   "tip10Category": "Улица",
-
   "popularCategoriesHeading": "Популярные Категории",
   "popularCategoriesSub": "Найди подходящую мебель в один клик",
   "categoryProductCount": "{count} товаров",
-
   "newsletterSubscribeSuccess": "Вы успешно подписались на нашу рассылку!",
   "newsletterHeading": "Узнавайте о Новых Товарах Первыми",
   "newsletterDesc": "Получайте акционные предложения, новые коллекции и кампании прямо на почту. Никакого спама, только полезные предложения.",
   "emailHint": "Ваш адрес электронной почты",
   "emailRequired": "Требуется адрес электронной почты",
   "emailInvalid": "Введите корректный адрес электронной почты",
-
   "whyUsHeading": "Почему Sağlam Spot?",
   "usp1Title": "20 Лет Надёжного Мастерства",
   "usp1Desc": "Более двадцати лет ремесленной работы в İçerenköy и тысячи довольных клиентов.",
@@ -231,10 +225,8 @@
   "usp3Desc": "Каждый товар проходит проверку конструкции и ткани/отделки перед продажей.",
   "usp4Title": "Поддержка После Продажи",
   "usp4Desc": "Настоящая команда, с которой можно связаться даже после доставки, решающая вашу проблему.",
-
   "socialShowcaseEyebrow": "ПОДЕЛИСЬ",
   "socialShowcaseHeading": "Поделитесь Своим Интерьером с #SağlamSpot",
-
   "productsLoadError": "Произошла ошибка при загрузке товаров: {error}",
   "viewAllButton": "Посмотреть Все",
   "showcaseEyebrow": "ВИТРИНА",
@@ -253,7 +245,6 @@
   "heroSlide2Title": "Мебель со Своей Историей",
   "heroSlide2Subtitle": "Тщательно отобранные, крепкие подержанные вещи с характером.",
   "heroSlide3Title": "Исследуйте Всю Коллекцию",
-
   "aboutBadge": "С ВАМИ С 2012 ГОДА",
   "aboutHeroTitle": "Sağlam Spot\nДоверие, Которое Вы Знаете",
   "aboutHeroSubtitle": "Мы служим нашему району с любовью и заботой во всём, что делаем.",
@@ -297,7 +288,6 @@
   "aboutViewMapButton": "Посмотреть на Карте",
   "aboutMapHeading": "Наш Магазин Прямо Здесь",
   "aboutMapSubtext": "Нажмите на карту, чтобы получить маршрут",
-
   "newProductsBadgeEyebrow": "НОВАЯ КОЛЛЕКЦИЯ",
   "newProductsTitle": "Новая\nКоллекция",
   "productsBadgeLabel": "ТОВАРОВ",
@@ -316,7 +306,6 @@
   "sortPriceLowHigh": "Цена: по возрастанию",
   "sortPriceHighLow": "Цена: по убыванию",
   "sortMostPopular": "Самые Популярные",
-
   "spotBadgeEyebrow": "АКЦИОННЫЕ ТОВАРЫ",
   "spotHeroTitle": "Акционные\nТовары",
   "spotDiscountLabel": "СКИДКА",
@@ -331,20 +320,16 @@
   "clearFiltersButton": "СБРОСИТЬ ФИЛЬТРЫ",
   "tryDifferentFiltersShort": "Вы можете попробовать другие фильтры",
   "spotBadgeTag": "АКЦИЯ",
-
   "productLoadError": "Не удалось загрузить товар: {error}",
   "productSpecConditionNew": "Новый Товар",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "Рекомендуемые",
   "sortPriceAsc": "Цена: по возрастанию",
   "sortPriceDesc": "Цена: по убыванию",
-
   "languageSelectorTitle": "Выбор Языка",
   "languageTooltip": "Язык",
   "galleryEmptyMessage": "К этому товару пока не добавлены фотографии.",
   "productCardNewBadge": "НОВОЕ",
-
   "sssHelpCenterBadge": "ЦЕНТР ПОМОЩИ",
   "sssHeroTitle": "Часто Задаваемые\nВопросы",
   "sssHeroSubtitle": "Ответы на всё, что вас интересует",
@@ -363,7 +348,6 @@
   "sssNoAnswerTitle": "Не Нашли Ответ на Свой Вопрос?",
   "sssNoAnswerSubtitle": "Вы Можете Связаться с Нами",
   "sssVisitStoreButton": "Посетить Магазин",
-
   "sssQ1": "Расскажите о трудовом пути и опыте мастера?",
   "sssA1": "Наш мастер активно работает в этой сфере с 1995 года. С первых шагов своей карьеры он непрерывно развивался. За свою трудовую жизнь он занимал множество должностей — водитель при доставках, перевозка, сборка, встреча клиентов — приобретя разносторонний опыт. В частности, до 2010 года он работал в İstikbal и за это время глубоко изучил особенности продукции, детали и тонкости. После 2010 года работал в соседнем Işık Çeyiz, дополнительно повысив свою квалификацию в отрасли. В 2012 году он решил открыть собственный ремесленный магазин и с тех пор стремится ставить качественный сервис на первое место, передавая свой отраслевой опыт клиентам наилучшим образом.",
   "sssQ2": "Можно ли доверять Sağlam Spot?",
@@ -425,6 +409,113 @@
   "@pieces": {
     "placeholders": {
       "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navDiscover": "Обзор",
+  "navCart": "Корзина",
+  "navProfile": "Профиль",
+  "storeHeroEyebrow": "НОВАЯ КОЛЛЕКЦИЯ",
+  "storeHeroTitle": "Мебель, в которой\nуютно, как дома",
+  "storeHeroSubtitle": "Качественная новая и б/у мебель с доставкой по ценам, которые вам понравятся.",
+  "storeHeroCta": "Начать покупки",
+  "sectionCategories": "Категории",
+  "sectionBestSellers": "Хиты продаж",
+  "sectionNewArrivals": "Новинки",
+  "seeAll": "Смотреть все",
+  "cartTitle": "Моя корзина",
+  "cartEmptyTitle": "Ваша корзина пуста",
+  "cartEmptyDesc": "Добавьте понравившиеся товары и уточните всё одним сообщением.",
+  "cartTotalLabel": "Итого",
+  "cartWhatsappCta": "Отправить корзину в WhatsApp",
+  "cartItemRemoved": "Удалено из корзины",
+  "addToCartCta": "В корзину",
+  "addedToCartMessage": "Добавлено в корзину",
+  "alreadyInCartMessage": "Уже в корзине",
+  "settingsTitle": "Настройки",
+  "settingsLanguageLabel": "Язык",
+  "settingsAccountSection": "Аккаунт",
+  "settingsGeneralSection": "Общее",
+  "settingsContact": "Контакты",
+  "settingsCallUs": "Позвонить нам",
+  "settingsAdminLogin": "Вход для администратора",
+  "settingsAppVersion": "Версия приложения",
+  "cartItemsCount": "{count, plural, =0{Корзина пуста} =1{1 товар} other{{count} товаров}}",
+  "@cartItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRateApp": "Оценить приложение",
+  "settingsShareApp": "Поделиться приложением",
+  "settingsPrivacyPolicy": "Политика конфиденциальности",
+  "settingsTerms": "Условия использования",
+  "legalContentTurkishOnly": "Этот контент пока доступен только на турецком языке.",
+  "doubleBackToExit": "Нажмите назад еще раз, чтобы выйти",
+  "productLinkLabel": "Ссылка на товар",
+  "settingsAppSection": "Приложение",
+  "settingsLegalSection": "Правовая информация",
+  "recentlyViewedTitle": "Недавно просмотренные",
+  "productTrustBadgeVerified": "Проверенный продавец",
+  "productTrustBadgeNegotiate": "Торг через WhatsApp",
+  "productTrustBadgeDelivery": "Доставка на месте",
+  "howToBuyTitle": "Как купить?",
+  "howToBuyStep1Title": "Написать в WhatsApp",
+  "howToBuyStep1Desc": "Если товар понравился, свяжитесь с нами через WhatsApp.",
+  "howToBuyStep2Title": "Обсудите цену",
+  "howToBuyStep2Desc": "Согласуйте цену и детали доставки вместе.",
+  "howToBuyStep3Title": "Заберите товар",
+  "howToBuyStep3Desc": "После договорённости безопасно заберите свой товар.",
+  "listedToday": "Добавлено сегодня",
+  "listedDaysAgo": "Добавлено {days} дн. назад",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "Добавлено {weeks} нед. назад",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppearanceSection": "Внешний вид",
+  "settingsThemeLight": "Светлая",
+  "settingsThemeSystem": "Системная",
+  "settingsThemeDark": "Тёмная",
+  "notificationsTitle": "Уведомления",
+  "notificationsEmptyTitle": "Пока нет уведомлений",
+  "notificationsEmptyDesc": "Новые акции и объявления появятся здесь",
+  "markAllReadAction": "Отметить все как прочитанные",
+  "clearAllAction": "Очистить всё",
+  "timeJustNow": "Только что",
+  "timeMinutesAgo": "{minutes} мин. назад",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} ч. назад",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} дн. назад",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
         "type": "int"
       }
     }

@@ -76,7 +76,7 @@ class _ProductListCardState extends State<ProductListCard> {
                         ? Image.network(product.imagesUrl.first, fit: BoxFit.cover)
                         : Container(
                             color: AppColors.secondary,
-                            child: const Icon(Icons.chair_alt_rounded,
+                            child: Icon(Icons.chair_alt_rounded,
                                 color: AppColors.textTertiary)),
                   ),
                 ),
@@ -110,7 +110,7 @@ class _ProductListCardState extends State<ProductListCard> {
                         product.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 15.5, fontWeight: FontWeight.w800,
                             color: AppColors.textPrimary),
                       ),
@@ -118,7 +118,7 @@ class _ProductListCardState extends State<ProductListCard> {
                       Row(
                         children: [
                           Text('₺${product.price.toStringAsFixed(0)}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w900,
                                   color: AppColors.textPrimary,

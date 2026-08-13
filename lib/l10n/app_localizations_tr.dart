@@ -1284,4 +1284,225 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get sssA22 =>
       'Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, \'sat-al\' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe \'şu an yerimiz var\' veya \'maalesef bu ara doluyuz\' diye bilgi veririz.';
+
+  @override
+  String get navDiscover => 'Keşfet';
+
+  @override
+  String get navCart => 'Sepet';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get storeHeroEyebrow => 'YENİ KOLEKSİYON';
+
+  @override
+  String get storeHeroTitle => 'Evinize Yakışan\nMobilyaları Keşfedin';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Kaliteli sıfır ve ikinci el mobilyalar, cebinize uygun fiyatlarla kapınızda.';
+
+  @override
+  String get storeHeroCta => 'Alışverişe Başla';
+
+  @override
+  String get sectionCategories => 'Kategoriler';
+
+  @override
+  String get sectionBestSellers => 'Çok Satanlar';
+
+  @override
+  String get sectionNewArrivals => 'Yeni Gelenler';
+
+  @override
+  String get seeAll => 'Tümünü Gör';
+
+  @override
+  String get cartTitle => 'Sepetim';
+
+  @override
+  String get cartEmptyTitle => 'Sepetiniz Boş';
+
+  @override
+  String get cartEmptyDesc =>
+      'Beğendiğiniz ürünleri sepete ekleyin, sonra tek mesajla bize sorun.';
+
+  @override
+  String get cartTotalLabel => 'Toplam';
+
+  @override
+  String get cartWhatsappCta => 'Sepeti WhatsApp\'tan Gönder';
+
+  @override
+  String get cartItemRemoved => 'Sepetten kaldırıldı';
+
+  @override
+  String get addToCartCta => 'Sepete Ekle';
+
+  @override
+  String get addedToCartMessage => 'Sepete eklendi';
+
+  @override
+  String get alreadyInCartMessage => 'Bu ürün zaten sepette';
+
+  @override
+  String get settingsTitle => 'Ayarlar';
+
+  @override
+  String get settingsLanguageLabel => 'Dil';
+
+  @override
+  String get settingsAccountSection => 'Hesap';
+
+  @override
+  String get settingsGeneralSection => 'Genel';
+
+  @override
+  String get settingsContact => 'İletişim';
+
+  @override
+  String get settingsCallUs => 'Bizi Arayın';
+
+  @override
+  String get settingsAdminLogin => 'Yönetici Girişi';
+
+  @override
+  String get settingsAppVersion => 'Uygulama Sürümü';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ürün',
+      one: '1 ürün',
+      zero: 'Sepet boş',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => 'Uygulamayı Değerlendir';
+
+  @override
+  String get settingsShareApp => 'Uygulamayı Paylaş';
+
+  @override
+  String get settingsPrivacyPolicy => 'Gizlilik Politikası';
+
+  @override
+  String get settingsTerms => 'Kullanım Koşulları';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Bu içerik şu anda yalnızca Türkçe olarak sunulmaktadır.';
+
+  @override
+  String get doubleBackToExit => 'Çıkmak için tekrar geri tuşuna basın';
+
+  @override
+  String get productLinkLabel => 'Ürün linki';
+
+  @override
+  String get settingsAppSection => 'Uygulama';
+
+  @override
+  String get settingsLegalSection => 'Yasal';
+
+  @override
+  String get recentlyViewedTitle => 'Son Görüntülenenler';
+
+  @override
+  String get productTrustBadgeVerified => 'Satıcı Onaylı';
+
+  @override
+  String get productTrustBadgeNegotiate => 'WhatsApp\'tan Pazarlık';
+
+  @override
+  String get productTrustBadgeDelivery => 'Yerinde Teslim';
+
+  @override
+  String get howToBuyTitle => 'Nasıl Satın Alırım?';
+
+  @override
+  String get howToBuyStep1Title => 'WhatsApp\'tan Yaz';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Ürünü beğendiyseniz WhatsApp üzerinden bize ulaşın.';
+
+  @override
+  String get howToBuyStep2Title => 'Fiyatı Konuş';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Fiyat ve teslimat detaylarını birlikte görüşelim.';
+
+  @override
+  String get howToBuyStep3Title => 'Teslim Alın';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Anlaştıktan sonra ürününüzü güvenle teslim alın.';
+
+  @override
+  String get listedToday => 'Bugün eklendi';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days gün önce eklendi';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks hafta önce eklendi';
+  }
+
+  @override
+  String get settingsAppearanceSection => 'Görünüm';
+
+  @override
+  String get settingsThemeLight => 'Açık';
+
+  @override
+  String get settingsThemeSystem => 'Sistem';
+
+  @override
+  String get settingsThemeDark => 'Koyu';
+
+  @override
+  String get notificationsTitle => 'Bildirimler';
+
+  @override
+  String get notificationsEmptyTitle => 'Henüz bildirim yok';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Yeni kampanya ve duyurular burada görünecek';
+
+  @override
+  String get markAllReadAction => 'Tümünü okundu işaretle';
+
+  @override
+  String get clearAllAction => 'Tümünü temizle';
+
+  @override
+  String get timeJustNow => 'Az önce';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes dakika önce';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours saat önce';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days gün önce';
+  }
 }

@@ -131,7 +131,7 @@ class _TipCardState extends State<_TipCard> {
                       Icon(tip.icon, size: 14, color: AppColors.accent),
                       const SizedBox(width: 6),
                       Text(tip.category.toUpperCase(),
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: AppColors.accent,
                               fontWeight: FontWeight.w700,
                               fontSize: 10,
@@ -140,7 +140,7 @@ class _TipCardState extends State<_TipCard> {
                   ),
                   const SizedBox(height: 8),
                   Text(tip.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontFamily: 'Fraunces',
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -149,7 +149,7 @@ class _TipCardState extends State<_TipCard> {
                       overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 6),
                   Text(tip.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 13,
                           height: 1.4),

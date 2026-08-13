@@ -41,7 +41,7 @@ class _NewsletterSectionState extends State<NewsletterSection> {
         padding: EdgeInsets.symmetric(
             horizontal: isMobile ? 24 : 60, vertical: isMobile ? 32 : 50),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [AppColors.primary, AppColors.primaryVariant],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

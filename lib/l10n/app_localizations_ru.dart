@@ -1288,4 +1288,224 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get sssA22 =>
       'Это полностью зависит от того, сколько места у нас есть в магазине на данный момент. Поскольку наш магазин небольшой, мы работаем по принципу баланса \'продать-купить\'. Иногда товар нам очень нравится, но мы не можем его взять из-за отсутствия места. Лучше всего прислать нам фотографии товара, который вы хотите продать. Мы честно сообщим вам, есть ли у нас сейчас место или мы, к сожалению, сейчас заполнены.';
+
+  @override
+  String get navDiscover => 'Обзор';
+
+  @override
+  String get navCart => 'Корзина';
+
+  @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get storeHeroEyebrow => 'НОВАЯ КОЛЛЕКЦИЯ';
+
+  @override
+  String get storeHeroTitle => 'Мебель, в которой\nуютно, как дома';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Качественная новая и б/у мебель с доставкой по ценам, которые вам понравятся.';
+
+  @override
+  String get storeHeroCta => 'Начать покупки';
+
+  @override
+  String get sectionCategories => 'Категории';
+
+  @override
+  String get sectionBestSellers => 'Хиты продаж';
+
+  @override
+  String get sectionNewArrivals => 'Новинки';
+
+  @override
+  String get seeAll => 'Смотреть все';
+
+  @override
+  String get cartTitle => 'Моя корзина';
+
+  @override
+  String get cartEmptyTitle => 'Ваша корзина пуста';
+
+  @override
+  String get cartEmptyDesc =>
+      'Добавьте понравившиеся товары и уточните всё одним сообщением.';
+
+  @override
+  String get cartTotalLabel => 'Итого';
+
+  @override
+  String get cartWhatsappCta => 'Отправить корзину в WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Удалено из корзины';
+
+  @override
+  String get addToCartCta => 'В корзину';
+
+  @override
+  String get addedToCartMessage => 'Добавлено в корзину';
+
+  @override
+  String get alreadyInCartMessage => 'Уже в корзине';
+
+  @override
+  String get settingsTitle => 'Настройки';
+
+  @override
+  String get settingsLanguageLabel => 'Язык';
+
+  @override
+  String get settingsAccountSection => 'Аккаунт';
+
+  @override
+  String get settingsGeneralSection => 'Общее';
+
+  @override
+  String get settingsContact => 'Контакты';
+
+  @override
+  String get settingsCallUs => 'Позвонить нам';
+
+  @override
+  String get settingsAdminLogin => 'Вход для администратора';
+
+  @override
+  String get settingsAppVersion => 'Версия приложения';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count товаров',
+      one: '1 товар',
+      zero: 'Корзина пуста',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => 'Оценить приложение';
+
+  @override
+  String get settingsShareApp => 'Поделиться приложением';
+
+  @override
+  String get settingsPrivacyPolicy => 'Политика конфиденциальности';
+
+  @override
+  String get settingsTerms => 'Условия использования';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Этот контент пока доступен только на турецком языке.';
+
+  @override
+  String get doubleBackToExit => 'Нажмите назад еще раз, чтобы выйти';
+
+  @override
+  String get productLinkLabel => 'Ссылка на товар';
+
+  @override
+  String get settingsAppSection => 'Приложение';
+
+  @override
+  String get settingsLegalSection => 'Правовая информация';
+
+  @override
+  String get recentlyViewedTitle => 'Недавно просмотренные';
+
+  @override
+  String get productTrustBadgeVerified => 'Проверенный продавец';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Торг через WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'Доставка на месте';
+
+  @override
+  String get howToBuyTitle => 'Как купить?';
+
+  @override
+  String get howToBuyStep1Title => 'Написать в WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Если товар понравился, свяжитесь с нами через WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Обсудите цену';
+
+  @override
+  String get howToBuyStep2Desc => 'Согласуйте цену и детали доставки вместе.';
+
+  @override
+  String get howToBuyStep3Title => 'Заберите товар';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'После договорённости безопасно заберите свой товар.';
+
+  @override
+  String get listedToday => 'Добавлено сегодня';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Добавлено $days дн. назад';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Добавлено $weeks нед. назад';
+  }
+
+  @override
+  String get settingsAppearanceSection => 'Внешний вид';
+
+  @override
+  String get settingsThemeLight => 'Светлая';
+
+  @override
+  String get settingsThemeSystem => 'Системная';
+
+  @override
+  String get settingsThemeDark => 'Тёмная';
+
+  @override
+  String get notificationsTitle => 'Уведомления';
+
+  @override
+  String get notificationsEmptyTitle => 'Пока нет уведомлений';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Новые акции и объявления появятся здесь';
+
+  @override
+  String get markAllReadAction => 'Отметить все как прочитанные';
+
+  @override
+  String get clearAllAction => 'Очистить всё';
+
+  @override
+  String get timeJustNow => 'Только что';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes мин. назад';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours ч. назад';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days дн. назад';
+  }
 }

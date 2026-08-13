@@ -1234,4 +1234,218 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sssA22 =>
       '这完全取决于我们店里当时的空间。由于我们店铺很小，我们按照\'卖一件、收一件\'的平衡在运营。有时候我们非常喜欢某件产品，但因为没有空间而无法收购。最好的办法是把您想出售的产品照片发给我们，我们会诚实地告诉您\'现在有空间\'还是\'很遗憾这段时间已经满了\'。';
+
+  @override
+  String get navDiscover => '发现';
+
+  @override
+  String get navCart => '购物车';
+
+  @override
+  String get navProfile => '我的';
+
+  @override
+  String get storeHeroEyebrow => '新品系列';
+
+  @override
+  String get storeHeroTitle => '家的感觉\n从家具开始';
+
+  @override
+  String get storeHeroSubtitle => '优质全新及二手家具，以您满意的价格送到家门口。';
+
+  @override
+  String get storeHeroCta => '开始购物';
+
+  @override
+  String get sectionCategories => '分类';
+
+  @override
+  String get sectionBestSellers => '热销商品';
+
+  @override
+  String get sectionNewArrivals => '新品上架';
+
+  @override
+  String get seeAll => '查看全部';
+
+  @override
+  String get cartTitle => '我的购物车';
+
+  @override
+  String get cartEmptyTitle => '购物车是空的';
+
+  @override
+  String get cartEmptyDesc => '将喜欢的商品加入购物车，然后一条消息询问所有商品。';
+
+  @override
+  String get cartTotalLabel => '合计';
+
+  @override
+  String get cartWhatsappCta => '通过WhatsApp发送购物车';
+
+  @override
+  String get cartItemRemoved => '已从购物车移除';
+
+  @override
+  String get addToCartCta => '加入购物车';
+
+  @override
+  String get addedToCartMessage => '已加入购物车';
+
+  @override
+  String get alreadyInCartMessage => '该商品已在购物车中';
+
+  @override
+  String get settingsTitle => '设置';
+
+  @override
+  String get settingsLanguageLabel => '语言';
+
+  @override
+  String get settingsAccountSection => '账户';
+
+  @override
+  String get settingsGeneralSection => '通用';
+
+  @override
+  String get settingsContact => '联系方式';
+
+  @override
+  String get settingsCallUs => '致电我们';
+
+  @override
+  String get settingsAdminLogin => '管理员登录';
+
+  @override
+  String get settingsAppVersion => '应用版本';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count件商品',
+      one: '1件商品',
+      zero: '购物车是空的',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => '给应用评分';
+
+  @override
+  String get settingsShareApp => '分享应用';
+
+  @override
+  String get settingsPrivacyPolicy => '隐私政策';
+
+  @override
+  String get settingsTerms => '使用条款';
+
+  @override
+  String get legalContentTurkishOnly => '此内容目前仅提供土耳其语版本。';
+
+  @override
+  String get doubleBackToExit => '再次按返回键退出';
+
+  @override
+  String get productLinkLabel => '商品链接';
+
+  @override
+  String get settingsAppSection => '应用';
+
+  @override
+  String get settingsLegalSection => '法律信息';
+
+  @override
+  String get recentlyViewedTitle => '最近浏览';
+
+  @override
+  String get productTrustBadgeVerified => '认证卖家';
+
+  @override
+  String get productTrustBadgeNegotiate => '通过WhatsApp议价';
+
+  @override
+  String get productTrustBadgeDelivery => '现场交货';
+
+  @override
+  String get howToBuyTitle => '如何购买？';
+
+  @override
+  String get howToBuyStep1Title => '在WhatsApp上留言';
+
+  @override
+  String get howToBuyStep1Desc => '如果您喜欢该商品，请通过WhatsApp联系我们。';
+
+  @override
+  String get howToBuyStep2Title => '商议价格';
+
+  @override
+  String get howToBuyStep2Desc => '一起商定价格和交货细节。';
+
+  @override
+  String get howToBuyStep3Title => '取货';
+
+  @override
+  String get howToBuyStep3Desc => '达成一致后，安全取走您的商品。';
+
+  @override
+  String get listedToday => '今天发布';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days天前发布';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks周前发布';
+  }
+
+  @override
+  String get settingsAppearanceSection => '外观';
+
+  @override
+  String get settingsThemeLight => '浅色';
+
+  @override
+  String get settingsThemeSystem => '跟随系统';
+
+  @override
+  String get settingsThemeDark => '深色';
+
+  @override
+  String get notificationsTitle => '通知';
+
+  @override
+  String get notificationsEmptyTitle => '暂无通知';
+
+  @override
+  String get notificationsEmptyDesc => '新活动和公告将显示在这里';
+
+  @override
+  String get markAllReadAction => '全部标为已读';
+
+  @override
+  String get clearAllAction => '清空全部';
+
+  @override
+  String get timeJustNow => '刚刚';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes分钟前';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours小时前';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days天前';
+  }
 }

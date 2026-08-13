@@ -1293,4 +1293,225 @@ class AppLocalizationsKy extends AppLocalizations {
   @override
   String get sssA22 =>
       'Бул толугу менен дүкөнүбүздөгү бош орунга байланыштуу. Дүкөнүбүз кичине болгондуктан, \'сат-ал\' балансы менен иштейбиз. Кээде продукт абдан жаксак дагы, орун жок болгондуктан ала албай калабыз. Эң туурасы — сатууну каалаган продуктуңуздун сүрөттөрүн бизге жиберүү. Сизге чынчылдык менен \'учурда орун бар\' же \'тилекке каршы, азыр толук\' деп маалымат беребиз.';
+
+  @override
+  String get navDiscover => 'Изилдөө';
+
+  @override
+  String get navCart => 'Себет';
+
+  @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get storeHeroEyebrow => 'ЖАҢЫ КОЛЛЕКЦИЯ';
+
+  @override
+  String get storeHeroTitle => 'Үйдөй жылуулук\nтартуулаган эмерек';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Сапаттуу жаңы жана колдонулган эмеректер, сиз жактырган баада эшигиңизге жеткирилет.';
+
+  @override
+  String get storeHeroCta => 'Соода баштоо';
+
+  @override
+  String get sectionCategories => 'Категориялар';
+
+  @override
+  String get sectionBestSellers => 'Көп сатылгандар';
+
+  @override
+  String get sectionNewArrivals => 'Жаңы келгендер';
+
+  @override
+  String get seeAll => 'Баарын көрүү';
+
+  @override
+  String get cartTitle => 'Себетим';
+
+  @override
+  String get cartEmptyTitle => 'Себетиңиз бош';
+
+  @override
+  String get cartEmptyDesc =>
+      'Жаккан заттарды себетке кошуп, баарын бир билдирүү менен сураштырыңыз.';
+
+  @override
+  String get cartTotalLabel => 'Жалпы';
+
+  @override
+  String get cartWhatsappCta => 'Себетти WhatsApp аркылуу жөнөтүү';
+
+  @override
+  String get cartItemRemoved => 'Себеттен алынып салынды';
+
+  @override
+  String get addToCartCta => 'Себетке кошуу';
+
+  @override
+  String get addedToCartMessage => 'Себетке кошулду';
+
+  @override
+  String get alreadyInCartMessage => 'Бул зат себетте бар';
+
+  @override
+  String get settingsTitle => 'Жөндөөлөр';
+
+  @override
+  String get settingsLanguageLabel => 'Тил';
+
+  @override
+  String get settingsAccountSection => 'Аккаунт';
+
+  @override
+  String get settingsGeneralSection => 'Жалпы';
+
+  @override
+  String get settingsContact => 'Байланыш';
+
+  @override
+  String get settingsCallUs => 'Бизге чалыңыз';
+
+  @override
+  String get settingsAdminLogin => 'Админ кирүүсү';
+
+  @override
+  String get settingsAppVersion => 'Колдонмонун версиясы';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count зат',
+      one: '1 зат',
+      zero: 'Себет бош',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => 'Колдонмону баалоо';
+
+  @override
+  String get settingsShareApp => 'Колдонмону бөлүшүү';
+
+  @override
+  String get settingsPrivacyPolicy => 'Купуялык саясаты';
+
+  @override
+  String get settingsTerms => 'Колдонуу шарттары';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Бул мазмун азырынча тек гана түрк тилинде жеткиликтүү.';
+
+  @override
+  String get doubleBackToExit => 'Чыгуу үчүн кайра артка басыңыз';
+
+  @override
+  String get productLinkLabel => 'Заттын шилтемеси';
+
+  @override
+  String get settingsAppSection => 'Колдонмо';
+
+  @override
+  String get settingsLegalSection => 'Юридикалык';
+
+  @override
+  String get recentlyViewedTitle => 'Жакында көрүлгөндөр';
+
+  @override
+  String get productTrustBadgeVerified => 'Текшерилген Сатуучу';
+
+  @override
+  String get productTrustBadgeNegotiate => 'WhatsApp аркылуу сүйлөшүү';
+
+  @override
+  String get productTrustBadgeDelivery => 'Жеринде жеткирүү';
+
+  @override
+  String get howToBuyTitle => 'Кантип сатып алам?';
+
+  @override
+  String get howToBuyStep1Title => 'WhatsApp\'ка жазыңыз';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Буюм жаккан болсо, бизге WhatsApp аркылуу кайрылыңыз.';
+
+  @override
+  String get howToBuyStep2Title => 'Баасын сүйлөшүңүз';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Баасын жана жеткирүү деталдарын биргеликте макулдашыңыз.';
+
+  @override
+  String get howToBuyStep3Title => 'Буюмду алыңыз';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Макулдашкандан кийин буюмуңузду коопсуз алыңыз.';
+
+  @override
+  String get listedToday => 'Бүгүн кошулду';
+
+  @override
+  String listedDaysAgo(int days) {
+    return '$days күн мурун кошулду';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return '$weeks жума мурун кошулду';
+  }
+
+  @override
+  String get settingsAppearanceSection => 'Көрүнүш';
+
+  @override
+  String get settingsThemeLight => 'Жарык';
+
+  @override
+  String get settingsThemeSystem => 'Тутум';
+
+  @override
+  String get settingsThemeDark => 'Караңгы';
+
+  @override
+  String get notificationsTitle => 'Билдирүүлөр';
+
+  @override
+  String get notificationsEmptyTitle => 'Азырынча билдирүү жок';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Жаңы акциялар жана жарыялар бул жерде көрүнөт';
+
+  @override
+  String get markAllReadAction => 'Баарын окулду деп белгилөө';
+
+  @override
+  String get clearAllAction => 'Баарын тазалоо';
+
+  @override
+  String get timeJustNow => 'Азыр эле';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes мүнөт мурун';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours саат мурун';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days күн мурун';
+  }
 }

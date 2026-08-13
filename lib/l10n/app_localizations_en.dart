@@ -1291,4 +1291,223 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sssA22 =>
       'It entirely depends on the space we have in our shop at the time. Since our shop is small, we operate on a \'sell one, buy one\' balance. Sometimes we really like an item but can\'t take it because we don\'t have room. The best approach is to send us photos of what you\'d like to sell — we\'ll honestly tell you whether \'we have room right now\' or \'unfortunately we\'re full at the moment.\'';
+
+  @override
+  String get navDiscover => 'Discover';
+
+  @override
+  String get navCart => 'Cart';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get storeHeroEyebrow => 'NEW COLLECTION';
+
+  @override
+  String get storeHeroTitle => 'Furniture That\nFeels Like Home';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Quality new and second-hand furniture, delivered to your door at prices you\'ll love.';
+
+  @override
+  String get storeHeroCta => 'Start Shopping';
+
+  @override
+  String get sectionCategories => 'Categories';
+
+  @override
+  String get sectionBestSellers => 'Best Sellers';
+
+  @override
+  String get sectionNewArrivals => 'New Arrivals';
+
+  @override
+  String get seeAll => 'See All';
+
+  @override
+  String get cartTitle => 'My Cart';
+
+  @override
+  String get cartEmptyTitle => 'Your Cart is Empty';
+
+  @override
+  String get cartEmptyDesc =>
+      'Add items you like, then ask about them all in one message.';
+
+  @override
+  String get cartTotalLabel => 'Total';
+
+  @override
+  String get cartWhatsappCta => 'Send Cart via WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Removed from cart';
+
+  @override
+  String get addToCartCta => 'Add to Cart';
+
+  @override
+  String get addedToCartMessage => 'Added to cart';
+
+  @override
+  String get alreadyInCartMessage => 'Already in your cart';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsLanguageLabel => 'Language';
+
+  @override
+  String get settingsAccountSection => 'Account';
+
+  @override
+  String get settingsGeneralSection => 'General';
+
+  @override
+  String get settingsContact => 'Contact';
+
+  @override
+  String get settingsCallUs => 'Call Us';
+
+  @override
+  String get settingsAdminLogin => 'Admin Login';
+
+  @override
+  String get settingsAppVersion => 'App Version';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'Cart is empty',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => 'Rate the App';
+
+  @override
+  String get settingsShareApp => 'Share the App';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsTerms => 'Terms & Conditions';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'This content is currently available in Turkish only.';
+
+  @override
+  String get doubleBackToExit => 'Press back again to exit';
+
+  @override
+  String get productLinkLabel => 'Product link';
+
+  @override
+  String get settingsAppSection => 'App';
+
+  @override
+  String get settingsLegalSection => 'Legal';
+
+  @override
+  String get recentlyViewedTitle => 'Recently Viewed';
+
+  @override
+  String get productTrustBadgeVerified => 'Verified Seller';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Negotiate on WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'On-site Delivery';
+
+  @override
+  String get howToBuyTitle => 'How to Buy?';
+
+  @override
+  String get howToBuyStep1Title => 'Message on WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc => 'If you like the item, reach us on WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Discuss the Price';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Agree on price and delivery details together.';
+
+  @override
+  String get howToBuyStep3Title => 'Get It Delivered';
+
+  @override
+  String get howToBuyStep3Desc => 'Once agreed, receive your item safely.';
+
+  @override
+  String get listedToday => 'Listed today';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Listed $days days ago';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Listed $weeks weeks ago';
+  }
+
+  @override
+  String get settingsAppearanceSection => 'Appearance';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsEmptyTitle => 'No notifications yet';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'New campaigns and announcements will appear here';
+
+  @override
+  String get markAllReadAction => 'Mark all as read';
+
+  @override
+  String get clearAllAction => 'Clear all';
+
+  @override
+  String get timeJustNow => 'Just now';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes min ago';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours hr ago';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days days ago';
+  }
 }

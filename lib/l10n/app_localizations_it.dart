@@ -1298,4 +1298,225 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get sssA22 =>
       'Dipende interamente dallo spazio che abbiamo nel negozio in quel momento. Poiché il nostro negozio è piccolo, operiamo con un equilibrio \'vendi-compra\'. A volte un prodotto ci piace molto ma non possiamo prenderlo perché non abbiamo spazio. La cosa migliore è inviarci le foto del prodotto che volete vendere. Vi diremo onestamente se \'abbiamo spazio ora\' oppure se \'purtroppo siamo al completo in questo periodo\'.';
+
+  @override
+  String get navDiscover => 'Scopri';
+
+  @override
+  String get navCart => 'Carrello';
+
+  @override
+  String get navProfile => 'Profilo';
+
+  @override
+  String get storeHeroEyebrow => 'NUOVA COLLEZIONE';
+
+  @override
+  String get storeHeroTitle => 'Mobili che sembrano\ncasa tua';
+
+  @override
+  String get storeHeroSubtitle =>
+      'Mobili nuovi e usati di qualità, consegnati a casa tua a prezzi che amerai.';
+
+  @override
+  String get storeHeroCta => 'Inizia lo shopping';
+
+  @override
+  String get sectionCategories => 'Categorie';
+
+  @override
+  String get sectionBestSellers => 'Più Venduti';
+
+  @override
+  String get sectionNewArrivals => 'Nuovi Arrivi';
+
+  @override
+  String get seeAll => 'Vedi Tutto';
+
+  @override
+  String get cartTitle => 'Il Mio Carrello';
+
+  @override
+  String get cartEmptyTitle => 'Il carrello è vuoto';
+
+  @override
+  String get cartEmptyDesc =>
+      'Aggiungi i prodotti che ti piacciono, poi chiedi informazioni con un solo messaggio.';
+
+  @override
+  String get cartTotalLabel => 'Totale';
+
+  @override
+  String get cartWhatsappCta => 'Invia carrello su WhatsApp';
+
+  @override
+  String get cartItemRemoved => 'Rimosso dal carrello';
+
+  @override
+  String get addToCartCta => 'Aggiungi al Carrello';
+
+  @override
+  String get addedToCartMessage => 'Aggiunto al carrello';
+
+  @override
+  String get alreadyInCartMessage => 'Già nel carrello';
+
+  @override
+  String get settingsTitle => 'Impostazioni';
+
+  @override
+  String get settingsLanguageLabel => 'Lingua';
+
+  @override
+  String get settingsAccountSection => 'Account';
+
+  @override
+  String get settingsGeneralSection => 'Generale';
+
+  @override
+  String get settingsContact => 'Contatti';
+
+  @override
+  String get settingsCallUs => 'Chiamaci';
+
+  @override
+  String get settingsAdminLogin => 'Accesso Amministratore';
+
+  @override
+  String get settingsAppVersion => 'Versione App';
+
+  @override
+  String cartItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articoli',
+      one: '1 articolo',
+      zero: 'Carrello vuoto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsRateApp => 'Valuta l\'app';
+
+  @override
+  String get settingsShareApp => 'Condividi l\'app';
+
+  @override
+  String get settingsPrivacyPolicy => 'Informativa sulla Privacy';
+
+  @override
+  String get settingsTerms => 'Termini e Condizioni';
+
+  @override
+  String get legalContentTurkishOnly =>
+      'Questo contenuto è attualmente disponibile solo in turco.';
+
+  @override
+  String get doubleBackToExit => 'Premi di nuovo indietro per uscire';
+
+  @override
+  String get productLinkLabel => 'Link al prodotto';
+
+  @override
+  String get settingsAppSection => 'App';
+
+  @override
+  String get settingsLegalSection => 'Legale';
+
+  @override
+  String get recentlyViewedTitle => 'Visti di Recente';
+
+  @override
+  String get productTrustBadgeVerified => 'Venditore Verificato';
+
+  @override
+  String get productTrustBadgeNegotiate => 'Tratta su WhatsApp';
+
+  @override
+  String get productTrustBadgeDelivery => 'Consegna in loco';
+
+  @override
+  String get howToBuyTitle => 'Come acquistare?';
+
+  @override
+  String get howToBuyStep1Title => 'Scrivi su WhatsApp';
+
+  @override
+  String get howToBuyStep1Desc =>
+      'Se ti piace il prodotto, contattaci su WhatsApp.';
+
+  @override
+  String get howToBuyStep2Title => 'Discuti il prezzo';
+
+  @override
+  String get howToBuyStep2Desc =>
+      'Concordate insieme prezzo e dettagli di consegna.';
+
+  @override
+  String get howToBuyStep3Title => 'Ritira il prodotto';
+
+  @override
+  String get howToBuyStep3Desc =>
+      'Dopo l\'accordo, ricevi il tuo prodotto in sicurezza.';
+
+  @override
+  String get listedToday => 'Pubblicato oggi';
+
+  @override
+  String listedDaysAgo(int days) {
+    return 'Pubblicato $days giorni fa';
+  }
+
+  @override
+  String listedWeeksAgo(int weeks) {
+    return 'Pubblicato $weeks settimane fa';
+  }
+
+  @override
+  String get settingsAppearanceSection => 'Aspetto';
+
+  @override
+  String get settingsThemeLight => 'Chiaro';
+
+  @override
+  String get settingsThemeSystem => 'Sistema';
+
+  @override
+  String get settingsThemeDark => 'Scuro';
+
+  @override
+  String get notificationsTitle => 'Notifiche';
+
+  @override
+  String get notificationsEmptyTitle => 'Nessuna notifica ancora';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Nuove campagne e annunci appariranno qui';
+
+  @override
+  String get markAllReadAction => 'Segna tutte come lette';
+
+  @override
+  String get clearAllAction => 'Cancella tutto';
+
+  @override
+  String get timeJustNow => 'Proprio ora';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes min fa';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours ore fa';
+  }
+
+  @override
+  String timeDaysAgoGeneric(int days) {
+    return '$days giorni fa';
+  }
 }

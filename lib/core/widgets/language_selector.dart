@@ -67,7 +67,7 @@ class LanguageSelector extends ConsumerWidget {
       offset: const Offset(0, 46),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: AppColors.border),
       ),
       color: AppColors.surface,
       icon: Container(
@@ -127,7 +127,7 @@ class LanguageSelector extends ConsumerWidget {
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.check_rounded,
+                  Icon(Icons.check_rounded,
                       color: AppColors.accentDark, size: 18),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/enum/enums.dart';
@@ -9,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
@@ -58,7 +60,7 @@ class _HomePageState extends ConsumerState<HomePage>
       appBar: _buildAppBar(context),
       body: productsAsync.when(
         loading: () =>
-            const Center(child: CircularProgressIndicator(color: AppColors.mobileAccent)),
+            Center(child: CircularProgressIndicator(color: AppColors.mobileAccent)),
         error: (final e, final _) => Center(child: Text('Hata: $e')),
         data: (final _) => Column(
           children: [
@@ -93,11 +95,15 @@ class _HomePageState extends ConsumerState<HomePage>
         backgroundColor: AppColors.mobileBackground,
         elevation: 0,
         centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.go('/'),
+        ),
         title: Padding(
           padding: const EdgeInsets.only(left: 4),
           child: Text(
             context.l10n.adminPanelTitle,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.mobileTextPrimary,
               fontWeight: FontWeight.w900,
               fontSize: 24,
@@ -105,7 +111,43 @@ class _HomePageState extends ConsumerState<HomePage>
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+            onPressed: () => _confirmLogout(context),
+          ),
+        ],
       );
+
+  Future<void> _confirmLogout(final BuildContext context) async {
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (final context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(context.l10n.brand, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(context.l10n.logoutConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(context.l10n.cancel, style: const TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Text(context.l10n.logout),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      await ref.read(authProvider.notifier).signOut();
+      if (context.mounted) context.go('/');
+    }
+  }
 
   Widget _buildStatsRow(final int stock, final int sold) => Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -213,22 +255,39 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.mobileBorder),
+          boxShadow: [
+            BoxShadow(
+                color: color.withOpacity(0.16),
+                blurRadius: 18,
+                offset: const Offset(0, 8)),
+          ],
         ),
         child: Column(
           children: [
-            Icon(icon, size: 18, color: color),
-            const SizedBox(height: 6),
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [color.withOpacity(0.85), color],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, size: 17, color: Colors.white),
+            ),
+            const SizedBox(height: 8),
             Text(value,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 17, fontWeight: FontWeight.w900,
                     color: AppColors.mobileTextPrimary)),
             Text(label,
-                style: const TextStyle(fontSize: 10.5, color: AppColors.mobileTextTertiary)),
+                style: TextStyle(fontSize: 10.5, color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -246,10 +305,10 @@ class _ProductGrid extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.mobileTextTertiary),
+            Icon(Icons.inbox_rounded, size: 48, color: AppColors.mobileTextTertiary),
             const SizedBox(height: 10),
             Text(context.l10n.emptyCategoryProducts,
-                style: const TextStyle(color: AppColors.mobileTextTertiary)),
+                style: TextStyle(color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -314,26 +373,29 @@ class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-              color: AppColors.mobileTextPrimary.withOpacity(0.06),
-              blurRadius: 18,
-              offset: const Offset(0, 8)),
+              color: AppColors.mobilePrimary.withOpacity(0.10),
+              blurRadius: 24,
+              offset: const Offset(0, 12)),
+          BoxShadow(
+              color: AppColors.mobileTextPrimary.withOpacity(0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 2)),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AspectRatio(aspectRatio: 0.9, child: _ImageArea(product: product)),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _InfoArea(product: product),
-                  const Spacer(),
-                  _ActionBar(product: product),
-                ],
-              ),
+          Expanded(child: _ImageArea(product: product)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _InfoArea(product: product),
+                const SizedBox(height: 8),
+                _ActionBar(product: product),
+              ],
             ),
           ),
         ],
@@ -371,13 +433,11 @@ class _ImageArea extends ConsumerWidget {
                     width: double.infinity,
                     height: double.infinity,
                     color: AppColors.mobileSecondaryBg,
-                    child: const Icon(Icons.chair_alt_rounded,
+                    child: Icon(Icons.chair_alt_rounded,
                         size: 48, color: AppColors.mobileTextTertiary),
                   ),
           ),
           Positioned(top: 10, left: 10, child: _StatusBadge(product: product)),
-          Positioned(
-              bottom: 10, right: 10, child: _PriceBadge(price: product.price)),
         ],
       );
 }
@@ -397,7 +457,7 @@ class _InfoArea extends StatelessWidget {
           product.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
         ),
         const SizedBox(height: 4),
@@ -420,6 +480,12 @@ class _InfoArea extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 6),
+        Text(
+          '${product.price.toStringAsFixed(0)} ₺',
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
+        ),
       ],
     );
   }
@@ -432,35 +498,28 @@ class _ActionBar extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    return Container(
-      height: 44,
-      decoration: BoxDecoration(
-        color: AppColors.mobileBackground.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.mobileBorder),
-      ),
-      child: Row(
-        children: [
-          if (!product.isSold) ...[
-            _actionBtn(
-              icon: Icons.edit_rounded,
-              color: AppColors.info,
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (final _) =>
-                        EditProductPage(productId: product.id, product: product),
-                  )),
-            ),
-            Container(width: 1, color: AppColors.mobileBorder),
-          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (!product.isSold) ...[
           _actionBtn(
-            icon: Icons.delete_forever_rounded,
-            color: AppColors.error,
-            onTap: () => _confirmDelete(context, ref),
+            icon: Icons.edit_rounded,
+            color: AppColors.mobilePrimary,
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (final _) =>
+                      EditProductPage(productId: product.id, product: product),
+                )),
           ),
+          const SizedBox(width: 8),
         ],
-      ),
+        _actionBtn(
+          icon: Icons.delete_rounded,
+          color: AppColors.error,
+          onTap: () => _confirmDelete(context, ref),
+        ),
+      ],
     );
   }
 
@@ -468,11 +527,19 @@ class _ActionBar extends ConsumerWidget {
       {required final IconData icon,
       required final Color color,
       required final VoidCallback onTap}) {
-    return Expanded(
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      elevation: 3,
+      shadowColor: color.withOpacity(0.35),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
-        child: Icon(icon, color: color, size: 20),
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 32,
+          height: 32,
+          child: Icon(icon, color: color, size: 16),
+        ),
       ),
     );
   }
@@ -493,7 +560,7 @@ class _ActionBar extends ConsumerWidget {
               Navigator.pop(context);
             },
             child: Text(context.l10n.yesDelete,
-                style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+                style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -521,26 +588,6 @@ class _StatusBadge extends StatelessWidget {
         style: const TextStyle(
             color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
       ),
-    );
-  }
-}
-
-class _PriceBadge extends StatelessWidget {
-  final num price;
-
-  const _PriceBadge({required this.price});
-
-  @override
-  Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text('$price ₺',
-          style: const TextStyle(
-              color: Colors.white, fontSize: 12, fontWeight: FontWeight.w900)),
     );
   }
 }

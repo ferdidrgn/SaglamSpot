@@ -119,12 +119,12 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(context.l10n.viewButton,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           color: AppColors.primary,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 12.5)),
                                   const SizedBox(width: 6),
-                                  const Icon(Icons.arrow_forward_rounded,
+                                  Icon(Icons.arrow_forward_rounded,
                                       size: 14, color: AppColors.primary),
                                 ],
                               ),
@@ -143,7 +143,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   children: [
                     Text(
                       widget.product.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontFamily: 'Fraunces',
                           color: AppColors.textPrimary,
                           fontSize: 15,
@@ -154,7 +154,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                     const SizedBox(height: 3),
                     Text(
                       widget.product.category.label(context),
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.textTertiary, fontSize: 12),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -162,7 +162,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                     const SizedBox(height: 7),
                     Text(
                       '₺${widget.product.price.toStringAsFixed(0)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.accentDark,
                           fontSize: 14,
                           fontWeight: FontWeight.w700),
@@ -196,7 +196,7 @@ class _ImageFallback extends StatelessWidget {
   const _ImageFallback();
 
   @override
-  Widget build(final BuildContext context) => const Center(
+  Widget build(final BuildContext context) => Center(
       child: Icon(Icons.chair_rounded, size: 40, color: AppColors.textTertiary));
 }
 
@@ -257,7 +257,7 @@ class _ConditionBadge extends StatelessWidget {
       ),
       child: Text(
         context.l10n.usedProductBadge,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppColors.accentDark,
           fontSize: 11,
           fontWeight: FontWeight.w700,

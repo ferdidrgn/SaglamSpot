@@ -231,7 +231,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
           IconButton(
             onPressed: _closeSheet,
             icon:
-                const Icon(Icons.close_rounded, color: AppColors.textSecondary),
+                Icon(Icons.close_rounded, color: AppColors.textSecondary),
             style: IconButton.styleFrom(
               backgroundColor: AppColors.secondary,
               shape: RoundedRectangleBorder(
@@ -377,7 +377,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
   Widget _buildActionButtons() {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(top: BorderSide(color: AppColors.border))),
       child: Row(
         children: [

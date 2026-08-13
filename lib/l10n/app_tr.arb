@@ -179,7 +179,6 @@
   "loginBrand": "Sağlam Spot",
   "logout": "Oturumu Kapat",
   "logoutConfirm": "Hesabınızdan güvenli bir şekilde çıkış yapmak istediğinize emin misiniz?",
-
   "testimonialsHeading": "Müşterilerimiz Ne Diyor?",
   "testimonialsSubheading": "20 yılı aşkın süredir İçerenköy ve çevresinde binlerce eve dokunduk",
   "testimonial1Comment": "Koltuk takımını çok uygun fiyata aldık, hem de sıfır gibi. Teslimat aynı gün elden ele yapıldı, esnaf usulü güven tam anlamıyla buradaydı.",
@@ -188,7 +187,6 @@
   "testimonial4Comment": "Yemek masası setini pazarlıksız, dürüst bir fiyata satın aldık. Nakliye konusunda da yardımcı oldular, gönül rahatlığıyla alışveriş yaptık.",
   "testimonial5Comment": "İkinci el gardırop aradık, hem sağlam hem şık bir ürün bulduk. Fiyat/performans olarak piyasadaki en iyi seçenekti.",
   "testimonial6Comment": "Showroom ziyaretimizde ürünleri yerinde görme şansımız oldu, bu güveni artırdı. Satış sonrası da bize her zaman ulaşılabilir oldular.",
-
   "howItWorksHeading": "Nasıl Çalışır?",
   "step1Title": "Gözat & Filtrele",
   "step1Desc": "Kategoriler ve fiyat aralığına göre binlerce ürün arasından beğendiğini bul.",
@@ -198,7 +196,6 @@
   "step3Desc": "Ürünü showroomda gör veya fotoğraflarla teyit et, esnaf usulü net fiyat al.",
   "step4Title": "Kapına Teslim",
   "step4Desc": "İçerenköy ve Anadolu Yakası'na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.",
-
   "tipsEyebrow": "İPUÇLARI",
   "tipsHeading": "Uzmanından Bakım Önerileri",
   "tip1Title": "Oturma Odasını Sevilesi Hale Getirin",
@@ -231,7 +228,6 @@
   "tip10Title": "Balkonunuzu Yaşam Alanına Dönüştürün",
   "tip10Desc": "Hava koşullarına dayanıklı bir koltuk takımı ve birkaç saksı bitkiyle balkon, evin en sevilen köşesi haline gelir.",
   "tip10Category": "Dış Mekan",
-
   "popularCategoriesHeading": "Popüler Kategoriler",
   "popularCategoriesSub": "İhtiyacına uygun mobilyayı tek tıkla bul",
   "categoryProductCount": "{count} ürün",
@@ -242,14 +238,12 @@
       }
     }
   },
-
   "newsletterSubscribeSuccess": "Bültenimize başarıyla abone oldunuz!",
   "newsletterHeading": "Yeni Ürünlerden İlk Siz Haberdar Olun",
   "newsletterDesc": "Spot fırsatlar, yeni koleksiyonlar ve kampanyalar e-posta kutunuza gelsin. Spam yok, sadece işinize yarayacak fırsatlar.",
   "emailHint": "E-posta adresiniz",
   "emailRequired": "E-posta gerekli",
   "emailInvalid": "Geçerli bir e-posta girin",
-
   "whyUsHeading": "Neden Sağlam Spot?",
   "usp1Title": "20 Yıllık Esnaf Güvencesi",
   "usp1Desc": "İçerenköy'de yirmi yılı aşan bir esnaflık geçmişi ve binlerce memnun müşteri.",
@@ -259,10 +253,8 @@
   "usp3Desc": "Her ürün satışa çıkmadan önce yapısal ve kumaş/kaplama kontrolünden geçer.",
   "usp4Title": "Satış Sonrası Destek",
   "usp4Desc": "Teslimat sonrası da ulaşabileceğin, sorununu çözen gerçek bir ekip.",
-
   "socialShowcaseEyebrow": "PAYLAŞIN",
   "socialShowcaseHeading": "#SağlamSpot ile Kurulumunuzu Paylaşın",
-
   "productsLoadError": "Ürünler yüklenirken hata oluştu: {error}",
   "@productsLoadError": {
     "placeholders": {
@@ -295,7 +287,6 @@
   "heroSlide2Title": "Öyküsü Olan Mobilyalar",
   "heroSlide2Subtitle": "Özenle seçilmiş, sağlam ve karakterli ikinci el parçalar.",
   "heroSlide3Title": "Tüm Koleksiyonu Keşfedin",
-
   "aboutBadge": "2012'DEN BERİ SİZİNLE",
   "aboutHeroTitle": "Sağlam Spot\nBildiğiniz Güven",
   "aboutHeroSubtitle": "İşimizi sevgi ve titizlikle yaparak\nmahallemize hizmet veriyoruz.",
@@ -339,7 +330,6 @@
   "aboutViewMapButton": "Haritada Gör",
   "aboutMapHeading": "Dükkanımız Tam Burada",
   "aboutMapSubtext": "Yol tarifi almak için haritaya dokunun",
-
   "newProductsBadgeEyebrow": "NEW COLLECTION",
   "newProductsTitle": "Yeni\nKoleksiyon",
   "productsBadgeLabel": "ÜRÜN",
@@ -358,7 +348,6 @@
   "sortPriceLowHigh": "Fiyat: Düşük-Yüksek",
   "sortPriceHighLow": "Fiyat: Yüksek-Düşük",
   "sortMostPopular": "En Popüler",
-
   "spotBadgeEyebrow": "SPOT ÜRÜNLER",
   "spotHeroTitle": "Fırsat\nÜrünleri",
   "spotDiscountLabel": "İNDİRİM",
@@ -373,7 +362,6 @@
   "clearFiltersButton": "FİLTRELERİ TEMİZLE",
   "tryDifferentFiltersShort": "Farklı filtreler deneyebilirsiniz",
   "spotBadgeTag": "SPOT",
-
   "productLoadError": "Ürün yüklenemedi: {error}",
   "@productLoadError": {
     "placeholders": {
@@ -384,16 +372,13 @@
   },
   "productSpecConditionNew": "Sıfır Ürün",
   "productLocationValue": "İçerenköy, İstanbul",
-
   "sortFeatured": "Öne Çıkanlar",
   "sortPriceAsc": "Fiyat: Artan",
   "sortPriceDesc": "Fiyat: Azalan",
-
   "languageSelectorTitle": "Dil Seçimi",
   "languageTooltip": "Dil",
   "galleryEmptyMessage": "Bu ürüne ait henüz fotoğraf eklenmemiş.",
   "productCardNewBadge": "SIFIR",
-
   "sssHelpCenterBadge": "YARDIM MERKEZİ",
   "sssHeroTitle": "Sıkça Sorulan\nSorular",
   "sssHeroSubtitle": "Merak ettiğiniz her şeyin cevabı burada",
@@ -412,7 +397,6 @@
   "sssNoAnswerTitle": "Sorunuz Yanıt Bulamadı mı?",
   "sssNoAnswerSubtitle": "Bize Ulaşabilirsiniz",
   "sssVisitStoreButton": "Mağazaya Gel",
-
   "sssQ1": "Ustanın çalışma hayatı ve tecrübesi hakkında bilgi verebilir misiniz?",
   "sssA1": "Ustamız, 1995 yılından beri bu sektörde aktif olarak çalışmaktadır. Kariyerine ilk adımlarını attığı günden itibaren sürekli bir gelişim göstermiştir. Çalışma hayatı boyunca, teslimatlar için sürücülük, taşıma, montaj, müşteri karşılama gibi birçok iş pozisyonunda görev alarak çok yönlü bir deneyim kazanmıştır. Özellikle 2010 yılına kadar İstikbal'de çalışmış ve bu süreçte ürünlerin özellikleri, parçaları ve püf noktaları hakkında derinlemesine bilgi sahibi olmuştur. 2010'dan sonra, yakın civardaki Işık Çeyiz'de çalışarak sektördeki yetkinliğini artırmıştır. 2012 yılında ise kendi esnaf dükkanını açma kararı almış ve bu süreçte kaliteli hizmet anlayışını ön planda tutarak, sektördeki deneyimlerini müşterilerine en iyi şekilde aktarmayı hedeflemiştir.",
   "sssQ2": "Sağlam Spot güvenilir mi?",
@@ -456,5 +440,112 @@
   "sssQ21": "Eşyalarım yüksek katta ve binada asansör yok. Alım yapar mısınız?",
   "sssA21": "Tıpkı teslimat konusunda olduğu gibi, bu bizim için en net kuralımız. Ustamızın sağlık durumu nedeniyle, asansör olmayan binalarda yüksek katlardan eşya indirme işlemi kesinlikle yapamıyoruz. Eşyalarınız zemin/giriş kata yakın ise veya binada yük asansörü varsa ancak o zaman değerlendirebiliriz.",
   "sssQ22": "Her zaman eşya alımı yapıyor musunuz?",
-  "sssA22": "Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, 'sat-al' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe 'şu an yerimiz var' veya 'maalesef bu ara doluyuz' diye bilgi veririz."
+  "sssA22": "Bu tamamen dükkanımızdaki boşluğa bağlı. Dükkanımız küçük olduğu için, 'sat-al' dengesiyle çalışıyoruz. Bazen bir ürünü çok beğensek de yerimiz olmadığı için alamayabiliyoruz. En sağlıklısı, bize satmak istediğiniz ürünün fotoğraflarını göndermenizdir. Size dürüstçe 'şu an yerimiz var' veya 'maalesef bu ara doluyuz' diye bilgi veririz.",
+  "navDiscover": "Keşfet",
+  "navCart": "Sepet",
+  "navProfile": "Profil",
+  "storeHeroEyebrow": "YENİ KOLEKSİYON",
+  "storeHeroTitle": "Evinize Yakışan\nMobilyaları Keşfedin",
+  "storeHeroSubtitle": "Kaliteli sıfır ve ikinci el mobilyalar, cebinize uygun fiyatlarla kapınızda.",
+  "storeHeroCta": "Alışverişe Başla",
+  "sectionCategories": "Kategoriler",
+  "sectionBestSellers": "Çok Satanlar",
+  "sectionNewArrivals": "Yeni Gelenler",
+  "seeAll": "Tümünü Gör",
+  "cartTitle": "Sepetim",
+  "cartEmptyTitle": "Sepetiniz Boş",
+  "cartEmptyDesc": "Beğendiğiniz ürünleri sepete ekleyin, sonra tek mesajla bize sorun.",
+  "cartTotalLabel": "Toplam",
+  "cartWhatsappCta": "Sepeti WhatsApp'tan Gönder",
+  "cartItemRemoved": "Sepetten kaldırıldı",
+  "addToCartCta": "Sepete Ekle",
+  "addedToCartMessage": "Sepete eklendi",
+  "alreadyInCartMessage": "Bu ürün zaten sepette",
+  "settingsTitle": "Ayarlar",
+  "settingsLanguageLabel": "Dil",
+  "settingsAccountSection": "Hesap",
+  "settingsGeneralSection": "Genel",
+  "settingsContact": "İletişim",
+  "settingsCallUs": "Bizi Arayın",
+  "settingsAdminLogin": "Yönetici Girişi",
+  "settingsAppVersion": "Uygulama Sürümü",
+  "cartItemsCount": "{count, plural, =0{Sepet boş} =1{1 ürün} other{{count} ürün}}",
+  "@cartItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRateApp": "Uygulamayı Değerlendir",
+  "settingsShareApp": "Uygulamayı Paylaş",
+  "settingsPrivacyPolicy": "Gizlilik Politikası",
+  "settingsTerms": "Kullanım Koşulları",
+  "legalContentTurkishOnly": "Bu içerik şu anda yalnızca Türkçe olarak sunulmaktadır.",
+  "doubleBackToExit": "Çıkmak için tekrar geri tuşuna basın",
+  "productLinkLabel": "Ürün linki",
+  "settingsAppSection": "Uygulama",
+  "settingsLegalSection": "Yasal",
+  "recentlyViewedTitle": "Son Görüntülenenler",
+  "productTrustBadgeVerified": "Satıcı Onaylı",
+  "productTrustBadgeNegotiate": "WhatsApp'tan Pazarlık",
+  "productTrustBadgeDelivery": "Yerinde Teslim",
+  "howToBuyTitle": "Nasıl Satın Alırım?",
+  "howToBuyStep1Title": "WhatsApp'tan Yaz",
+  "howToBuyStep1Desc": "Ürünü beğendiyseniz WhatsApp üzerinden bize ulaşın.",
+  "howToBuyStep2Title": "Fiyatı Konuş",
+  "howToBuyStep2Desc": "Fiyat ve teslimat detaylarını birlikte görüşelim.",
+  "howToBuyStep3Title": "Teslim Alın",
+  "howToBuyStep3Desc": "Anlaştıktan sonra ürününüzü güvenle teslim alın.",
+  "listedToday": "Bugün eklendi",
+  "listedDaysAgo": "{days} gün önce eklendi",
+  "@listedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "listedWeeksAgo": "{weeks} hafta önce eklendi",
+  "@listedWeeksAgo": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppearanceSection": "Görünüm",
+  "settingsThemeLight": "Açık",
+  "settingsThemeSystem": "Sistem",
+  "settingsThemeDark": "Koyu",
+  "notificationsTitle": "Bildirimler",
+  "notificationsEmptyTitle": "Henüz bildirim yok",
+  "notificationsEmptyDesc": "Yeni kampanya ve duyurular burada görünecek",
+  "markAllReadAction": "Tümünü okundu işaretle",
+  "clearAllAction": "Tümünü temizle",
+  "timeJustNow": "Az önce",
+  "timeMinutesAgo": "{minutes} dakika önce",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} saat önce",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgoGeneric": "{days} gün önce",
+  "@timeDaysAgoGeneric": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

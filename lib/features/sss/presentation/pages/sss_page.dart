@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 enum _FaqCategory {
   all,
@@ -164,6 +167,8 @@ class _SSSPageState extends State<SSSPage> {
 
   @override
   Widget build(final BuildContext context) {
+    if (context.isMobile) return _buildMobileScaffold(context);
+
     return CustomScrollView(
       slivers: [
         // Hero Section
@@ -187,6 +192,230 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
+  // ════════════════════════════════════════════════════════════
+  // MOBİL TASARIM — teal/sage paleti, gerçek Scaffold + geri butonu +
+  // alt navigasyon çubuğu, sıkıştırılmış tek-sütun akordeon SSS listesi.
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildMobileScaffold(final BuildContext context) {
+    final filteredFaqs = _filteredFaqs(context);
+
+    return Scaffold(
+      backgroundColor: AppColors.mobileBackground,
+      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(child: _buildMobileHeader(context)),
+            SliverToBoxAdapter(child: _buildMobileCategoryChips(context)),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (final context, final index) =>
+                      _buildMobileFaqCard(context, filteredFaqs[index], index),
+                  childCount: filteredFaqs.length,
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(child: _buildMobileContactCard(context)),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileHeader(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 20, 4),
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () => NavigationHandler.smartGoBack(context),
+              icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+            ),
+            Expanded(
+              child: Text(
+                context.l10n.sssHeroTitle,
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.mobileTextPrimary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildMobileCategoryChips(final BuildContext context) {
+    final allFaqs = _faqs(context);
+    return SizedBox(
+      height: 44,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _FaqCategory.values.length,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 8),
+        itemBuilder: (final context, final index) {
+          final category = _FaqCategory.values[index];
+          final isSelected = _selectedCategory == category;
+          final count = category == _FaqCategory.all
+              ? allFaqs.length
+              : allFaqs.where((final f) => f.category == category).length;
+
+          return GestureDetector(
+            onTap: () => setState(() {
+              _selectedCategory = category;
+              _expandedIndex = null;
+            }),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.mobilePrimary : Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected ? AppColors.mobilePrimary : AppColors.mobileBorder,
+                ),
+              ),
+              child: Text(
+                '${_categoryLabel(context, category)} ($count)',
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                  color: isSelected ? Colors.white : AppColors.mobileTextSecondary,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMobileFaqCard(final BuildContext context, final _Faq faq, final int index) {
+    final isExpanded = _expandedIndex == index;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isExpanded ? AppColors.mobilePrimary : AppColors.mobileBorder,
+          width: isExpanded ? 1.6 : 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => setState(() => _expandedIndex = isExpanded ? null : index),
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      faq.question,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w700,
+                        color: isExpanded
+                            ? AppColors.mobilePrimary
+                            : AppColors.mobileTextPrimary,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    isExpanded ? Icons.remove_circle_outline_rounded : Icons.add_circle_outline_rounded,
+                    color: isExpanded ? AppColors.mobilePrimary : AppColors.mobileTextTertiary,
+                    size: 20,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (isExpanded)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  faq.answer,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    color: AppColors.mobileTextSecondary,
+                    height: 1.55,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileContactCard(final BuildContext context) => Container(
+        margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: AppColors.mobilePrimaryGradient,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.support_agent_rounded, color: Colors.white, size: 36),
+            const SizedBox(height: 12),
+            Text(
+              context.l10n.sssNoAnswerTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              context.l10n.sssNoAnswerSubtitle,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 12.5),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => SaglamSpotCommunication.makeCall(),
+                    icon: const Icon(Icons.call_rounded, size: 16, color: Colors.white),
+                    label: Text(context.l10n.contactUs,
+                        style: const TextStyle(color: Colors.white, fontSize: 12.5)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.white70),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => SaglamSpotCommunication.launchWhatsApp(),
+                    icon: const Icon(Icons.chat_bubble_rounded, size: 16),
+                    label: Text(context.l10n.whatsappCta, style: const TextStyle(fontSize: 12.5)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.mobilePrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
   Widget _buildHeroSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -199,7 +428,7 @@ class _SSSPageState extends State<SSSPage> {
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [AppColors.sage, AppColors.sageDark],
