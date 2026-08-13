@@ -207,7 +207,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                   backgroundColor: AppColors.mobilePrimary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: const StadiumBorder(),
                   elevation: 0,
                 ),
                 child: Text(context.l10n.storeHeroCta,
@@ -250,6 +250,7 @@ class _CartPageState extends ConsumerState<CartPage> {
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
+            height: 54,
             child: ElevatedButton.icon(
               onPressed: hasSelection ? () => _sendCartToWhatsApp(selectedItems) : null,
               icon: const Icon(Icons.chat_bubble_rounded, size: 18),
@@ -259,8 +260,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                 backgroundColor: AppColors.mobilePrimary,
                 foregroundColor: Colors.white,
                 disabledBackgroundColor: AppColors.mobileMutedDark,
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: const StadiumBorder(),
                 elevation: 0,
               ),
             ),
@@ -295,14 +295,20 @@ class _CartItemCard extends ConsumerWidget {
         border: Border.all(
           color: isSelected ? AppColors.mobilePrimary.withOpacity(0.4) : AppColors.mobileBorder,
         ),
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.mobileTextPrimary.withOpacity(0.05),
+              blurRadius: 14,
+              offset: const Offset(0, 6)),
+        ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
             onTap: onToggleSelected,
             child: Padding(
-              padding: const EdgeInsets.only(top: 24, right: 8),
+              padding: const EdgeInsets.only(right: 8),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
                 width: 20,
@@ -359,25 +365,10 @@ class _CartItemCard extends ConsumerWidget {
                         fontSize: 14.5, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      _QtyButton(
-                        icon: Icons.remove_rounded,
-                        onTap: () => notifier.decrement(product.id),
-                      ),
-                      SizedBox(
-                        width: 30,
-                        child: Text(
-                          '${item.quantity}',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5),
-                        ),
-                      ),
-                      _QtyButton(
-                        icon: Icons.add_rounded,
-                        onTap: () => notifier.increment(product.id),
-                      ),
-                    ],
+                  _QtyStepper(
+                    quantity: item.quantity,
+                    onDecrement: () => notifier.decrement(product.id),
+                    onIncrement: () => notifier.increment(product.id),
                   ),
                 ],
               ),
@@ -394,24 +385,50 @@ class _CartItemCard extends ConsumerWidget {
   }
 }
 
-class _QtyButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
+/// Referans tasarımdaki tek parça, hap şeklinde adet seçici ("- 1 +").
+class _QtyStepper extends StatelessWidget {
+  final int quantity;
+  final VoidCallback onDecrement;
+  final VoidCallback onIncrement;
 
-  const _QtyButton({required this.icon, required this.onTap});
+  const _QtyStepper(
+      {required this.quantity, required this.onDecrement, required this.onIncrement});
 
   @override
-  Widget build(final BuildContext context) => InkWell(
+  Widget build(final BuildContext context) => Container(
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: AppColors.mobileCardBg,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _stepIcon(Icons.remove_rounded, onDecrement),
+            SizedBox(
+              width: 26,
+              child: Text(
+                '$quantity',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13.5,
+                    color: AppColors.mobileTextPrimary),
+              ),
+            ),
+            _stepIcon(Icons.add_rounded, onIncrement),
+          ],
+        ),
+      );
+
+  Widget _stepIcon(final IconData icon, final VoidCallback onTap) => InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: 26,
-          height: 26,
-          decoration: BoxDecoration(
-            color: AppColors.mobileCardBg,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 15, color: AppColors.mobileTextPrimary),
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 22,
+          height: 22,
+          child: Icon(icon, size: 14, color: AppColors.mobileTextPrimary),
         ),
       );
 }

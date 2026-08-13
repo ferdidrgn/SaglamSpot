@@ -781,6 +781,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           child: _PrimaryButton(
             label: context.l10n.whatsappCta,
             icon: Icons.chat_bubble_rounded,
+            price: '₺${product.price.toStringAsFixed(0)}',
             onTap: () => FurnitureShareService.contactAboutProduct(
               productId: product.id,
               productName: product.name,
@@ -885,6 +886,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               child: _PrimaryButton(
                 label: context.l10n.whatsappCta,
                 icon: Icons.chat_bubble_rounded,
+                price: '₺${product.price.toStringAsFixed(0)}',
                 onTap: () => FurnitureShareService.contactAboutProduct(
                   productId: product.id,
                   productName: product.name,
@@ -943,39 +945,64 @@ class _RoundIconButton extends StatelessWidget {
       );
 }
 
+/// Referans tasarımdaki "Add to Cart | $185" bölünmüş hap buton dili:
+/// solda etiket+ikon, sağda ayrı bir fiyat rozeti — tek bir tam-yuvarlak
+/// (stadium) pil içinde. `price` verilmezse düz, tek bölgeli buton olur.
 class _PrimaryButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
+  final String? price;
 
   const _PrimaryButton(
-      {required this.label, required this.icon, required this.onTap});
+      {required this.label, required this.icon, required this.onTap, this.price});
 
   @override
-  Widget build(final BuildContext context) => Material(
-        color: _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary),
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            height: 52,
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: Colors.white, size: 18),
-                const SizedBox(width: 8),
-                Text(label,
+  Widget build(final BuildContext context) {
+    final Color bg = _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
+    return Material(
+      color: bg,
+      shape: const StadiumBorder(),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const StadiumBorder(),
+        child: Container(
+          height: 52,
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(width: 10),
+              Icon(icon, color: Colors.white, size: 18),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(label,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 14.5)),
-              ],
-            ),
+                        color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14.5)),
+              ),
+              if (price != null) ...[
+                const SizedBox(width: 10),
+                Container(
+                  height: 40,
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.18),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(price!,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14.5)),
+                ),
+              ] else
+                const SizedBox(width: 10),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 class _TrustChip extends StatelessWidget {
