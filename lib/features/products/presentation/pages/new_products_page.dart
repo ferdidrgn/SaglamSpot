@@ -15,7 +15,6 @@ import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../../core/widgets/view_mode_toggle.dart';
-import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
