@@ -484,9 +484,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 class _TrustChip extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color accent;
+  final Color? accent;
 
-  _TrustChip({required this.icon, required this.label, this.accent = AppColors.primary});
+  const _TrustChip({required this.icon, required this.label, this.accent});
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -499,7 +499,7 @@ class _TrustChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 13, color: accent),
+            Icon(icon, size: 13, color: accent ?? AppColors.primary),
             const SizedBox(width: 6),
             Text(label,
                 style: TextStyle(

@@ -233,26 +233,27 @@ class _SettingsCard extends StatelessWidget {
 
 class _SettingsTile extends StatelessWidget {
   final IconData icon;
-  final Color accent;
+  final Color? accent;
   final String label;
   final VoidCallback onTap;
 
-  _SettingsTile({
+  const _SettingsTile({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.accent = AppColors.mobilePrimary,
+    this.accent,
   });
 
   @override
   Widget build(final BuildContext context) {
+    final Color resolvedAccent = accent ?? AppColors.mobilePrimary;
     return ListTile(
       onTap: onTap,
       leading: Container(
         width: 34,
         height: 34,
         decoration: BoxDecoration(
-          color: accent.withOpacity(0.14),
+          color: resolvedAccent.withOpacity(0.14),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 17, color: accent),

@@ -25,7 +25,7 @@ class AppTheme {
   }
 
   ThemeData get lightTheme {
-    const colorScheme = ColorScheme.light(
+    final colorScheme = ColorScheme.light(
       primary: AppColors.primary,
       onPrimary: AppColors.textLight,
       // Koyu yeşil üzerine beyaz metin
@@ -88,7 +88,7 @@ class AppTheme {
   }
 
   ThemeData get darkTheme {
-    const colorScheme = ColorScheme.dark(
+    final colorScheme = ColorScheme.dark(
       primary: AppColors.onPrimary,
       // Dark modda daha açık bir yeşil vurgu için
       onPrimary: AppColors.primary,
