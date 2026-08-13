@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "外观",
+  "settingsThemeLight": "浅色",
+  "settingsThemeSystem": "跟随系统",
+  "settingsThemeDark": "深色"
 }

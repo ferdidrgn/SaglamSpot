@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Ko'rinish",
+  "settingsThemeLight": "Yorug'",
+  "settingsThemeSystem": "Tizim",
+  "settingsThemeDark": "Qorong'u"
 }

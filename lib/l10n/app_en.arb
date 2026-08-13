@@ -513,5 +513,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Appearance",
+  "settingsThemeLight": "Light",
+  "settingsThemeSystem": "System",
+  "settingsThemeDark": "Dark"
 }

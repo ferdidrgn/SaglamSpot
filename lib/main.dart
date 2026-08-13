@@ -8,7 +8,9 @@ import 'core/config/app_router.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/services/admin_session_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
+import 'core/services/theme_mode_cache.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_mode_provider.dart';
 import 'l10n/app_localizations.dart';
 
 /// Flutter web/masaüstünde varsayılan olarak fare ile "tıkla-sürükle" kaydırma
@@ -58,6 +60,10 @@ void main() async {
   // yönlendirme kararını senkron verebilmesi için runApp'ten önce yüklenir
   await AdminSessionCache.load();
 
+  // 5. Kayıtlı görünüm (açık/koyu/sistem) tercihi — ilk karede yanlış
+  // temanın bir an görünüp değişmesini (flash) önlemek için önceden yüklenir
+  await ThemeModeCache.load();
+
   runApp(
       const ProviderScope(observers: [], child: MyApp())
   );
@@ -101,8 +107,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       scrollBehavior: MouseDragScrollBehavior(),
       theme: appTheme.lightTheme,
       darkTheme: appTheme.darkTheme,
-      themeMode: ThemeMode.light,
-      // Editoryal lüks mimari tasarımı korumak adına açık renk şeması tabanlı tutulmuştur
+      themeMode: ref.watch(themeModeProvider),
       locale: localeAsync.value ?? const Locale('tr'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

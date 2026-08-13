@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/language_selector.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
@@ -56,11 +57,16 @@ class SettingsPage extends ConsumerWidget {
                 if (isAdminLoggedIn)
                   _SettingsTile(
                     icon: Icons.admin_panel_settings_rounded,
+                    accent: AppColors.mobilePrimary,
                     label: context.l10n.settingsAdminLogin,
                     onTap: () => NavigationHandler.goToAdmin(context),
                   ),
               ],
             ),
+            const SizedBox(height: 24),
+            _SectionLabel(context.l10n.settingsAppearanceSection),
+            const SizedBox(height: 10),
+            const _ThemeModeCard(),
             const SizedBox(height: 24),
             _SectionLabel(context.l10n.settingsGeneralSection),
             const SizedBox(height: 10),
@@ -68,21 +74,25 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 _SettingsTile(
                   icon: Icons.storefront_rounded,
+                  accent: AppColors.mobilePrimary,
                   label: context.l10n.aboutUs,
                   onTap: () => NavigationHandler.goToAbout(context),
                 ),
                 _SettingsTile(
                   icon: Icons.quiz_rounded,
+                  accent: AppColors.mobileAccentDark,
                   label: context.l10n.sss,
                   onTap: () => NavigationHandler.goToSSS(context),
                 ),
                 _SettingsTile(
                   icon: Icons.call_rounded,
+                  accent: AppColors.info,
                   label: context.l10n.settingsCallUs,
                   onTap: SaglamSpotCommunication.makeCall,
                 ),
                 _SettingsTile(
                   icon: Icons.chat_bubble_rounded,
+                  accent: AppColors.success,
                   label: context.l10n.whatsappCta,
                   onTap: () => SaglamSpotCommunication.launchWhatsApp(),
                 ),
@@ -95,11 +105,13 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 _SettingsTile(
                   icon: Icons.star_rounded,
+                  accent: AppColors.mobileAccentDark,
                   label: context.l10n.settingsRateApp,
                   onTap: FurnitureShareService.openStoreListingForReview,
                 ),
                 _SettingsTile(
                   icon: Icons.ios_share_rounded,
+                  accent: AppColors.info,
                   label: context.l10n.settingsShareApp,
                   onTap: FurnitureShareService.shareApp,
                 ),
@@ -112,11 +124,13 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 _SettingsTile(
                   icon: Icons.privacy_tip_rounded,
+                  accent: AppColors.mobilePrimary,
                   label: context.l10n.settingsPrivacyPolicy,
                   onTap: () => NavigationHandler.goToPrivacyPolicy(context),
                 ),
                 _SettingsTile(
                   icon: Icons.description_rounded,
+                  accent: AppColors.mobilePrimary,
                   label: context.l10n.settingsTerms,
                   onTap: () => NavigationHandler.goToTerms(context),
                 ),
@@ -219,6 +233,7 @@ class _SettingsCard extends StatelessWidget {
 
 class _SettingsTile extends StatelessWidget {
   final IconData icon;
+  final Color accent;
   final String label;
   final VoidCallback onTap;
 
@@ -226,18 +241,88 @@ class _SettingsTile extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
+    this.accent = AppColors.mobilePrimary,
   });
 
   @override
   Widget build(final BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading: Icon(icon, size: 20, color: AppColors.mobilePrimary),
+      leading: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: accent.withOpacity(0.14),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, size: 17, color: accent),
+      ),
       title: Text(label,
           style: const TextStyle(
               fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextPrimary)),
       trailing: const Icon(Icons.chevron_right_rounded,
           size: 20, color: AppColors.mobileTextTertiary),
+    );
+  }
+}
+
+/// Görünüm (açık/sistem/koyu) seçici — 3 segmentli, tek kart içinde.
+class _ThemeModeCard extends ConsumerWidget {
+  const _ThemeModeCard();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final current = ref.watch(themeModeProvider);
+    final options = [
+      (ThemeMode.light, Icons.light_mode_rounded, context.l10n.settingsThemeLight),
+      (ThemeMode.system, Icons.brightness_auto_rounded, context.l10n.settingsThemeSystem),
+      (ThemeMode.dark, Icons.dark_mode_rounded, context.l10n.settingsThemeDark),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.mobileBorder),
+      ),
+      child: Row(
+        children: [
+          for (final option in options)
+            Expanded(
+              child: GestureDetector(
+                onTap: () => ref.read(themeModeProvider.notifier).set(option.$1),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: current == option.$1 ? AppColors.mobilePrimaryGradient : null,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(option.$2,
+                          size: 20,
+                          color: current == option.$1
+                              ? Colors.white
+                              : AppColors.mobileTextSecondary),
+                      const SizedBox(height: 4),
+                      Text(option.$3,
+                          style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w700,
+                              color: current == option.$1
+                                  ? Colors.white
+                                  : AppColors.mobileTextSecondary)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

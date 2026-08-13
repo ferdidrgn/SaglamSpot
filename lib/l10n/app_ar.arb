@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "المظهر",
+  "settingsThemeLight": "فاتح",
+  "settingsThemeSystem": "النظام",
+  "settingsThemeDark": "داكن"
 }

@@ -513,5 +513,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Görünüm",
+  "settingsThemeLight": "Açık",
+  "settingsThemeSystem": "Sistem",
+  "settingsThemeDark": "Koyu"
 }

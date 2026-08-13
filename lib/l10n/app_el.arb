@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Εμφάνιση",
+  "settingsThemeLight": "Φωτεινό",
+  "settingsThemeSystem": "Σύστημα",
+  "settingsThemeDark": "Σκοτεινό"
 }

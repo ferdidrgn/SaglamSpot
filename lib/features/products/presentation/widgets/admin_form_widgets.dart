@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 
 /// Ürün ekle/düzenle formlarında kullanılan ortak "kart bölüm" kabuğu.
@@ -187,6 +188,94 @@ class AdminSubmitButton extends StatelessWidget {
                           fontSize: 15.5,
                           fontWeight: FontWeight.w800)),
             ),
+          ),
+        ),
+      );
+}
+
+/// Ürün fotoğrafı küçük resmi — yuvarlatılmış köşe + yumuşak gölge +
+/// dairesel silme rozeti. Ekle/düzenle formlarında ortak kullanılır.
+class PhotoThumbnail extends StatelessWidget {
+  final ImageProvider image;
+  final VoidCallback onDelete;
+
+  const PhotoThumbnail({super.key, required this.image, required this.onDelete});
+
+  @override
+  Widget build(final BuildContext context) => Stack(
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              image: DecorationImage(image: image, fit: BoxFit.cover),
+              boxShadow: [
+                BoxShadow(
+                    color: AppColors.textPrimary.withOpacity(0.10),
+                    blurRadius: 14,
+                    offset: const Offset(0, 6)),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 6,
+            right: 6,
+            child: Material(
+              color: Colors.white,
+              shape: const CircleBorder(),
+              elevation: 2,
+              shadowColor: AppColors.error.withOpacity(0.4),
+              child: InkWell(
+                onTap: onDelete,
+                customBorder: const CircleBorder(),
+                child: const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Icon(Icons.close_rounded, size: 14, color: AppColors.error),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+}
+
+/// Fotoğraf şeridinin sonuna eklenen dairesel "ekle" karosu.
+class AddPhotoTile extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const AddPhotoTile({super.key, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 96,
+          height: 96,
+          decoration: BoxDecoration(
+            color: AppColors.secondary,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+                color: AppColors.accent.withOpacity(0.5), width: 1.4),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: const BoxDecoration(
+                  gradient: AppColors.accentGradient,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.add_rounded, color: Colors.white, size: 18),
+              ),
+              const SizedBox(height: 6),
+              Text(context.l10n.addImage,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 9.5, color: AppColors.accentDark, fontWeight: FontWeight.w700)),
+            ],
           ),
         ),
       );

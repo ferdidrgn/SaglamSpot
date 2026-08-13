@@ -116,14 +116,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   AdminFormSection(
                     title: context.l10n.productImages,
                     icon: Icons.photo_library_rounded,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildImagePreview(),
-                        const SizedBox(height: 12),
-                        _imagePickerButton(),
-                      ],
-                    ),
+                    child: _buildImagePreview(),
                   ),
                   AdminFormSection(
                     title: context.l10n.generalInfo,
@@ -207,65 +200,40 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   }
 
   Widget _buildImagePreview() {
-    return Container(
-      height: 120,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.mobileCardBg,
-        borderRadius: BorderRadius.circular(16),
+    final bool usingNew = _newSelectedImages.isNotEmpty;
+    final int existingCount = usingNew ? 0 : _currentProduct!.imagesUrl.length;
+    final int itemCount = (usingNew ? _newSelectedImages.length : existingCount) + 1;
+
+    return SizedBox(
+      height: 100,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: itemCount,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+        itemBuilder: (final _, final i) {
+          if (i == itemCount - 1) {
+            return AddPhotoTile(onTap: _pickNewImages);
+          }
+          if (usingNew) {
+            return PhotoThumbnail(
+              image: FileImage(File(_newSelectedImages[i].path)),
+              onDelete: () => setState(() => _newSelectedImages.removeAt(i)),
+            );
+          }
+          return PhotoThumbnail(
+            image: NetworkImage(_currentProduct!.imagesUrl[i]),
+            onDelete: () => setState(
+                () => _currentProduct = _currentProduct!.copyWith(
+                    imagesUrl: [..._currentProduct!.imagesUrl]..removeAt(i))),
+          );
+        },
       ),
-      child: _newSelectedImages.isNotEmpty
-          ? ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _newSelectedImages.length,
-              padding: const EdgeInsets.all(8),
-              itemBuilder: (final context, final index) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.file(File(_newSelectedImages[index].path),
-                      width: 100, fit: BoxFit.cover),
-                ),
-              ),
-            )
-          : (_currentProduct!.imagesUrl.isNotEmpty
-              ? ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _currentProduct!.imagesUrl.length,
-                  padding: const EdgeInsets.all(8),
-                  itemBuilder: (final context, final index) => Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(_currentProduct!.imagesUrl[index],
-                          width: 100, fit: BoxFit.cover),
-                    ),
-                  ),
-                )
-              : Center(
-                  child: Text(context.l10n.noImages,
-                      style: const TextStyle(color: AppColors.mobileTextTertiary)))),
     );
   }
 
-  Widget _imagePickerButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: () async {
-          final images = await _imageSelector.pickImages();
-          if (images.isNotEmpty) setState(() => _newSelectedImages = images);
-        },
-        icon: const Icon(Icons.add_a_photo_outlined, size: 18),
-        label: Text(context.l10n.changeImages),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.mobileAccentDark,
-          side: const BorderSide(color: AppColors.mobileAccent),
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        ),
-      ),
-    );
+  Future<void> _pickNewImages() async {
+    final images = await _imageSelector.pickImages();
+    if (images.isNotEmpty) setState(() => _newSelectedImages = images);
   }
 
   Future<void> _handleUpdate() async {

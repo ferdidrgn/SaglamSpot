@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Көрүнүш",
+  "settingsThemeLight": "Жарык",
+  "settingsThemeSystem": "Тутум",
+  "settingsThemeDark": "Караңгы"
 }

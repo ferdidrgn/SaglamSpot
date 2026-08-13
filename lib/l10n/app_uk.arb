@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Вигляд",
+  "settingsThemeLight": "Світла",
+  "settingsThemeSystem": "Системна",
+  "settingsThemeDark": "Темна"
 }

@@ -527,17 +527,19 @@ class _ActionBar extends ConsumerWidget {
       {required final IconData icon,
       required final Color color,
       required final VoidCallback onTap}) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: onTap,
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(10),
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      elevation: 3,
+      shadowColor: color.withOpacity(0.35),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 32,
+          height: 32,
+          child: Icon(icon, color: color, size: 16),
         ),
-        child: Icon(icon, color: color, size: 15),
       ),
     );
   }

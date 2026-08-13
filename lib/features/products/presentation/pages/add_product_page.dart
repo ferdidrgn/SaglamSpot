@@ -197,70 +197,20 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   // ---------------- UI HELPERS ----------------
 
-  Widget _imageSection() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _images.isEmpty
-              ? Container(
-                  height: 100,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.mobileCardBg,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                        color: AppColors.mobileBorder, style: BorderStyle.solid),
-                  ),
-                  child: Text(context.l10n.noImagesYet,
-                      style: TextStyle(color: AppColors.mobileTextTertiary)),
-                )
-              : SizedBox(
-                  height: 100,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _images.length,
-                    separatorBuilder: (final _, final __) => const SizedBox(width: 8),
-                    itemBuilder: (final _, final i) => Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.file(File(_images[i].path),
-                              width: 100, height: 100, fit: BoxFit.cover),
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: GestureDetector(
-                            onTap: () => setState(() => _images.removeAt(i)),
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                  color: Colors.black54, shape: BoxShape.circle),
-                              child: const Icon(Icons.close_rounded,
-                                  size: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _pickImages,
-              icon: const Icon(Icons.add_a_photo_rounded, size: 18),
-              label: Text(context.l10n.addImage),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.mobileAccentDark,
-                side: const BorderSide(color: AppColors.mobileAccent),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-            ),
-          ),
-        ],
+  Widget _imageSection() => SizedBox(
+        height: 100,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: _images.length + 1,
+          separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+          itemBuilder: (final _, final i) {
+            if (i == _images.length) return AddPhotoTile(onTap: _pickImages);
+            return PhotoThumbnail(
+              image: FileImage(File(_images[i].path)),
+              onDelete: () => setState(() => _images.removeAt(i)),
+            );
+          },
+        ),
       );
 
   Future<void> _pickImages() async {

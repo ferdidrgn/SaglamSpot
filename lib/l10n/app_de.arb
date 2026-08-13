@@ -485,5 +485,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsAppearanceSection": "Erscheinungsbild",
+  "settingsThemeLight": "Hell",
+  "settingsThemeSystem": "System",
+  "settingsThemeDark": "Dunkel"
 }
