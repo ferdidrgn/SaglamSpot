@@ -266,7 +266,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Container(
             height: height,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
@@ -590,7 +590,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
             ),
@@ -721,7 +721,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),
@@ -858,7 +858,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         padding: EdgeInsets.fromLTRB(
             16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.08),
@@ -924,7 +924,7 @@ class _RoundIconButton extends StatelessWidget {
   Widget build(final BuildContext context) => Material(
         color: filled
             ? _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary)
-            : Colors.white,
+            : _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
         shape: const CircleBorder(),
         elevation: filled ? 0 : 2,
         shadowColor: Colors.black.withOpacity(0.1),
@@ -1147,7 +1147,7 @@ class _SimilarProductCard extends StatelessWidget {
         child: Container(
           width: 160,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),

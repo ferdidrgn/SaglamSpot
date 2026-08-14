@@ -214,7 +214,7 @@ class _SettingsCard extends StatelessWidget {
     if (children.isEmpty) return const SizedBox.shrink();
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.mobileSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.mobileBorder),
       ),
@@ -267,7 +267,9 @@ class _SettingsTile extends StatelessWidget {
   }
 }
 
-/// Görünüm (açık/sistem/koyu) seçici — 3 segmentli, tek kart içinde.
+/// Görünüm seçici — sadece kendi marka renklerimiz: Açık / Koyu. Cihazın
+/// sistem ayarına bırakan bir "Sistem" seçeneği bilerek YOK — kullanıcı
+/// her zaman bizim tanımladığımız iki paletten birini seçiyor.
 class _ThemeModeCard extends ConsumerWidget {
   const _ThemeModeCard();
 
@@ -276,14 +278,13 @@ class _ThemeModeCard extends ConsumerWidget {
     final current = ref.watch(themeModeProvider);
     final options = [
       (ThemeMode.light, Icons.light_mode_rounded, context.l10n.settingsThemeLight),
-      (ThemeMode.system, Icons.brightness_auto_rounded, context.l10n.settingsThemeSystem),
       (ThemeMode.dark, Icons.dark_mode_rounded, context.l10n.settingsThemeDark),
     ];
 
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.mobileSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.mobileBorder),
       ),

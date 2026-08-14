@@ -224,7 +224,7 @@ class _CartPageState extends ConsumerState<CartPage> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.mobileSurface,
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 16, offset: const Offset(0, -4)),
         ],
@@ -290,7 +290,7 @@ class _CartItemCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.mobileSurface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: isSelected ? AppColors.mobilePrimary.withOpacity(0.4) : AppColors.mobileBorder,
@@ -314,7 +314,7 @@ class _CartItemCard extends ConsumerWidget {
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.mobilePrimary : Colors.white,
+                  color: isSelected ? AppColors.mobilePrimary : AppColors.mobileSurface,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
                     color: isSelected ? AppColors.mobilePrimary : AppColors.mobileMutedDark,
@@ -466,7 +466,7 @@ class _RecentlyViewedSection extends StatelessWidget {
                 child: Container(
                   width: 110,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.mobileSurface,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppColors.mobileBorder),
                   ),

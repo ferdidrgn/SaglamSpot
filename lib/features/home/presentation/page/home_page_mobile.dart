@@ -182,7 +182,7 @@ class _HomePageState extends ConsumerState<HomePage>
         child: Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.mobileSurface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -257,7 +257,7 @@ class _StatCard extends StatelessWidget {
   Widget build(final BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.mobileSurface,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
@@ -528,7 +528,7 @@ class _ActionBar extends ConsumerWidget {
       required final Color color,
       required final VoidCallback onTap}) {
     return Material(
-      color: Colors.white,
+      color: AppColors.mobileSurface,
       shape: const CircleBorder(),
       elevation: 3,
       shadowColor: color.withOpacity(0.35),

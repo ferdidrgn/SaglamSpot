@@ -368,7 +368,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         height: context.responsive(mobile: 46.0, desktop: 50.0),
         padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppColors.border),
         ),
@@ -600,7 +600,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           fontSize:
                               context.responsive(mobile: 15.0, desktop: 16.0))),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.textSecondary,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(
                       horizontal: context.responsive(
@@ -800,7 +800,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ),
         child: FloatingActionButton.extended(
           onPressed: () => _showFilterSheet(context),
-          backgroundColor: AppColors.textSecondary,
+          backgroundColor: AppColors.primary,
           elevation: 0,
           icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 22),
           label: Text(context.l10n.filter,
@@ -931,7 +931,7 @@ class _SidebarConditionSelector extends ConsumerWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.textSecondary
+                      ? AppColors.primary
                       : AppColors.secondary,
                   borderRadius: BorderRadius.circular(12),
                 ),

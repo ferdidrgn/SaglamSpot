@@ -44,7 +44,7 @@ class _ProductListCardState extends State<ProductListCard> {
               ? (Matrix4.identity()..translate(0.0, -3.0))
               : Matrix4.identity(),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.card,
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(

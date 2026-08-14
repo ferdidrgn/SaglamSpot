@@ -399,7 +399,7 @@ class _TrustChip extends StatelessWidget {
   Widget build(final BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(30),
           border: Border.all(color: AppColors.border),
         ),
