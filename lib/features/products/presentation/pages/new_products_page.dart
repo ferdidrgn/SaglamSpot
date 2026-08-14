@@ -72,12 +72,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   )),
                   SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge)),
                   _buildProductGrid(context, filtered),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: context.sectionPadding,
-                      child: const AdsenseBanner(height: 120, type: AdUnitType.multiplex),
+                  if (filtered.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: context.sectionPadding,
+                        child: const AdsenseBanner(height: 120, type: AdUnitType.multiplex),
+                      ),
                     ),
-                  ),
                   SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),

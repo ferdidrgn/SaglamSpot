@@ -87,14 +87,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         .toList(),
                     selectedCategory,
                   ),
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child:
-                          AdsenseBanner(type: AdUnitType.display, height: 250),
+                  if (availableProducts.isNotEmpty)
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child:
+                            AdsenseBanner(type: AdUnitType.display, height: 250),
+                      ),
                     ),
-                  ),
                   _buildRoomsInspirationBanner(),
                   const FurnitureTipsSection(),
                   const SocialShowcaseSection(),

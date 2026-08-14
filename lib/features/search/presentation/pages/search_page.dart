@@ -139,25 +139,27 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                 );
                               },
                             ),
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  context.responsive(
-                                      mobile: 16.0, tablet: 24.0, desktop: 32.0),
-                                  24,
-                                  context.responsive(
-                                      mobile: 16.0, tablet: 24.0, desktop: 32.0),
-                                  40,
-                                ),
-                                child: const Column(
-                                  children: [
-                                    AdsenseBanner(
-                                        height: 90, type: AdUnitType.multiplex),
-                                    AdNativeWidget(),
-                                  ],
+                            if ((searchResultsAsync.valueOrNull ?? const [])
+                                .isNotEmpty)
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    context.responsive(
+                                        mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                                    24,
+                                    context.responsive(
+                                        mobile: 16.0, tablet: 24.0, desktop: 32.0),
+                                    40,
+                                  ),
+                                  child: const Column(
+                                    children: [
+                                      AdsenseBanner(
+                                          height: 90, type: AdUnitType.multiplex),
+                                      AdNativeWidget(),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
                             const SliverToBoxAdapter(child: SizedBox(height: 80)),
                           ],
                         ),
