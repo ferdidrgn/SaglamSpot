@@ -6,6 +6,7 @@ import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -53,8 +54,21 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   Widget build(final BuildContext context) {
     ref.listen<AsyncValue<void>>(productMutationProvider, (final previous, final next) {
       if (next is AsyncData) {
+        final bool studioQuotaHit = StudioImageService.quotaExceededNotifier.value;
+        StudioImageService.quotaExceededNotifier.value = false;
         _snack(context.l10n.productAddedSuccess, success: true);
-        if (mounted) Navigator.of(context).pop();
+        if (studioQuotaHit) {
+          // Sayfa kapanmadan önce ikinci bildirimin de görünmesi için kısa
+          // bir gecikme — SnackBar, gösterildiği Scaffold pop edilince kaybolur.
+          Future.delayed(const Duration(milliseconds: 1600), () {
+            if (!mounted) return;
+            _snack(context.l10n.studioQuotaExceededNotice);
+            Future.delayed(const Duration(milliseconds: 1600),
+                () => mounted ? Navigator.of(context).pop() : null);
+          });
+        } else if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
       if (next is AsyncError) _snack(context.l10n.authOrConnectionError, error: true);
     });

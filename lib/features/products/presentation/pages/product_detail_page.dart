@@ -55,6 +55,25 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   double _rotateDragAccum = 0;
   bool _showRotateHint = true;
 
+  // remove.bg ile üretilmiş, arka planı kaldırılmış "stüdyo" versiyon
+  // varsa (studioImagesUrl), kullanıcı orijinal mağaza fotoğrafı ile
+  // stüdyo versiyonu arasında geçiş yapabilir.
+  bool _showStudioVersion = false;
+
+  String? _studioUrlFor(final Product product, final int index) {
+    if (index >= product.studioImagesUrl.length) return null;
+    final url = product.studioImagesUrl[index];
+    return url.isEmpty ? null : url;
+  }
+
+  String _effectiveImageUrl(final Product product, final int index) {
+    if (_showStudioVersion) {
+      final studio = _studioUrlFor(product, index);
+      if (studio != null) return studio;
+    }
+    return product.imagesUrl[index];
+  }
+
   late final AnimationController _entrance = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 650),
@@ -310,7 +329,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     transitionBuilder: (final child, final anim) =>
                         FadeTransition(opacity: anim, child: child),
                     child: Padding(
-                      key: ValueKey(_selectedImageIndex),
+                      key: ValueKey('$_selectedImageIndex-$_showStudioVersion'),
                       padding: EdgeInsets.all(
                           context.responsive(mobile: 28, desktop: 48)),
                       child: Hero(
@@ -324,7 +343,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                               ? (final _) => _rotateDragAccum = 0
                               : null,
                           child: OptimizedCachedImage(
-                            imageUrl: product.imagesUrl[_selectedImageIndex],
+                            imageUrl: _effectiveImageUrl(product, _selectedImageIndex),
                             fit: BoxFit.contain,
                             width: double.infinity,
                             height: double.infinity,
@@ -383,6 +402,18 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                             fontSize: 12,
                             fontWeight: FontWeight.w700),
                       ),
+                    ),
+                  ),
+
+                // "Mağaza / Stüdyo" geçişi — sadece bu index için remove.bg
+                // ile üretilmiş bir stüdyo (arka plansız) versiyon varsa.
+                if (_studioUrlFor(product, _selectedImageIndex) != null)
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    child: _StudioToggle(
+                      isStudio: _showStudioVersion,
+                      onTap: () => setState(() => _showStudioVersion = !_showStudioVersion),
                     ),
                   ),
 
@@ -1201,6 +1232,39 @@ class _StatusPill extends StatelessWidget {
       ),
     );
   }
+}
+
+/// "Mağaza" (orijinal) / "Stüdyo" (remove.bg, arka plansız) görsel geçişi.
+class _StudioToggle extends StatelessWidget {
+  final bool isStudio;
+  final VoidCallback onTap;
+
+  const _StudioToggle({required this.isStudio, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.55),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.auto_awesome_rounded, size: 13, color: Colors.white),
+              const SizedBox(width: 6),
+              Text(
+                isStudio ? context.l10n.studioPhotoLabel : context.l10n.storePhotoLabel,
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class _SimilarProductCard extends StatelessWidget {

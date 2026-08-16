@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../../../../../../core/services/studio_image_service.dart';
 import '../../../../../../core/util/date_formatter.dart';
 import '../datasources/product_remote_data_source.dart';
 import '../models/product_model.dart';
@@ -109,12 +110,13 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
     try {
       final productId = _productRef.doc().id;
-      final imageUrls = await _uploadImages(images, productId);
+      final uploaded = await _uploadImages(images, productId);
       final now = _formattedNow();
 
       final data = product.toFirestore();
       data['_id'] = productId;
-      data['imagesUrl'] = imageUrls;
+      data['imagesUrl'] = uploaded.originalUrls;
+      data['studioImagesUrl'] = uploaded.studioUrls;
       data['_createdAt'] = now;
       data['_updatedAt'] = now;
       data['_soldAt'] = '';
@@ -132,10 +134,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final List<dynamic>? newImages,
   ) async {
     try {
-      final updatedImages = await _handleImageUpdate(product, newImages);
+      final updated = await _handleImageUpdate(product, newImages);
       final now = _formattedNow();
 
-      final updateData = {'imagesUrl': updatedImages, '_updatedAt': now};
+      final updateData = {
+        'imagesUrl': updated.originalUrls,
+        'studioImagesUrl': updated.studioUrls,
+        '_updatedAt': now,
+      };
 
       final fullData = product.toFirestore();
       fullData.addAll(updateData);
@@ -163,21 +169,29 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   // IMAGE HELPERS
   // ---------------------------------------------------------------------------
 
-  Future<List<String>> _handleImageUpdate(
+  Future<_UploadedImages> _handleImageUpdate(
     final ProductModel product,
     final List<dynamic>? newImages,
   ) async {
-    if (newImages == null || newImages.isEmpty) return product.imagesUrl;
+    if (newImages == null || newImages.isEmpty) {
+      return _UploadedImages(product.imagesUrl, product.studioImagesUrl);
+    }
 
-    await _deleteImages(product.imagesUrl);
+    await _deleteImages([...product.imagesUrl, ...product.studioImagesUrl]);
     return _uploadImages(newImages, product.id);
   }
 
-  Future<List<String>> _uploadImages(
+  /// Her orijinal fotoğrafı Storage'a yükler; ardından her biri için
+  /// (best-effort, sırayla) remove.bg tabanlı bir "stüdyo" (arka plansız)
+  /// versiyon üretmeyi dener. Stüdyo üretimi başarısız olursa (kota
+  /// dolu/hata) o slotta boş string kalır — orijinal yükleme ASLA
+  /// etkilenmez, bkz. StudioImageService.
+  Future<_UploadedImages> _uploadImages(
     final List<dynamic> images,
     final String productId,
   ) async {
     final List<String> urls = [];
+    final List<String> studioUrls = [];
 
     for (int i = 0; i < images.length; i++) {
       final ref = _storage.ref('product_images/$productId/$i.jpg');
@@ -191,17 +205,23 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       else
         throw Exception('Geçersiz görsel türü');
 
-      urls.add(await ref.getDownloadURL());
+      final url = await ref.getDownloadURL();
+      urls.add(url);
+
+      final outcome = await StudioImageService.generate(url);
+      studioUrls.add(outcome.studioImageUrl ?? '');
     }
 
-    return urls;
+    return _UploadedImages(urls, studioUrls);
   }
 
   Future<void> _deleteImages(final List<String> imageUrls) async {
-    for (final url in imageUrls)
+    for (final url in imageUrls) {
+      if (url.isEmpty) continue;
       try {
         await _storage.refFromURL(url).delete();
       } catch (_) {}
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -221,4 +241,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   Never _throwError(final String message, final Object error) =>
       throw Exception('$message: $error');
+}
+
+/// `_uploadImages`/`_handleImageUpdate` çıktısı: orijinal ve stüdyo görsel
+/// URL listeleri her zaman AYNI UZUNLUKTA — bir slot için stüdyo görseli
+/// üretilemediyse orada boş string bulunur.
+class _UploadedImages {
+  final List<String> originalUrls;
+  final List<String> studioUrls;
+
+  const _UploadedImages(this.originalUrls, this.studioUrls);
 }

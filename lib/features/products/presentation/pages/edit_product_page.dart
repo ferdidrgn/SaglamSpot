@@ -5,6 +5,7 @@ import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_image_selector.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -255,6 +256,16 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           _newSelectedImages.isEmpty ? null : _newSelectedImages,
         );
 
+    final bool studioQuotaHit = StudioImageService.quotaExceededNotifier.value;
+    StudioImageService.quotaExceededNotifier.value = false;
+
+    if (!mounted) return;
+    if (studioQuotaHit) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.studioQuotaExceededNotice)),
+      );
+      await Future.delayed(const Duration(milliseconds: 1600));
+    }
     if (mounted) Navigator.pop(context);
   }
 }

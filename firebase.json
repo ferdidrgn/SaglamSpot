@@ -1,1 +1,84 @@
-{"hosting":{"site":"saglamspotcu","public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"headers":[{"source":"**/*.@(eot|otf|ttf|ttc|woff|woff2)","headers":[{"key":"Access-Control-Allow-Origin","value":"*"}]},{"source":"**","headers":[{"key":"X-Robots-Tag","value":"index, follow"},{"key":"Cache-Control","value":"public, max-age=3600"}]},{"source":"**/index.html","headers":[{"key":"Cache-Control","value":"no-cache, no-store, must-revalidate"}]}],"rewrites":[{"source":"**","destination":"/index.html"}]},"flutter":{"platforms":{"android":{"default":{"projectId":"saglamspotflutter-2a1a8","appId":"1:257014284345:android:f4fdeb7628cacdc722cde8","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"saglamspotflutter-2a1a8","configurations":{"android":"1:257014284345:android:f4fdeb7628cacdc722cde8","ios":"1:257014284345:ios:f4ebd9281ca0379622cde8","web":"1:257014284345:web:2092e3dd24aae5f022cde8"}}}}}}
+{
+  "hosting": {
+    "site": "saglamspotcu",
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(eot|otf|ttf|ttc|woff|woff2)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "index, follow"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
+      {
+        "source": "**/index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "saglamspotflutter-2a1a8",
+          "appId": "1:257014284345:android:f4fdeb7628cacdc722cde8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "saglamspotflutter-2a1a8",
+          "configurations": {
+            "android": "1:257014284345:android:f4fdeb7628cacdc722cde8",
+            "ios": "1:257014284345:ios:f4ebd9281ca0379622cde8",
+            "web": "1:257014284345:web:2092e3dd24aae5f022cde8"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs20",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ]
+}

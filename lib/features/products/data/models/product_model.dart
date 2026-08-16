@@ -11,6 +11,7 @@ class ProductModel {
   final bool isSold;
   final bool isSpotProduct;
   final List<String> availableColors;
+  final List<String> studioImagesUrl;
 
   const ProductModel({
     required this.id,
@@ -25,6 +26,7 @@ class ProductModel {
     required this.isSpotProduct,
     required this.imagesUrl,
     this.availableColors = const [],
+    this.studioImagesUrl = const [],
   });
 
   factory ProductModel.fromFirestore(final Map<String, dynamic> data) =>
@@ -42,6 +44,7 @@ class ProductModel {
         imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
         // Eski dokümanlarda bu alan yok, boş liste ile güvenli varsayılan.
         availableColors: List<String>.from(data['availableColors'] ?? []),
+        studioImagesUrl: List<String>.from(data['studioImagesUrl'] ?? []),
       );
 
   Map<String, dynamic> toFirestore() => {
@@ -57,5 +60,6 @@ class ProductModel {
         'isSpotProduct': isSpotProduct,
         'imagesUrl': imagesUrl,
         'availableColors': availableColors,
+        'studioImagesUrl': studioImagesUrl,
       };
 }
