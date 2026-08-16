@@ -316,6 +316,7 @@
   "statFreeShippingNote": "Лише для Найближчих Районів, Доставка",
   "statFreeShippingShort": "Доставка",
   "filtersPanelTitle": "ФІЛЬТРИ",
+  "dragToRotateHint": "Проведіть, щоб повернути",
   "sortPanelTitle": "СОРТУВАННЯ",
   "priceRangeSectionTitle": "ДІАПАЗОН ЦІН",
   "clearFiltersButton": "СКИНУТИ ФІЛЬТРИ",

@@ -49,6 +49,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   bool _isAppBarSolid = false;
   String? _trackedProductId;
 
+  // "360°" sürükle-çevir jesti: gerçek bir 3D model yok, ama birden fazla
+  // fotoğrafı frame gibi kullanarak sürüklemeyle geçiş yaptırıyoruz — çok
+  // fotoğraflı ürünlerde inandırıcı bir "çevirme" hissi veriyor.
+  double _rotateDragAccum = 0;
+  bool _showRotateHint = true;
+
   late final AnimationController _entrance = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 650),
@@ -254,6 +260,23 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     );
   }
 
+  /// Yatay sürüklemeyi fotoğraflar arasında "çevirme" hareketine çevirir.
+  /// Gerçek bir 3D model yok — birden fazla ürün fotoğrafı frame gibi
+  /// kullanılıyor, bu yüzden sadece 2+ fotoğraflı ürünlerde etkin.
+  void _handleRotateDrag(final DragUpdateDetails details, final Product product) {
+    const double stepPx = 26;
+    _rotateDragAccum += details.delta.dx;
+    if (_rotateDragAccum.abs() < stepPx) return;
+    final int direction = _rotateDragAccum > 0 ? -1 : 1;
+    _rotateDragAccum = 0;
+    final int count = product.imagesUrl.length;
+    setState(() {
+      _selectedImageIndex = (_selectedImageIndex + direction) % count;
+      if (_selectedImageIndex < 0) _selectedImageIndex += count;
+      _showRotateHint = false;
+    });
+  }
+
   // ════════════════════════════════════════════════════════════
   // GALERİ — sade, beyaz, yumuşak gölgeli. Renk/dalga denemesi kaldırıldı.
   // ════════════════════════════════════════════════════════════
@@ -294,6 +317,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         tag: 'product-${product.id}',
                         child: GestureDetector(
                           onTap: () => _openFullscreenGallery(context, product),
+                          onHorizontalDragUpdate: product.imagesUrl.length > 1
+                              ? (final details) => _handleRotateDrag(details, product)
+                              : null,
+                          onHorizontalDragEnd: product.imagesUrl.length > 1
+                              ? (final _) => _rotateDragAccum = 0
+                              : null,
                           child: OptimizedCachedImage(
                             imageUrl: product.imagesUrl[_selectedImageIndex],
                             fit: BoxFit.contain,
@@ -353,6 +382,43 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+
+                // "Sürükleyerek çevirin" ipucu — sadece birden çok fotoğraf
+                // varken ve kullanıcı henüz sürüklemediyse görünür.
+                if (product.imagesUrl.length > 1)
+                  Positioned(
+                    top: 18,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: AnimatedOpacity(
+                        opacity: _showRotateHint ? 1 : 0,
+                        duration: const Duration(milliseconds: 350),
+                        child: IgnorePointer(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.55),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.sync_rounded,
+                                    size: 15, color: Colors.white),
+                                const SizedBox(width: 6),
+                                Text(context.l10n.dragToRotateHint,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11.5,
+                                        fontWeight: FontWeight.w700)),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -782,22 +848,22 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       children: [
         Expanded(
           child: _PrimaryButton(
-            label: context.l10n.whatsappCta,
-            icon: Icons.chat_bubble_rounded,
+            label: inCart ? context.l10n.addedToCartMessage : context.l10n.addToCartCta,
+            icon: inCart ? Icons.check_rounded : Icons.shopping_bag_rounded,
             price: '₺${product.price.toStringAsFixed(0)}',
-            onTap: () => FurnitureShareService.contactAboutProduct(
-              productId: product.id,
-              productName: product.name,
-              price: product.price,
-            ),
+            onTap: () => ref.read(cartProvider.notifier).toggle(product),
           ),
         ),
         const SizedBox(width: 12),
         _RoundIconButton(
           size: 52,
-          icon: inCart ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined,
+          icon: Icons.chat_bubble_rounded,
           filled: true,
-          onTap: () => ref.read(cartProvider.notifier).toggle(product),
+          onTap: () => FurnitureShareService.contactAboutProduct(
+            productId: product.id,
+            productName: product.name,
+            price: product.price,
+          ),
         ),
         const SizedBox(width: 12),
         _RoundIconButton(
@@ -873,9 +939,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           children: [
             _RoundIconButton(
               size: 52,
-              icon: _inCart(product) ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined,
+              icon: Icons.chat_bubble_rounded,
               filled: true,
-              onTap: () => ref.read(cartProvider.notifier).toggle(product),
+              onTap: () => FurnitureShareService.contactAboutProduct(
+                productId: product.id,
+                productName: product.name,
+                price: product.price,
+              ),
             ),
             const SizedBox(width: 12),
             _RoundIconButton(
@@ -887,14 +957,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             const SizedBox(width: 12),
             Expanded(
               child: _PrimaryButton(
-                label: context.l10n.whatsappCta,
-                icon: Icons.chat_bubble_rounded,
+                label: _inCart(product)
+                    ? context.l10n.addedToCartMessage
+                    : context.l10n.addToCartCta,
+                icon: _inCart(product) ? Icons.check_rounded : Icons.shopping_bag_rounded,
                 price: '₺${product.price.toStringAsFixed(0)}',
-                onTap: () => FurnitureShareService.contactAboutProduct(
-                  productId: product.id,
-                  productName: product.name,
-                  price: product.price,
-                ),
+                onTap: () => ref.read(cartProvider.notifier).toggle(product),
               ),
             ),
           ],

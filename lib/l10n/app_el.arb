@@ -316,6 +316,7 @@
   "statFreeShippingNote": "Μόνο για Κοντινές Περιοχές, Μεταφορικά",
   "statFreeShippingShort": "Μεταφορικά",
   "filtersPanelTitle": "ΦΙΛΤΡΑ",
+  "dragToRotateHint": "Σύρετε για περιστροφή",
   "sortPanelTitle": "ΤΑΞΙΝΟΜΗΣΗ",
   "priceRangeSectionTitle": "ΕΥΡΟΣ ΤΙΜΗΣ",
   "clearFiltersButton": "ΚΑΘΑΡΙΣΜΟΣ ΦΙΛΤΡΩΝ",

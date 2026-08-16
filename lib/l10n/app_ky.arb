@@ -316,6 +316,7 @@
   "statFreeShippingNote": "Жакын Аймактарга Гана, Ташуу",
   "statFreeShippingShort": "Ташуу",
   "filtersPanelTitle": "ЧЫПКАЛАР",
+  "dragToRotateHint": "Айландыруу үчүн сүйрөңүз",
   "sortPanelTitle": "ИРЕТТӨӨ",
   "priceRangeSectionTitle": "БАА ДИАПАЗОНУ",
   "clearFiltersButton": "ЧЫПКАЛАРДЫ ТАЗАЛОО",

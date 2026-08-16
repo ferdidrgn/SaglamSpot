@@ -316,6 +316,7 @@
   "statFreeShippingNote": "Faqat Yaqin Hududlar Uchun, Yetkazish",
   "statFreeShippingShort": "Yetkazish",
   "filtersPanelTitle": "FILTRLAR",
+  "dragToRotateHint": "Aylantirish uchun torting",
   "sortPanelTitle": "SARALASH",
   "priceRangeSectionTitle": "NARX ORALIG'I",
   "clearFiltersButton": "FILTRLARNI TOZALASH",

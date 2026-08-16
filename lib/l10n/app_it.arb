@@ -316,6 +316,7 @@
   "statFreeShippingNote": "Solo per Zone Vicine, Spedizione",
   "statFreeShippingShort": "Spedizione",
   "filtersPanelTitle": "FILTRI",
+  "dragToRotateHint": "Trascina per ruotare",
   "sortPanelTitle": "ORDINA",
   "priceRangeSectionTitle": "FASCIA DI PREZZO",
   "clearFiltersButton": "AZZERA FILTRI",

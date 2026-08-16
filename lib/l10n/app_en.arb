@@ -358,6 +358,7 @@
   "statFreeShippingNote": "For Nearby Areas Only, Shipping",
   "statFreeShippingShort": "Shipping",
   "filtersPanelTitle": "FILTERS",
+  "dragToRotateHint": "Drag to rotate",
   "sortPanelTitle": "SORT",
   "priceRangeSectionTitle": "PRICE RANGE",
   "clearFiltersButton": "CLEAR FILTERS",
