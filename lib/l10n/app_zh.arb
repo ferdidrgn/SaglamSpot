@@ -316,6 +316,7 @@
   "statFreeShippingNote": "仅限周边地区，运费",
   "statFreeShippingShort": "运费",
   "filtersPanelTitle": "筛选",
+  "sortPanelTitle": "排序",
   "priceRangeSectionTitle": "价格区间",
   "clearFiltersButton": "清除筛选",
   "tryDifferentFiltersShort": "您可以尝试不同的筛选条件",

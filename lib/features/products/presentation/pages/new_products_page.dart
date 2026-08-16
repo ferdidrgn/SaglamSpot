@@ -1,7 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
@@ -9,20 +9,18 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_product_card.dart';
-import '../../../../core/widgets/dynamic_category_chips.dart';
+import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
-import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
-import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
-/// "Sıfır Ürünler" — köklü, sıfırdan yeniden tasarlandı. Eski sürüm dev bir
-/// dekoratif geometrik desenli hero + uydurma istatistikler (sahte '5
-/// kategori', sahte '⭐ 4.8' puan) içeriyordu. Bunun yerine: sade bir
-/// vitrin başlığı, GERÇEK ürün sayısı, markanın güven rozetleri ve temiz
-/// bir ızgara/liste görünümü.
+/// "Sıfır Ürünler" — KÖKLÜ, ikinci kez baştan tasarlandı. Önceki sürüm
+/// (pinned, gradyanlı SliverAppBar + renkli gradyan çipler + ağır gölgeli
+/// yuvarlak kartlar) tamamen terk edildi. Yerine editoryal bir katalog
+/// dili: düz sayfa akışı, serif (Fraunces) başlık, metin-sekme kategori
+/// rayı, tel kenarlıklı gölgesiz kartlar, alt sayfa açılır sırala/görünüm
+/// kontrolleri. Marka renkleri (AppColors) aynı — sadece şekil dili değişti.
 enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
 
 class NewProductsPage extends ConsumerStatefulWidget {
@@ -62,15 +60,17 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  _buildHeader(context, products.length),
-                  _buildToolbar(context),
+                  SliverToBoxAdapter(child: _buildMasthead(context, products.length)),
                   SliverToBoxAdapter(
-                      child: DynamicCategoryChips(
+                      child: EditorialCategoryRail(
                     selected: _selectedCategory,
                     onSelect: (final c) => setState(() => _selectedCategory = c),
-                    padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+                    allLabel: context.l10n.conditionAll,
+                    padding: context.sectionPadding,
                   )),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge)),
+                  SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
+                  _buildToolbar(context, filtered.length),
+                  SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
                   _buildProductGrid(context, filtered),
                   if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
@@ -91,95 +91,63 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 
   // ════════════════════════════════════════════════════════════
-  // BAŞLIK — sade panel + gerçek ürün sayısı + güven rozetleri
+  // BAŞLIK — düz sayfa akışında, serif, ince ayraçlı editoryal başlık
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildHeader(final BuildContext context, final int totalProducts) => SliverAppBar(
-        pinned: true,
-        expandedHeight: context.responsive(mobile: 232, tablet: 260, desktop: 288),
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        flexibleSpace: FlexibleSpaceBar(
-          background: Container(
-            decoration: BoxDecoration(
-              color: AppColors.secondary,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
+  Widget _buildMasthead(final BuildContext context, final int totalProducts) => Padding(
+        padding: context.pagePadding.copyWith(
+            top: context.responsive(mobile: 20, tablet: 28, desktop: 40), bottom: 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildBreadcrumb(context),
+            SizedBox(height: context.spacingLarge),
+            Text(
+              context.l10n.newProductsBadgeEyebrow,
+              style: TextStyle(
+                fontSize: 12,
+                letterSpacing: 3,
+                fontWeight: FontWeight.w800,
+                color: AppColors.accentDark,
+              ),
             ),
-            child: Stack(
+            const SizedBox(height: 8),
+            Text(
+              context.l10n.newCollection,
+              style: GoogleFonts.fraunces(
+                fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
+                fontWeight: FontWeight.w600,
+                height: 1.02,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.5,
+              ),
+            ),
+            SizedBox(height: context.spacing),
+            Wrap(
+              spacing: 18,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                // Yumuşak, tek renkli aksan lekesi — jenerik desen yerine
-                Positioned(
-                  right: -60,
-                  top: -60,
-                  child: Container(
-                    width: 220,
-                    height: 220,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [AppColors.accent.withOpacity(0.22), Colors.transparent],
-                      ),
-                    ),
-                  ),
-                ),
-                SafeArea(
-                  child: Padding(
-                    padding: context.pagePadding,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildBreadcrumb(context),
-                        SizedBox(height: context.spacing),
-                        Text(
-                          context.l10n.newProductsBadgeEyebrow,
-                          style: TextStyle(
-                            fontSize: 12,
-                            letterSpacing: 3,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.accentDark,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          context.l10n.newCollection,
-                          style: TextStyle(
-                            fontSize: context.responsive(mobile: 30, tablet: 38, desktop: 44),
-                            fontWeight: FontWeight.w900,
-                            height: 1.05,
-                            color: AppColors.textPrimary,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.productsFound(totalProducts),
-                          style: TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
-                        ),
-                        SizedBox(height: context.spacing),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            _TrustChip(
-                                icon: Icons.verified_rounded,
-                                label: context.l10n.productTrustBadgeVerified),
-                            _TrustChip(
-                                icon: Icons.local_shipping_rounded,
-                                label: context.l10n.productTrustBadgeDelivery),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                Text(context.l10n.productsFound(totalProducts),
+                    style: TextStyle(
+                        fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                _dotSep(),
+                _plainStat(context.l10n.productTrustBadgeVerified),
+                _dotSep(),
+                _plainStat(context.l10n.productTrustBadgeDelivery),
               ],
             ),
-          ),
+            SizedBox(height: context.spacingLarge),
+            Container(height: 1, color: AppColors.border),
+            SizedBox(height: context.spacingLarge),
+          ],
         ),
       );
+
+  Widget _dotSep() => Text('•', style: TextStyle(color: AppColors.border, fontSize: 12));
+
+  Widget _plainStat(final String label) => Text(label,
+      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.textTertiary));
 
   Widget _buildBreadcrumb(final BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
@@ -198,85 +166,69 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       );
 
   // ════════════════════════════════════════════════════════════
-  // ARAÇ ÇUBUĞU — arama + sırala + görünüm
+  // ARAÇ ÇUBUĞU — sonuç sayısı solda; sırala + görünüm sağda, metin tabanlı
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildToolbar(final BuildContext context) => SliverToBoxAdapter(
+  Widget _buildToolbar(final BuildContext context, final int resultCount) => SliverToBoxAdapter(
         child: Padding(
           padding: context.sectionPadding,
           child: Row(
             children: [
-              Expanded(child: _buildSearchBar(context)),
-              SizedBox(width: context.spacing),
-              _buildSortPill(context),
-              if (context.isTablet || context.isDesktop) ...[
-                SizedBox(width: context.spacing),
-                const ViewModeToggle(),
-              ],
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildSearchBar(final BuildContext context) => GestureDetector(
-        onTap: () => context.go('/search'),
-        child: Container(
-          height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
-              const SizedBox(width: 10),
-              Expanded(
-                child: RichText(
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    style: TextStyle(fontSize: context.bodySize, color: AppColors.textSecondary),
+              Flexible(
+                child: GestureDetector(
+                  onTap: () => context.go('/search'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextSpan(text: context.l10n.searchBarRichPrefix),
-                      TextSpan(
-                        text: context.l10n.searchBarRichHereLink,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.accentDark,
-                            decoration: TextDecoration.underline),
-                        recognizer: TapGestureRecognizer()..onTap = () => context.go('/search'),
+                      Icon(Icons.search_rounded, size: 16, color: AppColors.textSecondary),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(context.l10n.searchHint,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textSecondary,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.border)),
                       ),
-                      TextSpan(text: context.l10n.searchBarRichSuffix),
                     ],
                   ),
                 ),
               ),
+              SizedBox(width: context.spacing),
+              const Spacer(),
+              _TextTabButton(
+                icon: Icons.swap_vert_rounded,
+                label: _sortLabel(context, _selectedSort),
+                onTap: () => _openSortSheet(context),
+              ),
+              SizedBox(width: context.spacing),
+              _ViewToggle(),
             ],
           ),
         ),
       );
 
-  Widget _buildSortPill(final BuildContext context) => Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<_SortMode>(
-            value: _selectedSort,
-            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textPrimary),
-            items: _SortMode.values
-                .map((final mode) =>
-                    DropdownMenuItem(value: mode, child: Text(_sortLabel(context, mode))))
-                .toList(),
-            onChanged: (final val) => setState(() => _selectedSort = val!),
-          ),
-        ),
-      );
+  void _openSortSheet(final BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (final sheetContext) => _SortSheet<_SortMode>(
+        title: context.l10n.sortPanelTitle,
+        options: _SortMode.values,
+        current: _selectedSort,
+        labelBuilder: (final m) => _sortLabel(context, m),
+        onSelect: (final m) {
+          setState(() => _selectedSort = m);
+          Navigator.pop(sheetContext);
+        },
+      ),
+    );
+  }
 
   String _sortLabel(final BuildContext context, final _SortMode mode) {
     switch (mode) {
@@ -305,7 +257,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         padding: context.sectionPadding,
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
-            (final context, final index) => ProductListCard(product: products[index]),
+            (final context, final index) => EditorialProductRow(product: products[index]),
             childCount: products.length,
           ),
         ),
@@ -319,14 +271,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
           crossAxisSpacing: context.gridSpacing,
           mainAxisSpacing: context.gridSpacing,
-          childAspectRatio: context.responsive(mobile: 0.68, tablet: 0.72, desktop: 0.75),
+          childAspectRatio: context.responsive(mobile: 0.66, tablet: 0.70, desktop: 0.73),
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
             if (isAdSlot(index, products.length)) return const NativeAdCard();
             final realIndex = realIndexForAdGrid(index, products.length);
             if (realIndex >= products.length) return const SizedBox.shrink();
-            return CustomProductCard(product: products[realIndex]);
+            return EditorialProductCard(product: products[realIndex]);
           },
           childCount: paddedItemCountForAds(products.length),
         ),
@@ -334,22 +286,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  Widget _buildEmptyState(final BuildContext context) => Container(
-        height: 360,
-        margin: context.sectionPadding,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.border),
-        ),
+  Widget _buildEmptyState(final BuildContext context) => Padding(
+        padding: context.sectionPadding.copyWith(top: 40, bottom: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off_rounded, size: 64, color: AppColors.textTertiary.withOpacity(0.6)),
+            Icon(Icons.search_off_rounded, size: 44, color: AppColors.textTertiary.withOpacity(0.6)),
             const SizedBox(height: 14),
             Text(context.l10n.productNotFound,
-                style: TextStyle(
-                    fontSize: 16, color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
+                style: GoogleFonts.fraunces(
+                    fontSize: 18, color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
             const SizedBox(height: 6),
             Text(context.l10n.tryDifferentFiltersShort,
                 style: TextStyle(fontSize: 13, color: AppColors.textTertiary)),
@@ -390,29 +335,143 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 }
 
-class _TrustChip extends StatelessWidget {
+/// Metin + ikon tabanlı araç çubuğu düğmesi (kutulu ikon yerine).
+class _TextTabButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback onTap;
+  final bool isActive;
 
-  const _TrustChip({required this.icon, required this.label});
+  const _TextTabButton(
+      {required this.icon, required this.label, required this.onTap, this.isActive = false});
 
   @override
-  Widget build(final BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: AppColors.border),
-        ),
+  Widget build(final BuildContext context) {
+    final showLabel = context.isTablet || context.isDesktop;
+    return Tooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 13, color: AppColors.primary),
-            const SizedBox(width: 6),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+            Icon(icon, size: 18, color: isActive ? AppColors.primary : AppColors.textPrimary),
+            if (showLabel) ...[
+              const SizedBox(width: 6),
+              Text(label,
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: isActive ? AppColors.primary : AppColors.textPrimary)),
+            ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ViewToggle extends ConsumerWidget {
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final mode = ref.watch(productViewModeProvider);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _viewIcon(
+          icon: Icons.grid_view_rounded,
+          isSelected: mode == ProductViewMode.grid,
+          onTap: () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.grid),
+        ),
+        const SizedBox(width: 10),
+        _viewIcon(
+          icon: Icons.view_list_rounded,
+          isSelected: mode == ProductViewMode.list,
+          onTap: () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.list),
+        ),
+      ],
+    );
+  }
+
+  Widget _viewIcon(
+          {required final IconData icon,
+          required final bool isSelected,
+          required final VoidCallback onTap}) =>
+      GestureDetector(
+        onTap: onTap,
+        child: Icon(icon,
+            size: 19, color: isSelected ? AppColors.textPrimary : AppColors.textTertiary),
+      );
+}
+
+/// Alt sayfadan açılan, radyo listesi tarzı sade sıralama seçici — native
+/// DropdownButton yerine.
+class _SortSheet<T> extends StatelessWidget {
+  final String title;
+  final List<T> options;
+  final T current;
+  final String Function(T) labelBuilder;
+  final ValueChanged<T> onSelect;
+
+  const _SortSheet({
+    required this.title,
+    required this.options,
+    required this.current,
+    required this.labelBuilder,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(final BuildContext context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 18),
+                  decoration: BoxDecoration(
+                      color: AppColors.border, borderRadius: BorderRadius.circular(4)),
+                ),
+              ),
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.4,
+                      color: AppColors.textTertiary)),
+              const SizedBox(height: 8),
+              ...options.map((final o) {
+                final selected = o == current;
+                return GestureDetector(
+                  onTap: () => onSelect(o),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(labelBuilder(o),
+                              style: GoogleFonts.fraunces(
+                                  fontSize: 17,
+                                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                                  color: selected
+                                      ? AppColors.textPrimary
+                                      : AppColors.textSecondary)),
+                        ),
+                        if (selected) Icon(Icons.check_rounded, size: 18, color: AppColors.primary),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
       );
 }
