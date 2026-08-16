@@ -6,6 +6,7 @@ import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
 import 'gallery_section.dart';
+import 'optimized_cached_image.dart';
 
 /// Temiz, ferah "vitrin katalog" kartı: fotoğraf üstte, isim/kategori/fiyat
 /// altta ayrı bir beyaz blokta — editoryal fotoğraf-üstü-metin stili yerine
@@ -64,10 +65,11 @@ class _CustomProductCardState extends State<CustomProductCard> {
                           duration: const Duration(milliseconds: 450),
                           curve: Curves.easeOutCubic,
                           child: hasImage
-                              ? Image.network(
-                                  widget.product.imagesUrl.first,
+                              ? OptimizedCachedImage(
+                                  imageUrl: widget.product.imagesUrl.first,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (final c, final e, final s) =>
+                                  borderRadius: 0,
+                                  errorBuilder: (final c, final u, final e) =>
                                       const _ImageFallback(),
                                 )
                               : const _ImageFallback(),

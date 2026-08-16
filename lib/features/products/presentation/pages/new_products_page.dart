@@ -94,54 +94,62 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // BAŞLIK — düz sayfa akışında, serif, ince ayraçlı editoryal başlık
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildMasthead(final BuildContext context, final int totalProducts) => Padding(
-        padding: context.pagePadding.copyWith(
-            top: context.responsive(mobile: 20, tablet: 28, desktop: 40), bottom: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBreadcrumb(context),
-            SizedBox(height: context.spacingLarge),
-            Text(
-              context.l10n.newProductsBadgeEyebrow,
-              style: TextStyle(
-                fontSize: 12,
-                letterSpacing: 3,
-                fontWeight: FontWeight.w800,
-                color: AppColors.accentDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              context.l10n.newCollection,
-              style: GoogleFonts.fraunces(
-                fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
-                fontWeight: FontWeight.w600,
-                height: 1.02,
-                color: AppColors.textPrimary,
-                letterSpacing: -0.5,
-              ),
-            ),
-            SizedBox(height: context.spacing),
-            Wrap(
-              spacing: 18,
-              runSpacing: 6,
-              crossAxisAlignment: WrapCrossAlignment.center,
+  Widget _buildMasthead(final BuildContext context, final int totalProducts) => Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Positioned.fill(child: FurnitureMotifBackdrop()),
+          Padding(
+            padding: context.pagePadding.copyWith(
+                top: context.responsive(mobile: 20, tablet: 28, desktop: 40), bottom: 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(context.l10n.productsFound(totalProducts),
-                    style: TextStyle(
-                        fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-                _dotSep(),
-                _plainStat(context.l10n.productTrustBadgeVerified),
-                _dotSep(),
-                _plainStat(context.l10n.productTrustBadgeDelivery),
+                _buildBreadcrumb(context),
+                SizedBox(height: context.spacingLarge),
+                Text(
+                  context.l10n.newProductsBadgeEyebrow,
+                  style: TextStyle(
+                    fontSize: 12,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.accentDark,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  context.l10n.newCollection,
+                  style: GoogleFonts.fraunces(
+                    fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
+                    fontWeight: FontWeight.w600,
+                    height: 1.02,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SizedBox(height: context.spacing),
+                Wrap(
+                  spacing: 18,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(context.l10n.productsFound(totalProducts),
+                        style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary)),
+                    _dotSep(),
+                    _plainStat(context.l10n.productTrustBadgeVerified),
+                    _dotSep(),
+                    _plainStat(context.l10n.productTrustBadgeDelivery),
+                  ],
+                ),
+                SizedBox(height: context.spacingLarge),
+                const FurnitureMotifDivider(),
+                SizedBox(height: context.spacingLarge),
               ],
             ),
-            SizedBox(height: context.spacingLarge),
-            Container(height: 1, color: AppColors.border),
-            SizedBox(height: context.spacingLarge),
-          ],
-        ),
+          ),
+        ],
       );
 
   Widget _dotSep() => Text('•', style: TextStyle(color: AppColors.border, fontSize: 12));

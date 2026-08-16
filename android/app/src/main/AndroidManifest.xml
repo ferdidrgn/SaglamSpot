@@ -74,6 +74,17 @@
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
 
+            <!-- KRİTİK: Bu olmadan Android, App Links intent'ini (WhatsApp'tan
+                 gelen ürün linki dahil) Flutter/GoRouter katmanına HİÇ
+                 iletmiyor — uygulama URI'yi tamamen görmezden gelip normal
+                 başlangıç konumuna (ör. cihazda daha önce admin girişi
+                 yapılmışsa /admin) açılıyordu. "Güvenlik doğrulaması
+                 başarısız" / "admin paneline düşüyor" bug'ının kök nedeni
+                 buydu — imza doğrulama koduna hiç ulaşılmıyordu. -->
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="true" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

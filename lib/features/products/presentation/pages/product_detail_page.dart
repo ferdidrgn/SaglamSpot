@@ -10,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/gallery_section.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../data/models/category_meta.dart';
@@ -293,12 +294,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         tag: 'product-${product.id}',
                         child: GestureDetector(
                           onTap: () => _openFullscreenGallery(context, product),
-                          child: Image.network(
-                            product.imagesUrl[_selectedImageIndex],
+                          child: OptimizedCachedImage(
+                            imageUrl: product.imagesUrl[_selectedImageIndex],
                             fit: BoxFit.contain,
                             width: double.infinity,
                             height: double.infinity,
-                            errorBuilder: (final c, final e, final s) => Icon(
+                            borderRadius: 0,
+                            errorBuilder: (final c, final u, final e) => Icon(
                                 Icons.chair_alt_rounded,
                                 size: 64,
                                 color: AppColors.textTertiary),
@@ -398,12 +400,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         ]
                       : null,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.network(product.imagesUrl[index],
-                      fit: BoxFit.cover,
-                      errorBuilder: (final c, final e, final s) =>
-                          const SizedBox.shrink()),
+                child: OptimizedCachedImage(
+                  imageUrl: product.imagesUrl[index],
+                  width: 68,
+                  height: 68,
+                  fit: BoxFit.cover,
+                  borderRadius: 14,
+                  errorBuilder: (final c, final u, final e) => const SizedBox.shrink(),
                 ),
               ),
             );
@@ -1157,12 +1160,13 @@ class _SimilarProductCard extends StatelessWidget {
               ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20)),
-                child: Image.network(
-                  product.imagesUrl.first,
+                child: OptimizedCachedImage(
+                  imageUrl: product.imagesUrl.first,
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (final c, final e, final s) => Container(
+                  borderRadius: 0,
+                  errorBuilder: (final c, final u, final e) => Container(
                       height: 120,
                       color: _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
                       child: const Icon(Icons.chair_alt_rounded)),
