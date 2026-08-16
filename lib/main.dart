@@ -8,6 +8,7 @@ import 'core/config/app_router.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/services/admin_session_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
+import 'core/services/onboarding_cache.dart';
 import 'core/services/theme_mode_cache.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
@@ -64,6 +65,10 @@ void main() async {
   // 5. Kayıtlı görünüm (açık/koyu/sistem) tercihi — ilk karede yanlış
   // temanın bir an görünüp değişmesini (flash) önlemek için önceden yüklenir
   await ThemeModeCache.load();
+
+  // 6. Ev içi tanıtım (onboarding) daha önce gösterildi mi — router'ın ilk
+  // konum kararını senkron verebilmesi için önceden yüklenir
+  await OnboardingCache.load();
 
   runApp(
       const ProviderScope(observers: [], child: MyApp())
