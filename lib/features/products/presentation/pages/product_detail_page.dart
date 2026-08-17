@@ -50,10 +50,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   bool _isAppBarSolid = false;
   String? _trackedProductId;
 
-  // "360°" sürükle-çevir jesti: gerçek bir 3D model yok, ama birden fazla
-  // fotoğrafı frame gibi kullanarak sürüklemeyle geçiş yaptırıyoruz — çok
-  // fotoğraflı ürünlerde inandırıcı bir "çevirme" hissi veriyor.
-  double _rotateDragAccum = 0;
+  // "360°" sürükle-çevir jesti — ÖNCEKİ SÜRÜM elle yazılmış bir sürükleme
+  // eşiği + AnimatedSwitcher/FadeTransition kullanıyordu; hızlı sürüklemede
+  // eşik art arda birden çok kez aşılıp üst üste binen fade'ler tetikliyor,
+  // "eski fotoğrafı gösterip kayboluyor" gibi bozuk bir görüntü
+  // oluşturuyordu. Artık gerçek bir PageView kullanıyoruz — Flutter'ın
+  // kendi, parmakla birebir takip eden, bırakınca en yakın fotoğrafa
+  // "snap" eden native kaydırma mekanizması; elle yazılmış eşik/animasyon
+  // kodu tamamen kaldırıldı.
+  late final PageController _galleryController =
+      PageController(initialPage: _selectedImageIndex);
   bool _showRotateHint = true;
 
   // remove.bg ile üretilmiş, arka planı kaldırılmış "stüdyo" versiyon
@@ -103,6 +109,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   @override
   void dispose() {
     _scrollController.dispose();
+    _galleryController.dispose();
     _entrance.dispose();
     super.dispose();
   }
@@ -283,23 +290,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     );
   }
 
-  /// Yatay sürüklemeyi fotoğraflar arasında "çevirme" hareketine çevirir.
-  /// Gerçek bir 3D model yok — birden fazla ürün fotoğrafı frame gibi
-  /// kullanılıyor, bu yüzden sadece 2+ fotoğraflı ürünlerde etkin.
-  void _handleRotateDrag(final DragUpdateDetails details, final Product product) {
-    const double stepPx = 26;
-    _rotateDragAccum += details.delta.dx;
-    if (_rotateDragAccum.abs() < stepPx) return;
-    final int direction = _rotateDragAccum > 0 ? -1 : 1;
-    _rotateDragAccum = 0;
-    final int count = product.imagesUrl.length;
-    setState(() {
-      _selectedImageIndex = (_selectedImageIndex + direction) % count;
-      if (_selectedImageIndex < 0) _selectedImageIndex += count;
-      _showRotateHint = false;
-    });
-  }
-
   // ════════════════════════════════════════════════════════════
   // GALERİ — sade, beyaz, yumuşak gölgeli. Renk/dalga denemesi kaldırıldı.
   // ════════════════════════════════════════════════════════════
@@ -328,26 +318,25 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(28),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (final child, final anim) =>
-                        FadeTransition(opacity: anim, child: child),
-                    child: Padding(
-                      key: ValueKey('$_selectedImageIndex-$_showStudioVersion'),
-                      padding: EdgeInsets.all(
-                          context.responsive(mobile: 28, desktop: 48)),
-                      child: Hero(
-                        tag: 'product-${product.id}',
+                  child: Hero(
+                    tag: 'product-${product.id}',
+                    child: PageView.builder(
+                      controller: _galleryController,
+                      physics: product.imagesUrl.length > 1
+                          ? const BouncingScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+                      itemCount: product.imagesUrl.length,
+                      onPageChanged: (final index) => setState(() {
+                        _selectedImageIndex = index;
+                        _showRotateHint = false;
+                      }),
+                      itemBuilder: (final context, final index) => Padding(
+                        padding:
+                            EdgeInsets.all(context.responsive(mobile: 28, desktop: 48)),
                         child: GestureDetector(
                           onTap: () => _openFullscreenGallery(context, product),
-                          onHorizontalDragUpdate: product.imagesUrl.length > 1
-                              ? (final details) => _handleRotateDrag(details, product)
-                              : null,
-                          onHorizontalDragEnd: product.imagesUrl.length > 1
-                              ? (final _) => _rotateDragAccum = 0
-                              : null,
                           child: OptimizedCachedImage(
-                            imageUrl: _effectiveImageUrl(product, _selectedImageIndex),
+                            imageUrl: _effectiveImageUrl(product, index),
                             fit: BoxFit.contain,
                             width: double.infinity,
                             height: double.infinity,
@@ -442,7 +431,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.sync_rounded,
+                                const Icon(Icons.swipe_rounded,
                                     size: 15, color: Colors.white),
                                 const SizedBox(width: 6),
                                 Text(context.l10n.dragToRotateHint,
@@ -478,7 +467,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           itemBuilder: (final context, final index) {
             final selected = index == _selectedImageIndex;
             return GestureDetector(
-              onTap: () => setState(() => _selectedImageIndex = index),
+              onTap: () {
+                setState(() => _selectedImageIndex = index);
+                _galleryController.animateToPage(index,
+                    duration: const Duration(milliseconds: 320), curve: Curves.easeOutCubic);
+              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width: 68,

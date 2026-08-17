@@ -1,8 +1,9 @@
 /**
  * Sağlam Spot Cloud Functions
  * ============================================================
- * "Stüdyo görsel" özelliği: admin panelinde bir ürün fotoğrafı
- * yüklendiğinde, bu fonksiyon remove.bg API'sine gönderip arka planı
+ * "Stüdyo görsel" özelliği: admin panelinde bir fotoğraf SEÇİLİR
+ * SEÇİLMEZ (henüz Storage'a yüklenmeden, base64 olarak) bu fonksiyona
+ * gönderilir; fonksiyon remove.bg API'sine gönderip arka planı
  * kaldırılmış bir versiyon üretir ve Firebase Storage'a kaydeder.
  *
  * remove.bg API anahtarı BURADA, sunucu tarafında bir "secret" olarak
@@ -72,9 +73,13 @@ async function releaseQuotaSlot(db) {
 exports.removeProductBackground = onCall(
     {secrets: [REMOVEBG_API_KEY], timeoutSeconds: 60, memory: "512MiB"},
     async (request) => {
-      const imageUrl = request.data && request.data.imageUrl;
-      if (!imageUrl || typeof imageUrl !== "string") {
-        throw new HttpsError("invalid-argument", "imageUrl gerekli.");
+      // Admin fotoğraf seçer seçmez, henüz Storage'a hiç yüklenmeden
+      // ÇIPLAK BAYT olarak gönderiliyor (base64) — bu sayede önce
+      // Storage'a yükleyip sonra URL üretmek gibi ekstra bir adıma/gecikmeye
+      // gerek kalmıyor, seçimden hemen sonra önizleme üretilebiliyor.
+      const imageBase64 = request.data && request.data.imageBase64;
+      if (!imageBase64 || typeof imageBase64 !== "string") {
+        throw new HttpsError("invalid-argument", "imageBase64 gerekli.");
       }
 
       const db = getFirestore();
@@ -90,7 +95,7 @@ exports.removeProductBackground = onCall(
             "X-Api-Key": REMOVEBG_API_KEY.value(),
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({image_url: imageUrl, size: "auto", format: "png"}),
+          body: JSON.stringify({image_file_b64: imageBase64, size: "auto", format: "png"}),
         });
 
         if (!removeBgResponse.ok) {

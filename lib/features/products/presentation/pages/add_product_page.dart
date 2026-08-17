@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,14 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   final List<XFile> _images = [];
   bool _isSecondHand = false;
+
+  // İlk fotoğraf SEÇİLİR SEÇİLMEZ (kaydet'e basmadan çok önce) arka planda
+  // stüdyo (arka plansız) önizlemesi üretilmeye başlanır — bkz.
+  // _generateStudioPreview. `_studioFuture` kaydet anında hâlâ devam
+  // ediyorsa admin'in beklemesi için tutuluyor (bkz. _submit).
+  Future<void>? _studioFuture;
+  bool _isGeneratingStudio = false;
+  String? _studioImageUrl;
 
   @override
   void initState() {
@@ -189,6 +198,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       return;
     }
 
+    // Stüdyo önizlemesi hâlâ üretiliyorsa, kaydetmeden önce bitmesini
+    // bekle — admin'e bunu bir diyalogla belli et.
+    if (_isGeneratingStudio && _studioFuture != null) {
+      await _waitForStudioPreview();
+      if (!mounted) return;
+    }
+
     final product = Product(
       id: '',
       createdAt: DateTime.now().toIso8601String(),
@@ -202,6 +218,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       isSpotProduct: _isSecondHand,
       imagesUrl: const [],
       availableColors: _isSecondHand ? const [] : _selectedColors,
+      studioImagesUrl: _studioImageUrl != null ? [_studioImageUrl!] : const [],
     );
 
     await ref
@@ -209,27 +226,93 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         .add(product, _images.map((final e) => File(e.path)).toList());
   }
 
+  /// Stüdyo önizlemesi kaydet anında hâlâ sürüyorsa, bitene kadar
+  /// kapatılamayan bir bekleme diyalogu gösterir.
+  Future<void> _waitForStudioPreview() async {
+    unawaited(showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (final _) => AlertDialog(
+        content: Row(
+          children: [
+            const SizedBox(
+                width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4)),
+            const SizedBox(width: 16),
+            Expanded(child: Text(context.l10n.studioPreparingWait)),
+          ],
+        ),
+      ),
+    ));
+    await _studioFuture;
+    if (mounted) Navigator.of(context, rootNavigator: true).pop();
+  }
+
   // ---------------- UI HELPERS ----------------
 
-  Widget _imageSection() => SizedBox(
-        height: 100,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: _images.length + 1,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 10),
-          itemBuilder: (final _, final i) {
-            if (i == _images.length) return AddPhotoTile(onTap: _pickImages);
+  Widget _imageSection() {
+    final showStudioTile = _isGeneratingStudio || _studioImageUrl != null;
+    final itemCount = _images.length + (showStudioTile ? 1 : 0) + 1;
+
+    return SizedBox(
+      height: 100,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: itemCount,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+        itemBuilder: (final _, final i) {
+          if (i < _images.length) {
             return PhotoThumbnail(
               image: FileImage(File(_images[i].path)),
-              onDelete: () => setState(() => _images.removeAt(i)),
+              onDelete: () => setState(() {
+                _images.removeAt(i);
+                // İlk fotoğraf silindiyse, ona dayanan stüdyo önizlemesi
+                // artık geçersiz — temizle (yeniden üretmiyoruz, admin
+                // isterse kalan fotoğraflarla devam eder).
+                if (i == 0) {
+                  _studioImageUrl = null;
+                  _studioFuture = null;
+                }
+              }),
             );
-          },
-        ),
-      );
+          }
+          if (showStudioTile && i == _images.length) {
+            return StudioPhotoTile(
+              isLoading: _isGeneratingStudio,
+              imageUrl: _studioImageUrl,
+              onDiscard: () => setState(() => _studioImageUrl = null),
+            );
+          }
+          return AddPhotoTile(onTap: _pickImages);
+        },
+      ),
+    );
+  }
 
   Future<void> _pickImages() async {
     final images = await ImagePicker().pickMultiImage();
-    if (images.isNotEmpty) setState(() => _images.addAll(images));
+    if (images.isEmpty) return;
+    final wasEmpty = _images.isEmpty;
+    setState(() => _images.addAll(images));
+    // Stüdyo önizlemesi sadece İLK kez fotoğraf eklendiğinde (ya da ilk
+    // fotoğraf daha önce silinip yeniden eklendiğinde) tetiklenir — aylık
+    // kotayı korumak için her zaman yalnızca "kapak" fotoğrafı işlenir.
+    if (wasEmpty || _studioFuture == null) _generateStudioPreview();
+  }
+
+  /// İlk fotoğrafı, henüz Storage'a hiç yüklenmeden ham bayt olarak
+  /// remove.bg tabanlı Cloud Function'a gönderir. Kaydet'e basılmadan
+  /// çok önce çalışır — admin sonucu fotoğraf şeridinde görür.
+  void _generateStudioPreview() {
+    if (_images.isEmpty || _isGeneratingStudio) return;
+    setState(() => _isGeneratingStudio = true);
+    _studioFuture = _images.first.readAsBytes().then(StudioImageService.generate).then((final outcome) {
+      if (!mounted) return;
+      setState(() {
+        _isGeneratingStudio = false;
+        _studioImageUrl =
+            outcome.result == StudioImageResult.success ? outcome.studioImageUrl : null;
+      });
+    });
   }
 
   void _snack(final String msg, {final bool success = false, final bool error = false}) {

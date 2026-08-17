@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/ads/widgets/ad_banner_widget.dart';
@@ -34,6 +36,13 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   List<dynamic> _newSelectedImages = [];
   final ImageSelector _imageSelector = ImageSelector();
+
+  // Yeni fotoğraflar seçilince (ilk fotoğraf değiştiği için) eski stüdyo
+  // görseli geçersiz kalır — yeni ilk fotoğraf için eşdeğerini yeniden
+  // üretiyoruz, tıpkı add_product_page.dart'taki gibi.
+  Future<void>? _studioFuture;
+  bool _isGeneratingStudio = false;
+  String? _studioImageUrl;
 
   bool _isSold = false;
   bool _isSpotProduct = false;
@@ -202,8 +211,10 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   Widget _buildImagePreview() {
     final bool usingNew = _newSelectedImages.isNotEmpty;
+    final bool showStudioTile = usingNew && (_isGeneratingStudio || _studioImageUrl != null);
     final int existingCount = usingNew ? 0 : _currentProduct!.imagesUrl.length;
-    final int itemCount = (usingNew ? _newSelectedImages.length : existingCount) + 1;
+    final int baseCount = usingNew ? _newSelectedImages.length : existingCount;
+    final int itemCount = baseCount + (showStudioTile ? 1 : 0) + 1;
 
     return SizedBox(
       height: 100,
@@ -212,21 +223,37 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
         itemCount: itemCount,
         separatorBuilder: (final _, final __) => const SizedBox(width: 10),
         itemBuilder: (final _, final i) {
-          if (i == itemCount - 1) {
-            return AddPhotoTile(onTap: _pickNewImages);
-          }
-          if (usingNew) {
+          if (i < baseCount) {
+            if (usingNew) {
+              final dynamic raw = _newSelectedImages[i];
+              final ImageProvider imageProvider =
+                  raw is Uint8List ? MemoryImage(raw) : FileImage(raw as File);
+              return PhotoThumbnail(
+                image: imageProvider,
+                onDelete: () => setState(() {
+                  _newSelectedImages.removeAt(i);
+                  if (i == 0) {
+                    _studioImageUrl = null;
+                    _studioFuture = null;
+                  }
+                }),
+              );
+            }
             return PhotoThumbnail(
-              image: FileImage(File(_newSelectedImages[i].path)),
-              onDelete: () => setState(() => _newSelectedImages.removeAt(i)),
+              image: NetworkImage(_currentProduct!.imagesUrl[i]),
+              onDelete: () => setState(
+                  () => _currentProduct = _currentProduct!.copyWith(
+                      imagesUrl: [..._currentProduct!.imagesUrl]..removeAt(i))),
             );
           }
-          return PhotoThumbnail(
-            image: NetworkImage(_currentProduct!.imagesUrl[i]),
-            onDelete: () => setState(
-                () => _currentProduct = _currentProduct!.copyWith(
-                    imagesUrl: [..._currentProduct!.imagesUrl]..removeAt(i))),
-          );
+          if (showStudioTile && i == baseCount) {
+            return StudioPhotoTile(
+              isLoading: _isGeneratingStudio,
+              imageUrl: _studioImageUrl,
+              onDiscard: () => setState(() => _studioImageUrl = null),
+            );
+          }
+          return AddPhotoTile(onTap: _pickNewImages);
         },
       ),
     );
@@ -234,10 +261,63 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   Future<void> _pickNewImages() async {
     final images = await _imageSelector.pickImages();
-    if (images.isNotEmpty) setState(() => _newSelectedImages = images);
+    if (images.isEmpty) return;
+    setState(() {
+      _newSelectedImages = images;
+      _studioImageUrl = null;
+    });
+    _generateStudioPreview();
+  }
+
+  Future<Uint8List> _bytesOf(final dynamic image) async =>
+      image is Uint8List ? image : (image as File).readAsBytes();
+
+  /// Yeni seçilen ilk fotoğrafı, henüz Storage'a hiç yüklenmeden ham bayt
+  /// olarak remove.bg tabanlı Cloud Function'a gönderir (bkz.
+  /// add_product_page.dart'taki eşdeğeri — aynı desen).
+  void _generateStudioPreview() {
+    if (_newSelectedImages.isEmpty || _isGeneratingStudio) return;
+    setState(() => _isGeneratingStudio = true);
+    _studioFuture =
+        _bytesOf(_newSelectedImages.first).then(StudioImageService.generate).then((final outcome) {
+      if (!mounted) return;
+      setState(() {
+        _isGeneratingStudio = false;
+        _studioImageUrl =
+            outcome.result == StudioImageResult.success ? outcome.studioImageUrl : null;
+      });
+    });
+  }
+
+  Future<void> _waitForStudioPreview() async {
+    unawaited(showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (final _) => AlertDialog(
+        content: Row(
+          children: [
+            const SizedBox(
+                width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4)),
+            const SizedBox(width: 16),
+            Expanded(child: Text(context.l10n.studioPreparingWait)),
+          ],
+        ),
+      ),
+    ));
+    await _studioFuture;
+    if (mounted) Navigator.of(context, rootNavigator: true).pop();
   }
 
   Future<void> _handleUpdate() async {
+    final bool pickedNewImages = _newSelectedImages.isNotEmpty;
+
+    // Yeni fotoğraflar seçildiyse ve stüdyo önizlemesi hâlâ üretiliyorsa,
+    // kaydetmeden önce bitmesini bekle.
+    if (pickedNewImages && _isGeneratingStudio && _studioFuture != null) {
+      await _waitForStudioPreview();
+      if (!mounted) return;
+    }
+
     final updatedProduct = _currentProduct!.copyWith(
       name: _nameController.text.trim(),
       desc: _descController.text.trim(),
@@ -249,6 +329,11 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       category: _selectedCategory ?? _currentProduct!.category,
       availableColors: _isSpotProduct ? const [] : _selectedColors,
       updatedAt: DateTime.now().toIso8601String(),
+      // Yeni fotoğraf seçilmediyse mevcut stüdyo görselini koru (alan
+      // belirtilmezse copyWith zaten eskisini tutar); seçildiyse yeni
+      // üretilen (veya üretilemediyse boş) versiyonla değiştir.
+      studioImagesUrl:
+          pickedNewImages ? (_studioImageUrl != null ? [_studioImageUrl!] : const []) : null,
     );
 
     await ref.read(productMutationProvider.notifier).updateProduct(

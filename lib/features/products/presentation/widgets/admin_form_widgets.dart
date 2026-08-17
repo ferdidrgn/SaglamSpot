@@ -241,6 +241,90 @@ class PhotoThumbnail extends StatelessWidget {
       );
 }
 
+/// remove.bg ile üretilen "stüdyo" (arka plansız) önizleme karosu —
+/// üretim sürerken bir spinner, hazır olduğunda "Stüdyo" rozetli bir
+/// önizleme gösterir. `isLoading == false && imageUrl == null` ise
+/// (henüz hiç fotoğraf seçilmediği veya üretim başarısız olduğu
+/// durumlar) hiçbir şey göstermez.
+class StudioPhotoTile extends StatelessWidget {
+  final bool isLoading;
+  final String? imageUrl;
+  final VoidCallback? onDiscard;
+
+  const StudioPhotoTile({super.key, required this.isLoading, this.imageUrl, this.onDiscard});
+
+  @override
+  Widget build(final BuildContext context) {
+    if (!isLoading && imageUrl == null) return const SizedBox.shrink();
+
+    return Stack(
+      children: [
+        Container(
+          width: 96,
+          height: 96,
+          decoration: BoxDecoration(
+            color: AppColors.secondary,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.accent.withOpacity(0.6), width: 1.4),
+            image: (!isLoading && imageUrl != null)
+                ? DecorationImage(image: NetworkImage(imageUrl!), fit: BoxFit.cover)
+                : null,
+          ),
+          child: isLoading
+              ? Center(
+                  child: SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2.4, color: AppColors.accent),
+                  ),
+                )
+              : null,
+        ),
+        Positioned(
+          top: 6,
+          left: 6,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.55),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.auto_awesome_rounded, size: 10, color: Colors.white),
+                const SizedBox(width: 3),
+                Text(context.l10n.studioPhotoLabel,
+                    style: const TextStyle(
+                        fontSize: 8.5, fontWeight: FontWeight.w800, color: Colors.white)),
+              ],
+            ),
+          ),
+        ),
+        if (!isLoading && imageUrl != null && onDiscard != null)
+          Positioned(
+            top: 6,
+            right: 6,
+            child: Material(
+              color: Colors.white,
+              shape: const CircleBorder(),
+              elevation: 2,
+              child: InkWell(
+                onTap: onDiscard,
+                customBorder: const CircleBorder(),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Icon(Icons.close_rounded, size: 14, color: AppColors.error),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 /// Fotoğraf şeridinin sonuna eklenen dairesel "ekle" karosu.
 class AddPhotoTile extends StatelessWidget {
   final VoidCallback onTap;

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../../../../../../core/services/studio_image_service.dart';
 import '../../../../../../core/util/date_formatter.dart';
 import '../datasources/product_remote_data_source.dart';
 import '../models/product_model.dart';
@@ -110,13 +109,18 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
     try {
       final productId = _productRef.doc().id;
-      final uploaded = await _uploadImages(images, productId);
+      final imageUrls = await _uploadImages(images, productId);
       final now = _formattedNow();
 
       final data = product.toFirestore();
       data['_id'] = productId;
-      data['imagesUrl'] = uploaded.originalUrls;
-      data['studioImagesUrl'] = uploaded.studioUrls;
+      data['imagesUrl'] = imageUrls;
+      // Stüdyo (arka plansız) görsel — admin panelinde fotoğraf SEÇİLİR
+      // seçilmez, henüz buraya gelmeden ÖNCE üretilip product.studioImagesUrl
+      // alanına yazılmış oluyor (bkz. add_product_page.dart /
+      // edit_product_page.dart). Burada sadece yükleme sayısıyla aynı
+      // uzunluğa hizalanıp olduğu gibi kaydediliyor.
+      data['studioImagesUrl'] = _alignStudioUrls(product.studioImagesUrl, imageUrls.length);
       data['_createdAt'] = now;
       data['_updatedAt'] = now;
       data['_soldAt'] = '';
@@ -134,12 +138,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final List<dynamic>? newImages,
   ) async {
     try {
-      final updated = await _handleImageUpdate(product, newImages);
+      final imageUrls = await _handleImageUpdate(product, newImages);
       final now = _formattedNow();
 
       final updateData = {
-        'imagesUrl': updated.originalUrls,
-        'studioImagesUrl': updated.studioUrls,
+        'imagesUrl': imageUrls,
+        'studioImagesUrl': _alignStudioUrls(product.studioImagesUrl, imageUrls.length),
         '_updatedAt': now,
       };
 
@@ -169,29 +173,21 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   // IMAGE HELPERS
   // ---------------------------------------------------------------------------
 
-  Future<_UploadedImages> _handleImageUpdate(
+  Future<List<String>> _handleImageUpdate(
     final ProductModel product,
     final List<dynamic>? newImages,
   ) async {
-    if (newImages == null || newImages.isEmpty) {
-      return _UploadedImages(product.imagesUrl, product.studioImagesUrl);
-    }
+    if (newImages == null || newImages.isEmpty) return product.imagesUrl;
 
     await _deleteImages([...product.imagesUrl, ...product.studioImagesUrl]);
     return _uploadImages(newImages, product.id);
   }
 
-  /// Her orijinal fotoğrafı Storage'a yükler; ardından her biri için
-  /// (best-effort, sırayla) remove.bg tabanlı bir "stüdyo" (arka plansız)
-  /// versiyon üretmeyi dener. Stüdyo üretimi başarısız olursa (kota
-  /// dolu/hata) o slotta boş string kalır — orijinal yükleme ASLA
-  /// etkilenmez, bkz. StudioImageService.
-  Future<_UploadedImages> _uploadImages(
+  Future<List<String>> _uploadImages(
     final List<dynamic> images,
     final String productId,
   ) async {
     final List<String> urls = [];
-    final List<String> studioUrls = [];
 
     for (int i = 0; i < images.length; i++) {
       final ref = _storage.ref('product_images/$productId/$i.jpg');
@@ -205,15 +201,17 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       else
         throw Exception('Geçersiz görsel türü');
 
-      final url = await ref.getDownloadURL();
-      urls.add(url);
-
-      final outcome = await StudioImageService.generate(url);
-      studioUrls.add(outcome.studioImageUrl ?? '');
+      urls.add(await ref.getDownloadURL());
     }
 
-    return _UploadedImages(urls, studioUrls);
+    return urls;
   }
+
+  /// [studio] dizisini [length] uzunluğa hizalar — eksik slotlar boş
+  /// string ile doldurulur, fazlaları atılır. imagesUrl ile studioImagesUrl
+  /// HER ZAMAN aynı uzunlukta olmalı (bkz. Product.studioImagesUrl doc'u).
+  List<String> _alignStudioUrls(final List<String> studio, final int length) =>
+      List.generate(length, (final i) => i < studio.length ? studio[i] : '');
 
   Future<void> _deleteImages(final List<String> imageUrls) async {
     for (final url in imageUrls) {
@@ -241,14 +239,4 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   Never _throwError(final String message, final Object error) =>
       throw Exception('$message: $error');
-}
-
-/// `_uploadImages`/`_handleImageUpdate` çıktısı: orijinal ve stüdyo görsel
-/// URL listeleri her zaman AYNI UZUNLUKTA — bir slot için stüdyo görseli
-/// üretilemediyse orada boş string bulunur.
-class _UploadedImages {
-  final List<String> originalUrls;
-  final List<String> studioUrls;
-
-  const _UploadedImages(this.originalUrls, this.studioUrls);
 }
