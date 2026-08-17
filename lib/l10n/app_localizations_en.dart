@@ -1035,11 +1035,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filtersPanelTitle => 'FILTERS';
 
   @override
-  String get dragToRotateHint => 'Drag to rotate';
+  String get dragToRotateHint => 'Swipe for more photos';
 
   @override
   String get studioQuotaExceededNotice =>
       'Monthly studio image limit reached — photos were added in their original form.';
+
+  @override
+  String get studioPreparingWait => 'Preparing studio photo, please wait...';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get studioGenerationFailed => 'Couldn\'t generate studio photo';
 
   @override
   String get storePhotoLabel => 'Store';
@@ -1054,34 +1063,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingStart => 'Get Started';
 
   @override
-  String get onboardingPage1Eyebrow => 'WELCOME';
+  String get onboardingPage1Eyebrow => 'WELCOME TO SAĞLAM SPOT';
 
   @override
-  String get onboardingPage1Title => 'Like Walking Through Your Own Home';
+  String get onboardingPage1Title => 'The Right Place\nFor Your Home';
 
   @override
   String get onboardingPage1Desc =>
-      'Discover furniture as if you were already standing in your own living room.';
+      'With over 20 years of trusted craftsmanship, we bring quality furniture straight to your pocket.';
 
   @override
-  String get onboardingPage2Eyebrow => 'ROOM TO ROOM';
+  String get onboardingPage2Eyebrow => 'PRE-OWNED & BRAND NEW, TOGETHER';
 
   @override
-  String get onboardingPage2Title => 'Swipe To Explore';
+  String get onboardingPage2Title => 'Options For\nEvery Budget';
 
   @override
   String get onboardingPage2Desc =>
-      'Swipe right to move to another corner of the house — spot and brand-new furniture under one roof.';
+      'From great second-hand finds to our brand-new collection — easily find exactly what you\'re looking for.';
 
   @override
-  String get onboardingPage3Eyebrow => 'LAST STOP';
+  String get onboardingPage3Eyebrow => 'SHOP WITH CONFIDENCE';
 
   @override
-  String get onboardingPage3Title => 'Find Your Favorite';
+  String get onboardingPage3Title => 'Found\nSomething? Ask Now';
 
   @override
   String get onboardingPage3Desc =>
-      'Pick the one that suits you from thousands of products, ask instantly on WhatsApp.';
+      'Reach us instantly on WhatsApp, ask about pricing, and negotiate directly — no middlemen.';
 
   @override
   String get favoritesTitle => 'My Favorites';

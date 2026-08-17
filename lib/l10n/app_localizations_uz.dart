@@ -1037,11 +1037,20 @@ class AppLocalizationsUz extends AppLocalizations {
   String get filtersPanelTitle => 'FILTRLAR';
 
   @override
-  String get dragToRotateHint => 'Aylantirish uchun torting';
+  String get dragToRotateHint => 'Boshqa fotolar uchun torting';
 
   @override
   String get studioQuotaExceededNotice =>
       'Oylik studiya rasm limiti to\'ldi — fotolar asl holida qo\'shildi.';
+
+  @override
+  String get studioPreparingWait => 'Studiya rasmi tayyorlanmoqda, kuting...';
+
+  @override
+  String get retry => 'Qayta urinish';
+
+  @override
+  String get studioGenerationFailed => 'Studiya rasmini yaratib bo\'lmadi';
 
   @override
   String get storePhotoLabel => 'Do\'kon';
@@ -1056,34 +1065,34 @@ class AppLocalizationsUz extends AppLocalizations {
   String get onboardingStart => 'Boshlash';
 
   @override
-  String get onboardingPage1Eyebrow => 'XUSH KELIBSIZ';
+  String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'GA XUSH KELIBSIZ';
 
   @override
-  String get onboardingPage1Title => 'Xuddi O\'z Uyingizda Yurgandek';
+  String get onboardingPage1Title => 'Uyingiz Uchun\nTo\'g\'ri Manzil';
 
   @override
   String get onboardingPage1Desc =>
-      'Mebellarni xuddi o\'z mehmonxonangizda turgandek his qilib kashf eting.';
+      '20 yildan ortiq tajriba bilan sifatli mebelni cho\'ntagingizga olib kelamiz.';
 
   @override
-  String get onboardingPage2Eyebrow => 'XONADAN XONAGA';
+  String get onboardingPage2Eyebrow => 'ISHLATILGAN VA YANGI BIRGALIKDA';
 
   @override
-  String get onboardingPage2Title => 'Ko\'rish uchun torting';
+  String get onboardingPage2Title => 'Har Qanday Byudjet\nUchun Variantlar';
 
   @override
   String get onboardingPage2Desc =>
-      'Uyning boshqa burchagiga o\'tish uchun o\'ngga torting — ishlatilgan va yangi mebellar bitta tom ostida.';
+      'Ajoyib ishlatilgan takliflardan yangi kolleksiyagacha — izlaganingizni osongina toping.';
 
   @override
-  String get onboardingPage3Eyebrow => 'OXIRGI BEKAT';
+  String get onboardingPage3Eyebrow => 'ISHONCH BILAN XARID QILING';
 
   @override
-  String get onboardingPage3Title => 'Sevimlingizni Toping';
+  String get onboardingPage3Title => 'Yoqdimi?\nHozir Yozing';
 
   @override
   String get onboardingPage3Desc =>
-      'Minglab mahsulotlar orasidan o\'zingizga mosini tanlang, WhatsApp orqali darhol so\'rang.';
+      'WhatsApp orqali bir bosishda bog\'laning, narxni so\'rang, to\'g\'ridan-to\'g\'ri kelishing.';
 
   @override
   String get favoritesTitle => 'Sevimlilarim';

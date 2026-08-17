@@ -1035,11 +1035,21 @@ class AppLocalizationsKy extends AppLocalizations {
   String get filtersPanelTitle => 'ЧЫПКАЛАР';
 
   @override
-  String get dragToRotateHint => 'Айландыруу үчүн сүйрөңүз';
+  String get dragToRotateHint => 'Дагы сүрөттөр үчүн сүйрөңүз';
 
   @override
   String get studioQuotaExceededNotice =>
       'Айлык студиялык сүрөт чеги толду — сүрөттөр өз түрүндө кошулду.';
+
+  @override
+  String get studioPreparingWait =>
+      'Студиялык сүрөт даярдалууда, күтө туруңуз...';
+
+  @override
+  String get retry => 'Кайра аракет кыл';
+
+  @override
+  String get studioGenerationFailed => 'Студиялык сүрөт түзүлгөн жок';
 
   @override
   String get storePhotoLabel => 'Дүкөн';
@@ -1054,34 +1064,34 @@ class AppLocalizationsKy extends AppLocalizations {
   String get onboardingStart => 'Баштоо';
 
   @override
-  String get onboardingPage1Eyebrow => 'КОШ КЕЛИҢИЗ';
+  String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'КО КОШ КЕЛИҢИЗ';
 
   @override
-  String get onboardingPage1Title => 'Өз Үйүңүздө Басып Жүргөндөй';
+  String get onboardingPage1Title => 'Үйүңүз үчүн\nТуура Дарек';
 
   @override
   String get onboardingPage1Desc =>
-      'Эмеректерди өз конок бөлмөңүздө тургандай эле ачыңыз.';
+      '20 жылдан ашык тажрыйба менен сапаттуу эмеректи чөнтөгүңүзгө алып келебиз.';
 
   @override
-  String get onboardingPage2Eyebrow => 'БӨЛМӨДӨН БӨЛМӨГӨ';
+  String get onboardingPage2Eyebrow => 'КОЛДОНУЛГАН ЖАНА ЖАҢЫ БИРГЕ';
 
   @override
-  String get onboardingPage2Title => 'Кароо үчүн сүйрөңүз';
+  String get onboardingPage2Title => 'Ар кандай бюджетке\nЫңгайлуу Тандоо';
 
   @override
   String get onboardingPage2Desc =>
-      'Үйдүн башка бурчуна өтүү үчүн оңго сүйрөңүз — колдонулган жана жаңы эмеректер бир чатыр астында.';
+      'Колдонулган мүмкүнчүлүктөрдөн жаңы коллекцияга чейин — издегениңизди оңой табыңыз.';
 
   @override
-  String get onboardingPage3Eyebrow => 'АКЫРКЫ БЕКЕТ';
+  String get onboardingPage3Eyebrow => 'ИШЕНИМДҮҮ САТЫП АЛУУ';
 
   @override
-  String get onboardingPage3Title => 'Сүйүктүүңүздү табыңыз';
+  String get onboardingPage3Title => 'Жактыңызбы?\nАзыр Жазыңыз';
 
   @override
   String get onboardingPage3Desc =>
-      'Миңдеген товарлардын арасынан өзүңүзгө ылайыгын тандаңыз, WhatsApp аркылуу дароо сураңыз.';
+      'WhatsApp аркылуу бир басуу менен байланышыңыз, баа сураңыз, түз сүйлөшүңүз.';
 
   @override
   String get favoritesTitle => 'Тандалмаларым';

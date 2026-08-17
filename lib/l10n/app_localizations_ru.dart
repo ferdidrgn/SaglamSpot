@@ -1033,11 +1033,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filtersPanelTitle => 'ФИЛЬТРЫ';
 
   @override
-  String get dragToRotateHint => 'Проведите, чтобы повернуть';
+  String get dragToRotateHint => 'Проведите для других фото';
 
   @override
   String get studioQuotaExceededNotice =>
       'Достигнут месячный лимит студийных фото — фотографии добавлены в исходном виде.';
+
+  @override
+  String get studioPreparingWait =>
+      'Подготовка студийного фото, пожалуйста, подождите...';
+
+  @override
+  String get retry => 'Повторить';
+
+  @override
+  String get studioGenerationFailed => 'Не удалось создать студийное фото';
 
   @override
   String get storePhotoLabel => 'Магазин';
@@ -1052,34 +1062,34 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onboardingStart => 'Начать';
 
   @override
-  String get onboardingPage1Eyebrow => 'ДОБРО ПОЖАЛОВАТЬ';
+  String get onboardingPage1Eyebrow => 'ДОБРО ПОЖАЛОВАТЬ В SAĞLAM SPOT';
 
   @override
-  String get onboardingPage1Title => 'Как Прогулка По Своему Дому';
+  String get onboardingPage1Title => 'Правильный Выбор\nДля Вашего Дома';
 
   @override
   String get onboardingPage1Desc =>
-      'Открывайте мебель так, будто вы уже в своей гостиной.';
+      'Более 20 лет проверенного мастерства — качественная мебель теперь у вас в кармане.';
 
   @override
-  String get onboardingPage2Eyebrow => 'ИЗ КОМНАТЫ В КОМНАТУ';
+  String get onboardingPage2Eyebrow => 'Б/У И НОВАЯ МЕБЕЛЬ ВМЕСТЕ';
 
   @override
-  String get onboardingPage2Title => 'Проведите, чтобы осмотреться';
+  String get onboardingPage2Title => 'Варианты На\nЛюбой Бюджет';
 
   @override
   String get onboardingPage2Desc =>
-      'Проведите вправо, чтобы перейти в другой уголок дома — бывшая в употреблении и новая мебель под одной крышей.';
+      'От выгодных предложений б/у до новой коллекции — легко найдите то, что искали.';
 
   @override
-  String get onboardingPage3Eyebrow => 'ПОСЛЕДНЯЯ ОСТАНОВКА';
+  String get onboardingPage3Eyebrow => 'ПОКУПАЙТЕ С УВЕРЕННОСТЬЮ';
 
   @override
-  String get onboardingPage3Title => 'Найдите Свой Фаворит';
+  String get onboardingPage3Title => 'Нашли Что-то?\nСпросите Сейчас';
 
   @override
   String get onboardingPage3Desc =>
-      'Выберите подходящий вариант из тысяч товаров, сразу спросите в WhatsApp.';
+      'Свяжитесь с нами в WhatsApp одним касанием, узнайте цену и договоритесь напрямую.';
 
   @override
   String get favoritesTitle => 'Мои Избранные';

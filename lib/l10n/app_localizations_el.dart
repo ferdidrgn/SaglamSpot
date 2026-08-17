@@ -1042,11 +1042,22 @@ class AppLocalizationsEl extends AppLocalizations {
   String get filtersPanelTitle => 'ΦΙΛΤΡΑ';
 
   @override
-  String get dragToRotateHint => 'Σύρετε για περιστροφή';
+  String get dragToRotateHint => 'Σύρετε για περισσότερες φωτογραφίες';
 
   @override
   String get studioQuotaExceededNotice =>
       'Το μηνιαίο όριο εικόνων στούντιο συμπληρώθηκε — οι φωτογραφίες προστέθηκαν στην αρχική τους μορφή.';
+
+  @override
+  String get studioPreparingWait =>
+      'Προετοιμασία φωτογραφίας στούντιο, παρακαλώ περιμένετε...';
+
+  @override
+  String get retry => 'Δοκιμάστε ξανά';
+
+  @override
+  String get studioGenerationFailed =>
+      'Δεν ήταν δυνατή η δημιουργία φωτογραφίας στούντιο';
 
   @override
   String get storePhotoLabel => 'Κατάστημα';
@@ -1061,34 +1072,34 @@ class AppLocalizationsEl extends AppLocalizations {
   String get onboardingStart => 'Ξεκινήστε';
 
   @override
-  String get onboardingPage1Eyebrow => 'ΚΑΛΩΣ ΗΡΘΑΤΕ';
+  String get onboardingPage1Eyebrow => 'ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟ SAĞLAM SPOT';
 
   @override
-  String get onboardingPage1Title => 'Σαν να Περπατάτε στο Δικό σας Σπίτι';
+  String get onboardingPage1Title => 'Η Σωστή Διεύθυνση\nΓια το Σπίτι σας';
 
   @override
   String get onboardingPage1Desc =>
-      'Ανακαλύψτε έπιπλα σαν να βρίσκεστε ήδη στο δικό σας σαλόνι.';
+      'Με πάνω από 20 χρόνια έμπειρης τεχνογνωσίας, φέρνουμε ποιοτικά έπιπλα στην τσέπη σας.';
 
   @override
-  String get onboardingPage2Eyebrow => 'ΑΠΟ ΔΩΜΑΤΙΟ ΣΕ ΔΩΜΑΤΙΟ';
+  String get onboardingPage2Eyebrow => 'ΜΕΤΑΧΕΙΡΙΣΜΕΝΑ & ΚΑΙΝΟΥΡΓΙΑ ΜΑΖΙ';
 
   @override
-  String get onboardingPage2Title => 'Σύρετε για Εξερεύνηση';
+  String get onboardingPage2Title => 'Επιλογές Για\nΚάθε Προϋπολογισμό';
 
   @override
   String get onboardingPage2Desc =>
-      'Σύρετε δεξιά για να περάσετε σε άλλη γωνιά του σπιτιού — μεταχειρισμένα και καινούργια έπιπλα κάτω από την ίδια στέγη.';
+      'Από εξαιρετικές μεταχειρισμένες ευκαιρίες έως τη νέα μας συλλογή — βρείτε εύκολα αυτό που ψάχνετε.';
 
   @override
-  String get onboardingPage3Eyebrow => 'ΤΕΛΕΥΤΑΙΑ ΣΤΑΣΗ';
+  String get onboardingPage3Eyebrow => 'ΑΓΟΡΑΣΤΕ ΜΕ ΕΜΠΙΣΤΟΣΥΝΗ';
 
   @override
-  String get onboardingPage3Title => 'Βρείτε το Αγαπημένο σας';
+  String get onboardingPage3Title => 'Βρήκατε Κάτι;\nΡωτήστε Τώρα';
 
   @override
   String get onboardingPage3Desc =>
-      'Επιλέξτε αυτό που σας ταιριάζει από χιλιάδες προϊόντα, ρωτήστε αμέσως μέσω WhatsApp.';
+      'Επικοινωνήστε άμεσα μέσω WhatsApp, ρωτήστε για τιμές και διαπραγματευτείτε απευθείας.';
 
   @override
   String get favoritesTitle => 'Τα Αγαπημένα μου';

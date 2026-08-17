@@ -1026,11 +1026,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filtersPanelTitle => 'الفلاتر';
 
   @override
-  String get dragToRotateHint => 'اسحب للتدوير';
+  String get dragToRotateHint => 'اسحب لعرض المزيد من الصور';
 
   @override
   String get studioQuotaExceededNotice =>
       'تم الوصول للحد الشهري لصور الاستوديو — تمت إضافة الصور بشكلها الأصلي.';
+
+  @override
+  String get studioPreparingWait =>
+      'جارٍ تجهيز صورة الاستوديو، يرجى الانتظار...';
+
+  @override
+  String get retry => 'أعد المحاولة';
+
+  @override
+  String get studioGenerationFailed => 'تعذر إنشاء صورة الاستوديو';
 
   @override
   String get storePhotoLabel => 'المتجر';
@@ -1045,34 +1055,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingStart => 'ابدأ';
 
   @override
-  String get onboardingPage1Eyebrow => 'مرحباً بكم';
+  String get onboardingPage1Eyebrow => 'مرحباً بكم في سالام سبوت';
 
   @override
-  String get onboardingPage1Title => 'وكأنكم تتجولون في منزلكم';
+  String get onboardingPage1Title => 'الوجهة الصحيحة\nلمنزلكم';
 
   @override
   String get onboardingPage1Desc =>
-      'اكتشفوا الأثاث وكأنكم بالفعل في غرفة معيشتكم.';
+      'بخبرة تتجاوز 20 عاماً، ننقل الأثاث عالي الجودة إلى جيبكم.';
 
   @override
-  String get onboardingPage2Eyebrow => 'من غرفة إلى غرفة';
+  String get onboardingPage2Eyebrow => 'أثاث مستعمل وجديد معاً';
 
   @override
-  String get onboardingPage2Title => 'اسحب للاستكشاف';
+  String get onboardingPage2Title => 'خيارات تناسب\nكل ميزانية';
 
   @override
   String get onboardingPage2Desc =>
-      'اسحب لليمين للانتقال إلى ركن آخر من المنزل — أثاث مستعمل وجديد تحت سقف واحد.';
+      'من الصفقات المستعملة الرائعة إلى مجموعتنا الجديدة — اعثروا بسهولة على ما تبحثون عنه.';
 
   @override
-  String get onboardingPage3Eyebrow => 'المحطة الأخيرة';
+  String get onboardingPage3Eyebrow => 'تسوقوا بثقة';
 
   @override
-  String get onboardingPage3Title => 'اعثر على المفضل لديك';
+  String get onboardingPage3Title => 'أعجبكم شيء؟\nراسلونا الآن';
 
   @override
   String get onboardingPage3Desc =>
-      'اختر ما يناسبك من بين آلاف المنتجات، واسأل فوراً عبر واتساب.';
+      'تواصلوا معنا فوراً عبر واتساب، اسألوا عن السعر وتفاوضوا مباشرة دون وسطاء.';
 
   @override
   String get favoritesTitle => 'مفضلتي';

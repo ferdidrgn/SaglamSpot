@@ -1029,11 +1029,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get filtersPanelTitle => 'FİLTRELER';
 
   @override
-  String get dragToRotateHint => 'Çevirmek için sürükleyin';
+  String get dragToRotateHint => 'Diğer fotoğraflar için kaydırın';
 
   @override
   String get studioQuotaExceededNotice =>
       'Bu ay stüdyo (arka plansız) görsel limiti doldu — fotoğraflar normal haliyle eklendi.';
+
+  @override
+  String get studioPreparingWait =>
+      'Stüdyo görseli hazırlanıyor, lütfen bekleyin...';
+
+  @override
+  String get retry => 'Tekrar Dene';
+
+  @override
+  String get studioGenerationFailed => 'Stüdyo görseli oluşturulamadı';
 
   @override
   String get storePhotoLabel => 'Mağaza';
@@ -1048,34 +1058,34 @@ class AppLocalizationsTr extends AppLocalizations {
   String get onboardingStart => 'Başla';
 
   @override
-  String get onboardingPage1Eyebrow => 'HOŞ GELDİNİZ';
+  String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'A HOŞ GELDİNİZ';
 
   @override
-  String get onboardingPage1Title => 'Kendi Evinizde Gezinir Gibi';
+  String get onboardingPage1Title => 'Eviniz İçin\nDoğru Adres';
 
   @override
   String get onboardingPage1Desc =>
-      'Mobilyaları, sanki kendi salonunuzdaymışsınız gibi keşfedin.';
+      '20 yılı aşkın esnaf tecrübesiyle, kaliteli mobilyayı cebinize taşıyoruz.';
 
   @override
-  String get onboardingPage2Eyebrow => 'ODADAN ODAYA';
+  String get onboardingPage2Eyebrow => 'SPOT & SIFIR BİR ARADA';
 
   @override
-  String get onboardingPage2Title => 'Kaydırarak Gezin';
+  String get onboardingPage2Title => 'Her Bütçeye\nUygun Seçenekler';
 
   @override
   String get onboardingPage2Desc =>
-      'Sağa kaydırın, evin başka bir köşesine geçin — spot ve sıfır mobilyalar aynı çatı altında.';
+      'İkinci el fırsatlardan sıfır koleksiyona kadar — aradığınızı kolayca bulun.';
 
   @override
-  String get onboardingPage3Eyebrow => 'SON DURAK';
+  String get onboardingPage3Eyebrow => 'GÜVENLE ALIŞVERİŞ';
 
   @override
-  String get onboardingPage3Title => 'Favorinizi Bulun';
+  String get onboardingPage3Title => 'Beğendiniz mi?\nHemen Yazın';
 
   @override
   String get onboardingPage3Desc =>
-      'Binlerce ürün arasından size uygun olanı seçin, WhatsApp\'tan hemen sorun.';
+      'Tek dokunuşla WhatsApp\'tan ulaşın, fiyat sorun, pazarlık edin.';
 
   @override
   String get favoritesTitle => 'Favorilerim';
