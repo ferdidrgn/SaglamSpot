@@ -319,6 +319,8 @@
   "dragToRotateHint": "Scorri per altre foto",
   "studioQuotaExceededNotice": "Limite mensile di immagini studio raggiunto — le foto sono state aggiunte nella forma originale.",
   "studioPreparingWait": "Preparazione foto studio, attendere...",
+  "retry": "Riprova",
+  "studioGenerationFailed": "Impossibile generare la foto studio",
   "storePhotoLabel": "Negozio",
   "studioPhotoLabel": "Studio",
   "onboardingSkip": "Salta",

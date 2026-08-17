@@ -361,6 +361,8 @@
   "dragToRotateHint": "Diğer fotoğraflar için kaydırın",
   "studioQuotaExceededNotice": "Bu ay stüdyo (arka plansız) görsel limiti doldu — fotoğraflar normal haliyle eklendi.",
   "studioPreparingWait": "Stüdyo görseli hazırlanıyor, lütfen bekleyin...",
+  "retry": "Tekrar Dene",
+  "studioGenerationFailed": "Stüdyo görseli oluşturulamadı",
   "storePhotoLabel": "Mağaza",
   "studioPhotoLabel": "Stüdyo",
   "onboardingSkip": "Atla",

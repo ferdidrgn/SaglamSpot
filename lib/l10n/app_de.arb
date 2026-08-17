@@ -319,6 +319,8 @@
   "dragToRotateHint": "Für weitere Fotos wischen",
   "studioQuotaExceededNotice": "Monatliches Studio-Bild-Limit erreicht — Fotos wurden im Original hinzugefügt.",
   "studioPreparingWait": "Studiofoto wird vorbereitet, bitte warten...",
+  "retry": "Erneut versuchen",
+  "studioGenerationFailed": "Studiofoto konnte nicht erstellt werden",
   "storePhotoLabel": "Geschäft",
   "studioPhotoLabel": "Studio",
   "onboardingSkip": "Überspringen",

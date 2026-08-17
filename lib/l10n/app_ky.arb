@@ -319,6 +319,8 @@
   "dragToRotateHint": "Дагы сүрөттөр үчүн сүйрөңүз",
   "studioQuotaExceededNotice": "Айлык студиялык сүрөт чеги толду — сүрөттөр өз түрүндө кошулду.",
   "studioPreparingWait": "Студиялык сүрөт даярдалууда, күтө туруңуз...",
+  "retry": "Кайра аракет кыл",
+  "studioGenerationFailed": "Студиялык сүрөт түзүлгөн жок",
   "storePhotoLabel": "Дүкөн",
   "studioPhotoLabel": "Студия",
   "onboardingSkip": "Өткөрүп жиберүү",

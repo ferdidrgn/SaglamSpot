@@ -319,6 +319,8 @@
   "dragToRotateHint": "Boshqa fotolar uchun torting",
   "studioQuotaExceededNotice": "Oylik studiya rasm limiti to'ldi — fotolar asl holida qo'shildi.",
   "studioPreparingWait": "Studiya rasmi tayyorlanmoqda, kuting...",
+  "retry": "Qayta urinish",
+  "studioGenerationFailed": "Studiya rasmini yaratib bo'lmadi",
   "storePhotoLabel": "Do'kon",
   "studioPhotoLabel": "Studiya",
   "onboardingSkip": "O'tkazib yuborish",

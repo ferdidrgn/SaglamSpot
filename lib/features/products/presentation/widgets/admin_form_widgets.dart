@@ -243,19 +243,29 @@ class PhotoThumbnail extends StatelessWidget {
 
 /// remove.bg ile üretilen "stüdyo" (arka plansız) önizleme karosu —
 /// üretim sürerken bir spinner, hazır olduğunda "Stüdyo" rozetli bir
-/// önizleme gösterir. `isLoading == false && imageUrl == null` ise
-/// (henüz hiç fotoğraf seçilmediği veya üretim başarısız olduğu
-/// durumlar) hiçbir şey göstermez.
+/// önizleme, başarısız olduğunda ise SESSİZCE KAYBOLMAK YERİNE bir hata
+/// ikonu + "tekrar dene" gösterir (bkz. onRetry). `isLoading == false &&
+/// imageUrl == null && !hasError` ise (henüz hiç fotoğraf seçilmediği
+/// durum) hiçbir şey göstermez.
 class StudioPhotoTile extends StatelessWidget {
   final bool isLoading;
   final String? imageUrl;
+  final bool hasError;
   final VoidCallback? onDiscard;
+  final VoidCallback? onRetry;
 
-  const StudioPhotoTile({super.key, required this.isLoading, this.imageUrl, this.onDiscard});
+  const StudioPhotoTile({
+    super.key,
+    required this.isLoading,
+    this.imageUrl,
+    this.hasError = false,
+    this.onDiscard,
+    this.onRetry,
+  });
 
   @override
   Widget build(final BuildContext context) {
-    if (!isLoading && imageUrl == null) return const SizedBox.shrink();
+    if (!isLoading && imageUrl == null && !hasError) return const SizedBox.shrink();
 
     return Stack(
       children: [
@@ -263,10 +273,12 @@ class StudioPhotoTile extends StatelessWidget {
           width: 96,
           height: 96,
           decoration: BoxDecoration(
-            color: AppColors.secondary,
+            color: hasError ? AppColors.error.withOpacity(0.08) : AppColors.secondary,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.accent.withOpacity(0.6), width: 1.4),
-            image: (!isLoading && imageUrl != null)
+            border: Border.all(
+                color: hasError ? AppColors.error.withOpacity(0.5) : AppColors.accent.withOpacity(0.6),
+                width: 1.4),
+            image: (!isLoading && !hasError && imageUrl != null)
                 ? DecorationImage(image: NetworkImage(imageUrl!), fit: BoxFit.cover)
                 : null,
           ),
@@ -278,30 +290,48 @@ class StudioPhotoTile extends StatelessWidget {
                     child: CircularProgressIndicator(strokeWidth: 2.4, color: AppColors.accent),
                   ),
                 )
-              : null,
+              : hasError
+                  ? InkWell(
+                      onTap: onRetry,
+                      borderRadius: BorderRadius.circular(18),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.refresh_rounded, color: AppColors.error, size: 22),
+                          const SizedBox(height: 4),
+                          Text(context.l10n.retry,
+                              style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.error)),
+                        ],
+                      ),
+                    )
+                  : null,
         ),
-        Positioned(
-          top: 6,
-          left: 6,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.55),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.auto_awesome_rounded, size: 10, color: Colors.white),
-                const SizedBox(width: 3),
-                Text(context.l10n.studioPhotoLabel,
-                    style: const TextStyle(
-                        fontSize: 8.5, fontWeight: FontWeight.w800, color: Colors.white)),
-              ],
+        if (!hasError)
+          Positioned(
+            top: 6,
+            left: 6,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.55),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.auto_awesome_rounded, size: 10, color: Colors.white),
+                  const SizedBox(width: 3),
+                  Text(context.l10n.studioPhotoLabel,
+                      style: const TextStyle(
+                          fontSize: 8.5, fontWeight: FontWeight.w800, color: Colors.white)),
+                ],
+              ),
             ),
           ),
-        ),
-        if (!isLoading && imageUrl != null && onDiscard != null)
+        if (!isLoading && (imageUrl != null || hasError) && onDiscard != null)
           Positioned(
             top: 6,
             right: 6,

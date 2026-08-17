@@ -319,6 +319,8 @@
   "dragToRotateHint": "滑动查看更多照片",
   "studioQuotaExceededNotice": "本月工作室图片额度已用完 — 照片已按原样添加。",
   "studioPreparingWait": "正在准备工作室图片,请稍候...",
+  "retry": "重试",
+  "studioGenerationFailed": "无法生成工作室图片",
   "storePhotoLabel": "门店",
   "studioPhotoLabel": "工作室",
   "onboardingSkip": "跳过",

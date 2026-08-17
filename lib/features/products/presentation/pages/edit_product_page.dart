@@ -43,6 +43,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   Future<void>? _studioFuture;
   bool _isGeneratingStudio = false;
   String? _studioImageUrl;
+  bool _studioFailed = false;
 
   bool _isSold = false;
   bool _isSpotProduct = false;
@@ -211,7 +212,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   Widget _buildImagePreview() {
     final bool usingNew = _newSelectedImages.isNotEmpty;
-    final bool showStudioTile = usingNew && (_isGeneratingStudio || _studioImageUrl != null);
+    final bool showStudioTile =
+        usingNew && (_isGeneratingStudio || _studioImageUrl != null || _studioFailed);
     final int existingCount = usingNew ? 0 : _currentProduct!.imagesUrl.length;
     final int baseCount = usingNew ? _newSelectedImages.length : existingCount;
     final int itemCount = baseCount + (showStudioTile ? 1 : 0) + 1;
@@ -235,6 +237,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                   if (i == 0) {
                     _studioImageUrl = null;
                     _studioFuture = null;
+                    _studioFailed = false;
                   }
                 }),
               );
@@ -250,7 +253,12 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
             return StudioPhotoTile(
               isLoading: _isGeneratingStudio,
               imageUrl: _studioImageUrl,
-              onDiscard: () => setState(() => _studioImageUrl = null),
+              hasError: _studioFailed,
+              onDiscard: () => setState(() {
+                _studioImageUrl = null;
+                _studioFailed = false;
+              }),
+              onRetry: _generateStudioPreview,
             );
           }
           return AddPhotoTile(onTap: _pickNewImages);
@@ -265,6 +273,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     setState(() {
       _newSelectedImages = images;
       _studioImageUrl = null;
+      _studioFailed = false;
     });
     _generateStudioPreview();
   }
@@ -274,17 +283,34 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   /// Yeni seçilen ilk fotoğrafı, henüz Storage'a hiç yüklenmeden ham bayt
   /// olarak remove.bg tabanlı Cloud Function'a gönderir (bkz.
-  /// add_product_page.dart'taki eşdeğeri — aynı desen).
+  /// add_product_page.dart'taki eşdeğeri — aynı desen, aynı hata karosu).
   void _generateStudioPreview() {
     if (_newSelectedImages.isEmpty || _isGeneratingStudio) return;
-    setState(() => _isGeneratingStudio = true);
+    setState(() {
+      _isGeneratingStudio = true;
+      _studioFailed = false;
+    });
     _studioFuture =
         _bytesOf(_newSelectedImages.first).then(StudioImageService.generate).then((final outcome) {
       if (!mounted) return;
       setState(() {
         _isGeneratingStudio = false;
-        _studioImageUrl =
-            outcome.result == StudioImageResult.success ? outcome.studioImageUrl : null;
+        if (outcome.result == StudioImageResult.success) {
+          _studioImageUrl = outcome.studioImageUrl;
+          _studioFailed = false;
+        } else if (outcome.result == StudioImageResult.failed) {
+          _studioImageUrl = null;
+          _studioFailed = true;
+          if (outcome.errorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: AppColors.error,
+              content: Text('${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}'),
+            ));
+          }
+        } else {
+          _studioImageUrl = null;
+          _studioFailed = false;
+        }
       });
     });
   }

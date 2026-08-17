@@ -41,6 +41,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   Future<void>? _studioFuture;
   bool _isGeneratingStudio = false;
   String? _studioImageUrl;
+  bool _studioFailed = false;
 
   @override
   void initState() {
@@ -250,7 +251,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   // ---------------- UI HELPERS ----------------
 
   Widget _imageSection() {
-    final showStudioTile = _isGeneratingStudio || _studioImageUrl != null;
+    final showStudioTile = _isGeneratingStudio || _studioImageUrl != null || _studioFailed;
     final itemCount = _images.length + (showStudioTile ? 1 : 0) + 1;
 
     return SizedBox(
@@ -271,6 +272,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                 if (i == 0) {
                   _studioImageUrl = null;
                   _studioFuture = null;
+                  _studioFailed = false;
                 }
               }),
             );
@@ -279,7 +281,12 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
             return StudioPhotoTile(
               isLoading: _isGeneratingStudio,
               imageUrl: _studioImageUrl,
-              onDiscard: () => setState(() => _studioImageUrl = null),
+              hasError: _studioFailed,
+              onDiscard: () => setState(() {
+                _studioImageUrl = null;
+                _studioFailed = false;
+              }),
+              onRetry: _generateStudioPreview,
             );
           }
           return AddPhotoTile(onTap: _pickImages);
@@ -301,16 +308,34 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   /// İlk fotoğrafı, henüz Storage'a hiç yüklenmeden ham bayt olarak
   /// remove.bg tabanlı Cloud Function'a gönderir. Kaydet'e basılmadan
-  /// çok önce çalışır — admin sonucu fotoğraf şeridinde görür.
+  /// çok önce çalışır — admin sonucu fotoğraf şeridinde görür. Başarısız
+  /// olursa SESSİZCE KAYBOLMAZ — hata karosu + gerçek hata mesajıyla bir
+  /// SnackBar gösterilir (bkz. StudioImageService.generate errorMessage).
   void _generateStudioPreview() {
     if (_images.isEmpty || _isGeneratingStudio) return;
-    setState(() => _isGeneratingStudio = true);
+    setState(() {
+      _isGeneratingStudio = true;
+      _studioFailed = false;
+    });
     _studioFuture = _images.first.readAsBytes().then(StudioImageService.generate).then((final outcome) {
       if (!mounted) return;
       setState(() {
         _isGeneratingStudio = false;
-        _studioImageUrl =
-            outcome.result == StudioImageResult.success ? outcome.studioImageUrl : null;
+        if (outcome.result == StudioImageResult.success) {
+          _studioImageUrl = outcome.studioImageUrl;
+          _studioFailed = false;
+        } else if (outcome.result == StudioImageResult.failed) {
+          _studioImageUrl = null;
+          _studioFailed = true;
+          if (outcome.errorMessage != null) {
+            _snack('${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}', error: true);
+          }
+        } else {
+          // Kota doldu — sessizce (StudioQuotaExceededNotice zaten kaydet
+          // sonrası gösteriliyor), hata karosu değil, hiçbir karo göstermez.
+          _studioImageUrl = null;
+          _studioFailed = false;
+        }
       });
     });
   }

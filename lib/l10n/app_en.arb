@@ -361,6 +361,8 @@
   "dragToRotateHint": "Swipe for more photos",
   "studioQuotaExceededNotice": "Monthly studio image limit reached — photos were added in their original form.",
   "studioPreparingWait": "Preparing studio photo, please wait...",
+  "retry": "Retry",
+  "studioGenerationFailed": "Couldn't generate studio photo",
   "storePhotoLabel": "Store",
   "studioPhotoLabel": "Studio",
   "onboardingSkip": "Skip",

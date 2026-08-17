@@ -319,6 +319,8 @@
   "dragToRotateHint": "اسحب لعرض المزيد من الصور",
   "studioQuotaExceededNotice": "تم الوصول للحد الشهري لصور الاستوديو — تمت إضافة الصور بشكلها الأصلي.",
   "studioPreparingWait": "جارٍ تجهيز صورة الاستوديو، يرجى الانتظار...",
+  "retry": "أعد المحاولة",
+  "studioGenerationFailed": "تعذر إنشاء صورة الاستوديو",
   "storePhotoLabel": "المتجر",
   "studioPhotoLabel": "استوديو",
   "onboardingSkip": "تخطي",

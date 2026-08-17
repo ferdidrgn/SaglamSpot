@@ -319,6 +319,8 @@
   "dragToRotateHint": "Проведите для других фото",
   "studioQuotaExceededNotice": "Достигнут месячный лимит студийных фото — фотографии добавлены в исходном виде.",
   "studioPreparingWait": "Подготовка студийного фото, пожалуйста, подождите...",
+  "retry": "Повторить",
+  "studioGenerationFailed": "Не удалось создать студийное фото",
   "storePhotoLabel": "Магазин",
   "studioPhotoLabel": "Студия",
   "onboardingSkip": "Пропустить",

@@ -8,8 +8,9 @@ enum StudioImageResult { success, quotaExceeded, failed }
 class StudioImageOutcome {
   final StudioImageResult result;
   final String? studioImageUrl;
+  final String? errorMessage;
 
-  const StudioImageOutcome(this.result, this.studioImageUrl);
+  const StudioImageOutcome(this.result, this.studioImageUrl, {this.errorMessage});
 }
 
 /// remove.bg tabanlı "stüdyo" (arka plansız) görsel üretimi — istek her
@@ -54,7 +55,10 @@ class StudioImageService {
       return const StudioImageOutcome(StudioImageResult.failed, null);
     } catch (e) {
       debugPrint('⚠️ Stüdyo görsel üretimi başarısız: $e');
-      return const StudioImageOutcome(StudioImageResult.failed, null);
+      final String message = e is FirebaseFunctionsException
+          ? '${e.code}: ${e.message ?? ''}'
+          : e.toString();
+      return StudioImageOutcome(StudioImageResult.failed, null, errorMessage: message);
     }
   }
 }
