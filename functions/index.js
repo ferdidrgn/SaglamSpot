@@ -25,6 +25,7 @@
  */
 
 const {onCall, HttpsError} = require("firebase-functions/v2/https");
+const {onDocumentDeleted} = require("firebase-functions/v2/firestore");
 const {defineSecret} = require("firebase-functions/params");
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore, FieldValue} = require("firebase-admin/firestore");
@@ -135,3 +136,46 @@ exports.removeProductBackground = onCall(
       }
     },
 );
+
+/**
+ * Bir Firebase Storage indirme URL'inden (`.../o/<encodedPath>?alt=media&...`)
+ * dosyanın bucket içindeki gerçek yolunu çıkarır. Ayrıştırılamazsa null döner.
+ */
+function storagePathFromUrl(url) {
+  const match = typeof url === "string" && url.match(/\/o\/([^?]+)/);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
+ * Bir ürün dokümanı silindiğinde, Storage'daki tüm görsellerini (orijinal +
+ * stüdyo) sunucu tarafında (Admin SDK ile) temizler. Bilinçli olarak
+ * istemci tarafında DEĞİL burada yapılıyor: Admin SDK, Storage Security
+ * Rules'tan tamamen muaf — stüdyo görselleri zaten yalnızca bu dosyadaki
+ * Admin SDK ile yazıldığı için (bkz. removeProductBackground), istemci
+ * tarafında onlara "delete" izni veren bir kural hiç tanımlanmamıştı; bu
+ * yüzden Flutter'dan yapılan silme denemeleri sessizce yetkisiz kalıp
+ * hiçbir şey silmiyordu.
+ */
+exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event) => {
+  const data = event.data && event.data.data();
+  if (!data) return;
+
+  const urls = [
+    ...(Array.isArray(data.imagesUrl) ? data.imagesUrl : []),
+    ...(Array.isArray(data.studioImagesUrl) ? data.studioImagesUrl : []),
+  ].filter((u) => typeof u === "string" && u.length > 0);
+
+  if (urls.length === 0) return;
+
+  const bucket = getStorage().bucket();
+  await Promise.all(urls.map(async (url) => {
+    const path = storagePathFromUrl(url);
+    if (!path) return;
+    await bucket.file(path).delete().catch(() => {});
+  }));
+});

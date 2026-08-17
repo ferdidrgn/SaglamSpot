@@ -173,17 +173,15 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<void> deleteProduct(final String productId) async {
     try {
-      // ÖNCE Storage'daki görselleri (orijinal + stüdyo) sil, SONRA
-      // Firestore dokümanını kaldır — aksi halde Storage'da hiç
-      // kullanılmayan, kalıcı "yetim" dosyalar birikip depolamayı şişirir.
-      final doc = await _productRef.doc(productId).get();
-      if (doc.exists) {
-        final data = doc.data()!;
-        final imagesUrl = List<String>.from(data['imagesUrl'] ?? []);
-        final studioImagesUrl = List<String>.from(data['studioImagesUrl'] ?? []);
-        await _deleteImages([...imagesUrl, ...studioImagesUrl]);
-      }
-
+      // Storage'daki görselleri (orijinal + stüdyo) İSTEMCİDEN silmiyoruz —
+      // stüdyo dosyaları yalnızca sunucu tarafındaki Admin SDK ile
+      // yazıldığından (bkz. functions/index.js -> removeProductBackground),
+      // istemciye onları silme izni veren bir Storage kuralı hiç yok; bu
+      // yüzden client-side silme denemesi sessizce yetkisiz kalıp hiçbir
+      // şey silmiyordu. Bunun yerine Firestore dokümanı silindiğinde
+      // sunucu tarafında (Admin SDK ile, kurallardan tamamen muaf) otomatik
+      // tetiklenen bir Cloud Function (onProductDeleted) Storage'daki tüm
+      // görselleri güvenilir şekilde temizliyor.
       await _productRef.doc(productId).delete();
     } catch (e) {
       _throwError('Ürün silinirken hata oluştu', e);
