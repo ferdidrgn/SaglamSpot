@@ -10,6 +10,7 @@ import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
 import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
+import '../../features/products/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/page/home_page_mobile.dart' as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/info/presentation/pages/about_page.dart';
@@ -221,6 +222,16 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
           child: const CartPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/favorites',
+        name: 'favorites',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const FavoritesPage(),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),

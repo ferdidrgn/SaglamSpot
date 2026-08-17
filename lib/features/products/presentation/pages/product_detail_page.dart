@@ -14,6 +14,7 @@ import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../data/models/category_meta.dart';
+import '../providers/favorites_provider.dart';
 import '../providers/gallery_provider.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
@@ -86,6 +87,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   bool _inCart(final Product product) =>
       ref.watch(cartProvider).any((final i) => i.product.id == product.id);
+
+  bool _isFavorite(final Product product) =>
+      ref.watch(favoritesProvider).any((final p) => p.id == product.id);
 
   @override
   void initState() {
@@ -222,13 +226,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Padding(
             padding: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
             child: _RoundIconButton(
-              icon: _inCart(product)
+              icon: _isFavorite(product)
                   ? Icons.favorite_rounded
                   : Icons.favorite_border_rounded,
-              iconColor: _inCart(product)
+              iconColor: _isFavorite(product)
                   ? AppColors.error
                   : _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary),
-              onTap: () => ref.read(cartProvider.notifier).toggle(product),
+              onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
             ),
           ),
         ],
@@ -872,36 +876,43 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
       );
 
+  /// Sepete ekleme ve WhatsApp iletişimi İKİ AYRI, eşit ağırlıklı buton —
+  /// biri diğerinin küçük bir ikona indirgenmiş hali DEĞİL. Ara (telefon)
+  /// daha düşük öncelikli bir ikon düğmesi olarak kalıyor; favori artık
+  /// burada değil, üst çubuktaki kalp ikonunda (bkz. _buildAppBar) ve
+  /// SEPETTEN tamamen bağımsız (favoritesProvider).
   Widget _buildActionButtons(final Product product) {
     if (product.isSold) return const SizedBox.shrink();
     final bool inCart = _inCart(product);
     return Row(
       children: [
-        Expanded(
-          child: _PrimaryButton(
-            label: inCart ? context.l10n.addedToCartMessage : context.l10n.addToCartCta,
-            icon: inCart ? Icons.check_rounded : Icons.shopping_bag_rounded,
-            price: '₺${product.price.toStringAsFixed(0)}',
-            onTap: () => ref.read(cartProvider.notifier).toggle(product),
-          ),
-        ),
-        const SizedBox(width: 12),
-        _RoundIconButton(
-          size: 52,
-          icon: Icons.chat_bubble_rounded,
-          filled: true,
-          onTap: () => FurnitureShareService.contactAboutProduct(
-            productId: product.id,
-            productName: product.name,
-            price: product.price,
-          ),
-        ),
-        const SizedBox(width: 12),
         _RoundIconButton(
           size: 52,
           icon: Icons.call_rounded,
           filled: true,
           onTap: SaglamSpotCommunication.makeCall,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _HalfActionButton(
+            label: inCart ? context.l10n.addedToCartMessage : context.l10n.addToCartCta,
+            icon: inCart ? Icons.check_rounded : Icons.shopping_bag_rounded,
+            filled: true,
+            onTap: () => ref.read(cartProvider.notifier).toggle(product),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _HalfActionButton(
+            label: context.l10n.whatsappCta,
+            icon: Icons.chat_bubble_rounded,
+            filled: false,
+            onTap: () => FurnitureShareService.contactAboutProduct(
+              productId: product.id,
+              productName: product.name,
+              price: product.price,
+            ),
+          ),
         ),
       ],
     );
@@ -970,30 +981,32 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           children: [
             _RoundIconButton(
               size: 52,
-              icon: Icons.chat_bubble_rounded,
-              filled: true,
-              onTap: () => FurnitureShareService.contactAboutProduct(
-                productId: product.id,
-                productName: product.name,
-                price: product.price,
-              ),
-            ),
-            const SizedBox(width: 12),
-            _RoundIconButton(
-              size: 52,
               icon: Icons.call_rounded,
               filled: true,
               onTap: SaglamSpotCommunication.makeCall,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
-              child: _PrimaryButton(
+              child: _HalfActionButton(
                 label: _inCart(product)
                     ? context.l10n.addedToCartMessage
                     : context.l10n.addToCartCta,
                 icon: _inCart(product) ? Icons.check_rounded : Icons.shopping_bag_rounded,
-                price: '₺${product.price.toStringAsFixed(0)}',
+                filled: true,
                 onTap: () => ref.read(cartProvider.notifier).toggle(product),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _HalfActionButton(
+                label: context.l10n.whatsappCta,
+                icon: Icons.chat_bubble_rounded,
+                filled: false,
+                onTap: () => FurnitureShareService.contactAboutProduct(
+                  productId: product.id,
+                  productName: product.name,
+                  price: product.price,
+                ),
               ),
             ),
           ],
@@ -1047,58 +1060,45 @@ class _RoundIconButton extends StatelessWidget {
       );
 }
 
-/// Referans tasarımdaki "Add to Cart | $185" bölünmüş hap buton dili:
-/// solda etiket+ikon, sağda ayrı bir fiyat rozeti — tek bir tam-yuvarlak
-/// (stadium) pil içinde. `price` verilmezse düz, tek bölgeli buton olur.
-class _PrimaryButton extends StatelessWidget {
+/// Sepete Ekle ve WhatsApp'ı EŞİT AĞIRLIKLI iki yarım-genişlik butona
+/// ayırır — biri diğerinin gölgesinde kalmasın diye. `filled == true`
+/// dolgu (birincil, sepet), `false` ise sadece kenarlıklı (ikincil,
+/// WhatsApp) çizilir.
+class _HalfActionButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
-  final String? price;
+  final bool filled;
 
-  const _PrimaryButton(
-      {required this.label, required this.icon, required this.onTap, this.price});
+  const _HalfActionButton(
+      {required this.label, required this.icon, required this.onTap, required this.filled});
 
   @override
   Widget build(final BuildContext context) {
-    final Color bg = _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
+    final Color accent = _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
+    final Color fg = filled ? Colors.white : accent;
+
     return Material(
-      color: bg,
-      shape: const StadiumBorder(),
+      color: filled ? accent : Colors.transparent,
+      shape: StadiumBorder(side: filled ? BorderSide.none : BorderSide(color: accent, width: 1.6)),
       child: InkWell(
         onTap: onTap,
         customBorder: const StadiumBorder(),
         child: Container(
           height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 6),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(width: 10),
-              Icon(icon, color: Colors.white, size: 18),
-              const SizedBox(width: 8),
+              Icon(icon, color: fg, size: 17),
+              const SizedBox(width: 7),
               Flexible(
                 child: Text(label,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14.5)),
+                    style: TextStyle(color: fg, fontWeight: FontWeight.w800, fontSize: 13.5)),
               ),
-              if (price != null) ...[
-                const SizedBox(width: 10),
-                Container(
-                  height: 40,
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(price!,
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14.5)),
-                ),
-              ] else
-                const SizedBox(width: 10),
             ],
           ),
         ),

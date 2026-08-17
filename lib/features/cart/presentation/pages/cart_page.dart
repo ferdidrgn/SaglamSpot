@@ -473,15 +473,36 @@ class _RecentlyViewedSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                        child: OptimizedCachedImage(
-                          imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
-                          width: 110,
-                          height: 90,
-                          borderRadius: 0,
-                          fit: BoxFit.cover,
-                        ),
+                      Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                            child: OptimizedCachedImage(
+                              imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                              width: 110,
+                              height: 90,
+                              borderRadius: 0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          if (product.isSold)
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.error,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  context.l10n.sold,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w800),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8),

@@ -53,6 +53,12 @@ class SettingsPage extends ConsumerWidget {
             const SizedBox(height: 10),
             _SettingsCard(
               children: [
+                _SettingsTile(
+                  icon: Icons.favorite_rounded,
+                  accent: AppColors.error,
+                  label: context.l10n.favoritesTitle,
+                  onTap: () => NavigationHandler.goToFavorites(context),
+                ),
                 const _LanguageTile(),
                 if (isAdminLoggedIn)
                   _SettingsTile(

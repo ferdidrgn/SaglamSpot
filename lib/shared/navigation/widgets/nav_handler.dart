@@ -97,6 +97,9 @@ class NavigationHandler {
   /// Sepet sayfasına git
   static void goToCart(final BuildContext context) => context.go('/cart');
 
+  /// Favoriler sayfasına git
+  static void goToFavorites(final BuildContext context) => context.go('/favorites');
+
   /// Profil/Ayarlar sayfasına git
   static void goToSettings(final BuildContext context) => context.go('/settings');
 
