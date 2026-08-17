@@ -107,7 +107,11 @@ exports.removeProductBackground = onCall(
         const arrayBuffer = await removeBgResponse.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        const fileName = `studio_images/${Date.now()}_${randomUUID()}.png`;
+        // Dosya adı bilinçli olarak "studio-" ile başlıyor — Flutter tarafı
+        // bu görseli artık ayrı bir alanda değil, doğrudan ürünün normal
+        // imagesUrl dizisine ekliyor; adın kendisi Storage konsolunda hangi
+        // dosyaların remove.bg çıktısı olduğunu ayırt etmenin tek yolu.
+        const fileName = `studio_images/studio-${Date.now()}_${randomUUID()}.png`;
         const bucket = getStorage().bucket();
         const file = bucket.file(fileName);
         const downloadToken = randomUUID();
