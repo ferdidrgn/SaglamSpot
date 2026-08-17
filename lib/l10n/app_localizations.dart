@@ -2012,6 +2012,120 @@ abstract class AppLocalizations {
   /// **'FİLTRELER'**
   String get filtersPanelTitle;
 
+  /// No description provided for @dragToRotateHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çevirmek için sürükleyin'**
+  String get dragToRotateHint;
+
+  /// No description provided for @studioQuotaExceededNotice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu ay stüdyo (arka plansız) görsel limiti doldu — fotoğraflar normal haliyle eklendi.'**
+  String get studioQuotaExceededNotice;
+
+  /// No description provided for @storePhotoLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mağaza'**
+  String get storePhotoLabel;
+
+  /// No description provided for @studioPhotoLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Stüdyo'**
+  String get studioPhotoLabel;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Atla'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başla'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingPage1Eyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'HOŞ GELDİNİZ'**
+  String get onboardingPage1Eyebrow;
+
+  /// No description provided for @onboardingPage1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kendi Evinizde Gezinir Gibi'**
+  String get onboardingPage1Title;
+
+  /// No description provided for @onboardingPage1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobilyaları, sanki kendi salonunuzdaymışsınız gibi keşfedin.'**
+  String get onboardingPage1Desc;
+
+  /// No description provided for @onboardingPage2Eyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'ODADAN ODAYA'**
+  String get onboardingPage2Eyebrow;
+
+  /// No description provided for @onboardingPage2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydırarak Gezin'**
+  String get onboardingPage2Title;
+
+  /// No description provided for @onboardingPage2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağa kaydırın, evin başka bir köşesine geçin — spot ve sıfır mobilyalar aynı çatı altında.'**
+  String get onboardingPage2Desc;
+
+  /// No description provided for @onboardingPage3Eyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'SON DURAK'**
+  String get onboardingPage3Eyebrow;
+
+  /// No description provided for @onboardingPage3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favorinizi Bulun'**
+  String get onboardingPage3Title;
+
+  /// No description provided for @onboardingPage3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Binlerce ürün arasından size uygun olanı seçin, WhatsApp\'tan hemen sorun.'**
+  String get onboardingPage3Desc;
+
+  /// No description provided for @favoritesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favorilerim'**
+  String get favoritesTitle;
+
+  /// No description provided for @favoritesEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favori Listeniz Boş'**
+  String get favoritesEmptyTitle;
+
+  /// No description provided for @favoritesEmptyDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beğendiğiniz ürünleri kalp ikonuna dokunarak favorilerinize ekleyin.'**
+  String get favoritesEmptyDesc;
+
+  /// No description provided for @sortPanelTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIRALA'**
+  String get sortPanelTitle;
+
   /// No description provided for @priceRangeSectionTitle.
   ///
   /// In tr, this message translates to:

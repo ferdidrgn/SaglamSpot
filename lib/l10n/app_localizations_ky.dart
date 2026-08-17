@@ -1035,6 +1035,68 @@ class AppLocalizationsKy extends AppLocalizations {
   String get filtersPanelTitle => 'ЧЫПКАЛАР';
 
   @override
+  String get dragToRotateHint => 'Айландыруу үчүн сүйрөңүз';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Айлык студиялык сүрөт чеги толду — сүрөттөр өз түрүндө кошулду.';
+
+  @override
+  String get storePhotoLabel => 'Дүкөн';
+
+  @override
+  String get studioPhotoLabel => 'Студия';
+
+  @override
+  String get onboardingSkip => 'Өткөрүп жиберүү';
+
+  @override
+  String get onboardingStart => 'Баштоо';
+
+  @override
+  String get onboardingPage1Eyebrow => 'КОШ КЕЛИҢИЗ';
+
+  @override
+  String get onboardingPage1Title => 'Өз Үйүңүздө Басып Жүргөндөй';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Эмеректерди өз конок бөлмөңүздө тургандай эле ачыңыз.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'БӨЛМӨДӨН БӨЛМӨГӨ';
+
+  @override
+  String get onboardingPage2Title => 'Кароо үчүн сүйрөңүз';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Үйдүн башка бурчуна өтүү үчүн оңго сүйрөңүз — колдонулган жана жаңы эмеректер бир чатыр астында.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'АКЫРКЫ БЕКЕТ';
+
+  @override
+  String get onboardingPage3Title => 'Сүйүктүүңүздү табыңыз';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Миңдеген товарлардын арасынан өзүңүзгө ылайыгын тандаңыз, WhatsApp аркылуу дароо сураңыз.';
+
+  @override
+  String get favoritesTitle => 'Тандалмаларым';
+
+  @override
+  String get favoritesEmptyTitle => 'Тандалмалар тизмеңиз бош';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Жаккан заттарды тандалмаларга кошуу үчүн жүрөк белгисине басыңыз.';
+
+  @override
+  String get sortPanelTitle => 'ИРЕТТӨӨ';
+
+  @override
   String get priceRangeSectionTitle => 'БАА ДИАПАЗОНУ';
 
   @override

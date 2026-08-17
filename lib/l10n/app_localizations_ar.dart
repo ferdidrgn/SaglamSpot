@@ -1026,6 +1026,68 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filtersPanelTitle => 'الفلاتر';
 
   @override
+  String get dragToRotateHint => 'اسحب للتدوير';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'تم الوصول للحد الشهري لصور الاستوديو — تمت إضافة الصور بشكلها الأصلي.';
+
+  @override
+  String get storePhotoLabel => 'المتجر';
+
+  @override
+  String get studioPhotoLabel => 'استوديو';
+
+  @override
+  String get onboardingSkip => 'تخطي';
+
+  @override
+  String get onboardingStart => 'ابدأ';
+
+  @override
+  String get onboardingPage1Eyebrow => 'مرحباً بكم';
+
+  @override
+  String get onboardingPage1Title => 'وكأنكم تتجولون في منزلكم';
+
+  @override
+  String get onboardingPage1Desc =>
+      'اكتشفوا الأثاث وكأنكم بالفعل في غرفة معيشتكم.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'من غرفة إلى غرفة';
+
+  @override
+  String get onboardingPage2Title => 'اسحب للاستكشاف';
+
+  @override
+  String get onboardingPage2Desc =>
+      'اسحب لليمين للانتقال إلى ركن آخر من المنزل — أثاث مستعمل وجديد تحت سقف واحد.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'المحطة الأخيرة';
+
+  @override
+  String get onboardingPage3Title => 'اعثر على المفضل لديك';
+
+  @override
+  String get onboardingPage3Desc =>
+      'اختر ما يناسبك من بين آلاف المنتجات، واسأل فوراً عبر واتساب.';
+
+  @override
+  String get favoritesTitle => 'مفضلتي';
+
+  @override
+  String get favoritesEmptyTitle => 'قائمة المفضلة لديك فارغة';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'اضغط على أيقونة القلب على المنتجات التي تعجبك لإضافتها إلى المفضلة.';
+
+  @override
+  String get sortPanelTitle => 'الترتيب';
+
+  @override
   String get priceRangeSectionTitle => 'نطاق السعر';
 
   @override

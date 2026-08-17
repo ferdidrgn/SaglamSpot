@@ -1042,6 +1042,68 @@ class AppLocalizationsEl extends AppLocalizations {
   String get filtersPanelTitle => 'ΦΙΛΤΡΑ';
 
   @override
+  String get dragToRotateHint => 'Σύρετε για περιστροφή';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Το μηνιαίο όριο εικόνων στούντιο συμπληρώθηκε — οι φωτογραφίες προστέθηκαν στην αρχική τους μορφή.';
+
+  @override
+  String get storePhotoLabel => 'Κατάστημα';
+
+  @override
+  String get studioPhotoLabel => 'Στούντιο';
+
+  @override
+  String get onboardingSkip => 'Παράλειψη';
+
+  @override
+  String get onboardingStart => 'Ξεκινήστε';
+
+  @override
+  String get onboardingPage1Eyebrow => 'ΚΑΛΩΣ ΗΡΘΑΤΕ';
+
+  @override
+  String get onboardingPage1Title => 'Σαν να Περπατάτε στο Δικό σας Σπίτι';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Ανακαλύψτε έπιπλα σαν να βρίσκεστε ήδη στο δικό σας σαλόνι.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'ΑΠΟ ΔΩΜΑΤΙΟ ΣΕ ΔΩΜΑΤΙΟ';
+
+  @override
+  String get onboardingPage2Title => 'Σύρετε για Εξερεύνηση';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Σύρετε δεξιά για να περάσετε σε άλλη γωνιά του σπιτιού — μεταχειρισμένα και καινούργια έπιπλα κάτω από την ίδια στέγη.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'ΤΕΛΕΥΤΑΙΑ ΣΤΑΣΗ';
+
+  @override
+  String get onboardingPage3Title => 'Βρείτε το Αγαπημένο σας';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Επιλέξτε αυτό που σας ταιριάζει από χιλιάδες προϊόντα, ρωτήστε αμέσως μέσω WhatsApp.';
+
+  @override
+  String get favoritesTitle => 'Τα Αγαπημένα μου';
+
+  @override
+  String get favoritesEmptyTitle => 'Η λίστα αγαπημένων σας είναι άδεια';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Πατήστε το εικονίδιο καρδιάς στα προϊόντα που σας αρέσουν για να τα προσθέσετε στα αγαπημένα σας.';
+
+  @override
+  String get sortPanelTitle => 'ΤΑΞΙΝΟΜΗΣΗ';
+
+  @override
   String get priceRangeSectionTitle => 'ΕΥΡΟΣ ΤΙΜΗΣ';
 
   @override

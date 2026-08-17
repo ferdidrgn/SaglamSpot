@@ -1037,6 +1037,68 @@ class AppLocalizationsUz extends AppLocalizations {
   String get filtersPanelTitle => 'FILTRLAR';
 
   @override
+  String get dragToRotateHint => 'Aylantirish uchun torting';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Oylik studiya rasm limiti to\'ldi — fotolar asl holida qo\'shildi.';
+
+  @override
+  String get storePhotoLabel => 'Do\'kon';
+
+  @override
+  String get studioPhotoLabel => 'Studiya';
+
+  @override
+  String get onboardingSkip => 'O\'tkazib yuborish';
+
+  @override
+  String get onboardingStart => 'Boshlash';
+
+  @override
+  String get onboardingPage1Eyebrow => 'XUSH KELIBSIZ';
+
+  @override
+  String get onboardingPage1Title => 'Xuddi O\'z Uyingizda Yurgandek';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Mebellarni xuddi o\'z mehmonxonangizda turgandek his qilib kashf eting.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'XONADAN XONAGA';
+
+  @override
+  String get onboardingPage2Title => 'Ko\'rish uchun torting';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Uyning boshqa burchagiga o\'tish uchun o\'ngga torting — ishlatilgan va yangi mebellar bitta tom ostida.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'OXIRGI BEKAT';
+
+  @override
+  String get onboardingPage3Title => 'Sevimlingizni Toping';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Minglab mahsulotlar orasidan o\'zingizga mosini tanlang, WhatsApp orqali darhol so\'rang.';
+
+  @override
+  String get favoritesTitle => 'Sevimlilarim';
+
+  @override
+  String get favoritesEmptyTitle => 'Sevimlilar ro\'yxatingiz bo\'sh';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Yoqqan mahsulotlarni sevimlilarga qo\'shish uchun yurak belgisiga bosing.';
+
+  @override
+  String get sortPanelTitle => 'SARALASH';
+
+  @override
   String get priceRangeSectionTitle => 'NARX ORALIG\'I';
 
   @override

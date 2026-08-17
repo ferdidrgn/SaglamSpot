@@ -1033,6 +1033,68 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filtersPanelTitle => 'ФИЛЬТРЫ';
 
   @override
+  String get dragToRotateHint => 'Проведите, чтобы повернуть';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Достигнут месячный лимит студийных фото — фотографии добавлены в исходном виде.';
+
+  @override
+  String get storePhotoLabel => 'Магазин';
+
+  @override
+  String get studioPhotoLabel => 'Студия';
+
+  @override
+  String get onboardingSkip => 'Пропустить';
+
+  @override
+  String get onboardingStart => 'Начать';
+
+  @override
+  String get onboardingPage1Eyebrow => 'ДОБРО ПОЖАЛОВАТЬ';
+
+  @override
+  String get onboardingPage1Title => 'Как Прогулка По Своему Дому';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Открывайте мебель так, будто вы уже в своей гостиной.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'ИЗ КОМНАТЫ В КОМНАТУ';
+
+  @override
+  String get onboardingPage2Title => 'Проведите, чтобы осмотреться';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Проведите вправо, чтобы перейти в другой уголок дома — бывшая в употреблении и новая мебель под одной крышей.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'ПОСЛЕДНЯЯ ОСТАНОВКА';
+
+  @override
+  String get onboardingPage3Title => 'Найдите Свой Фаворит';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Выберите подходящий вариант из тысяч товаров, сразу спросите в WhatsApp.';
+
+  @override
+  String get favoritesTitle => 'Мои Избранные';
+
+  @override
+  String get favoritesEmptyTitle => 'Ваш список избранного пуст';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Нажмите на значок сердца на понравившихся товарах, чтобы добавить их в избранное.';
+
+  @override
+  String get sortPanelTitle => 'СОРТИРОВКА';
+
+  @override
   String get priceRangeSectionTitle => 'ДИАПАЗОН ЦЕН';
 
   @override

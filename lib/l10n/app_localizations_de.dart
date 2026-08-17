@@ -1043,6 +1043,69 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filtersPanelTitle => 'FILTER';
 
   @override
+  String get dragToRotateHint => 'Zum Drehen ziehen';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Monatliches Studio-Bild-Limit erreicht — Fotos wurden im Original hinzugefügt.';
+
+  @override
+  String get storePhotoLabel => 'Geschäft';
+
+  @override
+  String get studioPhotoLabel => 'Studio';
+
+  @override
+  String get onboardingSkip => 'Überspringen';
+
+  @override
+  String get onboardingStart => 'Loslegen';
+
+  @override
+  String get onboardingPage1Eyebrow => 'WILLKOMMEN';
+
+  @override
+  String get onboardingPage1Title =>
+      'Als würden Sie durch Ihr eigenes Zuhause gehen';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Entdecken Sie Möbel, als stünden Sie schon in Ihrem eigenen Wohnzimmer.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'VON RAUM ZU RAUM';
+
+  @override
+  String get onboardingPage2Title => 'Zum Erkunden wischen';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Wischen Sie nach rechts, um in eine andere Ecke des Hauses zu gelangen — Gebrauchtmöbel und Neuware unter einem Dach.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'LETZTE STATION';
+
+  @override
+  String get onboardingPage3Title => 'Finden Sie Ihren Favoriten';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Wählen Sie aus Tausenden Produkten das Passende, fragen Sie sofort per WhatsApp nach.';
+
+  @override
+  String get favoritesTitle => 'Meine Favoriten';
+
+  @override
+  String get favoritesEmptyTitle => 'Ihre Favoritenliste ist leer';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Tippen Sie auf das Herzsymbol bei Produkten, die Ihnen gefallen, um sie zu Ihren Favoriten hinzuzufügen.';
+
+  @override
+  String get sortPanelTitle => 'SORTIEREN';
+
+  @override
   String get priceRangeSectionTitle => 'PREISSPANNE';
 
   @override

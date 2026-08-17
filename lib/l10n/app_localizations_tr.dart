@@ -1029,6 +1029,68 @@ class AppLocalizationsTr extends AppLocalizations {
   String get filtersPanelTitle => 'FİLTRELER';
 
   @override
+  String get dragToRotateHint => 'Çevirmek için sürükleyin';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Bu ay stüdyo (arka plansız) görsel limiti doldu — fotoğraflar normal haliyle eklendi.';
+
+  @override
+  String get storePhotoLabel => 'Mağaza';
+
+  @override
+  String get studioPhotoLabel => 'Stüdyo';
+
+  @override
+  String get onboardingSkip => 'Atla';
+
+  @override
+  String get onboardingStart => 'Başla';
+
+  @override
+  String get onboardingPage1Eyebrow => 'HOŞ GELDİNİZ';
+
+  @override
+  String get onboardingPage1Title => 'Kendi Evinizde Gezinir Gibi';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Mobilyaları, sanki kendi salonunuzdaymışsınız gibi keşfedin.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'ODADAN ODAYA';
+
+  @override
+  String get onboardingPage2Title => 'Kaydırarak Gezin';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Sağa kaydırın, evin başka bir köşesine geçin — spot ve sıfır mobilyalar aynı çatı altında.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'SON DURAK';
+
+  @override
+  String get onboardingPage3Title => 'Favorinizi Bulun';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Binlerce ürün arasından size uygun olanı seçin, WhatsApp\'tan hemen sorun.';
+
+  @override
+  String get favoritesTitle => 'Favorilerim';
+
+  @override
+  String get favoritesEmptyTitle => 'Favori Listeniz Boş';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Beğendiğiniz ürünleri kalp ikonuna dokunarak favorilerinize ekleyin.';
+
+  @override
+  String get sortPanelTitle => 'SIRALA';
+
+  @override
   String get priceRangeSectionTitle => 'FİYAT ARALIĞI';
 
   @override
