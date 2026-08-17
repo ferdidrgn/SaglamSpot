@@ -163,6 +163,17 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<void> deleteProduct(final String productId) async {
     try {
+      // ÖNCE Storage'daki görselleri (orijinal + stüdyo) sil, SONRA
+      // Firestore dokümanını kaldır — aksi halde Storage'da hiç
+      // kullanılmayan, kalıcı "yetim" dosyalar birikip depolamayı şişirir.
+      final doc = await _productRef.doc(productId).get();
+      if (doc.exists) {
+        final data = doc.data()!;
+        final imagesUrl = List<String>.from(data['imagesUrl'] ?? []);
+        final studioImagesUrl = List<String>.from(data['studioImagesUrl'] ?? []);
+        await _deleteImages([...imagesUrl, ...studioImagesUrl]);
+      }
+
       await _productRef.doc(productId).delete();
     } catch (e) {
       _throwError('Ürün silinirken hata oluştu', e);
