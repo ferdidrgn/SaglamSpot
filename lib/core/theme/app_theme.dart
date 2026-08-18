@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_colors.dart';
+import 'app_design_tokens.dart';
 import 'app_text_styles.dart';
 
 final appThemeProvider = Provider<AppTheme>((final ref) {
@@ -84,6 +85,7 @@ class AppTheme {
           color: colorScheme.outline.withOpacity(0.3), thickness: 1, space: 1),
       floatingActionButtonTheme: _fabTheme(colors: colorScheme),
       snackBarTheme: _snackBarTheme(colors: colorScheme, textTheme: textTheme),
+      extensions: const [AppGlassTokens.light],
     );
   }
 
@@ -148,6 +150,7 @@ class AppTheme {
           color: colorScheme.outline.withOpacity(0.3), thickness: 1, space: 1),
       floatingActionButtonTheme: _fabTheme(colors: colorScheme),
       snackBarTheme: _snackBarTheme(colors: colorScheme, textTheme: textTheme),
+      extensions: const [AppGlassTokens.dark],
     );
   }
 

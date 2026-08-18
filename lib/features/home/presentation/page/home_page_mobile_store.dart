@@ -8,6 +8,9 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
+import '../../../../core/widgets/design_system/glass_surface.dart';
+import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../features/products/data/models/category_meta.dart';
@@ -34,44 +37,49 @@ class HomeStorePage extends ConsumerWidget {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: const MobileBottomNav(),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(child: _buildHeader(context, ref)),
-            SliverToBoxAdapter(child: _buildSearchBar(context)),
-            const SliverToBoxAdapter(child: _HomeHeroSlider()),
-            SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
-            SliverToBoxAdapter(child: _CategoryRow()),
-            SliverToBoxAdapter(
-              child: _buildSectionTitle(
-                context,
-                context.l10n.sectionBestSellers,
-                onSeeAll: () => NavigationHandler.goToSearch(context),
-              ),
-            ),
-            if (featured.isEmpty)
-              const SliverToBoxAdapter(child: SizedBox.shrink())
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                sliver: SliverGrid(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.72,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (final context, final index) =>
-                        _ProductCard(product: featured[index]),
-                    childCount: featured.length,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AmbientMeshBackground()),
+          SafeArea(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(child: _buildHeader(context, ref)),
+                SliverToBoxAdapter(child: _buildSearchBar(context)),
+                const SliverToBoxAdapter(child: _HomeHeroSlider()),
+                SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
+                SliverToBoxAdapter(child: _CategoryRow()),
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle(
+                    context,
+                    context.l10n.sectionBestSellers,
+                    onSeeAll: () => NavigationHandler.goToSearch(context),
                   ),
                 ),
-              ),
-            const SliverToBoxAdapter(child: SizedBox(height: 8)),
-          ],
-        ),
+                if (featured.isEmpty)
+                  const SliverToBoxAdapter(child: SizedBox.shrink())
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+                    sliver: SliverGrid(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.72,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (final context, final index) =>
+                            _ProductCard(product: featured[index]),
+                        childCount: featured.length,
+                      ),
+                    ),
+                  ),
+                const SliverToBoxAdapter(child: SizedBox(height: 8)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
 
@@ -100,9 +108,8 @@ class HomeStorePage extends ConsumerWidget {
               onTap: () => NavigationHandler.goToNotifications(context),
             ),
             const SizedBox(width: 10),
-            InkWell(
+            TactilePress(
               onTap: () => NavigationHandler.goToSettings(context),
-              borderRadius: BorderRadius.circular(24),
               child: Container(
                 width: 44,
                 height: 44,
@@ -119,17 +126,13 @@ class HomeStorePage extends ConsumerWidget {
 
   Widget _buildSearchBar(final BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-        child: InkWell(
+        child: TactilePress(
           onTap: () => NavigationHandler.goToSearch(context),
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
+          pressScale: 0.98,
+          child: GlassSurface(
             height: 50,
+            borderRadius: 16,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: AppColors.mobileCardBg,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.mobileBorder),
-            ),
             child: Row(
               children: [
                 Icon(Icons.search_rounded, color: AppColors.mobileTextTertiary, size: 20),
@@ -331,18 +334,16 @@ class _CategoryRow extends ConsumerWidget {
         separatorBuilder: (final _, final __) => const SizedBox(width: 14),
         itemBuilder: (final context, final index) {
           final CategoryMeta meta = categories[index];
-          return GestureDetector(
+          return TactilePress(
             onTap: () => NavigationHandler.goToSearchWithCategory(
                 context, meta.category.name),
             child: Column(
               children: [
-                Container(
+                GlassSurface(
                   width: 56,
                   height: 56,
-                  decoration: BoxDecoration(
-                    color: AppColors.mobileCardBg,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
+                  borderRadius: 18,
+                  alignment: Alignment.center,
                   child: Icon(meta.icon, color: AppColors.mobilePrimary, size: 24),
                 ),
                 const SizedBox(height: 6),
@@ -371,18 +372,15 @@ class _ProductCard extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final inCart = ref.watch(cartProvider).any((final i) => i.product.id == product.id);
 
-    return GestureDetector(
+    return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
         context: context,
         productId: product.id,
         productSlug: product.name.toSlug(),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.mobileSurface,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.mobileBorder),
-        ),
+      child: GlassSurface(
+        borderRadius: 18,
+        chromaticEdge: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -472,17 +470,12 @@ class _NotificationBellButton extends StatelessWidget {
   const _NotificationBellButton({required this.unreadCount, required this.onTap});
 
   @override
-  Widget build(final BuildContext context) => InkWell(
+  Widget build(final BuildContext context) => TactilePress(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
+        child: GlassSurface(
           width: 44,
           height: 44,
-          decoration: BoxDecoration(
-            color: AppColors.mobileCardBg,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.mobileBorder),
-          ),
+          borderRadius: 22,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
