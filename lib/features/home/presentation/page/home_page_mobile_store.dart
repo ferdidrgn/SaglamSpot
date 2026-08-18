@@ -13,6 +13,7 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
+import '../../../../core/widgets/design_system/infinite_ticker.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
@@ -50,6 +51,7 @@ class HomeStorePage extends ConsumerWidget {
                 SliverToBoxAdapter(child: _buildHeader(context, ref)),
                 SliverToBoxAdapter(child: _buildSearchBar(context)),
                 const SliverToBoxAdapter(child: _HomeHeroSlider()),
+                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
                 SliverToBoxAdapter(child: _CategoryRow()),
                 SliverToBoxAdapter(
@@ -152,6 +154,23 @@ class HomeStorePage extends ConsumerWidget {
               ],
             ),
           ),
+        ),
+      );
+
+  /// Sonsuz kayan güven/özellik şeridi — referans tasarımların kayan marka
+  /// şeridi motifinin gerçek güven metinleriyle mobil karşılığı.
+  Widget _buildFeatureTicker(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+        child: InfiniteTicker(
+          height: 44,
+          items: [
+            TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
+            TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
+            TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
+            TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
+            TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
+            TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
+          ],
         ),
       );
 

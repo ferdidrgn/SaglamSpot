@@ -6,6 +6,7 @@ import 'package:saglamspot/core/widgets/design_system/ambient_mesh_background.da
 import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
+import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
 import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
 import 'package:saglamspot/core/widgets/design_system/tactile_press.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
@@ -297,20 +298,22 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   /// `_buildBrandLogos` bölümünün karşılığı. Uydurma marka isimleri yerine
   /// gerçek güven/hizmet vurgularımızı aynı görsel dille kullanır.
   Widget _buildFeatureTicker() {
-    final items = <_TickerItem>[
-      _TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
-      _TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
-      _TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
-      _TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
-      _TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
-      _TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
+    final items = <TickerItem>[
+      TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
+      TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
+      TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
+      TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
+      TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
+      TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
     ];
 
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.symmetric(
             vertical: context.responsive(mobile: 14, desktop: 20)),
-        child: _InfiniteTicker(items: items),
+        child: InfiniteTicker(
+            items: items,
+            height: context.responsive(mobile: 46, desktop: 54)),
       ),
     );
   }
@@ -912,97 +915,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                             fontSize: 13)),
                   ),
                 )),
-          ],
-        ),
-      );
-}
-
-class _TickerItem {
-  final IconData icon;
-  final String label;
-  const _TickerItem(this.icon, this.label);
-}
-
-/// Referans tasarımdaki yatay "brand strip" hareketinin karşılığı: sabit
-/// hızda, kesintisiz ve sonsuz akan bir şerit. `itemCount` bilerek
-/// verilmiyor — `ListView.builder` böylece sınırsız kabul edip modulo ile
-/// döngüsel olarak `items`'a indeksler, bu da genişlik ölçüp döngü
-/// sıçraması yönetmeyi gereksiz kılar; kaydırma konumu yalnızca artar.
-class _InfiniteTicker extends StatefulWidget {
-  final List<_TickerItem> items;
-  const _InfiniteTicker({required this.items});
-
-  @override
-  State<_InfiniteTicker> createState() => _InfiniteTickerState();
-}
-
-class _InfiniteTickerState extends State<_InfiniteTicker>
-    with SingleTickerProviderStateMixin {
-  final ScrollController _scrollController = ScrollController();
-  late final AnimationController _controller;
-  double _offset = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(days: 1),
-    )..addListener(_tick);
-    _controller.repeat();
-  }
-
-  void _tick() {
-    if (!_scrollController.hasClients) return;
-    _offset += 0.45;
-    _scrollController.jumpTo(_offset);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(final BuildContext context) => GlassSurface(
-        borderRadius: 999,
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          height: context.responsive(mobile: 46, desktop: 54),
-          child: ListView.builder(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (final context, final index) {
-              final item = widget.items[index % widget.items.length];
-              return _TickerChip(item: item);
-            },
-          ),
-        ),
-      );
-}
-
-class _TickerChip extends StatelessWidget {
-  final _TickerItem item;
-  const _TickerChip({required this.item});
-
-  @override
-  Widget build(final BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(item.icon, size: 16, color: AppColors.accent),
-            const SizedBox(width: 8),
-            Text(item.label,
-                style: AppTextStyles.microLabel(
-                    fontSize: 12,
-                    letterSpacing: 1,
-                    color: AppColors.textPrimary)),
-            const SizedBox(width: 18),
-            Icon(Icons.circle, size: 4, color: AppColors.border),
           ],
         ),
       );
