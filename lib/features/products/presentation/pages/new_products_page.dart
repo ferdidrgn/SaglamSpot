@@ -9,6 +9,9 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
+import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
@@ -56,6 +59,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
           return Stack(
             children: [
+              const Positioned.fill(child: AmbientMeshBackground()),
               CustomScrollView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
@@ -108,10 +112,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 SizedBox(height: context.spacingLarge),
                 Text(
                   context.l10n.newProductsBadgeEyebrow,
-                  style: TextStyle(
+                  style: AppTextStyles.microLabel(
                     fontSize: 12,
                     letterSpacing: 3,
-                    fontWeight: FontWeight.w800,
                     color: AppColors.accentDark,
                   ),
                 ),
@@ -180,7 +183,10 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   Widget _buildToolbar(final BuildContext context, final int resultCount) => SliverToBoxAdapter(
         child: Padding(
           padding: context.sectionPadding,
-          child: Row(
+          child: GlassSurface(
+            borderRadius: 18,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
             children: [
               Flexible(
                 child: GestureDetector(
@@ -215,6 +221,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               SizedBox(width: context.spacing),
               _ViewToggle(),
             ],
+            ),
           ),
         ),
       );

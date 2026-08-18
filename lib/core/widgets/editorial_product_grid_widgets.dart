@@ -8,7 +8,10 @@ import '../common/extentions/app_context_ui_extension.dart';
 import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 import '../../shared/navigation/widgets/nav_handler.dart';
+import 'design_system/glass_surface.dart';
+import 'design_system/tactile_press.dart';
 import 'gallery_section.dart';
 import 'optimized_cached_image.dart';
 
@@ -215,24 +218,17 @@ class _EditorialProductCardState extends State<EditorialProductCard> {
     return MouseRegion(
       onEnter: (final _) => setState(() => _isHovered = true),
       onExit: (final _) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      // Tek dokunma kaynağı [TactilePress] — [GlassSurface]'e ayrıca onTap
+      // verilmiyor (çift tetiklemeyi önler, bkz. Home ekranındaki aynı desen).
+      child: TactilePress(
         onTap: () => NavigationHandler.goToProduct(
           context: context,
           productId: widget.product.id,
           productSlug: widget.product.name.toSlug(),
         ),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: _isHovered
-                  ? AppColors.textPrimary.withOpacity(0.45)
-                  : AppColors.border,
-              width: 1,
-            ),
-          ),
+        child: GlassSurface(
+          borderRadius: 8,
+          chromaticEdge: _isHovered,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -283,9 +279,8 @@ class _EditorialProductCardState extends State<EditorialProductCard> {
                   children: [
                     Text(
                       widget.product.category.label(context).toUpperCase(),
-                      style: TextStyle(
+                      style: AppTextStyles.microLabel(
                         fontSize: 9.5,
-                        fontWeight: FontWeight.w700,
                         letterSpacing: 1.1,
                         color: AppColors.textTertiary,
                       ),
@@ -381,9 +376,8 @@ class EditorialProductRow extends StatelessWidget {
                   children: [
                     Text(
                       product.category.label(context).toUpperCase(),
-                      style: TextStyle(
+                      style: AppTextStyles.microLabel(
                           fontSize: 9.5,
-                          fontWeight: FontWeight.w700,
                           letterSpacing: 1.1,
                           color: AppColors.textTertiary),
                     ),
@@ -431,8 +425,7 @@ class _ConditionDot extends StatelessWidget {
       children: [
         Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
         const SizedBox(width: 5),
-        Text(label,
-            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: color)),
+        Text(label, style: AppTextStyles.microLabel(fontSize: 10.5, letterSpacing: 0.6, color: color)),
       ],
     );
   }

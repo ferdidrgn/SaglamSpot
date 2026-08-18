@@ -25,6 +25,8 @@ class GlassSurface extends StatelessWidget {
     this.width,
     this.height,
     this.alignment,
+    this.borderColor,
+    this.borderWidth,
   });
 
   final Widget child;
@@ -32,6 +34,11 @@ class GlassSurface extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final double? borderRadius;
   final double? blurSigma;
+
+  /// Varsayılan token kenarlığı yerine (ör. bir input'un odak durumunda)
+  /// dinamik bir kenarlık rengi/kalınlığı vermek için.
+  final Color? borderColor;
+  final double? borderWidth;
 
   /// true ise daha opak/belirgin bir cam dolgusu kullanır (basılı/seçili
   /// durumlar, ya da düşük kontrastlı bir görsel üzerine binen kartlar için).
@@ -64,7 +71,10 @@ class GlassSurface extends StatelessWidget {
           decoration: BoxDecoration(
             color: strong ? tokens.glassTintStrong : tokens.glassTint,
             borderRadius: radiusGeometry,
-            border: Border.all(color: tokens.glassBorder, width: tokens.hairline),
+            border: Border.all(
+              color: borderColor ?? tokens.glassBorder,
+              width: borderWidth ?? tokens.hairline,
+            ),
           ),
           foregroundDecoration: BoxDecoration(
             borderRadius: radiusGeometry,
