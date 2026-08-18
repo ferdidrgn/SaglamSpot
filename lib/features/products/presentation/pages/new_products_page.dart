@@ -9,8 +9,8 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
+import '../../../../core/theme/app_text_styles.dart'; // <-- Eksik olan AppTextStyles importu eklendi
+import '../../../../core/widgets/design_system/ambient_mesh_background.dart'; // <-- Eksik olan AmbientMeshBackground importu eklendi
 import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
@@ -59,7 +59,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       case ProductCategory.chair:
         return "Sandalye & Berjer";
       case ProductCategory.table:
-        return "Yemek & Çalışma Masası";
+        return "Yemek Masası";
       case ProductCategory.bed:
         return "Yatak & Baza";
       case ProductCategory.wardrobe:
@@ -67,7 +67,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       case ProductCategory.white:
         return "Beyaz Eşya";
       case ProductCategory.other:
-        return "Dekorasyon & Diğer";
+        return "Dekorasyon";
     }
   }
 
@@ -130,40 +130,42 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  // 1. DRIBBBLE HERO VİTRİN
+                  // 1. ÜST HERO VİTRİN
                   SliverToBoxAdapter(
                     child: _buildHeroSection(context, products.length),
                   ),
 
-                  // 2. GÜVEN & MARKA BANDI (DOĞTAŞ, BELLONA, KELEBEK...)
+                  // 2. MARKA BANDI
                   SliverToBoxAdapter(
                     child: _buildBrandTicker(context),
                   ),
 
-                  // 3. KATEGORİYE GÖRE KEŞFET (Dinamik HD Kartlar)
+                  // 3. KATEGORİYE GÖRE KEŞFET
                   SliverToBoxAdapter(
                     child: _buildShopByCategorySection(context, products),
                   ),
 
-                  const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-                  // 4. BÜYÜK WEB ARAMA KUTUSU (In-Place Canlı Arama & Filtreleme)
+                  // 4. LÜKS VE GENİŞ ARAMA ÇUBUĞU
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: context.sectionPadding.copyWith(top: 0, bottom: 20),
+                      padding: context.sectionPadding.copyWith(
+                          top: 0, bottom: 20),
                       child: Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1240),
-                          child: _buildLargeWebSearchBar(context),
+                          child: _buildRefinedSearchBox(context),
                         ),
                       ),
                     ),
                   ),
 
-                  // 5. ANA BÖLÜM (SOLDA ŞIK DİKEY KATEGORİ RAYI + SAĞDA YENİLENMİŞ ÜRÜN KARTLARI)
+                  // 5. ANA KISIM (SOL DİKEY RAY + SAĞ MÜKEMMEL KARTLAR)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: context.sectionPadding.copyWith(top: 0, bottom: 36),
+                      padding: context.sectionPadding.copyWith(
+                          top: 0, bottom: 36),
                       child: Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1240),
@@ -171,10 +173,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                               ? Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Sol Dikey Yan Sekme
                               _buildVerticalCategoryRail(),
                               const SizedBox(width: 28),
-                              // Sağ Ürün Grid Vitrini
                               Expanded(
                                 child: _buildProductContent(context, filtered),
                               ),
@@ -197,12 +197,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: context.sectionPadding.copyWith(top: 16, bottom: 24),
-                        child: const AdsenseBanner(height: 120, type: AdUnitType.multiplex),
+                        padding: context.sectionPadding.copyWith(
+                            top: 16, bottom: 24),
+                        child: const AdsenseBanner(
+                            height: 120, type: AdUnitType.multiplex),
                       ),
                     ),
 
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 2)),
+                  SliverToBoxAdapter(
+                      child: SizedBox(height: context.spacingLarge * 2)),
                 ],
               ),
               ScrollUpButton(scrollController: _scrollController),
@@ -217,7 +220,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // 1. HERO BÖLÜMÜ
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildHeroSection(final BuildContext context, final int totalProducts) {
+  Widget _buildHeroSection(final BuildContext context,
+      final int totalProducts) {
     final isDesktop = context.isDesktop;
 
     final leftContent = Column(
@@ -240,7 +244,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           child: RichText(
             text: TextSpan(
               style: GoogleFonts.fraunces(
-                fontSize: context.responsive(mobile: 34, tablet: 44, desktop: 52),
+                fontSize: context.responsive(
+                    mobile: 34, tablet: 44, desktop: 52),
                 height: 1.1,
                 fontWeight: FontWeight.w400,
                 color: const Color(0xFF1E1815),
@@ -288,23 +293,29 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2C241E),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
                   elevation: 0,
                 ),
                 label: const Icon(Icons.arrow_forward_rounded, size: 16),
-                icon: const Text("Koleksiyonu İncele", style: TextStyle(fontWeight: FontWeight.bold)),
+                icon: const Text("Koleksiyonu İncele",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               OutlinedButton.icon(
                 onPressed: _scrollToCollection,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF2C241E),
                   side: const BorderSide(color: Color(0xFFE5DFD7), width: 1.4),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
                 ),
                 icon: const Icon(Icons.search_rounded, size: 16),
-                label: const Text("Hızlı Filtrele", style: TextStyle(fontWeight: FontWeight.w600)),
+                label: const Text("Hızlı Filtrele",
+                    style: TextStyle(fontWeight: FontWeight.w600)),
               ),
             ],
           ),
@@ -335,16 +346,19 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           children: [
             Image.network(
               'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
-              height: context.responsive(mobile: 260.0, tablet: 340.0, desktop: 400.0),
+              height: context.responsive(
+                  mobile: 260.0, tablet: 340.0, desktop: 400.0),
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                height: 340,
-                color: AppColors.surface,
-                child: Center(
-                  child: Icon(Icons.chair_outlined, size: 80, color: AppColors.accentDark),
-                ),
-              ),
+              errorBuilder: (_, __, ___) =>
+                  Container(
+                    height: 340,
+                    color: AppColors.surface,
+                    child: Center(
+                      child: Icon(Icons.chair_outlined, size: 80,
+                          color: AppColors.accentDark),
+                    ),
+                  ),
             ),
             Container(
               height: 120,
@@ -366,7 +380,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       color: Colors.white.withOpacity(0.9),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.verified_outlined, size: 18, color: AppColors.accentDark),
+                    child: Icon(Icons.verified_outlined, size: 18,
+                        color: AppColors.accentDark),
                   ),
                   const SizedBox(width: 10),
                   Text(
@@ -388,7 +403,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.7),
-        border: Border(bottom: BorderSide(color: const Color(0xFFEDE8E1).withOpacity(0.7))),
+        border: Border(bottom: BorderSide(
+            color: const Color(0xFFEDE8E1).withOpacity(0.7))),
       ),
       padding: context.pagePadding.copyWith(
         top: context.responsive(mobile: 24, desktop: 40),
@@ -460,8 +476,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       decoration: const BoxDecoration(
-        color: Color(0xFFF6F3EE),
-        border: Border(bottom: BorderSide(color: Color(0xFFEAE3D8))),
+        color: Color(0xFFF4EFE6),
+        border: Border(bottom: BorderSide(color: Color(0xFFE8E1D5))),
       ),
       child: Center(
         child: Wrap(
@@ -495,10 +511,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 
   // ════════════════════════════════════════════════════════════
-  // 3. KATEGORİYE GÖRE KEŞFET (Dinamik Kartlar)
+  // 3. KATEGORİYE GÖRE KEŞFET
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildShopByCategorySection(final BuildContext context, final List<Product> allProducts) {
+  Widget _buildShopByCategorySection(final BuildContext context,
+      final List<Product> allProducts) {
     final availableCategories = ProductCategory.values.take(4).toList();
 
     return Padding(
@@ -548,7 +565,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                           ),
                         ),
                         SizedBox(width: 4),
-                        Icon(Icons.arrow_forward_rounded, size: 14, color: Color(0xFF1E1815)),
+                        Icon(Icons.arrow_forward_rounded, size: 14,
+                            color: Color(0xFF1E1815)),
                       ],
                     ),
                   ),
@@ -564,9 +582,12 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   return Wrap(
                     spacing: 16,
                     runSpacing: 16,
-                    children: List.generate(availableCategories.length, (index) {
+                    children: List.generate(
+                        availableCategories.length, (index) {
                       final cat = availableCategories[index];
-                      final count = allProducts.where((p) => p.category == cat).length;
+                      final count = allProducts
+                          .where((p) => p.category == cat)
+                          .length;
                       final imageUrl = _getCategoryImageUrl(cat);
 
                       return _buildVisualCategoryCard(
@@ -608,7 +629,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: isSelected ? const Color(0xFF2C241E).withOpacity(0.20) : Colors.black.withOpacity(0.06),
+              color: isSelected
+                  ? const Color(0xFF2C241E).withOpacity(0.20)
+                  : Colors.black.withOpacity(0.06),
               blurRadius: isSelected ? 16 : 10,
               offset: const Offset(0, 5),
             ),
@@ -626,7 +649,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(color: const Color(0xFFEBE5DF)),
+                errorBuilder: (_, __, ___) =>
+                    Container(color: const Color(0xFFEBE5DF)),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -654,7 +678,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   child: Icon(
                     Icons.arrow_outward_rounded,
                     size: 14,
-                    color: isSelected ? AppColors.accentDark : const Color(0xFF1E1815),
+                    color: isSelected ? AppColors.accentDark : const Color(
+                        0xFF1E1815),
                   ),
                 ),
               ),
@@ -679,7 +704,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                     ),
                     const SizedBox(height: 3),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(10),
@@ -704,10 +730,10 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 
   // ════════════════════════════════════════════════════════════
-  // 4. BÜYÜK VE OKUNAKLI WEB ARAMA ÇUBUĞU
+  // 4. LÜKS VE GENİŞ WEB ARAMA ÇUBUĞU
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildLargeWebSearchBar(BuildContext context) {
+  Widget _buildRefinedSearchBox(BuildContext context) {
     return Container(
       height: 60,
       decoration: BoxDecoration(
@@ -716,30 +742,30 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         border: Border.all(color: const Color(0xFFE5DFD7), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2C2018).withOpacity(0.05),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
+            color: const Color(0xFF2C2018).withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          const Icon(Icons.search_rounded, size: 24, color: Color(0xFF7A6F66)),
+          const Icon(Icons.search_rounded, size: 22, color: Color(0xFF8B7D72)),
           const SizedBox(width: 14),
           Expanded(
             child: TextField(
               controller: _searchController,
               onChanged: (val) => setState(() => _searchQuery = val),
               style: GoogleFonts.inter(
-                fontSize: 15.5,
+                fontSize: 15,
                 fontWeight: FontWeight.w500,
-                color: const Color(0xFF1E1815),
+                color: const Color(0xFF2C241E),
               ),
               decoration: InputDecoration(
-                hintText: "Eviniz için mobilya, koltuk, masa veya kategori ara...",
+                hintText: "Mobilya, koltuk, masa veya kategori ara...",
                 hintStyle: GoogleFonts.inter(
-                  fontSize: 14.5,
+                  fontSize: 14,
                   color: const Color(0xFFA69C92),
                 ),
                 border: InputBorder.none,
@@ -748,30 +774,32 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             ),
           ),
           if (_searchQuery.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.close_rounded, size: 20, color: Color(0xFF7A6F66)),
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 _searchController.clear();
                 setState(() => _searchQuery = '');
               },
+              child: const Icon(
+                  Icons.close_rounded, size: 18, color: Color(0xFF8B7D72)),
             ),
           Container(
-            height: 28,
+            height: 24,
             width: 1,
-            color: const Color(0xFFE5DFD7),
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            color: const Color(0xFFEBE5DE),
+            margin: const EdgeInsets.symmetric(horizontal: 12),
           ),
           GestureDetector(
             onTap: () => _openSortSheet(context),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F1EB),
+                color: const Color(0xFFF7F4F0),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.swap_vert_rounded, size: 18, color: Color(0xFF5D5248)),
+                  const Icon(Icons.swap_vert_rounded, size: 18,
+                      color: Color(0xFF5D5248)),
                   const SizedBox(width: 6),
                   Text(
                     _sortLabel(_selectedSort),
@@ -791,7 +819,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 
   // ════════════════════════════════════════════════════════════
-  // 5. SOLDA DİKEY KATEGORİ RAYI (Vertical Rail)
+  // 5. SOL DİKEY KATEGORİ RAYI
   // ════════════════════════════════════════════════════════════
 
   Widget _buildVerticalCategoryRail() {
@@ -804,7 +832,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         border: Border.all(color: const Color(0xFFEFE9E0)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withOpacity(0.025),
             blurRadius: 14,
             offset: const Offset(0, 4),
           ),
@@ -821,15 +849,16 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           ),
           const SizedBox(height: 12),
           ...ProductCategory.values.map(
-                (cat) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _buildRailIconItem(
-                icon: _getCategoryIcon(cat),
-                label: _getCategoryTitle(cat),
-                isSelected: _selectedCategory == cat,
-                onTap: () => setState(() => _selectedCategory = cat),
-              ),
-            ),
+                (cat) =>
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildRailIconItem(
+                    icon: _getCategoryIcon(cat),
+                    label: _getCategoryTitle(cat),
+                    isSelected: _selectedCategory == cat,
+                    onTap: () => setState(() => _selectedCategory = cat),
+                  ),
+                ),
           ),
         ],
       ),
@@ -877,12 +906,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             onTap: () => setState(() => _selectedCategory = null),
           ),
           ...ProductCategory.values.map(
-                (cat) => _buildMobileCategoryPill(
-              title: _getCategoryTitle(cat),
-              icon: _getCategoryIcon(cat),
-              isSelected: _selectedCategory == cat,
-              onTap: () => setState(() => _selectedCategory = cat),
-            ),
+                (cat) =>
+                _buildMobileCategoryPill(
+                  title: _getCategoryTitle(cat),
+                  icon: _getCategoryIcon(cat),
+                  isSelected: _selectedCategory == cat,
+                  onTap: () => setState(() => _selectedCategory = cat),
+                ),
           ),
         ],
       ),
@@ -906,13 +936,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             color: isSelected ? const Color(0xFF2C241E) : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? const Color(0xFF2C241E) : const Color(0xFFE8E2D9),
+              color: isSelected ? const Color(0xFF2C241E) : const Color(
+                  0xFFE8E2D9),
             ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16, color: isSelected ? Colors.white : const Color(0xFF7A6F66)),
+              Icon(icon, size: 16,
+                  color: isSelected ? Colors.white : const Color(0xFF7A6F66)),
               const SizedBox(width: 6),
               Text(
                 title,
@@ -930,7 +962,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   }
 
   // ════════════════════════════════════════════════════════════
-  // 6. ÜRÜN VİTRİNİ VE YENİLENMİŞ LUMA TARZI ÜRÜN KARTI
+  // 6. YENİLENMİŞ FARKLI MOBİLYA MOTİFLİ ÜRÜN KARTI
   // ════════════════════════════════════════════════════════════
 
   Widget _buildProductContent(BuildContext context, List<Product> products) {
@@ -946,36 +978,36 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 24,
-        childAspectRatio: context.responsive(mobile: 0.68, tablet: 0.72, desktop: 0.76),
+        crossAxisSpacing: 22,
+        mainAxisSpacing: 26,
+        childAspectRatio: context.responsive(
+            mobile: 0.66, tablet: 0.70, desktop: 0.74),
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {
         return RevealFade(
           delayMs: (index % 6) * 30,
           offsetY: 12,
-          child: _buildPremiumLumaProductCard(context, products[index]),
+          child: _buildMotifFurnitureCard(context, products[index]),
         );
       },
     );
   }
 
-  // Yeni Luma & Minimal E-Ticaret Ürün Kartı
-  Widget _buildPremiumLumaProductCard(BuildContext context, Product product) {
+  // Lüks E-Ticaret / Mobilya Motifli Yeni Kart Tasarımı
+  Widget _buildMotifFurnitureCard(BuildContext context, Product product) {
     return TactilePress(
       onTap: () => context.push('/product/${product.id}'),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFEDE7DF), width: 1.1),
+          borderRadius: BorderRadius.circular(26),
+          border: Border.all(color: const Color(0xFFEAE3D8), width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF2C241E).withOpacity(0.045),
-              blurRadius: 18,
-              spreadRadius: 0,
-              offset: const Offset(0, 8),
+              color: const Color(0xFF2C241E).withOpacity(0.06),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
@@ -983,70 +1015,55 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Üst Görsel Kutusu
+            // Üst Geniş Görsel Alanı
             Expanded(
               child: Stack(
                 fit: StackFit.expand,
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF7F4F0),
-                      borderRadius: BorderRadius.circular(16),
+                      color: const Color(0xFFF2ECE1),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: EditorialProductCard(product: product),
                   ),
-                  // Sol Alt: Kırmızı YENİ / FIRSAT Rozeti
+                  // Sol Üst: Zarif Kategori Etiketi
                   Positioned(
-                    bottom: 8,
-                    left: 8,
+                    top: 10,
+                    left: 10,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFDC2626),
-                        borderRadius: BorderRadius.circular(6),
+                        color: const Color(0xFF2C241E).withOpacity(0.80),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        "YENİ",
+                        _getCategoryTitle(product.category).toUpperCase(),
                         style: GoogleFonts.inter(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
                           color: Colors.white,
-                          letterSpacing: 0.5,
+                          letterSpacing: 0.8,
                         ),
                       ),
                     ),
                   ),
-                  // Sağ Alt: Yıldızlı Puan Rozeti
+                  // Sağ Üst: Favori İkonu
                   Positioned(
-                    bottom: 8,
-                    right: 8,
+                    top: 10,
+                    right: 10,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.95),
-                        borderRadius: BorderRadius.circular(6),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 4,
-                          ),
-                        ],
+                        color: Colors.white.withOpacity(0.9),
+                        shape: BoxShape.circle,
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.star_rounded, size: 13, color: Color(0xFFF59E0B)),
-                          const SizedBox(width: 3),
-                          Text(
-                            "4.8",
-                            style: GoogleFonts.inter(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF1E1815),
-                            ),
-                          ),
-                        ],
+                      child: const Icon(
+                        Icons.favorite_border_rounded,
+                        size: 16,
+                        color: Color(0xFF2C241E),
                       ),
                     ),
                   ),
@@ -1056,32 +1073,40 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
             const SizedBox(height: 12),
 
-            // Ürün Başlığı
+            // Ürün Başlığı (Serif Font)
             Text(
               product.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.fraunces(
-                fontSize: 16,
+                fontSize: 16.5,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF1E1815),
+                letterSpacing: -0.2,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
 
-            // Kategori Alt Başlığı
-            Text(
-              _getCategoryTitle(product.category),
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF8C827A),
-              ),
+            // Kalite / Durum Bilgisi
+            Row(
+              children: [
+                const Icon(
+                    Icons.star_rounded, size: 14, color: Color(0xFFD97706)),
+                const SizedBox(width: 4),
+                Text(
+                  "4.8 (Özel Seri)",
+                  style: GoogleFonts.inter(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF7A6F66),
+                  ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
 
-            // Fiyat ve Yuvarlak Ekleme Butonu
+            // Fiyat ve Lüks Aksiyon Butonu
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -1089,22 +1114,33 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 Text(
                   "₺${product.price.toStringAsFixed(0)}",
                   style: GoogleFonts.inter(
-                    fontSize: 17.5,
+                    fontSize: 18,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF1E1815),
                   ),
                 ),
                 Container(
-                  width: 34,
-                  height: 34,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF2C241E),
-                    shape: BoxShape.circle,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2C241E),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Icon(
-                    Icons.add_rounded,
-                    color: Colors.white,
-                    size: 20,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "İncele",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.arrow_forward_rounded, size: 14,
+                          color: Colors.white),
+                    ],
                   ),
                 ),
               ],
@@ -1126,7 +1162,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       ),
       child: Column(
         children: [
-          const Icon(Icons.search_off_rounded, size: 48, color: Color(0xFFA69C92)),
+          const Icon(
+              Icons.search_off_rounded, size: 48, color: Color(0xFFA69C92)),
           const SizedBox(height: 16),
           Text(
             "Aradığınız Kriterde Mobilya Bulunamadı",
@@ -1140,55 +1177,68 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           Text(
             "Arama kelimesini değiştirebilir ya da filtreleri temizleyebilirsiniz.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(fontSize: 13.5, color: const Color(0xFF8C827A)),
+            style: GoogleFonts.inter(
+                fontSize: 13.5, color: const Color(0xFF8C827A)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildErrorState(BuildContext context, String error) => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
-        const SizedBox(height: 14),
-        Text(
-          context.l10n.errorOccurred,
-          style: TextStyle(fontSize: context.h4Size, fontWeight: FontWeight.bold),
+  Widget _buildErrorState(BuildContext context, String error) =>
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
+            const SizedBox(height: 14),
+            Text(
+              context.l10n.errorOccurred,
+              style: TextStyle(
+                  fontSize: context.h4Size, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 6),
+            Text(error, style: TextStyle(color: AppColors.textSecondary)),
+          ],
         ),
-        const SizedBox(height: 6),
-        Text(error, style: TextStyle(color: AppColors.textSecondary)),
-      ],
-    ),
-  );
+      );
 
-  Widget _buildBreadcrumb(final BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      const Icon(Icons.home_outlined, size: 13, color: Color(0xFF8C827A)),
-      const SizedBox(width: 6),
-      Text(context.l10n.breadcrumbHome,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF8C827A))),
-      const SizedBox(width: 6),
-      const Icon(Icons.chevron_right_rounded, size: 14, color: Color(0xFF8C827A)),
-      const SizedBox(width: 6),
-      Text(
-        context.l10n.newCollection,
-        style: const TextStyle(
-            fontSize: 12, color: Color(0xFF2C241E), fontWeight: FontWeight.w700),
-      ),
-    ],
-  );
+  Widget _buildBreadcrumb(final BuildContext context) =>
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.home_outlined, size: 13, color: Color(0xFF8C827A)),
+          const SizedBox(width: 6),
+          Text(context.l10n.breadcrumbHome,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF8C827A))),
+          const SizedBox(width: 6),
+          const Icon(
+              Icons.chevron_right_rounded, size: 14, color: Color(0xFF8C827A)),
+          const SizedBox(width: 6),
+          Text(
+            context.l10n.newCollection,
+            style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF2C241E),
+                fontWeight: FontWeight.w700),
+          ),
+        ],
+      );
 
   List<Product> _filterProducts(List<Product> products) {
     var filtered = products;
     if (_selectedCategory != null) {
-      filtered = filtered.where((final p) => p.category == _selectedCategory).toList();
+      filtered =
+          filtered.where((final p) => p.category == _selectedCategory).toList();
     }
-    if (_searchQuery.trim().isNotEmpty) {
+    if (_searchQuery
+        .trim()
+        .isNotEmpty) {
       final query = _searchQuery.trim().toLowerCase();
-      filtered = filtered.where((final p) => p.name.toLowerCase().contains(query)).toList();
+      filtered =
+          filtered
+              .where((final p) => p.name.toLowerCase().contains(query))
+              .toList();
     }
     switch (_selectedSort) {
       case _SortMode.priceLowHigh:
@@ -1210,56 +1260,61 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (final sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE8E2D9),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              Text(
-                "Sıralama Seçenekleri",
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1E1815),
-                ),
-              ),
-              const SizedBox(height: 12),
-              ..._SortMode.values.map((mode) {
-                final selected = mode == _selectedSort;
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    _sortLabel(mode),
-                    style: GoogleFonts.inter(
-                      fontSize: 14.5,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      color: selected ? const Color(0xFF2C241E) : const Color(0xFF7A6F66),
+      builder: (final sheetContext) =>
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE8E2D9),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
-                  trailing: selected ? const Icon(Icons.check_rounded, color: Color(0xFF2C241E)) : null,
-                  onTap: () {
-                    setState(() => _selectedSort = mode);
-                    Navigator.pop(sheetContext);
-                  },
-                );
-              }),
-            ],
+                  Text(
+                    "Sıralama Seçenekleri",
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1E1815),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ..._SortMode.values.map((mode) {
+                    final selected = mode == _selectedSort;
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        _sortLabel(mode),
+                        style: GoogleFonts.inter(
+                          fontSize: 14.5,
+                          fontWeight: selected ? FontWeight.w700 : FontWeight
+                              .w500,
+                          color: selected
+                              ? const Color(0xFF2C241E)
+                              : const Color(0xFF7A6F66),
+                        ),
+                      ),
+                      trailing: selected ? const Icon(
+                          Icons.check_rounded, color: Color(0xFF2C241E)) : null,
+                      onTap: () {
+                        setState(() => _selectedSort = mode);
+                        Navigator.pop(sheetContext);
+                      },
+                    );
+                  }),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -1272,7 +1327,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       case _SortMode.priceHighLow:
         return "Fiyat: Yüksekten Düşüğe";
       case _SortMode.popular:
+        Name:
         return "En Çok İncelenenler";
     }
+    return "";
   }
 }
