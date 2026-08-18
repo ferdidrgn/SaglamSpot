@@ -1,16 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// TEK MARKA PALETİ — artık GERÇEK ANLAMDA DİNAMİK. Önceki sürümde tüm
-/// alanlar `static const` idi; bu, derleme zamanı sabitleri olduğu için
-/// hiçbir şekilde çalışma zamanında değişemezdi (Settings'teki Açık/Koyu
-/// seçici görsel olarak hiçbir şeyi etkilemiyordu). Şimdi her isim bir
-/// GETTER — o an aktif `Brightness`'a göre açık ya da koyu değeri döner.
-///
-/// `AppColors.setBrightness(...)` uygulama kökünde (main.dart) her tema
-/// değişiminde çağrılır; ardından kök widget'ı yeniden inşa ettirmek için
-/// bir `Key` değişikliği tetiklenir (statik bir değer değiştiğinde
-/// Flutter'ın kendiliğinden hiçbir widget'ı "kirli" işaretlemeyeceğini
-/// unutma — bu yüzden tam bir yeniden inşa tetiklemek gerekiyor).
 class AppColors {
   AppColors._();
 
