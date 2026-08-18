@@ -70,7 +70,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     selected: _selectedCategory,
                     onSelect: (final c) => setState(() => _selectedCategory = c),
                     allLabel: context.l10n.conditionAll,
-                    padding: context.sectionPadding,
+                    // NOT: sadece YATAY padding — dikey bileşen eklenirse
+                    // sabit 40px yükseklikli rayı neredeyse tamamen kırpar.
+                    padding: context.sectionPadding.copyWith(top: 0, bottom: 0),
                   )),
                   SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
                   _buildToolbar(context, filtered.length),
@@ -129,6 +131,15 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     letterSpacing: -0.5,
                   ),
                 ),
+                const SizedBox(height: 10),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: context.responsive(mobile: 400, desktop: 520)),
+                  child: Text(
+                    context.l10n.spotProductsDesc,
+                    style: TextStyle(
+                        fontSize: context.bodySize, color: AppColors.textSecondary, height: 1.5),
+                  ),
+                ),
                 SizedBox(height: context.spacing),
                 Wrap(
                   spacing: 18,
@@ -182,7 +193,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
   Widget _buildToolbar(final BuildContext context, final int resultCount) => SliverToBoxAdapter(
         child: Padding(
-          padding: context.sectionPadding,
+          // NOT: yalnızca yatay — sectionPadding'in tamamı masthead/toolbar/
+          // grid arasında fazladan onlarca piksel boş alan biriktiriyordu.
+          padding: context.sectionPadding.copyWith(top: 0, bottom: 0),
           child: GlassSurface(
             borderRadius: 18,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -369,7 +382,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
     if (ref.watch(productViewModeProvider) == ProductViewMode.list) {
       return SliverPadding(
-        padding: context.sectionPadding,
+        padding: context.sectionPadding.copyWith(top: 0),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (final context, final index) => EditorialProductRow(product: products[index]),
@@ -380,7 +393,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     }
 
     return SliverPadding(
-      padding: context.sectionPadding,
+      padding: context.sectionPadding.copyWith(top: 0),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
