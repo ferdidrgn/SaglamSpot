@@ -6,6 +6,7 @@ import '../common/extentions/app_context_ui_extension.dart';
 import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
+import 'optimized_cached_image.dart';
 
 /// Işaret görselindeki liste görünümü için: yatay, geniş, tek satırlık
 /// ürün kartı. Işıklık kartla (CustomProductCard) aynı marka dilini
@@ -44,7 +45,7 @@ class _ProductListCardState extends State<ProductListCard> {
               ? (Matrix4.identity()..translate(0.0, -3.0))
               : Matrix4.identity(),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.card,
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
@@ -73,7 +74,13 @@ class _ProductListCardState extends State<ProductListCard> {
                     width: 96,
                     height: 96,
                     child: product.imagesUrl.isNotEmpty
-                        ? Image.network(product.imagesUrl.first, fit: BoxFit.cover)
+                        ? OptimizedCachedImage(
+                            imageUrl: product.imagesUrl.first,
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            borderRadius: 0,
+                          )
                         : Container(
                             color: AppColors.secondary,
                             child: Icon(Icons.chair_alt_rounded,

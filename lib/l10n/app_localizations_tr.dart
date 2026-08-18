@@ -1029,6 +1029,78 @@ class AppLocalizationsTr extends AppLocalizations {
   String get filtersPanelTitle => 'FİLTRELER';
 
   @override
+  String get dragToRotateHint => 'Diğer fotoğraflar için kaydırın';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Bu ay stüdyo (arka plansız) görsel limiti doldu — fotoğraflar normal haliyle eklendi.';
+
+  @override
+  String get studioPreparingWait =>
+      'Stüdyo görseli hazırlanıyor, lütfen bekleyin...';
+
+  @override
+  String get retry => 'Tekrar Dene';
+
+  @override
+  String get studioGenerationFailed => 'Stüdyo görseli oluşturulamadı';
+
+  @override
+  String get storePhotoLabel => 'Mağaza';
+
+  @override
+  String get studioPhotoLabel => 'Stüdyo';
+
+  @override
+  String get onboardingSkip => 'Atla';
+
+  @override
+  String get onboardingStart => 'Başla';
+
+  @override
+  String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'A HOŞ GELDİNİZ';
+
+  @override
+  String get onboardingPage1Title => 'Eviniz İçin\nDoğru Adres';
+
+  @override
+  String get onboardingPage1Desc =>
+      '20 yılı aşkın esnaf tecrübesiyle, kaliteli mobilyayı cebinize taşıyoruz.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'SPOT & SIFIR BİR ARADA';
+
+  @override
+  String get onboardingPage2Title => 'Her Bütçeye\nUygun Seçenekler';
+
+  @override
+  String get onboardingPage2Desc =>
+      'İkinci el fırsatlardan sıfır koleksiyona kadar — aradığınızı kolayca bulun.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'GÜVENLE ALIŞVERİŞ';
+
+  @override
+  String get onboardingPage3Title => 'Beğendiniz mi?\nHemen Yazın';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Tek dokunuşla WhatsApp\'tan ulaşın, fiyat sorun, pazarlık edin.';
+
+  @override
+  String get favoritesTitle => 'Favorilerim';
+
+  @override
+  String get favoritesEmptyTitle => 'Favori Listeniz Boş';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Beğendiğiniz ürünleri kalp ikonuna dokunarak favorilerinize ekleyin.';
+
+  @override
+  String get sortPanelTitle => 'SIRALA';
+
+  @override
   String get priceRangeSectionTitle => 'FİYAT ARALIĞI';
 
   @override

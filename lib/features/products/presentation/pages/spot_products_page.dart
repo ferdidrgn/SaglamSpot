@@ -1,7 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
@@ -9,20 +9,16 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_product_card.dart';
-import '../../../../core/widgets/dynamic_category_chips.dart';
+import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
-import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/shimmer_components.dart';
-import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
-/// "Spot / İkinci El Ürünler" — köklü, sıfırdan yeniden tasarlandı. Eski
-/// sürümdeki dev animasyonlu arka plan deseni, sahte istatistik kutuları
-/// ve karmaşık, her zaman State'e bağlı filtre paneli kaldırıldı. Yerine:
-/// fırsat vurgulu sade bir başlık, gerçek ürün sayısı, alt sayfadan açılan
-/// hafif bir fiyat filtresi ve temiz bir ızgara/liste.
+/// "Spot / İkinci El Ürünler" — KÖKLÜ, ikinci kez baştan tasarlandı.
+/// new_products_page.dart ile aynı editoryal katalog dilini paylaşır
+/// (bkz. core/widgets/editorial_product_grid_widgets.dart) — sadece vurgu
+/// rengi (AppColors.error) ve fiyat filtresi ile ayrışır.
 enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
 
 class SpotProductsPage extends ConsumerStatefulWidget {
@@ -64,22 +60,25 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  _buildHeader(context, products.length),
-                  _buildToolbar(context),
+                  SliverToBoxAdapter(child: _buildMasthead(context, products.length)),
                   SliverToBoxAdapter(
-                      child: DynamicCategoryChips(
+                      child: EditorialCategoryRail(
                     selected: _selectedCategory,
                     onSelect: (final c) => setState(() => _selectedCategory = c),
-                    padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+                    allLabel: context.l10n.conditionAll,
+                    padding: context.sectionPadding,
                   )),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge)),
+                  SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
+                  _buildToolbar(context, filtered.length),
+                  SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
                   _buildProductGrid(context, filtered),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: context.sectionPadding,
-                      child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
+                  if (filtered.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: context.sectionPadding,
+                        child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
+                      ),
                     ),
-                  ),
                   SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 3)),
                 ],
               ),
@@ -92,95 +91,71 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ════════════════════════════════════════════════════════════
-  // BAŞLIK — fırsat vurgulu panel + gerçek ürün sayısı
+  // BAŞLIK
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildHeader(final BuildContext context, final int totalProducts) => SliverAppBar(
-        pinned: true,
-        expandedHeight: context.responsive(mobile: 232, tablet: 260, desktop: 288),
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        flexibleSpace: FlexibleSpaceBar(
-          background: Container(
-            decoration: BoxDecoration(
-              color: AppColors.secondary,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
-            ),
-            child: Stack(
+  Widget _buildMasthead(final BuildContext context, final int totalProducts) => Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Positioned.fill(child: FurnitureMotifBackdrop()),
+          Padding(
+            padding: context.pagePadding.copyWith(
+                top: context.responsive(mobile: 20, tablet: 28, desktop: 40), bottom: 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  right: -60,
-                  top: -60,
-                  child: Container(
-                    width: 220,
-                    height: 220,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [AppColors.error.withOpacity(0.16), Colors.transparent],
-                      ),
-                    ),
+                _buildBreadcrumb(context),
+                SizedBox(height: context.spacingLarge),
+                Text(
+                  context.l10n.spotBadgeEyebrow,
+                  style: TextStyle(
+                    fontSize: 12,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.error,
                   ),
                 ),
-                SafeArea(
-                  child: Padding(
-                    padding: context.pagePadding,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildBreadcrumb(context),
-                        SizedBox(height: context.spacing),
-                        Text(
-                          context.l10n.spotBadgeEyebrow,
-                          style: TextStyle(
-                            fontSize: 12,
-                            letterSpacing: 3,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.error,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          context.l10n.spotProducts,
-                          style: TextStyle(
-                            fontSize: context.responsive(mobile: 30, tablet: 38, desktop: 44),
-                            fontWeight: FontWeight.w900,
-                            height: 1.05,
-                            color: AppColors.textPrimary,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.productsFound(totalProducts),
-                          style: TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
-                        ),
-                        SizedBox(height: context.spacing),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            _TrustChip(
-                                icon: Icons.inventory_2_rounded,
-                                label: context.l10n.statSpotProductLabel,
-                                accent: AppColors.error),
-                            _TrustChip(
-                                icon: Icons.chat_bubble_rounded,
-                                label: context.l10n.productTrustBadgeNegotiate),
-                          ],
-                        ),
-                      ],
-                    ),
+                const SizedBox(height: 8),
+                Text(
+                  context.l10n.spotProducts,
+                  style: GoogleFonts.fraunces(
+                    fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
+                    fontWeight: FontWeight.w600,
+                    height: 1.02,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
+                SizedBox(height: context.spacing),
+                Wrap(
+                  spacing: 18,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(context.l10n.productsFound(totalProducts),
+                        style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary)),
+                    _dotSep(),
+                    _plainStat(context.l10n.statSpotProductLabel),
+                    _dotSep(),
+                    _plainStat(context.l10n.productTrustBadgeNegotiate),
+                  ],
+                ),
+                SizedBox(height: context.spacingLarge),
+                const FurnitureMotifDivider(),
+                SizedBox(height: context.spacingLarge),
               ],
             ),
           ),
-        ),
+        ],
       );
+
+  Widget _dotSep() => Text('•', style: TextStyle(color: AppColors.border, fontSize: 12));
+
+  Widget _plainStat(final String label) => Text(label,
+      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.textTertiary));
 
   Widget _buildBreadcrumb(final BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
@@ -199,79 +174,54 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       );
 
   // ════════════════════════════════════════════════════════════
-  // ARAÇ ÇUBUĞU — arama + fiyat filtresi + sırala + görünüm
+  // ARAÇ ÇUBUĞU — arama + fiyat filtresi + sırala + görünüm, metin tabanlı
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildToolbar(final BuildContext context) => SliverToBoxAdapter(
+  Widget _buildToolbar(final BuildContext context, final int resultCount) => SliverToBoxAdapter(
         child: Padding(
           padding: context.sectionPadding,
           child: Row(
             children: [
-              Expanded(child: _buildSearchBar(context)),
-              SizedBox(width: context.spacing),
-              _buildPriceFilterButton(context),
-              SizedBox(width: context.spacing),
-              _buildSortPill(context),
-              if (context.isTablet || context.isDesktop) ...[
-                SizedBox(width: context.spacing),
-                const ViewModeToggle(),
-              ],
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildSearchBar(final BuildContext context) => GestureDetector(
-        onTap: () => context.go('/search'),
-        child: Container(
-          height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
-              const SizedBox(width: 10),
-              Expanded(
-                child: RichText(
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    style: TextStyle(fontSize: context.bodySize, color: AppColors.textSecondary),
+              Flexible(
+                child: GestureDetector(
+                  onTap: () => context.go('/search'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextSpan(text: context.l10n.searchBarRichPrefix),
-                      TextSpan(
-                        text: context.l10n.searchBarRichHereLink,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.error,
-                            decoration: TextDecoration.underline),
-                        recognizer: TapGestureRecognizer()..onTap = () => context.go('/search'),
+                      Icon(Icons.search_rounded, size: 16, color: AppColors.textSecondary),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(context.l10n.searchHint,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textSecondary,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.border)),
                       ),
-                      TextSpan(text: context.l10n.searchBarRichSuffix),
                     ],
                   ),
                 ),
               ),
+              const Spacer(),
+              _TextTabButton(
+                icon: Icons.tune_rounded,
+                label: context.l10n.priceRangeSectionTitle,
+                isActive: _priceFilterActive,
+                onTap: () => _openPriceFilterSheet(context),
+              ),
+              SizedBox(width: context.spacing),
+              _TextTabButton(
+                icon: Icons.swap_vert_rounded,
+                label: _sortLabel(context, _selectedSort),
+                onTap: () => _openSortSheet(context),
+              ),
+              SizedBox(width: context.spacing),
+              _ViewToggle(),
             ],
           ),
-        ),
-      );
-
-  Widget _buildPriceFilterButton(final BuildContext context) => GestureDetector(
-        onTap: () => _openPriceFilterSheet(context),
-        child: Container(
-          height: 52,
-          width: 52,
-          decoration: BoxDecoration(
-            color: _priceFilterActive ? AppColors.primary : AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: _priceFilterActive ? AppColors.primary : AppColors.border),
-          ),
-          child: Icon(Icons.tune_rounded,
-              color: _priceFilterActive ? Colors.white : AppColors.textPrimary, size: 20),
         ),
       );
 
@@ -279,92 +229,114 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     RangeValues temp = _priceRange;
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (final sheetContext) => StatefulBuilder(
-        builder: (final sheetContext, final setSheetState) => Padding(
-          padding: EdgeInsets.fromLTRB(24, 20, 24,
-              24 + MediaQuery.of(sheetContext).viewInsets.bottom),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(context.l10n.priceRangeSectionTitle,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
-              const SizedBox(height: 8),
-              Text(
-                '₺${temp.start.round()} - ₺${temp.end.round()}',
-                style: TextStyle(
-                    fontWeight: FontWeight.w900, fontSize: 20, color: AppColors.primary),
-              ),
-              RangeSlider(
-                values: temp,
-                min: 0,
-                max: 50000,
-                divisions: 50,
-                activeColor: AppColors.primary,
-                inactiveColor: AppColors.border,
-                onChanged: (final v) => setSheetState(() => temp = v),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          _priceRange = const RangeValues(0, 50000);
-                          _priceFilterActive = false;
-                        });
-                        Navigator.pop(sheetContext);
-                      },
-                      child: Text(context.l10n.clearFiltersButton),
-                    ),
+        builder: (final sheetContext, final setSheetState) => SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+                24, 16, 24, 20 + MediaQuery.of(sheetContext).viewInsets.bottom),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 18),
+                    decoration: BoxDecoration(
+                        color: AppColors.border, borderRadius: BorderRadius.circular(4)),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
-                      onPressed: () {
-                        setState(() {
-                          _priceRange = temp;
-                          _priceFilterActive = temp.start > 0 || temp.end < 50000;
-                        });
-                        Navigator.pop(sheetContext);
-                      },
-                      child: Text(context.l10n.apply),
+                ),
+                Text(context.l10n.priceRangeSectionTitle,
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.4,
+                        color: AppColors.textTertiary)),
+                const SizedBox(height: 10),
+                Text(
+                  '₺${temp.start.round()} — ₺${temp.end.round()}',
+                  style: GoogleFonts.fraunces(
+                      fontWeight: FontWeight.w600, fontSize: 26, color: AppColors.textPrimary),
+                ),
+                RangeSlider(
+                  values: temp,
+                  min: 0,
+                  max: 50000,
+                  divisions: 50,
+                  activeColor: AppColors.primary,
+                  inactiveColor: AppColors.border,
+                  onChanged: (final v) => setSheetState(() => temp = v),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: const StadiumBorder(),
                     ),
+                    onPressed: () {
+                      setState(() {
+                        _priceRange = temp;
+                        _priceFilterActive = temp.start > 0 || temp.end < 50000;
+                      });
+                      Navigator.pop(sheetContext);
+                    },
+                    child: Text(context.l10n.apply,
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5)),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _priceRange = const RangeValues(0, 50000);
+                        _priceFilterActive = false;
+                      });
+                      Navigator.pop(sheetContext);
+                    },
+                    child: Text(context.l10n.clearFiltersButton,
+                        style: TextStyle(
+                            color: AppColors.textTertiary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.5,
+                            letterSpacing: 0.6)),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSortPill(final BuildContext context) => Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<_SortMode>(
-            value: _selectedSort,
-            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textPrimary),
-            items: _SortMode.values
-                .map((final mode) =>
-                    DropdownMenuItem(value: mode, child: Text(_sortLabel(context, mode))))
-                .toList(),
-            onChanged: (final val) => setState(() => _selectedSort = val!),
-          ),
-        ),
-      );
+  void _openSortSheet(final BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (final sheetContext) => _SortSheet<_SortMode>(
+        title: context.l10n.sortPanelTitle,
+        options: _SortMode.values,
+        current: _selectedSort,
+        labelBuilder: (final m) => _sortLabel(context, m),
+        onSelect: (final m) {
+          setState(() => _selectedSort = m);
+          Navigator.pop(sheetContext);
+        },
+      ),
+    );
+  }
 
   String _sortLabel(final BuildContext context, final _SortMode mode) {
     switch (mode) {
@@ -393,7 +365,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         padding: context.sectionPadding,
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
-            (final context, final index) => ProductListCard(product: products[index]),
+            (final context, final index) => EditorialProductRow(product: products[index]),
             childCount: products.length,
           ),
         ),
@@ -407,14 +379,14 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
           crossAxisSpacing: context.gridSpacing,
           mainAxisSpacing: context.gridSpacing,
-          childAspectRatio: context.responsive(mobile: 0.65, tablet: 0.70, desktop: 0.73),
+          childAspectRatio: context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
         ),
         delegate: SliverChildBuilderDelegate(
           (final context, final index) {
             if (isAdSlot(index, products.length)) return const NativeAdCard();
             final realIndex = realIndexForAdGrid(index, products.length);
             if (realIndex >= products.length) return const SizedBox.shrink();
-            return CustomProductCard(product: products[realIndex]);
+            return EditorialProductCard(product: products[realIndex]);
           },
           childCount: paddedItemCountForAds(products.length),
         ),
@@ -422,22 +394,15 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  Widget _buildEmptyState(final BuildContext context) => Container(
-        height: 360,
-        margin: context.sectionPadding,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.border),
-        ),
+  Widget _buildEmptyState(final BuildContext context) => Padding(
+        padding: context.sectionPadding.copyWith(top: 40, bottom: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off_rounded, size: 64, color: AppColors.textTertiary.withOpacity(0.6)),
+            Icon(Icons.search_off_rounded, size: 44, color: AppColors.textTertiary.withOpacity(0.6)),
             const SizedBox(height: 14),
             Text(context.l10n.productNotFound,
-                style: TextStyle(
-                    fontSize: 16, color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
+                style: GoogleFonts.fraunces(
+                    fontSize: 18, color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
             const SizedBox(height: 6),
             Text(context.l10n.tryDifferentFiltersShort,
                 style: TextStyle(fontSize: 13, color: AppColors.textTertiary)),
@@ -481,30 +446,142 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 }
 
-class _TrustChip extends StatelessWidget {
+/// Metin + ikon tabanlı araç çubuğu düğmesi (kutulu ikon yerine).
+class _TextTabButton extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color? accent;
+  final VoidCallback onTap;
+  final bool isActive;
 
-  const _TrustChip({required this.icon, required this.label, this.accent});
+  const _TextTabButton(
+      {required this.icon, required this.label, required this.onTap, this.isActive = false});
 
   @override
-  Widget build(final BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: AppColors.border),
-        ),
+  Widget build(final BuildContext context) {
+    final showLabel = context.isTablet || context.isDesktop;
+    return Tooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 13, color: accent ?? AppColors.primary),
-            const SizedBox(width: 6),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+            Icon(icon, size: 18, color: isActive ? AppColors.error : AppColors.textPrimary),
+            if (showLabel) ...[
+              const SizedBox(width: 6),
+              Text(label,
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: isActive ? AppColors.error : AppColors.textPrimary)),
+            ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ViewToggle extends ConsumerWidget {
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final mode = ref.watch(productViewModeProvider);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _viewIcon(
+          icon: Icons.grid_view_rounded,
+          isSelected: mode == ProductViewMode.grid,
+          onTap: () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.grid),
+        ),
+        const SizedBox(width: 10),
+        _viewIcon(
+          icon: Icons.view_list_rounded,
+          isSelected: mode == ProductViewMode.list,
+          onTap: () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.list),
+        ),
+      ],
+    );
+  }
+
+  Widget _viewIcon(
+          {required final IconData icon,
+          required final bool isSelected,
+          required final VoidCallback onTap}) =>
+      GestureDetector(
+        onTap: onTap,
+        child: Icon(icon,
+            size: 19, color: isSelected ? AppColors.textPrimary : AppColors.textTertiary),
+      );
+}
+
+/// Alt sayfadan açılan, radyo listesi tarzı sade sıralama seçici.
+class _SortSheet<T> extends StatelessWidget {
+  final String title;
+  final List<T> options;
+  final T current;
+  final String Function(T) labelBuilder;
+  final ValueChanged<T> onSelect;
+
+  const _SortSheet({
+    required this.title,
+    required this.options,
+    required this.current,
+    required this.labelBuilder,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(final BuildContext context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 18),
+                  decoration: BoxDecoration(
+                      color: AppColors.border, borderRadius: BorderRadius.circular(4)),
+                ),
+              ),
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.4,
+                      color: AppColors.textTertiary)),
+              const SizedBox(height: 8),
+              ...options.map((final o) {
+                final selected = o == current;
+                return GestureDetector(
+                  onTap: () => onSelect(o),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(labelBuilder(o),
+                              style: GoogleFonts.fraunces(
+                                  fontSize: 17,
+                                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                                  color: selected
+                                      ? AppColors.textPrimary
+                                      : AppColors.textSecondary)),
+                        ),
+                        if (selected) Icon(Icons.check_rounded, size: 18, color: AppColors.error),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
       );
 }

@@ -1034,6 +1034,77 @@ class AppLocalizationsUk extends AppLocalizations {
   String get filtersPanelTitle => 'ФІЛЬТРИ';
 
   @override
+  String get dragToRotateHint => 'Проведіть для інших фото';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Досягнуто місячний ліміт студійних фото — фотографії додано в оригінальному вигляді.';
+
+  @override
+  String get studioPreparingWait => 'Підготовка студійного фото, зачекайте...';
+
+  @override
+  String get retry => 'Повторити';
+
+  @override
+  String get studioGenerationFailed => 'Не вдалося створити студійне фото';
+
+  @override
+  String get storePhotoLabel => 'Магазин';
+
+  @override
+  String get studioPhotoLabel => 'Студія';
+
+  @override
+  String get onboardingSkip => 'Пропустити';
+
+  @override
+  String get onboardingStart => 'Почати';
+
+  @override
+  String get onboardingPage1Eyebrow => 'ЛАСКАВО ПРОСИМО В SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => 'Правильна Адреса\nДля Вашого Дому';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Понад 20 років перевіреної майстерності — якісні меблі тепер у вашій кишені.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'Б/В ТА НОВІ МЕБЛІ РАЗОМ';
+
+  @override
+  String get onboardingPage2Title => 'Варіанти На\nБудь-Який Бюджет';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Від вигідних пропозицій б/в до нової колекції — легко знайдіть те, що шукали.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'КУПУЙТЕ З ВПЕВНЕНІСТЮ';
+
+  @override
+  String get onboardingPage3Title => 'Знайшли Щось?\nЗапитайте Зараз';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Зв\'яжіться з нами у WhatsApp одним дотиком, дізнайтеся ціну та домовляйтеся напряму.';
+
+  @override
+  String get favoritesTitle => 'Мої Улюблені';
+
+  @override
+  String get favoritesEmptyTitle => 'Ваш список улюблених порожній';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Натисніть на значок серця на товарах, які вам сподобались, щоб додати їх в улюблені.';
+
+  @override
+  String get sortPanelTitle => 'СОРТУВАННЯ';
+
+  @override
   String get priceRangeSectionTitle => 'ДІАПАЗОН ЦІН';
 
   @override

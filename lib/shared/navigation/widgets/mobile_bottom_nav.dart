@@ -47,7 +47,7 @@ class MobileBottomNav extends ConsumerWidget {
     ];
 
     return Material(
-      color: Colors.white,
+      color: AppColors.mobileSurface,
       elevation: 0,
       child: SafeArea(
         top: false,

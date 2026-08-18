@@ -106,7 +106,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           controller: _scrollController,
                           physics: const BouncingScrollPhysics(),
                           slivers: [
-                            _buildActiveFiltersSliver(currentFilters, showSidebar),
+                            _buildActiveFiltersSliver(
+                                currentFilters, showSidebar),
                             searchResultsAsync.when(
                               loading: () => const SliverToBoxAdapter(
                                   child: SizedBox.shrink()),
@@ -119,7 +120,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                             searchResultsAsync.when(
                               loading: () => const SliverFillRemaining(
                                   child: FullPageShimmer()),
-                              error: (final err, final _) => SliverFillRemaining(
+                              error: (final err, final _) =>
+                                  SliverFillRemaining(
                                 child: _buildErrorState(err.toString()),
                               ),
                               data: (final products) {
@@ -133,32 +135,40 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                                         mobile: 0.0, desktop: 8.0),
                                   ),
                                   sliver: SliverMainAxisGroup(
-                                    slivers:
-                                        _buildProductGridsWithAds(context, products),
+                                    slivers: _buildProductGridsWithAds(
+                                        context, products),
                                   ),
                                 );
                               },
                             ),
-                            SliverToBoxAdapter(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  context.responsive(
-                                      mobile: 16.0, tablet: 24.0, desktop: 32.0),
-                                  24,
-                                  context.responsive(
-                                      mobile: 16.0, tablet: 24.0, desktop: 32.0),
-                                  40,
-                                ),
-                                child: const Column(
-                                  children: [
-                                    AdsenseBanner(
-                                        height: 90, type: AdUnitType.multiplex),
-                                    AdNativeWidget(),
-                                  ],
+                            if ((searchResultsAsync.asData?.value ?? const [])
+                                .isNotEmpty)
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    context.responsive(
+                                        mobile: 16.0,
+                                        tablet: 24.0,
+                                        desktop: 32.0),
+                                    24,
+                                    context.responsive(
+                                        mobile: 16.0,
+                                        tablet: 24.0,
+                                        desktop: 32.0),
+                                    40,
+                                  ),
+                                  child: const Column(
+                                    children: [
+                                      AdsenseBanner(
+                                          height: 90,
+                                          type: AdUnitType.multiplex),
+                                      AdNativeWidget(),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                            const SliverToBoxAdapter(
+                                child: SizedBox(height: 80)),
                           ],
                         ),
                         ScrollUpButton(scrollController: _scrollController),
@@ -184,7 +194,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget _buildTopBar(final BuildContext context, final String query) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+        horizontal:
+            context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
         vertical: context.responsive(mobile: 10.0, desktop: 14.0),
       ),
       child: Row(
@@ -259,14 +270,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget _buildCategoryStrip(final dynamic filters) => Container(
         color: AppColors.surface,
         padding: EdgeInsets.symmetric(
-            vertical: context.responsive(mobile: 6.0, tablet: 8.0, desktop: 8.0)),
+            vertical:
+                context.responsive(mobile: 6.0, tablet: 8.0, desktop: 8.0)),
         child: DynamicCategoryChips(
           selected: filters.category as ProductCategory?,
           onSelect: (final category) =>
               ref.read(searchFiltersProvider.notifier).setCategory(category),
           padding: EdgeInsets.symmetric(
-              horizontal:
-                  context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0)),
+              horizontal: context.responsive(
+                  mobile: 12.0, tablet: 20.0, desktop: 32.0)),
         ),
       );
 
@@ -362,13 +374,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ref.read(sortOptionProvider.notifier).set(option),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       itemBuilder: (final context) => SortOption.values
-          .map((final o) => PopupMenuItem(value: o, child: Text(o.label(context))))
+          .map((final o) =>
+              PopupMenuItem(value: o, child: Text(o.label(context))))
           .toList(),
       child: Container(
         height: context.responsive(mobile: 46.0, desktop: 50.0),
         padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppColors.border),
         ),
@@ -600,7 +613,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           fontSize:
                               context.responsive(mobile: 15.0, desktop: 16.0))),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.textSecondary,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(
                       horizontal: context.responsive(
@@ -636,8 +649,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               const SizedBox(height: 8),
               Text(error,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 14, color: AppColors.textSecondary)),
+                  style:
+                      TextStyle(fontSize: 14, color: AppColors.textSecondary)),
             ],
           ),
         ),
@@ -800,7 +813,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ),
         child: FloatingActionButton.extended(
           onPressed: () => _showFilterSheet(context),
-          backgroundColor: AppColors.textSecondary,
+          backgroundColor: AppColors.primary,
           elevation: 0,
           icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 22),
           label: Text(context.l10n.filter,
@@ -879,7 +892,8 @@ class _SidebarCategoryRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: selected ? color : AppColors.textSecondary),
+              Icon(icon,
+                  size: 18, color: selected ? color : AppColors.textSecondary),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -889,7 +903,9 @@ class _SidebarCategoryRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: selected ? AppColors.textPrimary : AppColors.textSecondary,
+                    color: selected
+                        ? AppColors.textPrimary
+                        : AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -930,9 +946,7 @@ class _SidebarConditionSelector extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.textSecondary
-                      : AppColors.secondary,
+                  color: isSelected ? AppColors.primary : AppColors.secondary,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -1001,7 +1015,8 @@ class _SidebarPriceRangeState extends ConsumerState<_SidebarPriceRange> {
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary)),
-            Text('₺${_localValues.end.toInt()}${_localValues.end >= _cap ? '+' : ''}',
+            Text(
+                '₺${_localValues.end.toInt()}${_localValues.end >= _cap ? '+' : ''}',
                 style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,

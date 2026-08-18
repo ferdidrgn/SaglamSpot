@@ -19,6 +19,12 @@ class Product extends Equatable {
   /// Hex renk kodları olarak saklanır (örn: '#2E7D6B'). Boşsa hiç gösterilmez.
   final List<String> availableColors;
 
+  /// remove.bg ile arka planı kaldırılmış "stüdyo" versiyonlar —
+  /// `imagesUrl` ile AYNI SIRADA, aynı uzunlukta bir dizi. Bir index için
+  /// stüdyo görseli üretilemediyse (kota dolu/hata) o slotta boş string
+  /// ('') bulunur. Bkz. core/services/studio_image_service.dart.
+  final List<String> studioImagesUrl;
+
   const Product({
     required this.id,
     required this.createdAt,
@@ -32,6 +38,7 @@ class Product extends Equatable {
     required this.isSold,
     required this.isSpotProduct,
     this.availableColors = const [],
+    this.studioImagesUrl = const [],
   });
 
   factory Product.empty() => Product(
@@ -63,6 +70,7 @@ class Product extends Equatable {
         isSold,
         isSpotProduct,
         availableColors,
+        studioImagesUrl,
       ];
 
   Product copyWith({
@@ -78,6 +86,7 @@ class Product extends Equatable {
     final bool? isSold,
     final bool? isSpotProduct,
     final List<String>? availableColors,
+    final List<String>? studioImagesUrl,
   }) =>
       Product(
         id: id ?? this.id,
@@ -92,5 +101,6 @@ class Product extends Equatable {
         isSold: isSold ?? this.isSold,
         isSpotProduct: isSpotProduct ?? this.isSpotProduct,
         availableColors: availableColors ?? this.availableColors,
+        studioImagesUrl: studioImagesUrl ?? this.studioImagesUrl,
       );
 }

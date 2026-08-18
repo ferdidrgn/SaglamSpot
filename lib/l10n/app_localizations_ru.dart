@@ -1033,6 +1033,78 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filtersPanelTitle => 'ФИЛЬТРЫ';
 
   @override
+  String get dragToRotateHint => 'Проведите для других фото';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Достигнут месячный лимит студийных фото — фотографии добавлены в исходном виде.';
+
+  @override
+  String get studioPreparingWait =>
+      'Подготовка студийного фото, пожалуйста, подождите...';
+
+  @override
+  String get retry => 'Повторить';
+
+  @override
+  String get studioGenerationFailed => 'Не удалось создать студийное фото';
+
+  @override
+  String get storePhotoLabel => 'Магазин';
+
+  @override
+  String get studioPhotoLabel => 'Студия';
+
+  @override
+  String get onboardingSkip => 'Пропустить';
+
+  @override
+  String get onboardingStart => 'Начать';
+
+  @override
+  String get onboardingPage1Eyebrow => 'ДОБРО ПОЖАЛОВАТЬ В SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => 'Правильный Выбор\nДля Вашего Дома';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Более 20 лет проверенного мастерства — качественная мебель теперь у вас в кармане.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'Б/У И НОВАЯ МЕБЕЛЬ ВМЕСТЕ';
+
+  @override
+  String get onboardingPage2Title => 'Варианты На\nЛюбой Бюджет';
+
+  @override
+  String get onboardingPage2Desc =>
+      'От выгодных предложений б/у до новой коллекции — легко найдите то, что искали.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'ПОКУПАЙТЕ С УВЕРЕННОСТЬЮ';
+
+  @override
+  String get onboardingPage3Title => 'Нашли Что-то?\nСпросите Сейчас';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Свяжитесь с нами в WhatsApp одним касанием, узнайте цену и договоритесь напрямую.';
+
+  @override
+  String get favoritesTitle => 'Мои Избранные';
+
+  @override
+  String get favoritesEmptyTitle => 'Ваш список избранного пуст';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Нажмите на значок сердца на понравившихся товарах, чтобы добавить их в избранное.';
+
+  @override
+  String get sortPanelTitle => 'СОРТИРОВКА';
+
+  @override
   String get priceRangeSectionTitle => 'ДИАПАЗОН ЦЕН';
 
   @override

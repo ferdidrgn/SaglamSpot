@@ -1043,6 +1043,79 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filtersPanelTitle => 'FILTER';
 
   @override
+  String get dragToRotateHint => 'Für weitere Fotos wischen';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Monatliches Studio-Bild-Limit erreicht — Fotos wurden im Original hinzugefügt.';
+
+  @override
+  String get studioPreparingWait =>
+      'Studiofoto wird vorbereitet, bitte warten...';
+
+  @override
+  String get retry => 'Erneut versuchen';
+
+  @override
+  String get studioGenerationFailed =>
+      'Studiofoto konnte nicht erstellt werden';
+
+  @override
+  String get storePhotoLabel => 'Geschäft';
+
+  @override
+  String get studioPhotoLabel => 'Studio';
+
+  @override
+  String get onboardingSkip => 'Überspringen';
+
+  @override
+  String get onboardingStart => 'Loslegen';
+
+  @override
+  String get onboardingPage1Eyebrow => 'WILLKOMMEN BEI SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => 'Die richtige Adresse\nfür Ihr Zuhause';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Mit über 20 Jahren Handwerkserfahrung bringen wir hochwertige Möbel direkt in Ihre Hosentasche.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'GEBRAUCHT & NEU, VEREINT';
+
+  @override
+  String get onboardingPage2Title => 'Optionen für\njedes Budget';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Von tollen Gebrauchtmöbeln bis zur brandneuen Kollektion — finden Sie ganz einfach, was Sie suchen.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'SICHER EINKAUFEN';
+
+  @override
+  String get onboardingPage3Title => 'Etwas gefunden?\nJetzt Fragen';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Erreichen Sie uns sofort über WhatsApp, fragen Sie nach dem Preis und verhandeln Sie direkt.';
+
+  @override
+  String get favoritesTitle => 'Meine Favoriten';
+
+  @override
+  String get favoritesEmptyTitle => 'Ihre Favoritenliste ist leer';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Tippen Sie auf das Herzsymbol bei Produkten, die Ihnen gefallen, um sie zu Ihren Favoriten hinzuzufügen.';
+
+  @override
+  String get sortPanelTitle => 'SORTIEREN';
+
+  @override
   String get priceRangeSectionTitle => 'PREISSPANNE';
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,7 @@ import '../../../../core/ads/widgets/ad_banner_widget.dart';
 import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -32,6 +34,15 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   final List<XFile> _images = [];
   bool _isSecondHand = false;
 
+  // İlk fotoğraf SEÇİLİR SEÇİLMEZ (kaydet'e basmadan çok önce) arka planda
+  // stüdyo (arka plansız) önizlemesi üretilmeye başlanır — bkz.
+  // _generateStudioPreview. `_studioFuture` kaydet anında hâlâ devam
+  // ediyorsa admin'in beklemesi için tutuluyor (bkz. _submit).
+  Future<void>? _studioFuture;
+  bool _isGeneratingStudio = false;
+  String? _studioImageUrl;
+  bool _studioFailed = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,8 +64,21 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   Widget build(final BuildContext context) {
     ref.listen<AsyncValue<void>>(productMutationProvider, (final previous, final next) {
       if (next is AsyncData) {
+        final bool studioQuotaHit = StudioImageService.quotaExceededNotifier.value;
+        StudioImageService.quotaExceededNotifier.value = false;
         _snack(context.l10n.productAddedSuccess, success: true);
-        if (mounted) Navigator.of(context).pop();
+        if (studioQuotaHit) {
+          // Sayfa kapanmadan önce ikinci bildirimin de görünmesi için kısa
+          // bir gecikme — SnackBar, gösterildiği Scaffold pop edilince kaybolur.
+          Future.delayed(const Duration(milliseconds: 1600), () {
+            if (!mounted) return;
+            _snack(context.l10n.studioQuotaExceededNotice);
+            Future.delayed(const Duration(milliseconds: 1600),
+                () => mounted ? Navigator.of(context).pop() : null);
+          });
+        } else if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
       if (next is AsyncError) _snack(context.l10n.authOrConnectionError, error: true);
     });
@@ -175,6 +199,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       return;
     }
 
+    // Stüdyo önizlemesi hâlâ üretiliyorsa, kaydetmeden önce bitmesini
+    // bekle — admin'e bunu bir diyalogla belli et.
+    if (_isGeneratingStudio && _studioFuture != null) {
+      await _waitForStudioPreview();
+      if (!mounted) return;
+    }
+
     final product = Product(
       id: '',
       createdAt: DateTime.now().toIso8601String(),
@@ -188,6 +219,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       isSpotProduct: _isSecondHand,
       imagesUrl: const [],
       availableColors: _isSecondHand ? const [] : _selectedColors,
+      studioImagesUrl: _studioImageUrl != null ? [_studioImageUrl!] : const [],
     );
 
     await ref
@@ -195,27 +227,117 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         .add(product, _images.map((final e) => File(e.path)).toList());
   }
 
+  /// Stüdyo önizlemesi kaydet anında hâlâ sürüyorsa, bitene kadar
+  /// kapatılamayan bir bekleme diyalogu gösterir.
+  Future<void> _waitForStudioPreview() async {
+    unawaited(showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (final _) => AlertDialog(
+        content: Row(
+          children: [
+            const SizedBox(
+                width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4)),
+            const SizedBox(width: 16),
+            Expanded(child: Text(context.l10n.studioPreparingWait)),
+          ],
+        ),
+      ),
+    ));
+    await _studioFuture;
+    if (mounted) Navigator.of(context, rootNavigator: true).pop();
+  }
+
   // ---------------- UI HELPERS ----------------
 
-  Widget _imageSection() => SizedBox(
-        height: 100,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: _images.length + 1,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 10),
-          itemBuilder: (final _, final i) {
-            if (i == _images.length) return AddPhotoTile(onTap: _pickImages);
+  Widget _imageSection() {
+    final showStudioTile = _isGeneratingStudio || _studioImageUrl != null || _studioFailed;
+    final itemCount = _images.length + (showStudioTile ? 1 : 0) + 1;
+
+    return SizedBox(
+      height: 100,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: itemCount,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 10),
+        itemBuilder: (final _, final i) {
+          if (i < _images.length) {
             return PhotoThumbnail(
               image: FileImage(File(_images[i].path)),
-              onDelete: () => setState(() => _images.removeAt(i)),
+              onDelete: () => setState(() {
+                _images.removeAt(i);
+                // İlk fotoğraf silindiyse, ona dayanan stüdyo önizlemesi
+                // artık geçersiz — temizle (yeniden üretmiyoruz, admin
+                // isterse kalan fotoğraflarla devam eder).
+                if (i == 0) {
+                  _studioImageUrl = null;
+                  _studioFuture = null;
+                  _studioFailed = false;
+                }
+              }),
             );
-          },
-        ),
-      );
+          }
+          if (showStudioTile && i == _images.length) {
+            return StudioPhotoTile(
+              isLoading: _isGeneratingStudio,
+              imageUrl: _studioImageUrl,
+              hasError: _studioFailed,
+              onDiscard: () => setState(() {
+                _studioImageUrl = null;
+                _studioFailed = false;
+              }),
+              onRetry: _generateStudioPreview,
+            );
+          }
+          return AddPhotoTile(onTap: _pickImages);
+        },
+      ),
+    );
+  }
 
   Future<void> _pickImages() async {
     final images = await ImagePicker().pickMultiImage();
-    if (images.isNotEmpty) setState(() => _images.addAll(images));
+    if (images.isEmpty) return;
+    final wasEmpty = _images.isEmpty;
+    setState(() => _images.addAll(images));
+    // Stüdyo önizlemesi sadece İLK kez fotoğraf eklendiğinde (ya da ilk
+    // fotoğraf daha önce silinip yeniden eklendiğinde) tetiklenir — aylık
+    // kotayı korumak için her zaman yalnızca "kapak" fotoğrafı işlenir.
+    if (wasEmpty || _studioFuture == null) _generateStudioPreview();
+  }
+
+  /// İlk fotoğrafı, henüz Storage'a hiç yüklenmeden ham bayt olarak
+  /// remove.bg tabanlı Cloud Function'a gönderir. Kaydet'e basılmadan
+  /// çok önce çalışır — admin sonucu fotoğraf şeridinde görür. Başarısız
+  /// olursa SESSİZCE KAYBOLMAZ — hata karosu + gerçek hata mesajıyla bir
+  /// SnackBar gösterilir (bkz. StudioImageService.generate errorMessage).
+  void _generateStudioPreview() {
+    if (_images.isEmpty || _isGeneratingStudio) return;
+    setState(() {
+      _isGeneratingStudio = true;
+      _studioFailed = false;
+    });
+    _studioFuture = _images.first.readAsBytes().then(StudioImageService.generate).then((final outcome) {
+      if (!mounted) return;
+      setState(() {
+        _isGeneratingStudio = false;
+        if (outcome.result == StudioImageResult.success) {
+          _studioImageUrl = outcome.studioImageUrl;
+          _studioFailed = false;
+        } else if (outcome.result == StudioImageResult.failed) {
+          _studioImageUrl = null;
+          _studioFailed = true;
+          if (outcome.errorMessage != null) {
+            _snack('${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}', error: true);
+          }
+        } else {
+          // Kota doldu — sessizce (StudioQuotaExceededNotice zaten kaydet
+          // sonrası gösteriliyor), hata karosu değil, hiçbir karo göstermez.
+          _studioImageUrl = null;
+          _studioFailed = false;
+        }
+      });
+    });
   }
 
   void _snack(final String msg, {final bool success = false, final bool error = false}) {

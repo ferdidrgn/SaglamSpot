@@ -10,6 +10,7 @@ import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
 import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
+import '../../features/products/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/page/home_page_mobile.dart' as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/info/presentation/pages/about_page.dart';
@@ -22,8 +23,10 @@ import '../../features/notifications/presentation/pages/notifications_page.dart'
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/sss/presentation/pages/sss_page.dart';
 import '../../shared/navigation/widgets/navigation.dart';
+import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../services/admin_session_cache.dart';
 import '../services/deeplink/deeplink_service.dart';
+import '../services/onboarding_cache.dart';
 
 mixin DeepLinkSecurityEngine {
   /// Gelen link imzasını sabit zamanlı (constant-time) algoritma döngüsü ile güvenli bir şekilde doğrular.
@@ -64,8 +67,15 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
   // '/login?redirect=/admin' üzerinden geçirir; oturum bir an sonra
   // geri yüklenince aynı dal onu otomatik olarak panele gönderir —
   // yarış durumuna karşı kendiliğinden dayanıklı.
-  final String initialLocation =
-      (!kIsWeb && AdminSessionCache.wasAdminLoggedIn) ? '/admin' : '/';
+  //
+  // Ev içi tanıtım (onboarding) SADECE native mobilde, hiç admin girişi
+  // yapılmamış bir cihazda ve daha önce hiç gösterilmemişse açılır — web
+  // zaten kendi vitrin/onboarding'ini oynuyor, admin doğrudan panele gider.
+  final String initialLocation = (!kIsWeb && AdminSessionCache.wasAdminLoggedIn)
+      ? '/admin'
+      : (!kIsWeb && !OnboardingCache.hasSeenOnboarding)
+          ? '/onboarding'
+          : '/';
 
   return GoRouter(
     navigatorKey: NavigationKeys.rootNavigatorKey,
@@ -119,6 +129,13 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
           child: LoginPage(),
           transitionsBuilder: focalTransition,
           transitionDuration: Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        pageBuilder: (final context, final state) => const NoTransitionPage(
+          child: HouseWalkthroughOnboardingScreen(),
         ),
       ),
       StatefulShellRoute.indexedStack(
@@ -205,6 +222,16 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
           child: const CartPage(),
+          transitionsBuilder: focalTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/favorites',
+        name: 'favorites',
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const FavoritesPage(),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),

@@ -27,39 +27,43 @@ class AppColors {
   static const Color black = Color(0xFF2A1F17);
   static const Color textLight = white;
 
-  static Color get primary => _dark ? const Color(0xFFC79868) : const Color(0xFF3E2F23);
-  static Color get primaryDark => _dark ? const Color(0xFFA9714B) : const Color(0xFF241A13);
-  static Color get primaryLight => _dark ? const Color(0xFFDCC6A8) : const Color(0xFF6B5744);
+  static Color get primary => _dark ? const Color(0xFFE0B074) : const Color(0xFF3E2F23);
+  static Color get primaryDark => _dark ? const Color(0xFFC79868) : const Color(0xFF241A13);
+  static Color get primaryLight => _dark ? const Color(0xFFF0D4A8) : const Color(0xFF6B5744);
 
-  static Color get accent => _dark ? const Color(0xFFE0A868) : const Color(0xFFA9714B);
-  static Color get accentDark => _dark ? const Color(0xFFC79868) : const Color(0xFF8B5A3A);
-  static Color get accentLight => _dark ? const Color(0xFFEDD4B0) : const Color(0xFFC79868);
+  static Color get accent => _dark ? const Color(0xFFE8B573) : const Color(0xFFA9714B);
+  static Color get accentDark => _dark ? const Color(0xFFD09850) : const Color(0xFF8B5A3A);
+  static Color get accentLight => _dark ? const Color(0xFFF2D4A0) : const Color(0xFFC79868);
 
-  static Color get background => _dark ? const Color(0xFF241A13) : const Color(0xFFF5EFE6);
-  static Color get surface => _dark ? const Color(0xFF2C2019) : const Color(0xFFFFFDF9);
-  static Color get secondary => _dark ? const Color(0xFF3D2D22) : const Color(0xFFEDE3D3);
-  static Color get secondaryVariant => _dark ? const Color(0xFF4A3A2C) : const Color(0xFFE0D3BC);
+  // Koyu temada "surface/card" bilerek zeminden BELİRGİN şekilde daha açık
+  // tutuluyor (gerçek bir "elevated card" hissi için) — önceki sürümde
+  // hepsi birbirine çok yakın koyu kahve tonlarıydı ve her şey birbirine
+  // karışıyordu.
+  static Color get background => _dark ? const Color(0xFF1C140E) : const Color(0xFFF5EFE6);
+  static Color get surface => _dark ? const Color(0xFF3D2E22) : const Color(0xFFFFFDF9);
+  static Color get secondary => _dark ? const Color(0xFF4A3826) : const Color(0xFFEDE3D3);
+  static Color get secondaryVariant => _dark ? const Color(0xFF5C4630) : const Color(0xFFE0D3BC);
 
-  static Color get muted => _dark ? const Color(0xFF6B5744) : const Color(0xFFCFC0A8);
-  static Color get mutedDark => _dark ? const Color(0xFF8F7D6B) : const Color(0xFFB5A488);
+  static Color get muted => _dark ? const Color(0xFF8A7560) : const Color(0xFFCFC0A8);
+  static Color get mutedDark => _dark ? const Color(0xFFA8927A) : const Color(0xFFB5A488);
 
-  static Color get textPrimary => _dark ? const Color(0xFFEDE3D3) : const Color(0xFF3E2F23);
-  static Color get textSecondary => _dark ? const Color(0xFFC2B29B) : const Color(0xFF6B5744);
-  static Color get textTertiary => _dark ? const Color(0xFF9C8B76) : const Color(0xFF8F7D6B);
+  static Color get textPrimary => _dark ? const Color(0xFFF7F0E6) : const Color(0xFF3E2F23);
+  static Color get textSecondary => _dark ? const Color(0xFFDCCBB4) : const Color(0xFF6B5744);
+  static Color get textTertiary => _dark ? const Color(0xFFB4A088) : const Color(0xFF8F7D6B);
 
-  static Color get border => _dark ? const Color(0xFF4A3A2C) : const Color(0xFFE0D3BC);
-  static Color get divider => _dark ? const Color(0xFF3D2D22) : const Color(0xFFEDE3D3);
+  static Color get border => _dark ? const Color(0xFF5C4630) : const Color(0xFFE0D3BC);
+  static Color get divider => _dark ? const Color(0xFF4A3826) : const Color(0xFFEDE3D3);
 
   // --- SEMANTİK RENKLER (durum bildirimi — markadan bağımsız) ---
-  static Color get error => _dark ? const Color(0xFFD97B63) : const Color(0xFFB4543A);
+  static Color get error => _dark ? const Color(0xFFE08A70) : const Color(0xFFB4543A);
   static Color get onError => const Color(0xFFE0917A);
-  static Color get success => _dark ? const Color(0xFF9BAF8C) : const Color(0xFF7C8B6F);
-  static Color get warning => _dark ? const Color(0xFFDDAA6E) : const Color(0xFFC98A4B);
-  static Color get info => _dark ? const Color(0xFF8FA0B3) : const Color(0xFF6E7D8F);
+  static Color get success => _dark ? const Color(0xFFA8C296) : const Color(0xFF7C8B6F);
+  static Color get warning => _dark ? const Color(0xFFE8B984) : const Color(0xFFC98A4B);
+  static Color get info => _dark ? const Color(0xFF9DB2C7) : const Color(0xFF6E7D8F);
 
   static Color get sage => success;
-  static Color get sageDark => _dark ? const Color(0xFF7C8B6F) : const Color(0xFF62705A);
-  static Color get sageLight => _dark ? const Color(0xFFC3CDB8) : const Color(0xFFA3AE97);
+  static Color get sageDark => _dark ? const Color(0xFF8A9F79) : const Color(0xFF62705A);
+  static Color get sageLight => _dark ? const Color(0xFFCEDABF) : const Color(0xFFA3AE97);
 
   static Gradient get primaryGradient => LinearGradient(
         begin: Alignment.topLeft,
@@ -113,12 +117,12 @@ class AppColors {
 
   // Dark mode sabit referans değerleri (koyu tema AÇIKKEN de, parlaklıktan
   // bağımsız olarak "kesin koyu" bir ton lazım olduğunda kullanılır).
-  static const Color darkBackground = Color(0xFF241A13);
-  static const Color darkSurface = Color(0xFF32251C);
-  static const Color darkCard = Color(0xFF3D2D22);
-  static const Color darkTextPrimary = Color(0xFFEDE3D3);
-  static const Color darkTextSecondary = Color(0xFFCFC0A8);
-  static const Color darkBorder = Color(0xFF4A3A2C);
+  static const Color darkBackground = Color(0xFF1C140E);
+  static const Color darkSurface = Color(0xFF3D2E22);
+  static const Color darkCard = Color(0xFF4A3826);
+  static const Color darkTextPrimary = Color(0xFFF7F0E6);
+  static const Color darkTextSecondary = Color(0xFFDCCBB4);
+  static const Color darkBorder = Color(0xFF5C4630);
 
   // ================================================================
   // "mobile*" İSİMLERİ

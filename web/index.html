@@ -75,10 +75,6 @@
         gtag('config', 'G-3Z4LKNJ3N7');
     </script>
 
-    <script async custom-element="amp-auto-ads"
-            src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-    </script>
-
     <!-- ================= ADSENSE FLUTTER KÖPRÜSÜ =================
          Flutter tarafında HtmlElementView ile DOM'a eklenen <ins class="adsbygoogle">
          etiketlerini gerçek reklamla doldurmak için adsbygoogle kuyruğuna push eder. -->
@@ -127,9 +123,15 @@
 </head>
 
 <body>
-<amp-auto-ads type="adsense" data-ad-client="ca-pub-5779807348211992"></amp-auto-ads>
 
-<!-- ================= STATIC SEO CONTENT (CRAWLERS) ================= -->
+<!-- ================= STATIC SEO CONTENT (CRAWLERS) =================
+     Not: amp-auto-ads bilerek kaldırıldı — Flutter yüklenmeden önce, DOM
+     neredeyse boşken (yalnızca bu <body> iskeleti) otomatik olarak reklam
+     yerleştirebiliyordu. Google AdSense bunu "yayıncı içeriği olmayan
+     ekranlarda gösterilen reklam" ihlali olarak işaretledi. Reklamlar artık
+     yalnızca Flutter tarafında, gerçek içerik render edildikten SONRA,
+     AdsenseBanner widget'ı üzerinden ve içerik varlığı kontrolüyle
+     gösteriliyor (bkz. lib/features/*/presentation/pages/*.dart). -->
 <noscript>
     <header>
         <h1>Sağlam Spot – Spot & Sıfır Mobilya</h1>
@@ -148,6 +150,11 @@
     <section>
         <h2>Kurumsal</h2>
         <p>Sağlam Spot, 20 yılı aşkın tecrübesiyle güvenli ve ekonomik alışveriş sunar.</p>
+    </section>
+
+    <section>
+        <h2>Sıkça Sorulan Sorular</h2>
+        <p>Mobilya alım satımı, teslimat ve garanti süreçleriyle ilgili tüm sorularınızın yanıtları için <a href="/sss">Sıkça Sorulan Sorular</a> sayfamızı, şirketimiz hakkında bilgi için <a href="/about">Hakkımızda</a> sayfamızı ziyaret edebilirsiniz.</p>
     </section>
 
     <footer>

@@ -139,7 +139,7 @@ class _NotificationCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.mobileSurface,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
                 color: notification.read

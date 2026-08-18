@@ -1042,6 +1042,79 @@ class AppLocalizationsEl extends AppLocalizations {
   String get filtersPanelTitle => 'ΦΙΛΤΡΑ';
 
   @override
+  String get dragToRotateHint => 'Σύρετε για περισσότερες φωτογραφίες';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Το μηνιαίο όριο εικόνων στούντιο συμπληρώθηκε — οι φωτογραφίες προστέθηκαν στην αρχική τους μορφή.';
+
+  @override
+  String get studioPreparingWait =>
+      'Προετοιμασία φωτογραφίας στούντιο, παρακαλώ περιμένετε...';
+
+  @override
+  String get retry => 'Δοκιμάστε ξανά';
+
+  @override
+  String get studioGenerationFailed =>
+      'Δεν ήταν δυνατή η δημιουργία φωτογραφίας στούντιο';
+
+  @override
+  String get storePhotoLabel => 'Κατάστημα';
+
+  @override
+  String get studioPhotoLabel => 'Στούντιο';
+
+  @override
+  String get onboardingSkip => 'Παράλειψη';
+
+  @override
+  String get onboardingStart => 'Ξεκινήστε';
+
+  @override
+  String get onboardingPage1Eyebrow => 'ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟ SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => 'Η Σωστή Διεύθυνση\nΓια το Σπίτι σας';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Με πάνω από 20 χρόνια έμπειρης τεχνογνωσίας, φέρνουμε ποιοτικά έπιπλα στην τσέπη σας.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'ΜΕΤΑΧΕΙΡΙΣΜΕΝΑ & ΚΑΙΝΟΥΡΓΙΑ ΜΑΖΙ';
+
+  @override
+  String get onboardingPage2Title => 'Επιλογές Για\nΚάθε Προϋπολογισμό';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Από εξαιρετικές μεταχειρισμένες ευκαιρίες έως τη νέα μας συλλογή — βρείτε εύκολα αυτό που ψάχνετε.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'ΑΓΟΡΑΣΤΕ ΜΕ ΕΜΠΙΣΤΟΣΥΝΗ';
+
+  @override
+  String get onboardingPage3Title => 'Βρήκατε Κάτι;\nΡωτήστε Τώρα';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Επικοινωνήστε άμεσα μέσω WhatsApp, ρωτήστε για τιμές και διαπραγματευτείτε απευθείας.';
+
+  @override
+  String get favoritesTitle => 'Τα Αγαπημένα μου';
+
+  @override
+  String get favoritesEmptyTitle => 'Η λίστα αγαπημένων σας είναι άδεια';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Πατήστε το εικονίδιο καρδιάς στα προϊόντα που σας αρέσουν για να τα προσθέσετε στα αγαπημένα σας.';
+
+  @override
+  String get sortPanelTitle => 'ΤΑΞΙΝΟΜΗΣΗ';
+
+  @override
   String get priceRangeSectionTitle => 'ΕΥΡΟΣ ΤΙΜΗΣ';
 
   @override

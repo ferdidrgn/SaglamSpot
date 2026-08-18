@@ -379,7 +379,7 @@ class _ProductCard extends ConsumerWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.mobileSurface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: AppColors.mobileBorder),
         ),

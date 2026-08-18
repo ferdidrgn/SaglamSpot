@@ -985,6 +985,72 @@ class AppLocalizationsZh extends AppLocalizations {
   String get filtersPanelTitle => '筛选';
 
   @override
+  String get dragToRotateHint => '滑动查看更多照片';
+
+  @override
+  String get studioQuotaExceededNotice => '本月工作室图片额度已用完 — 照片已按原样添加。';
+
+  @override
+  String get studioPreparingWait => '正在准备工作室图片,请稍候...';
+
+  @override
+  String get retry => '重试';
+
+  @override
+  String get studioGenerationFailed => '无法生成工作室图片';
+
+  @override
+  String get storePhotoLabel => '门店';
+
+  @override
+  String get studioPhotoLabel => '工作室';
+
+  @override
+  String get onboardingSkip => '跳过';
+
+  @override
+  String get onboardingStart => '开始使用';
+
+  @override
+  String get onboardingPage1Eyebrow => '欢迎来到 SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => '家的\n理想之选';
+
+  @override
+  String get onboardingPage1Desc => '凭借20多年的信誉工艺,让优质家具触手可及。';
+
+  @override
+  String get onboardingPage2Eyebrow => '二手与全新,一站选购';
+
+  @override
+  String get onboardingPage2Title => '总有一款\n适合您的预算';
+
+  @override
+  String get onboardingPage2Desc => '从超值二手好物到全新系列,轻松找到心仪之选。';
+
+  @override
+  String get onboardingPage3Eyebrow => '安心购物,值得信赖';
+
+  @override
+  String get onboardingPage3Title => '看中了?\n立即咨询';
+
+  @override
+  String get onboardingPage3Desc => '一键联系WhatsApp,直接询价议价,无需中间商。';
+
+  @override
+  String get favoritesTitle => '我的收藏';
+
+  @override
+  String get favoritesEmptyTitle => '您的收藏夹为空';
+
+  @override
+  String get favoritesEmptyDesc => '点击喜欢的商品上的心形图标,将其添加到收藏夹。';
+
+  @override
+  String get sortPanelTitle => '排序';
+
+  @override
   String get priceRangeSectionTitle => '价格区间';
 
   @override

@@ -1026,6 +1026,78 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filtersPanelTitle => 'الفلاتر';
 
   @override
+  String get dragToRotateHint => 'اسحب لعرض المزيد من الصور';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'تم الوصول للحد الشهري لصور الاستوديو — تمت إضافة الصور بشكلها الأصلي.';
+
+  @override
+  String get studioPreparingWait =>
+      'جارٍ تجهيز صورة الاستوديو، يرجى الانتظار...';
+
+  @override
+  String get retry => 'أعد المحاولة';
+
+  @override
+  String get studioGenerationFailed => 'تعذر إنشاء صورة الاستوديو';
+
+  @override
+  String get storePhotoLabel => 'المتجر';
+
+  @override
+  String get studioPhotoLabel => 'استوديو';
+
+  @override
+  String get onboardingSkip => 'تخطي';
+
+  @override
+  String get onboardingStart => 'ابدأ';
+
+  @override
+  String get onboardingPage1Eyebrow => 'مرحباً بكم في سالام سبوت';
+
+  @override
+  String get onboardingPage1Title => 'الوجهة الصحيحة\nلمنزلكم';
+
+  @override
+  String get onboardingPage1Desc =>
+      'بخبرة تتجاوز 20 عاماً، ننقل الأثاث عالي الجودة إلى جيبكم.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'أثاث مستعمل وجديد معاً';
+
+  @override
+  String get onboardingPage2Title => 'خيارات تناسب\nكل ميزانية';
+
+  @override
+  String get onboardingPage2Desc =>
+      'من الصفقات المستعملة الرائعة إلى مجموعتنا الجديدة — اعثروا بسهولة على ما تبحثون عنه.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'تسوقوا بثقة';
+
+  @override
+  String get onboardingPage3Title => 'أعجبكم شيء؟\nراسلونا الآن';
+
+  @override
+  String get onboardingPage3Desc =>
+      'تواصلوا معنا فوراً عبر واتساب، اسألوا عن السعر وتفاوضوا مباشرة دون وسطاء.';
+
+  @override
+  String get favoritesTitle => 'مفضلتي';
+
+  @override
+  String get favoritesEmptyTitle => 'قائمة المفضلة لديك فارغة';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'اضغط على أيقونة القلب على المنتجات التي تعجبك لإضافتها إلى المفضلة.';
+
+  @override
+  String get sortPanelTitle => 'الترتيب';
+
+  @override
   String get priceRangeSectionTitle => 'نطاق السعر';
 
   @override

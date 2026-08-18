@@ -1037,6 +1037,77 @@ class AppLocalizationsUz extends AppLocalizations {
   String get filtersPanelTitle => 'FILTRLAR';
 
   @override
+  String get dragToRotateHint => 'Boshqa fotolar uchun torting';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Oylik studiya rasm limiti to\'ldi — fotolar asl holida qo\'shildi.';
+
+  @override
+  String get studioPreparingWait => 'Studiya rasmi tayyorlanmoqda, kuting...';
+
+  @override
+  String get retry => 'Qayta urinish';
+
+  @override
+  String get studioGenerationFailed => 'Studiya rasmini yaratib bo\'lmadi';
+
+  @override
+  String get storePhotoLabel => 'Do\'kon';
+
+  @override
+  String get studioPhotoLabel => 'Studiya';
+
+  @override
+  String get onboardingSkip => 'O\'tkazib yuborish';
+
+  @override
+  String get onboardingStart => 'Boshlash';
+
+  @override
+  String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'GA XUSH KELIBSIZ';
+
+  @override
+  String get onboardingPage1Title => 'Uyingiz Uchun\nTo\'g\'ri Manzil';
+
+  @override
+  String get onboardingPage1Desc =>
+      '20 yildan ortiq tajriba bilan sifatli mebelni cho\'ntagingizga olib kelamiz.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'ISHLATILGAN VA YANGI BIRGALIKDA';
+
+  @override
+  String get onboardingPage2Title => 'Har Qanday Byudjet\nUchun Variantlar';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Ajoyib ishlatilgan takliflardan yangi kolleksiyagacha — izlaganingizni osongina toping.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'ISHONCH BILAN XARID QILING';
+
+  @override
+  String get onboardingPage3Title => 'Yoqdimi?\nHozir Yozing';
+
+  @override
+  String get onboardingPage3Desc =>
+      'WhatsApp orqali bir bosishda bog\'laning, narxni so\'rang, to\'g\'ridan-to\'g\'ri kelishing.';
+
+  @override
+  String get favoritesTitle => 'Sevimlilarim';
+
+  @override
+  String get favoritesEmptyTitle => 'Sevimlilar ro\'yxatingiz bo\'sh';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Yoqqan mahsulotlarni sevimlilarga qo\'shish uchun yurak belgisiga bosing.';
+
+  @override
+  String get sortPanelTitle => 'SARALASH';
+
+  @override
   String get priceRangeSectionTitle => 'NARX ORALIG\'I';
 
   @override

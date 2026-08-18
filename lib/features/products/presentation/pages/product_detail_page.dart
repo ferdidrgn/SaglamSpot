@@ -10,9 +10,11 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/gallery_section.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../data/models/category_meta.dart';
+import '../providers/favorites_provider.dart';
 import '../providers/gallery_provider.dart';
 import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
@@ -48,6 +50,37 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   bool _isAppBarSolid = false;
   String? _trackedProductId;
 
+  // "360°" sürükle-çevir jesti — ÖNCEKİ SÜRÜM elle yazılmış bir sürükleme
+  // eşiği + AnimatedSwitcher/FadeTransition kullanıyordu; hızlı sürüklemede
+  // eşik art arda birden çok kez aşılıp üst üste binen fade'ler tetikliyor,
+  // "eski fotoğrafı gösterip kayboluyor" gibi bozuk bir görüntü
+  // oluşturuyordu. Artık gerçek bir PageView kullanıyoruz — Flutter'ın
+  // kendi, parmakla birebir takip eden, bırakınca en yakın fotoğrafa
+  // "snap" eden native kaydırma mekanizması; elle yazılmış eşik/animasyon
+  // kodu tamamen kaldırıldı.
+  late final PageController _galleryController =
+      PageController(initialPage: _selectedImageIndex);
+  bool _showRotateHint = true;
+
+  // remove.bg ile üretilmiş, arka planı kaldırılmış "stüdyo" versiyon
+  // varsa (studioImagesUrl), kullanıcı orijinal mağaza fotoğrafı ile
+  // stüdyo versiyonu arasında geçiş yapabilir.
+  bool _showStudioVersion = false;
+
+  String? _studioUrlFor(final Product product, final int index) {
+    if (index >= product.studioImagesUrl.length) return null;
+    final url = product.studioImagesUrl[index];
+    return url.isEmpty ? null : url;
+  }
+
+  String _effectiveImageUrl(final Product product, final int index) {
+    if (_showStudioVersion) {
+      final studio = _studioUrlFor(product, index);
+      if (studio != null) return studio;
+    }
+    return product.imagesUrl[index];
+  }
+
   late final AnimationController _entrance = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 650),
@@ -61,6 +94,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   bool _inCart(final Product product) =>
       ref.watch(cartProvider).any((final i) => i.product.id == product.id);
 
+  bool _isFavorite(final Product product) =>
+      ref.watch(favoritesProvider).any((final p) => p.id == product.id);
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +109,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   @override
   void dispose() {
     _scrollController.dispose();
+    _galleryController.dispose();
     _entrance.dispose();
     super.dispose();
   }
@@ -196,13 +233,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Padding(
             padding: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
             child: _RoundIconButton(
-              icon: _inCart(product)
+              icon: _isFavorite(product)
                   ? Icons.favorite_rounded
                   : Icons.favorite_border_rounded,
-              iconColor: _inCart(product)
+              iconColor: _isFavorite(product)
                   ? AppColors.error
                   : _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary),
-              onTap: () => ref.read(cartProvider.notifier).toggle(product),
+              onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
             ),
           ),
         ],
@@ -266,7 +303,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Container(
             height: height,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
@@ -281,24 +318,30 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(28),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (final child, final anim) =>
-                        FadeTransition(opacity: anim, child: child),
-                    child: Padding(
-                      key: ValueKey(_selectedImageIndex),
-                      padding: EdgeInsets.all(
-                          context.responsive(mobile: 28, desktop: 48)),
-                      child: Hero(
-                        tag: 'product-${product.id}',
+                  child: Hero(
+                    tag: 'product-${product.id}',
+                    child: PageView.builder(
+                      controller: _galleryController,
+                      physics: product.imagesUrl.length > 1
+                          ? const BouncingScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+                      itemCount: product.imagesUrl.length,
+                      onPageChanged: (final index) => setState(() {
+                        _selectedImageIndex = index;
+                        _showRotateHint = false;
+                      }),
+                      itemBuilder: (final context, final index) => Padding(
+                        padding:
+                            EdgeInsets.all(context.responsive(mobile: 28, desktop: 48)),
                         child: GestureDetector(
                           onTap: () => _openFullscreenGallery(context, product),
-                          child: Image.network(
-                            product.imagesUrl[_selectedImageIndex],
+                          child: OptimizedCachedImage(
+                            imageUrl: _effectiveImageUrl(product, index),
                             fit: BoxFit.contain,
                             width: double.infinity,
                             height: double.infinity,
-                            errorBuilder: (final c, final e, final s) => Icon(
+                            borderRadius: 0,
+                            errorBuilder: (final c, final u, final e) => Icon(
                                 Icons.chair_alt_rounded,
                                 size: 64,
                                 color: AppColors.textTertiary),
@@ -354,6 +397,55 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                       ),
                     ),
                   ),
+
+                // "Mağaza / Stüdyo" geçişi — sadece bu index için remove.bg
+                // ile üretilmiş bir stüdyo (arka plansız) versiyon varsa.
+                if (_studioUrlFor(product, _selectedImageIndex) != null)
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    child: _StudioToggle(
+                      isStudio: _showStudioVersion,
+                      onTap: () => setState(() => _showStudioVersion = !_showStudioVersion),
+                    ),
+                  ),
+
+                // "Sürükleyerek çevirin" ipucu — sadece birden çok fotoğraf
+                // varken ve kullanıcı henüz sürüklemediyse görünür.
+                if (product.imagesUrl.length > 1)
+                  Positioned(
+                    top: 18,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: AnimatedOpacity(
+                        opacity: _showRotateHint ? 1 : 0,
+                        duration: const Duration(milliseconds: 350),
+                        child: IgnorePointer(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.55),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.swipe_rounded,
+                                    size: 15, color: Colors.white),
+                                const SizedBox(width: 6),
+                                Text(context.l10n.dragToRotateHint,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11.5,
+                                        fontWeight: FontWeight.w700)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -375,7 +467,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           itemBuilder: (final context, final index) {
             final selected = index == _selectedImageIndex;
             return GestureDetector(
-              onTap: () => setState(() => _selectedImageIndex = index),
+              onTap: () {
+                setState(() => _selectedImageIndex = index);
+                _galleryController.animateToPage(index,
+                    duration: const Duration(milliseconds: 320), curve: Curves.easeOutCubic);
+              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width: 68,
@@ -398,12 +494,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         ]
                       : null,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.network(product.imagesUrl[index],
-                      fit: BoxFit.cover,
-                      errorBuilder: (final c, final e, final s) =>
-                          const SizedBox.shrink()),
+                child: OptimizedCachedImage(
+                  imageUrl: product.imagesUrl[index],
+                  width: 68,
+                  height: 68,
+                  fit: BoxFit.cover,
+                  borderRadius: 14,
+                  errorBuilder: (final c, final u, final e) => const SizedBox.shrink(),
                 ),
               ),
             );
@@ -590,7 +687,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
             ),
@@ -721,7 +818,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),
@@ -772,36 +869,43 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
       );
 
+  /// Sepete ekleme ve WhatsApp iletişimi İKİ AYRI, eşit ağırlıklı buton —
+  /// biri diğerinin küçük bir ikona indirgenmiş hali DEĞİL. Ara (telefon)
+  /// daha düşük öncelikli bir ikon düğmesi olarak kalıyor; favori artık
+  /// burada değil, üst çubuktaki kalp ikonunda (bkz. _buildAppBar) ve
+  /// SEPETTEN tamamen bağımsız (favoritesProvider).
   Widget _buildActionButtons(final Product product) {
     if (product.isSold) return const SizedBox.shrink();
     final bool inCart = _inCart(product);
     return Row(
       children: [
+        _RoundIconButton(
+          size: 52,
+          icon: Icons.call_rounded,
+          filled: true,
+          onTap: SaglamSpotCommunication.makeCall,
+        ),
+        const SizedBox(width: 10),
         Expanded(
-          child: _PrimaryButton(
+          child: _HalfActionButton(
+            label: inCart ? context.l10n.addedToCartMessage : context.l10n.addToCartCta,
+            icon: inCart ? Icons.check_rounded : Icons.shopping_bag_rounded,
+            filled: true,
+            onTap: () => ref.read(cartProvider.notifier).toggle(product),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _HalfActionButton(
             label: context.l10n.whatsappCta,
             icon: Icons.chat_bubble_rounded,
-            price: '₺${product.price.toStringAsFixed(0)}',
+            filled: false,
             onTap: () => FurnitureShareService.contactAboutProduct(
               productId: product.id,
               productName: product.name,
               price: product.price,
             ),
           ),
-        ),
-        const SizedBox(width: 12),
-        _RoundIconButton(
-          size: 52,
-          icon: inCart ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined,
-          filled: true,
-          onTap: () => ref.read(cartProvider.notifier).toggle(product),
-        ),
-        const SizedBox(width: 12),
-        _RoundIconButton(
-          size: 52,
-          icon: Icons.call_rounded,
-          filled: true,
-          onTap: SaglamSpotCommunication.makeCall,
         ),
       ],
     );
@@ -858,7 +962,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         padding: EdgeInsets.fromLTRB(
             16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.08),
@@ -870,23 +974,27 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           children: [
             _RoundIconButton(
               size: 52,
-              icon: _inCart(product) ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined,
-              filled: true,
-              onTap: () => ref.read(cartProvider.notifier).toggle(product),
-            ),
-            const SizedBox(width: 12),
-            _RoundIconButton(
-              size: 52,
               icon: Icons.call_rounded,
               filled: true,
               onTap: SaglamSpotCommunication.makeCall,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
-              child: _PrimaryButton(
+              child: _HalfActionButton(
+                label: _inCart(product)
+                    ? context.l10n.addedToCartMessage
+                    : context.l10n.addToCartCta,
+                icon: _inCart(product) ? Icons.check_rounded : Icons.shopping_bag_rounded,
+                filled: true,
+                onTap: () => ref.read(cartProvider.notifier).toggle(product),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _HalfActionButton(
                 label: context.l10n.whatsappCta,
                 icon: Icons.chat_bubble_rounded,
-                price: '₺${product.price.toStringAsFixed(0)}',
+                filled: false,
                 onTap: () => FurnitureShareService.contactAboutProduct(
                   productId: product.id,
                   productName: product.name,
@@ -924,7 +1032,7 @@ class _RoundIconButton extends StatelessWidget {
   Widget build(final BuildContext context) => Material(
         color: filled
             ? _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary)
-            : Colors.white,
+            : _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
         shape: const CircleBorder(),
         elevation: filled ? 0 : 2,
         shadowColor: Colors.black.withOpacity(0.1),
@@ -945,58 +1053,45 @@ class _RoundIconButton extends StatelessWidget {
       );
 }
 
-/// Referans tasarımdaki "Add to Cart | $185" bölünmüş hap buton dili:
-/// solda etiket+ikon, sağda ayrı bir fiyat rozeti — tek bir tam-yuvarlak
-/// (stadium) pil içinde. `price` verilmezse düz, tek bölgeli buton olur.
-class _PrimaryButton extends StatelessWidget {
+/// Sepete Ekle ve WhatsApp'ı EŞİT AĞIRLIKLI iki yarım-genişlik butona
+/// ayırır — biri diğerinin gölgesinde kalmasın diye. `filled == true`
+/// dolgu (birincil, sepet), `false` ise sadece kenarlıklı (ikincil,
+/// WhatsApp) çizilir.
+class _HalfActionButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
-  final String? price;
+  final bool filled;
 
-  const _PrimaryButton(
-      {required this.label, required this.icon, required this.onTap, this.price});
+  const _HalfActionButton(
+      {required this.label, required this.icon, required this.onTap, required this.filled});
 
   @override
   Widget build(final BuildContext context) {
-    final Color bg = _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
+    final Color accent = _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
+    final Color fg = filled ? Colors.white : accent;
+
     return Material(
-      color: bg,
-      shape: const StadiumBorder(),
+      color: filled ? accent : Colors.transparent,
+      shape: StadiumBorder(side: filled ? BorderSide.none : BorderSide(color: accent, width: 1.6)),
       child: InkWell(
         onTap: onTap,
         customBorder: const StadiumBorder(),
         child: Container(
           height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 6),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(width: 10),
-              Icon(icon, color: Colors.white, size: 18),
-              const SizedBox(width: 8),
+              Icon(icon, color: fg, size: 17),
+              const SizedBox(width: 7),
               Flexible(
                 child: Text(label,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14.5)),
+                    style: TextStyle(color: fg, fontWeight: FontWeight.w800, fontSize: 13.5)),
               ),
-              if (price != null) ...[
-                const SizedBox(width: 10),
-                Container(
-                  height: 40,
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(price!,
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14.5)),
-                ),
-              ] else
-                const SizedBox(width: 10),
             ],
           ),
         ),
@@ -1132,6 +1227,39 @@ class _StatusPill extends StatelessWidget {
   }
 }
 
+/// "Mağaza" (orijinal) / "Stüdyo" (remove.bg, arka plansız) görsel geçişi.
+class _StudioToggle extends StatelessWidget {
+  final bool isStudio;
+  final VoidCallback onTap;
+
+  const _StudioToggle({required this.isStudio, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.55),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.auto_awesome_rounded, size: 13, color: Colors.white),
+              const SizedBox(width: 6),
+              Text(
+                isStudio ? context.l10n.studioPhotoLabel : context.l10n.storePhotoLabel,
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      );
+}
+
 class _SimilarProductCard extends StatelessWidget {
   final Product product;
 
@@ -1147,7 +1275,7 @@ class _SimilarProductCard extends StatelessWidget {
         child: Container(
           width: 160,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),
@@ -1157,12 +1285,13 @@ class _SimilarProductCard extends StatelessWidget {
               ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20)),
-                child: Image.network(
-                  product.imagesUrl.first,
+                child: OptimizedCachedImage(
+                  imageUrl: product.imagesUrl.first,
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (final c, final e, final s) => Container(
+                  borderRadius: 0,
+                  errorBuilder: (final c, final u, final e) => Container(
                       height: 120,
                       color: _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
                       child: const Icon(Icons.chair_alt_rounded)),

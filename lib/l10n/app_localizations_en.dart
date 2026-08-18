@@ -1035,6 +1035,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filtersPanelTitle => 'FILTERS';
 
   @override
+  String get dragToRotateHint => 'Swipe for more photos';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Monthly studio image limit reached — photos were added in their original form.';
+
+  @override
+  String get studioPreparingWait => 'Preparing studio photo, please wait...';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get studioGenerationFailed => 'Couldn\'t generate studio photo';
+
+  @override
+  String get storePhotoLabel => 'Store';
+
+  @override
+  String get studioPhotoLabel => 'Studio';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingStart => 'Get Started';
+
+  @override
+  String get onboardingPage1Eyebrow => 'WELCOME TO SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => 'The Right Place\nFor Your Home';
+
+  @override
+  String get onboardingPage1Desc =>
+      'With over 20 years of trusted craftsmanship, we bring quality furniture straight to your pocket.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'PRE-OWNED & BRAND NEW, TOGETHER';
+
+  @override
+  String get onboardingPage2Title => 'Options For\nEvery Budget';
+
+  @override
+  String get onboardingPage2Desc =>
+      'From great second-hand finds to our brand-new collection — easily find exactly what you\'re looking for.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'SHOP WITH CONFIDENCE';
+
+  @override
+  String get onboardingPage3Title => 'Found\nSomething? Ask Now';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Reach us instantly on WhatsApp, ask about pricing, and negotiate directly — no middlemen.';
+
+  @override
+  String get favoritesTitle => 'My Favorites';
+
+  @override
+  String get favoritesEmptyTitle => 'Your Favorites List Is Empty';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Tap the heart icon on products you like to add them to your favorites.';
+
+  @override
+  String get sortPanelTitle => 'SORT';
+
+  @override
   String get priceRangeSectionTitle => 'PRICE RANGE';
 
   @override

@@ -1041,6 +1041,77 @@ class AppLocalizationsIt extends AppLocalizations {
   String get filtersPanelTitle => 'FILTRI';
 
   @override
+  String get dragToRotateHint => 'Scorri per altre foto';
+
+  @override
+  String get studioQuotaExceededNotice =>
+      'Limite mensile di immagini studio raggiunto — le foto sono state aggiunte nella forma originale.';
+
+  @override
+  String get studioPreparingWait => 'Preparazione foto studio, attendere...';
+
+  @override
+  String get retry => 'Riprova';
+
+  @override
+  String get studioGenerationFailed => 'Impossibile generare la foto studio';
+
+  @override
+  String get storePhotoLabel => 'Negozio';
+
+  @override
+  String get studioPhotoLabel => 'Studio';
+
+  @override
+  String get onboardingSkip => 'Salta';
+
+  @override
+  String get onboardingStart => 'Inizia';
+
+  @override
+  String get onboardingPage1Eyebrow => 'BENVENUTI DA SAĞLAM SPOT';
+
+  @override
+  String get onboardingPage1Title => 'L\'Indirizzo Giusto\nPer la Tua Casa';
+
+  @override
+  String get onboardingPage1Desc =>
+      'Con oltre 20 anni di esperienza artigianale, portiamo mobili di qualità direttamente nella tua tasca.';
+
+  @override
+  String get onboardingPage2Eyebrow => 'USATO & NUOVO, INSIEME';
+
+  @override
+  String get onboardingPage2Title => 'Opzioni Per\nOgni Budget';
+
+  @override
+  String get onboardingPage2Desc =>
+      'Dalle migliori occasioni dell\'usato alla nostra collezione nuova — trova facilmente ciò che cerchi.';
+
+  @override
+  String get onboardingPage3Eyebrow => 'ACQUISTA CON FIDUCIA';
+
+  @override
+  String get onboardingPage3Title => 'Hai Trovato\nQualcosa? Chiedi Ora';
+
+  @override
+  String get onboardingPage3Desc =>
+      'Contattaci subito su WhatsApp, chiedi il prezzo e tratta direttamente — senza intermediari.';
+
+  @override
+  String get favoritesTitle => 'I Miei Preferiti';
+
+  @override
+  String get favoritesEmptyTitle => 'La tua lista dei preferiti è vuota';
+
+  @override
+  String get favoritesEmptyDesc =>
+      'Tocca l\'icona a forma di cuore sui prodotti che ti piacciono per aggiungerli ai preferiti.';
+
+  @override
+  String get sortPanelTitle => 'ORDINA';
+
+  @override
   String get priceRangeSectionTitle => 'FASCIA DI PREZZO';
 
   @override

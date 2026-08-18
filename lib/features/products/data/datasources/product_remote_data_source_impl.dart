@@ -109,12 +109,24 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
     try {
       final productId = _productRef.doc().id;
-      final imageUrls = await _uploadImages(images, productId);
+      final uploaded = await _uploadImages(images, productId);
+      // remove.bg ile üretilen "stüdyo" (arka plansız) görsel — admin
+      // panelinde fotoğraf SEÇİLİR seçilmez, buraya gelmeden ÖNCE üretilip
+      // product.studioImagesUrl alanına GEÇİCİ olarak taşınmış oluyor (bkz.
+      // add_product_page.dart). Artık ayrı, gizli bir Firestore alanında
+      // SAKLANMIYOR — doğrudan normal fotoğraf şeridine bir fotoğraf daha
+      // olarak ekleniyor (Storage'daki dosya adı "studio-" ile başladığı
+      // için hangisinin remove.bg çıktısı olduğu ayırt edilebiliyor).
+      final imageUrls = [
+        ...uploaded,
+        ...product.studioImagesUrl.where((final u) => u.isNotEmpty),
+      ];
       final now = _formattedNow();
 
       final data = product.toFirestore();
       data['_id'] = productId;
       data['imagesUrl'] = imageUrls;
+      data['studioImagesUrl'] = const <String>[];
       data['_createdAt'] = now;
       data['_updatedAt'] = now;
       data['_soldAt'] = '';
@@ -132,10 +144,18 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final List<dynamic>? newImages,
   ) async {
     try {
-      final updatedImages = await _handleImageUpdate(product, newImages);
+      // Stüdyo görseli yalnızca YENİ fotoğraflarla birlikte imagesUrl'e
+      // katılır (bkz. _handleImageUpdate) — bu turda katılım olduysa ayrı
+      // alan boşaltılır, olmadıysa (fotoğraf değişmediyse) hiç dokunulmaz.
+      final bool mergingNewStudio = newImages != null && newImages.isNotEmpty;
+      final imageUrls = await _handleImageUpdate(product, newImages);
       final now = _formattedNow();
 
-      final updateData = {'imagesUrl': updatedImages, '_updatedAt': now};
+      final updateData = {
+        'imagesUrl': imageUrls,
+        'studioImagesUrl': mergingNewStudio ? const <String>[] : product.studioImagesUrl,
+        '_updatedAt': now,
+      };
 
       final fullData = product.toFirestore();
       fullData.addAll(updateData);
@@ -153,6 +173,15 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<void> deleteProduct(final String productId) async {
     try {
+      // Storage'daki görselleri (orijinal + stüdyo) İSTEMCİDEN silmiyoruz —
+      // stüdyo dosyaları yalnızca sunucu tarafındaki Admin SDK ile
+      // yazıldığından (bkz. functions/index.js -> removeProductBackground),
+      // istemciye onları silme izni veren bir Storage kuralı hiç yok; bu
+      // yüzden client-side silme denemesi sessizce yetkisiz kalıp hiçbir
+      // şey silmiyordu. Bunun yerine Firestore dokümanı silindiğinde
+      // sunucu tarafında (Admin SDK ile, kurallardan tamamen muaf) otomatik
+      // tetiklenen bir Cloud Function (onProductDeleted) Storage'daki tüm
+      // görselleri güvenilir şekilde temizliyor.
       await _productRef.doc(productId).delete();
     } catch (e) {
       _throwError('Ürün silinirken hata oluştu', e);
@@ -169,8 +198,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   ) async {
     if (newImages == null || newImages.isEmpty) return product.imagesUrl;
 
-    await _deleteImages(product.imagesUrl);
-    return _uploadImages(newImages, product.id);
+    await _deleteImages([...product.imagesUrl, ...product.studioImagesUrl]);
+    final uploaded = await _uploadImages(newImages, product.id);
+    return [
+      ...uploaded,
+      ...product.studioImagesUrl.where((final u) => u.isNotEmpty),
+    ];
   }
 
   Future<List<String>> _uploadImages(
@@ -198,10 +231,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   }
 
   Future<void> _deleteImages(final List<String> imageUrls) async {
-    for (final url in imageUrls)
+    for (final url in imageUrls) {
+      if (url.isEmpty) continue;
       try {
         await _storage.refFromURL(url).delete();
       } catch (_) {}
+    }
   }
 
   // ---------------------------------------------------------------------------
