@@ -58,6 +58,18 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     }
   }
 
+  IconData _getCategoryIcon(ProductCategory category) {
+    switch (category) {
+      case ProductCategory.sofa: return Icons.weekend_outlined;
+      case ProductCategory.chair: return Icons.chair_outlined;
+      case ProductCategory.table: return Icons.table_restaurant_outlined;
+      case ProductCategory.bed: return Icons.bed_outlined;
+      case ProductCategory.wardrobe: return Icons.door_sliding_outlined;
+      case ProductCategory.white: return Icons.kitchen_outlined;
+      case ProductCategory.other: return Icons.category_outlined;
+    }
+  }
+
   @override
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
@@ -79,21 +91,59 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverToBoxAdapter(child: _buildMasthead(context, products.length)),
+
+                  // Üstte arama + sıralama çubuğu
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      child: _buildCategoryBar(context),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 8)),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                       child: _buildSearchAndFilters(context, filtered.length),
                     ),
                   ),
+
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                  _buildProductGrid(context, filtered),
+
+                  // ANA KISIM: Sol tarafta ürünler, sağ tarafta rail
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: context.isDesktop
+                          ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Sol: Ürünler
+                          Expanded(
+                            child: _buildProductGrid(context, filtered),
+                          ),
+                          const SizedBox(width: 20),
+                          // Sağ: Dikey Kategori Rail
+                          _buildVerticalCategoryRail(),
+                        ],
+                      )
+                          : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Mobil: Kategori bar yatay
+                          _buildHorizontalCategoryBar(),
+                          const SizedBox(height: 16),
+                          _buildProductGrid(context, filtered),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // ======================================================
+                  // YENİ EKLENEN BÖLÜM: "Tatlı, Renkli, Web'e uygun" Tasarım
+                  // Görseldeki gibi, ama sağa yaslı ve web boyutlarında.
+                  // Ürünlerin hemen altına (reklamdan önce) eklendi.
+                  // ======================================================
+                  if (filtered.isNotEmpty && context.isDesktop)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                        child: _buildSweetWebDesign(context, filtered),
+                      ),
+                    ),
+
                   if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
@@ -101,6 +151,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                         child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
                       ),
                     ),
+
                   const SliverToBoxAdapter(child: SizedBox(height: 80)),
                 ],
               ),
@@ -113,7 +164,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ============================================================
-  // 1. HERO
+  // 1. HERO (Aynen korundu)
   // ============================================================
   Widget _buildMasthead(final BuildContext context, final int totalProducts) {
     final textColumn = Column(
@@ -324,67 +375,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   );
 
   // ============================================================
-  // 2. KATEGORİ BAR (Üstte Yatay)
-  // ============================================================
-  Widget _buildCategoryBar(BuildContext context) {
-    final allCategories = ProductCategory.values;
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      child: Row(
-        children: [
-          _buildCategoryChip(
-            context,
-            label: "Tümü",
-            isSelected: _selectedCategory == null,
-            onTap: () => setState(() => _selectedCategory = null),
-          ),
-          const SizedBox(width: 8),
-          ...allCategories.map((cat) => Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: _buildCategoryChip(
-              context,
-              label: _getCategoryTitle(cat),
-              isSelected: _selectedCategory == cat,
-              onTap: () => setState(() => _selectedCategory = cat),
-            ),
-          )).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip(BuildContext context, {
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF1A1A1A) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF1A1A1A) : const Color(0xFFE0E0E0),
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ============================================================
-  // 3. ARAMA + FİLTRELER (Sağda, yatay) - HATA DÜZELTİLDİ
+  // 2. ARAMA + FİLTRELER (Üstte Yatay)
   // ============================================================
   Widget _buildSearchAndFilters(BuildContext context, int resultCount) {
     final isDesktop = context.isDesktop;
@@ -405,6 +396,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       ),
       child: Row(
         children: [
+          // Arama (Sol)
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 20, right: 12),
@@ -429,6 +421,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             ),
           ),
 
+          // Filtreler (Sağ)
           if (isDesktop) ...[
             Container(width: 1, height: 24, color: const Color(0xFFE0E0E0)),
             const SizedBox(width: 8),
@@ -458,7 +451,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             _ViewToggle(),
             const SizedBox(width: 8),
           ] else ...[
-            // MOBİL İÇİN DÜZELTME: else bloğu bir liste olmalı!
             IconButton(
               icon: const Icon(Icons.tune_rounded, size: 22, color: Color(0xFF1A1A1A)),
               onPressed: () => _openFilterSheet(context),
@@ -504,34 +496,177 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ============================================================
-  // 4. ÜRÜN GRİDİ (İÇ İÇE OLMAYAN TEK KART)
+  // 3. SAĞ DİKEY KATEGORİ RAİL (YENİ!)
+  // ============================================================
+  Widget _buildVerticalCategoryRail() {
+    return Container(
+      width: 76,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(38),
+        border: Border.all(color: const Color(0xFFE8E3DC), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildRailIconItem(
+            icon: Icons.grid_view_rounded,
+            label: "Tümü",
+            isSelected: _selectedCategory == null,
+            onTap: () => setState(() => _selectedCategory = null),
+          ),
+          const SizedBox(height: 12),
+          ...ProductCategory.values.map(
+                (cat) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildRailIconItem(
+                icon: _getCategoryIcon(cat),
+                label: _getCategoryTitle(cat),
+                isSelected: _selectedCategory == cat,
+                onTap: () => setState(() => _selectedCategory = cat),
+              ),
+            ),
+          ).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRailIconItem({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Tooltip(
+      message: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF1A1A1A) : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Icon(
+            icon,
+            size: 22,
+            color: isSelected ? Colors.white : const Color(0xFF8C827A),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // 4. YATAY KATEGORİ BAR (Mobil için)
+  // ============================================================
+  Widget _buildHorizontalCategoryBar() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
+        children: [
+          _buildMobileCategoryPill(
+            title: "Tümü",
+            icon: Icons.grid_view_rounded,
+            isSelected: _selectedCategory == null,
+            onTap: () => setState(() => _selectedCategory = null),
+          ),
+          ...ProductCategory.values.map(
+                (cat) => _buildMobileCategoryPill(
+              title: _getCategoryTitle(cat),
+              icon: _getCategoryIcon(cat),
+              isSelected: _selectedCategory == cat,
+              onTap: () => setState(() => _selectedCategory = cat),
+            ),
+          ).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileCategoryPill({
+    required String title,
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF1A1A1A) : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF1A1A1A) : const Color(0xFFE8E2D9),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: isSelected ? Colors.white : const Color(0xFF7A6F66)),
+              const SizedBox(width: 6),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // 5. ÜRÜN GRİDİ (İÇ İÇE OLMAYAN TEK KART)
   // ============================================================
   Widget _buildProductGrid(final BuildContext context, final List<Product> products) {
     if (products.isEmpty) {
-      return SliverToBoxAdapter(child: _buildEmptyState(context));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: _buildEmptyState(context),
+        ),
+      );
     }
 
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
-        ),
-        delegate: SliverChildBuilderDelegate(
-              (final context, final index) {
-            if (index >= products.length) return const SizedBox.shrink();
-            return RevealFade(
-              delayMs: (index % 8) * 45,
-              offsetY: 18,
-              child: _buildSingleSpotCard(context, products[index]),
-            );
-          },
-          childCount: products.length,
-        ),
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 3, largeDesktop: 4),
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
       ),
+      itemCount: products.length,
+      itemBuilder: (final context, final index) {
+        return RevealFade(
+          delayMs: (index % 8) * 45,
+          offsetY: 18,
+          child: _buildSingleSpotCard(context, products[index]),
+        );
+      },
     );
   }
 
@@ -547,7 +682,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
           boxShadow: [
             BoxShadow(
@@ -578,27 +713,36 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     ),
                   ),
 
+                  // Kategori etiketi (sol üst)
                   Positioned(
                     top: 12,
                     left: 12,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE65100),
-                        borderRadius: BorderRadius.circular(6),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      child: const Text(
-                        "KULLANILMIŞ",
-                        style: TextStyle(
-                          color: Colors.white,
+                      child: Text(
+                        _getCategoryTitle(product.category).toUpperCase(),
+                        style: const TextStyle(
                           fontSize: 9,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.8,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF3D3630),
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
                   ),
 
+                  // Favori butonu (sağ üst)
                   Positioned(
                     top: 12,
                     right: 12,
@@ -612,6 +756,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     ),
                   ),
 
+                  // Fiyat etiketi (görsel alt sağ)
                   Positioned(
                     bottom: 12,
                     right: 12,
@@ -671,63 +816,86 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                       ],
                     ),
 
+                    // Bilgi satırları
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // 1. SATIR: Puan + Stok
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFF3E0),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Text(
-                                "İYİ DURUMDA",
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFFE65100),
-                                ),
-                              ),
+                            const Icon(Icons.star, size: 14, color: Color(0xFFF59E0B)),
+                            const SizedBox(width: 4),
+                            const Text(
+                              "4.9",
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151)),
                             ),
                             const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE8EAF6),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Text(
-                                "PAZARLIK VAR",
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1A237E),
-                                ),
-                              ),
+                            Container(width: 3, height: 3, decoration: const BoxDecoration(color: Color(0xFFD1D5DB), shape: BoxShape.circle)),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.check_circle, size: 12, color: Color(0xFF16A34A)),
+                            const SizedBox(width: 4),
+                            const Text(
+                              "Stokta",
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF16A34A)),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 6),
+
+                        // 2. SATIR: SIFIR + Popülerlik
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Fırsatı İncele",
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF1A1A1A),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF0F7F0),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFC8E6C9)),
+                              ),
+                              child: const Text(
+                                "SIFIR",
+                                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Color(0xFF2E7D32), letterSpacing: 0.5),
                               ),
                             ),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.trending_up, size: 12, color: Color(0xFFF59E0B)),
+                            const SizedBox(width: 4),
+                            const Text(
+                              "Çok tercih edilen",
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: Color(0xFF6B7280)),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+
+                        // 3. SATIR: Teslimat + Buton
+                        Row(
+                          children: [
+                            const Icon(Icons.local_shipping_outlined, size: 14, color: Color(0xFF6B7280)),
+                            const SizedBox(width: 6),
+                            const Text(
+                              "Ücretsiz teslimat",
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF6B7280)),
+                            ),
+                            const Spacer(),
+                            // İncele butonu
                             Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFEEEEEE),
-                                shape: BoxShape.circle,
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1A1A1A),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Icon(Icons.arrow_forward_rounded, size: 16, color: Color(0xFF1A1A1A)),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "İncele",
+                                    style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(width: 4),
+                                  Icon(Icons.arrow_forward_rounded, size: 12, color: Colors.white),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -739,6 +907,230 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // YENİ! "TATLI RENKLİ WEB TASARIMI" (Görseldeki gibi)
+  // Sağa yaslı, web boyutlarında, pastel renkler.
+  // ============================================================
+  Widget _buildSweetWebDesign(BuildContext context, List<Product> products) {
+    final isDesktop = context.isDesktop;
+    if (!isDesktop) return const SizedBox.shrink();
+
+    // Görselden esinlenerek oluşturulmuş renkli kartlar
+    final List<Map<String, dynamic>> featuredItems = [
+      {
+        'title': 'Sillones',
+        'subtitle': 'Temporada 2022',
+        'price': 50,
+        'color': const Color(0xFFFFC107), // Sarı
+        'image': 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=400&q=80',
+      },
+      {
+        'title': 'Butaca rosa',
+        'subtitle': 'Nuevo ingreso',
+        'price': 85,
+        'color': const Color(0xFFE8D5B7), // Bej
+        'image': 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80',
+      },
+      {
+        'title': 'Butaca amarilla',
+        'subtitle': 'Andy Room',
+        'price': 60,
+        'color': const Color(0xFFFF9800), // Turuncu
+        'image': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80',
+      },
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Öne Çıkan Fırsatlar",
+                style: GoogleFonts.fraunces(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1A1A1A),
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: const Text("Tümünü Gör", style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // 3'lü Web Kart Grid'i (Sağa yaslı görünüm)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: featuredItems.map((item) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: _buildSweetCard(
+                    context,
+                    title: item['title'],
+                    subtitle: item['subtitle'],
+                    price: item['price'],
+                    color: item['color'],
+                    imageUrl: item['image'],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSweetCard(BuildContext context, {
+    required String title,
+    required String subtitle,
+    required int price,
+    required Color color,
+    required String imageUrl,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Görsel alanı
+          AspectRatio(
+            aspectRatio: 4 / 3,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                // "Nuevo ingreso" / etiket
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                  ),
+                ),
+                // Kalp ikonu
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.favorite_border, size: 18, color: Color(0xFF1A1A1A)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // İçerik
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.fraunces(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A1A1A),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: const Color(0xFF1A1A1A).withOpacity(0.6),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "\$$price",
+                      style: GoogleFonts.fraunces(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1A1A),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1A1A1A),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Row(
+                        children: [
+                          Text(
+                            "İncele",
+                            style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(width: 4),
+                          Icon(Icons.arrow_forward_rounded, size: 12, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -967,19 +1359,16 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     }
   }
 
-  Widget _buildEmptyState(final BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-    child: Column(
-      children: [
-        Icon(Icons.search_off_rounded, size: 44, color: const Color(0xFF9E9E9E).withOpacity(0.6)),
-        const SizedBox(height: 14),
-        const Text("Bu kriterde fırsat bulamadık",
-            style: TextStyle(fontSize: 18, color: Color(0xFF1A1A1A), fontWeight: FontWeight.w600)),
-        const SizedBox(height: 6),
-        const Text("Filtreleri temizlemeyi veya farklı bir kategori denemeyi dene.",
-            style: TextStyle(fontSize: 13, color: Color(0xFF5A5A5A))),
-      ],
-    ),
+  Widget _buildEmptyState(final BuildContext context) => Column(
+    children: [
+      Icon(Icons.search_off_rounded, size: 44, color: const Color(0xFF9E9E9E).withOpacity(0.6)),
+      const SizedBox(height: 14),
+      const Text("Bu kriterde fırsat bulamadık",
+          style: TextStyle(fontSize: 18, color: Color(0xFF1A1A1A), fontWeight: FontWeight.w600)),
+      const SizedBox(height: 6),
+      const Text("Filtreleri temizlemeyi veya farklı bir kategori denemeyi dene.",
+          style: TextStyle(fontSize: 13, color: Color(0xFF5A5A5A))),
+    ],
   );
 
   Widget _buildErrorState(final BuildContext context, final String error) => Center(
