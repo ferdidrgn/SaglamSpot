@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
@@ -376,6 +377,7 @@ class _ProductCard extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final inCart = ref.watch(cartProvider).any((final i) => i.product.id == product.id);
+    final meta = defaultCategoryMeta[product.category] ?? defaultCategoryMeta[ProductCategory.other]!;
 
     return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
@@ -383,7 +385,17 @@ class _ProductCard extends ConsumerWidget {
         productId: product.id,
         productSlug: product.name.toSlug(),
       ),
-      child: GlassSurface(
+      // Kategori renkli "radiant" glow — web'deki CustomProductCard ile
+      // aynı canlı dil.
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+                color: meta.color.withOpacity(0.28), blurRadius: 22, spreadRadius: -4, offset: const Offset(0, 10)),
+          ],
+        ),
+        child: GlassSurface(
         borderRadius: 18,
         chromaticEdge: true,
         child: Column(
@@ -460,6 +472,7 @@ class _ProductCard extends ConsumerWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
