@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/design_system/ambient_mesh_background.dart';
+import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
+import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
 import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
 import 'package:saglamspot/core/widgets/design_system/tactile_press.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
@@ -297,9 +299,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           child: Column(
             children: [
               Text(context.l10n.showcaseEyebrow,
-                  style: TextStyle(
+                  style: AppTextStyles.microLabel(
                       color: AppColors.accent,
-                      fontWeight: FontWeight.w700,
                       letterSpacing: 3,
                       fontSize: context.captionSize)),
               const SizedBox(height: 8),
@@ -535,9 +536,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(context.l10n.visitUsEyebrow,
-                        style: TextStyle(
+                        style: AppTextStyles.microLabel(
                             color: AppColors.accentLight,
-                            fontWeight: FontWeight.bold,
                             letterSpacing: 2,
                             fontSize: context.captionSize)),
                     const SizedBox(height: 12),
@@ -748,11 +748,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             ),
             const SizedBox(height: 5),
             Text(label.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white.withOpacity(0.4),
+                style: AppTextStyles.microLabel(
+                    color: Colors.white.withOpacity(0.55),
                     fontSize: 10,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.bold)),
+                    letterSpacing: 1.6)),
           ],
         ),
       );
@@ -970,10 +969,10 @@ class _RoomCardState extends State<_RoomCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.sub,
-                          style: TextStyle(
+                          style: AppTextStyles.microLabel(
                               color: AppColors.accentLight,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
+                              letterSpacing: 1.4,
+                              fontSize: 10)),
                       Text(widget.title,
                           style: TextStyle(
                               fontFamily: 'Fraunces',
@@ -1083,19 +1082,23 @@ class _HeroBannerState extends State<_HeroBanner> {
     ];
     final slide = slides[_page % slides.length];
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
-      child: LayoutBuilder(
-        builder: (final context, final constraints) {
-          // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik
-          // varsa göster — dar tabletlerde/laptop pencerelerinde başlık
-          // metniyle çakışmalarını (üst üste binmesini) önler. Ölçüm
-          // nominal breakpoint yerine gerçek piksel genişliğine dayanır.
-          final heroWidth = constraints.maxWidth;
-          final showSideCards =
-              heroWidth >= 1100 && widget.featuredPool.isNotEmpty;
-          return _buildHeroContent(context, slide, showSideCards);
-        },
+    return HudCornerFrame(
+      armLength: 26,
+      inset: 16,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
+        child: LayoutBuilder(
+          builder: (final context, final constraints) {
+            // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik
+            // varsa göster — dar tabletlerde/laptop pencerelerinde başlık
+            // metniyle çakışmalarını (üst üste binmesini) önler. Ölçüm
+            // nominal breakpoint yerine gerçek piksel genişliğine dayanır.
+            final heroWidth = constraints.maxWidth;
+            final showSideCards =
+                heroWidth >= 1100 && widget.featuredPool.isNotEmpty;
+            return _buildHeroContent(context, slide, showSideCards);
+          },
+        ),
       ),
     );
   }
@@ -1154,10 +1157,9 @@ class _HeroBannerState extends State<_HeroBanner> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(slide.eyebrow,
-                      style: TextStyle(
+                      style: AppTextStyles.microLabel(
                           color: AppColors.accentLight,
                           letterSpacing: context.isMobile ? 2 : 3,
-                          fontWeight: FontWeight.w700,
                           fontSize:
                               context.responsive(mobile: 9, desktop: 12))),
                 ),

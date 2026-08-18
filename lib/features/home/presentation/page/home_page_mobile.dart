@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/ads/widgets/ad_banner_widget.dart';
-import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
@@ -72,7 +70,6 @@ class _HomePageState extends ConsumerState<HomePage>
               padding: const EdgeInsets.symmetric(horizontal: 16),
             ),
             const SizedBox(height: 4),
-            const AdBannerWidget(),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -83,7 +80,6 @@ class _HomePageState extends ConsumerState<HomePage>
                 ],
               ),
             ),
-            const AdBannerWidget(),
           ],
         ),
       ),
@@ -322,22 +318,19 @@ class _ProductGrid extends StatelessWidget {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
-      itemCount: paddedItemCountForAds(products.length),
+      itemCount: products.length,
       itemBuilder: (final context, final index) {
-        if (isAdSlot(index, products.length)) return const NativeAdCard();
-        final realIndex = realIndexForAdGrid(index, products.length);
-        if (realIndex >= products.length) return const SizedBox.shrink();
         return TweenAnimationBuilder<double>(
-          key: ValueKey(products[realIndex].id),
+          key: ValueKey(products[index].id),
           tween: Tween(begin: 0, end: 1),
-          duration: Duration(milliseconds: 300 + (realIndex % 6) * 60),
+          duration: Duration(milliseconds: 300 + (index % 6) * 60),
           curve: Curves.easeOutCubic,
           builder: (final context, final t, final child) => Opacity(
             opacity: t,
             child: Transform.translate(
                 offset: Offset(0, (1 - t) * 16), child: child),
           ),
-          child: LuxuryProductCard(product: products[realIndex]),
+          child: LuxuryProductCard(product: products[index]),
         );
       },
     );

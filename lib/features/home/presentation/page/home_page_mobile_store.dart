@@ -8,8 +8,10 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
+import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
@@ -230,7 +232,10 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
   @override
   Widget build(final BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
-        child: ClipRRect(
+        child: HudCornerFrame(
+          armLength: 18,
+          inset: 10,
+          child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
           child: SizedBox(
             height: 170,
@@ -272,11 +277,10 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
                     children: [
                       Text(
                         context.l10n.storeHeroEyebrow,
-                        style: TextStyle(
+                        style: AppTextStyles.microLabel(
                           color: Colors.white.withOpacity(0.85),
                           fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.2,
+                          letterSpacing: 1.8,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -316,6 +320,7 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
               ],
             ),
           ),
+        ),
         ),
       );
 }

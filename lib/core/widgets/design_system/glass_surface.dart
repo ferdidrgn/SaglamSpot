@@ -93,7 +93,10 @@ class GlassSurface extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: radiusGeometry,
         boxShadow: [
-          BoxShadow(color: tokens.shadowColor, blurRadius: 28, offset: const Offset(0, 14)),
+          BoxShadow(color: tokens.shadowColor, blurRadius: 24, offset: const Offset(0, 12)),
+          // Marka rengiyle tonlanmış "glow" — nötr bir gölge yerine kartın
+          // altından ışıyan bir aksan bırakır, cam hissini güçlendirir.
+          BoxShadow(color: tokens.glowColor, blurRadius: 40, spreadRadius: -6, offset: const Offset(0, 18)),
         ],
       ),
       child: surface,

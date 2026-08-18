@@ -3,8 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/ads/widgets/ad_banner_widget.dart';
-import '../../../../core/ads/widgets/ad_native_widget.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/studio_image_service.dart';
@@ -117,7 +115,6 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       ),
       body: Column(
         children: [
-          const AdBannerWidget(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -151,7 +148,6 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                       ],
                     ),
                   ),
-                  const AdNativeWidget(),
                   const SizedBox(height: 16),
                   AdminFormSection(
                     title: context.l10n.category,
@@ -204,7 +200,6 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
               ),
             ),
           ),
-          const AdBannerWidget(),
         ],
       ),
     );
