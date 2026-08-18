@@ -23,9 +23,6 @@ import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
 /// "Spot / İkinci El Ürünler" — KÖKLÜ, ikinci kez baştan tasarlandı.
-/// new_products_page.dart ile aynı editoryal katalog dilini paylaşır
-/// (bkz. core/widgets/editorial_product_grid_widgets.dart) — sadece vurgu
-/// rengi (AppColors.error) ve fiyat filtresi ile ayrışır.
 enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
 
 class SpotProductsPage extends ConsumerStatefulWidget {
@@ -48,12 +45,25 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     super.dispose();
   }
 
+  // Kategori başlıkları
+  String _getCategoryTitle(ProductCategory category) {
+    switch (category) {
+      case ProductCategory.sofa: return "Koltuk & Kanepe";
+      case ProductCategory.chair: return "Sandalye & Berjer";
+      case ProductCategory.table: return "Yemek Masası";
+      case ProductCategory.bed: return "Yatak & Baza";
+      case ProductCategory.wardrobe: return "Gardırop & Dolap";
+      case ProductCategory.white: return "Beyaz Eşya";
+      case ProductCategory.other: return "Dekorasyon";
+    }
+  }
+
   @override
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF4F5F7),
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
         error: (final e, final _) => _buildErrorState(context, e.toString()),
@@ -70,26 +80,28 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 slivers: [
                   SliverToBoxAdapter(child: _buildMasthead(context, products.length)),
                   SliverToBoxAdapter(
-                      child: EditorialCategoryRail(
-                    selected: _selectedCategory,
-                    onSelect: (final c) => setState(() => _selectedCategory = c),
-                    allLabel: context.l10n.conditionAll,
-                    // NOT: sadece YATAY padding — dikey bileşen eklenirse
-                    // sabit 40px yükseklikli rayı neredeyse tamamen kırpar.
-                    padding: context.sectionPadding.copyWith(top: 0, bottom: 0),
-                  )),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
-                  _buildToolbar(context, filtered.length),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacing)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      child: _buildCategoryBar(context),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                      child: _buildSearchAndFilters(context, filtered.length),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
                   _buildProductGrid(context, filtered),
                   if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: context.sectionPadding,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
                       ),
                     ),
-                  SliverToBoxAdapter(child: SizedBox(height: context.spacingLarge * 3)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 80)),
                 ],
               ),
               ScrollUpButton(scrollController: _scrollController),
@@ -100,10 +112,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  // ════════════════════════════════════════════════════════════
-  // BAŞLIK
-  // ════════════════════════════════════════════════════════════
-
+  // ============================================================
+  // 1. HERO
+  // ============================================================
   Widget _buildMasthead(final BuildContext context, final int totalProducts) {
     final textColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,20 +122,20 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       children: [
         RevealFade(
           child: Text(
-            context.l10n.spotBadgeEyebrow,
-            style: AppTextStyles.microLabel(fontSize: 12, letterSpacing: 3, color: AppColors.error),
+            "FIRSAT DEPOSU",
+            style: AppTextStyles.microLabel(fontSize: 12, letterSpacing: 3, color: const Color(0xFFE65100)),
           ),
         ),
         const SizedBox(height: 8),
         RevealFade(
           delayMs: 70,
           child: Text(
-            context.l10n.spotProducts,
-            style: GoogleFonts.fraunces(
+            "İkinci El & Spot",
+            style: GoogleFonts.spaceGrotesk(
               fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               height: 1.02,
-              color: AppColors.textPrimary,
+              color: const Color(0xFF1A1A1A),
               letterSpacing: -0.5,
             ),
           ),
@@ -135,9 +146,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: context.responsive(mobile: 400, desktop: 460)),
             child: Text(
-              context.l10n.spotProductsDesc,
-              style:
-                  TextStyle(fontSize: context.bodySize, color: AppColors.textSecondary, height: 1.6),
+              "Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.",
+              style: TextStyle(fontSize: context.bodySize, color: const Color(0xFF5A5A5A), height: 1.6),
             ),
           ),
         ),
@@ -149,13 +159,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             runSpacing: 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Text(context.l10n.productsFound(totalProducts),
-                  style: TextStyle(
-                      fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+              Text("${totalProducts}+ Fırsat",
+                  style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: Color(0xFF1A1A1A))),
               _dotSep(),
-              _plainStat(context.l10n.statSpotProductLabel),
+              _plainStat("Pazarlık Payı Mevcut"),
               _dotSep(),
-              _plainStat(context.l10n.productTrustBadgeNegotiate),
+              _plainStat("Kullanılmış"),
             ],
           ),
         ),
@@ -167,12 +176,11 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       offsetY: 20,
       child: _buildShowcaseImage(
         context: context,
-        imageUrl:
-            'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=900&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=900&q=80',
         badgeIcon: Icons.handshake_outlined,
-        badgeTitle: context.l10n.productTrustBadgeNegotiate,
-        badgeSubtitle: context.l10n.spotProductsDesc,
-        accentColor: AppColors.error,
+        badgeTitle: "Pazarlığa Açık",
+        badgeSubtitle: "Siz teklif verin, biz değerlendirelim.",
+        accentColor: const Color(0xFFE65100),
       ),
     );
 
@@ -190,21 +198,21 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
               SizedBox(height: context.spacingLarge),
               context.isDesktop
                   ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(flex: 6, child: textColumn),
-                        SizedBox(width: context.spacingLarge),
-                        Expanded(flex: 5, child: showcase),
-                      ],
-                    )
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(flex: 6, child: textColumn),
+                  SizedBox(width: context.spacingLarge),
+                  Expanded(flex: 5, child: showcase),
+                ],
+              )
                   : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        showcase,
-                        SizedBox(height: context.spacingLarge),
-                        textColumn,
-                      ],
-                    ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  showcase,
+                  SizedBox(height: context.spacingLarge),
+                  textColumn,
+                ],
+              ),
               SizedBox(height: context.spacingLarge),
               const FurnitureMotifDivider(),
               SizedBox(height: context.spacingLarge),
@@ -215,8 +223,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  /// Masthead'in "showcase" görseli: yuvarlatılmış köşeli fotoğraf + HUD
-  /// köşe-braketleri + alt kenardan taşan, buzlu-cam bir güven rozeti kartı.
   Widget _buildShowcaseImage({
     required final BuildContext context,
     required final String imageUrl,
@@ -277,15 +283,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                             Text(badgeTitle,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppColors.textPrimary)),
+                                style: const TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF1A1A1A))),
                             const SizedBox(height: 2),
                             Text(badgeSubtitle,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
+                                style: const TextStyle(fontSize: 11, color: Color(0xFF5A5A5A))),
                           ],
                         ),
                       ),
@@ -300,97 +304,459 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     );
   }
 
-  Widget _dotSep() => Text('•', style: TextStyle(color: AppColors.border, fontSize: 12));
+  Widget _dotSep() => Text('•', style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 12));
 
   Widget _plainStat(final String label) => Text(label,
-      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.textTertiary));
+      style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: Color(0xFF5A5A5A)));
 
   Widget _buildBreadcrumb(final BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(Icons.home_outlined, size: 13, color: const Color(0xFF9E9E9E)),
+      const SizedBox(width: 6),
+      Text("Ana Sayfa", style: const TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+      const SizedBox(width: 6),
+      Icon(Icons.chevron_right_rounded, size: 14, color: const Color(0xFF9E9E9E)),
+      const SizedBox(width: 6),
+      const Text("Spot & İkinci El",
+          style: TextStyle(fontSize: 12, color: Color(0xFFE65100), fontWeight: FontWeight.w700)),
+    ],
+  );
+
+  // ============================================================
+  // 2. KATEGORİ BAR (Üstte Yatay)
+  // ============================================================
+  Widget _buildCategoryBar(BuildContext context) {
+    final allCategories = ProductCategory.values;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
         children: [
-          Icon(Icons.home_outlined, size: 13, color: AppColors.textTertiary),
-          const SizedBox(width: 6),
-          Text(context.l10n.breadcrumbHome,
-              style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
-          const SizedBox(width: 6),
-          Icon(Icons.chevron_right_rounded, size: 14, color: AppColors.textTertiary),
-          const SizedBox(width: 6),
-          Text(context.l10n.spotProducts,
-              style: TextStyle(
-                  fontSize: 12, color: AppColors.error, fontWeight: FontWeight.w700)),
-        ],
-      );
-
-  // ════════════════════════════════════════════════════════════
-  // ARAÇ ÇUBUĞU — arama + fiyat filtresi + sırala + görünüm, metin tabanlı
-  // ════════════════════════════════════════════════════════════
-
-  Widget _buildToolbar(final BuildContext context, final int resultCount) => SliverToBoxAdapter(
-        child: Padding(
-          // NOT: yalnızca yatay — sectionPadding'in tamamı masthead/toolbar/
-          // grid arasında fazladan onlarca piksel boş alan biriktiriyordu.
-          padding: context.sectionPadding.copyWith(top: 0, bottom: 0),
-          child: GlassSurface(
-            borderRadius: 18,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-            children: [
-              Flexible(
-                child: GestureDetector(
-                  onTap: () => context.go('/search'),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.search_rounded, size: 16, color: AppColors.textSecondary),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(context.l10n.searchHint,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textSecondary,
-                                decoration: TextDecoration.underline,
-                                decorationColor: AppColors.border)),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Spacer(),
-              _TextTabButton(
-                icon: Icons.tune_rounded,
-                label: context.l10n.priceRangeSectionTitle,
-                isActive: _priceFilterActive,
-                onTap: () => _openPriceFilterSheet(context),
-              ),
-              SizedBox(width: context.spacing),
-              _TextTabButton(
-                icon: Icons.swap_vert_rounded,
-                label: _sortLabel(context, _selectedSort),
-                onTap: () => _openSortSheet(context),
-              ),
-              SizedBox(width: context.spacing),
-              _ViewToggle(),
-            ],
+          _buildCategoryChip(
+            context,
+            label: "Tümü",
+            isSelected: _selectedCategory == null,
+            onTap: () => setState(() => _selectedCategory = null),
+          ),
+          const SizedBox(width: 8),
+          ...allCategories.map((cat) => Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: _buildCategoryChip(
+              context,
+              label: _getCategoryTitle(cat),
+              isSelected: _selectedCategory == cat,
+              onTap: () => setState(() => _selectedCategory = cat),
             ),
+          )).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryChip(BuildContext context, {
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF1A1A1A) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF1A1A1A) : const Color(0xFFE0E0E0),
           ),
         ),
-      );
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
+          ),
+        ),
+      ),
+    );
+  }
 
-  void _openPriceFilterSheet(final BuildContext context) {
-    RangeValues temp = _priceRange;
+  // ============================================================
+  // 3. ARAMA + FİLTRELER (Sağda, yatay) - HATA DÜZELTİLDİ
+  // ============================================================
+  Widget _buildSearchAndFilters(BuildContext context, int resultCount) {
+    final isDesktop = context.isDesktop;
+
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1A1A1A).withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 12),
+              child: Row(
+                children: [
+                  const Icon(Icons.search_rounded, size: 20, color: Color(0xFF5A5A5A)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "Fırsat ara...",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF5A5A5A),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          if (isDesktop) ...[
+            Container(width: 1, height: 24, color: const Color(0xFFE0E0E0)),
+            const SizedBox(width: 8),
+
+            _buildFilterButton(
+              icon: Icons.tune_rounded,
+              label: "Fiyat Aralığı",
+              isActive: _priceFilterActive,
+              onTap: () => _openPriceFilterSheet(context),
+            ),
+
+            const SizedBox(width: 8),
+            Container(width: 1, height: 24, color: const Color(0xFFE0E0E0)),
+            const SizedBox(width: 8),
+
+            _buildFilterButton(
+              icon: Icons.swap_vert_rounded,
+              label: _sortLabel(_selectedSort),
+              isActive: false,
+              onTap: () => _openSortSheet(context),
+            ),
+
+            const SizedBox(width: 8),
+            Container(width: 1, height: 24, color: const Color(0xFFE0E0E0)),
+            const SizedBox(width: 8),
+
+            _ViewToggle(),
+            const SizedBox(width: 8),
+          ] else ...[
+            // MOBİL İÇİN DÜZELTME: else bloğu bir liste olmalı!
+            IconButton(
+              icon: const Icon(Icons.tune_rounded, size: 22, color: Color(0xFF1A1A1A)),
+              onPressed: () => _openFilterSheet(context),
+            ),
+            const SizedBox(width: 4),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterButton({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFFE65100).withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: isActive ? const Color(0xFFE65100) : const Color(0xFF5A5A5A)),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isActive ? const Color(0xFFE65100) : const Color(0xFF5A5A5A),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // 4. ÜRÜN GRİDİ (İÇ İÇE OLMAYAN TEK KART)
+  // ============================================================
+  Widget _buildProductGrid(final BuildContext context, final List<Product> products) {
+    if (products.isEmpty) {
+      return SliverToBoxAdapter(child: _buildEmptyState(context));
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
+        ),
+        delegate: SliverChildBuilderDelegate(
+              (final context, final index) {
+            if (index >= products.length) return const SizedBox.shrink();
+            return RevealFade(
+              delayMs: (index % 8) * 45,
+              offsetY: 18,
+              child: _buildSingleSpotCard(context, products[index]),
+            );
+          },
+          childCount: products.length,
+        ),
+      ),
+    );
+  }
+
+  // ================================================================
+  // TEK KART (SIFIRDAN - EditorialProductCard KULLANILMADI)
+  // ================================================================
+  Widget _buildSingleSpotCard(BuildContext context, Product product) {
+    final imageUrl = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80';
+
+    return GestureDetector(
+      onTap: () => context.push('/product/${product.id}'),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF1A1A1A).withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- GÖRSEL BÖLÜMÜ (Üst %60) ---
+            Expanded(
+              flex: 6,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: const Color(0xFFEEEEEE),
+                        child: const Center(
+                          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFBDBDBD)),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE65100),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        "KULLANILMIŞ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.favorite_border, size: 18, color: Color(0xFF1A1A1A)),
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1A1A1A),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        "₺${product.price.toStringAsFixed(0)}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // --- İÇERİK BÖLÜMÜ (Alt %40) ---
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _getCategoryTitle(product.category).toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF9E9E9E),
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          product.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF1A1A1A),
+                            height: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF3E0),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Text(
+                                "İYİ DURUMDA",
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFFE65100),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE8EAF6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Text(
+                                "PAZARLIK VAR",
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1A237E),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Fırsatı İncele",
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFEEEEEE),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.arrow_forward_rounded, size: 16, color: Color(0xFF1A1A1A)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // FİLTRE VE SIRALAMA FONKSİYONLARI
+  // ============================================================
+
+  void _openFilterSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (final sheetContext) => StatefulBuilder(
         builder: (final sheetContext, final setSheetState) => SafeArea(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                24, 16, 24, 20 + MediaQuery.of(sheetContext).viewInsets.bottom),
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,37 +767,111 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 18),
                     decoration: BoxDecoration(
-                        color: AppColors.border, borderRadius: BorderRadius.circular(4)),
+                        color: const Color(0xFFE0E0E0), borderRadius: BorderRadius.circular(4)),
                   ),
                 ),
-                Text(context.l10n.priceRangeSectionTitle,
+                const Text("FİLTRELER",
                     style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 1.4,
-                        color: AppColors.textTertiary)),
+                        color: Color(0xFF5A5A5A))),
+                const SizedBox(height: 16),
+                const Text("Fiyat Aralığı", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A1A1A))),
+                const SizedBox(height: 8),
+                RangeSlider(
+                  values: _priceRange,
+                  min: 0,
+                  max: 50000,
+                  divisions: 50,
+                  activeColor: const Color(0xFFE65100),
+                  inactiveColor: const Color(0xFFE0E0E0),
+                  onChanged: (final v) => setSheetState(() => _priceRange = v),
+                ),
+                Text(
+                  '₺${_priceRange.start.round()} — ₺${_priceRange.end.round()}',
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE65100),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _priceFilterActive = _priceRange.start > 0 || _priceRange.end < 50000;
+                      });
+                      Navigator.pop(sheetContext);
+                    },
+                    child: const Text("Filtreleri Uygula",
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openPriceFilterSheet(final BuildContext context) {
+    RangeValues temp = _priceRange;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (final sheetContext) => StatefulBuilder(
+        builder: (final sheetContext, final setSheetState) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 18),
+                    decoration: BoxDecoration(
+                        color: const Color(0xFFE0E0E0), borderRadius: BorderRadius.circular(4)),
+                  ),
+                ),
+                const Text("FİYAT ARALIĞI",
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.4,
+                        color: Color(0xFF5A5A5A))),
                 const SizedBox(height: 10),
                 Text(
                   '₺${temp.start.round()} — ₺${temp.end.round()}',
-                  style: GoogleFonts.fraunces(
-                      fontWeight: FontWeight.w600, fontSize: 26, color: AppColors.textPrimary),
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 26, color: Color(0xFF1A1A1A)),
                 ),
                 RangeSlider(
                   values: temp,
                   min: 0,
                   max: 50000,
                   divisions: 50,
-                  activeColor: AppColors.primary,
-                  inactiveColor: AppColors.border,
+                  activeColor: const Color(0xFFE65100),
+                  inactiveColor: const Color(0xFFE0E0E0),
                   onChanged: (final v) => setSheetState(() => temp = v),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
+                  height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: const Color(0xFFE65100),
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: const StadiumBorder(),
@@ -443,26 +883,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                       });
                       Navigator.pop(sheetContext);
                     },
-                    child: Text(context.l10n.apply,
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5)),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _priceRange = const RangeValues(0, 50000);
-                        _priceFilterActive = false;
-                      });
-                      Navigator.pop(sheetContext);
-                    },
-                    child: Text(context.l10n.clearFiltersButton,
-                        style: TextStyle(
-                            color: AppColors.textTertiary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12.5,
-                            letterSpacing: 0.6)),
+                    child: const Text("Uygula",
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                   ),
                 ),
               ],
@@ -476,111 +898,103 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   void _openSortSheet(final BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (final sheetContext) => _SortSheet<_SortMode>(
-        title: context.l10n.sortPanelTitle,
-        options: _SortMode.values,
-        current: _selectedSort,
-        labelBuilder: (final m) => _sortLabel(context, m),
-        onSelect: (final m) {
-          setState(() => _selectedSort = m);
-          Navigator.pop(sheetContext);
-        },
-      ),
-    );
-  }
-
-  String _sortLabel(final BuildContext context, final _SortMode mode) {
-    switch (mode) {
-      case _SortMode.newest:
-        return context.l10n.sortSpotProductsDefault;
-      case _SortMode.priceLowHigh:
-        return context.l10n.sortPriceLowHigh;
-      case _SortMode.priceHighLow:
-        return context.l10n.sortPriceHighLow;
-      case _SortMode.popular:
-        return context.l10n.sortMostPopular;
-    }
-  }
-
-  // ════════════════════════════════════════════════════════════
-  // IZGARA / LİSTE
-  // ════════════════════════════════════════════════════════════
-
-  Widget _buildProductGrid(final BuildContext context, final List<Product> products) {
-    if (products.isEmpty) {
-      return SliverToBoxAdapter(child: _buildEmptyState(context));
-    }
-
-    if (ref.watch(productViewModeProvider) == ProductViewMode.list) {
-      return SliverPadding(
-        padding: context.sectionPadding.copyWith(top: 0),
-        sliver: SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (final context, final index) => EditorialProductRow(product: products[index]),
-            childCount: products.length,
+      builder: (final sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 18),
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFE0E0E0), borderRadius: BorderRadius.circular(4)),
+                ),
+              ),
+              const Text("SIRALAMA",
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.4,
+                      color: Color(0xFF5A5A5A))),
+              const SizedBox(height: 8),
+              ..._SortMode.values.map((mode) {
+                final selected = mode == _selectedSort;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() => _selectedSort = mode);
+                    Navigator.pop(sheetContext);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _sortLabel(mode),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                              color: selected ? const Color(0xFF1A1A1A) : const Color(0xFF5A5A5A),
+                            ),
+                          ),
+                        ),
+                        if (selected) const Icon(Icons.check_rounded, size: 20, color: Color(0xFFE65100)),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ],
           ),
         ),
-      );
-    }
-
-    return SliverPadding(
-      padding: context.sectionPadding.copyWith(top: 0),
-      sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.responsive(mobile: 2, tablet: 3, desktop: 4, largeDesktop: 5),
-          crossAxisSpacing: context.gridSpacing,
-          mainAxisSpacing: context.gridSpacing,
-          childAspectRatio: context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (final context, final index) {
-            if (isAdSlot(index, products.length)) return const NativeAdCard();
-            final realIndex = realIndexForAdGrid(index, products.length);
-            if (realIndex >= products.length) return const SizedBox.shrink();
-            return RevealFade(
-              delayMs: (realIndex % 8) * 45,
-              offsetY: 18,
-              child: EditorialProductCard(product: products[realIndex]),
-            );
-          },
-          childCount: paddedItemCountForAds(products.length),
-        ),
       ),
     );
+  }
+
+  String _sortLabel(_SortMode mode) {
+    switch (mode) {
+      case _SortMode.newest: return "En Yeni Fırsatlar";
+      case _SortMode.priceLowHigh: return "Fiyat: Düşükten Yükseğe";
+      case _SortMode.priceHighLow: return "Fiyat: Yüksekten Düşüğe";
+      case _SortMode.popular: return "En Çok İncelenen";
+    }
   }
 
   Widget _buildEmptyState(final BuildContext context) => Padding(
-        padding: context.sectionPadding.copyWith(top: 40, bottom: 60),
-        child: Column(
-          children: [
-            Icon(Icons.search_off_rounded, size: 44, color: AppColors.textTertiary.withOpacity(0.6)),
-            const SizedBox(height: 14),
-            Text(context.l10n.productNotFound,
-                style: GoogleFonts.fraunces(
-                    fontSize: 18, color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 6),
-            Text(context.l10n.tryDifferentFiltersShort,
-                style: TextStyle(fontSize: 13, color: AppColors.textTertiary)),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+    child: Column(
+      children: [
+        Icon(Icons.search_off_rounded, size: 44, color: const Color(0xFF9E9E9E).withOpacity(0.6)),
+        const SizedBox(height: 14),
+        const Text("Bu kriterde fırsat bulamadık",
+            style: TextStyle(fontSize: 18, color: Color(0xFF1A1A1A), fontWeight: FontWeight.w600)),
+        const SizedBox(height: 6),
+        const Text("Filtreleri temizlemeyi veya farklı bir kategori denemeyi dene.",
+            style: TextStyle(fontSize: 13, color: Color(0xFF5A5A5A))),
+      ],
+    ),
+  );
 
   Widget _buildErrorState(final BuildContext context, final String error) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
-            const SizedBox(height: 14),
-            Text(context.l10n.errorOccurred,
-                style: TextStyle(fontSize: context.h4Size, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 6),
-            Text(error, style: TextStyle(color: AppColors.textSecondary)),
-          ],
-        ),
-      );
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.error_outline_rounded, size: 64, color: const Color(0xFFE65100)),
+        const SizedBox(height: 14),
+        const Text("Bir hata oluştu",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 6),
+        Text(error, style: const TextStyle(color: Color(0xFF5A5A5A))),
+      ],
+    ),
+  );
 
   List<Product> _filterProducts(final List<Product> products) {
     var filtered = products;
@@ -604,43 +1018,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 }
 
-/// Metin + ikon tabanlı araç çubuğu düğmesi (kutulu ikon yerine).
-class _TextTabButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final bool isActive;
-
-  const _TextTabButton(
-      {required this.icon, required this.label, required this.onTap, this.isActive = false});
-
-  @override
-  Widget build(final BuildContext context) {
-    final showLabel = context.isTablet || context.isDesktop;
-    return Tooltip(
-      message: label,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 18, color: isActive ? AppColors.error : AppColors.textPrimary),
-            if (showLabel) ...[
-              const SizedBox(width: 6),
-              Text(label,
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: isActive ? AppColors.error : AppColors.textPrimary)),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
+// ============================================================
+// VIEW TOGGLE WIDGET
+// ============================================================
 class _ViewToggle extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -648,98 +1028,24 @@ class _ViewToggle extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _viewIcon(
-          icon: Icons.grid_view_rounded,
-          isSelected: mode == ProductViewMode.grid,
+        GestureDetector(
           onTap: () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.grid),
+          child: Icon(
+            Icons.grid_view_rounded,
+            size: 20,
+            color: mode == ProductViewMode.grid ? const Color(0xFF1A1A1A) : const Color(0xFF9E9E9E),
+          ),
         ),
-        const SizedBox(width: 10),
-        _viewIcon(
-          icon: Icons.view_list_rounded,
-          isSelected: mode == ProductViewMode.list,
+        const SizedBox(width: 12),
+        GestureDetector(
           onTap: () => ref.read(productViewModeProvider.notifier).set(ProductViewMode.list),
+          child: Icon(
+            Icons.view_list_rounded,
+            size: 20,
+            color: mode == ProductViewMode.list ? const Color(0xFF1A1A1A) : const Color(0xFF9E9E9E),
+          ),
         ),
       ],
     );
   }
-
-  Widget _viewIcon(
-          {required final IconData icon,
-          required final bool isSelected,
-          required final VoidCallback onTap}) =>
-      GestureDetector(
-        onTap: onTap,
-        child: Icon(icon,
-            size: 19, color: isSelected ? AppColors.textPrimary : AppColors.textTertiary),
-      );
-}
-
-/// Alt sayfadan açılan, radyo listesi tarzı sade sıralama seçici.
-class _SortSheet<T> extends StatelessWidget {
-  final String title;
-  final List<T> options;
-  final T current;
-  final String Function(T) labelBuilder;
-  final ValueChanged<T> onSelect;
-
-  const _SortSheet({
-    required this.title,
-    required this.options,
-    required this.current,
-    required this.labelBuilder,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(final BuildContext context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 18),
-                  decoration: BoxDecoration(
-                      color: AppColors.border, borderRadius: BorderRadius.circular(4)),
-                ),
-              ),
-              Text(title,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.4,
-                      color: AppColors.textTertiary)),
-              const SizedBox(height: 8),
-              ...options.map((final o) {
-                final selected = o == current;
-                return GestureDetector(
-                  onTap: () => onSelect(o),
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 13),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(labelBuilder(o),
-                              style: GoogleFonts.fraunces(
-                                  fontSize: 17,
-                                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                                  color: selected
-                                      ? AppColors.textPrimary
-                                      : AppColors.textSecondary)),
-                        ),
-                        if (selected) Icon(Icons.check_rounded, size: 18, color: AppColors.error),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            ],
-          ),
-        ),
-      );
 }
