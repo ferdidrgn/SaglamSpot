@@ -12,7 +12,11 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
+import '../../../../core/widgets/design_system/hud_corner_frame.dart';
+import '../../../../core/widgets/design_system/reveal_fade.dart';
+import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_provider.dart';
@@ -101,71 +105,204 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // BAŞLIK — düz sayfa akışında, serif, ince ayraçlı editoryal başlık
   // ════════════════════════════════════════════════════════════
 
-  Widget _buildMasthead(final BuildContext context, final int totalProducts) => Stack(
-        clipBehavior: Clip.none,
-        children: [
-          const Positioned.fill(child: FurnitureMotifBackdrop()),
-          Padding(
-            padding: context.pagePadding.copyWith(
-                top: context.responsive(mobile: 20, tablet: 28, desktop: 40), bottom: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildBreadcrumb(context),
-                SizedBox(height: context.spacingLarge),
-                Text(
-                  context.l10n.newProductsBadgeEyebrow,
-                  style: AppTextStyles.microLabel(
-                    fontSize: 12,
-                    letterSpacing: 3,
-                    color: AppColors.accentDark,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  context.l10n.newCollection,
-                  style: GoogleFonts.fraunces(
-                    fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
-                    fontWeight: FontWeight.w600,
-                    height: 1.02,
-                    color: AppColors.textPrimary,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: context.responsive(mobile: 400, desktop: 520)),
-                  child: Text(
-                    context.l10n.newCollectionSub,
-                    style: TextStyle(
-                        fontSize: context.bodySize, color: AppColors.textSecondary, height: 1.5),
-                  ),
-                ),
-                SizedBox(height: context.spacing),
-                Wrap(
-                  spacing: 18,
-                  runSpacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text(context.l10n.productsFound(totalProducts),
-                        style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary)),
-                    _dotSep(),
-                    _plainStat(context.l10n.productTrustBadgeVerified),
-                    _dotSep(),
-                    _plainStat(context.l10n.productTrustBadgeDelivery),
-                  ],
-                ),
-                SizedBox(height: context.spacingLarge),
-                const FurnitureMotifDivider(),
-                SizedBox(height: context.spacingLarge),
-              ],
+  Widget _buildMasthead(final BuildContext context, final int totalProducts) {
+    final textColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RevealFade(
+          child: Text(
+            context.l10n.newProductsBadgeEyebrow,
+            style: AppTextStyles.microLabel(
+                fontSize: 12, letterSpacing: 3, color: AppColors.accentDark),
+          ),
+        ),
+        const SizedBox(height: 8),
+        RevealFade(
+          delayMs: 70,
+          child: Text(
+            context.l10n.newCollection,
+            style: GoogleFonts.fraunces(
+              fontSize: context.responsive(mobile: 34, tablet: 46, desktop: 58),
+              fontWeight: FontWeight.w600,
+              height: 1.02,
+              color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
-        ],
-      );
+        ),
+        const SizedBox(height: 12),
+        RevealFade(
+          delayMs: 140,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: context.responsive(mobile: 400, desktop: 460)),
+            child: Text(
+              context.l10n.newCollectionSub,
+              style:
+                  TextStyle(fontSize: context.bodySize, color: AppColors.textSecondary, height: 1.6),
+            ),
+          ),
+        ),
+        SizedBox(height: context.spacing),
+        RevealFade(
+          delayMs: 210,
+          child: Wrap(
+            spacing: 18,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(context.l10n.productsFound(totalProducts),
+                  style: TextStyle(
+                      fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+              _dotSep(),
+              _plainStat(context.l10n.productTrustBadgeVerified),
+              _dotSep(),
+              _plainStat(context.l10n.productTrustBadgeDelivery),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    final showcase = RevealFade(
+      delayMs: 100,
+      offsetY: 20,
+      child: _buildShowcaseImage(
+        context: context,
+        imageUrl:
+            'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=900&q=80',
+        badgeIcon: Icons.workspace_premium_outlined,
+        badgeTitle: context.l10n.productTrustBadgeVerified,
+        badgeSubtitle: context.l10n.newCollectionSub,
+        accentColor: AppColors.accentDark,
+      ),
+    );
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        const Positioned.fill(child: FurnitureMotifBackdrop()),
+        Padding(
+          padding: context.pagePadding.copyWith(
+              top: context.responsive(mobile: 20, tablet: 28, desktop: 40), bottom: 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildBreadcrumb(context),
+              SizedBox(height: context.spacingLarge),
+              context.isDesktop
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(flex: 6, child: textColumn),
+                        SizedBox(width: context.spacingLarge),
+                        Expanded(flex: 5, child: showcase),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        showcase,
+                        SizedBox(height: context.spacingLarge),
+                        textColumn,
+                      ],
+                    ),
+              SizedBox(height: context.spacingLarge),
+              const FurnitureMotifDivider(),
+              SizedBox(height: context.spacingLarge),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Masthead'in "showcase" görseli: yuvarlatılmış köşeli fotoğraf + HUD
+  /// köşe-braketleri + alt kenardan taşan, buzlu-cam bir güven rozeti kartı.
+  /// Web'de fare üzerine gelince hafif tilt/parallax verir ([TactilePress],
+  /// onTap olmadan da tilt çalışır — dokunma hedefi değil, salt dekoratif).
+  Widget _buildShowcaseImage({
+    required final BuildContext context,
+    required final String imageUrl,
+    required final IconData badgeIcon,
+    required final String badgeTitle,
+    required final String badgeSubtitle,
+    required final Color accentColor,
+  }) {
+    final imageHeight = context.responsive(mobile: 220.0, tablet: 300.0, desktop: 360.0);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 36),
+      child: TactilePress(
+        child: HudCornerFrame(
+          armLength: 22,
+          inset: 12,
+          color: accentColor,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(context.borderRadius(1.1)),
+                child: OptimizedCachedImage(
+                  imageUrl: imageUrl,
+                  width: double.infinity,
+                  height: imageHeight,
+                  fit: BoxFit.cover,
+                  borderRadius: 0,
+                ),
+              ),
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: -28,
+                child: GlassSurface(
+                  borderRadius: 18,
+                  strong: true,
+                  chromaticEdge: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: accentColor.withOpacity(0.14),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(badgeIcon, color: accentColor, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(badgeTitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.textPrimary)),
+                            const SizedBox(height: 2),
+                            Text(badgeSubtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _dotSep() => Text('•', style: TextStyle(color: AppColors.border, fontSize: 12));
 
@@ -309,7 +446,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             if (isAdSlot(index, products.length)) return const NativeAdCard();
             final realIndex = realIndexForAdGrid(index, products.length);
             if (realIndex >= products.length) return const SizedBox.shrink();
-            return EditorialProductCard(product: products[realIndex]);
+            return RevealFade(
+              delayMs: (realIndex % 8) * 45,
+              offsetY: 18,
+              child: EditorialProductCard(product: products[realIndex]),
+            );
           },
           childCount: paddedItemCountForAds(products.length),
         ),
