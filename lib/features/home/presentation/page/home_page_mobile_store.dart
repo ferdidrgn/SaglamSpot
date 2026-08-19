@@ -10,7 +10,6 @@ import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/design_system/soft_page_backdrop.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
@@ -43,7 +42,6 @@ class HomeStorePage extends ConsumerWidget {
       bottomNavigationBar: const MobileBottomNav(),
       body: Stack(
         children: [
-          const Positioned.fill(child: SoftPageBackdrop()),
           SafeArea(
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),

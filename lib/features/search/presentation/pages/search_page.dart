@@ -14,7 +14,6 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/util/responsive_product_grid.dart';
-import '../../../../core/widgets/design_system/soft_page_backdrop.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
@@ -90,7 +89,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: Stack(
         children: [
-          const Positioned.fill(child: SoftPageBackdrop()),
           SafeArea(
         child: Column(
           children: [

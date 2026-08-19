@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
-import 'package:saglamspot/core/widgets/design_system/soft_page_backdrop.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
@@ -76,7 +75,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             Center(child: Text(context.l10n.productsLoadError('$err'))),
         data: (final _) => Stack(
           children: [
-            const Positioned.fill(child: SoftPageBackdrop()),
             ResponsiveUtils.maxWidthContainer(
               child: CustomScrollView(
                 controller: _scrollController,
@@ -750,12 +748,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     required final IconData icon,
     final String prefix = "",
   }) =>
-      GlassSurface(
+      Container(
         width: context.responsive(
             mobile: context.wp(42), tablet: 200, desktop: 250),
         padding: const EdgeInsets.all(24),
-        borderRadius: context.borderRadius(),
-        chromaticEdge: true,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.04),
+          borderRadius: BorderRadius.circular(context.borderRadius()),
+          border: Border.all(color: Colors.white.withOpacity(0.09)),
+        ),
         child: Column(
           children: [
             Icon(icon, color: AppColors.accentLight, size: 30),

@@ -10,7 +10,6 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/design_system/soft_page_backdrop.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
@@ -85,9 +84,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
           return Stack(
             children: [
-              const Positioned.fill(
-                child: SoftPageBackdrop(tint: Color(0xFFE65100)),
-              ),
               CustomScrollView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
@@ -104,7 +100,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-                  // ANA KISIM: Sol tarafta ürünler, sağ tarafta rail
+                  // ANA KISIM: arama bitiminde hemen aşağı doğru başlar —
+                  // sol tarafta dikey kategori rail'i, sağında ürün ızgarası.
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -112,13 +109,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                           ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Sol: Ürünler
+                          // Sol: Dikey Kategori Rail
+                          _buildVerticalCategoryRail(),
+                          const SizedBox(width: 20),
+                          // Sağ: Ürünler
                           Expanded(
                             child: _buildProductGrid(context, filtered),
                           ),
-                          const SizedBox(width: 20),
-                          // Sağ: Dikey Kategori Rail
-                          _buildVerticalCategoryRail(),
                         ],
                       )
                           : Column(
@@ -132,19 +129,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                       ),
                     ),
                   ),
-
-                  // ======================================================
-                  // YENİ EKLENEN BÖLÜM: "Tatlı, Renkli, Web'e uygun" Tasarım
-                  // Görseldeki gibi, ama sağa yaslı ve web boyutlarında.
-                  // Ürünlerin hemen altına (reklamdan önce) eklendi.
-                  // ======================================================
-                  if (filtered.isNotEmpty && context.isDesktop)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                        child: _buildSweetWebDesign(context, filtered),
-                      ),
-                    ),
 
                   if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
@@ -498,7 +482,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ============================================================
-  // 3. SAĞ DİKEY KATEGORİ RAİL (YENİ!)
+  // 3. SOL DİKEY KATEGORİ RAİL — newProductsPage ile aynı mekanik:
+  // arama çubuğunun hemen altında, ürünlerin solunda, aşağı doğru sıralı.
   // ============================================================
   Widget _buildVerticalCategoryRail() {
     return Container(
@@ -909,230 +894,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // ============================================================
-  // YENİ! "TATLI RENKLİ WEB TASARIMI" (Görseldeki gibi)
-  // Sağa yaslı, web boyutlarında, pastel renkler.
-  // ============================================================
-  Widget _buildSweetWebDesign(BuildContext context, List<Product> products) {
-    final isDesktop = context.isDesktop;
-    if (!isDesktop) return const SizedBox.shrink();
-
-    // Görselden esinlenerek oluşturulmuş renkli kartlar
-    final List<Map<String, dynamic>> featuredItems = [
-      {
-        'title': 'Sillones',
-        'subtitle': 'Temporada 2022',
-        'price': 50,
-        'color': const Color(0xFFFFC107), // Sarı
-        'image': 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=400&q=80',
-      },
-      {
-        'title': 'Butaca rosa',
-        'subtitle': 'Nuevo ingreso',
-        'price': 85,
-        'color': const Color(0xFFE8D5B7), // Bej
-        'image': 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80',
-      },
-      {
-        'title': 'Butaca amarilla',
-        'subtitle': 'Andy Room',
-        'price': 60,
-        'color': const Color(0xFFFF9800), // Turuncu
-        'image': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80',
-      },
-    ];
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Öne Çıkan Fırsatlar",
-                style: GoogleFonts.fraunces(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1A1A1A),
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text("Tümünü Gör", style: TextStyle(fontWeight: FontWeight.w600)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // 3'lü Web Kart Grid'i (Sağa yaslı görünüm)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: featuredItems.map((item) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: _buildSweetCard(
-                    context,
-                    title: item['title'],
-                    subtitle: item['subtitle'],
-                    price: item['price'],
-                    color: item['color'],
-                    imageUrl: item['image'],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSweetCard(BuildContext context, {
-    required String title,
-    required String subtitle,
-    required int price,
-    required Color color,
-    required String imageUrl,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Görsel alanı
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                // "Nuevo ingreso" / etiket
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      subtitle,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                    ),
-                  ),
-                ),
-                // Kalp ikonu
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.favorite_border, size: 18, color: Color(0xFF1A1A1A)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // İçerik
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.fraunces(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1A1A1A),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: const Color(0xFF1A1A1A).withOpacity(0.6),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "\$$price",
-                      style: GoogleFonts.fraunces(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A1A),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Row(
-                        children: [
-                          Text(
-                            "İncele",
-                            style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward_rounded, size: 12, color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

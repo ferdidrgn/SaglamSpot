@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
-import 'glass_surface.dart';
 
 class TickerItem {
   final IconData icon;
@@ -53,12 +52,32 @@ class _InfiniteTickerState extends State<InfiniteTicker>
     super.dispose();
   }
 
+  // Köşesiz, dikdörtgen bir "reklam panosu" şeridi — önceki hap (pill)
+  // biçimli cam yüzeyin yerine geçti. Kenarlarda ince bir gradyan maske ile
+  // öğeler yumuşakça belirip kayboluyor (sert kesim yerine).
   @override
-  Widget build(final BuildContext context) => GlassSurface(
-        borderRadius: 999,
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          height: widget.height,
+  Widget build(final BuildContext context) => Container(
+        height: widget.height,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.secondary,
+          border: Border.symmetric(
+            horizontal: BorderSide(color: AppColors.border, width: 1.4),
+          ),
+        ),
+        child: ShaderMask(
+          blendMode: BlendMode.dstIn,
+          shaderCallback: (final rect) => const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Colors.transparent,
+              Colors.black,
+              Colors.black,
+              Colors.transparent,
+            ],
+            stops: [0.0, 0.05, 0.95, 1.0],
+          ).createShader(rect),
           child: ListView.builder(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
