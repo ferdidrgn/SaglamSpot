@@ -268,7 +268,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     required final String badgeSubtitle,
     required final Color accentColor,
   }) {
-    final imageHeight = context.responsive(mobile: 220.0, tablet: 300.0, desktop: 360.0);
+    final imageHeight = context.responsive(mobile: 300.0, tablet: 420.0, desktop: 520.0);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 36),
@@ -282,12 +282,24 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(context.borderRadius(1.1)),
-                child: OptimizedCachedImage(
-                  imageUrl: imageUrl,
-                  width: double.infinity,
-                  height: imageHeight,
-                  fit: BoxFit.cover,
-                  borderRadius: 0,
+                // Görsel, yazının hemen altından %10 saydamlıkla başlayıp
+                // aşağı doğru yumuşakça tam opağa bağlanıyor — "yazının
+                // altından beliren şık bir ev dekorasyonu görseli" hissi.
+                child: ShaderMask(
+                  blendMode: BlendMode.dstIn,
+                  shaderCallback: (final rect) => const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0x1AFFFFFF), Colors.white],
+                    stops: [0.0, 0.42],
+                  ).createShader(rect),
+                  child: OptimizedCachedImage(
+                    imageUrl: imageUrl,
+                    width: double.infinity,
+                    height: imageHeight,
+                    fit: BoxFit.cover,
+                    borderRadius: 0,
+                  ),
                 ),
               ),
               Positioned(
@@ -646,12 +658,16 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         mainAxisSpacing: 16,
         childAspectRatio: context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
       ),
-      itemCount: products.length,
+      itemCount: paddedItemCountForAds(products.length),
       itemBuilder: (final context, final index) {
+        if (isAdSlot(index, products.length)) {
+          return const RevealFade(offsetY: 18, child: NativeAdCard());
+        }
+        final realIndex = realIndexForAdGrid(index, products.length);
         return RevealFade(
           delayMs: (index % 8) * 45,
           offsetY: 18,
-          child: _buildSingleSpotCard(context, products[index]),
+          child: _buildSingleSpotCard(context, products[realIndex]),
         );
       },
     );

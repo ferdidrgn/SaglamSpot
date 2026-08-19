@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
+import 'package:saglamspot/core/widgets/google_maps_embed.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
 import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
@@ -119,7 +121,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   ),
                   const HowItWorksSection(),
                   _buildArtisanInfo(),
-                  _buildVisitSection(),
+                  const SliverToBoxAdapter(child: _VisitMapSection()),
                   const WhyUsSection(),
                   const TestimonialsSection(),
                   _buildStatsSection(),
@@ -538,148 +540,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             ],
           ),
         ),
-      );
-
-  Widget _buildVisitSection() => SliverToBoxAdapter(
-        child: Container(
-          margin: context.sectionPadding,
-          padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 48)),
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(context.borderRadius(2)),
-          ),
-          child: Flex(
-            direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: context.isMobile ? 0 : 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(context.l10n.visitUsEyebrow,
-                        style: AppTextStyles.microLabel(
-                            color: AppColors.accentLight,
-                            letterSpacing: 2,
-                            fontSize: context.captionSize)),
-                    const SizedBox(height: 12),
-                    Text(context.l10n.visitUsHeading,
-                        style: TextStyle(
-                            fontFamily: 'Fraunces',
-                            color: Colors.white,
-                            fontSize: context.h2Size,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2)),
-                    const SizedBox(height: 14),
-                    Text(
-                      context.l10n.visitUsOpenLine(SaglamSpotCommunication.workingHours),
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: context.bodySize,
-                          height: 1.5),
-                    ),
-                    const SizedBox(height: 24),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 10,
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: SaglamSpotCommunication.launchWhatsApp,
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.accent,
-                              foregroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30))),
-                          icon: const Icon(Icons.chat_bubble_outline, size: 16),
-                          label: const Text('WhatsApp'),
-                        ),
-                        OutlinedButton.icon(
-                          onPressed: SaglamSpotCommunication.makeCall,
-                          style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white54),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30))),
-                          icon: const Icon(Icons.call_outlined, size: 16),
-                          label: Text(SaglamSpotCommunication.displayPhone),
-                        ),
-                        OutlinedButton.icon(
-                          onPressed: SaglamSpotCommunication.openStoreLocation,
-                          style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white54),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30))),
-                          icon: const Icon(Icons.north_east, size: 16),
-                          label: Text(context.l10n.directionsButton),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              if (!context.isMobile) const SizedBox(width: 40),
-              if (context.isMobile) const SizedBox(height: 28),
-              Expanded(
-                flex: context.isMobile ? 0 : 4,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.06),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _visitInfoRow(
-                          Icons.local_shipping_outlined,
-                          context.l10n.freeDeliveryLabel,
-                          SaglamSpotCommunication.freeDeliveryZones.join(', ')),
-                      const SizedBox(height: 16),
-                      _visitInfoRow(
-                          Icons.directions_bus_outlined,
-                          context.l10n.busLinesLabel,
-                          SaglamSpotCommunication.getBusLines()
-                              .entries
-                              .map((final e) =>
-                                  '${e.key}: ${e.value.join(', ')}')
-                              .join('\n')),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _visitInfoRow(
-          final IconData icon, final String title, final String detail) =>
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: AppColors.accentLight, size: 18),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13)),
-                const SizedBox(height: 4),
-                Text(detail,
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12,
-                        height: 1.4)),
-              ],
-            ),
-          ),
-        ],
       );
 
   Widget _buildStatsSection() {
@@ -1120,9 +980,316 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
   }
 }
 
-/// Oda kartı: tıklanınca ilgili kategoriyle arama sayfasına götürür.
-/// Web'de fare üzerine gelince görsel hafifçe büyür ve bir "İncele" rozeti
-/// belirir — tıklanabilir olduğunu netleştirmek için.
+/// Ana sayfanın ortasındaki büyük "işletme bilgisi" vitrini — gerçek bir
+/// Google Haritalar gömmesi, gerçek zamana göre canlı "Açık/Kapalı"
+/// rozetiyle, haftalık çalışma saatleriyle, teslimat bölgeleri/otobüs
+/// hatlarıyla ve birkaç yumuşakça süzülen mobilya motifiyle sanatsal bir
+/// doku katıyor. Rozet dakikada bir kendini günceller.
+class _VisitMapSection extends StatefulWidget {
+  const _VisitMapSection();
+
+  @override
+  State<_VisitMapSection> createState() => _VisitMapSectionState();
+}
+
+class _VisitMapSectionState extends State<_VisitMapSection> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(minutes: 1), (final _) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final isOpen = SaglamSpotCommunication.isOpenNow;
+    final mapHeight =
+        context.responsive(mobile: 240.0, tablet: 340.0, desktop: 440.0);
+
+    final mapCard = HudCornerFrame(
+      armLength: 22,
+      inset: 10,
+      color: AppColors.accent,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(context.borderRadius(1.4)),
+        child: SizedBox(
+          height: mapHeight,
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: GoogleMapsEmbed(
+                  latitude: SaglamSpotCommunication.placeLatitude,
+                  longitude: SaglamSpotCommunication.placeLongitude,
+                ),
+              ),
+              Positioned(left: 14, top: 14, child: _LiveOpenBadge(isOpen: isOpen)),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final infoColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(context.l10n.visitUsEyebrow,
+            style: AppTextStyles.microLabel(
+                color: AppColors.accentLight,
+                letterSpacing: 2,
+                fontSize: context.captionSize)),
+        const SizedBox(height: 12),
+        Text(context.l10n.visitUsHeading,
+            style: TextStyle(
+                fontFamily: 'Fraunces',
+                color: Colors.white,
+                fontSize: context.h2Size,
+                fontWeight: FontWeight.w600,
+                height: 1.2)),
+        const SizedBox(height: 14),
+        Text(
+          SaglamSpotCommunication.workingHours.replaceAll('\n', '   ·   '),
+          style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: context.bodySize,
+              height: 1.5),
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          runSpacing: 10,
+          children: [
+            ElevatedButton.icon(
+              onPressed: SaglamSpotCommunication.launchWhatsApp,
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accent,
+                  foregroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
+              icon: const Icon(Icons.chat_bubble_outline, size: 16),
+              label: const Text('WhatsApp'),
+            ),
+            OutlinedButton.icon(
+              onPressed: SaglamSpotCommunication.makeCall,
+              style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white54),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
+              icon: const Icon(Icons.call_outlined, size: 16),
+              label: Text(SaglamSpotCommunication.displayPhone),
+            ),
+            OutlinedButton.icon(
+              onPressed: SaglamSpotCommunication.openStoreLocation,
+              style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white54),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
+              icon: const Icon(Icons.north_east, size: 16),
+              label: Text(context.l10n.directionsButton),
+            ),
+          ],
+        ),
+        const SizedBox(height: 28),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.06),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _visitInfoRow(
+                  Icons.local_shipping_outlined,
+                  context.l10n.freeDeliveryLabel,
+                  SaglamSpotCommunication.freeDeliveryZones.join(', ')),
+              const SizedBox(height: 16),
+              _visitInfoRow(
+                  Icons.directions_bus_outlined,
+                  context.l10n.busLinesLabel,
+                  SaglamSpotCommunication.getBusLines()
+                      .entries
+                      .map((final e) => '${e.key}: ${e.value.join(', ')}')
+                      .join('\n')),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    return Container(
+      margin: context.sectionPadding,
+      padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 48)),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(context.borderRadius(2)),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Positioned.fill(child: _FloatingMotifLayer()),
+          context.isMobile
+              ? Column(children: [mapCard, const SizedBox(height: 28), infoColumn])
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 6, child: mapCard),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 5, child: infoColumn),
+                  ],
+                ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget _visitInfoRow(
+        final IconData icon, final String title, final String detail) =>
+    Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: AppColors.accentLight, size: 18),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13)),
+              const SizedBox(height: 4),
+              Text(detail,
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 12,
+                      height: 1.4)),
+            ],
+          ),
+        ),
+      ],
+    );
+
+/// Harita üzerine binen, canlı "Açık/Kapalı" rozeti — gerçek zamana göre.
+class _LiveOpenBadge extends StatelessWidget {
+  const _LiveOpenBadge({required this.isOpen});
+
+  final bool isOpen;
+
+  @override
+  Widget build(final BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.95),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.18), blurRadius: 10, offset: const Offset(0, 3)),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isOpen ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+              ),
+            ),
+            const SizedBox(width: 7),
+            Text(
+              isOpen ? 'ŞU AN AÇIK' : 'ŞU AN KAPALI',
+              style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.4,
+                  color: isOpen ? const Color(0xFF2E7D32) : const Color(0xFFC62828)),
+            ),
+            const SizedBox(width: 6),
+            Text('· ${SaglamSpotCommunication.todayHoursLabel}',
+                style: const TextStyle(fontSize: 11, color: Color(0xFF5A5A5A), fontWeight: FontWeight.w600)),
+          ],
+        ),
+      );
+}
+
+/// Sanatsal doku: birkaç dev, çok soluk mobilya/motif ikonu yavaşça
+/// yukarı-aşağı süzülüp hafifçe döner — "sihirbaz hareketi" hissi veren,
+/// saf dekoratif bir katman. Erişilebilirlik ağacından ve dokunuşlardan
+/// hariç tutulur; tek bir [AnimationController] ile sürülür.
+class _FloatingMotifLayer extends StatefulWidget {
+  const _FloatingMotifLayer();
+
+  @override
+  State<_FloatingMotifLayer> createState() => _FloatingMotifLayerState();
+}
+
+class _FloatingMotifLayerState extends State<_FloatingMotifLayer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 10),
+  )..repeat();
+
+  static const _motifs = [
+    (icon: Icons.auto_awesome, size: 46.0, phase: 0.0, top: 0.06, right: 0.08),
+    (icon: Icons.weekend_rounded, size: 96.0, phase: 0.33, top: 0.62, right: -0.03),
+    (icon: Icons.chair_rounded, size: 64.0, phase: 0.66, top: 0.12, right: 0.42),
+  ];
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) => ExcludeSemantics(
+        child: IgnorePointer(
+          child: ClipRect(
+            child: LayoutBuilder(
+              builder: (final context, final constraints) => AnimatedBuilder(
+                animation: _controller,
+                builder: (final context, final _) {
+                  final t = _controller.value;
+                  return Stack(
+                    children: [
+                      for (final m in _motifs)
+                        Positioned(
+                          top: constraints.maxHeight * m.top +
+                              math.sin((t + m.phase) * 2 * math.pi) * 12,
+                          right: constraints.maxWidth * m.right,
+                          child: Transform.rotate(
+                            angle: math.sin((t + m.phase) * 2 * math.pi) * 0.09,
+                            child: Icon(m.icon,
+                                size: m.size, color: Colors.white.withOpacity(0.05)),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+}
+
 class _RoomCard extends StatefulWidget {
   final String title;
   final String img;

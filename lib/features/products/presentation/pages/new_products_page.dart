@@ -922,9 +922,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         mainAxisSpacing: 16,
         childAspectRatio: childAspectRatio,
       ),
-      itemCount: products.length,
+      itemCount: paddedItemCountForAds(products.length),
       itemBuilder: (context, index) {
-        return _buildFinalCard(context, products[index]);
+        if (isAdSlot(index, products.length)) return const NativeAdCard();
+        final realIndex = realIndexForAdGrid(index, products.length);
+        return _buildFinalCard(context, products[realIndex]);
       },
     );
   }

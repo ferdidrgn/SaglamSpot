@@ -20,6 +20,12 @@ final class SaglamSpotCommunication {
   static const double _lat = 40.9691;
   static const double _lng = 29.1105;
 
+  // Google'daki doğrulanmış mağaza kaydının hassas koordinatları (yukarıdaki
+  // kaba _lat/_lng'den farklı — openStoreLocation()'daki Google URL'sinden
+  // alınmıştır). Harita gömme/görsel amaçlı kullanılır.
+  static const double placeLatitude = 40.9699196;
+  static const double placeLongitude = 29.1148379;
+
   // --- 📞 İLETİŞİM AKSİYONLARI ---
 
   /// WhatsApp hattını başlatır
