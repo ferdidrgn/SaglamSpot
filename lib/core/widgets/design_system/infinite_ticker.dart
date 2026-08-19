@@ -18,7 +18,7 @@ class InfiniteTicker extends StatefulWidget {
   final List<TickerItem> items;
   final double height;
 
-  const InfiniteTicker({super.key, required this.items, this.height = 50});
+  const InfiniteTicker({super.key, required this.items, this.height = 68});
 
   @override
   State<InfiniteTicker> createState() => _InfiniteTickerState();
@@ -42,7 +42,7 @@ class _InfiniteTickerState extends State<InfiniteTicker>
 
   void _tick() {
     if (!_scrollController.hasClients) return;
-    _offset += 0.45;
+    _offset += 0.6;
     _scrollController.jumpTo(_offset);
   }
 
@@ -78,19 +78,19 @@ class _TickerChip extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 14),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(item.icon, size: 16, color: AppColors.accent),
-            const SizedBox(width: 8),
+            Icon(item.icon, size: 24, color: AppColors.accent),
+            const SizedBox(width: 12),
             Text(item.label,
                 style: AppTextStyles.microLabel(
-                    fontSize: 12,
-                    letterSpacing: 1,
+                    fontSize: 17,
+                    letterSpacing: 1.2,
                     color: AppColors.textPrimary)),
-            const SizedBox(width: 18),
-            Icon(Icons.circle, size: 4, color: AppColors.border),
+            const SizedBox(width: 26),
+            Icon(Icons.circle, size: 6, color: AppColors.border),
           ],
         ),
       );

@@ -10,7 +10,7 @@ import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
+import '../../../../core/widgets/design_system/soft_page_backdrop.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
@@ -43,7 +43,7 @@ class HomeStorePage extends ConsumerWidget {
       bottomNavigationBar: const MobileBottomNav(),
       body: Stack(
         children: [
-          const Positioned.fill(child: AmbientMeshBackground()),
+          const Positioned.fill(child: SoftPageBackdrop()),
           SafeArea(
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
@@ -160,9 +160,9 @@ class HomeStorePage extends ConsumerWidget {
   /// Sonsuz kayan güven/özellik şeridi — referans tasarımların kayan marka
   /// şeridi motifinin gerçek güven metinleriyle mobil karşılığı.
   Widget _buildFeatureTicker(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
         child: InfiniteTicker(
-          height: 44,
+          height: 62,
           items: [
             TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
             TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),

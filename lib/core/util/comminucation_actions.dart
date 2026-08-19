@@ -8,6 +8,7 @@ final class SaglamSpotCommunication {
   // --- MAĞAZA BİLGİLERİ ---
   static const String _phoneNumber = "905392019961";
   static const String _instaUser = "saglamspot";
+  static const String _fbUser = "saglamspot";
   static const String email = "info@saglamspot.com";
   static const String _fullAddress =
       "İçerenköy Mahallesi Buket Sokak No:6, Ataşehir/İstanbul";
@@ -40,6 +41,21 @@ final class SaglamSpotCommunication {
   static Future<void> openInstagram() async {
     final native = Uri.parse("instagram://user?username=$_instaUser");
     final web = Uri.parse("https://www.instagram.com/$_instaUser");
+
+    try {
+      if (!await launchUrl(native,
+          mode: LaunchMode.externalNonBrowserApplication)) {
+        await launchUrl(web, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      await launchUrl(web, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  /// Facebook sayfasını açar
+  static Future<void> openFacebook() async {
+    final native = Uri.parse("fb://facewebmodal/f?href=https://www.facebook.com/$_fbUser");
+    final web = Uri.parse("https://www.facebook.com/$_fbUser");
 
     try {
       if (!await launchUrl(native,
@@ -115,6 +131,22 @@ final class SaglamSpotCommunication {
   /// Haftalık çalışma saatleri
   static String get workingHours =>
       "Pzt-Cmt: 09:00 - 22:00\nPazar: 10:00 - 20:00";
+
+  /// Bugünün açılış-kapanış saati (tek satır, dinamik gösterimler için).
+  static String get todayHoursLabel =>
+      DateTime.now().weekday == DateTime.sunday
+          ? "10:00 - 20:00"
+          : "09:00 - 22:00";
+
+  /// Mağazanın şu anda (gerçek saate göre) açık olup olmadığı.
+  static bool get isOpenNow {
+    final now = DateTime.now();
+    final isSunday = now.weekday == DateTime.sunday;
+    final openMinutes = (isSunday ? 10 : 9) * 60;
+    final closeMinutes = (isSunday ? 20 : 22) * 60;
+    final nowMinutes = now.hour * 60 + now.minute;
+    return nowMinutes >= openMinutes && nowMinutes < closeMinutes;
+  }
 
   // --- 🛠 YARDIMCI METOT ---
   static Future<void> _launch(Uri url) async {

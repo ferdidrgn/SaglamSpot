@@ -10,7 +10,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
+import '../../../../core/widgets/design_system/soft_page_backdrop.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
@@ -85,7 +85,9 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
 
           return Stack(
             children: [
-              const Positioned.fill(child: AmbientMeshBackground()),
+              const Positioned.fill(
+                child: SoftPageBackdrop(tint: Color(0xFFE65100)),
+              ),
               CustomScrollView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),

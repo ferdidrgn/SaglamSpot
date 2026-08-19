@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
-import 'package:saglamspot/core/widgets/design_system/ambient_mesh_background.dart';
+import 'package:saglamspot/core/widgets/design_system/soft_page_backdrop.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
@@ -31,7 +31,6 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
-import '../widgets/newsletter_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/testimonials_section.dart';
 import '../widgets/why_us_section.dart';
@@ -77,7 +76,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             Center(child: Text(context.l10n.productsLoadError('$err'))),
         data: (final _) => Stack(
           children: [
-            const Positioned.fill(child: AmbientMeshBackground()),
+            const Positioned.fill(child: SoftPageBackdrop()),
             ResponsiveUtils.maxWidthContainer(
               child: CustomScrollView(
                 controller: _scrollController,
@@ -126,7 +125,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   const WhyUsSection(),
                   const TestimonialsSection(),
                   _buildStatsSection(),
-                  const NewsletterSection(),
                   // Sayfanın en altına, footer'dan hemen önce ikinci bir
                   // reklam — kullanıcı sayfanın sonuna kadar geldiğinde de
                   // bir kazanım fırsatı olsun diye.
@@ -310,10 +308,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.symmetric(
-            vertical: context.responsive(mobile: 14, desktop: 20)),
+            vertical: context.responsive(mobile: 20, desktop: 28)),
         child: InfiniteTicker(
             items: items,
-            height: context.responsive(mobile: 46, desktop: 54)),
+            height: context.responsive(mobile: 64, desktop: 78)),
       ),
     );
   }
@@ -782,111 +780,142 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ),
       );
 
-  // --- Yeni referans tasarımın footer'ı ---
-  // 4 sütunlu düzen: marka + sosyal ikonlar, menü linkleri, gerçek
-  // iletişim bilgileri ve bülten kaydı. Hesap/sepet sütunu yok — bu bir
-  // showcase sitesi.
+  // --- Endüstriyel/gerçekçi footer ---
+  // Üstte bir "tehlike şeridi" ayraç + fabrika levhası hissi veren
+  // monospace etiketler. 4 sütun: marka + sosyal ikonlar (WhatsApp,
+  // Instagram, Facebook, Telefon), menü linkleri, gerçek iletişim
+  // bilgileri ve CANLI çalışma-saati/konum kartı (e-posta bülten
+  // formunun yerini aldı — gerçek zamana göre "Açık/Kapalı" hesaplar).
   Widget _buildFooter() => SliverToBoxAdapter(
         child: Container(
-          padding: EdgeInsets.fromLTRB(
-              context.pagePadding.left, 72, context.pagePadding.right, 32),
           color: AppColors.backgroundDark,
           child: Column(
             children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 40,
-                runSpacing: 42,
-                children: [
-                  SizedBox(
-                    width: context.responsive(
-                        mobile: double.infinity, desktop: 260),
-                    child: Column(
-                      crossAxisAlignment: context.isMobile
-                          ? CrossAxisAlignment.center
-                          : CrossAxisAlignment.start,
+              const _HazardStripeBar(),
+              Container(
+                padding: EdgeInsets.fromLTRB(context.pagePadding.left, 56,
+                    context.pagePadding.right, 32),
+                child: Column(
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      spacing: 40,
+                      runSpacing: 42,
                       children: [
-                        Text(context.l10n.brand,
-                            style: const TextStyle(
-                                fontFamily: 'Fraunces',
-                                color: Colors.white,
-                                fontSize: 22,
-                                letterSpacing: 3,
-                                fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: context.responsive(
+                              mobile: double.infinity, desktop: 260),
+                          child: Column(
+                            crossAxisAlignment: context.isMobile
+                                ? CrossAxisAlignment.center
+                                : CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.storefront_rounded,
+                                      color: AppColors.accentLight, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(context.l10n.brand,
+                                      style: const TextStyle(
+                                          fontFamily: 'Fraunces',
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          letterSpacing: 3,
+                                          fontWeight: FontWeight.w600)),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                context.l10n.footerDesc,
+                                textAlign: context.isMobile
+                                    ? TextAlign.center
+                                    : TextAlign.start,
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(0.4),
+                                    fontSize: 13,
+                                    height: 1.6),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _FooterSocialIcon(
+                                      icon: Icons.chat_bubble_outline_rounded,
+                                      onTap: SaglamSpotCommunication
+                                          .launchWhatsApp),
+                                  const SizedBox(width: 10),
+                                  _FooterSocialIcon(
+                                      icon: Icons.camera_alt_outlined,
+                                      onTap: SaglamSpotCommunication
+                                          .openInstagram),
+                                  const SizedBox(width: 10),
+                                  _FooterSocialIcon(
+                                      icon: Icons.facebook,
+                                      onTap: SaglamSpotCommunication
+                                          .openFacebook),
+                                  const SizedBox(width: 10),
+                                  _FooterSocialIcon(
+                                      icon: Icons.call_outlined,
+                                      onTap:
+                                          SaglamSpotCommunication.makeCall),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        _footerColumn(context.l10n.explore, {
+                          context.l10n.home: () =>
+                              NavigationHandler.goToHome(context),
+                          context.l10n.collections: () =>
+                              NavigationHandler.goToSearch(context),
+                          context.l10n.spotProducts: () =>
+                              NavigationHandler.goToSpotProducts(context),
+                          context.l10n.aboutUs: () =>
+                              NavigationHandler.goToAbout(context),
+                        }),
+                        _footerColumn(context.l10n.contact, {
+                          SaglamSpotCommunication.displayPhone:
+                              SaglamSpotCommunication.makeCall,
+                          context.l10n.whatsappCta:
+                              SaglamSpotCommunication.launchWhatsApp,
+                          context.l10n.storeAddress:
+                              SaglamSpotCommunication.openStoreLocation,
+                          context.l10n.sss: () =>
+                              NavigationHandler.goToSSS(context),
+                        }),
+                        SizedBox(
+                          width: context.responsive(
+                              mobile: double.infinity, desktop: 260),
+                          child: const _FooterLocationCard(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 48),
+                    Container(
+                        height: 1, color: Colors.white.withOpacity(0.08)),
+                    const SizedBox(height: 20),
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      runSpacing: 10,
+                      children: [
+                        Text(context.l10n.allRightsReserved,
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.15),
+                                fontSize: 10)),
                         Text(
-                          context.l10n.footerDesc,
-                          textAlign: context.isMobile
-                              ? TextAlign.center
-                              : TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.4),
-                              fontSize: 13,
-                              height: 1.6),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _FooterSocialIcon(
-                                icon: Icons.chat_bubble_outline_rounded,
-                                onTap: SaglamSpotCommunication.launchWhatsApp),
-                            const SizedBox(width: 10),
-                            _FooterSocialIcon(
-                                icon: Icons.camera_alt_outlined,
-                                onTap: SaglamSpotCommunication.openInstagram),
-                            const SizedBox(width: 10),
-                            _FooterSocialIcon(
-                                icon: Icons.call_outlined,
-                                onTap: SaglamSpotCommunication.makeCall),
-                          ],
+                          "MOBİLYA DEPOSU · İÇERENKÖY / ATAŞEHİR",
+                          style: AppTextStyles.microLabel(
+                              fontSize: 9.5,
+                              letterSpacing: 1.6,
+                              color: Colors.white.withOpacity(0.15)),
                         ),
                       ],
                     ),
-                  ),
-                  _footerColumn(context.l10n.explore, {
-                    context.l10n.home: () =>
-                        NavigationHandler.goToHome(context),
-                    context.l10n.collections: () =>
-                        NavigationHandler.goToSearch(context),
-                    context.l10n.spotProducts: () =>
-                        NavigationHandler.goToSpotProducts(context),
-                    context.l10n.aboutUs: () =>
-                        NavigationHandler.goToAbout(context),
-                  }),
-                  _footerColumn(context.l10n.contact, {
-                    SaglamSpotCommunication.displayPhone:
-                        SaglamSpotCommunication.makeCall,
-                    context.l10n.whatsappCta: SaglamSpotCommunication.launchWhatsApp,
-                    context.l10n.storeAddress:
-                        SaglamSpotCommunication.openStoreLocation,
-                    context.l10n.sss: () => NavigationHandler.goToSSS(context),
-                  }),
-                  SizedBox(
-                    width: context.responsive(
-                        mobile: double.infinity, desktop: 260),
-                    child: Column(
-                      crossAxisAlignment: context.isMobile
-                          ? CrossAxisAlignment.center
-                          : CrossAxisAlignment.start,
-                      children: [
-                        Text(context.l10n.stayUpdated,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13)),
-                        const SizedBox(height: 18),
-                        const _NewsletterField(),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 56),
-              Text(context.l10n.allRightsReserved,
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.15), fontSize: 10)),
             ],
           ),
         ),
@@ -899,11 +928,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13)),
+            Text(title.toUpperCase(),
+                style: AppTextStyles.microLabel(
+                    fontSize: 11.5,
+                    letterSpacing: 1.6,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white)),
             const SizedBox(height: 25),
             ...items.entries.map((final entry) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -918,6 +948,175 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           ],
         ),
       );
+}
+
+/// Fabrika/depo levhası hissi veren, ince bir "tehlike şeridi" ayraç —
+/// footer ile içerik arasındaki sınırı endüstriyel bir imzayla çizer.
+/// Statik desen: bir kez çizilir, animasyon YOK.
+class _HazardStripeBar extends StatelessWidget {
+  const _HazardStripeBar();
+
+  @override
+  Widget build(final BuildContext context) => SizedBox(
+        height: 6,
+        width: double.infinity,
+        child: CustomPaint(painter: _HazardStripePainter()),
+      );
+}
+
+class _HazardStripePainter extends CustomPainter {
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    const stripeWidth = 18.0;
+    final darkPaint = Paint()..color = const Color(0xFF1A120C);
+    final lightPaint = Paint()..color = AppColors.accentLight;
+    canvas.drawRect(Offset.zero & size, darkPaint);
+
+    final path = Path();
+    for (double x = -size.height; x < size.width; x += stripeWidth * 2) {
+      path
+        ..moveTo(x, size.height)
+        ..lineTo(x + size.height, 0)
+        ..lineTo(x + size.height + stripeWidth, 0)
+        ..lineTo(x + stripeWidth, size.height)
+        ..close();
+    }
+    canvas.drawPath(path, lightPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant final CustomPainter oldDelegate) => false;
+}
+
+/// CANLI çalışma-saati/konum kartı — e-posta bülten formunun yerini aldı.
+/// Gerçek adres + gerçek saatlere göre "Açık şu an / Kapalı" rozetini her
+/// dakika yeniden hesaplar (gerçek zamana bağlı, dinamik).
+class _FooterLocationCard extends StatefulWidget {
+  const _FooterLocationCard();
+
+  @override
+  State<_FooterLocationCard> createState() => _FooterLocationCardState();
+}
+
+class _FooterLocationCardState extends State<_FooterLocationCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Açık/kapalı rozeti dakikada bir kendini günceller.
+    _timer = Timer.periodic(const Duration(minutes: 1), (final _) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final isOpen = SaglamSpotCommunication.isOpenNow;
+    final crossAlign =
+        context.isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start;
+
+    return Column(
+      crossAxisAlignment: crossAlign,
+      children: [
+        Text("KONUM & ÇALIŞMA SAATİ",
+            style: AppTextStyles.microLabel(
+                fontSize: 11.5,
+                letterSpacing: 1.6,
+                fontWeight: FontWeight.w700,
+                color: Colors.white)),
+        const SizedBox(height: 14),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.04),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.white.withOpacity(0.08)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isOpen ? const Color(0xFF6FCF97) : const Color(0xFFE57373),
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Text(
+                    isOpen ? "ŞU AN AÇIK" : "ŞU AN KAPALI",
+                    style: TextStyle(
+                        color: isOpen
+                            ? const Color(0xFF9BE3B8)
+                            : const Color(0xFFEDA0A0),
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                        "· Bugün ${SaglamSpotCommunication.todayHoursLabel}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.35),
+                            fontSize: 11)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: SaglamSpotCommunication.openStoreLocation,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.location_on_rounded,
+                        size: 16, color: AppColors.accentLight),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(context.l10n.storeAddress,
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.55),
+                              fontSize: 12,
+                              height: 1.4)),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: SaglamSpotCommunication.openStoreLocation,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withOpacity(0.18)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  icon: const Icon(Icons.map_outlined, size: 16),
+                  label: const Text("Haritada Aç",
+                      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 /// Oda kartı: tıklanınca ilgili kategoriyle arama sayfasına götürür.
@@ -1648,91 +1847,3 @@ class _FooterSocialIcon extends StatelessWidget {
       );
 }
 
-/// Footer'daki bülten kayıt formu — NewsletterSection'daki ile aynı dürüst
-/// davranış: backend entegrasyonu TODO, ama kullanıcıya anında geri bildirim
-/// veriliyor.
-class _NewsletterField extends StatefulWidget {
-  const _NewsletterField();
-
-  @override
-  State<_NewsletterField> createState() => _NewsletterFieldState();
-}
-
-class _NewsletterFieldState extends State<_NewsletterField> {
-  final TextEditingController _controller = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _subscribe() {
-    if (!_formKey.currentState!.validate()) return;
-    _controller.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.newsletterSubscribeSuccess)),
-    );
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    return SizedBox(
-      width: context.responsive(mobile: 260, desktop: 240),
-      child: Form(
-        key: _formKey,
-        child: Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _controller,
-                style: const TextStyle(color: Colors.white, fontSize: 13),
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: context.l10n.emailHint,
-                  hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.4), fontSize: 12),
-                  isDense: true,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.06),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.white.withOpacity(0.15))),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.white.withOpacity(0.15))),
-                ),
-                validator: (final value) {
-                  if (value == null || value.isEmpty) return context.l10n.emailRequired;
-                  final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-                  if (!regex.hasMatch(value))
-                    return context.l10n.emailInvalid;
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(width: 8),
-            Material(
-              color: AppColors.accent,
-              borderRadius: BorderRadius.circular(10),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: _subscribe,
-                child: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Icon(Icons.arrow_forward_rounded,
-                      color: Colors.white, size: 18),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
