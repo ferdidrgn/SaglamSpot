@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
+import '../../features/products/data/models/category_meta.dart';
 import '../../shared/navigation/widgets/nav_handler.dart';
+import '../common/enum/enums.dart';
 import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
@@ -27,6 +29,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
   @override
   Widget build(final BuildContext context) {
     final hasImage = widget.product.imagesUrl.isNotEmpty;
+    final meta = defaultCategoryMeta[widget.product.category] ??
+        defaultCategoryMeta[ProductCategory.other]!;
 
     return MouseRegion(
       onEnter: (final _) => setState(() => _isHovered = true),
@@ -38,12 +42,20 @@ class _CustomProductCardState extends State<CustomProductCard> {
           curve: Curves.easeOut,
           decoration: BoxDecoration(
             color: AppColors.card,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
             boxShadow: [
+              // Kategori renkli "radiant" glow — /new ve /spot'taki canlı
+              // kart diliyle tutarlı.
               BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.05),
-                blurRadius: _isHovered ? 22 : 12,
-                offset: Offset(0, _isHovered ? 12 : 6),
+                color: meta.color.withOpacity(_isHovered ? 0.42 : 0.24),
+                blurRadius: _isHovered ? 32 : 18,
+                spreadRadius: -6,
+                offset: Offset(0, _isHovered ? 16 : 10),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.1 : 0.04),
+                blurRadius: _isHovered ? 18 : 10,
+                offset: Offset(0, _isHovered ? 8 : 4),
               ),
             ],
           ),
@@ -53,7 +65,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
               Expanded(
                 child: ClipRRect(
                   borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(20)),
+                      const BorderRadius.vertical(top: Radius.circular(22)),
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -154,20 +166,31 @@ class _CustomProductCardState extends State<CustomProductCard> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 3),
-                    Text(
-                      widget.product.category.label(context),
-                      style: TextStyle(
-                          color: AppColors.textTertiary, fontSize: 12),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(meta.icon, size: 11, color: meta.color),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            widget.product.category.label(context),
+                            style: TextStyle(
+                                color: meta.color,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 7),
                     Text(
                       '₺${widget.product.price.toStringAsFixed(0)}',
                       style: TextStyle(
-                          color: AppColors.accentDark,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700),
+                          color: AppColors.accent,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900),
                     ),
                   ],
                 ),

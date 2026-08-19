@@ -13,6 +13,25 @@ class AppTextStyles {
   /// TextStyle'larına eklemek için kullanılır.
   static final String headingFontFamily = GoogleFonts.fraunces().fontFamily!;
 
+  /// 2026 endüstriyel-editorial dilin imza detayı: mühendislik hissi veren
+  /// monospace aile (JetBrains Mono). Büyük başlıklarda DEĞİL — eyebrow'lar,
+  /// rozetler, fiyat/istatistik etiketleri gibi "mikro-etiket" metinlerde
+  /// kullanılır; [microLabel] hazır stili bunun için var.
+  static final String monoFontFamily = GoogleFonts.jetBrainsMono().fontFamily!;
+
+  static TextStyle microLabel({
+    final double fontSize = 11,
+    final FontWeight fontWeight = FontWeight.w600,
+    final double letterSpacing = 2.4,
+    final Color? color,
+  }) =>
+      GoogleFonts.jetBrainsMono(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        letterSpacing: letterSpacing,
+        color: color,
+      );
+
   static TextStyle _heading({
     required final double fontSize,
     required final FontWeight fontWeight,

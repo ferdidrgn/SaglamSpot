@@ -2,6 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
+import 'package:saglamspot/core/widgets/design_system/ambient_mesh_background.dart';
+import 'package:saglamspot/core/theme/app_text_styles.dart';
+import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
+import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
+import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
+import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
+import 'package:saglamspot/core/widgets/design_system/tactile_press.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
@@ -70,6 +77,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             Center(child: Text(context.l10n.productsLoadError('$err'))),
         data: (final _) => Stack(
           children: [
+            const Positioned.fill(child: AmbientMeshBackground()),
             ResponsiveUtils.maxWidthContainer(
               child: CustomScrollView(
                 controller: _scrollController,
@@ -77,6 +85,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 slivers: [
                   _buildHeroBanner(availableProducts),
                   _buildTrustBar(),
+                  _buildFeatureTicker(),
                   _buildCategoriesSection(),
                   _buildProductsHeader(),
                   _buildDynamicFeaturedGrid(
@@ -237,15 +246,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     return SliverToBoxAdapter(
       child: Padding(
         padding: context.pagePadding,
-        child: Container(
+        child: GlassSurface(
+          borderRadius: 20,
+          chromaticEdge: true,
           padding: EdgeInsets.symmetric(
               vertical: context.responsive(mobile: 20, desktop: 26),
               horizontal: context.responsive(mobile: 16, desktop: 32)),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.border),
-          ),
           child: context.isMobile
               ? Wrap(
                   alignment: WrapAlignment.center,
@@ -288,6 +294,30 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ],
       );
 
+  /// Sonsuz kayan güven/marka şeridi — referans "Luma & Living" tasarımının
+  /// `_buildBrandLogos` bölümünün karşılığı. Uydurma marka isimleri yerine
+  /// gerçek güven/hizmet vurgularımızı aynı görsel dille kullanır.
+  Widget _buildFeatureTicker() {
+    final items = <TickerItem>[
+      TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
+      TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
+      TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
+      TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
+      TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
+      TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
+    ];
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: context.responsive(mobile: 14, desktop: 20)),
+        child: InfiniteTicker(
+            items: items,
+            height: context.responsive(mobile: 46, desktop: 54)),
+      ),
+    );
+  }
+
   Widget _buildProductsHeader() => SliverToBoxAdapter(
         child: Padding(
           padding: context.pagePadding.copyWith(
@@ -295,9 +325,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           child: Column(
             children: [
               Text(context.l10n.showcaseEyebrow,
-                  style: TextStyle(
+                  style: AppTextStyles.microLabel(
                       color: AppColors.accent,
-                      fontWeight: FontWeight.w700,
                       letterSpacing: 3,
                       fontSize: context.captionSize)),
               const SizedBox(height: 8),
@@ -533,9 +562,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(context.l10n.visitUsEyebrow,
-                        style: TextStyle(
+                        style: AppTextStyles.microLabel(
                             color: AppColors.accentLight,
-                            fontWeight: FontWeight.bold,
                             letterSpacing: 2,
                             fontSize: context.captionSize)),
                     const SizedBox(height: 12),
@@ -724,15 +752,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     required final IconData icon,
     final String prefix = "",
   }) =>
-      Container(
+      GlassSurface(
         width: context.responsive(
             mobile: context.wp(42), tablet: 200, desktop: 250),
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
-          borderRadius: BorderRadius.circular(context.borderRadius()),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
-        ),
+        borderRadius: context.borderRadius(),
+        chromaticEdge: true,
         child: Column(
           children: [
             Icon(icon, color: AppColors.accentLight, size: 30),
@@ -749,11 +774,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             ),
             const SizedBox(height: 5),
             Text(label.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white.withOpacity(0.4),
+                style: AppTextStyles.microLabel(
+                    color: Colors.white.withOpacity(0.55),
                     fontSize: 10,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.bold)),
+                    letterSpacing: 1.6)),
           ],
         ),
       );
@@ -971,10 +995,10 @@ class _RoomCardState extends State<_RoomCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.sub,
-                          style: TextStyle(
+                          style: AppTextStyles.microLabel(
                               color: AppColors.accentLight,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
+                              letterSpacing: 1.4,
+                              fontSize: 10)),
                       Text(widget.title,
                           style: TextStyle(
                               fontFamily: 'Fraunces',
@@ -1084,19 +1108,23 @@ class _HeroBannerState extends State<_HeroBanner> {
     ];
     final slide = slides[_page % slides.length];
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
-      child: LayoutBuilder(
-        builder: (final context, final constraints) {
-          // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik
-          // varsa göster — dar tabletlerde/laptop pencerelerinde başlık
-          // metniyle çakışmalarını (üst üste binmesini) önler. Ölçüm
-          // nominal breakpoint yerine gerçek piksel genişliğine dayanır.
-          final heroWidth = constraints.maxWidth;
-          final showSideCards =
-              heroWidth >= 1100 && widget.featuredPool.isNotEmpty;
-          return _buildHeroContent(context, slide, showSideCards);
-        },
+    return HudCornerFrame(
+      armLength: 26,
+      inset: 16,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
+        child: LayoutBuilder(
+          builder: (final context, final constraints) {
+            // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik
+            // varsa göster — dar tabletlerde/laptop pencerelerinde başlık
+            // metniyle çakışmalarını (üst üste binmesini) önler. Ölçüm
+            // nominal breakpoint yerine gerçek piksel genişliğine dayanır.
+            final heroWidth = constraints.maxWidth;
+            final showSideCards =
+                heroWidth >= 1100 && widget.featuredPool.isNotEmpty;
+            return _buildHeroContent(context, slide, showSideCards);
+          },
+        ),
       ),
     );
   }
@@ -1115,6 +1143,10 @@ class _HeroBannerState extends State<_HeroBanner> {
             fit: BoxFit.cover,
             errorBuilder: (final c, final e, final s) =>
                 Container(color: AppColors.secondary),
+            loadingBuilder: (final c, final child, final progress) =>
+                progress == null
+                    ? child
+                    : const KineticBeamSkeleton(borderRadius: 0),
           ),
         ),
         IgnorePointer(
@@ -1151,10 +1183,9 @@ class _HeroBannerState extends State<_HeroBanner> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(slide.eyebrow,
-                      style: TextStyle(
+                      style: AppTextStyles.microLabel(
                           color: AppColors.accentLight,
                           letterSpacing: context.isMobile ? 2 : 3,
-                          fontWeight: FontWeight.w700,
                           fontSize:
                               context.responsive(mobile: 9, desktop: 12))),
                 ),
@@ -1340,12 +1371,16 @@ class _HeroPillButton extends StatelessWidget {
         break;
     }
 
-    return Material(
-      color: background,
-      borderRadius: BorderRadius.circular(30),
-      child: InkWell(
+    // Tek dokunma kaynağı [TactilePress]'tir — içeride ayrıca bir InkWell
+    // eklenmiyor ki aynı dokunuşun iki kez tetiklenmesi (çift navigasyon)
+    // riski olmasın. Dokunsal geri bildirim spring tabanlı ölçek animasyonu
+    // ile veriliyor.
+    return TactilePress(
+      onTap: onTap,
+      pressScale: 0.94,
+      child: Material(
+        color: background,
         borderRadius: BorderRadius.circular(30),
-        onTap: onTap,
         child: Container(
           padding: EdgeInsets.symmetric(
               horizontal: context.responsive(mobile: 14, desktop: 20),
@@ -1485,23 +1520,19 @@ class _NumberedProductCard extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final hasImage = product.imagesUrl.isNotEmpty;
-    return GestureDetector(
+    // Tek dokunma kaynağı [TactilePress] — kart arkasındaki hero fotoğrafı
+    // gerçek bir buzlu-cam (backdrop blur) yüzeyle bulanıklaştırıyor, bu
+    // yüzden [GlassSurface]'e ayrıca onTap verilMEZ (çift tetiklemeyi önler).
+    return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
           context: context,
           productId: product.id,
           productSlug: product.name.toSlug()),
-      child: Container(
+      child: GlassSurface(
+        borderRadius: 18,
+        strong: true,
+        chromaticEdge: true,
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.96),
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 22,
-                offset: const Offset(0, 10)),
-          ],
-        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1516,6 +1547,10 @@ class _NumberedProductCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (final c, final e, final s) =>
                             const _FeaturedCardFallback(),
+                        loadingBuilder: (final c, final child, final progress) =>
+                            progress == null
+                                ? child
+                                : const KineticBeamSkeleton(borderRadius: 0),
                       )
                     : const _FeaturedCardFallback(),
               ),

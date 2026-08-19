@@ -14,6 +14,8 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/util/responsive_product_grid.dart';
+import '../../../../core/widgets/design_system/ambient_mesh_background.dart';
+import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
@@ -86,7 +88,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final scaffold = Scaffold(
       backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
-      body: SafeArea(
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AmbientMeshBackground()),
+          SafeArea(
         child: Column(
           children: [
             _buildTopBar(context, searchQuery),
@@ -180,6 +185,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
           ],
         ),
+          ),
+        ],
       ),
       floatingActionButton: !showSidebar ? _buildFloatingFilter(context) : null,
     );
@@ -206,18 +213,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Container(
+            child: GlassSurface(
               height: context.responsive(mobile: 46.0, desktop: 50.0),
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: _showSearchFocus
-                      ? AppColors.textSecondary
-                      : AppColors.border,
-                  width: 1.4,
-                ),
-              ),
+              borderRadius: 14,
+              borderColor: _showSearchFocus
+                  ? AppColors.textSecondary
+                  : null,
+              borderWidth: _showSearchFocus ? 1.4 : null,
+              chromaticEdge: _showSearchFocus,
               child: TextField(
                 controller: _searchController,
                 onChanged: (final val) =>
