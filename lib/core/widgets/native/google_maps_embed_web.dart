@@ -48,7 +48,7 @@ class _GoogleMapsEmbedState extends State<GoogleMapsEmbed> {
           ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%'
-          ..loading = 'lazy'
+          ..setAttribute('loading', 'lazy')
           ..allowFullscreen = true;
       });
     } catch (e) {
