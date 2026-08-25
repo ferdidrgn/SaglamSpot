@@ -10,10 +10,12 @@ import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
+import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../features/products/data/models/category_meta.dart';
@@ -79,6 +81,10 @@ class HomeStorePage extends ConsumerWidget {
                     ),
                   ),
                 const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(
+                    child: _buildSectionTitle(context, context.l10n.visitUsHeading)),
+                const SliverToBoxAdapter(child: _MobileBusinessCard()),
+                const SliverToBoxAdapter(child: SizedBox(height: 24)),
               ],
             ),
           ),
@@ -541,4 +547,183 @@ class _NotificationBellButton extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Mobil ana sayfadaki kompakt "işletme bilgisi" kartı — web'deki büyük
+/// harita bölümünün tek-sütunlu karşılığı. Gerçek bir harita önizlemesi +
+/// gerçek zamana göre canlı "Açık/Kapalı" rozeti (dakikada bir kendini
+/// günceller) + WhatsApp/yol tarifi aksiyonları.
+class _MobileBusinessCard extends StatefulWidget {
+  const _MobileBusinessCard();
+
+  @override
+  State<_MobileBusinessCard> createState() => _MobileBusinessCardState();
+}
+
+class _MobileBusinessCardState extends State<_MobileBusinessCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(minutes: 1), (final _) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final isOpen = SaglamSpotCommunication.isOpenNow;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      child: HudCornerFrame(
+        armLength: 18,
+        inset: 10,
+        color: AppColors.mobilePrimary,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 150,
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: GoogleMapsEmbed(
+                        latitude: SaglamSpotCommunication.placeLatitude,
+                        longitude: SaglamSpotCommunication.placeLongitude,
+                      ),
+                    ),
+                    Positioned(
+                      left: 10,
+                      top: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.95),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.16),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2)),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 7,
+                              height: 7,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isOpen
+                                    ? const Color(0xFF2E7D32)
+                                    : const Color(0xFFC62828),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              isOpen ? 'ŞU AN AÇIK' : 'ŞU AN KAPALI',
+                              style: TextStyle(
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: isOpen
+                                      ? const Color(0xFF2E7D32)
+                                      : const Color(0xFFC62828)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                color: AppColors.mobileSurface,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.location_on_rounded,
+                            size: 16, color: AppColors.mobilePrimary),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(context.l10n.storeAddress,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.mobileTextPrimary)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text('· Bugün ${SaglamSpotCommunication.todayHoursLabel}',
+                        style: TextStyle(fontSize: 11.5, color: AppColors.mobileTextTertiary)),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TactilePress(
+                            onTap: SaglamSpotCommunication.launchWhatsApp,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                color: AppColors.mobilePrimary,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Center(
+                                child: Text('WhatsApp',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.w700)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TactilePress(
+                            onTap: SaglamSpotCommunication.openStoreLocation,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppColors.mobilePrimary),
+                              ),
+                              child: Center(
+                                child: Text(context.l10n.directionsButton,
+                                    style: TextStyle(
+                                        color: AppColors.mobilePrimary,
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.w700)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
