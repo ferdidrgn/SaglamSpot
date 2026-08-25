@@ -90,42 +90,57 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 slivers: [
                   SliverToBoxAdapter(child: _buildMasthead(context, products.length)),
 
-                  // Üstte arama + sıralama çubuğu
+                  // Üstte arama + sıralama çubuğu — new-products sayfasıyla
+                  // aynı 1240px merkezi sınır, kenarlara yapışmasın diye.
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      child: _buildSearchAndFilters(context, filtered.length),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1240),
+                          child: _buildSearchAndFilters(context, filtered.length),
+                        ),
+                      ),
                     ),
                   ),
 
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
+                  SliverToBoxAdapter(child: _buildAphorismSection(context)),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
                   // ANA KISIM: arama bitiminde hemen aşağı doğru başlar —
-                  // sol tarafta dikey kategori rail'i, sağında ürün ızgarası.
+                  // sol tarafta ürünler, sağında dikey kategori rail'i.
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: context.isDesktop
-                          ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Sol: Dikey Kategori Rail
-                          _buildVerticalCategoryRail(),
-                          const SizedBox(width: 20),
-                          // Sağ: Ürünler
-                          Expanded(
-                            child: _buildProductGrid(context, filtered),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1240),
+                          child: context.isDesktop
+                              ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Sol: Ürünler
+                              Expanded(
+                                child: _buildProductGrid(context, filtered),
+                              ),
+                              const SizedBox(width: 20),
+                              // Sağ: Dikey Kategori Rail
+                              _buildVerticalCategoryRail(),
+                            ],
+                          )
+                              : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Mobil: Kategori bar yatay
+                              _buildHorizontalCategoryBar(),
+                              const SizedBox(height: 16),
+                              _buildProductGrid(context, filtered),
+                            ],
                           ),
-                        ],
-                      )
-                          : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Mobil: Kategori bar yatay
-                          _buildHorizontalCategoryBar(),
-                          const SizedBox(height: 16),
-                          _buildProductGrid(context, filtered),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -134,7 +149,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                        child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1240),
+                            child: const AdsenseBanner(height: 100, type: AdUnitType.multiplex),
+                          ),
+                        ),
                       ),
                     ),
 
@@ -214,9 +234,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       child: _buildShowcaseImage(
         context: context,
         imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=900&q=80',
-        badgeIcon: Icons.handshake_outlined,
-        badgeTitle: "Pazarlığa Açık",
-        badgeSubtitle: "Siz teklif verin, biz değerlendirelim.",
+        // NOT: "siz teklif verin, biz değerlendirelim" gibi satıcı davet
+        // eden bir metin BİLİNÇLİ olarak kullanılmıyor — bu sayfa alım
+        // odaklı bir vitrin, eşya satmak isteyenler için bir başvuru kanalı
+        // değil.
+        badgeIcon: Icons.task_alt_rounded,
+        badgeTitle: "Elden Geçirildi",
+        badgeSubtitle: "Her ürün teslimden önce tek tek kontrol edilir.",
         accentColor: const Color(0xFFE65100),
       ),
     );
@@ -373,6 +397,94 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   );
 
   // ============================================================
+  // 1.5 "BİR SÖZÜMÜZ VAR" — İkinci elin ruhunu anlatan kısa, çarpıcı bir
+  // söz + birkaç soluk mobilya motifi. Sayfaya duygusal bir ağırlık
+  // katıyor; new-products'ın "zamansız koleksiyon" havasının tam
+  // karşısında, "eski ama değerli" havasını pekiştiriyor.
+  // ============================================================
+  Widget _buildAphorismSection(final BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1240),
+            child: Container(
+              width: double.infinity,
+              clipBehavior: Clip.antiAlias,
+              padding: EdgeInsets.symmetric(
+                  horizontal: context.responsive(mobile: 26, desktop: 60),
+                  vertical: context.responsive(mobile: 32, desktop: 52)),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A1A),
+                borderRadius: BorderRadius.circular(28),
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    top: -6,
+                    left: context.isMobile ? -4 : 8,
+                    child: Icon(Icons.format_quote_rounded,
+                        size: 60, color: const Color(0xFFE65100).withOpacity(0.35)),
+                  ),
+                  Positioned(
+                    right: -14,
+                    bottom: -20,
+                    child: Transform.rotate(
+                      angle: -0.14,
+                      child: Icon(Icons.chair_rounded,
+                          size: 100, color: Colors.white.withOpacity(0.045)),
+                    ),
+                  ),
+                  if (!context.isMobile)
+                    Positioned(
+                      right: 140,
+                      top: 20,
+                      child: Transform.rotate(
+                        angle: 0.2,
+                        child: Icon(Icons.emoji_objects_outlined,
+                            size: 42, color: Colors.white.withOpacity(0.05)),
+                      ),
+                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("BİR SÖZÜMÜZ VAR",
+                          style: AppTextStyles.microLabel(
+                              fontSize: 11,
+                              letterSpacing: 3,
+                              color: const Color(0xFFE65100))),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Eskimiş değil, emek görmüş.\nİyi mobilya asla eskimez, sadece ev değiştirir.",
+                        style: GoogleFonts.fraunces(
+                          fontSize: context.responsive(mobile: 22, tablet: 28, desktop: 34),
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w500,
+                          height: 1.35,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 560),
+                        child: Text(
+                          "Biz de tam bu yüzden buradayız: hâlâ hayatı olan parçaları, onlara değer verecek yeni bir eve ulaştırmak için.",
+                          style: TextStyle(
+                              fontSize: context.bodySize,
+                              color: Colors.white.withOpacity(0.55),
+                              height: 1.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+  // ============================================================
   // 2. ARAMA + FİLTRELER (Üstte Yatay)
   // ============================================================
   Widget _buildSearchAndFilters(BuildContext context, int resultCount) {
@@ -494,8 +606,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ============================================================
-  // 3. SOL DİKEY KATEGORİ RAİL — newProductsPage ile aynı mekanik:
-  // arama çubuğunun hemen altında, ürünlerin solunda, aşağı doğru sıralı.
+  // 3. SAĞ DİKEY KATEGORİ RAİL — ürünlerin sağında, arama çubuğunun
+  // hemen altında başlayıp aşağı doğru sıralı.
   // ============================================================
   Widget _buildVerticalCategoryRail() {
     return Container(
