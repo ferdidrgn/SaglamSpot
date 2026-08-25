@@ -105,6 +105,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       ),
                     ),
                   _buildRoomsInspirationBanner(),
+                  // Sayfanın tam ortasına — canlı Google Haritalar + Açık/
+                  // Kapalı durumu, gerçek çalışma saatleri ve iletişim
+                  // aksiyonlarıyla, ziyaretçinin "gerçek bir işletme"
+                  // olduğumuzu ilk bakışta gördüğü nokta.
+                  const SliverToBoxAdapter(child: _VisitMapSection()),
                   const FurnitureTipsSection(),
                   const SocialShowcaseSection(),
                   // --- Önceki tasarımların bölümleri: kaldırılmadı, yeni
@@ -121,7 +126,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   ),
                   const HowItWorksSection(),
                   _buildArtisanInfo(),
-                  const SliverToBoxAdapter(child: _VisitMapSection()),
                   const WhyUsSection(),
                   const TestimonialsSection(),
                   _buildStatsSection(),
@@ -1033,6 +1037,34 @@ class _VisitMapSectionState extends State<_VisitMapSection> {
                 ),
               ),
               Positioned(left: 14, top: 14, child: _LiveOpenBadge(isOpen: isOpen)),
+              Positioned(
+                right: 14,
+                bottom: 14,
+                child: Material(
+                  color: Colors.white.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(30),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    onTap: SaglamSpotCommunication.openStoreLocation,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.travel_explore_rounded,
+                              size: 15, color: Color(0xFF1A1A1A)),
+                          SizedBox(width: 6),
+                          Text('Google Haritalar\'da Görüntüle',
+                              style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1A1A1A))),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
-import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 enum _FaqCategory {
@@ -202,7 +200,6 @@ class _SSSPageState extends State<SSSPage> {
 
     return Scaffold(
       backgroundColor: AppColors.mobileBackground,
-      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

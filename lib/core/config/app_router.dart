@@ -184,6 +184,43 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
               ),
             ],
           ),
+          // NOT: /about ve /sss BİLEREK bu kabuğun içinde (StatefulShellBranch
+          // olarak) — NavigationScreen'deki üst navigasyon çubuğu/menü
+          // (_navItems, index 3-4) bu iki sekmeyi de navigationShell.goBranch()
+          // ile açıyor. Bunlar önceden kabuğun DIŞINDA, bağımsız GoRoute
+          // olarak tanımlıydı; goBranch(3) / goBranch(4) o zaman kabuktaki
+          // (yalnızca 3 dallı) index aralığının dışına düşüp navigasyonun
+          // sessizce başarısız olmasına (ya da web'de AboutPage'in kendi
+          // Scaffold'u olmadığı için navigasyon çubuğusuz, "kaçış yolu
+          // olmayan" bir sayfada kalınmasına) yol açıyordu.
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/about',
+                name: 'about',
+                pageBuilder: (final context, final state) =>
+                    const CustomTransitionPage(
+                  child: AboutPage(),
+                  transitionsBuilder: focalTransition,
+                  transitionDuration: Duration(milliseconds: 400),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/sss',
+                name: 'sss',
+                pageBuilder: (final context, final state) =>
+                    const CustomTransitionPage(
+                  child: SSSPage(),
+                  transitionsBuilder: focalTransition,
+                  transitionDuration: Duration(milliseconds: 400),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       GoRoute(
@@ -193,26 +230,6 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
           key: state.pageKey,
           child: const SearchPage(),
           transitionsBuilder: shimmerSlideTransition,
-          transitionDuration: const Duration(milliseconds: 400),
-        ),
-      ),
-      GoRoute(
-        path: '/about',
-        name: 'about',
-        pageBuilder: (final context, final state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const AboutPage(),
-          transitionsBuilder: focalTransition,
-          transitionDuration: const Duration(milliseconds: 400),
-        ),
-      ),
-      GoRoute(
-        path: '/sss',
-        name: 'sss',
-        pageBuilder: (final context, final state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const SSSPage(),
-          transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),
       ),
