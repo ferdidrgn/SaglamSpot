@@ -7,7 +7,6 @@ import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
-import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
@@ -1355,6 +1354,5 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       case _SortMode.popular:
         return "En Çok İncelenenler";
     }
-    return "";
   }
 }

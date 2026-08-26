@@ -10,8 +10,6 @@ final class SaglamSpotCommunication {
   static const String _instaUser = "saglamspot";
   static const String _fbUser = "saglamspot";
   static const String email = "info@saglamspot.com";
-  static const String _fullAddress =
-      "İçerenköy Mahallesi Buket Sokak No:6, Ataşehir/İstanbul";
 
   /// Ekranda göstermek için biçimlendirilmiş telefon numarası.
   static String get displayPhone => "+90 539 201 99 61";

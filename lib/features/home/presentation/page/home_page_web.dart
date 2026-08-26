@@ -2046,4 +2046,3 @@ class _FooterSocialIcon extends StatelessWidget {
         ),
       );
 }
-
