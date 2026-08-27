@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
+import 'package:saglamspot/core/theme/catalog_theme.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
@@ -84,6 +85,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 slivers: [
                   _buildHeroBanner(availableProducts),
                   _buildMottoStrip(),
+                  _buildCatalogGateway(),
                   _buildTrustBar(),
                   _buildFeatureTicker(),
                   _buildCategoriesSection(),
@@ -287,6 +289,66 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               largeDesktop: 620.0),
           child: _HeroBanner(images: _heroImages, featuredPool: featuredPool),
         ),
+      ),
+    );
+  }
+
+  // İki katalog, iki ayrı "kapı" — kullanıcı tıklamadan önce Sıfır
+  // Koleksiyon'un sakin/butik ve Spot Fırsatlar'ın canlı/atölye kimliğini
+  // burada görsel olarak öğreniyor (bkz. core/theme/catalog_theme.dart).
+  Widget _buildCatalogGateway() {
+    final newCount = ref.watch(newDealsProductsProvider).length;
+    final spotCount = ref.watch(spotDealsProductsProvider).length;
+
+    final newCard = _GatewayCard(
+      eyebrow: 'SIFIR KOLEKSİYON',
+      eyebrowColor: NewCollectionPalette.badgeGreen,
+      title: 'Zamansız Parçalar',
+      subtitle: 'Hiç kullanılmamış, yeni gibi mobilyalar.',
+      count: newCount,
+      background: NewCollectionPalette.background,
+      cardBorder: NewCollectionPalette.cardBorder,
+      heading: NewCollectionPalette.heading,
+      body: NewCollectionPalette.body,
+      accent: NewCollectionPalette.accent,
+      headingFontFamily: NewCollectionPalette.headingFont,
+      icon: Icons.chair_rounded,
+      buttonLabel: 'Koleksiyonu Gör',
+      onTap: () => NavigationHandler.goToNewProducts(context),
+    );
+
+    final spotCard = _GatewayCard(
+      eyebrow: 'SPOT FIRSATLAR',
+      eyebrowColor: SpotPalette.accent,
+      title: 'Kullanılmış, Sağlam',
+      subtitle: 'İkinci el ama kullanışlı, cebe uygun fiyatlarla.',
+      count: spotCount,
+      background: SpotPalette.background,
+      cardBorder: SpotPalette.cardBorder,
+      heading: SpotPalette.heading,
+      body: SpotPalette.body,
+      accent: SpotPalette.accent,
+      headingFontFamily: null,
+      icon: Icons.local_offer_rounded,
+      buttonLabel: 'Fırsatları Gör',
+      onTap: () => NavigationHandler.goToSpotProducts(context),
+    );
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: context.pagePadding.copyWith(bottom: context.spacingLarge),
+        child: context.isMobile
+            ? Column(children: [newCard, const SizedBox(height: 16), spotCard])
+            : IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: newCard),
+                    const SizedBox(width: 20),
+                    Expanded(child: spotCard),
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -1311,6 +1373,125 @@ class _LiveOpenBadge extends StatelessWidget {
             Text('· ${SaglamSpotCommunication.todayHoursLabel}',
                 style: const TextStyle(fontSize: 11, color: Color(0xFF5A5A5A), fontWeight: FontWeight.w600)),
           ],
+        ),
+      );
+}
+
+/// Ana sayfadaki "iki kapı" kartı — Sıfır Koleksiyon ve Spot Fırsatlar'ın
+/// kendi renk/tipografi kimliğini (bkz. catalog_theme.dart) taşıyan,
+/// tıklanınca ilgili sekmeye götüren büyük bir vitrin kartı.
+class _GatewayCard extends StatelessWidget {
+  const _GatewayCard({
+    required this.eyebrow,
+    required this.eyebrowColor,
+    required this.title,
+    required this.subtitle,
+    required this.count,
+    required this.background,
+    required this.cardBorder,
+    required this.heading,
+    required this.body,
+    required this.accent,
+    required this.headingFontFamily,
+    required this.icon,
+    required this.buttonLabel,
+    required this.onTap,
+  });
+
+  final String eyebrow;
+  final Color eyebrowColor;
+  final String title;
+  final String subtitle;
+  final int count;
+  final Color background;
+  final Color cardBorder;
+  final Color heading;
+  final Color body;
+  final Color accent;
+  final String? headingFontFamily;
+  final IconData icon;
+  final String buttonLabel;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(final BuildContext context) => TactilePress(
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          clipBehavior: Clip.antiAlias,
+          padding: EdgeInsets.all(context.responsive(mobile: 24, desktop: 32)),
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: cardBorder),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                right: -18,
+                bottom: -18,
+                child: Icon(icon, size: 120, color: accent.withOpacity(0.07)),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(eyebrow,
+                      style: AppTextStyles.microLabel(
+                          color: eyebrowColor, letterSpacing: 2.4, fontSize: 11)),
+                  const SizedBox(height: 12),
+                  Text(title,
+                      style: TextStyle(
+                          fontFamily: headingFontFamily,
+                          fontSize: context.responsive(mobile: 22, desktop: 26),
+                          fontWeight: FontWeight.w700,
+                          color: heading,
+                          height: 1.15)),
+                  const SizedBox(height: 8),
+                  Text(subtitle,
+                      style: TextStyle(color: body, fontSize: 13, height: 1.45)),
+                  const SizedBox(height: 22),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: accent.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text('$count ürün',
+                            style: TextStyle(
+                                color: accent,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700)),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: accent,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
+                        ),
+                        icon: const Icon(Icons.arrow_forward_rounded, size: 15),
+                        label: Text(buttonLabel,
+                            style: const TextStyle(
+                                fontSize: 12.5, fontWeight: FontWeight.w700)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 }
