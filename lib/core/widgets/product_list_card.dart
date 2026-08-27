@@ -6,6 +6,7 @@ import '../common/extentions/app_context_ui_extension.dart';
 import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
+import '../theme/catalog_theme.dart';
 import 'optimized_cached_image.dart';
 
 /// Işaret görselindeki liste görünümü için: yatay, geniş, tek satırlık
@@ -135,9 +136,12 @@ class _ProductListCardState extends State<ProductListCard> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
+                              // Sıfır/Spot vitrinleriyle aynı renk dili
+                              // (bkz. catalog_theme.dart) — yeşil/turuncu
+                              // ayrımı sitedeki her yerde tutarlı.
                               color: (product.isSpotProduct
-                                      ? AppColors.accentDark
-                                      : AppColors.success)
+                                      ? SpotPalette.accent
+                                      : NewCollectionPalette.badgeGreen)
                                   .withOpacity(0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -149,8 +153,8 @@ class _ProductListCardState extends State<ProductListCard> {
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w700,
                                 color: product.isSpotProduct
-                                    ? AppColors.accentDark
-                                    : AppColors.success,
+                                    ? SpotPalette.accent
+                                    : NewCollectionPalette.badgeGreen,
                               ),
                             ),
                           ),

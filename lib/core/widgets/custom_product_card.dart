@@ -7,6 +7,7 @@ import '../common/enum/enums.dart';
 import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
+import '../theme/catalog_theme.dart';
 import 'gallery_section.dart';
 import 'optimized_cached_image.dart';
 
@@ -256,10 +257,14 @@ class _ConditionBadge extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     if (!isSpotProduct) {
+      // Yeni/Spot vitrinleriyle AYNI renk dili: yeşil = Sıfır Koleksiyon
+      // (bkz. NewCollectionPalette.badgeGreen, o sayfadaki "SIFIR"
+      // rozetiyle aynı renk) — kullanıcı bu rengi ana sayfadaki "iki kapı"
+      // kartından tanıyor.
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: NewCollectionPalette.badgeGreen,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(
@@ -273,17 +278,19 @@ class _ConditionBadge extends StatelessWidget {
         ),
       );
     }
+    // Turuncu = Spot Fırsatlar (bkz. SpotPalette.accent) — aynı mantıkla,
+    // ana sayfadaki "iki kapı" kartındaki turuncuyla aynı.
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.85),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: AppColors.accentDark, width: 1.2),
+        border: Border.all(color: SpotPalette.accent, width: 1.2),
       ),
       child: Text(
         context.l10n.usedProductBadge,
         style: TextStyle(
-          color: AppColors.accentDark,
+          color: SpotPalette.accent,
           fontSize: 11,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
