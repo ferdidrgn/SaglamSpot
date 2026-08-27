@@ -10,6 +10,7 @@ import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
@@ -52,6 +53,7 @@ class HomeStorePage extends ConsumerWidget {
                 SliverToBoxAdapter(child: _buildSearchBar(context)),
                 const SliverToBoxAdapter(child: _HomeHeroSlider()),
                 SliverToBoxAdapter(child: _buildMottoStrip(context)),
+                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
                 SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
                 SliverToBoxAdapter(child: _CategoryRow()),
@@ -770,4 +772,129 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
       ),
     );
   }
+}
+
+/// Mobil ana sayfadaki "iki kapı" — web'deki dual-gateway kartlarının
+/// tek-sütunlu karşılığı. Sıfır Koleksiyon ve Spot Fırsatlar'ın kendi
+/// renk kimliğini (bkz. catalog_theme.dart) taşır, canlı ürün sayısı
+/// gösterir ve ilgili sekmeye götürür.
+class _MobileCatalogGateway extends ConsumerWidget {
+  const _MobileCatalogGateway();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final newCount = ref.watch(newDealsProductsProvider).length;
+    final spotCount = ref.watch(spotDealsProductsProvider).length;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: _MobileGatewayTile(
+              eyebrow: 'SIFIR',
+              eyebrowColor: NewCollectionPalette.badgeGreen,
+              title: 'Koleksiyon',
+              count: newCount,
+              background: NewCollectionPalette.background,
+              border: NewCollectionPalette.cardBorder,
+              heading: NewCollectionPalette.heading,
+              accent: NewCollectionPalette.accent,
+              headingFontFamily: NewCollectionPalette.headingFont,
+              icon: Icons.chair_rounded,
+              onTap: () => NavigationHandler.goToNewProducts(context),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _MobileGatewayTile(
+              eyebrow: 'SPOT',
+              eyebrowColor: SpotPalette.accent,
+              title: 'Fırsatlar',
+              count: spotCount,
+              background: SpotPalette.background,
+              border: SpotPalette.cardBorder,
+              heading: SpotPalette.heading,
+              accent: SpotPalette.accent,
+              headingFontFamily: null,
+              icon: Icons.local_offer_rounded,
+              onTap: () => NavigationHandler.goToSpotProducts(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MobileGatewayTile extends StatelessWidget {
+  const _MobileGatewayTile({
+    required this.eyebrow,
+    required this.eyebrowColor,
+    required this.title,
+    required this.count,
+    required this.background,
+    required this.border,
+    required this.heading,
+    required this.accent,
+    required this.headingFontFamily,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String eyebrow;
+  final Color eyebrowColor;
+  final String title;
+  final int count;
+  final Color background;
+  final Color border;
+  final Color heading;
+  final Color accent;
+  final String? headingFontFamily;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(final BuildContext context) => TactilePress(
+        onTap: onTap,
+        child: Container(
+          clipBehavior: Clip.antiAlias,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: border),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                right: -12,
+                bottom: -12,
+                child: Icon(icon, size: 64, color: accent.withOpacity(0.08)),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(eyebrow,
+                      style: AppTextStyles.microLabel(
+                          color: eyebrowColor, letterSpacing: 1.6, fontSize: 9.5)),
+                  const SizedBox(height: 6),
+                  Text(title,
+                      style: TextStyle(
+                          fontFamily: headingFontFamily,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: heading)),
+                  const SizedBox(height: 10),
+                  Text('$count ürün',
+                      style: TextStyle(
+                          color: accent, fontSize: 11.5, fontWeight: FontWeight.w700)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
 }
