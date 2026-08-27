@@ -7,8 +7,10 @@ import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/product_wear_tier_ex.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
@@ -795,9 +797,17 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          color: SpotPalette.cardBackground,
+          borderRadius: BorderRadius.circular(SpotPalette.cardRadius),
+          // Sol kenardaki kalın turuncu şerit, "fiyat etiketi" hissi
+          // veriyor — Sıfır kartlarının yumuşak, şeritsiz haliyle bilinçli
+          // bir zıtlık kuruyor.
+          border: Border(
+            top: BorderSide(color: SpotPalette.cardBorder, width: 1),
+            right: BorderSide(color: SpotPalette.cardBorder, width: 1),
+            bottom: BorderSide(color: SpotPalette.cardBorder, width: 1),
+            left: BorderSide(color: SpotPalette.accent, width: 4),
+          ),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF1A1A1A).withOpacity(0.04),
@@ -920,10 +930,10 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                           product.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: GoogleFonts.spaceGrotesk(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF1A1A1A),
+                            color: SpotPalette.heading,
                             height: 1.2,
                           ),
                         ),
@@ -934,49 +944,32 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 1. SATIR: Puan + Stok
+                        // 1. SATIR: Gerçek durum rozeti (esnafın kendi girdiği
+                        // bilgi — sahte yıldız puanı ve "SIFIR" etiketi
+                        // KALDIRILDI, ikinci el ürünü sıfırmış gibi
+                        // göstermek yanıltıcıydı) + stok.
                         Row(
                           children: [
-                            const Icon(Icons.star, size: 14, color: Color(0xFFF59E0B)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              "4.9",
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151)),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(width: 3, height: 3, decoration: const BoxDecoration(color: Color(0xFFD1D5DB), shape: BoxShape.circle)),
-                            const SizedBox(width: 8),
+                            if (product.wearTier != null) ...[
+                              Icon(product.wearTier!.icon,
+                                  size: 13, color: product.wearTier!.color),
+                              const SizedBox(width: 4),
+                              Text(
+                                product.wearTier!.label,
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: product.wearTier!.color),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(width: 3, height: 3, decoration: const BoxDecoration(color: Color(0xFFD1D5DB), shape: BoxShape.circle)),
+                              const SizedBox(width: 8),
+                            ],
                             const Icon(Icons.check_circle, size: 12, color: Color(0xFF16A34A)),
                             const SizedBox(width: 4),
                             const Text(
                               "Stokta",
                               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF16A34A)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-
-                        // 2. SATIR: SIFIR + Popülerlik
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF0F7F0),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFFC8E6C9)),
-                              ),
-                              child: const Text(
-                                "SIFIR",
-                                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Color(0xFF2E7D32), letterSpacing: 0.5),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.trending_up, size: 12, color: Color(0xFFF59E0B)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              "Çok tercih edilen",
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: Color(0xFF6B7280)),
                             ),
                           ],
                         ),

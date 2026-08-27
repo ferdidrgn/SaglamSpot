@@ -9,6 +9,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
@@ -939,9 +940,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: const Color(0xFFFAF8F5), // Sayfa ile aynı sıcak bej
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE8E3DC), width: 1),
+          color: NewCollectionPalette.background, // Sayfa ile aynı sıcak bej
+          borderRadius: BorderRadius.circular(NewCollectionPalette.cardRadius),
+          border: Border.all(color: NewCollectionPalette.cardBorder, width: 1),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF2C2018).withOpacity(0.05),
@@ -1060,6 +1061,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
+                            fontFamily: NewCollectionPalette.headingFont,
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Color(0xFF2C241E),
@@ -1075,17 +1077,28 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 1. SATIR: Puan + Stok
+                        // SATIR: SIFIR rozeti (bu sayfadaki tüm ürünler
+                        // gerçekten sıfır olduğu için doğru bir bilgi —
+                        // spot sayfasındaki gibi sahte bir yıldız puanı ya
+                        // da uydurma "popülerlik" metni YOK) + stok.
                         Row(
                           children: [
-                            const Icon(Icons.star, size: 14,
-                                color: Color(0xFFF59E0B)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              "4.9",
-                              style: TextStyle(fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF374151)),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: NewCollectionPalette.badgeGreenBg,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    color: NewCollectionPalette.badgeGreenBorder),
+                              ),
+                              child: Text(
+                                "SIFIR",
+                                style: TextStyle(fontSize: 9,
+                                    fontWeight: FontWeight.w700,
+                                    color: NewCollectionPalette.badgeGreen,
+                                    letterSpacing: 0.5),
+                              ),
                             ),
                             const SizedBox(width: 8),
                             Container(width: 3,
@@ -1102,40 +1115,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                               style: TextStyle(fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xFF16A34A)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-
-                        // 2. SATIR: SIFIR + Popülerlik
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF0F7F0),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: const Color(0xFFC8E6C9)),
-                              ),
-                              child: const Text(
-                                "SIFIR",
-                                style: TextStyle(fontSize: 9,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF2E7D32),
-                                    letterSpacing: 0.5),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.trending_up, size: 12,
-                                color: Color(0xFFF59E0B)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              "Çok tercih edilen",
-                              style: TextStyle(fontSize: 11,
-                                  fontWeight: FontWeight.w400,
-                                  color: Color(0xFF6B7280)),
                             ),
                           ],
                         ),
