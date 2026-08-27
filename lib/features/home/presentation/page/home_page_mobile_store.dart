@@ -51,6 +51,7 @@ class HomeStorePage extends ConsumerWidget {
                 SliverToBoxAdapter(child: _buildHeader(context, ref)),
                 SliverToBoxAdapter(child: _buildSearchBar(context)),
                 const SliverToBoxAdapter(child: _HomeHeroSlider()),
+                SliverToBoxAdapter(child: _buildMottoStrip(context)),
                 SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
                 SliverToBoxAdapter(child: _CategoryRow()),
@@ -158,6 +159,49 @@ class HomeStorePage extends ConsumerWidget {
               ],
             ),
           ),
+        ),
+      );
+
+  /// Bir esnaf uygulamasıyız — vitrin, çevrimiçi mağaza değil. Hero
+  /// kaydırıcının hemen altında, kaymayan/sabit bir motto: dükkâna
+  /// gelmeden önce vitrini gez, beğendiğinde dükkâna gel.
+  Widget _buildMottoStrip(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+        child: Column(
+          children: [
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              children: [
+                Icon(Icons.visibility_rounded,
+                    size: 20, color: AppColors.mobilePrimary),
+                Text.rich(
+                  TextSpan(
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      color: AppColors.mobileTextPrimary,
+                    ),
+                    children: [
+                      const TextSpan(text: "Gelmeden Gör, "),
+                      TextSpan(
+                        text: "Beğenince Gel.",
+                        style: TextStyle(color: AppColors.mobilePrimary),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.mobileTextTertiary, fontSize: 11.5),
+            ),
+          ],
         ),
       );
 

@@ -83,6 +83,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   _buildHeroBanner(availableProducts),
+                  _buildMottoStrip(),
                   _buildTrustBar(),
                   _buildFeatureTicker(),
                   _buildCategoriesSection(),
@@ -210,6 +211,60 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       ),
     );
   }
+
+  // Bir esnaf uygulamasıyız — vitrin, çevrimiçi mağaza değil. Ziyaretçinin
+  // hero'yu gördüğü ilk anda işin özünü anlaması için, dönen slaytlara
+  // bağlı olmayan sabit bir motto şeridi: dükkâna gelmeden önce vitrini
+  // gez, beğendiğinde dükkâna gel.
+  Widget _buildMottoStrip() => SliverToBoxAdapter(
+        child: Padding(
+          padding: context.pagePadding.copyWith(
+              top: context.spacingLarge, bottom: context.spacingLarge),
+          child: Center(
+            child: Column(
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 10,
+                  children: [
+                    Icon(Icons.visibility_rounded,
+                        size: context.iconMedium, color: AppColors.accentDark),
+                    Text.rich(
+                      TextSpan(
+                        style: TextStyle(
+                          fontFamily: 'Fraunces',
+                          fontSize: context.responsive(mobile: 20, desktop: 26),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          height: 1.2,
+                        ),
+                        children: [
+                          const TextSpan(text: "Gelmeden Gör, "),
+                          TextSpan(
+                            text: "Beğenince Gel.",
+                            style: TextStyle(
+                                color: AppColors.accentDark,
+                                fontStyle: FontStyle.italic),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: AppColors.textSecondary, fontSize: context.captionSize),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   // Tek parça, geniş banner hero: arka planda kaydırılabilir (ok + nokta
   // göstergeli) fotoğraflar, solda başlık + tek bir "keşfet" CTA'sı, sağ
