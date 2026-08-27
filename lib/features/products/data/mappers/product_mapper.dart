@@ -1,4 +1,5 @@
 import '../../../../core/common/extentions/product_category_ex.dart';
+import '../../../../core/common/extentions/product_wear_tier_ex.dart';
 import '../../domain/entites/product.dart';
 import '../models/product_model.dart';
 
@@ -19,6 +20,7 @@ extension ProductModelMapper on ProductModel {
         isSpotProduct: isSpotProduct,
         availableColors: availableColors,
         studioImagesUrl: studioImagesUrl,
+        wearTier: wearTier.toProductWearTier(),
       );
 }
 
@@ -38,5 +40,6 @@ extension ProductEntityMapper on Product {
         isSpotProduct: isSpotProduct,
         availableColors: availableColors,
         studioImagesUrl: studioImagesUrl,
+        wearTier: wearTier.toFirestore(),
       );
 }

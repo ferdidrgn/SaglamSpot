@@ -16,6 +16,7 @@ import '../providers/product_provider.dart';
 import '../widgets/admin_form_widgets.dart';
 import '../widgets/category_form_selector.dart';
 import '../widgets/color_variant_picker.dart';
+import '../widgets/wear_tier_form_selector.dart';
 
 class EditProductPage extends ConsumerStatefulWidget {
   final String productId;
@@ -47,6 +48,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   bool _isSpotProduct = false;
   ProductCategory? _selectedCategory;
   List<String> _selectedColors = [];
+  ProductWearTier? _selectedWearTier;
   Product? _currentProduct;
 
   @override
@@ -78,6 +80,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       // Önceden hiç düzenlenemeyen iki alan — artık formda mevcutlar.
       _selectedCategory = _currentProduct!.category;
       _selectedColors = List<String>.from(_currentProduct!.availableColors);
+      _selectedWearTier = _currentProduct!.wearTier;
     } else {
       _nameController = TextEditingController();
       _priceController = TextEditingController();
@@ -179,6 +182,15 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                       ],
                     ),
                   ),
+                  if (_isSpotProduct)
+                    AdminFormSection(
+                      title: 'Ürün Durumu',
+                      icon: Icons.fact_check_outlined,
+                      child: WearTierFormSelector(
+                        selected: _selectedWearTier,
+                        onSelect: (final t) => setState(() => _selectedWearTier = t),
+                      ),
+                    ),
                   if (!_isSpotProduct)
                     AdminFormSection(
                       title: context.l10n.colorOptionsOptional,
@@ -349,6 +361,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       // formdan değiştirilip kaydedilebiliyor.
       category: _selectedCategory ?? _currentProduct!.category,
       availableColors: _isSpotProduct ? const [] : _selectedColors,
+      wearTier: _isSpotProduct ? _selectedWearTier : null,
       updatedAt: DateTime.now().toIso8601String(),
       // Yeni fotoğraf seçilmediyse mevcut stüdyo görselini koru (alan
       // belirtilmezse copyWith zaten eskisini tutar); seçildiyse yeni

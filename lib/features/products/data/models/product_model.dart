@@ -13,6 +13,10 @@ class ProductModel {
   final List<String> availableColors;
   final List<String> studioImagesUrl;
 
+  /// Firestore'da 'wearTier' alanı olarak, enum adı (string) şeklinde
+  /// tutulur. Eski dokümanlarda yok — null güvenli varsayılan.
+  final String? wearTier;
+
   const ProductModel({
     required this.id,
     required this.createdAt,
@@ -27,6 +31,7 @@ class ProductModel {
     required this.imagesUrl,
     this.availableColors = const [],
     this.studioImagesUrl = const [],
+    this.wearTier,
   });
 
   factory ProductModel.fromFirestore(final Map<String, dynamic> data) =>
@@ -45,6 +50,7 @@ class ProductModel {
         // Eski dokümanlarda bu alan yok, boş liste ile güvenli varsayılan.
         availableColors: List<String>.from(data['availableColors'] ?? []),
         studioImagesUrl: List<String>.from(data['studioImagesUrl'] ?? []),
+        wearTier: data['wearTier'] as String?,
       );
 
   Map<String, dynamic> toFirestore() => {
@@ -61,5 +67,6 @@ class ProductModel {
         'imagesUrl': imagesUrl,
         'availableColors': availableColors,
         'studioImagesUrl': studioImagesUrl,
+        'wearTier': wearTier,
       };
 }

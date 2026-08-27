@@ -23,6 +23,12 @@ enum ProductCondition {
   }
 }
 
+/// Spot/ikinci el ürünün gerçek yıpranma seviyesi — SADECE isSpotProduct
+/// true olan ürünlerde anlamlıdır. Ürün eklenirken esnaf tarafından elle
+/// seçilir (bkz. AddProductPage/EditProductPage); uydurma bir puan DEĞİLDİR.
+/// Eski ilanlarda alan boş olabilir, bu yüzden her yerde nullable kullanılır.
+enum ProductWearTier { likeNew, good, wellLoved }
+
 enum AdUnitType {
   banner, // Mobil Banner
   native, // Mobil Native

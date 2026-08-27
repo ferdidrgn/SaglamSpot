@@ -25,6 +25,10 @@ class Product extends Equatable {
   /// ('') bulunur. Bkz. core/services/studio_image_service.dart.
   final List<String> studioImagesUrl;
 
+  /// Sadece spot/ikinci el ürünlerde anlamlıdır — esnafın elle girdiği
+  /// gerçek yıpranma seviyesi. Sıfır ürünlerde ve eski ilanlarda null'dır.
+  final ProductWearTier? wearTier;
+
   const Product({
     required this.id,
     required this.createdAt,
@@ -39,6 +43,7 @@ class Product extends Equatable {
     required this.isSpotProduct,
     this.availableColors = const [],
     this.studioImagesUrl = const [],
+    this.wearTier,
   });
 
   factory Product.empty() => Product(
@@ -71,6 +76,7 @@ class Product extends Equatable {
         isSpotProduct,
         availableColors,
         studioImagesUrl,
+        wearTier,
       ];
 
   Product copyWith({
@@ -87,6 +93,7 @@ class Product extends Equatable {
     final bool? isSpotProduct,
     final List<String>? availableColors,
     final List<String>? studioImagesUrl,
+    final ProductWearTier? wearTier,
   }) =>
       Product(
         id: id ?? this.id,
@@ -102,5 +109,6 @@ class Product extends Equatable {
         isSpotProduct: isSpotProduct ?? this.isSpotProduct,
         availableColors: availableColors ?? this.availableColors,
         studioImagesUrl: studioImagesUrl ?? this.studioImagesUrl,
+        wearTier: wearTier ?? this.wearTier,
       );
 }

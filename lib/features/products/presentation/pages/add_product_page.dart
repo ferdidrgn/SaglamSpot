@@ -14,6 +14,7 @@ import '../providers/product_mutation_provider.dart';
 import '../widgets/admin_form_widgets.dart';
 import '../widgets/category_form_selector.dart';
 import '../widgets/color_variant_picker.dart';
+import '../widgets/wear_tier_form_selector.dart';
 
 class AddProductPage extends ConsumerStatefulWidget {
   const AddProductPage({super.key});
@@ -28,6 +29,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   final _price = TextEditingController();
   ProductCategory? _selectedCategory;
   List<String> _selectedColors = [];
+  ProductWearTier? _selectedWearTier;
 
   final List<XFile> _images = [];
   bool _isSecondHand = false;
@@ -149,6 +151,20 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                 ),
               ),
 
+              // Yıpranma seviyesi SADECE ikinci el ürünlerde gösterilir —
+              // vitrindeki "durum rozeti" bu bilgiyi kullanır (bkz.
+              // spot_products_page.dart). Boş bırakılırsa kartta rozet
+              // görünmez, uydurma bir değer ATANMAZ.
+              if (_isSecondHand)
+                AdminFormSection(
+                  title: 'Ürün Durumu',
+                  icon: Icons.fact_check_outlined,
+                  child: WearTierFormSelector(
+                    selected: _selectedWearTier,
+                    onSelect: (final t) => setState(() => _selectedWearTier = t),
+                  ),
+                ),
+
               // Renk seçenekleri SADECE sıfır ürünlerde gösterilir — ikinci el
               // ürünlerde tek bir fiziksel parça satıldığı için anlamsız olur
               // (bkz. product_color_section.dart, vitrin tarafındaki aynı mantık).
@@ -212,6 +228,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       imagesUrl: const [],
       availableColors: _isSecondHand ? const [] : _selectedColors,
       studioImagesUrl: _studioImageUrl != null ? [_studioImageUrl!] : const [],
+      wearTier: _isSecondHand ? _selectedWearTier : null,
     );
 
     await ref
