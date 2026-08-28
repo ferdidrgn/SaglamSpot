@@ -1155,28 +1155,35 @@ class _VisitMapSectionState extends State<_VisitMapSection> {
               ),
               Positioned(left: 14, top: 14, child: _LiveOpenBadge(isOpen: isOpen)),
               Positioned(
+                left: 14,
                 right: 14,
                 bottom: 14,
-                child: Material(
-                  color: Colors.white.withOpacity(0.95),
-                  borderRadius: BorderRadius.circular(30),
-                  child: InkWell(
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Material(
+                    color: Colors.white.withOpacity(0.95),
                     borderRadius: BorderRadius.circular(30),
-                    onTap: SaglamSpotCommunication.openStoreLocation,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.travel_explore_rounded,
-                              size: 15, color: Color(0xFF1A1A1A)),
-                          SizedBox(width: 6),
-                          Text('Google Haritalar\'da Görüntüle',
-                              style: TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1A1A1A))),
-                        ],
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: SaglamSpotCommunication.openStoreLocation,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.travel_explore_rounded,
+                                size: 15, color: Color(0xFF1A1A1A)),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text('Google Haritalar\'da Görüntüle',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFF1A1A1A))),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -1743,23 +1750,23 @@ class _HeroBannerState extends State<_HeroBanner> {
     ];
     final slide = slides[_page % slides.length];
 
+    // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik varsa
+    // göster — dar tabletlerde/laptop pencerelerinde başlık metniyle
+    // çakışmalarını (üst üste binmesini) önler. Not: LayoutBuilder
+    // bilerek kullanılmadı — bu widget bazı ata bağlamlarda intrinsic
+    // boyut sorgusuna maruz kaldığında "LayoutBuilder does not support
+    // returning intrinsic dimensions" hatasını fırlatıyordu ve tüm
+    // sayfayı boş/kırık bırakıyordu. Ekran genişliği burada yerel
+    // constraint genişliğine zaten çok yakın (maksimum genişlikli
+    // konteynerde), bu yüzden güvenli bir vekil.
+    final showSideCards =
+        context.screenWidth >= 1100 && widget.featuredPool.isNotEmpty;
     return HudCornerFrame(
       armLength: 26,
       inset: 16,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(context.borderRadius(1.2)),
-        child: LayoutBuilder(
-          builder: (final context, final constraints) {
-            // Yüzen kartları yalnızca gerçekten sığacak kadar genişlik
-            // varsa göster — dar tabletlerde/laptop pencerelerinde başlık
-            // metniyle çakışmalarını (üst üste binmesini) önler. Ölçüm
-            // nominal breakpoint yerine gerçek piksel genişliğine dayanır.
-            final heroWidth = constraints.maxWidth;
-            final showSideCards =
-                heroWidth >= 1100 && widget.featuredPool.isNotEmpty;
-            return _buildHeroContent(context, slide, showSideCards);
-          },
-        ),
+        child: _buildHeroContent(context, slide, showSideCards),
       ),
     );
   }
