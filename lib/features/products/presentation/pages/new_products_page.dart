@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
@@ -936,7 +937,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ============================================================
   Widget _buildFinalCard(BuildContext context, Product product) {
     return GestureDetector(
-      onTap: () => context.push('/product/${product.id}'),
+      onTap: () => NavigationHandler.goToProduct(
+        context: context,
+        productId: product.id,
+        productSlug: product.name.toSlug(),
+      ),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -960,18 +965,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.network(
-                      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          Container(
-                            color: const Color(0xFFF0EBE3),
-                            child: const Center(
-                              child: Icon(Icons.chair_outlined, size: 48,
-                                  color: Color(0xFFB0A59A)),
-                            ),
-                          ),
-                    ),
+                    child: product.imagesUrl.isNotEmpty
+                        ? Image.network(
+                            product.imagesUrl.first,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                const _NewCardImageFallback(),
+                          )
+                        : const _NewCardImageFallback(),
                   ),
                   // Kategori etiketi (sol üst)
                   Positioned(
@@ -1334,4 +1335,17 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         return "En Çok İncelenenler";
     }
   }
+}
+
+/// Ürünün gerçek fotoğrafı yoksa ya da yüklenemezse gösterilen yedek görsel.
+class _NewCardImageFallback extends StatelessWidget {
+  const _NewCardImageFallback();
+
+  @override
+  Widget build(BuildContext context) => Container(
+        color: const Color(0xFFF0EBE3),
+        child: const Center(
+          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFB0A59A)),
+        ),
+      );
 }

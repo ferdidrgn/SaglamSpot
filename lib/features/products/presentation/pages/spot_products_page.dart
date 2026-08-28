@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
@@ -8,7 +7,9 @@ import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_wear_tier_ex.dart';
+import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
@@ -790,10 +791,14 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // TEK KART (SIFIRDAN - EditorialProductCard KULLANILMADI)
   // ================================================================
   Widget _buildSingleSpotCard(BuildContext context, Product product) {
-    final imageUrl = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80';
+    final imageUrl = product.imagesUrl.isNotEmpty ? product.imagesUrl.first : null;
 
     return GestureDetector(
-      onTap: () => context.push('/product/${product.id}'),
+      onTap: () => NavigationHandler.goToProduct(
+        context: context,
+        productId: product.id,
+        productSlug: product.name.toSlug(),
+      ),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -825,16 +830,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: const Color(0xFFEEEEEE),
-                        child: const Center(
-                          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFBDBDBD)),
-                        ),
-                      ),
-                    ),
+                    child: imageUrl != null
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => const _SpotCardImageFallback(),
+                          )
+                        : const _SpotCardImageFallback(),
                   ),
 
                   // Kategori etiketi (sol üst)
@@ -1320,4 +1322,17 @@ class _ViewToggle extends ConsumerWidget {
       ],
     );
   }
+}
+
+/// Ürünün gerçek fotoğrafı yoksa ya da yüklenemezse gösterilen yedek görsel.
+class _SpotCardImageFallback extends StatelessWidget {
+  const _SpotCardImageFallback();
+
+  @override
+  Widget build(BuildContext context) => Container(
+        color: const Color(0xFFEEEEEE),
+        child: const Center(
+          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFBDBDBD)),
+        ),
+      );
 }
