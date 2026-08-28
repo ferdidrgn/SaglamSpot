@@ -15,6 +15,7 @@ import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
@@ -966,9 +967,12 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 children: [
                   Positioned.fill(
                     child: product.imagesUrl.isNotEmpty
-                        ? Image.network(
-                            product.imagesUrl.first,
+                        ? OptimizedCachedImage(
+                            imageUrl: product.imagesUrl.first,
+                            width: double.infinity,
+                            height: double.infinity,
                             fit: BoxFit.cover,
+                            borderRadius: 0,
                             errorBuilder: (_, __, ___) =>
                                 const _NewCardImageFallback(),
                           )

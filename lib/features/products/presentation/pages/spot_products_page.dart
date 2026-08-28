@@ -92,6 +92,10 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 slivers: [
                   SliverToBoxAdapter(child: _buildMasthead(context, products.length)),
 
+                  SliverToBoxAdapter(child: _buildAphorismSection(context)),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 8)),
+
                   // Üstte arama + sıralama çubuğu — new-products sayfasıyla
                   // aynı 1240px merkezi sınır, kenarlara yapışmasın diye.
                   SliverToBoxAdapter(
@@ -105,10 +109,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                       ),
                     ),
                   ),
-
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-                  SliverToBoxAdapter(child: _buildAphorismSection(context)),
 
                   const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
@@ -831,9 +831,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 children: [
                   Positioned.fill(
                     child: imageUrl != null
-                        ? Image.network(
-                            imageUrl,
+                        ? OptimizedCachedImage(
+                            imageUrl: imageUrl,
+                            width: double.infinity,
+                            height: double.infinity,
                             fit: BoxFit.cover,
+                            borderRadius: 0,
                             errorBuilder: (_, __, ___) => const _SpotCardImageFallback(),
                           )
                         : const _SpotCardImageFallback(),
