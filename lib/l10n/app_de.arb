@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Sofa & Couch",
+  "catalogCategoryTitleChair": "Stuhl & Sessel",
+  "catalogCategoryTitleTable": "Esstisch",
+  "catalogCategoryTitleBed": "Bett & Bettgestell",
+  "catalogCategoryTitleWardrobe": "Kleiderschrank & Schrank",
+  "catalogCategoryTitleWhite": "Haushaltsgeräte",
+  "catalogCategoryTitleOther": "Dekoration",
+  "mottoTitlePart1": "Erst sehen, ",
+  "mottoTitlePart2": "Komm, wenn's dir gefällt.",
+  "mottoSubtitle": "Stöbere in unserem Schaufenster, bevor du in den Laden kommst — komm einfach vorbei, sobald du etwas Passendes gefunden hast.",
+  "gatewayNewEyebrow": "NEUE KOLLEKTION",
+  "gatewayNewTitle": "Zeitlose Stücke",
+  "gatewayNewSubtitle": "Brandneue, unbenutzte Möbel.",
+  "gatewayNewButton": "Kollektion ansehen",
+  "gatewaySpotEyebrow": "SPOT-ANGEBOTE",
+  "gatewaySpotTitle": "Gebraucht, aber solide",
+  "gatewaySpotSubtitle": "Gebraucht, aber praktisch — zu preiswerten Konditionen.",
+  "gatewaySpotButton": "Angebote ansehen",
+  "freeDeliveryZonesNote": "Kostenlose Lieferung gilt nur in {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "MÖBELLAGER · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "STANDORT & ÖFFNUNGSZEITEN",
+  "openNowLabel": "JETZT GEÖFFNET",
+  "closedNowLabel": "JETZT GESCHLOSSEN",
+  "todayHoursPrefix": "· Heute {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "In Karten öffnen",
+  "viewOnGoogleMapsButton": "Auf Google Maps ansehen",
+  "gatewayProductCount": "{count} Produkte",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "NEU",
+  "gatewayNewTitleShort": "Kollektion",
+  "gatewaySpotEyebrowShort": "SPOT",
+  "gatewaySpotTitleShort": "Angebote",
+  "spotHeroEyebrow": "ANGEBOTSLAGER",
+  "spotHeroSubtitle": "Gebraucht, aber praktisch. Wie neu wirkende Möbel für jedes Budget. Verhandlungsspielraum vorhanden.",
+  "spotHeroDealCount": "{count}+ Angebote",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Verhandlungsspielraum",
+  "spotStatUsed": "Gebraucht",
+  "spotShowcaseBadgeTitle": "Generalüberholt",
+  "spotShowcaseBadgeSubtitle": "Jedes Stück wird vor der Lieferung einzeln überprüft.",
+  "spotBreadcrumbLabel": "Spot & Gebraucht",
+  "aphorismEyebrow": "WIR HABEN EIN MOTTO",
+  "aphorismQuote": "Nicht abgenutzt, sondern bewährt.\nGute Möbel altern nie — sie wechseln nur das Zuhause.",
+  "aphorismBody": "Genau deshalb sind wir hier: Stücke, die noch Leben in sich tragen, zu einem neuen Zuhause bringen, das sie zu schätzen weiß.",
+  "spotSearchHint": "Angebote suchen …",
+  "priceRangeLabel": "Preisspanne",
+  "filtersSheetTitle": "FILTER",
+  "applyFiltersButton": "Filter anwenden",
+  "priceRangeSheetTitle": "PREISSPANNE",
+  "applyButton": "Anwenden",
+  "sortSheetTitle": "SORTIEREN",
+  "sortNewest": "Neueste Angebote",
+  "sortPopular": "Meistgesehen",
+  "spotEmptyStateTitle": "Wir haben dazu keine passenden Angebote gefunden",
+  "spotEmptyStateSubtitle": "Versuche, die Filter zurückzusetzen oder eine andere Kategorie.",
+  "newHeroTitleLine1": "Für Ihren Wohnraum\n",
+  "newHeroTitleEmphasis": "Zeitlose ",
+  "newHeroButtonCollection": "Kollektion ansehen",
+  "newHeroButtonQuickFilter": "Schnellfilter",
+  "newStatActiveProductLabel": "AKTIVE PRODUKTE",
+  "newStatControlledStockLabel": "GEPRÜFTER BESTAND",
+  "shopByCategoryTitlePrefix": "Nach Kategorie ",
+  "shopByCategoryTitleEmphasis": "Entdecken",
+  "showAllButton": "Alle anzeigen",
+  "newEmptyStateTitle": "Keine Möbel gefunden, die Ihrer Suche entsprechen",
+  "newEmptyStateSubtitle": "Versuchen Sie einen anderen Suchbegriff oder setzen Sie die Filter zurück.",
+  "sortOptionsSheetTitle": "Sortieroptionen",
+  "newSortNewest": "Neueste",
+  "newSortPopular": "Meistgesehen",
+  "cartWhatsappGreeting": "Hallo, ich möchte Informationen zu diesen Produkten:\n\n",
+  "cartWhatsappAllProductsLine": "Alle Produkte: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Hallo, ich möchte Informationen zu den Möbeln.",
+  "spotHeroPageTitle": "Gebraucht & Spot",
+  "sortByPriceLowHigh": "Preis: aufsteigend",
+  "sortByPriceHighLow": "Preis: absteigend"
 }

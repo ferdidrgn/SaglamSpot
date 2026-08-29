@@ -1577,4 +1577,243 @@ class AppLocalizationsTr extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return '$days gün önce';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Koltuk & Kanepe';
+
+  @override
+  String get catalogCategoryTitleChair => 'Sandalye & Berjer';
+
+  @override
+  String get catalogCategoryTitleTable => 'Yemek Masası';
+
+  @override
+  String get catalogCategoryTitleBed => 'Yatak & Baza';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Gardırop & Dolap';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Beyaz Eşya';
+
+  @override
+  String get catalogCategoryTitleOther => 'Dekorasyon';
+
+  @override
+  String get mottoTitlePart1 => 'Gelmeden Gör, ';
+
+  @override
+  String get mottoTitlePart2 => 'Beğenince Gel.';
+
+  @override
+  String get mottoSubtitle =>
+      'Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.';
+
+  @override
+  String get gatewayNewEyebrow => 'SIFIR KOLEKSİYON';
+
+  @override
+  String get gatewayNewTitle => 'Zamansız Parçalar';
+
+  @override
+  String get gatewayNewSubtitle => 'Hiç kullanılmamış, yeni gibi mobilyalar.';
+
+  @override
+  String get gatewayNewButton => 'Koleksiyonu Gör';
+
+  @override
+  String get gatewaySpotEyebrow => 'SPOT FIRSATLAR';
+
+  @override
+  String get gatewaySpotTitle => 'Kullanılmış, Sağlam';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'İkinci el ama kullanışlı, cebe uygun fiyatlarla.';
+
+  @override
+  String get gatewaySpotButton => 'Fırsatları Gör';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Ücretsiz teslimat sadece $zones bölgelerinde geçerlidir';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'MOBİLYA DEPOSU · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'KONUM & ÇALIŞMA SAATİ';
+
+  @override
+  String get openNowLabel => 'ŞU AN AÇIK';
+
+  @override
+  String get closedNowLabel => 'ŞU AN KAPALI';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Bugün $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'Haritada Aç';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Google Haritalar\'da Görüntüle';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count ürün';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'SIFIR';
+
+  @override
+  String get gatewayNewTitleShort => 'Koleksiyon';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'SPOT';
+
+  @override
+  String get gatewaySpotTitleShort => 'Fırsatlar';
+
+  @override
+  String get spotHeroEyebrow => 'FIRSAT DEPOSU';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ Fırsat';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Pazarlık Payı Mevcut';
+
+  @override
+  String get spotStatUsed => 'Kullanılmış';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'Elden Geçirildi';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Her ürün teslimden önce tek tek kontrol edilir.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Spot & İkinci El';
+
+  @override
+  String get aphorismEyebrow => 'BİR SÖZÜMÜZ VAR';
+
+  @override
+  String get aphorismQuote =>
+      'Eskimiş değil, emek görmüş.\nİyi mobilya asla eskimez, sadece ev değiştirir.';
+
+  @override
+  String get aphorismBody =>
+      'Biz de tam bu yüzden buradayız: hâlâ hayatı olan parçaları, onlara değer verecek yeni bir eve ulaştırmak için.';
+
+  @override
+  String get spotSearchHint => 'Fırsat ara...';
+
+  @override
+  String get priceRangeLabel => 'Fiyat Aralığı';
+
+  @override
+  String get filtersSheetTitle => 'FİLTRELER';
+
+  @override
+  String get applyFiltersButton => 'Filtreleri Uygula';
+
+  @override
+  String get priceRangeSheetTitle => 'FİYAT ARALIĞI';
+
+  @override
+  String get applyButton => 'Uygula';
+
+  @override
+  String get sortSheetTitle => 'SIRALAMA';
+
+  @override
+  String get sortNewest => 'En Yeni Fırsatlar';
+
+  @override
+  String get sortPopular => 'En Çok İncelenen';
+
+  @override
+  String get spotEmptyStateTitle => 'Bu kriterde fırsat bulamadık';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Filtreleri temizlemeyi veya farklı bir kategori denemeyi dene.';
+
+  @override
+  String get newHeroTitleLine1 => 'Yaşam Alanınız İçin\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Zamansız ';
+
+  @override
+  String get newHeroButtonCollection => 'Koleksiyonu İncele';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Hızlı Filtrele';
+
+  @override
+  String get newStatActiveProductLabel => 'AKTİF ÜRÜN';
+
+  @override
+  String get newStatControlledStockLabel => 'KONTROLLÜ STOK';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'Kategoriye Göre ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Keşfet';
+
+  @override
+  String get showAllButton => 'Tümünü Göster';
+
+  @override
+  String get newEmptyStateTitle => 'Aradığınız Kriterde Mobilya Bulunamadı';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Arama kelimesini değiştirebilir ya da filtreleri temizleyebilirsiniz.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Sıralama Seçenekleri';
+
+  @override
+  String get newSortNewest => 'En Yeniler';
+
+  @override
+  String get newSortPopular => 'En Çok İncelenenler';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Tüm ürünler: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting =>
+      'Merhaba, mobilyalar hakkında bilgi almak istiyorum.';
+
+  @override
+  String get spotHeroPageTitle => 'İkinci El & Spot';
+
+  @override
+  String get sortByPriceLowHigh => 'Fiyat: Düşükten Yükseğe';
+
+  @override
+  String get sortByPriceHighLow => 'Fiyat: Yüksekten Düşüğe';
 }

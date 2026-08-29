@@ -34,7 +34,8 @@ class _CartPageState extends ConsumerState<CartPage> {
   // yok, sadece "işareti kaldırılanlar" tutuluyor.
   final Set<String> _uncheckedIds = {};
 
-  bool _isSelected(final String productId) => !_uncheckedIds.contains(productId);
+  bool _isSelected(final String productId) =>
+      !_uncheckedIds.contains(productId);
 
   void _toggle(final String productId) {
     setState(() {
@@ -52,19 +53,22 @@ class _CartPageState extends ConsumerState<CartPage> {
       context: context,
       builder: (final context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(context.l10n.cartTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(context.l10n.cartTitle,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         content: Text(context.l10n.cartEmptyDesc),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(context.l10n.cancel, style: const TextStyle(color: Colors.grey)),
+            child: Text(context.l10n.cancel,
+                style: const TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: Text(context.l10n.clear),
           ),
@@ -75,29 +79,33 @@ class _CartPageState extends ConsumerState<CartPage> {
   }
 
   void _sendCartToWhatsApp(final List<CartItem> items) {
-    final buffer = StringBuffer('Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n');
+    final buffer = StringBuffer(context.l10n.cartWhatsappGreeting);
     for (final item in items) {
-      final String link =
-          FurnitureShareService.generateProductUrl(item.product.id, item.product.name);
+      final String link = FurnitureShareService.generateProductUrl(
+          item.product.id, item.product.name);
       buffer.write('• ${item.product.name}');
       if (item.quantity > 1) buffer.write(' (x${item.quantity})');
       buffer.write(' — ${item.subtotal.toStringAsFixed(0)}₺\n');
       buffer.write('  $link\n\n');
     }
-    final total = items.fold<double>(0, (final sum, final item) => sum + item.subtotal);
-    buffer.write('Toplam: ${total.toStringAsFixed(0)}₺\n\n');
-    buffer.write('Tüm ürünler: ${FurnitureShareService.storeUrl}');
+    final total =
+        items.fold<double>(0, (final sum, final item) => sum + item.subtotal);
+    buffer.write(
+        '${context.l10n.cartTotalLabel}: ${total.toStringAsFixed(0)}₺\n\n');
+    buffer.write(context.l10n
+        .cartWhatsappAllProductsLine(FurnitureShareService.storeUrl));
     SaglamSpotCommunication.launchWhatsApp(message: buffer.toString());
   }
 
   @override
   Widget build(final BuildContext context) {
     final items = ref.watch(cartProvider);
-    final selectedItems = items.where((final i) => _isSelected(i.product.id)).toList();
-    final double selectedTotal =
-        selectedItems.fold<double>(0, (final sum, final item) => sum + item.subtotal);
-    final int selectedCount =
-        selectedItems.fold<int>(0, (final sum, final item) => sum + item.quantity);
+    final selectedItems =
+        items.where((final i) => _isSelected(i.product.id)).toList();
+    final double selectedTotal = selectedItems.fold<double>(
+        0, (final sum, final item) => sum + item.subtotal);
+    final int selectedCount = selectedItems.fold<int>(
+        0, (final sum, final item) => sum + item.quantity);
     final recentlyViewed = ref.watch(recentlyViewedProvider);
 
     final scaffold = Scaffold(
@@ -129,7 +137,8 @@ class _CartPageState extends ConsumerState<CartPage> {
                     ),
             ),
             if (items.isNotEmpty)
-              _buildFooter(context, selectedItems, selectedCount, selectedTotal),
+              _buildFooter(
+                  context, selectedItems, selectedCount, selectedTotal),
           ],
         ),
       ),
@@ -138,13 +147,15 @@ class _CartPageState extends ConsumerState<CartPage> {
     return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
-  Widget _buildHeader(final BuildContext context, final List<CartItem> items) => Padding(
+  Widget _buildHeader(final BuildContext context, final List<CartItem> items) =>
+      Padding(
         padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
         child: Row(
           children: [
             IconButton(
               onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+              icon: Icon(Icons.arrow_back_rounded,
+                  color: AppColors.mobileTextPrimary),
             ),
             Expanded(
               child: Text(
@@ -159,7 +170,8 @@ class _CartPageState extends ConsumerState<CartPage> {
             if (items.isNotEmpty)
               IconButton(
                 onPressed: () => _confirmClearCart(items),
-                icon: Icon(Icons.delete_outline_rounded, color: AppColors.mobileTextSecondary),
+                icon: Icon(Icons.delete_outline_rounded,
+                    color: AppColors.mobileTextSecondary),
               ),
           ],
         ),
@@ -206,7 +218,8 @@ class _CartPageState extends ConsumerState<CartPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.mobilePrimary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                   shape: const StadiumBorder(),
                   elevation: 0,
                 ),
@@ -218,15 +231,21 @@ class _CartPageState extends ConsumerState<CartPage> {
         ),
       );
 
-  Widget _buildFooter(final BuildContext context, final List<CartItem> selectedItems,
-      final int selectedCount, final double selectedTotal) {
+  Widget _buildFooter(
+      final BuildContext context,
+      final List<CartItem> selectedItems,
+      final int selectedCount,
+      final double selectedTotal) {
     final bool hasSelection = selectedItems.isNotEmpty;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       decoration: BoxDecoration(
         color: AppColors.mobileSurface,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 16, offset: const Offset(0, -4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 16,
+              offset: const Offset(0, -4)),
         ],
       ),
       child: Column(
@@ -238,12 +257,16 @@ class _CartPageState extends ConsumerState<CartPage> {
               Text(
                 context.l10n.cartItemsCount(selectedCount),
                 style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextSecondary),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.mobileTextSecondary),
               ),
               Text(
                 '${selectedTotal.toStringAsFixed(0)}₺',
                 style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.mobileTextPrimary),
               ),
             ],
           ),
@@ -252,10 +275,13 @@ class _CartPageState extends ConsumerState<CartPage> {
             width: double.infinity,
             height: 54,
             child: ElevatedButton.icon(
-              onPressed: hasSelection ? () => _sendCartToWhatsApp(selectedItems) : null,
+              onPressed: hasSelection
+                  ? () => _sendCartToWhatsApp(selectedItems)
+                  : null,
               icon: const Icon(Icons.chat_bubble_rounded, size: 18),
               label: Text(context.l10n.cartWhatsappCta,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14.5)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w800, fontSize: 14.5)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.mobilePrimary,
                 foregroundColor: Colors.white,
@@ -293,7 +319,9 @@ class _CartItemCard extends ConsumerWidget {
         color: AppColors.mobileSurface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isSelected ? AppColors.mobilePrimary.withOpacity(0.4) : AppColors.mobileBorder,
+          color: isSelected
+              ? AppColors.mobilePrimary.withOpacity(0.4)
+              : AppColors.mobileBorder,
         ),
         boxShadow: [
           BoxShadow(
@@ -314,15 +342,20 @@ class _CartItemCard extends ConsumerWidget {
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.mobilePrimary : AppColors.mobileSurface,
+                  color: isSelected
+                      ? AppColors.mobilePrimary
+                      : AppColors.mobileSurface,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: isSelected ? AppColors.mobilePrimary : AppColors.mobileMutedDark,
+                    color: isSelected
+                        ? AppColors.mobilePrimary
+                        : AppColors.mobileMutedDark,
                     width: 1.6,
                   ),
                 ),
                 child: isSelected
-                    ? const Icon(Icons.check_rounded, size: 14, color: Colors.white)
+                    ? const Icon(Icons.check_rounded,
+                        size: 14, color: Colors.white)
                     : null,
               ),
             ),
@@ -334,7 +367,8 @@ class _CartItemCard extends ConsumerWidget {
               productSlug: product.name.toSlug(),
             ),
             child: OptimizedCachedImage(
-              imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+              imageUrl:
+                  product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
               width: 64,
               height: 64,
               borderRadius: 14,
@@ -356,13 +390,17 @@ class _CartItemCard extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.mobileTextPrimary),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.mobileTextPrimary),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '${product.price.toStringAsFixed(0)}₺',
                     style: TextStyle(
-                        fontSize: 14.5, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.mobilePrimary),
                   ),
                   const SizedBox(height: 8),
                   _QtyStepper(
@@ -376,7 +414,8 @@ class _CartItemCard extends ConsumerWidget {
           ),
           IconButton(
             onPressed: () => notifier.remove(product.id),
-            icon: Icon(Icons.close_rounded, size: 18, color: AppColors.mobileMutedDark),
+            icon: Icon(Icons.close_rounded,
+                size: 18, color: AppColors.mobileMutedDark),
             visualDensity: VisualDensity.compact,
           ),
         ],
@@ -392,7 +431,9 @@ class _QtyStepper extends StatelessWidget {
   final VoidCallback onIncrement;
 
   const _QtyStepper(
-      {required this.quantity, required this.onDecrement, required this.onIncrement});
+      {required this.quantity,
+      required this.onDecrement,
+      required this.onIncrement});
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -446,7 +487,9 @@ class _RecentlyViewedSection extends StatelessWidget {
         Text(
           context.l10n.recentlyViewedTitle,
           style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: AppColors.mobileTextPrimary),
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -476,9 +519,12 @@ class _RecentlyViewedSection extends StatelessWidget {
                       Stack(
                         children: [
                           ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16)),
                             child: OptimizedCachedImage(
-                              imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                              imageUrl: product.imagesUrl.isNotEmpty
+                                  ? product.imagesUrl.first
+                                  : '',
                               width: 110,
                               height: 90,
                               borderRadius: 0,
@@ -490,7 +536,8 @@ class _RecentlyViewedSection extends StatelessWidget {
                               top: 6,
                               right: 6,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 7, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: AppColors.error,
                                   borderRadius: BorderRadius.circular(20),
@@ -498,7 +545,9 @@ class _RecentlyViewedSection extends StatelessWidget {
                                 child: Text(
                                   context.l10n.sold,
                                   style: const TextStyle(
-                                      color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w800),
+                                      color: Colors.white,
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.w800),
                                 ),
                               ),
                             ),
@@ -513,7 +562,8 @@ class _RecentlyViewedSection extends StatelessWidget {
                               product.name,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 2),
                             Text(

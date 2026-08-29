@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Диван жана креслолор",
+  "catalogCategoryTitleChair": "Отургуч жана креслолор",
+  "catalogCategoryTitleTable": "Ашкана столу",
+  "catalogCategoryTitleBed": "Керебет жана негиз",
+  "catalogCategoryTitleWardrobe": "Кийим шкафы жана шкаф",
+  "catalogCategoryTitleWhite": "Тиричилик техникасы",
+  "catalogCategoryTitleOther": "Декор",
+  "mottoTitlePart1": "Келерден мурун көр, ",
+  "mottoTitlePart2": "Жагымдуу болсо кел.",
+  "mottoSubtitle": "Дүкөнгө келерден мурун витринабызды кара, жаккан нерсени тапканда бизге кел.",
+  "gatewayNewEyebrow": "ЖАҢЫ КОЛЛЕКЦИЯ",
+  "gatewayNewTitle": "Убакыт билбеген буюмдар",
+  "gatewayNewSubtitle": "Такыр колдонулбаган, жаңы эмерек.",
+  "gatewayNewButton": "Коллекцияны көрүү",
+  "gatewaySpotEyebrow": "СПОТ СУНУШТАР",
+  "gatewaySpotTitle": "Колдонулган, бирок бекем",
+  "gatewaySpotSubtitle": "Экинчи кол, бирок пайдалуу, чөнтөккө ылайыктуу баада.",
+  "gatewaySpotButton": "Сунуштарды көрүү",
+  "freeDeliveryZonesNote": "Акысыз жеткирүү {zones} аймактарында гана күчүндө",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "МЕБЕЛЬ ДЕПОСУ · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "ЖАЙГАШКАН ЖЕРИ ЖАНА ИШ УБАКЫТЫ",
+  "openNowLabel": "АЗЫР АЧЫК",
+  "closedNowLabel": "АЗЫР ЖАБЫК",
+  "todayHoursPrefix": "· Бүгүн {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Картада ачуу",
+  "viewOnGoogleMapsButton": "Google Карталарда көрүү",
+  "gatewayProductCount": "{count} товар",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "ЖАҢЫ",
+  "gatewayNewTitleShort": "Коллекция",
+  "gatewaySpotEyebrowShort": "СПОТ",
+  "gatewaySpotTitleShort": "Сунуштар",
+  "spotHeroEyebrow": "СУНУШТАР ДЕПОСУ",
+  "spotHeroSubtitle": "Колдонулган, бирок пайдалуу. Ар кандай бюджетке ылайыктуу, жаңыдай буюмдар. Соода мүмкүн.",
+  "spotHeroDealCount": "{count}+ сунуш",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Соода мүмкүн",
+  "spotStatUsed": "Колдонулган",
+  "spotShowcaseBadgeTitle": "Толук калыбына келтирилген",
+  "spotShowcaseBadgeSubtitle": "Ар бир буюм жеткирилерден мурун жеке текшерилет.",
+  "spotBreadcrumbLabel": "Спот & Экинчи кол",
+  "aphorismEyebrow": "БИЗДИН БИР СӨЗ БАР",
+  "aphorismQuote": "Эскирген эмес, эмгектелген.\nЖакшы эмерек эч качан эскирбейт, жөн гана үй которот.",
+  "aphorismBody": "Биз так ушул үчүн бул жердебиз: дагы эле жашоосу бар буюмдарды аларды баалай турган жаңы үйгө жеткирүү үчүн.",
+  "spotSearchHint": "Сунуштарды издөө...",
+  "priceRangeLabel": "Баа диапазону",
+  "filtersSheetTitle": "ФИЛЬТРЛЕР",
+  "applyFiltersButton": "Фильтрлерди колдонуу",
+  "priceRangeSheetTitle": "БАА ДИАПАЗОНУ",
+  "applyButton": "Колдонуу",
+  "sortSheetTitle": "ИРЕТТӨӨ",
+  "sortNewest": "Эң жаңы сунуштар",
+  "sortPopular": "Эң көп каралган",
+  "spotEmptyStateTitle": "Бул шартка сунуш табылган жок",
+  "spotEmptyStateSubtitle": "Фильтрлерди тазалап же башка категорияны байкап көр.",
+  "newHeroTitleLine1": "Жашоо мейкиндигиңиз үчүн\n",
+  "newHeroTitleEmphasis": "Убакыт билбеген ",
+  "newHeroButtonCollection": "Коллекцияны кароо",
+  "newHeroButtonQuickFilter": "Тез фильтр",
+  "newStatActiveProductLabel": "ИШТЕГИ ТОВАРЛАР",
+  "newStatControlledStockLabel": "ТЕКШЕРИЛГЕН КОР",
+  "shopByCategoryTitlePrefix": "Категория боюнча ",
+  "shopByCategoryTitleEmphasis": "Изилде",
+  "showAllButton": "Баарын көрсөтүү",
+  "newEmptyStateTitle": "Издөөңүзгө дал келген эмерек табылган жок",
+  "newEmptyStateSubtitle": "Издөө сөзүн өзгөртүп же фильтрлерди тазалап көрүңүз.",
+  "sortOptionsSheetTitle": "Иреттөө параметрлери",
+  "newSortNewest": "Эң жаңылары",
+  "newSortPopular": "Эң көп каралгандар",
+  "cartWhatsappGreeting": "Салам, мына бул товарлар жөнүндө маалымат алгым келет:\n\n",
+  "cartWhatsappAllProductsLine": "Бардык товарлар: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Салам, эмерек жөнүндө маалымат алгым келет.",
+  "spotHeroPageTitle": "Экинчи кол & Спот",
+  "sortByPriceLowHigh": "Баа: арзандан кымбатка",
+  "sortByPriceHighLow": "Баа: кымбаттан арзанга"
 }

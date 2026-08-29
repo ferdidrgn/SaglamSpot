@@ -185,7 +185,8 @@ class _SSSPageState extends State<SSSPage> {
         _buildContactCTA(context),
 
         const SliverToBoxAdapter(child: SizedBox(height: 60)),
-        const SliverToBoxAdapter(child: AdsenseBanner(height: 100,type: AdUnitType.multiplex)),
+        const SliverToBoxAdapter(
+            child: AdsenseBanner(height: 100, type: AdUnitType.multiplex)),
       ],
     );
   }
@@ -230,7 +231,8 @@ class _SSSPageState extends State<SSSPage> {
           children: [
             IconButton(
               onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+              icon: Icon(Icons.arrow_back_rounded,
+                  color: AppColors.mobileTextPrimary),
             ),
             Expanded(
               child: Text(
@@ -273,7 +275,9 @@ class _SSSPageState extends State<SSSPage> {
                 color: isSelected ? AppColors.mobilePrimary : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isSelected ? AppColors.mobilePrimary : AppColors.mobileBorder,
+                  color: isSelected
+                      ? AppColors.mobilePrimary
+                      : AppColors.mobileBorder,
                 ),
               ),
               child: Text(
@@ -281,7 +285,8 @@ class _SSSPageState extends State<SSSPage> {
                 style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
-                  color: isSelected ? Colors.white : AppColors.mobileTextSecondary,
+                  color:
+                      isSelected ? Colors.white : AppColors.mobileTextSecondary,
                 ),
               ),
             ),
@@ -291,7 +296,8 @@ class _SSSPageState extends State<SSSPage> {
     );
   }
 
-  Widget _buildMobileFaqCard(final BuildContext context, final _Faq faq, final int index) {
+  Widget _buildMobileFaqCard(
+      final BuildContext context, final _Faq faq, final int index) {
     final isExpanded = _expandedIndex == index;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -306,7 +312,8 @@ class _SSSPageState extends State<SSSPage> {
       child: Column(
         children: [
           InkWell(
-            onTap: () => setState(() => _expandedIndex = isExpanded ? null : index),
+            onTap: () =>
+                setState(() => _expandedIndex = isExpanded ? null : index),
             borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
@@ -325,8 +332,12 @@ class _SSSPageState extends State<SSSPage> {
                     ),
                   ),
                   Icon(
-                    isExpanded ? Icons.remove_circle_outline_rounded : Icons.add_circle_outline_rounded,
-                    color: isExpanded ? AppColors.mobilePrimary : AppColors.mobileTextTertiary,
+                    isExpanded
+                        ? Icons.remove_circle_outline_rounded
+                        : Icons.add_circle_outline_rounded,
+                    color: isExpanded
+                        ? AppColors.mobilePrimary
+                        : AppColors.mobileTextTertiary,
                     size: 20,
                   ),
                 ],
@@ -362,19 +373,23 @@ class _SSSPageState extends State<SSSPage> {
         ),
         child: Column(
           children: [
-            const Icon(Icons.support_agent_rounded, color: Colors.white, size: 36),
+            const Icon(Icons.support_agent_rounded,
+                color: Colors.white, size: 36),
             const SizedBox(height: 12),
             Text(
               context.l10n.sssNoAnswerTitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16),
             ),
             const SizedBox(height: 6),
             Text(
               context.l10n.sssNoAnswerSubtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 12.5),
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.85), fontSize: 12.5),
             ),
             const SizedBox(height: 16),
             Row(
@@ -382,28 +397,34 @@ class _SSSPageState extends State<SSSPage> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () => SaglamSpotCommunication.makeCall(),
-                    icon: const Icon(Icons.call_rounded, size: 16, color: Colors.white),
+                    icon: const Icon(Icons.call_rounded,
+                        size: 16, color: Colors.white),
                     label: Text(context.l10n.contactUs,
-                        style: const TextStyle(color: Colors.white, fontSize: 12.5)),
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 12.5)),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.white70),
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => SaglamSpotCommunication.launchWhatsApp(),
+                    onPressed: () => SaglamSpotCommunication.launchWhatsApp(
+                        message: context.l10n.defaultWhatsappGreeting),
                     icon: const Icon(Icons.chat_bubble_rounded, size: 16),
-                    label: Text(context.l10n.whatsappCta, style: const TextStyle(fontSize: 12.5)),
+                    label: Text(context.l10n.whatsappCta,
+                        style: const TextStyle(fontSize: 12.5)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: AppColors.mobilePrimary,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                 ),

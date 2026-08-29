@@ -569,5 +569,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Koltuk & Kanepe",
+  "catalogCategoryTitleChair": "Sandalye & Berjer",
+  "catalogCategoryTitleTable": "Yemek Masası",
+  "catalogCategoryTitleBed": "Yatak & Baza",
+  "catalogCategoryTitleWardrobe": "Gardırop & Dolap",
+  "catalogCategoryTitleWhite": "Beyaz Eşya",
+  "catalogCategoryTitleOther": "Dekorasyon",
+  "mottoTitlePart1": "Gelmeden Gör, ",
+  "mottoTitlePart2": "Beğenince Gel.",
+  "mottoSubtitle": "Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.",
+  "gatewayNewEyebrow": "SIFIR KOLEKSİYON",
+  "gatewayNewTitle": "Zamansız Parçalar",
+  "gatewayNewSubtitle": "Hiç kullanılmamış, yeni gibi mobilyalar.",
+  "gatewayNewButton": "Koleksiyonu Gör",
+  "gatewaySpotEyebrow": "SPOT FIRSATLAR",
+  "gatewaySpotTitle": "Kullanılmış, Sağlam",
+  "gatewaySpotSubtitle": "İkinci el ama kullanışlı, cebe uygun fiyatlarla.",
+  "gatewaySpotButton": "Fırsatları Gör",
+  "freeDeliveryZonesNote": "Ücretsiz teslimat sadece {zones} bölgelerinde geçerlidir",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "MOBİLYA DEPOSU · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "KONUM & ÇALIŞMA SAATİ",
+  "openNowLabel": "ŞU AN AÇIK",
+  "closedNowLabel": "ŞU AN KAPALI",
+  "todayHoursPrefix": "· Bugün {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Haritada Aç",
+  "viewOnGoogleMapsButton": "Google Haritalar'da Görüntüle",
+  "gatewayProductCount": "{count} ürün",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "SIFIR",
+  "gatewayNewTitleShort": "Koleksiyon",
+  "gatewaySpotEyebrowShort": "SPOT",
+  "gatewaySpotTitleShort": "Fırsatlar",
+  "spotHeroEyebrow": "FIRSAT DEPOSU",
+  "spotHeroSubtitle": "Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.",
+  "spotHeroDealCount": "{count}+ Fırsat",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Pazarlık Payı Mevcut",
+  "spotStatUsed": "Kullanılmış",
+  "spotShowcaseBadgeTitle": "Elden Geçirildi",
+  "spotShowcaseBadgeSubtitle": "Her ürün teslimden önce tek tek kontrol edilir.",
+  "spotBreadcrumbLabel": "Spot & İkinci El",
+  "aphorismEyebrow": "BİR SÖZÜMÜZ VAR",
+  "aphorismQuote": "Eskimiş değil, emek görmüş.\nİyi mobilya asla eskimez, sadece ev değiştirir.",
+  "aphorismBody": "Biz de tam bu yüzden buradayız: hâlâ hayatı olan parçaları, onlara değer verecek yeni bir eve ulaştırmak için.",
+  "spotSearchHint": "Fırsat ara...",
+  "priceRangeLabel": "Fiyat Aralığı",
+  "filtersSheetTitle": "FİLTRELER",
+  "applyFiltersButton": "Filtreleri Uygula",
+  "priceRangeSheetTitle": "FİYAT ARALIĞI",
+  "applyButton": "Uygula",
+  "sortSheetTitle": "SIRALAMA",
+  "sortNewest": "En Yeni Fırsatlar",
+  "sortPopular": "En Çok İncelenen",
+  "spotEmptyStateTitle": "Bu kriterde fırsat bulamadık",
+  "spotEmptyStateSubtitle": "Filtreleri temizlemeyi veya farklı bir kategori denemeyi dene.",
+  "newHeroTitleLine1": "Yaşam Alanınız İçin\n",
+  "newHeroTitleEmphasis": "Zamansız ",
+  "newHeroButtonCollection": "Koleksiyonu İncele",
+  "newHeroButtonQuickFilter": "Hızlı Filtrele",
+  "newStatActiveProductLabel": "AKTİF ÜRÜN",
+  "newStatControlledStockLabel": "KONTROLLÜ STOK",
+  "shopByCategoryTitlePrefix": "Kategoriye Göre ",
+  "shopByCategoryTitleEmphasis": "Keşfet",
+  "showAllButton": "Tümünü Göster",
+  "newEmptyStateTitle": "Aradığınız Kriterde Mobilya Bulunamadı",
+  "newEmptyStateSubtitle": "Arama kelimesini değiştirebilir ya da filtreleri temizleyebilirsiniz.",
+  "sortOptionsSheetTitle": "Sıralama Seçenekleri",
+  "newSortNewest": "En Yeniler",
+  "newSortPopular": "En Çok İncelenenler",
+  "cartWhatsappGreeting": "Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n",
+  "cartWhatsappAllProductsLine": "Tüm ürünler: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Merhaba, mobilyalar hakkında bilgi almak istiyorum.",
+  "spotHeroPageTitle": "İkinci El & Spot",
+  "sortByPriceLowHigh": "Fiyat: Düşükten Yükseğe",
+  "sortByPriceHighLow": "Fiyat: Yüksekten Düşüğe"
 }

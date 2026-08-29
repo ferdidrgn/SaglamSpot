@@ -1594,4 +1594,243 @@ class AppLocalizationsEl extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return 'Πριν από $days ημέρες';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Καναπές';
+
+  @override
+  String get catalogCategoryTitleChair => 'Καρέκλα & Πολυθρόνα';
+
+  @override
+  String get catalogCategoryTitleTable => 'Τραπέζι κουζίνας';
+
+  @override
+  String get catalogCategoryTitleBed => 'Κρεβάτι & Βάση';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Ντουλάπα & Ντουλάπι';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Οικιακές Συσκευές';
+
+  @override
+  String get catalogCategoryTitleOther => 'Διακόσμηση';
+
+  @override
+  String get mottoTitlePart1 => 'Δες πριν έρθεις, ';
+
+  @override
+  String get mottoTitlePart2 => 'Έλα όταν σου αρέσει.';
+
+  @override
+  String get mottoSubtitle =>
+      'Δες τη βιτρίνα μας πριν έρθεις στο κατάστημα, και πέρνα όταν βρεις αυτό που θέλεις.';
+
+  @override
+  String get gatewayNewEyebrow => 'ΝΕΑ ΣΥΛΛΟΓΗ';
+
+  @override
+  String get gatewayNewTitle => 'Διαχρονικά Κομμάτια';
+
+  @override
+  String get gatewayNewSubtitle => 'Ολοκαίνουργια, αχρησιμοποίητα έπιπλα.';
+
+  @override
+  String get gatewayNewButton => 'Δες τη Συλλογή';
+
+  @override
+  String get gatewaySpotEyebrow => 'ΠΡΟΣΦΟΡΕΣ SPOT';
+
+  @override
+  String get gatewaySpotTitle => 'Μεταχειρισμένο, αλλά Γερό';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'Μεταχειρισμένα αλλά χρηστικά, σε προσιτές τιμές.';
+
+  @override
+  String get gatewaySpotButton => 'Δες τις Προσφορές';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Η δωρεάν παράδοση ισχύει μόνο στις περιοχές $zones';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'ΑΠΟΘΗΚΗ ΕΠΙΠΛΩΝ · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'ΤΟΠΟΘΕΣΙΑ & ΩΡΑΡΙΟ';
+
+  @override
+  String get openNowLabel => 'ΑΝΟΙΧΤΟ ΤΩΡΑ';
+
+  @override
+  String get closedNowLabel => 'ΚΛΕΙΣΤΟ ΤΩΡΑ';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Σήμερα $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'Άνοιγμα στους Χάρτες';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Προβολή στους Χάρτες Google';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count προϊόντα';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'ΝΕΟ';
+
+  @override
+  String get gatewayNewTitleShort => 'Συλλογή';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'SPOT';
+
+  @override
+  String get gatewaySpotTitleShort => 'Προσφορές';
+
+  @override
+  String get spotHeroEyebrow => 'ΑΠΟΘΗΚΗ ΠΡΟΣΦΟΡΩΝ';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Μεταχειρισμένα αλλά χρηστικά. Σαν καινούρια, για κάθε προϋπολογισμό. Χωράει διαπραγμάτευση.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ Προσφορές';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Χωράει Διαπραγμάτευση';
+
+  @override
+  String get spotStatUsed => 'Μεταχειρισμένο';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'Πλήρως Ανακαινισμένο';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Κάθε προϊόν ελέγχεται ξεχωριστά πριν την παράδοση.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Spot & Μεταχειρισμένα';
+
+  @override
+  String get aphorismEyebrow => 'ΕΧΟΥΜΕ ΕΝΑ ΡΗΤΟ';
+
+  @override
+  String get aphorismQuote =>
+      'Όχι φθαρμένο, αλλά αγαπημένο.\nΤα καλά έπιπλα δεν γερνούν ποτέ, απλώς αλλάζουν σπίτι.';
+
+  @override
+  String get aphorismBody =>
+      'Γι\' αυτό ακριβώς είμαστε εδώ: για να φέρουμε κομμάτια που έχουν ακόμα ζωή σε ένα νέο σπίτι που θα τα εκτιμήσει.';
+
+  @override
+  String get spotSearchHint => 'Αναζήτηση προσφορών…';
+
+  @override
+  String get priceRangeLabel => 'Εύρος Τιμής';
+
+  @override
+  String get filtersSheetTitle => 'ΦΙΛΤΡΑ';
+
+  @override
+  String get applyFiltersButton => 'Εφαρμογή Φίλτρων';
+
+  @override
+  String get priceRangeSheetTitle => 'ΕΥΡΟΣ ΤΙΜΗΣ';
+
+  @override
+  String get applyButton => 'Εφαρμογή';
+
+  @override
+  String get sortSheetTitle => 'ΤΑΞΙΝΟΜΗΣΗ';
+
+  @override
+  String get sortNewest => 'Νεότερες Προσφορές';
+
+  @override
+  String get sortPopular => 'Πιο Δημοφιλή';
+
+  @override
+  String get spotEmptyStateTitle => 'Δεν βρήκαμε προσφορές με αυτά τα κριτήρια';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Δοκίμασε να καθαρίσεις τα φίλτρα ή διαφορετική κατηγορία.';
+
+  @override
+  String get newHeroTitleLine1 => 'Για τον Χώρο σας\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Διαχρονική ';
+
+  @override
+  String get newHeroButtonCollection => 'Δες τη Συλλογή';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Γρήγορο Φίλτρο';
+
+  @override
+  String get newStatActiveProductLabel => 'ΕΝΕΡΓΑ ΠΡΟΪΟΝΤΑ';
+
+  @override
+  String get newStatControlledStockLabel => 'ΕΛΕΓΜΕΝΟ ΑΠΟΘΕΜΑ';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'Ανά Κατηγορία ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Εξερεύνησε';
+
+  @override
+  String get showAllButton => 'Εμφάνιση Όλων';
+
+  @override
+  String get newEmptyStateTitle => 'Δεν Βρέθηκαν Έπιπλα με Αυτά τα Κριτήρια';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Δοκίμασε να αλλάξεις τον όρο αναζήτησης ή να καθαρίσεις τα φίλτρα.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Επιλογές Ταξινόμησης';
+
+  @override
+  String get newSortNewest => 'Νεότερα';
+
+  @override
+  String get newSortPopular => 'Πιο Δημοφιλή';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'Γεια σας, θα ήθελα πληροφορίες για αυτά τα προϊόντα:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Όλα τα προϊόντα: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting =>
+      'Γεια σας, θα ήθελα πληροφορίες για τα έπιπλα.';
+
+  @override
+  String get spotHeroPageTitle => 'Μεταχειρισμένα & Spot';
+
+  @override
+  String get sortByPriceLowHigh => 'Τιμή: Αύξουσα';
+
+  @override
+  String get sortByPriceHighLow => 'Τιμή: Φθίνουσα';
 }

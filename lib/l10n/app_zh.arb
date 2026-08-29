@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "沙发与长椅",
+  "catalogCategoryTitleChair": "椅子与扶手椅",
+  "catalogCategoryTitleTable": "餐桌",
+  "catalogCategoryTitleBed": "床与床架",
+  "catalogCategoryTitleWardrobe": "衣柜与橱柜",
+  "catalogCategoryTitleWhite": "家用电器",
+  "catalogCategoryTitleOther": "装饰",
+  "mottoTitlePart1": "来店前先看看，",
+  "mottoTitlePart2": "喜欢了再来。",
+  "mottoSubtitle": "来店前先浏览我们的展示，看中了再来店里。",
+  "gatewayNewEyebrow": "全新系列",
+  "gatewayNewTitle": "经典之作",
+  "gatewayNewSubtitle": "全新未使用的家具。",
+  "gatewayNewButton": "查看系列",
+  "gatewaySpotEyebrow": "限时优惠",
+  "gatewaySpotTitle": "二手但结实",
+  "gatewaySpotSubtitle": "二手但实用，价格亲民。",
+  "gatewaySpotButton": "查看优惠",
+  "freeDeliveryZonesNote": "仅在{zones}地区提供免费送货",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "家具仓库 · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "位置与营业时间",
+  "openNowLabel": "营业中",
+  "closedNowLabel": "已打烊",
+  "todayHoursPrefix": "· 今天 {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "在地图中打开",
+  "viewOnGoogleMapsButton": "在谷歌地图中查看",
+  "gatewayProductCount": "{count} 件商品",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "全新",
+  "gatewayNewTitleShort": "系列",
+  "gatewaySpotEyebrowShort": "限时",
+  "gatewaySpotTitleShort": "优惠",
+  "spotHeroEyebrow": "优惠仓库",
+  "spotHeroSubtitle": "二手但实用。适合各种预算的近全新商品，可议价。",
+  "spotHeroDealCount": "{count}+ 项优惠",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "可议价",
+  "spotStatUsed": "二手",
+  "spotShowcaseBadgeTitle": "全面翻新",
+  "spotShowcaseBadgeSubtitle": "每件商品在交付前都经过单独检查。",
+  "spotBreadcrumbLabel": "限时优惠与二手",
+  "aphorismEyebrow": "我们有句话",
+  "aphorismQuote": "不是破旧，而是有故事。\n好家具永远不会过时，只会换个新家。",
+  "aphorismBody": "这正是我们存在的原因：把仍有价值的物件，带到懂得珍惜它们的新家。",
+  "spotSearchHint": "搜索优惠…",
+  "priceRangeLabel": "价格区间",
+  "filtersSheetTitle": "筛选",
+  "applyFiltersButton": "应用筛选",
+  "priceRangeSheetTitle": "价格区间",
+  "applyButton": "应用",
+  "sortSheetTitle": "排序",
+  "sortNewest": "最新优惠",
+  "sortPopular": "最多浏览",
+  "spotEmptyStateTitle": "未找到符合条件的优惠",
+  "spotEmptyStateSubtitle": "请尝试清除筛选或换一个分类。",
+  "newHeroTitleLine1": "为您的生活空间\n",
+  "newHeroTitleEmphasis": "经典",
+  "newHeroButtonCollection": "浏览系列",
+  "newHeroButtonQuickFilter": "快速筛选",
+  "newStatActiveProductLabel": "在售商品",
+  "newStatControlledStockLabel": "品控库存",
+  "shopByCategoryTitlePrefix": "按分类",
+  "shopByCategoryTitleEmphasis": "探索",
+  "showAllButton": "显示全部",
+  "newEmptyStateTitle": "未找到符合搜索条件的家具",
+  "newEmptyStateSubtitle": "请尝试更改搜索词或清除筛选条件。",
+  "sortOptionsSheetTitle": "排序选项",
+  "newSortNewest": "最新",
+  "newSortPopular": "最多浏览",
+  "cartWhatsappGreeting": "您好，我想咨询这些商品的信息：\n\n",
+  "cartWhatsappAllProductsLine": "所有商品：{url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "您好，我想咨询家具的信息。",
+  "spotHeroPageTitle": "二手与限时优惠",
+  "sortByPriceLowHigh": "价格：从低到高",
+  "sortByPriceHighLow": "价格：从高到低"
 }

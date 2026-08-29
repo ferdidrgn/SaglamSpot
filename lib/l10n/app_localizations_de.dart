@@ -1595,4 +1595,245 @@ class AppLocalizationsDe extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return 'Vor $days Tagen';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Sofa & Couch';
+
+  @override
+  String get catalogCategoryTitleChair => 'Stuhl & Sessel';
+
+  @override
+  String get catalogCategoryTitleTable => 'Esstisch';
+
+  @override
+  String get catalogCategoryTitleBed => 'Bett & Bettgestell';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Kleiderschrank & Schrank';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Haushaltsgeräte';
+
+  @override
+  String get catalogCategoryTitleOther => 'Dekoration';
+
+  @override
+  String get mottoTitlePart1 => 'Erst sehen, ';
+
+  @override
+  String get mottoTitlePart2 => 'Komm, wenn\'s dir gefällt.';
+
+  @override
+  String get mottoSubtitle =>
+      'Stöbere in unserem Schaufenster, bevor du in den Laden kommst — komm einfach vorbei, sobald du etwas Passendes gefunden hast.';
+
+  @override
+  String get gatewayNewEyebrow => 'NEUE KOLLEKTION';
+
+  @override
+  String get gatewayNewTitle => 'Zeitlose Stücke';
+
+  @override
+  String get gatewayNewSubtitle => 'Brandneue, unbenutzte Möbel.';
+
+  @override
+  String get gatewayNewButton => 'Kollektion ansehen';
+
+  @override
+  String get gatewaySpotEyebrow => 'SPOT-ANGEBOTE';
+
+  @override
+  String get gatewaySpotTitle => 'Gebraucht, aber solide';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'Gebraucht, aber praktisch — zu preiswerten Konditionen.';
+
+  @override
+  String get gatewaySpotButton => 'Angebote ansehen';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Kostenlose Lieferung gilt nur in $zones';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'MÖBELLAGER · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'STANDORT & ÖFFNUNGSZEITEN';
+
+  @override
+  String get openNowLabel => 'JETZT GEÖFFNET';
+
+  @override
+  String get closedNowLabel => 'JETZT GESCHLOSSEN';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Heute $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'In Karten öffnen';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Auf Google Maps ansehen';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count Produkte';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'NEU';
+
+  @override
+  String get gatewayNewTitleShort => 'Kollektion';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'SPOT';
+
+  @override
+  String get gatewaySpotTitleShort => 'Angebote';
+
+  @override
+  String get spotHeroEyebrow => 'ANGEBOTSLAGER';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Gebraucht, aber praktisch. Wie neu wirkende Möbel für jedes Budget. Verhandlungsspielraum vorhanden.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ Angebote';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Verhandlungsspielraum';
+
+  @override
+  String get spotStatUsed => 'Gebraucht';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'Generalüberholt';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Jedes Stück wird vor der Lieferung einzeln überprüft.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Spot & Gebraucht';
+
+  @override
+  String get aphorismEyebrow => 'WIR HABEN EIN MOTTO';
+
+  @override
+  String get aphorismQuote =>
+      'Nicht abgenutzt, sondern bewährt.\nGute Möbel altern nie — sie wechseln nur das Zuhause.';
+
+  @override
+  String get aphorismBody =>
+      'Genau deshalb sind wir hier: Stücke, die noch Leben in sich tragen, zu einem neuen Zuhause bringen, das sie zu schätzen weiß.';
+
+  @override
+  String get spotSearchHint => 'Angebote suchen …';
+
+  @override
+  String get priceRangeLabel => 'Preisspanne';
+
+  @override
+  String get filtersSheetTitle => 'FILTER';
+
+  @override
+  String get applyFiltersButton => 'Filter anwenden';
+
+  @override
+  String get priceRangeSheetTitle => 'PREISSPANNE';
+
+  @override
+  String get applyButton => 'Anwenden';
+
+  @override
+  String get sortSheetTitle => 'SORTIEREN';
+
+  @override
+  String get sortNewest => 'Neueste Angebote';
+
+  @override
+  String get sortPopular => 'Meistgesehen';
+
+  @override
+  String get spotEmptyStateTitle =>
+      'Wir haben dazu keine passenden Angebote gefunden';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Versuche, die Filter zurückzusetzen oder eine andere Kategorie.';
+
+  @override
+  String get newHeroTitleLine1 => 'Für Ihren Wohnraum\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Zeitlose ';
+
+  @override
+  String get newHeroButtonCollection => 'Kollektion ansehen';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Schnellfilter';
+
+  @override
+  String get newStatActiveProductLabel => 'AKTIVE PRODUKTE';
+
+  @override
+  String get newStatControlledStockLabel => 'GEPRÜFTER BESTAND';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'Nach Kategorie ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Entdecken';
+
+  @override
+  String get showAllButton => 'Alle anzeigen';
+
+  @override
+  String get newEmptyStateTitle =>
+      'Keine Möbel gefunden, die Ihrer Suche entsprechen';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Versuchen Sie einen anderen Suchbegriff oder setzen Sie die Filter zurück.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Sortieroptionen';
+
+  @override
+  String get newSortNewest => 'Neueste';
+
+  @override
+  String get newSortPopular => 'Meistgesehen';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'Hallo, ich möchte Informationen zu diesen Produkten:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Alle Produkte: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting =>
+      'Hallo, ich möchte Informationen zu den Möbeln.';
+
+  @override
+  String get spotHeroPageTitle => 'Gebraucht & Spot';
+
+  @override
+  String get sortByPriceLowHigh => 'Preis: aufsteigend';
+
+  @override
+  String get sortByPriceHighLow => 'Preis: absteigend';
 }

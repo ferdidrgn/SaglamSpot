@@ -242,9 +242,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           height: 1.2,
                         ),
                         children: [
-                          const TextSpan(text: "Gelmeden Gör, "),
+                          TextSpan(text: context.l10n.mottoTitlePart1),
                           TextSpan(
-                            text: "Beğenince Gel.",
+                            text: context.l10n.mottoTitlePart2,
                             style: TextStyle(
                                 color: AppColors.accentDark,
                                 fontStyle: FontStyle.italic),
@@ -257,7 +257,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.",
+                  context.l10n.mottoSubtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: AppColors.textSecondary,
@@ -302,10 +302,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final spotCount = ref.watch(spotDealsProductsProvider).length;
 
     final newCard = _GatewayCard(
-      eyebrow: 'SIFIR KOLEKSİYON',
+      eyebrow: context.l10n.gatewayNewEyebrow,
       eyebrowColor: NewCollectionPalette.badgeGreen,
-      title: 'Zamansız Parçalar',
-      subtitle: 'Hiç kullanılmamış, yeni gibi mobilyalar.',
+      title: context.l10n.gatewayNewTitle,
+      subtitle: context.l10n.gatewayNewSubtitle,
       count: newCount,
       background: NewCollectionPalette.background,
       cardBorder: NewCollectionPalette.cardBorder,
@@ -314,15 +314,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       accent: NewCollectionPalette.accent,
       headingFontFamily: NewCollectionPalette.headingFont,
       icon: Icons.chair_rounded,
-      buttonLabel: 'Koleksiyonu Gör',
+      buttonLabel: context.l10n.gatewayNewButton,
       onTap: () => NavigationHandler.goToNewProducts(context),
     );
 
     final spotCard = _GatewayCard(
-      eyebrow: 'SPOT FIRSATLAR',
+      eyebrow: context.l10n.gatewaySpotEyebrow,
       eyebrowColor: SpotPalette.accent,
-      title: 'Kullanılmış, Sağlam',
-      subtitle: 'İkinci el ama kullanışlı, cebe uygun fiyatlarla.',
+      title: context.l10n.gatewaySpotTitle,
+      subtitle: context.l10n.gatewaySpotSubtitle,
       count: spotCount,
       background: SpotPalette.background,
       cardBorder: SpotPalette.cardBorder,
@@ -331,7 +331,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       accent: SpotPalette.accent,
       headingFontFamily: null,
       icon: Icons.local_offer_rounded,
-      buttonLabel: 'Fırsatları Gör',
+      buttonLabel: context.l10n.gatewaySpotButton,
       onTap: () => NavigationHandler.goToSpotProducts(context),
     );
 
@@ -431,9 +431,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       // oluşmasın diye).
       TickerItem(
         Icons.map_rounded,
-        'Ücretsiz teslimat sadece '
-        '${SaglamSpotCommunication.freeDeliveryZones.join(', ')} '
-        'bölgelerinde geçerlidir',
+        context.l10n.freeDeliveryZonesNote(
+            SaglamSpotCommunication.freeDeliveryZones.join(', ')),
       ),
       TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
       TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
@@ -898,7 +897,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                                 color: Colors.white.withOpacity(0.15),
                                 fontSize: 10)),
                         Text(
-                          "MOBİLYA DEPOSU · İÇERENKÖY / ATAŞEHİR",
+                          context.l10n.footerWarehouseTagline,
                           style: AppTextStyles.microLabel(
                               fontSize: 9.5,
                               letterSpacing: 1.6,
@@ -1018,7 +1017,7 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
     return Column(
       crossAxisAlignment: crossAlign,
       children: [
-        Text("KONUM & ÇALIŞMA SAATİ",
+        Text(context.l10n.locationAndHoursLabel,
             style: AppTextStyles.microLabel(
                 fontSize: 11.5,
                 letterSpacing: 1.6,
@@ -1049,7 +1048,9 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
                   ),
                   const SizedBox(width: 7),
                   Text(
-                    isOpen ? "ŞU AN AÇIK" : "ŞU AN KAPALI",
+                    isOpen
+                        ? context.l10n.openNowLabel
+                        : context.l10n.closedNowLabel,
                     style: TextStyle(
                         color: isOpen
                             ? const Color(0xFF9BE3B8)
@@ -1061,7 +1062,8 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                        "· Bugün ${SaglamSpotCommunication.todayHoursLabel}",
+                        context.l10n.todayHoursPrefix(
+                            SaglamSpotCommunication.todayHoursLabel),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -1102,8 +1104,8 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
                         borderRadius: BorderRadius.circular(10)),
                   ),
                   icon: const Icon(Icons.map_outlined, size: 16),
-                  label: const Text("Haritada Aç",
-                      style: TextStyle(
+                  label: Text(context.l10n.openInMapsButton,
+                      style: const TextStyle(
                           fontSize: 12.5, fontWeight: FontWeight.w700)),
                 ),
               ),
@@ -1191,7 +1193,7 @@ class _VisitMapSectionState extends State<_VisitMapSection> {
                                 size: 15, color: Color(0xFF1A1A1A)),
                             const SizedBox(width: 6),
                             Flexible(
-                              child: Text('Google Haritalar\'da Görüntüle',
+                              child: Text(context.l10n.viewOnGoogleMapsButton,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       fontSize: 11.5,
@@ -1390,7 +1392,7 @@ class _LiveOpenBadge extends StatelessWidget {
             ),
             const SizedBox(width: 7),
             Text(
-              isOpen ? 'ŞU AN AÇIK' : 'ŞU AN KAPALI',
+              isOpen ? context.l10n.openNowLabel : context.l10n.closedNowLabel,
               style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -1565,7 +1567,7 @@ class _GatewayCard extends StatelessWidget {
                           color: accent.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Text('$count ürün',
+                        child: Text(context.l10n.gatewayProductCount(count),
                             style: TextStyle(
                                 color: accent,
                                 fontSize: 12,

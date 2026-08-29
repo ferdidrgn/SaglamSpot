@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "أريكة وكنبة",
+  "catalogCategoryTitleChair": "كرسي وكرسي بذراعين",
+  "catalogCategoryTitleTable": "طاولة طعام",
+  "catalogCategoryTitleBed": "سرير وقاعدة",
+  "catalogCategoryTitleWardrobe": "خزانة ملابس ودولاب",
+  "catalogCategoryTitleWhite": "أجهزة منزلية",
+  "catalogCategoryTitleOther": "ديكور",
+  "mottoTitlePart1": "شاهد قبل أن تأتي، ",
+  "mottoTitlePart2": "تعال عندما يعجبك.",
+  "mottoSubtitle": "تصفح واجهتنا قبل زيارة المتجر، ثم مر بنا عندما تجد ما يعجبك.",
+  "gatewayNewEyebrow": "مجموعة جديدة",
+  "gatewayNewTitle": "قطع خالدة",
+  "gatewayNewSubtitle": "أثاث جديد تمامًا لم يُستخدم من قبل.",
+  "gatewayNewButton": "عرض المجموعة",
+  "gatewaySpotEyebrow": "عروض سبوت",
+  "gatewaySpotTitle": "مستعمل، لكنه متين",
+  "gatewaySpotSubtitle": "مستعملة لكنها عملية، بأسعار تناسب ميزانيتك.",
+  "gatewaySpotButton": "عرض العروض",
+  "freeDeliveryZonesNote": "التوصيل المجاني متاح فقط في مناطق {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "مستودع الأثاث · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "الموقع وساعات العمل",
+  "openNowLabel": "مفتوح الآن",
+  "closedNowLabel": "مغلق الآن",
+  "todayHoursPrefix": "· اليوم {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "افتح في الخرائط",
+  "viewOnGoogleMapsButton": "عرض على خرائط جوجل",
+  "gatewayProductCount": "{count} منتج",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "جديد",
+  "gatewayNewTitleShort": "مجموعة",
+  "gatewaySpotEyebrowShort": "سبوت",
+  "gatewaySpotTitleShort": "عروض",
+  "spotHeroEyebrow": "مستودع العروض",
+  "spotHeroSubtitle": "مستعملة لكنها عملية. منتجات تبدو جديدة تناسب كل ميزانية. هامش للتفاوض متاح.",
+  "spotHeroDealCount": "{count}+ عرضًا",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "هامش للتفاوض",
+  "spotStatUsed": "مستعمل",
+  "spotShowcaseBadgeTitle": "تم فحصه وتجديده",
+  "spotShowcaseBadgeSubtitle": "يتم فحص كل قطعة على حدة قبل التسليم.",
+  "spotBreadcrumbLabel": "سبوت ومستعمل",
+  "aphorismEyebrow": "لدينا مقولة",
+  "aphorismQuote": "ليس باليًا، بل مُحبًا.\nالأثاث الجيد لا يشيخ أبدًا، بل يغيّر المنزل فقط.",
+  "aphorismBody": "لهذا نحن هنا بالتحديد: لنوصل القطع التي لا تزال بها حياة إلى منزل جديد يقدّرها.",
+  "spotSearchHint": "ابحث عن عروض...",
+  "priceRangeLabel": "نطاق السعر",
+  "filtersSheetTitle": "الفلاتر",
+  "applyFiltersButton": "تطبيق الفلاتر",
+  "priceRangeSheetTitle": "نطاق السعر",
+  "applyButton": "تطبيق",
+  "sortSheetTitle": "الترتيب",
+  "sortNewest": "أحدث العروض",
+  "sortPopular": "الأكثر مشاهدة",
+  "spotEmptyStateTitle": "لم نجد عروضًا تطابق هذا",
+  "spotEmptyStateSubtitle": "جرّب مسح الفلاتر أو تجربة فئة مختلفة.",
+  "newHeroTitleLine1": "لمساحة معيشتك\n",
+  "newHeroTitleEmphasis": "خالدة ",
+  "newHeroButtonCollection": "تصفح المجموعة",
+  "newHeroButtonQuickFilter": "تصفية سريعة",
+  "newStatActiveProductLabel": "منتجات نشطة",
+  "newStatControlledStockLabel": "مخزون مفحوص",
+  "shopByCategoryTitlePrefix": "حسب الفئة ",
+  "shopByCategoryTitleEmphasis": "اكتشف",
+  "showAllButton": "عرض الكل",
+  "newEmptyStateTitle": "لم يتم العثور على أثاث يطابق بحثك",
+  "newEmptyStateSubtitle": "جرّب تغيير كلمة البحث أو مسح الفلاتر.",
+  "sortOptionsSheetTitle": "خيارات الترتيب",
+  "newSortNewest": "الأحدث",
+  "newSortPopular": "الأكثر مشاهدة",
+  "cartWhatsappGreeting": "مرحبًا، أرغب في معرفة معلومات حول هذه المنتجات:\n\n",
+  "cartWhatsappAllProductsLine": "جميع المنتجات: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "مرحبًا، أرغب في معرفة معلومات حول الأثاث.",
+  "spotHeroPageTitle": "مستعمل وسبوت",
+  "sortByPriceLowHigh": "السعر: من الأقل إلى الأعلى",
+  "sortByPriceHighLow": "السعر: من الأعلى إلى الأقل"
 }

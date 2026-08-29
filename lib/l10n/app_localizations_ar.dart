@@ -1565,4 +1565,241 @@ class AppLocalizationsAr extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return 'قبل $days يوم';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'أريكة وكنبة';
+
+  @override
+  String get catalogCategoryTitleChair => 'كرسي وكرسي بذراعين';
+
+  @override
+  String get catalogCategoryTitleTable => 'طاولة طعام';
+
+  @override
+  String get catalogCategoryTitleBed => 'سرير وقاعدة';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'خزانة ملابس ودولاب';
+
+  @override
+  String get catalogCategoryTitleWhite => 'أجهزة منزلية';
+
+  @override
+  String get catalogCategoryTitleOther => 'ديكور';
+
+  @override
+  String get mottoTitlePart1 => 'شاهد قبل أن تأتي، ';
+
+  @override
+  String get mottoTitlePart2 => 'تعال عندما يعجبك.';
+
+  @override
+  String get mottoSubtitle =>
+      'تصفح واجهتنا قبل زيارة المتجر، ثم مر بنا عندما تجد ما يعجبك.';
+
+  @override
+  String get gatewayNewEyebrow => 'مجموعة جديدة';
+
+  @override
+  String get gatewayNewTitle => 'قطع خالدة';
+
+  @override
+  String get gatewayNewSubtitle => 'أثاث جديد تمامًا لم يُستخدم من قبل.';
+
+  @override
+  String get gatewayNewButton => 'عرض المجموعة';
+
+  @override
+  String get gatewaySpotEyebrow => 'عروض سبوت';
+
+  @override
+  String get gatewaySpotTitle => 'مستعمل، لكنه متين';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'مستعملة لكنها عملية، بأسعار تناسب ميزانيتك.';
+
+  @override
+  String get gatewaySpotButton => 'عرض العروض';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'التوصيل المجاني متاح فقط في مناطق $zones';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'مستودع الأثاث · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'الموقع وساعات العمل';
+
+  @override
+  String get openNowLabel => 'مفتوح الآن';
+
+  @override
+  String get closedNowLabel => 'مغلق الآن';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· اليوم $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'افتح في الخرائط';
+
+  @override
+  String get viewOnGoogleMapsButton => 'عرض على خرائط جوجل';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count منتج';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'جديد';
+
+  @override
+  String get gatewayNewTitleShort => 'مجموعة';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'سبوت';
+
+  @override
+  String get gatewaySpotTitleShort => 'عروض';
+
+  @override
+  String get spotHeroEyebrow => 'مستودع العروض';
+
+  @override
+  String get spotHeroSubtitle =>
+      'مستعملة لكنها عملية. منتجات تبدو جديدة تناسب كل ميزانية. هامش للتفاوض متاح.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ عرضًا';
+  }
+
+  @override
+  String get spotStatNegotiable => 'هامش للتفاوض';
+
+  @override
+  String get spotStatUsed => 'مستعمل';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'تم فحصه وتجديده';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'يتم فحص كل قطعة على حدة قبل التسليم.';
+
+  @override
+  String get spotBreadcrumbLabel => 'سبوت ومستعمل';
+
+  @override
+  String get aphorismEyebrow => 'لدينا مقولة';
+
+  @override
+  String get aphorismQuote =>
+      'ليس باليًا، بل مُحبًا.\nالأثاث الجيد لا يشيخ أبدًا، بل يغيّر المنزل فقط.';
+
+  @override
+  String get aphorismBody =>
+      'لهذا نحن هنا بالتحديد: لنوصل القطع التي لا تزال بها حياة إلى منزل جديد يقدّرها.';
+
+  @override
+  String get spotSearchHint => 'ابحث عن عروض...';
+
+  @override
+  String get priceRangeLabel => 'نطاق السعر';
+
+  @override
+  String get filtersSheetTitle => 'الفلاتر';
+
+  @override
+  String get applyFiltersButton => 'تطبيق الفلاتر';
+
+  @override
+  String get priceRangeSheetTitle => 'نطاق السعر';
+
+  @override
+  String get applyButton => 'تطبيق';
+
+  @override
+  String get sortSheetTitle => 'الترتيب';
+
+  @override
+  String get sortNewest => 'أحدث العروض';
+
+  @override
+  String get sortPopular => 'الأكثر مشاهدة';
+
+  @override
+  String get spotEmptyStateTitle => 'لم نجد عروضًا تطابق هذا';
+
+  @override
+  String get spotEmptyStateSubtitle => 'جرّب مسح الفلاتر أو تجربة فئة مختلفة.';
+
+  @override
+  String get newHeroTitleLine1 => 'لمساحة معيشتك\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'خالدة ';
+
+  @override
+  String get newHeroButtonCollection => 'تصفح المجموعة';
+
+  @override
+  String get newHeroButtonQuickFilter => 'تصفية سريعة';
+
+  @override
+  String get newStatActiveProductLabel => 'منتجات نشطة';
+
+  @override
+  String get newStatControlledStockLabel => 'مخزون مفحوص';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'حسب الفئة ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'اكتشف';
+
+  @override
+  String get showAllButton => 'عرض الكل';
+
+  @override
+  String get newEmptyStateTitle => 'لم يتم العثور على أثاث يطابق بحثك';
+
+  @override
+  String get newEmptyStateSubtitle => 'جرّب تغيير كلمة البحث أو مسح الفلاتر.';
+
+  @override
+  String get sortOptionsSheetTitle => 'خيارات الترتيب';
+
+  @override
+  String get newSortNewest => 'الأحدث';
+
+  @override
+  String get newSortPopular => 'الأكثر مشاهدة';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'مرحبًا، أرغب في معرفة معلومات حول هذه المنتجات:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'جميع المنتجات: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting =>
+      'مرحبًا، أرغب في معرفة معلومات حول الأثاث.';
+
+  @override
+  String get spotHeroPageTitle => 'مستعمل وسبوت';
+
+  @override
+  String get sortByPriceLowHigh => 'السعر: من الأقل إلى الأعلى';
+
+  @override
+  String get sortByPriceHighLow => 'السعر: من الأعلى إلى الأقل';
 }

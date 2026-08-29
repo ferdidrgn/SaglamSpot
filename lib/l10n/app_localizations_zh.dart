@@ -1514,4 +1514,233 @@ class AppLocalizationsZh extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return '$days天前';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => '沙发与长椅';
+
+  @override
+  String get catalogCategoryTitleChair => '椅子与扶手椅';
+
+  @override
+  String get catalogCategoryTitleTable => '餐桌';
+
+  @override
+  String get catalogCategoryTitleBed => '床与床架';
+
+  @override
+  String get catalogCategoryTitleWardrobe => '衣柜与橱柜';
+
+  @override
+  String get catalogCategoryTitleWhite => '家用电器';
+
+  @override
+  String get catalogCategoryTitleOther => '装饰';
+
+  @override
+  String get mottoTitlePart1 => '来店前先看看，';
+
+  @override
+  String get mottoTitlePart2 => '喜欢了再来。';
+
+  @override
+  String get mottoSubtitle => '来店前先浏览我们的展示，看中了再来店里。';
+
+  @override
+  String get gatewayNewEyebrow => '全新系列';
+
+  @override
+  String get gatewayNewTitle => '经典之作';
+
+  @override
+  String get gatewayNewSubtitle => '全新未使用的家具。';
+
+  @override
+  String get gatewayNewButton => '查看系列';
+
+  @override
+  String get gatewaySpotEyebrow => '限时优惠';
+
+  @override
+  String get gatewaySpotTitle => '二手但结实';
+
+  @override
+  String get gatewaySpotSubtitle => '二手但实用，价格亲民。';
+
+  @override
+  String get gatewaySpotButton => '查看优惠';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return '仅在$zones地区提供免费送货';
+  }
+
+  @override
+  String get footerWarehouseTagline => '家具仓库 · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => '位置与营业时间';
+
+  @override
+  String get openNowLabel => '营业中';
+
+  @override
+  String get closedNowLabel => '已打烊';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· 今天 $hours';
+  }
+
+  @override
+  String get openInMapsButton => '在地图中打开';
+
+  @override
+  String get viewOnGoogleMapsButton => '在谷歌地图中查看';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count 件商品';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => '全新';
+
+  @override
+  String get gatewayNewTitleShort => '系列';
+
+  @override
+  String get gatewaySpotEyebrowShort => '限时';
+
+  @override
+  String get gatewaySpotTitleShort => '优惠';
+
+  @override
+  String get spotHeroEyebrow => '优惠仓库';
+
+  @override
+  String get spotHeroSubtitle => '二手但实用。适合各种预算的近全新商品，可议价。';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ 项优惠';
+  }
+
+  @override
+  String get spotStatNegotiable => '可议价';
+
+  @override
+  String get spotStatUsed => '二手';
+
+  @override
+  String get spotShowcaseBadgeTitle => '全面翻新';
+
+  @override
+  String get spotShowcaseBadgeSubtitle => '每件商品在交付前都经过单独检查。';
+
+  @override
+  String get spotBreadcrumbLabel => '限时优惠与二手';
+
+  @override
+  String get aphorismEyebrow => '我们有句话';
+
+  @override
+  String get aphorismQuote => '不是破旧，而是有故事。\n好家具永远不会过时，只会换个新家。';
+
+  @override
+  String get aphorismBody => '这正是我们存在的原因：把仍有价值的物件，带到懂得珍惜它们的新家。';
+
+  @override
+  String get spotSearchHint => '搜索优惠…';
+
+  @override
+  String get priceRangeLabel => '价格区间';
+
+  @override
+  String get filtersSheetTitle => '筛选';
+
+  @override
+  String get applyFiltersButton => '应用筛选';
+
+  @override
+  String get priceRangeSheetTitle => '价格区间';
+
+  @override
+  String get applyButton => '应用';
+
+  @override
+  String get sortSheetTitle => '排序';
+
+  @override
+  String get sortNewest => '最新优惠';
+
+  @override
+  String get sortPopular => '最多浏览';
+
+  @override
+  String get spotEmptyStateTitle => '未找到符合条件的优惠';
+
+  @override
+  String get spotEmptyStateSubtitle => '请尝试清除筛选或换一个分类。';
+
+  @override
+  String get newHeroTitleLine1 => '为您的生活空间\n';
+
+  @override
+  String get newHeroTitleEmphasis => '经典';
+
+  @override
+  String get newHeroButtonCollection => '浏览系列';
+
+  @override
+  String get newHeroButtonQuickFilter => '快速筛选';
+
+  @override
+  String get newStatActiveProductLabel => '在售商品';
+
+  @override
+  String get newStatControlledStockLabel => '品控库存';
+
+  @override
+  String get shopByCategoryTitlePrefix => '按分类';
+
+  @override
+  String get shopByCategoryTitleEmphasis => '探索';
+
+  @override
+  String get showAllButton => '显示全部';
+
+  @override
+  String get newEmptyStateTitle => '未找到符合搜索条件的家具';
+
+  @override
+  String get newEmptyStateSubtitle => '请尝试更改搜索词或清除筛选条件。';
+
+  @override
+  String get sortOptionsSheetTitle => '排序选项';
+
+  @override
+  String get newSortNewest => '最新';
+
+  @override
+  String get newSortPopular => '最多浏览';
+
+  @override
+  String get cartWhatsappGreeting => '您好，我想咨询这些商品的信息：\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return '所有商品：$url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting => '您好，我想咨询家具的信息。';
+
+  @override
+  String get spotHeroPageTitle => '二手与限时优惠';
+
+  @override
+  String get sortByPriceLowHigh => '价格：从低到高';
+
+  @override
+  String get sortByPriceHighLow => '价格：从高到低';
 }

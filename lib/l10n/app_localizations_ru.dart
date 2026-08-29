@@ -1580,4 +1580,242 @@ class AppLocalizationsRu extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return '$days дн. назад';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Диван и кушетка';
+
+  @override
+  String get catalogCategoryTitleChair => 'Стул и кресло';
+
+  @override
+  String get catalogCategoryTitleTable => 'Обеденный стол';
+
+  @override
+  String get catalogCategoryTitleBed => 'Кровать и основание';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Гардероб и шкаф';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Бытовая техника';
+
+  @override
+  String get catalogCategoryTitleOther => 'Декор';
+
+  @override
+  String get mottoTitlePart1 => 'Смотрите до визита, ';
+
+  @override
+  String get mottoTitlePart2 => 'Приходите, когда понравится.';
+
+  @override
+  String get mottoSubtitle =>
+      'Просмотрите нашу витрину, прежде чем прийти в магазин — заходите, когда найдёте то, что вам понравится.';
+
+  @override
+  String get gatewayNewEyebrow => 'НОВАЯ КОЛЛЕКЦИЯ';
+
+  @override
+  String get gatewayNewTitle => 'Вечная классика';
+
+  @override
+  String get gatewayNewSubtitle => 'Абсолютно новая, неиспользованная мебель.';
+
+  @override
+  String get gatewayNewButton => 'Смотреть коллекцию';
+
+  @override
+  String get gatewaySpotEyebrow => 'СПОТ-ПРЕДЛОЖЕНИЯ';
+
+  @override
+  String get gatewaySpotTitle => 'Бывшая в употреблении, но крепкая';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'Бывшие в употреблении, но практичные вещи по доступным ценам.';
+
+  @override
+  String get gatewaySpotButton => 'Смотреть предложения';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Бесплатная доставка действует только в районах $zones';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'СКЛАД МЕБЕЛИ · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'АДРЕС И ЧАСЫ РАБОТЫ';
+
+  @override
+  String get openNowLabel => 'СЕЙЧАС ОТКРЫТО';
+
+  @override
+  String get closedNowLabel => 'СЕЙЧАС ЗАКРЫТО';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Сегодня $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'Открыть на карте';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Посмотреть на Google Картах';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count товаров';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'НОВОЕ';
+
+  @override
+  String get gatewayNewTitleShort => 'Коллекция';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'СПОТ';
+
+  @override
+  String get gatewaySpotTitleShort => 'Предложения';
+
+  @override
+  String get spotHeroEyebrow => 'СКЛАД ВЫГОДНЫХ ПРЕДЛОЖЕНИЙ';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Бывшие в употреблении, но практичные вещи. Товары как новые на любой бюджет. Возможен торг.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ предложений';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Возможен торг';
+
+  @override
+  String get spotStatUsed => 'Б/у';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'Полностью восстановлено';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Каждый товар проверяется индивидуально перед доставкой.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Спот и секонд-хенд';
+
+  @override
+  String get aphorismEyebrow => 'У НАС ЕСТЬ ДЕВИЗ';
+
+  @override
+  String get aphorismQuote =>
+      'Не изношено, а прожито с любовью.\nХорошая мебель никогда не стареет — она просто меняет дом.';
+
+  @override
+  String get aphorismBody =>
+      'Именно поэтому мы здесь: чтобы вещи, в которых ещё есть жизнь, нашли новый дом, где их оценят по достоинству.';
+
+  @override
+  String get spotSearchHint => 'Поиск предложений…';
+
+  @override
+  String get priceRangeLabel => 'Диапазон цен';
+
+  @override
+  String get filtersSheetTitle => 'ФИЛЬТРЫ';
+
+  @override
+  String get applyFiltersButton => 'Применить фильтры';
+
+  @override
+  String get priceRangeSheetTitle => 'ДИАПАЗОН ЦЕН';
+
+  @override
+  String get applyButton => 'Применить';
+
+  @override
+  String get sortSheetTitle => 'СОРТИРОВКА';
+
+  @override
+  String get sortNewest => 'Новые предложения';
+
+  @override
+  String get sortPopular => 'Самые просматриваемые';
+
+  @override
+  String get spotEmptyStateTitle => 'Мы не нашли предложений по этим критериям';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Попробуйте сбросить фильтры или выбрать другую категорию.';
+
+  @override
+  String get newHeroTitleLine1 => 'Для вашего дома\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Вечные ';
+
+  @override
+  String get newHeroButtonCollection => 'Смотреть коллекцию';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Быстрый фильтр';
+
+  @override
+  String get newStatActiveProductLabel => 'АКТИВНЫХ ТОВАРОВ';
+
+  @override
+  String get newStatControlledStockLabel => 'ПРОВЕРЕННЫЙ ЗАПАС';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'По категории: ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Исследуйте';
+
+  @override
+  String get showAllButton => 'Показать все';
+
+  @override
+  String get newEmptyStateTitle => 'Мебель по вашему запросу не найдена';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Попробуйте изменить запрос или сбросить фильтры.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Параметры сортировки';
+
+  @override
+  String get newSortNewest => 'Новые';
+
+  @override
+  String get newSortPopular => 'Самые просматриваемые';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'Здравствуйте, хочу узнать об этих товарах:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Все товары: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting => 'Здравствуйте, хочу узнать о мебели.';
+
+  @override
+  String get spotHeroPageTitle => 'Секонд-хенд и спот';
+
+  @override
+  String get sortByPriceLowHigh => 'Цена: по возрастанию';
+
+  @override
+  String get sortByPriceHighLow => 'Цена: по убыванию';
 }

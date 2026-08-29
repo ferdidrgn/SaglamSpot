@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Divano",
+  "catalogCategoryTitleChair": "Sedia e poltrona",
+  "catalogCategoryTitleTable": "Tavolo da pranzo",
+  "catalogCategoryTitleBed": "Letto e base",
+  "catalogCategoryTitleWardrobe": "Guardaroba e armadio",
+  "catalogCategoryTitleWhite": "Elettrodomestici",
+  "catalogCategoryTitleOther": "Decorazione",
+  "mottoTitlePart1": "Guarda prima di venire, ",
+  "mottoTitlePart2": "Vieni quando ti piace.",
+  "mottoSubtitle": "Sfoglia la nostra vetrina prima di venire in negozio, poi passa quando trovi ciò che ti piace.",
+  "gatewayNewEyebrow": "NUOVA COLLEZIONE",
+  "gatewayNewTitle": "Pezzi senza tempo",
+  "gatewayNewSubtitle": "Mobili nuovi di zecca, mai usati.",
+  "gatewayNewButton": "Vedi la collezione",
+  "gatewaySpotEyebrow": "OFFERTE SPOT",
+  "gatewaySpotTitle": "Usato, ma solido",
+  "gatewaySpotSubtitle": "Di seconda mano ma pratici, a prezzi accessibili.",
+  "gatewaySpotButton": "Vedi le offerte",
+  "freeDeliveryZonesNote": "La consegna gratuita è valida solo nelle zone {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "DEPOSITO MOBILI · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "POSIZIONE E ORARI",
+  "openNowLabel": "APERTO ORA",
+  "closedNowLabel": "CHIUSO ORA",
+  "todayHoursPrefix": "· Oggi {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Apri nelle mappe",
+  "viewOnGoogleMapsButton": "Visualizza su Google Maps",
+  "gatewayProductCount": "{count} prodotti",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "NUOVO",
+  "gatewayNewTitleShort": "Collezione",
+  "gatewaySpotEyebrowShort": "SPOT",
+  "gatewaySpotTitleShort": "Offerte",
+  "spotHeroEyebrow": "DEPOSITO OFFERTE",
+  "spotHeroSubtitle": "Usati ma pratici. Articoli quasi nuovi per ogni budget. Margine di trattativa.",
+  "spotHeroDealCount": "{count}+ offerte",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Margine di trattativa",
+  "spotStatUsed": "Usato",
+  "spotShowcaseBadgeTitle": "Completamente revisionato",
+  "spotShowcaseBadgeSubtitle": "Ogni articolo viene controllato singolarmente prima della consegna.",
+  "spotBreadcrumbLabel": "Spot & Usato",
+  "aphorismEyebrow": "ABBIAMO UN MOTTO",
+  "aphorismQuote": "Non consumato, vissuto.\nI bei mobili non invecchiano mai, cambiano solo casa.",
+  "aphorismBody": "Siamo qui proprio per questo: portare pezzi che hanno ancora vita in una nuova casa che saprà apprezzarli.",
+  "spotSearchHint": "Cerca offerte…",
+  "priceRangeLabel": "Fascia di prezzo",
+  "filtersSheetTitle": "FILTRI",
+  "applyFiltersButton": "Applica filtri",
+  "priceRangeSheetTitle": "FASCIA DI PREZZO",
+  "applyButton": "Applica",
+  "sortSheetTitle": "ORDINA",
+  "sortNewest": "Offerte più recenti",
+  "sortPopular": "Più visti",
+  "spotEmptyStateTitle": "Non abbiamo trovato offerte per questi criteri",
+  "spotEmptyStateSubtitle": "Prova a cancellare i filtri o una categoria diversa.",
+  "newHeroTitleLine1": "Per il tuo spazio\n",
+  "newHeroTitleEmphasis": "Senza tempo ",
+  "newHeroButtonCollection": "Sfoglia la collezione",
+  "newHeroButtonQuickFilter": "Filtro rapido",
+  "newStatActiveProductLabel": "PRODOTTI ATTIVI",
+  "newStatControlledStockLabel": "STOCK CONTROLLATO",
+  "shopByCategoryTitlePrefix": "Per categoria ",
+  "shopByCategoryTitleEmphasis": "Esplora",
+  "showAllButton": "Mostra tutto",
+  "newEmptyStateTitle": "Nessun mobile trovato per questa ricerca",
+  "newEmptyStateSubtitle": "Prova a cambiare il termine di ricerca o a cancellare i filtri.",
+  "sortOptionsSheetTitle": "Opzioni di ordinamento",
+  "newSortNewest": "Più recenti",
+  "newSortPopular": "Più visti",
+  "cartWhatsappGreeting": "Ciao, vorrei informazioni su questi prodotti:\n\n",
+  "cartWhatsappAllProductsLine": "Tutti i prodotti: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Ciao, vorrei informazioni sui mobili.",
+  "spotHeroPageTitle": "Usato & Spot",
+  "sortByPriceLowHigh": "Prezzo: dal più basso",
+  "sortByPriceHighLow": "Prezzo: dal più alto"
 }

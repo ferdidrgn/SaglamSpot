@@ -54,22 +54,22 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     }
   }
 
-  String _getCategoryTitle(ProductCategory category) {
+  String _getCategoryTitle(BuildContext context, ProductCategory category) {
     switch (category) {
       case ProductCategory.sofa:
-        return "Koltuk & Kanepe";
+        return context.l10n.catalogCategoryTitleSofa;
       case ProductCategory.chair:
-        return "Sandalye & Berjer";
+        return context.l10n.catalogCategoryTitleChair;
       case ProductCategory.table:
-        return "Yemek Masası";
+        return context.l10n.catalogCategoryTitleTable;
       case ProductCategory.bed:
-        return "Yatak & Baza";
+        return context.l10n.catalogCategoryTitleBed;
       case ProductCategory.wardrobe:
-        return "Gardırop & Dolap";
+        return context.l10n.catalogCategoryTitleWardrobe;
       case ProductCategory.white:
-        return "Beyaz Eşya";
+        return context.l10n.catalogCategoryTitleWhite;
       case ProductCategory.other:
-        return "Dekorasyon";
+        return context.l10n.catalogCategoryTitleOther;
     }
   }
 
@@ -231,9 +231,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 letterSpacing: -0.5,
               ),
               children: [
-                const TextSpan(text: "Yaşam Alanınız İçin\n"),
+                TextSpan(text: context.l10n.newHeroTitleLine1),
                 TextSpan(
-                  text: "Zamansız ",
+                  text: context.l10n.newHeroTitleEmphasis,
                   style: TextStyle(
                       color: AppColors.accentDark,
                       fontStyle: FontStyle.italic,
@@ -277,7 +277,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   elevation: 0,
                 ),
                 label: const Icon(Icons.arrow_forward_rounded, size: 16),
-                icon: const Text("Koleksiyonu İncele",
+                icon: Text(context.l10n.newHeroButtonCollection,
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               OutlinedButton.icon(
@@ -291,7 +291,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       borderRadius: BorderRadius.circular(30)),
                 ),
                 icon: const Icon(Icons.search_rounded, size: 16),
-                label: const Text("Hızlı Filtrele",
+                label: Text(context.l10n.newHeroButtonQuickFilter,
                     style: TextStyle(fontWeight: FontWeight.w600)),
               ),
             ],
@@ -302,11 +302,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           delayMs: 240,
           child: Row(
             children: [
-              _buildStatItem("$totalProducts+", "AKTİF ÜRÜN"),
+              _buildStatItem(
+                  "$totalProducts+", context.l10n.newStatActiveProductLabel),
               const SizedBox(width: 24),
-              _buildStatItem("2.4k+", "MUTLU MÜŞTERİ"),
+              _buildStatItem(
+                  "2.4k+", context.l10n.statHappyCustomer.toUpperCase()),
               const SizedBox(width: 24),
-              _buildStatItem("%100", "KONTROLLÜ STOK"),
+              _buildStatItem("%100", context.l10n.newStatControlledStockLabel),
             ],
           ),
         ),
@@ -516,9 +518,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                         color: const Color(0xFF1E1815),
                       ),
                       children: [
-                        const TextSpan(text: "Kategoriye Göre "),
+                        TextSpan(text: context.l10n.shopByCategoryTitlePrefix),
                         TextSpan(
-                          text: "Keşfet",
+                          text: context.l10n.shopByCategoryTitleEmphasis,
                           style: TextStyle(
                               color: AppColors.accentDark,
                               fontWeight: FontWeight.w600),
@@ -531,9 +533,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       setState(() => _selectedCategory = null);
                       _scrollToCollection();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Text("Tümünü Göster",
+                        Text(context.l10n.showAllButton,
                             style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
@@ -565,8 +567,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
                       return _buildVisualCategoryCard(
                         width: cardWidth,
-                        title: _getCategoryTitle(cat),
-                        itemCount: "$count Ürün",
+                        title: _getCategoryTitle(context, cat),
+                        itemCount: context.l10n.categoryProductCount(count),
                         imageUrl: imageUrl,
                         isSelected: _selectedCategory == cat,
                         onTap: () {
@@ -767,7 +769,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       size: 18, color: Color(0xFF5D5248)),
                   const SizedBox(width: 6),
                   Text(
-                    _sortLabel(_selectedSort),
+                    _sortLabel(context, _selectedSort),
                     style: GoogleFonts.inter(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -805,7 +807,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         children: [
           _buildRailIconItem(
             icon: Icons.grid_view_rounded,
-            label: "Tümü",
+            label: context.l10n.conditionAll,
             isSelected: _selectedCategory == null,
             onTap: () => setState(() => _selectedCategory = null),
           ),
@@ -815,7 +817,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               padding: const EdgeInsets.only(bottom: 12),
               child: _buildRailIconItem(
                 icon: _getCategoryIcon(cat),
-                label: _getCategoryTitle(cat),
+                label: _getCategoryTitle(context, cat),
                 isSelected: _selectedCategory == cat,
                 onTap: () => setState(() => _selectedCategory = cat),
               ),
@@ -859,14 +861,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       child: Row(
         children: [
           _buildMobileCategoryPill(
-            title: "Tümü",
+            title: context.l10n.conditionAll,
             icon: Icons.grid_view_rounded,
             isSelected: _selectedCategory == null,
             onTap: () => setState(() => _selectedCategory = null),
           ),
           ...ProductCategory.values.map(
             (cat) => _buildMobileCategoryPill(
-              title: _getCategoryTitle(cat),
+              title: _getCategoryTitle(context, cat),
               icon: _getCategoryIcon(cat),
               isSelected: _selectedCategory == cat,
               onTap: () => setState(() => _selectedCategory = cat),
@@ -1023,7 +1025,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        _getCategoryTitle(product.category).toUpperCase(),
+                        _getCategoryTitle(context, product.category)
+                            .toUpperCase(),
                         style: const TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w600,
@@ -1085,7 +1088,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _getCategoryTitle(product.category).toUpperCase(),
+                          _getCategoryTitle(context, product.category)
+                              .toUpperCase(),
                           style: const TextStyle(
                             fontSize: 9,
                             fontWeight: FontWeight.w500,
@@ -1168,9 +1172,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                             const Icon(Icons.local_shipping_outlined,
                                 size: 14, color: Color(0xFF6B7280)),
                             const SizedBox(width: 6),
-                            const Text(
-                              "Ücretsiz teslimat",
-                              style: TextStyle(
+                            Text(
+                              context.l10n.freeDeliveryLabel,
+                              style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xFF6B7280)),
@@ -1183,11 +1187,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                                 color: const Color(0xFF2C241E),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "İncele",
+                                    context.l10n.viewButton,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 11,
@@ -1228,7 +1232,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               size: 48, color: Color(0xFFA69C92)),
           const SizedBox(height: 16),
           Text(
-            "Aradığınız Kriterde Mobilya Bulunamadı",
+            context.l10n.newEmptyStateTitle,
             style: GoogleFonts.fraunces(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -1236,7 +1240,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            "Arama kelimesini değiştirebilir ya da filtreleri temizleyebilirsiniz.",
+            context.l10n.newEmptyStateSubtitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
                 fontSize: 13.5, color: const Color(0xFF8C827A)),
@@ -1329,7 +1333,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 ),
               ),
               Text(
-                "Sıralama Seçenekleri",
+                context.l10n.sortOptionsSheetTitle,
                 style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -1341,7 +1345,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
-                    _sortLabel(mode),
+                    _sortLabel(context, mode),
                     style: GoogleFonts.inter(
                       fontSize: 14.5,
                       fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
@@ -1367,16 +1371,16 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  String _sortLabel(_SortMode mode) {
+  String _sortLabel(BuildContext context, _SortMode mode) {
     switch (mode) {
       case _SortMode.newest:
-        return "En Yeniler";
+        return context.l10n.newSortNewest;
       case _SortMode.priceLowHigh:
-        return "Fiyat: Düşükten Yükseğe";
+        return context.l10n.sortByPriceLowHigh;
       case _SortMode.priceHighLow:
-        return "Fiyat: Yüksekten Düşüğe";
+        return context.l10n.sortByPriceHighLow;
       case _SortMode.popular:
-        return "En Çok İncelenenler";
+        return context.l10n.newSortPopular;
     }
   }
 }

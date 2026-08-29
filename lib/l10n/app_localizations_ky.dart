@@ -1586,4 +1586,243 @@ class AppLocalizationsKy extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return '$days күн мурун';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Диван жана креслолор';
+
+  @override
+  String get catalogCategoryTitleChair => 'Отургуч жана креслолор';
+
+  @override
+  String get catalogCategoryTitleTable => 'Ашкана столу';
+
+  @override
+  String get catalogCategoryTitleBed => 'Керебет жана негиз';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Кийим шкафы жана шкаф';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Тиричилик техникасы';
+
+  @override
+  String get catalogCategoryTitleOther => 'Декор';
+
+  @override
+  String get mottoTitlePart1 => 'Келерден мурун көр, ';
+
+  @override
+  String get mottoTitlePart2 => 'Жагымдуу болсо кел.';
+
+  @override
+  String get mottoSubtitle =>
+      'Дүкөнгө келерден мурун витринабызды кара, жаккан нерсени тапканда бизге кел.';
+
+  @override
+  String get gatewayNewEyebrow => 'ЖАҢЫ КОЛЛЕКЦИЯ';
+
+  @override
+  String get gatewayNewTitle => 'Убакыт билбеген буюмдар';
+
+  @override
+  String get gatewayNewSubtitle => 'Такыр колдонулбаган, жаңы эмерек.';
+
+  @override
+  String get gatewayNewButton => 'Коллекцияны көрүү';
+
+  @override
+  String get gatewaySpotEyebrow => 'СПОТ СУНУШТАР';
+
+  @override
+  String get gatewaySpotTitle => 'Колдонулган, бирок бекем';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'Экинчи кол, бирок пайдалуу, чөнтөккө ылайыктуу баада.';
+
+  @override
+  String get gatewaySpotButton => 'Сунуштарды көрүү';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Акысыз жеткирүү $zones аймактарында гана күчүндө';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'МЕБЕЛЬ ДЕПОСУ · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'ЖАЙГАШКАН ЖЕРИ ЖАНА ИШ УБАКЫТЫ';
+
+  @override
+  String get openNowLabel => 'АЗЫР АЧЫК';
+
+  @override
+  String get closedNowLabel => 'АЗЫР ЖАБЫК';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Бүгүн $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'Картада ачуу';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Google Карталарда көрүү';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count товар';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'ЖАҢЫ';
+
+  @override
+  String get gatewayNewTitleShort => 'Коллекция';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'СПОТ';
+
+  @override
+  String get gatewaySpotTitleShort => 'Сунуштар';
+
+  @override
+  String get spotHeroEyebrow => 'СУНУШТАР ДЕПОСУ';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Колдонулган, бирок пайдалуу. Ар кандай бюджетке ылайыктуу, жаңыдай буюмдар. Соода мүмкүн.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ сунуш';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Соода мүмкүн';
+
+  @override
+  String get spotStatUsed => 'Колдонулган';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'Толук калыбына келтирилген';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Ар бир буюм жеткирилерден мурун жеке текшерилет.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Спот & Экинчи кол';
+
+  @override
+  String get aphorismEyebrow => 'БИЗДИН БИР СӨЗ БАР';
+
+  @override
+  String get aphorismQuote =>
+      'Эскирген эмес, эмгектелген.\nЖакшы эмерек эч качан эскирбейт, жөн гана үй которот.';
+
+  @override
+  String get aphorismBody =>
+      'Биз так ушул үчүн бул жердебиз: дагы эле жашоосу бар буюмдарды аларды баалай турган жаңы үйгө жеткирүү үчүн.';
+
+  @override
+  String get spotSearchHint => 'Сунуштарды издөө...';
+
+  @override
+  String get priceRangeLabel => 'Баа диапазону';
+
+  @override
+  String get filtersSheetTitle => 'ФИЛЬТРЛЕР';
+
+  @override
+  String get applyFiltersButton => 'Фильтрлерди колдонуу';
+
+  @override
+  String get priceRangeSheetTitle => 'БАА ДИАПАЗОНУ';
+
+  @override
+  String get applyButton => 'Колдонуу';
+
+  @override
+  String get sortSheetTitle => 'ИРЕТТӨӨ';
+
+  @override
+  String get sortNewest => 'Эң жаңы сунуштар';
+
+  @override
+  String get sortPopular => 'Эң көп каралган';
+
+  @override
+  String get spotEmptyStateTitle => 'Бул шартка сунуш табылган жок';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Фильтрлерди тазалап же башка категорияны байкап көр.';
+
+  @override
+  String get newHeroTitleLine1 => 'Жашоо мейкиндигиңиз үчүн\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Убакыт билбеген ';
+
+  @override
+  String get newHeroButtonCollection => 'Коллекцияны кароо';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Тез фильтр';
+
+  @override
+  String get newStatActiveProductLabel => 'ИШТЕГИ ТОВАРЛАР';
+
+  @override
+  String get newStatControlledStockLabel => 'ТЕКШЕРИЛГЕН КОР';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'Категория боюнча ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Изилде';
+
+  @override
+  String get showAllButton => 'Баарын көрсөтүү';
+
+  @override
+  String get newEmptyStateTitle => 'Издөөңүзгө дал келген эмерек табылган жок';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Издөө сөзүн өзгөртүп же фильтрлерди тазалап көрүңүз.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Иреттөө параметрлери';
+
+  @override
+  String get newSortNewest => 'Эң жаңылары';
+
+  @override
+  String get newSortPopular => 'Эң көп каралгандар';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'Салам, мына бул товарлар жөнүндө маалымат алгым келет:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Бардык товарлар: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting =>
+      'Салам, эмерек жөнүндө маалымат алгым келет.';
+
+  @override
+  String get spotHeroPageTitle => 'Экинчи кол & Спот';
+
+  @override
+  String get sortByPriceLowHigh => 'Баа: арзандан кымбатка';
+
+  @override
+  String get sortByPriceHighLow => 'Баа: кымбаттан арзанга';
 }

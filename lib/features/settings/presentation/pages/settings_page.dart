@@ -29,7 +29,8 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final authState = ref.watch(authProvider);
-    final bool isAdminLoggedIn = authState.value != null && !authState.isLoading;
+    final bool isAdminLoggedIn =
+        authState.value != null && !authState.isLoading;
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
@@ -100,7 +101,8 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.chat_bubble_rounded,
                   accent: AppColors.success,
                   label: context.l10n.whatsappCta,
-                  onTap: () => SaglamSpotCommunication.launchWhatsApp(),
+                  onTap: () => SaglamSpotCommunication.launchWhatsApp(
+                      message: context.l10n.defaultWhatsappGreeting),
                 ),
               ],
             ),
@@ -167,7 +169,8 @@ class SettingsPage extends ConsumerWidget {
                 color: Colors.white.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.storefront_rounded, color: Colors.white, size: 26),
+              child: const Icon(Icons.storefront_rounded,
+                  color: Colors.white, size: 26),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -178,12 +181,15 @@ class SettingsPage extends ConsumerWidget {
                   Text(
                     context.l10n.brand,
                     style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     SaglamSpotCommunication.displayPhone,
-                    style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 12.5),
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.85), fontSize: 12.5),
                   ),
                 ],
               ),
@@ -266,7 +272,9 @@ class _SettingsTile extends StatelessWidget {
       ),
       title: Text(label,
           style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.mobileTextPrimary)),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.mobileTextPrimary)),
       trailing: Icon(Icons.chevron_right_rounded,
           size: 20, color: AppColors.mobileTextTertiary),
     );
@@ -283,7 +291,11 @@ class _ThemeModeCard extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final current = ref.watch(themeModeProvider);
     final options = [
-      (ThemeMode.light, Icons.light_mode_rounded, context.l10n.settingsThemeLight),
+      (
+        ThemeMode.light,
+        Icons.light_mode_rounded,
+        context.l10n.settingsThemeLight
+      ),
       (ThemeMode.dark, Icons.dark_mode_rounded, context.l10n.settingsThemeDark),
     ];
 
@@ -299,13 +311,16 @@ class _ThemeModeCard extends ConsumerWidget {
           for (final option in options)
             Expanded(
               child: GestureDetector(
-                onTap: () => ref.read(themeModeProvider.notifier).set(option.$1),
+                onTap: () =>
+                    ref.read(themeModeProvider.notifier).set(option.$1),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
-                    gradient: current == option.$1 ? AppColors.mobilePrimaryGradient : null,
+                    gradient: current == option.$1
+                        ? AppColors.mobilePrimaryGradient
+                        : null,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -357,29 +372,31 @@ class _AppVersionFooter extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final authState = ref.read(authProvider);
-    final bool isAdminLoggedIn = authState.value != null && !authState.isLoading;
+    final bool isAdminLoggedIn =
+        authState.value != null && !authState.isLoading;
 
     return Center(
-        child: GestureDetector(
-          onLongPress: () => isAdminLoggedIn
-              ? NavigationHandler.goToAdmin(context)
-              : NavigationHandler.goToLoginForAdmin(context),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: FutureBuilder<PackageInfo>(
-              future: PackageInfo.fromPlatform(),
-              builder: (final context, final snapshot) {
-                final String version = snapshot.hasData
-                    ? '${snapshot.data!.version}+${snapshot.data!.buildNumber}'
-                    : '…';
-                return Text(
-                  '${context.l10n.settingsAppVersion}: $version',
-                  style: TextStyle(fontSize: 12, color: AppColors.mobileTextTertiary),
-                );
-              },
-            ),
+      child: GestureDetector(
+        onLongPress: () => isAdminLoggedIn
+            ? NavigationHandler.goToAdmin(context)
+            : NavigationHandler.goToLoginForAdmin(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (final context, final snapshot) {
+              final String version = snapshot.hasData
+                  ? '${snapshot.data!.version}+${snapshot.data!.buildNumber}'
+                  : '…';
+              return Text(
+                '${context.l10n.settingsAppVersion}: $version',
+                style: TextStyle(
+                    fontSize: 12, color: AppColors.mobileTextTertiary),
+              );
+            },
           ),
         ),
-      );
+      ),
+    );
   }
 }

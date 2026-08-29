@@ -1579,4 +1579,242 @@ class AppLocalizationsUk extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return '$days дн тому';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Диван і канапа';
+
+  @override
+  String get catalogCategoryTitleChair => 'Стілець і крісло';
+
+  @override
+  String get catalogCategoryTitleTable => 'Обідній стіл';
+
+  @override
+  String get catalogCategoryTitleBed => 'Ліжко й основа';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Гардероб і шафа';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Побутова техніка';
+
+  @override
+  String get catalogCategoryTitleOther => 'Декор';
+
+  @override
+  String get mottoTitlePart1 => 'Побач перш ніж прийти, ';
+
+  @override
+  String get mottoTitlePart2 => 'Приходь, коли сподобається.';
+
+  @override
+  String get mottoSubtitle =>
+      'Перегляньте нашу вітрину перед візитом до магазину, а тоді заходьте, коли знайдете те, що подобається.';
+
+  @override
+  String get gatewayNewEyebrow => 'НОВА КОЛЕКЦІЯ';
+
+  @override
+  String get gatewayNewTitle => 'Позачасові речі';
+
+  @override
+  String get gatewayNewSubtitle => 'Цілком нові, невживані меблі.';
+
+  @override
+  String get gatewayNewButton => 'Переглянути колекцію';
+
+  @override
+  String get gatewaySpotEyebrow => 'СПОТ-ПРОПОЗИЦІЇ';
+
+  @override
+  String get gatewaySpotTitle => 'Вживані, але міцні';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'Вживані, але практичні, за доступними цінами.';
+
+  @override
+  String get gatewaySpotButton => 'Переглянути пропозиції';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Безкоштовна доставка діє лише в районах $zones';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'СКЛАД МЕБЛІВ · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'АДРЕСА ТА ГОДИНИ РОБОТИ';
+
+  @override
+  String get openNowLabel => 'ЗАРАЗ ВІДЧИНЕНО';
+
+  @override
+  String get closedNowLabel => 'ЗАРАЗ ЗАЧИНЕНО';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Сьогодні $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'Відкрити на карті';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Переглянути на Google Картах';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count товарів';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'НОВЕ';
+
+  @override
+  String get gatewayNewTitleShort => 'Колекція';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'СПОТ';
+
+  @override
+  String get gatewaySpotTitleShort => 'Пропозиції';
+
+  @override
+  String get spotHeroEyebrow => 'СКЛАД ВИГІДНИХ ПРОПОЗИЦІЙ';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Вживані, але практичні. Майже нові товари для будь-якого бюджету. Можливий торг.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ пропозицій';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Можливий торг';
+
+  @override
+  String get spotStatUsed => 'Вживане';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'Повністю відновлено';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Кожен товар індивідуально перевіряється перед доставкою.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Спот і секонд-хенд';
+
+  @override
+  String get aphorismEyebrow => 'У НАС Є ГАСЛО';
+
+  @override
+  String get aphorismQuote =>
+      'Не зношені, а виплекані.\nГарні меблі ніколи не старіють — вони просто змінюють дім.';
+
+  @override
+  String get aphorismBody =>
+      'Саме тому ми тут: щоб принести речі, у яких ще є життя, у новий дім, який їх цінуватиме.';
+
+  @override
+  String get spotSearchHint => 'Пошук пропозицій…';
+
+  @override
+  String get priceRangeLabel => 'Діапазон цін';
+
+  @override
+  String get filtersSheetTitle => 'ФІЛЬТРИ';
+
+  @override
+  String get applyFiltersButton => 'Застосувати фільтри';
+
+  @override
+  String get priceRangeSheetTitle => 'ДІАПАЗОН ЦІН';
+
+  @override
+  String get applyButton => 'Застосувати';
+
+  @override
+  String get sortSheetTitle => 'СОРТУВАННЯ';
+
+  @override
+  String get sortNewest => 'Найновіші пропозиції';
+
+  @override
+  String get sortPopular => 'Найпопулярніші';
+
+  @override
+  String get spotEmptyStateTitle =>
+      'Ми не знайшли пропозицій за цими критеріями';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Спробуйте очистити фільтри або іншу категорію.';
+
+  @override
+  String get newHeroTitleLine1 => 'Для вашого простору\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Позачасова ';
+
+  @override
+  String get newHeroButtonCollection => 'Переглянути колекцію';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Швидкий фільтр';
+
+  @override
+  String get newStatActiveProductLabel => 'АКТИВНІ ТОВАРИ';
+
+  @override
+  String get newStatControlledStockLabel => 'ПЕРЕВІРЕНИЙ ЗАПАС';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'За категорією ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Досліджуй';
+
+  @override
+  String get showAllButton => 'Показати всі';
+
+  @override
+  String get newEmptyStateTitle => 'Меблів за вашим запитом не знайдено';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Спробуйте змінити пошуковий запит або очистити фільтри.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Параметри сортування';
+
+  @override
+  String get newSortNewest => 'Найновіші';
+
+  @override
+  String get newSortPopular => 'Найпопулярніші';
+
+  @override
+  String get cartWhatsappGreeting => 'Вітаю, хочу дізнатися про ці товари:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Усі товари: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting => 'Вітаю, хочу дізнатися про меблі.';
+
+  @override
+  String get spotHeroPageTitle => 'Секонд-хенд і спот';
+
+  @override
+  String get sortByPriceLowHigh => 'Ціна: за зростанням';
+
+  @override
+  String get sortByPriceHighLow => 'Ціна: за спаданням';
 }

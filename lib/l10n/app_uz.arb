@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Divan va kanape",
+  "catalogCategoryTitleChair": "Stul va kreslo",
+  "catalogCategoryTitleTable": "Oshxona stoli",
+  "catalogCategoryTitleBed": "Krovat va asos",
+  "catalogCategoryTitleWardrobe": "Garderob va shkaf",
+  "catalogCategoryTitleWhite": "Maishiy texnika",
+  "catalogCategoryTitleOther": "Dekor",
+  "mottoTitlePart1": "Kelishdan oldin ko'ring, ",
+  "mottoTitlePart2": "Yoqqanda keling.",
+  "mottoSubtitle": "Do'konga kelishdan oldin vitrinamizni ko'ring, yoqqan narsani topganingizda bizga keling.",
+  "gatewayNewEyebrow": "YANGI KOLLEKSIYA",
+  "gatewayNewTitle": "Vaqtsiz buyumlar",
+  "gatewayNewSubtitle": "Hech qachon ishlatilmagan, yangi mebel.",
+  "gatewayNewButton": "Kolleksiyani ko'rish",
+  "gatewaySpotEyebrow": "SPOT TAKLIFLAR",
+  "gatewaySpotTitle": "Ishlatilgan, ammo mustahkam",
+  "gatewaySpotSubtitle": "Ikkinchi qo'l, ammo foydali, hamyonbop narxlarda.",
+  "gatewaySpotButton": "Takliflarni ko'rish",
+  "freeDeliveryZonesNote": "Bepul yetkazib berish faqat {zones} hududlarida amal qiladi",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "MEBEL OMBORI · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "MANZIL VA ISH VAQTI",
+  "openNowLabel": "HOZIR OCHIQ",
+  "closedNowLabel": "HOZIR YOPIQ",
+  "todayHoursPrefix": "· Bugun {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Xaritada ochish",
+  "viewOnGoogleMapsButton": "Google Xaritada ko'rish",
+  "gatewayProductCount": "{count} ta mahsulot",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "YANGI",
+  "gatewayNewTitleShort": "Kolleksiya",
+  "gatewaySpotEyebrowShort": "SPOT",
+  "gatewaySpotTitleShort": "Takliflar",
+  "spotHeroEyebrow": "TAKLIFLAR OMBORI",
+  "spotHeroSubtitle": "Ishlatilgan, ammo foydali. Har qanday byudjet uchun yangidek mahsulotlar. Kelishish imkoniyati bor.",
+  "spotHeroDealCount": "{count}+ taklif",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Kelishish mumkin",
+  "spotStatUsed": "Ishlatilgan",
+  "spotShowcaseBadgeTitle": "To'liq yangilangan",
+  "spotShowcaseBadgeSubtitle": "Har bir mahsulot yetkazishdan oldin alohida tekshiriladi.",
+  "spotBreadcrumbLabel": "Spot va ikkinchi qo'l",
+  "aphorismEyebrow": "BIZDA BIR SO'Z BOR",
+  "aphorismQuote": "Eskirgan emas, mehr ko'rgan.\nYaxshi mebel hech qachon eskirmaydi, faqat uy almashtiradi.",
+  "aphorismBody": "Biz aynan shuning uchun shu yerdamiz: hali ham hayoti bor buyumlarni ularni qadrlaydigan yangi uyga yetkazish uchun.",
+  "spotSearchHint": "Takliflarni qidirish...",
+  "priceRangeLabel": "Narx oralig'i",
+  "filtersSheetTitle": "FILTRLAR",
+  "applyFiltersButton": "Filtrlarni qo'llash",
+  "priceRangeSheetTitle": "NARX ORALIG'I",
+  "applyButton": "Qo'llash",
+  "sortSheetTitle": "SARALASH",
+  "sortNewest": "Eng yangi takliflar",
+  "sortPopular": "Eng ko'p ko'rilgan",
+  "spotEmptyStateTitle": "Bu mezon bo'yicha takliflar topilmadi",
+  "spotEmptyStateSubtitle": "Filtrlarni tozalab yoki boshqa kategoriyani sinab ko'ring.",
+  "newHeroTitleLine1": "Turar joyingiz uchun\n",
+  "newHeroTitleEmphasis": "Vaqtsiz ",
+  "newHeroButtonCollection": "Kolleksiyani ko'rish",
+  "newHeroButtonQuickFilter": "Tezkor filtr",
+  "newStatActiveProductLabel": "FAOL MAHSULOTLAR",
+  "newStatControlledStockLabel": "TEKSHIRILGAN ZAXIRA",
+  "shopByCategoryTitlePrefix": "Kategoriya bo'yicha ",
+  "shopByCategoryTitleEmphasis": "Kashf eting",
+  "showAllButton": "Barchasini ko'rsatish",
+  "newEmptyStateTitle": "Qidiruvingizga mos mebel topilmadi",
+  "newEmptyStateSubtitle": "Qidiruv so'zini o'zgartiring yoki filtrlarni tozalang.",
+  "sortOptionsSheetTitle": "Saralash parametrlari",
+  "newSortNewest": "Eng yangilari",
+  "newSortPopular": "Eng ko'p ko'rilganlar",
+  "cartWhatsappGreeting": "Salom, quyidagi mahsulotlar haqida ma'lumot olmoqchiman:\n\n",
+  "cartWhatsappAllProductsLine": "Barcha mahsulotlar: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Salom, mebel haqida ma'lumot olmoqchiman.",
+  "spotHeroPageTitle": "Ikkinchi qo'l va Spot",
+  "sortByPriceLowHigh": "Narx: arzondan qimmatga",
+  "sortByPriceHighLow": "Narx: qimmatdan arzonga"
 }

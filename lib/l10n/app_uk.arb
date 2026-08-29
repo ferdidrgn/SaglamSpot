@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Диван і канапа",
+  "catalogCategoryTitleChair": "Стілець і крісло",
+  "catalogCategoryTitleTable": "Обідній стіл",
+  "catalogCategoryTitleBed": "Ліжко й основа",
+  "catalogCategoryTitleWardrobe": "Гардероб і шафа",
+  "catalogCategoryTitleWhite": "Побутова техніка",
+  "catalogCategoryTitleOther": "Декор",
+  "mottoTitlePart1": "Побач перш ніж прийти, ",
+  "mottoTitlePart2": "Приходь, коли сподобається.",
+  "mottoSubtitle": "Перегляньте нашу вітрину перед візитом до магазину, а тоді заходьте, коли знайдете те, що подобається.",
+  "gatewayNewEyebrow": "НОВА КОЛЕКЦІЯ",
+  "gatewayNewTitle": "Позачасові речі",
+  "gatewayNewSubtitle": "Цілком нові, невживані меблі.",
+  "gatewayNewButton": "Переглянути колекцію",
+  "gatewaySpotEyebrow": "СПОТ-ПРОПОЗИЦІЇ",
+  "gatewaySpotTitle": "Вживані, але міцні",
+  "gatewaySpotSubtitle": "Вживані, але практичні, за доступними цінами.",
+  "gatewaySpotButton": "Переглянути пропозиції",
+  "freeDeliveryZonesNote": "Безкоштовна доставка діє лише в районах {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "СКЛАД МЕБЛІВ · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "АДРЕСА ТА ГОДИНИ РОБОТИ",
+  "openNowLabel": "ЗАРАЗ ВІДЧИНЕНО",
+  "closedNowLabel": "ЗАРАЗ ЗАЧИНЕНО",
+  "todayHoursPrefix": "· Сьогодні {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Відкрити на карті",
+  "viewOnGoogleMapsButton": "Переглянути на Google Картах",
+  "gatewayProductCount": "{count} товарів",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "НОВЕ",
+  "gatewayNewTitleShort": "Колекція",
+  "gatewaySpotEyebrowShort": "СПОТ",
+  "gatewaySpotTitleShort": "Пропозиції",
+  "spotHeroEyebrow": "СКЛАД ВИГІДНИХ ПРОПОЗИЦІЙ",
+  "spotHeroSubtitle": "Вживані, але практичні. Майже нові товари для будь-якого бюджету. Можливий торг.",
+  "spotHeroDealCount": "{count}+ пропозицій",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Можливий торг",
+  "spotStatUsed": "Вживане",
+  "spotShowcaseBadgeTitle": "Повністю відновлено",
+  "spotShowcaseBadgeSubtitle": "Кожен товар індивідуально перевіряється перед доставкою.",
+  "spotBreadcrumbLabel": "Спот і секонд-хенд",
+  "aphorismEyebrow": "У НАС Є ГАСЛО",
+  "aphorismQuote": "Не зношені, а виплекані.\nГарні меблі ніколи не старіють — вони просто змінюють дім.",
+  "aphorismBody": "Саме тому ми тут: щоб принести речі, у яких ще є життя, у новий дім, який їх цінуватиме.",
+  "spotSearchHint": "Пошук пропозицій…",
+  "priceRangeLabel": "Діапазон цін",
+  "filtersSheetTitle": "ФІЛЬТРИ",
+  "applyFiltersButton": "Застосувати фільтри",
+  "priceRangeSheetTitle": "ДІАПАЗОН ЦІН",
+  "applyButton": "Застосувати",
+  "sortSheetTitle": "СОРТУВАННЯ",
+  "sortNewest": "Найновіші пропозиції",
+  "sortPopular": "Найпопулярніші",
+  "spotEmptyStateTitle": "Ми не знайшли пропозицій за цими критеріями",
+  "spotEmptyStateSubtitle": "Спробуйте очистити фільтри або іншу категорію.",
+  "newHeroTitleLine1": "Для вашого простору\n",
+  "newHeroTitleEmphasis": "Позачасова ",
+  "newHeroButtonCollection": "Переглянути колекцію",
+  "newHeroButtonQuickFilter": "Швидкий фільтр",
+  "newStatActiveProductLabel": "АКТИВНІ ТОВАРИ",
+  "newStatControlledStockLabel": "ПЕРЕВІРЕНИЙ ЗАПАС",
+  "shopByCategoryTitlePrefix": "За категорією ",
+  "shopByCategoryTitleEmphasis": "Досліджуй",
+  "showAllButton": "Показати всі",
+  "newEmptyStateTitle": "Меблів за вашим запитом не знайдено",
+  "newEmptyStateSubtitle": "Спробуйте змінити пошуковий запит або очистити фільтри.",
+  "sortOptionsSheetTitle": "Параметри сортування",
+  "newSortNewest": "Найновіші",
+  "newSortPopular": "Найпопулярніші",
+  "cartWhatsappGreeting": "Вітаю, хочу дізнатися про ці товари:\n\n",
+  "cartWhatsappAllProductsLine": "Усі товари: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Вітаю, хочу дізнатися про меблі.",
+  "spotHeroPageTitle": "Секонд-хенд і спот",
+  "sortByPriceLowHigh": "Ціна: за зростанням",
+  "sortByPriceHighLow": "Ціна: за спаданням"
 }

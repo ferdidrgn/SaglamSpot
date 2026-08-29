@@ -1588,4 +1588,243 @@ class AppLocalizationsUz extends AppLocalizations {
   String timeDaysAgoGeneric(int days) {
     return '$days kun oldin';
   }
+
+  @override
+  String get catalogCategoryTitleSofa => 'Divan va kanape';
+
+  @override
+  String get catalogCategoryTitleChair => 'Stul va kreslo';
+
+  @override
+  String get catalogCategoryTitleTable => 'Oshxona stoli';
+
+  @override
+  String get catalogCategoryTitleBed => 'Krovat va asos';
+
+  @override
+  String get catalogCategoryTitleWardrobe => 'Garderob va shkaf';
+
+  @override
+  String get catalogCategoryTitleWhite => 'Maishiy texnika';
+
+  @override
+  String get catalogCategoryTitleOther => 'Dekor';
+
+  @override
+  String get mottoTitlePart1 => 'Kelishdan oldin ko\'ring, ';
+
+  @override
+  String get mottoTitlePart2 => 'Yoqqanda keling.';
+
+  @override
+  String get mottoSubtitle =>
+      'Do\'konga kelishdan oldin vitrinamizni ko\'ring, yoqqan narsani topganingizda bizga keling.';
+
+  @override
+  String get gatewayNewEyebrow => 'YANGI KOLLEKSIYA';
+
+  @override
+  String get gatewayNewTitle => 'Vaqtsiz buyumlar';
+
+  @override
+  String get gatewayNewSubtitle => 'Hech qachon ishlatilmagan, yangi mebel.';
+
+  @override
+  String get gatewayNewButton => 'Kolleksiyani ko\'rish';
+
+  @override
+  String get gatewaySpotEyebrow => 'SPOT TAKLIFLAR';
+
+  @override
+  String get gatewaySpotTitle => 'Ishlatilgan, ammo mustahkam';
+
+  @override
+  String get gatewaySpotSubtitle =>
+      'Ikkinchi qo\'l, ammo foydali, hamyonbop narxlarda.';
+
+  @override
+  String get gatewaySpotButton => 'Takliflarni ko\'rish';
+
+  @override
+  String freeDeliveryZonesNote(String zones) {
+    return 'Bepul yetkazib berish faqat $zones hududlarida amal qiladi';
+  }
+
+  @override
+  String get footerWarehouseTagline => 'MEBEL OMBORI · İÇERENKÖY / ATAŞEHİR';
+
+  @override
+  String get locationAndHoursLabel => 'MANZIL VA ISH VAQTI';
+
+  @override
+  String get openNowLabel => 'HOZIR OCHIQ';
+
+  @override
+  String get closedNowLabel => 'HOZIR YOPIQ';
+
+  @override
+  String todayHoursPrefix(String hours) {
+    return '· Bugun $hours';
+  }
+
+  @override
+  String get openInMapsButton => 'Xaritada ochish';
+
+  @override
+  String get viewOnGoogleMapsButton => 'Google Xaritada ko\'rish';
+
+  @override
+  String gatewayProductCount(int count) {
+    return '$count ta mahsulot';
+  }
+
+  @override
+  String get gatewayNewEyebrowShort => 'YANGI';
+
+  @override
+  String get gatewayNewTitleShort => 'Kolleksiya';
+
+  @override
+  String get gatewaySpotEyebrowShort => 'SPOT';
+
+  @override
+  String get gatewaySpotTitleShort => 'Takliflar';
+
+  @override
+  String get spotHeroEyebrow => 'TAKLIFLAR OMBORI';
+
+  @override
+  String get spotHeroSubtitle =>
+      'Ishlatilgan, ammo foydali. Har qanday byudjet uchun yangidek mahsulotlar. Kelishish imkoniyati bor.';
+
+  @override
+  String spotHeroDealCount(int count) {
+    return '$count+ taklif';
+  }
+
+  @override
+  String get spotStatNegotiable => 'Kelishish mumkin';
+
+  @override
+  String get spotStatUsed => 'Ishlatilgan';
+
+  @override
+  String get spotShowcaseBadgeTitle => 'To\'liq yangilangan';
+
+  @override
+  String get spotShowcaseBadgeSubtitle =>
+      'Har bir mahsulot yetkazishdan oldin alohida tekshiriladi.';
+
+  @override
+  String get spotBreadcrumbLabel => 'Spot va ikkinchi qo\'l';
+
+  @override
+  String get aphorismEyebrow => 'BIZDA BIR SO\'Z BOR';
+
+  @override
+  String get aphorismQuote =>
+      'Eskirgan emas, mehr ko\'rgan.\nYaxshi mebel hech qachon eskirmaydi, faqat uy almashtiradi.';
+
+  @override
+  String get aphorismBody =>
+      'Biz aynan shuning uchun shu yerdamiz: hali ham hayoti bor buyumlarni ularni qadrlaydigan yangi uyga yetkazish uchun.';
+
+  @override
+  String get spotSearchHint => 'Takliflarni qidirish...';
+
+  @override
+  String get priceRangeLabel => 'Narx oralig\'i';
+
+  @override
+  String get filtersSheetTitle => 'FILTRLAR';
+
+  @override
+  String get applyFiltersButton => 'Filtrlarni qo\'llash';
+
+  @override
+  String get priceRangeSheetTitle => 'NARX ORALIG\'I';
+
+  @override
+  String get applyButton => 'Qo\'llash';
+
+  @override
+  String get sortSheetTitle => 'SARALASH';
+
+  @override
+  String get sortNewest => 'Eng yangi takliflar';
+
+  @override
+  String get sortPopular => 'Eng ko\'p ko\'rilgan';
+
+  @override
+  String get spotEmptyStateTitle => 'Bu mezon bo\'yicha takliflar topilmadi';
+
+  @override
+  String get spotEmptyStateSubtitle =>
+      'Filtrlarni tozalab yoki boshqa kategoriyani sinab ko\'ring.';
+
+  @override
+  String get newHeroTitleLine1 => 'Turar joyingiz uchun\n';
+
+  @override
+  String get newHeroTitleEmphasis => 'Vaqtsiz ';
+
+  @override
+  String get newHeroButtonCollection => 'Kolleksiyani ko\'rish';
+
+  @override
+  String get newHeroButtonQuickFilter => 'Tezkor filtr';
+
+  @override
+  String get newStatActiveProductLabel => 'FAOL MAHSULOTLAR';
+
+  @override
+  String get newStatControlledStockLabel => 'TEKSHIRILGAN ZAXIRA';
+
+  @override
+  String get shopByCategoryTitlePrefix => 'Kategoriya bo\'yicha ';
+
+  @override
+  String get shopByCategoryTitleEmphasis => 'Kashf eting';
+
+  @override
+  String get showAllButton => 'Barchasini ko\'rsatish';
+
+  @override
+  String get newEmptyStateTitle => 'Qidiruvingizga mos mebel topilmadi';
+
+  @override
+  String get newEmptyStateSubtitle =>
+      'Qidiruv so\'zini o\'zgartiring yoki filtrlarni tozalang.';
+
+  @override
+  String get sortOptionsSheetTitle => 'Saralash parametrlari';
+
+  @override
+  String get newSortNewest => 'Eng yangilari';
+
+  @override
+  String get newSortPopular => 'Eng ko\'p ko\'rilganlar';
+
+  @override
+  String get cartWhatsappGreeting =>
+      'Salom, quyidagi mahsulotlar haqida ma\'lumot olmoqchiman:\n\n';
+
+  @override
+  String cartWhatsappAllProductsLine(String url) {
+    return 'Barcha mahsulotlar: $url';
+  }
+
+  @override
+  String get defaultWhatsappGreeting =>
+      'Salom, mebel haqida ma\'lumot olmoqchiman.';
+
+  @override
+  String get spotHeroPageTitle => 'Ikkinchi qo\'l va Spot';
+
+  @override
+  String get sortByPriceLowHigh => 'Narx: arzondan qimmatga';
+
+  @override
+  String get sortByPriceHighLow => 'Narx: qimmatdan arzonga';
 }

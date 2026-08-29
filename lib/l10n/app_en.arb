@@ -569,5 +569,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Sofa & Couch",
+  "catalogCategoryTitleChair": "Chair & Armchair",
+  "catalogCategoryTitleTable": "Dining Table",
+  "catalogCategoryTitleBed": "Bed & Base",
+  "catalogCategoryTitleWardrobe": "Wardrobe & Cabinet",
+  "catalogCategoryTitleWhite": "Appliances",
+  "catalogCategoryTitleOther": "Decor",
+  "mottoTitlePart1": "See Before You Come, ",
+  "mottoTitlePart2": "Come When You Like It.",
+  "mottoSubtitle": "Browse our showcase before visiting the shop, then drop by once you've found what you like.",
+  "gatewayNewEyebrow": "NEW COLLECTION",
+  "gatewayNewTitle": "Timeless Pieces",
+  "gatewayNewSubtitle": "Brand-new, never-used furniture.",
+  "gatewayNewButton": "View Collection",
+  "gatewaySpotEyebrow": "SPOT DEALS",
+  "gatewaySpotTitle": "Used, But Solid",
+  "gatewaySpotSubtitle": "Secondhand but practical, at wallet-friendly prices.",
+  "gatewaySpotButton": "View Deals",
+  "freeDeliveryZonesNote": "Free delivery is only available in {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "FURNITURE WAREHOUSE · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "LOCATION & HOURS",
+  "openNowLabel": "OPEN NOW",
+  "closedNowLabel": "CLOSED NOW",
+  "todayHoursPrefix": "· Today {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Open in Maps",
+  "viewOnGoogleMapsButton": "View on Google Maps",
+  "gatewayProductCount": "{count} products",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "NEW",
+  "gatewayNewTitleShort": "Collection",
+  "gatewaySpotEyebrowShort": "SPOT",
+  "gatewaySpotTitleShort": "Deals",
+  "spotHeroEyebrow": "DEAL WAREHOUSE",
+  "spotHeroSubtitle": "Used but practical. Like-new items for every budget. Room to negotiate.",
+  "spotHeroDealCount": "{count}+ Deals",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Room to Negotiate",
+  "spotStatUsed": "Used",
+  "spotShowcaseBadgeTitle": "Fully Refurbished",
+  "spotShowcaseBadgeSubtitle": "Every item is individually checked before delivery.",
+  "spotBreadcrumbLabel": "Spot & Secondhand",
+  "aphorismEyebrow": "WE HAVE A SAYING",
+  "aphorismQuote": "Not worn out, well-loved.\nGood furniture never gets old — it just changes homes.",
+  "aphorismBody": "That's exactly why we're here: to bring pieces that still have life left in them to a new home that will value them.",
+  "spotSearchHint": "Search deals...",
+  "priceRangeLabel": "Price Range",
+  "filtersSheetTitle": "FILTERS",
+  "applyFiltersButton": "Apply Filters",
+  "priceRangeSheetTitle": "PRICE RANGE",
+  "applyButton": "Apply",
+  "sortSheetTitle": "SORT",
+  "sortNewest": "Newest Deals",
+  "sortPopular": "Most Viewed",
+  "spotEmptyStateTitle": "We couldn't find deals matching this",
+  "spotEmptyStateSubtitle": "Try clearing the filters or a different category.",
+  "newHeroTitleLine1": "For Your Living Space\n",
+  "newHeroTitleEmphasis": "Timeless ",
+  "newHeroButtonCollection": "Browse Collection",
+  "newHeroButtonQuickFilter": "Quick Filter",
+  "newStatActiveProductLabel": "ACTIVE PRODUCTS",
+  "newStatControlledStockLabel": "QUALITY-CHECKED STOCK",
+  "shopByCategoryTitlePrefix": "Shop by ",
+  "shopByCategoryTitleEmphasis": "Explore",
+  "showAllButton": "Show All",
+  "newEmptyStateTitle": "No Furniture Found Matching Your Search",
+  "newEmptyStateSubtitle": "Try changing your search term or clearing the filters.",
+  "sortOptionsSheetTitle": "Sort Options",
+  "newSortNewest": "Newest",
+  "newSortPopular": "Most Viewed",
+  "cartWhatsappGreeting": "Hello, I'd like some information about these products:\n\n",
+  "cartWhatsappAllProductsLine": "All products: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Hello, I'd like some information about the furniture.",
+  "spotHeroPageTitle": "Secondhand & Spot",
+  "sortByPriceLowHigh": "Price: Low to High",
+  "sortByPriceHighLow": "Price: High to Low"
 }

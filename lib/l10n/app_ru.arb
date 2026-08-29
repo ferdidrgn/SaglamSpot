@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Диван и кушетка",
+  "catalogCategoryTitleChair": "Стул и кресло",
+  "catalogCategoryTitleTable": "Обеденный стол",
+  "catalogCategoryTitleBed": "Кровать и основание",
+  "catalogCategoryTitleWardrobe": "Гардероб и шкаф",
+  "catalogCategoryTitleWhite": "Бытовая техника",
+  "catalogCategoryTitleOther": "Декор",
+  "mottoTitlePart1": "Смотрите до визита, ",
+  "mottoTitlePart2": "Приходите, когда понравится.",
+  "mottoSubtitle": "Просмотрите нашу витрину, прежде чем прийти в магазин — заходите, когда найдёте то, что вам понравится.",
+  "gatewayNewEyebrow": "НОВАЯ КОЛЛЕКЦИЯ",
+  "gatewayNewTitle": "Вечная классика",
+  "gatewayNewSubtitle": "Абсолютно новая, неиспользованная мебель.",
+  "gatewayNewButton": "Смотреть коллекцию",
+  "gatewaySpotEyebrow": "СПОТ-ПРЕДЛОЖЕНИЯ",
+  "gatewaySpotTitle": "Бывшая в употреблении, но крепкая",
+  "gatewaySpotSubtitle": "Бывшие в употреблении, но практичные вещи по доступным ценам.",
+  "gatewaySpotButton": "Смотреть предложения",
+  "freeDeliveryZonesNote": "Бесплатная доставка действует только в районах {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "СКЛАД МЕБЕЛИ · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "АДРЕС И ЧАСЫ РАБОТЫ",
+  "openNowLabel": "СЕЙЧАС ОТКРЫТО",
+  "closedNowLabel": "СЕЙЧАС ЗАКРЫТО",
+  "todayHoursPrefix": "· Сегодня {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Открыть на карте",
+  "viewOnGoogleMapsButton": "Посмотреть на Google Картах",
+  "gatewayProductCount": "{count} товаров",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "НОВОЕ",
+  "gatewayNewTitleShort": "Коллекция",
+  "gatewaySpotEyebrowShort": "СПОТ",
+  "gatewaySpotTitleShort": "Предложения",
+  "spotHeroEyebrow": "СКЛАД ВЫГОДНЫХ ПРЕДЛОЖЕНИЙ",
+  "spotHeroSubtitle": "Бывшие в употреблении, но практичные вещи. Товары как новые на любой бюджет. Возможен торг.",
+  "spotHeroDealCount": "{count}+ предложений",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Возможен торг",
+  "spotStatUsed": "Б/у",
+  "spotShowcaseBadgeTitle": "Полностью восстановлено",
+  "spotShowcaseBadgeSubtitle": "Каждый товар проверяется индивидуально перед доставкой.",
+  "spotBreadcrumbLabel": "Спот и секонд-хенд",
+  "aphorismEyebrow": "У НАС ЕСТЬ ДЕВИЗ",
+  "aphorismQuote": "Не изношено, а прожито с любовью.\nХорошая мебель никогда не стареет — она просто меняет дом.",
+  "aphorismBody": "Именно поэтому мы здесь: чтобы вещи, в которых ещё есть жизнь, нашли новый дом, где их оценят по достоинству.",
+  "spotSearchHint": "Поиск предложений…",
+  "priceRangeLabel": "Диапазон цен",
+  "filtersSheetTitle": "ФИЛЬТРЫ",
+  "applyFiltersButton": "Применить фильтры",
+  "priceRangeSheetTitle": "ДИАПАЗОН ЦЕН",
+  "applyButton": "Применить",
+  "sortSheetTitle": "СОРТИРОВКА",
+  "sortNewest": "Новые предложения",
+  "sortPopular": "Самые просматриваемые",
+  "spotEmptyStateTitle": "Мы не нашли предложений по этим критериям",
+  "spotEmptyStateSubtitle": "Попробуйте сбросить фильтры или выбрать другую категорию.",
+  "newHeroTitleLine1": "Для вашего дома\n",
+  "newHeroTitleEmphasis": "Вечные ",
+  "newHeroButtonCollection": "Смотреть коллекцию",
+  "newHeroButtonQuickFilter": "Быстрый фильтр",
+  "newStatActiveProductLabel": "АКТИВНЫХ ТОВАРОВ",
+  "newStatControlledStockLabel": "ПРОВЕРЕННЫЙ ЗАПАС",
+  "shopByCategoryTitlePrefix": "По категории: ",
+  "shopByCategoryTitleEmphasis": "Исследуйте",
+  "showAllButton": "Показать все",
+  "newEmptyStateTitle": "Мебель по вашему запросу не найдена",
+  "newEmptyStateSubtitle": "Попробуйте изменить запрос или сбросить фильтры.",
+  "sortOptionsSheetTitle": "Параметры сортировки",
+  "newSortNewest": "Новые",
+  "newSortPopular": "Самые просматриваемые",
+  "cartWhatsappGreeting": "Здравствуйте, хочу узнать об этих товарах:\n\n",
+  "cartWhatsappAllProductsLine": "Все товары: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Здравствуйте, хочу узнать о мебели.",
+  "spotHeroPageTitle": "Секонд-хенд и спот",
+  "sortByPriceLowHigh": "Цена: по возрастанию",
+  "sortByPriceHighLow": "Цена: по убыванию"
 }

@@ -55,7 +55,9 @@ class HomeStorePage extends ConsumerWidget {
                 SliverToBoxAdapter(child: _buildMottoStrip(context)),
                 const SliverToBoxAdapter(child: _MobileCatalogGateway()),
                 SliverToBoxAdapter(child: _buildFeatureTicker(context)),
-                SliverToBoxAdapter(child: _buildSectionTitle(context, context.l10n.sectionCategories)),
+                SliverToBoxAdapter(
+                    child: _buildSectionTitle(
+                        context, context.l10n.sectionCategories)),
                 SliverToBoxAdapter(child: _CategoryRow()),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle(
@@ -70,7 +72,8 @@ class HomeStorePage extends ConsumerWidget {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
                     sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
@@ -85,7 +88,8 @@ class HomeStorePage extends ConsumerWidget {
                   ),
                 const SliverToBoxAdapter(child: SizedBox(height: 8)),
                 SliverToBoxAdapter(
-                    child: _buildSectionTitle(context, context.l10n.visitUsHeading)),
+                    child: _buildSectionTitle(
+                        context, context.l10n.visitUsHeading)),
                 const SliverToBoxAdapter(child: _MobileBusinessCard()),
                 const SliverToBoxAdapter(child: SizedBox(height: 24)),
               ],
@@ -98,7 +102,8 @@ class HomeStorePage extends ConsumerWidget {
     return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
 
-  Widget _buildHeader(final BuildContext context, final WidgetRef ref) => Padding(
+  Widget _buildHeader(final BuildContext context, final WidgetRef ref) =>
+      Padding(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,7 +134,8 @@ class HomeStorePage extends ConsumerWidget {
                   color: AppColors.mobilePrimary,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.person_rounded, color: Colors.white, size: 22),
+                child: const Icon(Icons.person_rounded,
+                    color: Colors.white, size: 22),
               ),
             ),
           ],
@@ -147,17 +153,20 @@ class HomeStorePage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                Icon(Icons.search_rounded, color: AppColors.mobileTextTertiary, size: 20),
+                Icon(Icons.search_rounded,
+                    color: AppColors.mobileTextTertiary, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     context.l10n.searchHint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: AppColors.mobileTextTertiary, fontSize: 13.5),
+                    style: TextStyle(
+                        color: AppColors.mobileTextTertiary, fontSize: 13.5),
                   ),
                 ),
-                Icon(Icons.tune_rounded, color: AppColors.mobileTextTertiary, size: 18),
+                Icon(Icons.tune_rounded,
+                    color: AppColors.mobileTextTertiary, size: 18),
               ],
             ),
           ),
@@ -186,9 +195,9 @@ class HomeStorePage extends ConsumerWidget {
                       color: AppColors.mobileTextPrimary,
                     ),
                     children: [
-                      const TextSpan(text: "Gelmeden Gör, "),
+                      TextSpan(text: context.l10n.mottoTitlePart1),
                       TextSpan(
-                        text: "Beğenince Gel.",
+                        text: context.l10n.mottoTitlePart2,
                         style: TextStyle(color: AppColors.mobilePrimary),
                       ),
                     ],
@@ -199,9 +208,10 @@ class HomeStorePage extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              "Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.",
+              context.l10n.mottoSubtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.mobileTextTertiary, fontSize: 11.5),
+              style: TextStyle(
+                  color: AppColors.mobileTextTertiary, fontSize: 11.5),
             ),
           ],
         ),
@@ -214,12 +224,16 @@ class HomeStorePage extends ConsumerWidget {
         child: InfiniteTicker(
           height: 62,
           items: [
-            TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
-            TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
-            TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
+            TickerItem(
+                Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
+            TickerItem(Icons.handshake_rounded,
+                context.l10n.productTrustBadgeNegotiate),
+            TickerItem(Icons.local_shipping_rounded,
+                context.l10n.productTrustBadgeDelivery),
             TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
             TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
-            TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
+            TickerItem(
+                Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
           ],
         ),
       );
@@ -306,91 +320,94 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
           armLength: 18,
           inset: 10,
           child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: SizedBox(
-            height: 170,
-            child: Stack(
-              children: [
-                PageView.builder(
-                  controller: _pageController,
-                  itemCount: _HomeHeroSlider._images.length,
-                  onPageChanged: (final index) => setState(() => _currentPage = index),
-                  itemBuilder: (final context, final index) => OptimizedCachedImage(
-                    imageUrl: _HomeHeroSlider._images[index],
-                    height: 170,
-                    width: double.infinity,
-                    borderRadius: 0,
+            borderRadius: BorderRadius.circular(24),
+            child: SizedBox(
+              height: 170,
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    controller: _pageController,
+                    itemCount: _HomeHeroSlider._images.length,
+                    onPageChanged: (final index) =>
+                        setState(() => _currentPage = index),
+                    itemBuilder: (final context, final index) =>
+                        OptimizedCachedImage(
+                      imageUrl: _HomeHeroSlider._images[index],
+                      height: 170,
+                      width: double.infinity,
+                      borderRadius: 0,
+                    ),
                   ),
-                ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight,
-                          colors: [
-                            AppColors.mobilePrimaryDark.withOpacity(0.75),
-                            AppColors.mobilePrimaryDark.withOpacity(0.05),
-                          ],
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                            colors: [
+                              AppColors.mobilePrimaryDark.withOpacity(0.75),
+                              AppColors.mobilePrimaryDark.withOpacity(0.05),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: 20,
-                  right: 20,
-                  bottom: 30,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.l10n.storeHeroEyebrow,
-                        style: AppTextStyles.microLabel(
-                          color: Colors.white.withOpacity(0.85),
-                          fontSize: 11,
-                          letterSpacing: 1.8,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        context.l10n.storeHeroSubtitle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          height: 1.35,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 16,
-                  bottom: 12,
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < _HomeHeroSlider._images.length; i++)
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          margin: const EdgeInsets.only(left: 5),
-                          width: i == _currentPage ? 16 : 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(i == _currentPage ? 0.95 : 0.5),
-                            borderRadius: BorderRadius.circular(3),
+                  Positioned(
+                    left: 20,
+                    right: 20,
+                    bottom: 30,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.l10n.storeHeroEyebrow,
+                          style: AppTextStyles.microLabel(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 11,
+                            letterSpacing: 1.8,
                           ),
                         ),
-                    ],
+                        const SizedBox(height: 6),
+                        Text(
+                          context.l10n.storeHeroSubtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    right: 16,
+                    bottom: 12,
+                    child: Row(
+                      children: [
+                        for (int i = 0; i < _HomeHeroSlider._images.length; i++)
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            margin: const EdgeInsets.only(left: 5),
+                            width: i == _currentPage ? 16 : 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: Colors.white
+                                  .withOpacity(i == _currentPage ? 0.95 : 0.5),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
         ),
       );
 }
@@ -419,7 +436,8 @@ class _CategoryRow extends ConsumerWidget {
                   height: 56,
                   borderRadius: 18,
                   alignment: Alignment.center,
-                  child: Icon(meta.icon, color: AppColors.mobilePrimary, size: 24),
+                  child:
+                      Icon(meta.icon, color: AppColors.mobilePrimary, size: 24),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -427,7 +445,9 @@ class _CategoryRow extends ConsumerWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.mobileTextSecondary),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.mobileTextSecondary),
                 ),
               ],
             ),
@@ -445,8 +465,10 @@ class _ProductCard extends ConsumerWidget {
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final inCart = ref.watch(cartProvider).any((final i) => i.product.id == product.id);
-    final meta = defaultCategoryMeta[product.category] ?? defaultCategoryMeta[ProductCategory.other]!;
+    final inCart =
+        ref.watch(cartProvider).any((final i) => i.product.id == product.id);
+    final meta = defaultCategoryMeta[product.category] ??
+        defaultCategoryMeta[ProductCategory.other]!;
 
     return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
@@ -461,87 +483,104 @@ class _ProductCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-                color: meta.color.withOpacity(0.28), blurRadius: 22, spreadRadius: -4, offset: const Offset(0, 10)),
+                color: meta.color.withOpacity(0.28),
+                blurRadius: 22,
+                spreadRadius: -4,
+                offset: const Offset(0, 10)),
           ],
         ),
         child: GlassSurface(
-        borderRadius: 18,
-        chromaticEdge: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-                    child: OptimizedCachedImage(
-                      imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
-                      fit: BoxFit.cover,
-                      borderRadius: 0,
+          borderRadius: 18,
+          chromaticEdge: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(18)),
+                      child: OptimizedCachedImage(
+                        imageUrl: product.imagesUrl.isNotEmpty
+                            ? product.imagesUrl.first
+                            : '',
+                        fit: BoxFit.cover,
+                        borderRadius: 0,
+                      ),
                     ),
-                  ),
-                  if (!product.isSpotProduct)
+                    if (!product.isSpotProduct)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.mobileAccent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            context.l10n.newProductBadge,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ),
                     Positioned(
-                      top: 8,
-                      left: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.mobileAccent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          context.l10n.newProductBadge,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 9, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                    ),
-                  Positioned(
-                    right: 8,
-                    bottom: 8,
-                    child: GestureDetector(
-                      onTap: () => ref.read(cartProvider.notifier).toggle(product),
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        child: Icon(
-                          inCart ? Icons.shopping_bag_rounded : Icons.add_rounded,
-                          size: 16,
-                          color: AppColors.mobilePrimary,
+                      right: 8,
+                      bottom: 8,
+                      child: GestureDetector(
+                        onTap: () =>
+                            ref.read(cartProvider.notifier).toggle(product),
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          child: Icon(
+                            inCart
+                                ? Icons.shopping_bag_rounded
+                                : Icons.add_rounded,
+                            size: 16,
+                            color: AppColors.mobilePrimary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.mobileTextPrimary),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    '${product.price.toStringAsFixed(0)}₺',
-                    style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.mobileTextPrimary),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '${product.price.toStringAsFixed(0)}₺',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.mobilePrimary),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -554,7 +593,8 @@ class _NotificationBellButton extends StatelessWidget {
   final int unreadCount;
   final VoidCallback onTap;
 
-  const _NotificationBellButton({required this.unreadCount, required this.onTap});
+  const _NotificationBellButton(
+      {required this.unreadCount, required this.onTap});
 
   @override
   Widget build(final BuildContext context) => TactilePress(
@@ -576,7 +616,8 @@ class _NotificationBellButton extends StatelessWidget {
                   right: 4,
                   child: Container(
                     padding: const EdgeInsets.all(3),
-                    constraints: const BoxConstraints(minWidth: 15, minHeight: 15),
+                    constraints:
+                        const BoxConstraints(minWidth: 15, minHeight: 15),
                     decoration: BoxDecoration(
                       color: AppColors.error,
                       shape: BoxShape.circle,
@@ -585,7 +626,9 @@ class _NotificationBellButton extends StatelessWidget {
                       unreadCount > 9 ? '9+' : '$unreadCount',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                          color: Colors.white, fontSize: 9, fontWeight: FontWeight.w800),
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800),
                     ),
                   ),
                 ),
@@ -652,7 +695,8 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                       left: 10,
                       top: 10,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.95),
                           borderRadius: BorderRadius.circular(30),
@@ -678,7 +722,9 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              isOpen ? 'ŞU AN AÇIK' : 'ŞU AN KAPALI',
+                              isOpen
+                                  ? context.l10n.openNowLabel
+                                  : context.l10n.closedNowLabel,
                               style: TextStyle(
                                   fontSize: 10.5,
                                   fontWeight: FontWeight.w800,
@@ -717,8 +763,12 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text('· Bugün ${SaglamSpotCommunication.todayHoursLabel}',
-                        style: TextStyle(fontSize: 11.5, color: AppColors.mobileTextTertiary)),
+                    Text(
+                        context.l10n.todayHoursPrefix(
+                            SaglamSpotCommunication.todayHoursLabel),
+                        style: TextStyle(
+                            fontSize: 11.5,
+                            color: AppColors.mobileTextTertiary)),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -749,7 +799,8 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: AppColors.mobilePrimary),
+                                border:
+                                    Border.all(color: AppColors.mobilePrimary),
                               ),
                               child: Center(
                                 child: Text(context.l10n.directionsButton,
@@ -792,9 +843,9 @@ class _MobileCatalogGateway extends ConsumerWidget {
         children: [
           Expanded(
             child: _MobileGatewayTile(
-              eyebrow: 'SIFIR',
+              eyebrow: context.l10n.gatewayNewEyebrowShort,
               eyebrowColor: NewCollectionPalette.badgeGreen,
-              title: 'Koleksiyon',
+              title: context.l10n.gatewayNewTitleShort,
               count: newCount,
               background: NewCollectionPalette.background,
               border: NewCollectionPalette.cardBorder,
@@ -808,9 +859,9 @@ class _MobileCatalogGateway extends ConsumerWidget {
           const SizedBox(width: 12),
           Expanded(
             child: _MobileGatewayTile(
-              eyebrow: 'SPOT',
+              eyebrow: context.l10n.gatewaySpotEyebrowShort,
               eyebrowColor: SpotPalette.accent,
-              title: 'Fırsatlar',
+              title: context.l10n.gatewaySpotTitleShort,
               count: spotCount,
               background: SpotPalette.background,
               border: SpotPalette.cardBorder,
@@ -879,7 +930,9 @@ class _MobileGatewayTile extends StatelessWidget {
                 children: [
                   Text(eyebrow,
                       style: AppTextStyles.microLabel(
-                          color: eyebrowColor, letterSpacing: 1.6, fontSize: 9.5)),
+                          color: eyebrowColor,
+                          letterSpacing: 1.6,
+                          fontSize: 9.5)),
                   const SizedBox(height: 6),
                   Text(title,
                       style: TextStyle(
@@ -888,9 +941,11 @@ class _MobileGatewayTile extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           color: heading)),
                   const SizedBox(height: 10),
-                  Text('$count ürün',
+                  Text(context.l10n.gatewayProductCount(count),
                       style: TextStyle(
-                          color: accent, fontSize: 11.5, fontWeight: FontWeight.w700)),
+                          color: accent,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700)),
                 ],
               ),
             ],

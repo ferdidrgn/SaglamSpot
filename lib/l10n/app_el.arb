@@ -541,5 +541,113 @@
         "type": "int"
       }
     }
-  }
+  },
+  "catalogCategoryTitleSofa": "Καναπές",
+  "catalogCategoryTitleChair": "Καρέκλα & Πολυθρόνα",
+  "catalogCategoryTitleTable": "Τραπέζι κουζίνας",
+  "catalogCategoryTitleBed": "Κρεβάτι & Βάση",
+  "catalogCategoryTitleWardrobe": "Ντουλάπα & Ντουλάπι",
+  "catalogCategoryTitleWhite": "Οικιακές Συσκευές",
+  "catalogCategoryTitleOther": "Διακόσμηση",
+  "mottoTitlePart1": "Δες πριν έρθεις, ",
+  "mottoTitlePart2": "Έλα όταν σου αρέσει.",
+  "mottoSubtitle": "Δες τη βιτρίνα μας πριν έρθεις στο κατάστημα, και πέρνα όταν βρεις αυτό που θέλεις.",
+  "gatewayNewEyebrow": "ΝΕΑ ΣΥΛΛΟΓΗ",
+  "gatewayNewTitle": "Διαχρονικά Κομμάτια",
+  "gatewayNewSubtitle": "Ολοκαίνουργια, αχρησιμοποίητα έπιπλα.",
+  "gatewayNewButton": "Δες τη Συλλογή",
+  "gatewaySpotEyebrow": "ΠΡΟΣΦΟΡΕΣ SPOT",
+  "gatewaySpotTitle": "Μεταχειρισμένο, αλλά Γερό",
+  "gatewaySpotSubtitle": "Μεταχειρισμένα αλλά χρηστικά, σε προσιτές τιμές.",
+  "gatewaySpotButton": "Δες τις Προσφορές",
+  "freeDeliveryZonesNote": "Η δωρεάν παράδοση ισχύει μόνο στις περιοχές {zones}",
+  "@freeDeliveryZonesNote": {
+    "placeholders": {
+      "zones": {
+        "type": "String"
+      }
+    }
+  },
+  "footerWarehouseTagline": "ΑΠΟΘΗΚΗ ΕΠΙΠΛΩΝ · İÇERENKÖY / ATAŞEHİR",
+  "locationAndHoursLabel": "ΤΟΠΟΘΕΣΙΑ & ΩΡΑΡΙΟ",
+  "openNowLabel": "ΑΝΟΙΧΤΟ ΤΩΡΑ",
+  "closedNowLabel": "ΚΛΕΙΣΤΟ ΤΩΡΑ",
+  "todayHoursPrefix": "· Σήμερα {hours}",
+  "@todayHoursPrefix": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "openInMapsButton": "Άνοιγμα στους Χάρτες",
+  "viewOnGoogleMapsButton": "Προβολή στους Χάρτες Google",
+  "gatewayProductCount": "{count} προϊόντα",
+  "@gatewayProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gatewayNewEyebrowShort": "ΝΕΟ",
+  "gatewayNewTitleShort": "Συλλογή",
+  "gatewaySpotEyebrowShort": "SPOT",
+  "gatewaySpotTitleShort": "Προσφορές",
+  "spotHeroEyebrow": "ΑΠΟΘΗΚΗ ΠΡΟΣΦΟΡΩΝ",
+  "spotHeroSubtitle": "Μεταχειρισμένα αλλά χρηστικά. Σαν καινούρια, για κάθε προϋπολογισμό. Χωράει διαπραγμάτευση.",
+  "spotHeroDealCount": "{count}+ Προσφορές",
+  "@spotHeroDealCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotStatNegotiable": "Χωράει Διαπραγμάτευση",
+  "spotStatUsed": "Μεταχειρισμένο",
+  "spotShowcaseBadgeTitle": "Πλήρως Ανακαινισμένο",
+  "spotShowcaseBadgeSubtitle": "Κάθε προϊόν ελέγχεται ξεχωριστά πριν την παράδοση.",
+  "spotBreadcrumbLabel": "Spot & Μεταχειρισμένα",
+  "aphorismEyebrow": "ΕΧΟΥΜΕ ΕΝΑ ΡΗΤΟ",
+  "aphorismQuote": "Όχι φθαρμένο, αλλά αγαπημένο.\nΤα καλά έπιπλα δεν γερνούν ποτέ, απλώς αλλάζουν σπίτι.",
+  "aphorismBody": "Γι' αυτό ακριβώς είμαστε εδώ: για να φέρουμε κομμάτια που έχουν ακόμα ζωή σε ένα νέο σπίτι που θα τα εκτιμήσει.",
+  "spotSearchHint": "Αναζήτηση προσφορών…",
+  "priceRangeLabel": "Εύρος Τιμής",
+  "filtersSheetTitle": "ΦΙΛΤΡΑ",
+  "applyFiltersButton": "Εφαρμογή Φίλτρων",
+  "priceRangeSheetTitle": "ΕΥΡΟΣ ΤΙΜΗΣ",
+  "applyButton": "Εφαρμογή",
+  "sortSheetTitle": "ΤΑΞΙΝΟΜΗΣΗ",
+  "sortNewest": "Νεότερες Προσφορές",
+  "sortPopular": "Πιο Δημοφιλή",
+  "spotEmptyStateTitle": "Δεν βρήκαμε προσφορές με αυτά τα κριτήρια",
+  "spotEmptyStateSubtitle": "Δοκίμασε να καθαρίσεις τα φίλτρα ή διαφορετική κατηγορία.",
+  "newHeroTitleLine1": "Για τον Χώρο σας\n",
+  "newHeroTitleEmphasis": "Διαχρονική ",
+  "newHeroButtonCollection": "Δες τη Συλλογή",
+  "newHeroButtonQuickFilter": "Γρήγορο Φίλτρο",
+  "newStatActiveProductLabel": "ΕΝΕΡΓΑ ΠΡΟΪΟΝΤΑ",
+  "newStatControlledStockLabel": "ΕΛΕΓΜΕΝΟ ΑΠΟΘΕΜΑ",
+  "shopByCategoryTitlePrefix": "Ανά Κατηγορία ",
+  "shopByCategoryTitleEmphasis": "Εξερεύνησε",
+  "showAllButton": "Εμφάνιση Όλων",
+  "newEmptyStateTitle": "Δεν Βρέθηκαν Έπιπλα με Αυτά τα Κριτήρια",
+  "newEmptyStateSubtitle": "Δοκίμασε να αλλάξεις τον όρο αναζήτησης ή να καθαρίσεις τα φίλτρα.",
+  "sortOptionsSheetTitle": "Επιλογές Ταξινόμησης",
+  "newSortNewest": "Νεότερα",
+  "newSortPopular": "Πιο Δημοφιλή",
+  "cartWhatsappGreeting": "Γεια σας, θα ήθελα πληροφορίες για αυτά τα προϊόντα:\n\n",
+  "cartWhatsappAllProductsLine": "Όλα τα προϊόντα: {url}",
+  "@cartWhatsappAllProductsLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultWhatsappGreeting": "Γεια σας, θα ήθελα πληροφορίες για τα έπιπλα.",
+  "spotHeroPageTitle": "Μεταχειρισμένα & Spot",
+  "sortByPriceLowHigh": "Τιμή: Αύξουσα",
+  "sortByPriceHighLow": "Τιμή: Φθίνουσα"
 }

@@ -2989,6 +2989,444 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{days} gün önce'**
   String timeDaysAgoGeneric(int days);
+
+  /// No description provided for @catalogCategoryTitleSofa.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koltuk & Kanepe'**
+  String get catalogCategoryTitleSofa;
+
+  /// No description provided for @catalogCategoryTitleChair.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sandalye & Berjer'**
+  String get catalogCategoryTitleChair;
+
+  /// No description provided for @catalogCategoryTitleTable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yemek Masası'**
+  String get catalogCategoryTitleTable;
+
+  /// No description provided for @catalogCategoryTitleBed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatak & Baza'**
+  String get catalogCategoryTitleBed;
+
+  /// No description provided for @catalogCategoryTitleWardrobe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardırop & Dolap'**
+  String get catalogCategoryTitleWardrobe;
+
+  /// No description provided for @catalogCategoryTitleWhite.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beyaz Eşya'**
+  String get catalogCategoryTitleWhite;
+
+  /// No description provided for @catalogCategoryTitleOther.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dekorasyon'**
+  String get catalogCategoryTitleOther;
+
+  /// No description provided for @mottoTitlePart1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gelmeden Gör, '**
+  String get mottoTitlePart1;
+
+  /// No description provided for @mottoTitlePart2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beğenince Gel.'**
+  String get mottoTitlePart2;
+
+  /// No description provided for @mottoSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.'**
+  String get mottoSubtitle;
+
+  /// No description provided for @gatewayNewEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIFIR KOLEKSİYON'**
+  String get gatewayNewEyebrow;
+
+  /// No description provided for @gatewayNewTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zamansız Parçalar'**
+  String get gatewayNewTitle;
+
+  /// No description provided for @gatewayNewSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hiç kullanılmamış, yeni gibi mobilyalar.'**
+  String get gatewayNewSubtitle;
+
+  /// No description provided for @gatewayNewButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koleksiyonu Gör'**
+  String get gatewayNewButton;
+
+  /// No description provided for @gatewaySpotEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'SPOT FIRSATLAR'**
+  String get gatewaySpotEyebrow;
+
+  /// No description provided for @gatewaySpotTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanılmış, Sağlam'**
+  String get gatewaySpotTitle;
+
+  /// No description provided for @gatewaySpotSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci el ama kullanışlı, cebe uygun fiyatlarla.'**
+  String get gatewaySpotSubtitle;
+
+  /// No description provided for @gatewaySpotButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fırsatları Gör'**
+  String get gatewaySpotButton;
+
+  /// No description provided for @freeDeliveryZonesNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ücretsiz teslimat sadece {zones} bölgelerinde geçerlidir'**
+  String freeDeliveryZonesNote(String zones);
+
+  /// No description provided for @footerWarehouseTagline.
+  ///
+  /// In tr, this message translates to:
+  /// **'MOBİLYA DEPOSU · İÇERENKÖY / ATAŞEHİR'**
+  String get footerWarehouseTagline;
+
+  /// No description provided for @locationAndHoursLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'KONUM & ÇALIŞMA SAATİ'**
+  String get locationAndHoursLabel;
+
+  /// No description provided for @openNowLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'ŞU AN AÇIK'**
+  String get openNowLabel;
+
+  /// No description provided for @closedNowLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'ŞU AN KAPALI'**
+  String get closedNowLabel;
+
+  /// No description provided for @todayHoursPrefix.
+  ///
+  /// In tr, this message translates to:
+  /// **'· Bugün {hours}'**
+  String todayHoursPrefix(String hours);
+
+  /// No description provided for @openInMapsButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haritada Aç'**
+  String get openInMapsButton;
+
+  /// No description provided for @viewOnGoogleMapsButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Haritalar\'da Görüntüle'**
+  String get viewOnGoogleMapsButton;
+
+  /// No description provided for @gatewayProductCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ürün'**
+  String gatewayProductCount(int count);
+
+  /// No description provided for @gatewayNewEyebrowShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIFIR'**
+  String get gatewayNewEyebrowShort;
+
+  /// No description provided for @gatewayNewTitleShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koleksiyon'**
+  String get gatewayNewTitleShort;
+
+  /// No description provided for @gatewaySpotEyebrowShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'SPOT'**
+  String get gatewaySpotEyebrowShort;
+
+  /// No description provided for @gatewaySpotTitleShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fırsatlar'**
+  String get gatewaySpotTitleShort;
+
+  /// No description provided for @spotHeroEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'FIRSAT DEPOSU'**
+  String get spotHeroEyebrow;
+
+  /// No description provided for @spotHeroSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.'**
+  String get spotHeroSubtitle;
+
+  /// No description provided for @spotHeroDealCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count}+ Fırsat'**
+  String spotHeroDealCount(int count);
+
+  /// No description provided for @spotStatNegotiable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pazarlık Payı Mevcut'**
+  String get spotStatNegotiable;
+
+  /// No description provided for @spotStatUsed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanılmış'**
+  String get spotStatUsed;
+
+  /// No description provided for @spotShowcaseBadgeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elden Geçirildi'**
+  String get spotShowcaseBadgeTitle;
+
+  /// No description provided for @spotShowcaseBadgeSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her ürün teslimden önce tek tek kontrol edilir.'**
+  String get spotShowcaseBadgeSubtitle;
+
+  /// No description provided for @spotBreadcrumbLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot & İkinci El'**
+  String get spotBreadcrumbLabel;
+
+  /// No description provided for @aphorismEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİR SÖZÜMÜZ VAR'**
+  String get aphorismEyebrow;
+
+  /// No description provided for @aphorismQuote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eskimiş değil, emek görmüş.\nİyi mobilya asla eskimez, sadece ev değiştirir.'**
+  String get aphorismQuote;
+
+  /// No description provided for @aphorismBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biz de tam bu yüzden buradayız: hâlâ hayatı olan parçaları, onlara değer verecek yeni bir eve ulaştırmak için.'**
+  String get aphorismBody;
+
+  /// No description provided for @spotSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fırsat ara...'**
+  String get spotSearchHint;
+
+  /// No description provided for @priceRangeLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat Aralığı'**
+  String get priceRangeLabel;
+
+  /// No description provided for @filtersSheetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'FİLTRELER'**
+  String get filtersSheetTitle;
+
+  /// No description provided for @applyFiltersButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtreleri Uygula'**
+  String get applyFiltersButton;
+
+  /// No description provided for @priceRangeSheetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'FİYAT ARALIĞI'**
+  String get priceRangeSheetTitle;
+
+  /// No description provided for @applyButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygula'**
+  String get applyButton;
+
+  /// No description provided for @sortSheetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIRALAMA'**
+  String get sortSheetTitle;
+
+  /// No description provided for @sortNewest.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Yeni Fırsatlar'**
+  String get sortNewest;
+
+  /// No description provided for @sortPopular.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Çok İncelenen'**
+  String get sortPopular;
+
+  /// No description provided for @spotEmptyStateTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kriterde fırsat bulamadık'**
+  String get spotEmptyStateTitle;
+
+  /// No description provided for @spotEmptyStateSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtreleri temizlemeyi veya farklı bir kategori denemeyi dene.'**
+  String get spotEmptyStateSubtitle;
+
+  /// No description provided for @newHeroTitleLine1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yaşam Alanınız İçin\n'**
+  String get newHeroTitleLine1;
+
+  /// No description provided for @newHeroTitleEmphasis.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zamansız '**
+  String get newHeroTitleEmphasis;
+
+  /// No description provided for @newHeroButtonCollection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koleksiyonu İncele'**
+  String get newHeroButtonCollection;
+
+  /// No description provided for @newHeroButtonQuickFilter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hızlı Filtrele'**
+  String get newHeroButtonQuickFilter;
+
+  /// No description provided for @newStatActiveProductLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'AKTİF ÜRÜN'**
+  String get newStatActiveProductLabel;
+
+  /// No description provided for @newStatControlledStockLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'KONTROLLÜ STOK'**
+  String get newStatControlledStockLabel;
+
+  /// No description provided for @shopByCategoryTitlePrefix.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategoriye Göre '**
+  String get shopByCategoryTitlePrefix;
+
+  /// No description provided for @shopByCategoryTitleEmphasis.
+  ///
+  /// In tr, this message translates to:
+  /// **'Keşfet'**
+  String get shopByCategoryTitleEmphasis;
+
+  /// No description provided for @showAllButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümünü Göster'**
+  String get showAllButton;
+
+  /// No description provided for @newEmptyStateTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aradığınız Kriterde Mobilya Bulunamadı'**
+  String get newEmptyStateTitle;
+
+  /// No description provided for @newEmptyStateSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arama kelimesini değiştirebilir ya da filtreleri temizleyebilirsiniz.'**
+  String get newEmptyStateSubtitle;
+
+  /// No description provided for @sortOptionsSheetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıralama Seçenekleri'**
+  String get sortOptionsSheetTitle;
+
+  /// No description provided for @newSortNewest.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Yeniler'**
+  String get newSortNewest;
+
+  /// No description provided for @newSortPopular.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Çok İncelenenler'**
+  String get newSortPopular;
+
+  /// No description provided for @cartWhatsappGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n'**
+  String get cartWhatsappGreeting;
+
+  /// No description provided for @cartWhatsappAllProductsLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm ürünler: {url}'**
+  String cartWhatsappAllProductsLine(String url);
+
+  /// No description provided for @defaultWhatsappGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Merhaba, mobilyalar hakkında bilgi almak istiyorum.'**
+  String get defaultWhatsappGreeting;
+
+  /// No description provided for @spotHeroPageTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci El & Spot'**
+  String get spotHeroPageTitle;
+
+  /// No description provided for @sortByPriceLowHigh.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat: Düşükten Yükseğe'**
+  String get sortByPriceLowHigh;
+
+  /// No description provided for @sortByPriceHighLow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat: Yüksekten Düşüğe'**
+  String get sortByPriceHighLow;
 }
 
 class _AppLocalizationsDelegate
