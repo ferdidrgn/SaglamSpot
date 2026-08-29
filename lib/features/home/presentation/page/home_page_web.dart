@@ -85,9 +85,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 slivers: [
                   _buildHeroBanner(availableProducts),
                   _buildMottoStrip(),
+                  _buildFeatureTicker(),
                   _buildCatalogGateway(),
                   _buildTrustBar(),
-                  _buildFeatureTicker(),
                   _buildCategoriesSection(),
                   _buildProductsHeader(),
                   _buildDynamicFeaturedGrid(
@@ -421,6 +421,16 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
       TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
       TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
+      // Ücretsiz teslimat gerçek bir vaat, ama sınırsız değil — şeritte
+      // genel "teslimat" rozetinin yanına, hangi bölgelerle sınırlı
+      // olduğunu netleştiren ayrı bir not ekleniyor (yanlış beklenti
+      // oluşmasın diye).
+      TickerItem(
+        Icons.map_rounded,
+        'Ücretsiz teslimat sadece '
+        '${SaglamSpotCommunication.freeDeliveryZones.join(', ')} '
+        'bölgelerinde geçerlidir',
+      ),
       TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
       TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
       TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
@@ -1431,14 +1441,63 @@ class _GatewayCard extends StatelessWidget {
             color: background,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: cardBorder),
+            boxShadow: [
+              BoxShadow(
+                color: accent.withOpacity(0.14),
+                blurRadius: 32,
+                offset: const Offset(0, 16),
+              ),
+            ],
           ),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
+              // Köşeden taşan renkli "glow" — düz arka plana canlılık
+              // katan yumuşak bir radyal gradyan; LayoutBuilder KULLANMAZ
+              // (masaüstünde bu kartlar IntrinsicHeight içinde eşit
+              // yüksekliğe zorlanıyor, LayoutBuilder orada exception atar).
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: const Alignment(1.15, 1.25),
+                      radius: 1.05,
+                      colors: [accent.withOpacity(0.22), Colors.transparent],
+                    ),
+                  ),
+                ),
+              ),
+              // İnce yörünge çizgisi + nokta kümesi: sanatsal, dokusal bir
+              // dokunuş. CustomPaint boyutu doğrudan paint(size)'dan alır,
+              // LayoutBuilder gerektirmez — bu yüzden IntrinsicHeight ile
+              // güvenle bir arada kullanılabilir.
+              Positioned.fill(
+                child: CustomPaint(painter: _GatewayMotifPainter(accent: accent)),
+              ),
+              // Katmanlı ikon kompozisyonu: tek soluk ikon yerine, farklı
+              // boyut/açı/opaklıkta üç ikon — "koleksiyon" hissi veren bir
+              // mini kolaj.
               Positioned(
-                right: -18,
-                bottom: -18,
-                child: Icon(icon, size: 120, color: accent.withOpacity(0.07)),
+                right: -22,
+                bottom: -22,
+                child: Transform.rotate(
+                  angle: -0.12,
+                  child: Icon(icon, size: 132, color: accent.withOpacity(0.10)),
+                ),
+              ),
+              Positioned(
+                right: 34,
+                bottom: 8,
+                child: Transform.rotate(
+                  angle: 0.22,
+                  child: Icon(Icons.auto_awesome_rounded,
+                      size: 30, color: accent.withOpacity(0.30)),
+                ),
+              ),
+              Positioned(
+                top: 14,
+                right: 18,
+                child: Icon(Icons.circle, size: 8, color: accent.withOpacity(0.24)),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1501,6 +1560,50 @@ class _GatewayCard extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Kapı kartlarındaki ince yörünge çizgisi + nokta kümesi dokusu. Sabit bir
+/// [CustomPainter] — [paint] doğrudan kendi [Size]'ını alır, bir üst
+/// widget'tan constraints SORMAZ. Bu yüzden [_GatewayCard]'ın masaüstünde
+/// sarıldığı [IntrinsicHeight] ile çakışmaz (bkz. [TactilePress] geçmişi:
+/// aynı sebepten LayoutBuilder oradan tamamen kaldırıldı).
+class _GatewayMotifPainter extends CustomPainter {
+  const _GatewayMotifPainter({required this.accent});
+
+  final Color accent;
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final arcPaint = Paint()
+      ..color = accent.withOpacity(0.18)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
+    canvas.drawArc(
+      Rect.fromCircle(
+        center: Offset(size.width * 0.12, size.height * 0.16),
+        radius: 30,
+      ),
+      math.pi * 0.1,
+      math.pi * 1.4,
+      false,
+      arcPaint,
+    );
+
+    final dotPaint = Paint()..color = accent.withOpacity(0.26);
+    const dots = [
+      (dx: 0.86, dy: 0.18, r: 3.2),
+      (dx: 0.93, dy: 0.30, r: 2.0),
+      (dx: 0.80, dy: 0.10, r: 1.6),
+    ];
+    for (final d in dots) {
+      canvas.drawCircle(
+          Offset(size.width * d.dx, size.height * d.dy), d.r, dotPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant final _GatewayMotifPainter oldDelegate) =>
+      oldDelegate.accent != accent;
 }
 
 /// Sanatsal doku: birkaç dev, çok soluk mobilya/motif ikonu yavaşça
