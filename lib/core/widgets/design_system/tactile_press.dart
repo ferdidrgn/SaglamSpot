@@ -52,7 +52,6 @@ class _TactilePressState extends State<TactilePress>
   );
 
   Offset _tilt = Offset.zero; // -1..1 aralığında normalize edilmiş imleç konumu
-  Size _size = Size.zero;
 
   @override
   void dispose() {
@@ -71,9 +70,13 @@ class _TactilePressState extends State<TactilePress>
   }
 
   void _onHover(final PointerHoverEvent event) {
-    if (!widget.enableTilt || !kIsWeb || _size == Size.zero) return;
-    final dx = (event.localPosition.dx / _size.width) * 2 - 1;
-    final dy = (event.localPosition.dy / _size.height) * 2 - 1;
+    if (!widget.enableTilt || !kIsWeb) return;
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return;
+    final size = renderBox.size;
+    if (size == Size.zero) return;
+    final dx = (event.localPosition.dx / size.width) * 2 - 1;
+    final dy = (event.localPosition.dy / size.height) * 2 - 1;
     setState(() => _tilt = Offset(dx.clamp(-1.0, 1.0), dy.clamp(-1.0, 1.0)));
   }
 
@@ -109,17 +112,12 @@ class _TactilePressState extends State<TactilePress>
       child: content,
     );
 
-    return LayoutBuilder(
-      builder: (final context, final constraints) {
-        _size = Size(constraints.maxWidth, constraints.maxHeight);
-        return GestureDetector(
-          onTap: widget.onTap,
-          onTapDown: (final _) => _animateTo(1.0),
-          onTapUp: (final _) => _animateTo(0.0),
-          onTapCancel: () => _animateTo(0.0),
-          child: content,
-        );
-      },
+    return GestureDetector(
+      onTap: widget.onTap,
+      onTapDown: (final _) => _animateTo(1.0),
+      onTapUp: (final _) => _animateTo(0.0),
+      onTapCancel: () => _animateTo(0.0),
+      child: content,
     );
   }
 }
