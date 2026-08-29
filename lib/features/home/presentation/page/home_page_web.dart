@@ -103,8 +103,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       child: Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child:
-                            AdsenseBanner(type: AdUnitType.display, height: 250),
+                        child: AdsenseBanner(
+                            type: AdUnitType.display, height: 250),
                       ),
                     ),
                   _buildRoomsInspirationBanner(),
@@ -260,7 +260,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   "Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: AppColors.textSecondary, fontSize: context.captionSize),
+                      color: AppColors.textSecondary,
+                      fontSize: context.captionSize),
                 ),
               ],
             ),
@@ -418,9 +419,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   /// gerçek güven/hizmet vurgularımızı aynı görsel dille kullanır.
   Widget _buildFeatureTicker() {
     final items = <TickerItem>[
-      TickerItem(Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
-      TickerItem(Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
-      TickerItem(Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
+      TickerItem(
+          Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
+      TickerItem(
+          Icons.handshake_rounded, context.l10n.productTrustBadgeNegotiate),
+      TickerItem(
+          Icons.local_shipping_rounded, context.l10n.productTrustBadgeDelivery),
       // Ücretsiz teslimat gerçek bir vaat, ama sınırsız değil — şeritte
       // genel "teslimat" rozetinin yanına, hangi bölgelerle sınırlı
       // olduğunu netleştiren ayrı bir not ekleniyor (yanlış beklenti
@@ -441,8 +445,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         padding: EdgeInsets.symmetric(
             vertical: context.responsive(mobile: 20, desktop: 28)),
         child: InfiniteTicker(
-            items: items,
-            height: context.responsive(mobile: 64, desktop: 78)),
+            items: items, height: context.responsive(mobile: 64, desktop: 78)),
       ),
     );
   }
@@ -845,13 +848,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                                   const SizedBox(width: 10),
                                   _FooterSocialIcon(
                                       icon: Icons.facebook,
-                                      onTap: SaglamSpotCommunication
-                                          .openFacebook),
+                                      onTap:
+                                          SaglamSpotCommunication.openFacebook),
                                   const SizedBox(width: 10),
                                   _FooterSocialIcon(
                                       icon: Icons.call_outlined,
-                                      onTap:
-                                          SaglamSpotCommunication.makeCall),
+                                      onTap: SaglamSpotCommunication.makeCall),
                                 ],
                               ),
                             ],
@@ -885,8 +887,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       ],
                     ),
                     const SizedBox(height: 48),
-                    Container(
-                        height: 1, color: Colors.white.withOpacity(0.08)),
+                    Container(height: 1, color: Colors.white.withOpacity(0.08)),
                     const SizedBox(height: 20),
                     Wrap(
                       alignment: WrapAlignment.spaceBetween,
@@ -1041,7 +1042,9 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
                     height: 7,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isOpen ? const Color(0xFF6FCF97) : const Color(0xFFE57373),
+                      color: isOpen
+                          ? const Color(0xFF6FCF97)
+                          : const Color(0xFFE57373),
                     ),
                   ),
                   const SizedBox(width: 7),
@@ -1100,7 +1103,8 @@ class _FooterLocationCardState extends State<_FooterLocationCard> {
                   ),
                   icon: const Icon(Icons.map_outlined, size: 16),
                   label: const Text("Haritada Aç",
-                      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700)),
+                      style: TextStyle(
+                          fontSize: 12.5, fontWeight: FontWeight.w700)),
                 ),
               ),
             ],
@@ -1163,7 +1167,8 @@ class _VisitMapSectionState extends State<_VisitMapSection> {
                   longitude: SaglamSpotCommunication.placeLongitude,
                 ),
               ),
-              Positioned(left: 14, top: 14, child: _LiveOpenBadge(isOpen: isOpen)),
+              Positioned(
+                  left: 14, top: 14, child: _LiveOpenBadge(isOpen: isOpen)),
               Positioned(
                 left: 14,
                 right: 14,
@@ -1177,7 +1182,8 @@ class _VisitMapSectionState extends State<_VisitMapSection> {
                       borderRadius: BorderRadius.circular(30),
                       onTap: SaglamSpotCommunication.openStoreLocation,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 9),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -1307,7 +1313,8 @@ class _VisitMapSectionState extends State<_VisitMapSection> {
         children: [
           const Positioned.fill(child: _FloatingMotifLayer()),
           context.isMobile
-              ? Column(children: [mapCard, const SizedBox(height: 28), infoColumn])
+              ? Column(
+                  children: [mapCard, const SizedBox(height: 28), infoColumn])
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1363,7 +1370,10 @@ class _LiveOpenBadge extends StatelessWidget {
           color: Colors.white.withOpacity(0.95),
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.18), blurRadius: 10, offset: const Offset(0, 3)),
+            BoxShadow(
+                color: Colors.black.withOpacity(0.18),
+                blurRadius: 10,
+                offset: const Offset(0, 3)),
           ],
         ),
         child: Row(
@@ -1374,7 +1384,8 @@ class _LiveOpenBadge extends StatelessWidget {
               height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isOpen ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+                color:
+                    isOpen ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
               ),
             ),
             const SizedBox(width: 7),
@@ -1384,11 +1395,16 @@ class _LiveOpenBadge extends StatelessWidget {
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.4,
-                  color: isOpen ? const Color(0xFF2E7D32) : const Color(0xFFC62828)),
+                  color: isOpen
+                      ? const Color(0xFF2E7D32)
+                      : const Color(0xFFC62828)),
             ),
             const SizedBox(width: 6),
             Text('· ${SaglamSpotCommunication.todayHoursLabel}',
-                style: const TextStyle(fontSize: 11, color: Color(0xFF5A5A5A), fontWeight: FontWeight.w600)),
+                style: const TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFF5A5A5A),
+                    fontWeight: FontWeight.w600)),
           ],
         ),
       );
@@ -1441,11 +1457,25 @@ class _GatewayCard extends StatelessWidget {
             color: background,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: cardBorder),
+            // "Havada süzülen" 3B his: katmanlı, tamamen dikey ofsetli
+            // gölgeler — üstte neredeyse hiç iz bırakmıyor, aşağı ve
+            // yanlara doğru gide gide belirginleşiyor.
             boxShadow: [
               BoxShadow(
-                color: accent.withOpacity(0.14),
-                blurRadius: 32,
-                offset: const Offset(0, 16),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 12),
+              ),
+              BoxShadow(
+                color: accent.withOpacity(0.16),
+                blurRadius: 36,
+                offset: const Offset(0, 22),
+                spreadRadius: -6,
               ),
             ],
           ),
@@ -1472,7 +1502,8 @@ class _GatewayCard extends StatelessWidget {
               // LayoutBuilder gerektirmez — bu yüzden IntrinsicHeight ile
               // güvenle bir arada kullanılabilir.
               Positioned.fill(
-                child: CustomPaint(painter: _GatewayMotifPainter(accent: accent)),
+                child:
+                    CustomPaint(painter: _GatewayMotifPainter(accent: accent)),
               ),
               // Katmanlı ikon kompozisyonu: tek soluk ikon yerine, farklı
               // boyut/açı/opaklıkta üç ikon — "koleksiyon" hissi veren bir
@@ -1497,7 +1528,8 @@ class _GatewayCard extends StatelessWidget {
               Positioned(
                 top: 14,
                 right: 18,
-                child: Icon(Icons.circle, size: 8, color: accent.withOpacity(0.24)),
+                child: Icon(Icons.circle,
+                    size: 8, color: accent.withOpacity(0.24)),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1505,7 +1537,9 @@ class _GatewayCard extends StatelessWidget {
                 children: [
                   Text(eyebrow,
                       style: AppTextStyles.microLabel(
-                          color: eyebrowColor, letterSpacing: 2.4, fontSize: 11)),
+                          color: eyebrowColor,
+                          letterSpacing: 2.4,
+                          fontSize: 11)),
                   const SizedBox(height: 12),
                   Text(title,
                       style: TextStyle(
@@ -1516,7 +1550,8 @@ class _GatewayCard extends StatelessWidget {
                           height: 1.15)),
                   const SizedBox(height: 8),
                   Text(subtitle,
-                      style: TextStyle(color: body, fontSize: 13, height: 1.45)),
+                      style:
+                          TextStyle(color: body, fontSize: 13, height: 1.45)),
                   const SizedBox(height: 22),
                   Wrap(
                     spacing: 12,
@@ -1524,8 +1559,8 @@ class _GatewayCard extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: accent.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(30),
@@ -1626,8 +1661,20 @@ class _FloatingMotifLayerState extends State<_FloatingMotifLayer>
 
   static const _motifs = [
     (icon: Icons.auto_awesome, size: 46.0, phase: 0.0, top: 0.06, right: 0.08),
-    (icon: Icons.weekend_rounded, size: 96.0, phase: 0.33, top: 0.62, right: -0.03),
-    (icon: Icons.chair_rounded, size: 64.0, phase: 0.66, top: 0.12, right: 0.42),
+    (
+      icon: Icons.weekend_rounded,
+      size: 96.0,
+      phase: 0.33,
+      top: 0.62,
+      right: -0.03
+    ),
+    (
+      icon: Icons.chair_rounded,
+      size: 64.0,
+      phase: 0.66,
+      top: 0.12,
+      right: 0.42
+    ),
   ];
 
   @override
@@ -1655,7 +1702,8 @@ class _FloatingMotifLayerState extends State<_FloatingMotifLayer>
                           child: Transform.rotate(
                             angle: math.sin((t + m.phase) * 2 * math.pi) * 0.09,
                             child: Icon(m.icon,
-                                size: m.size, color: Colors.white.withOpacity(0.05)),
+                                size: m.size,
+                                color: Colors.white.withOpacity(0.05)),
                           ),
                         ),
                     ],
@@ -1705,11 +1753,18 @@ class _RoomCardState extends State<_RoomCard> {
               : Matrix4.identity(),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(context.borderRadius(2)),
+            // "Havada süzülen" 3B his: katmanlı, dikey ofsetli gölgeler.
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.22 : 0.08),
-                blurRadius: _isHovered ? 24 : 12,
-                offset: const Offset(0, 10),
+                color: Colors.black.withOpacity(_isHovered ? 0.10 : 0.05),
+                blurRadius: _isHovered ? 8 : 5,
+                offset: const Offset(0, 3),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.24 : 0.10),
+                blurRadius: _isHovered ? 30 : 16,
+                offset: Offset(0, _isHovered ? 20 : 12),
+                spreadRadius: -4,
               ),
             ],
           ),
@@ -2292,7 +2347,8 @@ class _NumberedProductCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (final c, final e, final s) =>
                             const _FeaturedCardFallback(),
-                        loadingBuilder: (final c, final child, final progress) =>
+                        loadingBuilder: (final c, final child,
+                                final progress) =>
                             progress == null
                                 ? child
                                 : const KineticBeamSkeleton(borderRadius: 0),
@@ -2368,8 +2424,8 @@ class _FeaturedCardFallback extends StatelessWidget {
   @override
   Widget build(final BuildContext context) => Container(
       color: AppColors.secondary,
-      child: Icon(Icons.chair_rounded,
-          size: 18, color: AppColors.textTertiary));
+      child:
+          Icon(Icons.chair_rounded, size: 18, color: AppColors.textTertiary));
 }
 
 class _FooterSocialIcon extends StatelessWidget {

@@ -966,11 +966,25 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           color: NewCollectionPalette.background, // Sayfa ile aynı sıcak bej
           borderRadius: BorderRadius.circular(NewCollectionPalette.cardRadius),
           border: Border.all(color: NewCollectionPalette.cardBorder, width: 1),
+          // "Havada süzülen" 3B his: katmanlı, tamamen dikey ofsetli
+          // gölgeler — üstte neredeyse hiç iz bırakmıyor, aşağı ve yanlara
+          // doğru gide gide belirginleşiyor.
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF2C2018).withOpacity(0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+            BoxShadow(
+              color: const Color(0xFF2C2018).withOpacity(0.08),
+              blurRadius: 18,
+              offset: const Offset(0, 12),
+            ),
+            BoxShadow(
+              color: NewCollectionPalette.accent.withOpacity(0.14),
+              blurRadius: 34,
+              offset: const Offset(0, 22),
+              spreadRadius: -6,
             ),
           ],
         ),

@@ -44,19 +44,27 @@ class _CustomProductCardState extends State<CustomProductCard> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius: BorderRadius.circular(22),
+            // "Havada süzülen" 3B his: katmanlı, tamamen dikey ofsetli
+            // gölgeler — üstte neredeyse hiç iz bırakmıyor, aşağı ve yanlara
+            // doğru gide gide belirginleşiyor (hover'da daha da derinleşir).
             boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.07 : 0.05),
+                blurRadius: _isHovered ? 6 : 5,
+                offset: const Offset(0, 2),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.08),
+                blurRadius: _isHovered ? 22 : 18,
+                offset: Offset(0, _isHovered ? 14 : 12),
+              ),
               // Kategori renkli "radiant" glow — /new ve /spot'taki canlı
               // kart diliyle tutarlı.
               BoxShadow(
                 color: meta.color.withOpacity(_isHovered ? 0.42 : 0.24),
-                blurRadius: _isHovered ? 32 : 18,
+                blurRadius: _isHovered ? 38 : 32,
                 spreadRadius: -6,
-                offset: Offset(0, _isHovered ? 16 : 10),
-              ),
-              BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.1 : 0.04),
-                blurRadius: _isHovered ? 18 : 10,
-                offset: Offset(0, _isHovered ? 8 : 4),
+                offset: Offset(0, _isHovered ? 26 : 20),
               ),
             ],
           ),

@@ -870,11 +870,26 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           // kısıtı) — bu yüzden kenarlık tek renk, turuncu şerit ayrı bir
           // Positioned katman olarak çiziliyor (altta).
           border: Border.all(color: SpotPalette.cardBorder, width: 1),
+          // "Havada süzülen" 3B his: katmanlı, tamamen dikey ofsetli
+          // gölgeler — üstte neredeyse hiç iz bırakmıyor, aşağı ve yanlara
+          // doğru gide gide belirginleşiyor (offset dx=0 olduğu için üst
+          // kenar gölgesiz kalıyor, blur köşelerden yanlara taşıyor).
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF1A1A1A).withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: const Color(0xFF1A1A1A).withOpacity(0.05),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+            BoxShadow(
+              color: const Color(0xFF1A1A1A).withOpacity(0.08),
+              blurRadius: 18,
+              offset: const Offset(0, 12),
+            ),
+            BoxShadow(
+              color: SpotPalette.accent.withOpacity(0.16),
+              blurRadius: 34,
+              offset: const Offset(0, 22),
+              spreadRadius: -6,
             ),
           ],
         ),
