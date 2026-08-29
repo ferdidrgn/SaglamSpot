@@ -8,6 +8,7 @@ import '../common/extentions/product_category_ex.dart';
 import '../common/extentions/reg_exp_extentions.dart';
 import '../theme/app_colors.dart';
 import '../theme/catalog_theme.dart';
+import 'design_system/product_image_switcher.dart';
 import 'gallery_section.dart';
 import 'optimized_cached_image.dart';
 
@@ -29,7 +30,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
 
   @override
   Widget build(final BuildContext context) {
-    final hasImage = widget.product.imagesUrl.isNotEmpty;
     final meta = defaultCategoryMeta[widget.product.category] ??
         defaultCategoryMeta[ProductCategory.other]!;
 
@@ -77,15 +77,21 @@ class _CustomProductCardState extends State<CustomProductCard> {
                           scale: _isHovered ? 1.06 : 1.0,
                           duration: const Duration(milliseconds: 450),
                           curve: Curves.easeOutCubic,
-                          child: hasImage
-                              ? OptimizedCachedImage(
-                                  imageUrl: widget.product.imagesUrl.first,
-                                  fit: BoxFit.cover,
-                                  borderRadius: 0,
-                                  errorBuilder: (final c, final u, final e) =>
-                                      const _ImageFallback(),
-                                )
-                              : const _ImageFallback(),
+                          child: ProductImageSwitcher(
+                            images: widget.product.imagesUrl,
+                            // Görsel açık galeriyle karışmasın diye üstte
+                            // gösteriliyor — alt kısım hover'da beliren
+                            // "İncele" eylemiyle zaten dolu.
+                            dotsAtTop: true,
+                            imageBuilder: (final url) => OptimizedCachedImage(
+                              imageUrl: url,
+                              fit: BoxFit.cover,
+                              borderRadius: 0,
+                              errorBuilder: (final c, final u, final e) =>
+                                  const _ImageFallback(),
+                            ),
+                            fallback: const _ImageFallback(),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -223,7 +229,8 @@ class _ImageFallback extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Center(
-      child: Icon(Icons.chair_rounded, size: 40, color: AppColors.textTertiary));
+      child:
+          Icon(Icons.chair_rounded, size: 40, color: AppColors.textTertiary));
 }
 
 class _CircleIconButton extends StatelessWidget {

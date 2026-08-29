@@ -14,6 +14,7 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
+import '../../../../core/widgets/design_system/product_image_switcher.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
@@ -853,9 +854,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // TEK KART (SIFIRDAN - EditorialProductCard KULLANILMADI)
   // ================================================================
   Widget _buildSingleSpotCard(BuildContext context, Product product) {
-    final imageUrl =
-        product.imagesUrl.isNotEmpty ? product.imagesUrl.first : null;
-
     return GestureDetector(
       onTap: () => NavigationHandler.goToProduct(
         context: context,
@@ -901,17 +899,19 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: imageUrl != null
-                            ? OptimizedCachedImage(
-                                imageUrl: imageUrl,
-                                width: double.infinity,
-                                height: double.infinity,
-                                fit: BoxFit.cover,
-                                borderRadius: 0,
-                                errorBuilder: (_, __, ___) =>
-                                    const _SpotCardImageFallback(),
-                              )
-                            : const _SpotCardImageFallback(),
+                        child: ProductImageSwitcher(
+                          images: product.imagesUrl,
+                          imageBuilder: (final url) => OptimizedCachedImage(
+                            imageUrl: url,
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                            borderRadius: 0,
+                            errorBuilder: (_, __, ___) =>
+                                const _SpotCardImageFallback(),
+                          ),
+                          fallback: const _SpotCardImageFallback(),
+                        ),
                       ),
 
                       // Kategori etiketi (sol üst)

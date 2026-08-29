@@ -11,6 +11,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
+import '../../../../core/widgets/design_system/product_image_switcher.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
@@ -138,8 +139,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: context.sectionPadding.copyWith(
-                          top: 0, bottom: 20),
+                      padding:
+                          context.sectionPadding.copyWith(top: 0, bottom: 20),
                       child: Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1240),
@@ -150,29 +151,30 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: context.sectionPadding.copyWith(
-                          top: 0, bottom: 36),
+                      padding:
+                          context.sectionPadding.copyWith(top: 0, bottom: 36),
                       child: Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1240),
                           child: isDesktop
                               ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildVerticalCategoryRail(),
-                              const SizedBox(width: 28),
-                              Expanded(child: _buildProductContent(
-                                  context, filtered)),
-                            ],
-                          )
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildVerticalCategoryRail(),
+                                    const SizedBox(width: 28),
+                                    Expanded(
+                                        child: _buildProductContent(
+                                            context, filtered)),
+                                  ],
+                                )
                               : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildHorizontalCategoryBar(),
-                              const SizedBox(height: 20),
-                              _buildProductContent(context, filtered),
-                            ],
-                          ),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildHorizontalCategoryBar(),
+                                    const SizedBox(height: 20),
+                                    _buildProductContent(context, filtered),
+                                  ],
+                                ),
                         ),
                       ),
                     ),
@@ -180,8 +182,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: context.sectionPadding.copyWith(
-                            top: 16, bottom: 24),
+                        padding: context.sectionPadding
+                            .copyWith(top: 16, bottom: 24),
                         child: const AdsenseBanner(
                             height: 120, type: AdUnitType.multiplex),
                       ),
@@ -201,8 +203,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ============================================================
   // 1. HERO
   // ============================================================
-  Widget _buildHeroSection(final BuildContext context,
-      final int totalProducts) {
+  Widget _buildHeroSection(
+      final BuildContext context, final int totalProducts) {
     final isDesktop = context.isDesktop;
     final leftContent = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,8 +223,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           child: RichText(
             text: TextSpan(
               style: GoogleFonts.fraunces(
-                fontSize: context.responsive(
-                    mobile: 34, tablet: 44, desktop: 52),
+                fontSize:
+                    context.responsive(mobile: 34, tablet: 44, desktop: 52),
                 height: 1.1,
                 fontWeight: FontWeight.w400,
                 color: const Color(0xFF1E1815),
@@ -232,7 +234,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 const TextSpan(text: "Yaşam Alanınız İçin\n"),
                 TextSpan(
                   text: "Zamansız ",
-                  style: TextStyle(color: AppColors.accentDark,
+                  style: TextStyle(
+                      color: AppColors.accentDark,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w500),
                 ),
@@ -248,7 +251,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             constraints: const BoxConstraints(maxWidth: 480),
             child: Text(
               context.l10n.newCollectionSub,
-              style: TextStyle(fontSize: context.bodySize,
+              style: TextStyle(
+                  fontSize: context.bodySize,
                   color: const Color(0xFF7A6F66),
                   height: 1.6),
             ),
@@ -266,8 +270,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2C241E),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
                   elevation: 0,
@@ -281,8 +285,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF2C241E),
                   side: const BorderSide(color: Color(0xFFE5DFD7), width: 1.4),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
                 ),
@@ -323,13 +327,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   mobile: 260.0, tablet: 340.0, desktop: 400.0),
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) =>
-                  Container(
-                    height: 340,
-                    color: AppColors.surface,
-                    child: Center(child: Icon(Icons.chair_outlined, size: 80,
-                        color: AppColors.accentDark)),
-                  ),
+              errorBuilder: (_, __, ___) => Container(
+                height: 340,
+                color: AppColors.surface,
+                child: Center(
+                    child: Icon(Icons.chair_outlined,
+                        size: 80, color: AppColors.accentDark)),
+              ),
             ),
             Container(
               height: 120,
@@ -350,13 +354,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                     decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
                         shape: BoxShape.circle),
-                    child: Icon(Icons.verified_outlined, size: 18,
-                        color: AppColors.accentDark),
+                    child: Icon(Icons.verified_outlined,
+                        size: 18, color: AppColors.accentDark),
                   ),
                   const SizedBox(width: 10),
                   Text(
                     context.l10n.productTrustBadgeVerified,
-                    style: const TextStyle(color: Colors.white,
+                    style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 13,
                         fontWeight: FontWeight.bold),
                   ),
@@ -371,8 +376,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.7),
-        border: Border(bottom: BorderSide(
-            color: const Color(0xFFEDE8E1).withOpacity(0.7))),
+        border: Border(
+            bottom:
+                BorderSide(color: const Color(0xFFEDE8E1).withOpacity(0.7))),
       ),
       child: Stack(
         clipBehavior: Clip.none,
@@ -393,21 +399,21 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                     const SizedBox(height: 24),
                     isDesktop
                         ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(flex: 6, child: leftContent),
-                        const SizedBox(width: 44),
-                        Expanded(flex: 5, child: heroImage),
-                      ],
-                    )
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(flex: 6, child: leftContent),
+                              const SizedBox(width: 44),
+                              Expanded(flex: 5, child: heroImage),
+                            ],
+                          )
                         : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        heroImage,
-                        const SizedBox(height: 32),
-                        leftContent,
-                      ],
-                    ),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              heroImage,
+                              const SizedBox(height: 32),
+                              leftContent,
+                            ],
+                          ),
                   ],
                 ),
               ),
@@ -424,14 +430,16 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       children: [
         Text(
           value,
-          style: GoogleFonts.fraunces(fontSize: 22,
+          style: GoogleFonts.fraunces(
+              fontSize: 22,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1E1815)),
         ),
         const SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(fontSize: 9.5,
+          style: const TextStyle(
+              fontSize: 9.5,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.8,
               color: Color(0xFF8C827A)),
@@ -484,8 +492,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ============================================================
   // 3. KATEGORİ KEŞFET
   // ============================================================
-  Widget _buildShopByCategorySection(final BuildContext context,
-      final List<Product> allProducts) {
+  Widget _buildShopByCategorySection(
+      final BuildContext context, final List<Product> allProducts) {
     final availableCategories = ProductCategory.values.take(4).toList();
 
     return Padding(
@@ -511,7 +519,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                         const TextSpan(text: "Kategoriye Göre "),
                         TextSpan(
                           text: "Keşfet",
-                          style: TextStyle(color: AppColors.accentDark,
+                          style: TextStyle(
+                              color: AppColors.accentDark,
                               fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -524,12 +533,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                     },
                     child: const Row(
                       children: [
-                        Text("Tümünü Göster", style: TextStyle(fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1E1815))),
+                        Text("Tümünü Göster",
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF1E1815))),
                         SizedBox(width: 4),
-                        Icon(Icons.arrow_forward_rounded, size: 14,
-                            color: Color(0xFF1E1815)),
+                        Icon(Icons.arrow_forward_rounded,
+                            size: 14, color: Color(0xFF1E1815)),
                       ],
                     ),
                   ),
@@ -545,12 +556,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   return Wrap(
                     spacing: 16,
                     runSpacing: 16,
-                    children: List.generate(
-                        availableCategories.length, (index) {
+                    children:
+                        List.generate(availableCategories.length, (index) {
                       final cat = availableCategories[index];
-                      final count = allProducts
-                          .where((p) => p.category == cat)
-                          .length;
+                      final count =
+                          allProducts.where((p) => p.category == cat).length;
                       final imageUrl = _getCategoryImageUrl(cat);
 
                       return _buildVisualCategoryCard(
@@ -640,8 +650,9 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   child: Icon(
                     Icons.arrow_outward_rounded,
                     size: 14,
-                    color: isSelected ? AppColors.accentDark : const Color(
-                        0xFF1E1815),
+                    color: isSelected
+                        ? AppColors.accentDark
+                        : const Color(0xFF1E1815),
                   ),
                 ),
               ),
@@ -673,7 +684,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                           borderRadius: BorderRadius.circular(10)),
                       child: Text(
                         itemCount,
-                        style: const TextStyle(fontSize: 11,
+                        style: const TextStyle(
+                            fontSize: 11,
                             fontWeight: FontWeight.w500,
                             color: Colors.white),
                       ),
@@ -715,7 +727,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             child: TextField(
               controller: _searchController,
               onChanged: (val) => setState(() => _searchQuery = val),
-              style: GoogleFonts.inter(fontSize: 15,
+              style: GoogleFonts.inter(
+                  fontSize: 15,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF2C241E)),
               decoration: InputDecoration(
@@ -733,10 +746,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 _searchController.clear();
                 setState(() => _searchQuery = '');
               },
-              child: const Icon(
-                  Icons.close_rounded, size: 18, color: Color(0xFF8B7D72)),
+              child: const Icon(Icons.close_rounded,
+                  size: 18, color: Color(0xFF8B7D72)),
             ),
-          Container(height: 24,
+          Container(
+              height: 24,
               width: 1,
               color: const Color(0xFFEBE5DE),
               margin: const EdgeInsets.symmetric(horizontal: 12)),
@@ -744,16 +758,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             onTap: () => _openSortSheet(context),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(color: const Color(0xFFF7F4F0),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFF7F4F0),
                   borderRadius: BorderRadius.circular(20)),
               child: Row(
                 children: [
-                  const Icon(Icons.swap_vert_rounded, size: 18,
-                      color: Color(0xFF5D5248)),
+                  const Icon(Icons.swap_vert_rounded,
+                      size: 18, color: Color(0xFF5D5248)),
                   const SizedBox(width: 6),
                   Text(
                     _sortLabel(_selectedSort),
-                    style: GoogleFonts.inter(fontSize: 13,
+                    style: GoogleFonts.inter(
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF3B332B)),
                   ),
@@ -778,7 +794,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         borderRadius: BorderRadius.circular(38),
         border: Border.all(color: const Color(0xFFEFE9E0)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.025),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.025),
               blurRadius: 14,
               offset: const Offset(0, 4))
         ],
@@ -794,16 +811,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           ),
           const SizedBox(height: 12),
           ...ProductCategory.values.map(
-                (cat) =>
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildRailIconItem(
-                    icon: _getCategoryIcon(cat),
-                    label: _getCategoryTitle(cat),
-                    isSelected: _selectedCategory == cat,
-                    onTap: () => setState(() => _selectedCategory = cat),
-                  ),
-                ),
+            (cat) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildRailIconItem(
+                icon: _getCategoryIcon(cat),
+                label: _getCategoryTitle(cat),
+                isSelected: _selectedCategory == cat,
+                onTap: () => setState(() => _selectedCategory = cat),
+              ),
+            ),
           ),
         ],
       ),
@@ -828,7 +844,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             color: isSelected ? const Color(0xFF2C241E) : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Icon(icon, size: 22,
+          child: Icon(icon,
+              size: 22,
               color: isSelected ? Colors.white : const Color(0xFF8C827A)),
         ),
       ),
@@ -848,13 +865,12 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             onTap: () => setState(() => _selectedCategory = null),
           ),
           ...ProductCategory.values.map(
-                (cat) =>
-                _buildMobileCategoryPill(
-                  title: _getCategoryTitle(cat),
-                  icon: _getCategoryIcon(cat),
-                  isSelected: _selectedCategory == cat,
-                  onTap: () => setState(() => _selectedCategory = cat),
-                ),
+            (cat) => _buildMobileCategoryPill(
+              title: _getCategoryTitle(cat),
+              icon: _getCategoryIcon(cat),
+              isSelected: _selectedCategory == cat,
+              onTap: () => setState(() => _selectedCategory = cat),
+            ),
           ),
         ],
       ),
@@ -878,13 +894,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             color: isSelected ? const Color(0xFF2C241E) : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-                color: isSelected ? const Color(0xFF2C241E) : const Color(
-                    0xFFE8E2D9)),
+                color: isSelected
+                    ? const Color(0xFF2C241E)
+                    : const Color(0xFFE8E2D9)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16,
+              Icon(icon,
+                  size: 16,
                   color: isSelected ? Colors.white : const Color(0xFF7A6F66)),
               const SizedBox(width: 6),
               Text(
@@ -910,9 +928,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
 
     final isDesktop = context.isDesktop;
     final crossAxisCount = isDesktop ? 3 : (context.isTablet ? 2 : 2);
-    final childAspectRatio = isDesktop ? 0.72 : (context.isTablet
-        ? 0.75
-        : 0.70);
+    final childAspectRatio =
+        isDesktop ? 0.72 : (context.isTablet ? 0.75 : 0.70);
 
     return GridView.builder(
       shrinkWrap: true,
@@ -966,17 +983,19 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: product.imagesUrl.isNotEmpty
-                        ? OptimizedCachedImage(
-                            imageUrl: product.imagesUrl.first,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                            borderRadius: 0,
-                            errorBuilder: (_, __, ___) =>
-                                const _NewCardImageFallback(),
-                          )
-                        : const _NewCardImageFallback(),
+                    child: ProductImageSwitcher(
+                      images: product.imagesUrl,
+                      imageBuilder: (final url) => OptimizedCachedImage(
+                        imageUrl: url,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                        borderRadius: 0,
+                        errorBuilder: (_, __, ___) =>
+                            const _NewCardImageFallback(),
+                      ),
+                      fallback: const _NewCardImageFallback(),
+                    ),
                   ),
                   // Kategori etiketi (sol üst)
                   Positioned(
@@ -1008,8 +1027,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
                           color: Colors.white, shape: BoxShape.circle),
-                      child: const Icon(Icons.favorite_border, size: 18,
-                          color: Color(0xFF3D3630)),
+                      child: const Icon(Icons.favorite_border,
+                          size: 18, color: Color(0xFF3D3630)),
                     ),
                   ),
                   // Fiyat etiketi (görsel alt sağ)
@@ -1095,29 +1114,33 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                                 color: NewCollectionPalette.badgeGreenBg,
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
-                                    color: NewCollectionPalette.badgeGreenBorder),
+                                    color:
+                                        NewCollectionPalette.badgeGreenBorder),
                               ),
                               child: Text(
                                 "SIFIR",
-                                style: TextStyle(fontSize: 9,
+                                style: TextStyle(
+                                    fontSize: 9,
                                     fontWeight: FontWeight.w700,
                                     color: NewCollectionPalette.badgeGreen,
                                     letterSpacing: 0.5),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Container(width: 3,
+                            Container(
+                                width: 3,
                                 height: 3,
                                 decoration: const BoxDecoration(
                                     color: Color(0xFFD1D5DB),
                                     shape: BoxShape.circle)),
                             const SizedBox(width: 8),
-                            const Icon(Icons.check_circle, size: 12,
-                                color: Color(0xFF16A34A)),
+                            const Icon(Icons.check_circle,
+                                size: 12, color: Color(0xFF16A34A)),
                             const SizedBox(width: 4),
                             const Text(
                               "Stokta",
-                              style: TextStyle(fontSize: 11,
+                              style: TextStyle(
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xFF16A34A)),
                             ),
@@ -1128,12 +1151,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                         // 3. SATIR: Teslimat + Buton
                         Row(
                           children: [
-                            const Icon(Icons.local_shipping_outlined, size: 14,
-                                color: Color(0xFF6B7280)),
+                            const Icon(Icons.local_shipping_outlined,
+                                size: 14, color: Color(0xFF6B7280)),
                             const SizedBox(width: 6),
                             const Text(
                               "Ücretsiz teslimat",
-                              style: TextStyle(fontSize: 11,
+                              style: TextStyle(
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                   color: Color(0xFF6B7280)),
                             ),
@@ -1150,13 +1174,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                                 children: [
                                   Text(
                                     "İncele",
-                                    style: TextStyle(color: Colors.white,
+                                    style: TextStyle(
+                                        color: Colors.white,
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600),
                                   ),
                                   SizedBox(width: 4),
-                                  Icon(Icons.arrow_forward_rounded, size: 12,
-                                      color: Colors.white),
+                                  Icon(Icons.arrow_forward_rounded,
+                                      size: 12, color: Colors.white),
                                 ],
                               ),
                             ),
@@ -1185,12 +1210,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       ),
       child: Column(
         children: [
-          const Icon(
-              Icons.search_off_rounded, size: 48, color: Color(0xFFA69C92)),
+          const Icon(Icons.search_off_rounded,
+              size: 48, color: Color(0xFFA69C92)),
           const SizedBox(height: 16),
           Text(
             "Aradığınız Kriterde Mobilya Bulunamadı",
-            style: GoogleFonts.fraunces(fontSize: 20,
+            style: GoogleFonts.fraunces(
+                fontSize: 20,
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF1E1815)),
           ),
@@ -1206,23 +1232,22 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     );
   }
 
-  Widget _buildErrorState(BuildContext context, String error) =>
-      Center(
+  Widget _buildErrorState(BuildContext context, String error) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
             const SizedBox(height: 14),
-            Text(context.l10n.errorOccurred, style: TextStyle(
-                fontSize: context.h4Size, fontWeight: FontWeight.bold)),
+            Text(context.l10n.errorOccurred,
+                style: TextStyle(
+                    fontSize: context.h4Size, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
             Text(error, style: TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       );
 
-  Widget _buildBreadcrumb(final BuildContext context) =>
-      Row(
+  Widget _buildBreadcrumb(final BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.home_outlined, size: 13, color: Color(0xFF8C827A)),
@@ -1230,12 +1255,14 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           Text(context.l10n.breadcrumbHome,
               style: const TextStyle(fontSize: 12, color: Color(0xFF8C827A))),
           const SizedBox(width: 6),
-          const Icon(
-              Icons.chevron_right_rounded, size: 14, color: Color(0xFF8C827A)),
+          const Icon(Icons.chevron_right_rounded,
+              size: 14, color: Color(0xFF8C827A)),
           const SizedBox(width: 6),
-          Text(context.l10n.newCollection, style: const TextStyle(fontSize: 12,
-              color: Color(0xFF2C241E),
-              fontWeight: FontWeight.w700)),
+          Text(context.l10n.newCollection,
+              style: const TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF2C241E),
+                  fontWeight: FontWeight.w700)),
         ],
       );
 
@@ -1245,14 +1272,11 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       filtered =
           filtered.where((final p) => p.category == _selectedCategory).toList();
     }
-    if (_searchQuery
-        .trim()
-        .isNotEmpty) {
+    if (_searchQuery.trim().isNotEmpty) {
       final query = _searchQuery.trim().toLowerCase();
-      filtered =
-          filtered
-              .where((final p) => p.name.toLowerCase().contains(query))
-              .toList();
+      filtered = filtered
+          .where((final p) => p.name.toLowerCase().contains(query))
+          .toList();
     }
     switch (_selectedSort) {
       case _SortMode.priceLowHigh:
@@ -1273,57 +1297,59 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (final sheetContext) =>
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(color: const Color(0xFFE8E2D9),
-                          borderRadius: BorderRadius.circular(4)),
+      builder: (final sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFE8E2D9),
+                      borderRadius: BorderRadius.circular(4)),
+                ),
+              ),
+              Text(
+                "Sıralama Seçenekleri",
+                style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1E1815)),
+              ),
+              const SizedBox(height: 12),
+              ..._SortMode.values.map((mode) {
+                final selected = mode == _selectedSort;
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    _sortLabel(mode),
+                    style: GoogleFonts.inter(
+                      fontSize: 14.5,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: selected
+                          ? const Color(0xFF2C241E)
+                          : const Color(0xFF7A6F66),
                     ),
                   ),
-                  Text(
-                    "Sıralama Seçenekleri",
-                    style: GoogleFonts.inter(fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1E1815)),
-                  ),
-                  const SizedBox(height: 12),
-                  ..._SortMode.values.map((mode) {
-                    final selected = mode == _selectedSort;
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        _sortLabel(mode),
-                        style: GoogleFonts.inter(
-                          fontSize: 14.5,
-                          fontWeight: selected ? FontWeight.w700 : FontWeight
-                              .w500,
-                          color: selected
-                              ? const Color(0xFF2C241E)
-                              : const Color(0xFF7A6F66),
-                        ),
-                      ),
-                      trailing: selected ? const Icon(
-                          Icons.check_rounded, color: Color(0xFF2C241E)) : null,
-                      onTap: () {
-                        setState(() => _selectedSort = mode);
-                        Navigator.pop(sheetContext);
-                      },
-                    );
-                  }),
-                ],
-              ),
-            ),
+                  trailing: selected
+                      ? const Icon(Icons.check_rounded,
+                          color: Color(0xFF2C241E))
+                      : null,
+                  onTap: () {
+                    setState(() => _selectedSort = mode);
+                    Navigator.pop(sheetContext);
+                  },
+                );
+              }),
+            ],
           ),
+        ),
+      ),
     );
   }
 
