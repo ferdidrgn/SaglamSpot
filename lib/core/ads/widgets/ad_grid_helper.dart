@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import '../../util/platform_checker.dart';
-import 'native_ad_product_card.dart';
-import 'web_ad_product_card.dart';
+// NativeAdCard artık burada değil — platforma göre koşullu dışa aktarılan
+// ayrı bir dosyada (bkz. native_ad_card.dart). Bu re-export, mevcut
+// `import 'ad_grid_helper.dart';` kullanan tüm çağıranların değişmeden
+// çalışmasını sağlıyor.
+export 'native_ad_card.dart';
 
 /// Ürün ızgaralarına reklam serpiştirme kuralı, tüm sayfalarda tek yerden:
 /// liste kısaysa (aza yakınsa) her 5 üründe bir, uzunsa her 10 üründe bir
@@ -31,18 +32,4 @@ bool isAdSlot(final int index, final int itemCount) {
 int realIndexForAdGrid(final int index, final int itemCount) {
   final freq = adFrequencyFor(itemCount);
   return index - (index ~/ (freq + 1));
-}
-
-/// Platforma uygun, ürün kartıyla aynı çerçeveye sahip "doğal" reklam
-/// kartı — web'de AdSense, mobil uygulamada AdMob native. Reklam
-/// yüklenemezse (boş slot id, henüz yüklenmedi vb.) ilgili kart zaten
-/// kendi içinde boş widget döner; burada platforma göre doğru olanı
-/// seçmek yeterli.
-class NativeAdCard extends StatelessWidget {
-  const NativeAdCard({super.key});
-
-  @override
-  Widget build(final BuildContext context) => PlatformChecker.isWeb
-      ? const WebAdProductCard()
-      : const NativeAdProductCard();
 }

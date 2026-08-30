@@ -11,11 +11,15 @@ import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
 import '../../features/products/presentation/pages/favorites_page.dart';
-import '../../features/home/presentation/page/home_page_mobile.dart' as admin;
+import '../../features/home/presentation/page/home_page_mobile.dart'
+    deferred as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/info/presentation/pages/about_page.dart';
-import '../../features/legal/presentation/pages/privacy_policy_page.dart';
-import '../../features/legal/presentation/pages/terms_page.dart';
+import '../../features/legal/presentation/pages/privacy_policy_page.dart'
+    deferred as legal_privacy;
+import '../../features/legal/presentation/pages/terms_page.dart'
+    deferred as legal_terms;
+import '../widgets/deferred_widget.dart';
 import '../../features/products/presentation/pages/new_products_page.dart';
 import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
@@ -37,7 +41,8 @@ mixin DeepLinkSecurityEngine {
       final String rawId, final String signature) {
     if (rawId.isEmpty || signature.isEmpty) return false;
     try {
-      final String calculatedSignature = FurnitureShareService.signProductId(rawId);
+      final String calculatedSignature =
+          FurnitureShareService.signProductId(rawId);
       return _fixedTimeStringEquals(calculatedSignature, signature);
     } catch (_) {
       return false;
@@ -278,7 +283,13 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         name: 'privacy',
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const PrivacyPolicyPage(),
+          // Yasal metin sayfaları ağır ve nadiren ziyaret edilir — web'de
+          // ana pakete değil, ayrı bir parçaya (chunk) alınır (bkz.
+          // DeferredWidget).
+          child: DeferredWidget(
+            libraryLoader: legal_privacy.loadLibrary,
+            builder: (final context) => legal_privacy.PrivacyPolicyPage(),
+          ),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),
@@ -288,7 +299,10 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         name: 'terms',
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const TermsPage(),
+          child: DeferredWidget(
+            libraryLoader: legal_terms.loadLibrary,
+            builder: (final context) => legal_terms.TermsPage(),
+          ),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),
@@ -298,7 +312,13 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
         name: 'admin',
         pageBuilder: (final context, final state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const admin.HomePage(),
+          // Yönetici paneli (ürün ekleme/düzenleme formları dahil) sıradan
+          // ziyaretçilerin asla açmadığı, ağır bir bölüm — ayrı bir
+          // parçaya (chunk) alınır.
+          child: DeferredWidget(
+            libraryLoader: admin.loadLibrary,
+            builder: (final context) => admin.HomePage(),
+          ),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),

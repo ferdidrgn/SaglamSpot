@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/common/extentions/product_category_ex.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
-import '../../../../core/ads/widgets/ad_native_widget.dart';
+import '../../../../core/ads/widgets/platform_native_ad_slot.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/widgets/product_list_card.dart';
 import '../../../../core/widgets/view_mode_toggle.dart';
@@ -90,99 +90,101 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       body: Stack(
         children: [
           SafeArea(
-        child: Column(
-          children: [
-            _buildTopBar(context, searchQuery),
-            if (!showSidebar) _buildCategoryStrip(currentFilters),
-            Divider(height: 1, color: AppColors.border),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (showSidebar) _buildSidebar(context, currentFilters),
-                  if (showSidebar)
-                    VerticalDivider(width: 1, color: AppColors.border),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        CustomScrollView(
-                          controller: _scrollController,
-                          physics: const BouncingScrollPhysics(),
-                          slivers: [
-                            _buildActiveFiltersSliver(
-                                currentFilters, showSidebar),
-                            searchResultsAsync.when(
-                              loading: () => const SliverToBoxAdapter(
-                                  child: SizedBox.shrink()),
-                              error: (final _, final __) =>
-                                  const SliverToBoxAdapter(
+            child: Column(
+              children: [
+                _buildTopBar(context, searchQuery),
+                if (!showSidebar) _buildCategoryStrip(currentFilters),
+                Divider(height: 1, color: AppColors.border),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (showSidebar) _buildSidebar(context, currentFilters),
+                      if (showSidebar)
+                        VerticalDivider(width: 1, color: AppColors.border),
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            CustomScrollView(
+                              controller: _scrollController,
+                              physics: const BouncingScrollPhysics(),
+                              slivers: [
+                                _buildActiveFiltersSliver(
+                                    currentFilters, showSidebar),
+                                searchResultsAsync.when(
+                                  loading: () => const SliverToBoxAdapter(
                                       child: SizedBox.shrink()),
-                              data: (final products) => _buildResultsHeader(
-                                  context, products.length, searchQuery),
-                            ),
-                            searchResultsAsync.when(
-                              loading: () => const SliverFillRemaining(
-                                  child: FullPageShimmer()),
-                              error: (final err, final _) =>
-                                  SliverFillRemaining(
-                                child: _buildErrorState(err.toString()),
-                              ),
-                              data: (final products) {
-                                if (products.isEmpty) return _buildEmptyState();
-                                return SliverPadding(
-                                  padding: EdgeInsets.only(
-                                    bottom: context.isMobile ? 100 : 60,
-                                    left: context.responsive(
-                                        mobile: 0.0, desktop: 8.0),
-                                    right: context.responsive(
-                                        mobile: 0.0, desktop: 8.0),
-                                  ),
-                                  sliver: SliverMainAxisGroup(
-                                    slivers: _buildProductGridsWithAds(
-                                        context, products),
-                                  ),
-                                );
-                              },
-                            ),
-                            if ((searchResultsAsync.asData?.value ?? const [])
-                                .isNotEmpty)
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(
-                                    context.responsive(
-                                        mobile: 16.0,
-                                        tablet: 24.0,
-                                        desktop: 32.0),
-                                    24,
-                                    context.responsive(
-                                        mobile: 16.0,
-                                        tablet: 24.0,
-                                        desktop: 32.0),
-                                    40,
-                                  ),
-                                  child: const Column(
-                                    children: [
-                                      AdsenseBanner(
-                                          height: 90,
-                                          type: AdUnitType.multiplex),
-                                      AdNativeWidget(),
-                                    ],
-                                  ),
+                                  error: (final _, final __) =>
+                                      const SliverToBoxAdapter(
+                                          child: SizedBox.shrink()),
+                                  data: (final products) => _buildResultsHeader(
+                                      context, products.length, searchQuery),
                                 ),
-                              ),
-                            const SliverToBoxAdapter(
-                                child: SizedBox(height: 80)),
+                                searchResultsAsync.when(
+                                  loading: () => const SliverFillRemaining(
+                                      child: FullPageShimmer()),
+                                  error: (final err, final _) =>
+                                      SliverFillRemaining(
+                                    child: _buildErrorState(err.toString()),
+                                  ),
+                                  data: (final products) {
+                                    if (products.isEmpty)
+                                      return _buildEmptyState();
+                                    return SliverPadding(
+                                      padding: EdgeInsets.only(
+                                        bottom: context.isMobile ? 100 : 60,
+                                        left: context.responsive(
+                                            mobile: 0.0, desktop: 8.0),
+                                        right: context.responsive(
+                                            mobile: 0.0, desktop: 8.0),
+                                      ),
+                                      sliver: SliverMainAxisGroup(
+                                        slivers: _buildProductGridsWithAds(
+                                            context, products),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                if ((searchResultsAsync.asData?.value ??
+                                        const [])
+                                    .isNotEmpty)
+                                  SliverToBoxAdapter(
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                        context.responsive(
+                                            mobile: 16.0,
+                                            tablet: 24.0,
+                                            desktop: 32.0),
+                                        24,
+                                        context.responsive(
+                                            mobile: 16.0,
+                                            tablet: 24.0,
+                                            desktop: 32.0),
+                                        40,
+                                      ),
+                                      child: const Column(
+                                        children: [
+                                          AdsenseBanner(
+                                              height: 90,
+                                              type: AdUnitType.multiplex),
+                                          PlatformNativeAdSlot(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                const SliverToBoxAdapter(
+                                    child: SizedBox(height: 80)),
+                              ],
+                            ),
+                            ScrollUpButton(scrollController: _scrollController),
                           ],
                         ),
-                        ScrollUpButton(scrollController: _scrollController),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
           ),
         ],
       ),
@@ -214,9 +216,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             child: GlassSurface(
               height: context.responsive(mobile: 46.0, desktop: 50.0),
               borderRadius: 14,
-              borderColor: _showSearchFocus
-                  ? AppColors.textSecondary
-                  : null,
+              borderColor: _showSearchFocus ? AppColors.textSecondary : null,
               borderWidth: _showSearchFocus ? 1.4 : null,
               chromaticEdge: _showSearchFocus,
               child: TextField(
