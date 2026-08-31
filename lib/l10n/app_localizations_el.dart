@@ -1833,4 +1833,24 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Τιμή: Φθίνουσα';
+
+  @override
+  String get seoSssTitle => 'Συχνές Ερωτήσεις | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Απαντήσεις σε όλες τις ερωτήσεις σας για αγορά, παράδοση και εγγύηση.';
+
+  @override
+  String get seoSearchTitle => 'Αναζήτηση Προϊόντων | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Βρείτε τα έπιπλα που ψάχνετε φιλτράροντας ανά κατηγορία, τιμή και κατάσταση.';
+
+  @override
+  String get seoPrivacyTitle => 'Πολιτική Απορρήτου | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Όροι Χρήσης | Sağlam Spot';
 }

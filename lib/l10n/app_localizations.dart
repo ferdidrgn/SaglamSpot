@@ -3427,6 +3427,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Fiyat: Yüksekten Düşüğe'**
   String get sortByPriceHighLow;
+
+  /// No description provided for @seoSssTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıkça Sorulan Sorular | Sağlam Spot'**
+  String get seoSssTitle;
+
+  /// No description provided for @seoSssDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobilya alım satımı, teslimat ve garanti süreçleriyle ilgili tüm sorularınızın yanıtları.'**
+  String get seoSssDesc;
+
+  /// No description provided for @seoSearchTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Ara | Sağlam Spot'**
+  String get seoSearchTitle;
+
+  /// No description provided for @seoSearchDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aradığınız mobilyayı kategori, fiyat ve duruma göre filtreleyerek bulun.'**
+  String get seoSearchDesc;
+
+  /// No description provided for @seoPrivacyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik Politikası | Sağlam Spot'**
+  String get seoPrivacyTitle;
+
+  /// No description provided for @seoTermsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Şartları | Sağlam Spot'**
+  String get seoTermsTitle;
 }
 
 class _AppLocalizationsDelegate

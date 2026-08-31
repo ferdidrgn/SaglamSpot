@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "Γεια σας, θα ήθελα πληροφορίες για τα έπιπλα.",
   "spotHeroPageTitle": "Μεταχειρισμένα & Spot",
   "sortByPriceLowHigh": "Τιμή: Αύξουσα",
-  "sortByPriceHighLow": "Τιμή: Φθίνουσα"
+  "sortByPriceHighLow": "Τιμή: Φθίνουσα",
+  "seoSssTitle": "Συχνές Ερωτήσεις | Sağlam Spot",
+  "seoSssDesc": "Απαντήσεις σε όλες τις ερωτήσεις σας για αγορά, παράδοση και εγγύηση.",
+  "seoSearchTitle": "Αναζήτηση Προϊόντων | Sağlam Spot",
+  "seoSearchDesc": "Βρείτε τα έπιπλα που ψάχνετε φιλτράροντας ανά κατηγορία, τιμή και κατάσταση.",
+  "seoPrivacyTitle": "Πολιτική Απορρήτου | Sağlam Spot",
+  "seoTermsTitle": "Όροι Χρήσης | Sağlam Spot"
 }

@@ -1816,4 +1816,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Fiyat: Yüksekten Düşüğe';
+
+  @override
+  String get seoSssTitle => 'Sıkça Sorulan Sorular | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Mobilya alım satımı, teslimat ve garanti süreçleriyle ilgili tüm sorularınızın yanıtları.';
+
+  @override
+  String get seoSearchTitle => 'Ürün Ara | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Aradığınız mobilyayı kategori, fiyat ve duruma göre filtreleyerek bulun.';
+
+  @override
+  String get seoPrivacyTitle => 'Gizlilik Politikası | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Kullanım Şartları | Sağlam Spot';
 }

@@ -24,13 +24,13 @@
  * yükler, sadece "stüdyo" versiyonunu atlar.
  */
 
-const {onCall, HttpsError} = require("firebase-functions/v2/https");
+const {onCall, onRequest, HttpsError} = require("firebase-functions/v2/https");
 const {onDocumentDeleted} = require("firebase-functions/v2/firestore");
 const {defineSecret} = require("firebase-functions/params");
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore, FieldValue} = require("firebase-admin/firestore");
 const {getStorage} = require("firebase-admin/storage");
-const {randomUUID} = require("crypto");
+const {randomUUID, createHmac} = require("crypto");
 
 initializeApp();
 
@@ -178,4 +178,99 @@ exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event
     if (!path) return;
     await bucket.file(path).delete().catch(() => {});
   }));
+});
+
+/**
+ * Dinamik ÜRÜN sitemap'i — web/sitemap.xml (statik, her zaman çalışan,
+ * ana sayfaları listeleyen dosya) ile ÇAKIŞMAZ, onu TAMAMLAR. Ayrı bir
+ * yolda (/sitemap-products.xml) yayınlanır ki fonksiyon deploy edilmese
+ * veya hata verse bile ana sitemap.xml her zaman geçerli kalsın.
+ *
+ * ÖNEMLİ: Ürün linkleri, Flutter tarafındaki FurnitureShareService ile
+ * BİREBİR AYNI imzalama şemasını kullanır (bkz.
+ * lib/core/services/deeplink/deeplink_service.dart ve
+ * lib/core/common/extentions/reg_exp_extentions.dart). Buradaki
+ * DOMAIN/HMAC_SECRET/toSlug() farklılaşırsa, üretilen linkler uygulamanın
+ * kendi DeepLinkSecurityEngine.verifySignedIdentifier kontrolünü geçemez
+ * (mobilde "GÜVENLİK DOĞRULAMASI BAŞARISIZ" ekranı gösterilir).
+ *
+ * firebase.json → hosting.rewrites içinde "/sitemap-products.xml" bu
+ * fonksiyona yönlendirilir (SPA catch-all rewrite'ından ÖNCE tanımlı).
+ * Devreye girmesi için `firebase deploy --only functions` gerekir —
+ * deploy edilmeden bu URL 404 döner ama site/SEO'nun geri kalanı bundan
+ * ETKİLENMEZ.
+ */
+const SITEMAP_DOMAIN = "https://saglamspotcu.web.app";
+const SITEMAP_HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
+
+function signProductId(id) {
+  return createHmac("sha256", SITEMAP_HMAC_SECRET).update(id, "utf8").digest("hex");
+}
+
+// lib/core/common/extentions/reg_exp_extentions.dart'taki toSlug() ile
+// AYNI sırada, AYNI karakter eşleştirmeleriyle çalışmalı.
+function toSlug(name) {
+  return (name || "")
+      .toLowerCase()
+      .replace(/ /g, "-")
+      .replace(/ş/g, "s")
+      .replace(/ı/g, "i")
+      .replace(/ç/g, "c")
+      .replace(/ö/g, "o")
+      .replace(/ü/g, "u")
+      .replace(/ğ/g, "g")
+      .replace(/[^a-z0-9-]/g, "");
+}
+
+function escapeXml(value) {
+  return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+}
+
+exports.sitemap = onRequest({cors: true, memory: "256MiB"}, async (req, res) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const entries = [];
+
+  try {
+    const db = getFirestore();
+    const snap = await db.collection("Product")
+        .where("isSold", "==", false)
+        .limit(500)
+        .get();
+
+    snap.forEach((doc) => {
+      const data = doc.data();
+      const id = data._id || doc.id;
+      const name = data.name;
+      if (!id || !name) return;
+
+      const slug = toSlug(name);
+      const signature = signProductId(id);
+      const loc = `${SITEMAP_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${signature}`;
+      const lastmod = doc.updateTime ?
+        doc.updateTime.toDate().toISOString().slice(0, 10) :
+        today;
+
+      entries.push({loc, lastmod, changefreq: "weekly", priority: "0.7"});
+    });
+  } catch (err) {
+    console.error("Sitemap: ürün sorgusu başarısız oldu, boş bir sitemap döndürülüyor.", err);
+  }
+
+  const body = entries.map((e) => `  <url>
+    <loc>${escapeXml(e.loc)}</loc>
+    <lastmod>${e.lastmod}</lastmod>
+    <changefreq>${e.changefreq}</changefreq>
+    <priority>${e.priority}</priority>
+  </url>`).join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+
+  res.set("Content-Type", "application/xml; charset=utf-8");
+  res.set("Cache-Control", "public, max-age=3600");
+  res.status(200).send(xml);
 });

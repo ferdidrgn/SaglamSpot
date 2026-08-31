@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "Salom, mebel haqida ma'lumot olmoqchiman.",
   "spotHeroPageTitle": "Ikkinchi qo'l va Spot",
   "sortByPriceLowHigh": "Narx: arzondan qimmatga",
-  "sortByPriceHighLow": "Narx: qimmatdan arzonga"
+  "sortByPriceHighLow": "Narx: qimmatdan arzonga",
+  "seoSssTitle": "Ko'p so'raladigan savollar | Sağlam Spot",
+  "seoSssDesc": "Xarid, yetkazib berish va kafolat haqidagi barcha savollaringizga javoblar.",
+  "seoSearchTitle": "Mahsulot qidirish | Sağlam Spot",
+  "seoSearchDesc": "Kategoriya, narx va holatga qarab filtrlab kerakli mebelni toping.",
+  "seoPrivacyTitle": "Maxfiylik siyosati | Sağlam Spot",
+  "seoTermsTitle": "Foydalanish shartlari | Sağlam Spot"
 }

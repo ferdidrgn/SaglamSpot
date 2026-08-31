@@ -1,4 +1,5 @@
-import 'dart:html' as html; // Sadece web ortamında yükleneceği kesinleştiği için artık güvenlidir
+import 'dart:html'
+    as html; // Sadece web ortamında yükleneceği kesinleştiği için artık güvenlidir
 import 'package:flutter/foundation.dart';
 
 abstract final class SeoServiceImplementation {
@@ -16,7 +17,8 @@ abstract final class SeoServiceImplementation {
       if (description != null) {
         _executeMetaEnjection('name', 'description', description);
       }
-      _executeMetaEnjection('name', 'keywords', 'sağlam spot, modern mobilya, ikinci el mobilya, lüks tasarım, koltuk takımı');
+      _executeMetaEnjection('name', 'keywords',
+          'sağlam spot, modern mobilya, ikinci el mobilya, lüks tasarım, koltuk takımı');
 
       // 3. OpenGraph Protokol Verileri (Safari ve Sosyal Medya Paylaşım Botları İçin)
       _executeMetaEnjection('property', 'og:title', title);
@@ -24,13 +26,12 @@ abstract final class SeoServiceImplementation {
         _executeMetaEnjection('property', 'og:description', description);
       }
 
-      final String safeUrl = currentUrl ?? 'https://saglamspot.com/';
+      final String safeUrl = currentUrl ?? 'https://saglamspotcu.web.app/';
       _executeMetaEnjection('property', 'og:url', safeUrl);
       _executeMetaEnjection('property', 'og:type', 'website');
 
       // 4. Yinelenen içerik (Duplicate Content) hatasını engellemek için Canonical Link güncellemesi
       _injectCanonicalLink(safeUrl);
-
     } catch (e) {
       debugPrint('⚠️ Web SEO DOM Enjeksiyon Hatası: $e');
     }
@@ -48,8 +49,10 @@ abstract final class SeoServiceImplementation {
     }
   }
 
-  static void _executeMetaEnjection(final String type, final String value, final String content) {
-    final html.Element? existingTag = html.document.head?.querySelector('meta[$type="$value"]');
+  static void _executeMetaEnjection(
+      final String type, final String value, final String content) {
+    final html.Element? existingTag =
+        html.document.head?.querySelector('meta[$type="$value"]');
     if (existingTag != null) {
       existingTag.setAttribute('content', content);
     } else {
@@ -61,7 +64,8 @@ abstract final class SeoServiceImplementation {
   }
 
   static void _injectCanonicalLink(final String url) {
-    final html.Element? existingLink = html.document.head?.querySelector('link[rel="canonical"]');
+    final html.Element? existingLink =
+        html.document.head?.querySelector('link[rel="canonical"]');
     if (existingLink != null) {
       existingLink.setAttribute('href', url);
     } else {

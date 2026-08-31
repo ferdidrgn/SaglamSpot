@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "Здравствуйте, хочу узнать о мебели.",
   "spotHeroPageTitle": "Секонд-хенд и спот",
   "sortByPriceLowHigh": "Цена: по возрастанию",
-  "sortByPriceHighLow": "Цена: по убыванию"
+  "sortByPriceHighLow": "Цена: по убыванию",
+  "seoSssTitle": "Частые вопросы | Sağlam Spot",
+  "seoSssDesc": "Ответы на все вопросы о покупке, доставке и гарантии.",
+  "seoSearchTitle": "Поиск товаров | Sağlam Spot",
+  "seoSearchDesc": "Найдите нужную мебель, отфильтровав по категории, цене и состоянию.",
+  "seoPrivacyTitle": "Политика конфиденциальности | Sağlam Spot",
+  "seoTermsTitle": "Условия использования | Sağlam Spot"
 }

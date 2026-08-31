@@ -1,47 +1,38 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'wrapper/seo_service.dart';
+import 'seo_routes.dart';
 
+/// Her sayfa geçişinde (bkz. app_router.dart'ın `observers:` listesi)
+/// SeoRoutes.update()'i tetikler — sekme başlığı, meta açıklaması ve
+/// canonical/OpenGraph URL'i o anki rotaya göre güncellenir.
+///
+/// Yalnızca web'de anlamlı (SeoService zaten mobilde no-op), bu yüzden
+/// diğer platformlarda hiçbir şey yapmaz.
 class SeoRouteObserver extends NavigatorObserver {
   @override
-  void didPush(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+  void didPush(
+      final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
-    _evaluateSEOData(route);
+    _update(route);
   }
 
   @override
   void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
-    if (previousRoute != null)
-      _evaluateSEOData(previousRoute);
+    if (previousRoute != null) _update(previousRoute);
   }
 
-  void _evaluateSEOData(final Route<dynamic> route) {
-    final String? currentRouteName = route.settings.name;
+  @override
+  void didReplace(
+      {final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    if (newRoute != null) _update(newRoute);
+  }
 
-    switch (currentRouteName) {
-      case 'home':
-        SeoService.updateDocumentHead(
-          title: 'Sağlam Spot | Modern Mobilya ve Lüks Yaşam Alanları',
-          description: 'Sağlam Spot ile evinizde rafine çizgiler oluşturun. İkinci el ve modern mobilyada lider tasarım showroomu.',
-          currentUrl: 'https://saglamspot.com/',
-        );
-        break;
-      case 'new-products':
-        SeoService.updateDocumentHead(
-          title: 'Yeni Gelenler | Sağlam Spot Editoryal Koleksiyonu',
-          description: 'En son eklenen mimari mobilya tasarımlarını ve spot lüks koleksiyon ürünlerini inceleyin.',
-          currentUrl: 'https://saglamspot.com/new',
-        );
-        break;
-      case 'spot-products':
-        SeoService.updateDocumentHead(
-          title: 'Spot Mobilya Vitrini | Sağlam Spot Avantajları',
-          description: 'Kalite ve minimalist estetiği bir arada sunan kurumsal spot mobilya listesi.',
-          currentUrl: 'https://saglamspot.com/spot',
-        );
-        break;
-      default:
-        break;
-    }
+  void _update(final Route<dynamic> route) {
+    if (!kIsWeb) return;
+    final context = navigator?.context;
+    if (context == null) return;
+    SeoRoutes.update(context, route.settings.name);
   }
 }

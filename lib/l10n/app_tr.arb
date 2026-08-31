@@ -677,5 +677,11 @@
   "defaultWhatsappGreeting": "Merhaba, mobilyalar hakkında bilgi almak istiyorum.",
   "spotHeroPageTitle": "İkinci El & Spot",
   "sortByPriceLowHigh": "Fiyat: Düşükten Yükseğe",
-  "sortByPriceHighLow": "Fiyat: Yüksekten Düşüğe"
+  "sortByPriceHighLow": "Fiyat: Yüksekten Düşüğe",
+  "seoSssTitle": "Sıkça Sorulan Sorular | Sağlam Spot",
+  "seoSssDesc": "Mobilya alım satımı, teslimat ve garanti süreçleriyle ilgili tüm sorularınızın yanıtları.",
+  "seoSearchTitle": "Ürün Ara | Sağlam Spot",
+  "seoSearchDesc": "Aradığınız mobilyayı kategori, fiyat ve duruma göre filtreleyerek bulun.",
+  "seoPrivacyTitle": "Gizlilik Politikası | Sağlam Spot",
+  "seoTermsTitle": "Kullanım Şartları | Sağlam Spot"
 }

@@ -1802,4 +1802,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'السعر: من الأعلى إلى الأقل';
+
+  @override
+  String get seoSssTitle => 'الأسئلة الشائعة | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'إجابات على جميع أسئلتك حول الشراء والتوصيل والضمان.';
+
+  @override
+  String get seoSearchTitle => 'ابحث عن المنتجات | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'اعثر على الأثاث الذي تبحث عنه بالتصفية حسب الفئة والسعر والحالة.';
+
+  @override
+  String get seoPrivacyTitle => 'سياسة الخصوصية | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'شروط الخدمة | Sağlam Spot';
 }

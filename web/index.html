@@ -6,6 +6,13 @@
 
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="auwiqgjhUHUDIchgyzDfclFcgXn-B7MaMIl3fNXWphE"/>
+    <!-- Yandex Webmaster ve Bing Webmaster Tools doğrulama kodları — bunlar
+         SAHTE/YER TUTUCU değerlerdir. Gerçek kodlar Yandex Webmaster
+         (webmaster.yandex.com) ve Bing Webmaster Tools (bing.com/webmasters)
+         hesaplarından alınıp buraya yazılmadan bu iki arama motoru site
+         sahipliğini doğrulayamaz. -->
+    <meta name="yandex-verification" content="YANDEX_WEBMASTER_KODUNUZU_BURAYA_YAZIN"/>
+    <meta name="msvalidate.01" content="BING_WEBMASTER_KODUNUZU_BURAYA_YAZIN"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 
@@ -58,6 +65,52 @@
                 "SaglamSpot"
             ],
             "url": "https://saglamspotcu.web.app"
+        }
+    </script>
+
+    <!-- Google/Yandex/Bing için gerçek mağaza kaydı: adres, telefon, konum ve
+         çalışma saatleri (bkz. lib/core/util/comminucation_actions.dart —
+         uygulama içindeki değerlerle BİREBİR aynı tutulmalı). -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FurnitureStore",
+            "name": "Sağlam Spot",
+            "image": "https://saglamspotcu.web.app/assets/og_default.png",
+            "url": "https://saglamspotcu.web.app",
+            "telephone": "+905392019961",
+            "email": "info@saglamspot.com",
+            "priceRange": "₺₺",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "İçerenköy Mahallesi, Buket Sokak No:6",
+                "addressLocality": "Ataşehir",
+                "addressRegion": "İstanbul",
+                "addressCountry": "TR"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 40.9699196,
+                "longitude": 29.1148379
+            },
+            "openingHoursSpecification": [
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    "opens": "09:00",
+                    "closes": "22:00"
+                },
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": "Sunday",
+                    "opens": "10:00",
+                    "closes": "20:00"
+                }
+            ],
+            "sameAs": [
+                "https://www.instagram.com/saglamspot",
+                "https://www.facebook.com/saglamspot"
+            ]
         }
     </script>
 

@@ -1817,4 +1817,24 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Ціна: за спаданням';
+
+  @override
+  String get seoSssTitle => 'Часті запитання | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Відповіді на всі запитання про купівлю, доставку та гарантію.';
+
+  @override
+  String get seoSearchTitle => 'Пошук товарів | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Знайдіть потрібні меблі, фільтруючи за категорією, ціною та станом.';
+
+  @override
+  String get seoPrivacyTitle => 'Політика конфіденційності | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Умови використання | Sağlam Spot';
 }

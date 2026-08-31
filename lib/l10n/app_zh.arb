@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "您好，我想咨询家具的信息。",
   "spotHeroPageTitle": "二手与限时优惠",
   "sortByPriceLowHigh": "价格：从低到高",
-  "sortByPriceHighLow": "价格：从高到低"
+  "sortByPriceHighLow": "价格：从高到低",
+  "seoSssTitle": "常见问题 | Sağlam Spot",
+  "seoSssDesc": "关于购买、配送和保修的所有问题解答。",
+  "seoSearchTitle": "搜索商品 | Sağlam Spot",
+  "seoSearchDesc": "按类别、价格和成色筛选，找到您想要的家具。",
+  "seoPrivacyTitle": "隐私政策 | Sağlam Spot",
+  "seoTermsTitle": "服务条款 | Sağlam Spot"
 }

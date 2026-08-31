@@ -1829,4 +1829,24 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Prezzo: dal più alto';
+
+  @override
+  String get seoSssTitle => 'Domande Frequenti | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Risposte a tutte le tue domande su acquisto, consegna e garanzia.';
+
+  @override
+  String get seoSearchTitle => 'Cerca prodotti | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Trova il mobile che cerchi filtrando per categoria, prezzo e condizione.';
+
+  @override
+  String get seoPrivacyTitle => 'Informativa sulla privacy | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Termini di servizio | Sağlam Spot';
 }

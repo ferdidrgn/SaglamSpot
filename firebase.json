@@ -38,9 +38,26 @@
             "value": "no-cache, no-store, must-revalidate"
           }
         ]
+      },
+      {
+        "source": "/{admin,cart,favorites,settings,notifications,login,onboarding}",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          }
+        ]
       }
     ],
     "rewrites": [
+      {
+        "source": "/sitemap-products.xml",
+        "function": "sitemap"
+      },
       {
         "source": "**",
         "destination": "/index.html"

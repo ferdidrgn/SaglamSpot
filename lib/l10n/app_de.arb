@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "Hallo, ich möchte Informationen zu den Möbeln.",
   "spotHeroPageTitle": "Gebraucht & Spot",
   "sortByPriceLowHigh": "Preis: aufsteigend",
-  "sortByPriceHighLow": "Preis: absteigend"
+  "sortByPriceHighLow": "Preis: absteigend",
+  "seoSssTitle": "Häufige Fragen | Sağlam Spot",
+  "seoSssDesc": "Antworten auf alle Fragen zu Kauf, Lieferung und Garantie.",
+  "seoSearchTitle": "Produkte suchen | Sağlam Spot",
+  "seoSearchDesc": "Finden Sie die gesuchten Möbel durch Filtern nach Kategorie, Preis und Zustand.",
+  "seoPrivacyTitle": "Datenschutzerklärung | Sağlam Spot",
+  "seoTermsTitle": "Nutzungsbedingungen | Sağlam Spot"
 }

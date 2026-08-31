@@ -677,5 +677,11 @@
   "defaultWhatsappGreeting": "Hello, I'd like some information about the furniture.",
   "spotHeroPageTitle": "Secondhand & Spot",
   "sortByPriceLowHigh": "Price: Low to High",
-  "sortByPriceHighLow": "Price: High to Low"
+  "sortByPriceHighLow": "Price: High to Low",
+  "seoSssTitle": "FAQ | Sağlam Spot",
+  "seoSssDesc": "Answers to all your questions about buying, delivery and warranty.",
+  "seoSearchTitle": "Search Products | Sağlam Spot",
+  "seoSearchDesc": "Find the furniture you're looking for by filtering by category, price and condition.",
+  "seoPrivacyTitle": "Privacy Policy | Sağlam Spot",
+  "seoTermsTitle": "Terms of Service | Sağlam Spot"
 }

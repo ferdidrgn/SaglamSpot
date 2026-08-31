@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /favorites
+Disallow: /settings
+Disallow: /notifications
+Disallow: /login
+Disallow: /onboarding
 
 Sitemap: https://saglamspotcu.web.app/sitemap.xml
+Sitemap: https://saglamspotcu.web.app/sitemap-products.xml

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
@@ -5,6 +6,7 @@ import '../../../../core/ads/widgets/platform_bottom_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
+import '../../../../core/config/seo/wrapper/seo_service.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
@@ -26,7 +28,8 @@ import '../widgets/product_color_section.dart';
 /// jenerik bırakıldı (Color VEYA Gradient dönebilir) — mobile/web kolları
 /// artık aynı değeri döndürse de çağrı yerlerini tek tek değiştirmemek
 /// için korunuyor.
-T _pc<T>(final BuildContext context, {required final T mobile, required final T web}) =>
+T _pc<T>(final BuildContext context,
+        {required final T mobile, required final T web}) =>
     context.isMobile ? mobile : web;
 
 /// Ürün Detay Sayfası — sıfırdan, sade ve premium bir tasarım anlayışıyla
@@ -88,7 +91,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Animation<double> _stagger(final double startAt) => CurvedAnimation(
         parent: _entrance,
-        curve: Interval(startAt.clamp(0.0, 0.9), 1.0, curve: Curves.easeOutCubic),
+        curve:
+            Interval(startAt.clamp(0.0, 0.9), 1.0, curve: Curves.easeOutCubic),
       );
 
   bool _inCart(final Product product) =>
@@ -118,21 +122,44 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   Widget build(final BuildContext context) {
     final productAsync = ref.watch(productByIdProvider(widget.productId));
 
+    // Ürün yüklendiği anda GERÇEK ürün adı/fiyatı/görseliyle sekme
+    // başlığını ve OpenGraph verilerini güncelle — hem arama motorları
+    // hem de WhatsApp/Facebook gibi paylaşım botları artık jenerik bir
+    // metin değil, o ürüne özel bir önizleme görür. ref.listen sadece
+    // DEĞER değiştiğinde tetiklenir, her rebuild'de değil.
+    ref.listen<AsyncValue<Product>>(productByIdProvider(widget.productId),
+        (final previous, final next) {
+      final product = next.value;
+      if (!kIsWeb || product == null) return;
+      final slug = product.name.toSlug();
+      SeoService.updateDocumentHead(
+        title: '${product.name} | Sağlam Spot',
+        description:
+            product.desc.isNotEmpty ? product.desc : context.l10n.seoHomeDesc,
+        currentUrl: 'https://saglamspotcu.web.app/product/$slug-${product.id}',
+        imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : null,
+      );
+    });
+
     return productAsync.when(
       loading: () => Scaffold(
-        backgroundColor: _pc(context, mobile: AppColors.mobileBackground, web: AppColors.background),
+        backgroundColor: _pc(context,
+            mobile: AppColors.mobileBackground, web: AppColors.background),
         body: Center(
             child: CircularProgressIndicator(
-                color: _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary))),
+                color: _pc(context,
+                    mobile: AppColors.mobilePrimary, web: AppColors.primary))),
       ),
       error: (final e, final _) => Scaffold(
-        backgroundColor: _pc(context, mobile: AppColors.mobileBackground, web: AppColors.background),
+        backgroundColor: _pc(context,
+            mobile: AppColors.mobileBackground, web: AppColors.background),
         appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
         body: Center(
           child: Text(context.l10n.productLoadError('$e'),
               style: TextStyle(
                   color: _pc(context,
-                      mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                      mobile: AppColors.mobileTextPrimary,
+                      web: AppColors.textPrimary))),
         ),
       ),
       data: (final product) {
@@ -143,12 +170,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
         if (_trackedProductId != product.id) {
           _trackedProductId = product.id;
-          WidgetsBinding.instance.addPostFrameCallback(
-              (final _) => ref.read(recentlyViewedProvider.notifier).track(product));
+          WidgetsBinding.instance.addPostFrameCallback((final _) =>
+              ref.read(recentlyViewedProvider.notifier).track(product));
         }
 
         return Scaffold(
-          backgroundColor: _pc(context, mobile: AppColors.mobileBackground, web: AppColors.background),
+          backgroundColor: _pc(context,
+              mobile: AppColors.mobileBackground, web: AppColors.background),
           body: Stack(
             children: [
               CustomScrollView(
@@ -169,14 +197,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         child: _buildSimilarSection(context, similar)),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: context.pagePadding.copyWith(
-                          top: context.spacingLarge, bottom: 0),
+                      padding: context.pagePadding
+                          .copyWith(top: context.spacingLarge, bottom: 0),
                       child: const PlatformBottomBanner(),
                     ),
                   ),
                   SliverToBoxAdapter(
-                      child:
-                          SizedBox(height: context.isMobile ? 110 : 60)),
+                      child: SizedBox(height: context.isMobile ? 110 : 60)),
                 ],
               ),
               if (context.isMobile) _buildStickyBar(context, product),
@@ -195,7 +222,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       SliverAppBar(
         pinned: true,
         backgroundColor: _isAppBarSolid
-            ? _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface)
+            ? _pc(context,
+                mobile: AppColors.mobileSurface, web: AppColors.surface)
             : Colors.transparent,
         elevation: _isAppBarSolid ? 1 : 0,
         surfaceTintColor: Colors.transparent,
@@ -214,7 +242,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: _pc(context,
-                      mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary),
+                      mobile: AppColors.mobileTextPrimary,
+                      web: AppColors.textPrimary),
                   fontSize: 15,
                   fontWeight: FontWeight.w700)),
         ),
@@ -238,7 +267,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   : Icons.favorite_border_rounded,
               iconColor: _isFavorite(product)
                   ? AppColors.error
-                  : _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary),
+                  : _pc(context,
+                      mobile: AppColors.mobileTextPrimary,
+                      web: AppColors.textPrimary),
               onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
             ),
           ),
@@ -276,7 +307,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   /// Görsele tıklanınca, tıklanan index'ten başlayarak sağa/sola kaydırılabilir
   /// tam ekran galeriyi açar (mevcut GalleryViewerDialog altyapısını kullanır).
-  void _openFullscreenGallery(final BuildContext context, final Product product) {
+  void _openFullscreenGallery(
+      final BuildContext context, final Product product) {
     ref
         .read(galleryProvider(product.imagesUrl.length).notifier)
         .setCurrentIndex(_selectedImageIndex);
@@ -303,11 +335,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Container(
             height: height,
             decoration: BoxDecoration(
-              color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
+              color: _pc(context,
+                  mobile: AppColors.mobileSurface, web: AppColors.surface),
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary)
+                  color: _pc(context,
+                          mobile: AppColors.mobileTextPrimary,
+                          web: AppColors.textPrimary)
                       .withOpacity(0.06),
                   blurRadius: 32,
                   offset: const Offset(0, 12),
@@ -331,8 +366,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         _showRotateHint = false;
                       }),
                       itemBuilder: (final context, final index) => Padding(
-                        padding:
-                            EdgeInsets.all(context.responsive(mobile: 28, desktop: 48)),
+                        padding: EdgeInsets.all(
+                            context.responsive(mobile: 28, desktop: 48)),
                         child: GestureDetector(
                           onTap: () => _openFullscreenGallery(context, product),
                           child: OptimizedCachedImage(
@@ -382,8 +417,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     bottom: 16,
                     right: 16,
                     child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.55),
                         borderRadius: BorderRadius.circular(20),
@@ -406,7 +441,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     left: 16,
                     child: _StudioToggle(
                       isStudio: _showStudioVersion,
-                      onTap: () => setState(() => _showStudioVersion = !_showStudioVersion),
+                      onTap: () => setState(
+                          () => _showStudioVersion = !_showStudioVersion),
                     ),
                   ),
 
@@ -423,7 +459,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         duration: const Duration(milliseconds: 350),
                         child: IgnorePointer(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 7),
                             decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0.55),
                               borderRadius: BorderRadius.circular(20),
@@ -470,7 +507,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               onTap: () {
                 setState(() => _selectedImageIndex = index);
                 _galleryController.animateToPage(index,
-                    duration: const Duration(milliseconds: 320), curve: Curves.easeOutCubic);
+                    duration: const Duration(milliseconds: 320),
+                    curve: Curves.easeOutCubic);
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
@@ -480,15 +518,20 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: selected
-                        ? _pc(context, mobile: AppColors.mobileAccent, web: AppColors.accent)
-                        : _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border),
+                        ? _pc(context,
+                            mobile: AppColors.mobileAccent,
+                            web: AppColors.accent)
+                        : _pc(context,
+                            mobile: AppColors.mobileBorder,
+                            web: AppColors.border),
                     width: selected ? 2 : 1,
                   ),
                   boxShadow: selected
                       ? [
                           BoxShadow(
                               color: _pc(context,
-                                      mobile: AppColors.mobileAccent, web: AppColors.accent)
+                                      mobile: AppColors.mobileAccent,
+                                      web: AppColors.accent)
                                   .withOpacity(0.25),
                               blurRadius: 10)
                         ]
@@ -500,7 +543,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   height: 68,
                   fit: BoxFit.cover,
                   borderRadius: 14,
-                  errorBuilder: (final c, final u, final e) => const SizedBox.shrink(),
+                  errorBuilder: (final c, final u, final e) =>
+                      const SizedBox.shrink(),
                 ),
               ),
             );
@@ -518,8 +562,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     return FadeTransition(
       opacity: _stagger(0.15),
       child: SlideTransition(
-        position: Tween<Offset>(
-                begin: const Offset(0, 0.03), end: Offset.zero)
+        position: Tween<Offset>(begin: const Offset(0, 0.03), end: Offset.zero)
             .animate(_stagger(0.15)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,7 +581,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
                     color: meta?.color ??
-                        _pc(context, mobile: AppColors.mobileTextSecondary, web: AppColors.textSecondary),
+                        _pc(context,
+                            mobile: AppColors.mobileTextSecondary,
+                            web: AppColors.textSecondary),
                   ),
                 ),
               ],
@@ -551,7 +596,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               style: TextStyle(
                 fontSize: context.responsive(mobile: 24, desktop: 30),
                 fontWeight: FontWeight.w800,
-                color: _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary),
+                color: _pc(context,
+                    mobile: AppColors.mobileTextPrimary,
+                    web: AppColors.textPrimary),
                 height: 1.2,
               ),
             ),
@@ -568,7 +615,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   style: TextStyle(
                     fontSize: context.responsive(mobile: 34, desktop: 42),
                     fontWeight: FontWeight.w900,
-                    color: _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.textPrimary),
+                    color: _pc(context,
+                        mobile: AppColors.mobilePrimary,
+                        web: AppColors.textPrimary),
                     letterSpacing: -1,
                   ),
                 ),
@@ -579,7 +628,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
                           color: _pc(context,
-                              mobile: AppColors.mobilePrimary, web: AppColors.textSecondary))),
+                              mobile: AppColors.mobilePrimary,
+                              web: AppColors.textSecondary))),
                 ),
               ],
             ),
@@ -630,11 +680,15 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 15,
-                color: _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                color: _pc(context,
+                    mobile: AppColors.mobileTextPrimary,
+                    web: AppColors.textPrimary))),
         const SizedBox(height: 8),
         Text(text,
             style: TextStyle(
-                color: _pc(context, mobile: AppColors.mobileTextSecondary, web: AppColors.textSecondary),
+                color: _pc(context,
+                    mobile: AppColors.mobileTextSecondary,
+                    web: AppColors.textSecondary),
                 fontSize: 14,
                 height: 1.55)),
         if (isLong)
@@ -644,9 +698,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               onTap: () =>
                   setState(() => _showFullDescription = !_showFullDescription),
               child: Text(
-                _showFullDescription ? context.l10n.readLess : context.l10n.readMore,
+                _showFullDescription
+                    ? context.l10n.readLess
+                    : context.l10n.readMore,
                 style: TextStyle(
-                    color: _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.accentDark),
+                    color: _pc(context,
+                        mobile: AppColors.mobilePrimary,
+                        web: AppColors.accentDark),
                     fontWeight: FontWeight.w700,
                     fontSize: 13),
               ),
@@ -658,16 +716,30 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildSpecs(final BuildContext context, final Product product) {
     final specs = [
-      (Icons.category_rounded, context.l10n.category, product.category.label(context)),
+      (
+        Icons.category_rounded,
+        context.l10n.category,
+        product.category.label(context)
+      ),
       (
         product.isSpotProduct
             ? Icons.inventory_2_rounded
             : Icons.new_releases_rounded,
         context.l10n.condition,
-        product.isSpotProduct ? context.l10n.conditionUsed : context.l10n.productSpecConditionNew,
+        product.isSpotProduct
+            ? context.l10n.conditionUsed
+            : context.l10n.productSpecConditionNew,
       ),
-      (Icons.local_shipping_rounded, context.l10n.specDelivery, context.l10n.specDeliveryValue),
-      (Icons.location_on_rounded, context.l10n.specLocation, context.l10n.productLocationValue),
+      (
+        Icons.local_shipping_rounded,
+        context.l10n.specDelivery,
+        context.l10n.specDeliveryValue
+      ),
+      (
+        Icons.location_on_rounded,
+        context.l10n.specLocation,
+        context.l10n.productLocationValue
+      ),
     ];
 
     return GridView.builder(
@@ -687,9 +759,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
+              color: _pc(context,
+                  mobile: AppColors.mobileSurface, web: AppColors.surface),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
+              border: Border.all(
+                  color: _pc(context,
+                      mobile: AppColors.mobileBorder, web: AppColors.border)),
             ),
             child: Row(
               children: [
@@ -697,12 +772,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+                    color: _pc(context,
+                        mobile: AppColors.mobileCardBg,
+                        web: AppColors.secondary),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(icon,
                       size: 17,
-                      color: _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.onSecondary)),
+                      color: _pc(context,
+                          mobile: AppColors.mobilePrimary,
+                          web: AppColors.onSecondary)),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -714,7 +793,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                           style: TextStyle(
                               fontSize: 10.5,
                               color: _pc(context,
-                                  mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary))),
+                                  mobile: AppColors.mobileTextTertiary,
+                                  web: AppColors.textTertiary))),
                       Text(value,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -722,7 +802,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,
                               color: _pc(context,
-                                  mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                                  mobile: AppColors.mobileTextPrimary,
+                                  web: AppColors.textPrimary))),
                     ],
                   ),
                 ),
@@ -765,7 +846,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               icon: Icons.local_shipping_rounded,
               label: context.l10n.productTrustBadgeDelivery),
           if (listed != null)
-            _TrustChip(icon: Icons.schedule_rounded, label: listed, subtle: true),
+            _TrustChip(
+                icon: Icons.schedule_rounded, label: listed, subtle: true),
         ],
       ),
     );
@@ -777,9 +859,21 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
   Widget _buildHowToBuy(final BuildContext context) {
     final steps = [
-      (Icons.chat_bubble_rounded, context.l10n.howToBuyStep1Title, context.l10n.howToBuyStep1Desc),
-      (Icons.handshake_rounded, context.l10n.howToBuyStep2Title, context.l10n.howToBuyStep2Desc),
-      (Icons.local_shipping_rounded, context.l10n.howToBuyStep3Title, context.l10n.howToBuyStep3Desc),
+      (
+        Icons.chat_bubble_rounded,
+        context.l10n.howToBuyStep1Title,
+        context.l10n.howToBuyStep1Desc
+      ),
+      (
+        Icons.handshake_rounded,
+        context.l10n.howToBuyStep2Title,
+        context.l10n.howToBuyStep2Desc
+      ),
+      (
+        Icons.local_shipping_rounded,
+        context.l10n.howToBuyStep3Title,
+        context.l10n.howToBuyStep3Desc
+      ),
     ];
 
     return FadeTransition(
@@ -787,7 +881,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+          color: _pc(context,
+              mobile: AppColors.mobileCardBg, web: AppColors.secondary),
           borderRadius: BorderRadius.circular(22),
         ),
         child: Column(
@@ -797,7 +892,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
-                    color: _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                    color: _pc(context,
+                        mobile: AppColors.mobileTextPrimary,
+                        web: AppColors.textPrimary))),
             const SizedBox(height: 14),
             for (int i = 0; i < steps.length; i++) ...[
               if (i != 0) const SizedBox(height: 12),
@@ -818,9 +915,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
+            color: _pc(context,
+                mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
+            border: Border.all(
+                color: _pc(context,
+                    mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),
           child: Row(
             children: [
@@ -829,7 +929,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 height: 44,
                 decoration: BoxDecoration(
                   gradient: _pc(context,
-                      mobile: AppColors.mobilePrimaryGradient, web: AppColors.primaryGradient),
+                      mobile: AppColors.mobilePrimaryGradient,
+                      web: AppColors.primaryGradient),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.storefront_rounded,
@@ -848,7 +949,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                                 fontWeight: FontWeight.w800,
                                 fontSize: 14,
                                 color: _pc(context,
-                                    mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                                    mobile: AppColors.mobileTextPrimary,
+                                    web: AppColors.textPrimary))),
                         const SizedBox(width: 4),
                         Icon(Icons.verified_rounded,
                             size: 14, color: AppColors.success),
@@ -858,12 +960,15 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                         style: TextStyle(
                             fontSize: 11.5,
                             color: _pc(context,
-                                mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary))),
+                                mobile: AppColors.mobileTextTertiary,
+                                web: AppColors.textTertiary))),
                   ],
                 ),
               ),
               Icon(Icons.chevron_right_rounded,
-                  color: _pc(context, mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary)),
+                  color: _pc(context,
+                      mobile: AppColors.mobileTextTertiary,
+                      web: AppColors.textTertiary)),
             ],
           ),
         ),
@@ -888,7 +993,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         const SizedBox(width: 10),
         Expanded(
           child: _HalfActionButton(
-            label: inCart ? context.l10n.addedToCartMessage : context.l10n.addToCartCta,
+            label: inCart
+                ? context.l10n.addedToCartMessage
+                : context.l10n.addToCartCta,
             icon: inCart ? Icons.check_rounded : Icons.shopping_bag_rounded,
             filled: true,
             onTap: () => ref.read(cartProvider.notifier).toggle(product),
@@ -928,7 +1035,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 18,
-                    color: _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                    color: _pc(context,
+                        mobile: AppColors.mobileTextPrimary,
+                        web: AppColors.textPrimary))),
           ),
           const SizedBox(height: 14),
           SizedBox(
@@ -938,7 +1047,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               padding:
                   EdgeInsets.symmetric(horizontal: context.pagePadding.left),
               itemCount: similar.length,
-              separatorBuilder: (final _, final __) => const SizedBox(width: 14),
+              separatorBuilder: (final _, final __) =>
+                  const SizedBox(width: 14),
               itemBuilder: (final context, final index) =>
                   _SimilarProductCard(product: similar[index]),
             ),
@@ -962,7 +1072,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         padding: EdgeInsets.fromLTRB(
             16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
-          color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
+          color: _pc(context,
+              mobile: AppColors.mobileSurface, web: AppColors.surface),
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.08),
@@ -984,7 +1095,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 label: _inCart(product)
                     ? context.l10n.addedToCartMessage
                     : context.l10n.addToCartCta,
-                icon: _inCart(product) ? Icons.check_rounded : Icons.shopping_bag_rounded,
+                icon: _inCart(product)
+                    ? Icons.check_rounded
+                    : Icons.shopping_bag_rounded,
                 filled: true,
                 onTap: () => ref.read(cartProvider.notifier).toggle(product),
               ),
@@ -1031,8 +1144,10 @@ class _RoundIconButton extends StatelessWidget {
   @override
   Widget build(final BuildContext context) => Material(
         color: filled
-            ? _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary)
-            : _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
+            ? _pc(context,
+                mobile: AppColors.mobileCardBg, web: AppColors.secondary)
+            : _pc(context,
+                mobile: AppColors.mobileSurface, web: AppColors.surface),
         shape: const CircleBorder(),
         elevation: filled ? 0 : 2,
         shadowColor: Colors.black.withOpacity(0.1),
@@ -1046,8 +1161,12 @@ class _RoundIconButton extends StatelessWidget {
                 size: size * 0.42,
                 color: iconColor ??
                     (filled
-                        ? _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary)
-                        : _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                        ? _pc(context,
+                            mobile: AppColors.mobilePrimary,
+                            web: AppColors.primary)
+                        : _pc(context,
+                            mobile: AppColors.mobileTextPrimary,
+                            web: AppColors.textPrimary))),
           ),
         ),
       );
@@ -1064,16 +1183,22 @@ class _HalfActionButton extends StatelessWidget {
   final bool filled;
 
   const _HalfActionButton(
-      {required this.label, required this.icon, required this.onTap, required this.filled});
+      {required this.label,
+      required this.icon,
+      required this.onTap,
+      required this.filled});
 
   @override
   Widget build(final BuildContext context) {
-    final Color accent = _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
+    final Color accent =
+        _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
     final Color fg = filled ? Colors.white : accent;
 
     return Material(
       color: filled ? accent : Colors.transparent,
-      shape: StadiumBorder(side: filled ? BorderSide.none : BorderSide(color: accent, width: 1.6)),
+      shape: StadiumBorder(
+          side:
+              filled ? BorderSide.none : BorderSide(color: accent, width: 1.6)),
       child: InkWell(
         onTap: onTap,
         customBorder: const StadiumBorder(),
@@ -1090,7 +1215,10 @@ class _HalfActionButton extends StatelessWidget {
               Flexible(
                 child: Text(label,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: fg, fontWeight: FontWeight.w800, fontSize: 13.5)),
+                    style: TextStyle(
+                        color: fg,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 13.5)),
               ),
             ],
           ),
@@ -1105,7 +1233,8 @@ class _TrustChip extends StatelessWidget {
   final String label;
   final bool subtle;
 
-  const _TrustChip({required this.icon, required this.label, this.subtle = false});
+  const _TrustChip(
+      {required this.icon, required this.label, this.subtle = false});
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -1113,10 +1242,13 @@ class _TrustChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: subtle
               ? Colors.transparent
-              : _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+              : _pc(context,
+                  mobile: AppColors.mobileCardBg, web: AppColors.secondary),
           borderRadius: BorderRadius.circular(30),
           border: subtle
-              ? Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border))
+              ? Border.all(
+                  color: _pc(context,
+                      mobile: AppColors.mobileBorder, web: AppColors.border))
               : null,
         ),
         child: Row(
@@ -1125,16 +1257,24 @@ class _TrustChip extends StatelessWidget {
             Icon(icon,
                 size: 13,
                 color: subtle
-                    ? _pc(context, mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary)
-                    : _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary)),
+                    ? _pc(context,
+                        mobile: AppColors.mobileTextTertiary,
+                        web: AppColors.textTertiary)
+                    : _pc(context,
+                        mobile: AppColors.mobilePrimary,
+                        web: AppColors.primary)),
             const SizedBox(width: 6),
             Text(label,
                 style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w700,
                     color: subtle
-                        ? _pc(context, mobile: AppColors.mobileTextTertiary, web: AppColors.textTertiary)
-                        : _pc(context, mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                        ? _pc(context,
+                            mobile: AppColors.mobileTextTertiary,
+                            web: AppColors.textTertiary)
+                        : _pc(context,
+                            mobile: AppColors.mobileTextPrimary,
+                            web: AppColors.textPrimary))),
           ],
         ),
       );
@@ -1147,7 +1287,10 @@ class _HowToBuyStep extends StatelessWidget {
   final String desc;
 
   const _HowToBuyStep(
-      {required this.index, required this.icon, required this.title, required this.desc});
+      {required this.index,
+      required this.icon,
+      required this.title,
+      required this.desc});
 
   @override
   Widget build(final BuildContext context) => Row(
@@ -1157,7 +1300,9 @@ class _HowToBuyStep extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              gradient: _pc(context, mobile: AppColors.mobileAccentGradient, web: AppColors.accentGradient),
+              gradient: _pc(context,
+                  mobile: AppColors.mobileAccentGradient,
+                  web: AppColors.accentGradient),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: Colors.white, size: 16),
@@ -1172,14 +1317,16 @@ class _HowToBuyStep extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         fontSize: 13.5,
                         color: _pc(context,
-                            mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                            mobile: AppColors.mobileTextPrimary,
+                            web: AppColors.textPrimary))),
                 const SizedBox(height: 2),
                 Text(desc,
                     style: TextStyle(
                         fontSize: 12,
                         height: 1.4,
                         color: _pc(context,
-                            mobile: AppColors.mobileTextSecondary, web: AppColors.textSecondary))),
+                            mobile: AppColors.mobileTextSecondary,
+                            web: AppColors.textSecondary))),
               ],
             ),
           ),
@@ -1199,7 +1346,9 @@ class _StatusPill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: (spot
-                ? _pc(context, mobile: AppColors.mobileAccentDark, web: AppColors.accentDark)
+                ? _pc(context,
+                    mobile: AppColors.mobileAccentDark,
+                    web: AppColors.accentDark)
                 : AppColors.success)
             .withOpacity(0.95),
         borderRadius: BorderRadius.circular(20),
@@ -1250,9 +1399,13 @@ class _StudioToggle extends StatelessWidget {
               Icon(Icons.auto_awesome_rounded, size: 13, color: Colors.white),
               const SizedBox(width: 6),
               Text(
-                isStudio ? context.l10n.studioPhotoLabel : context.l10n.storePhotoLabel,
+                isStudio
+                    ? context.l10n.studioPhotoLabel
+                    : context.l10n.storePhotoLabel,
                 style: const TextStyle(
-                    color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w700),
+                    color: Colors.white,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -1275,9 +1428,12 @@ class _SimilarProductCard extends StatelessWidget {
         child: Container(
           width: 160,
           decoration: BoxDecoration(
-            color: _pc(context, mobile: AppColors.mobileSurface, web: AppColors.surface),
+            color: _pc(context,
+                mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: _pc(context, mobile: AppColors.mobileBorder, web: AppColors.border)),
+            border: Border.all(
+                color: _pc(context,
+                    mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1293,7 +1449,9 @@ class _SimilarProductCard extends StatelessWidget {
                   borderRadius: 0,
                   errorBuilder: (final c, final u, final e) => Container(
                       height: 120,
-                      color: _pc(context, mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+                      color: _pc(context,
+                          mobile: AppColors.mobileCardBg,
+                          web: AppColors.secondary),
                       child: const Icon(Icons.chair_alt_rounded)),
                 ),
               ),
@@ -1309,13 +1467,16 @@ class _SimilarProductCard extends StatelessWidget {
                             fontSize: 12.5,
                             fontWeight: FontWeight.w700,
                             color: _pc(context,
-                                mobile: AppColors.mobileTextPrimary, web: AppColors.textPrimary))),
+                                mobile: AppColors.mobileTextPrimary,
+                                web: AppColors.textPrimary))),
                     const SizedBox(height: 4),
                     Text('₺${product.price.toStringAsFixed(0)}',
                         style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w900,
-                            color: _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.textPrimary))),
+                            color: _pc(context,
+                                mobile: AppColors.mobilePrimary,
+                                web: AppColors.textPrimary))),
                   ],
                 ),
               ),

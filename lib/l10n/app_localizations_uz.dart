@@ -1827,4 +1827,24 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Narx: qimmatdan arzonga';
+
+  @override
+  String get seoSssTitle => 'Ko\'p so\'raladigan savollar | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Xarid, yetkazib berish va kafolat haqidagi barcha savollaringizga javoblar.';
+
+  @override
+  String get seoSearchTitle => 'Mahsulot qidirish | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Kategoriya, narx va holatga qarab filtrlab kerakli mebelni toping.';
+
+  @override
+  String get seoPrivacyTitle => 'Maxfiylik siyosati | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Foydalanish shartlari | Sağlam Spot';
 }

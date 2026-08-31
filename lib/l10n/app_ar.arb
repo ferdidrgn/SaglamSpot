@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "مرحبًا، أرغب في معرفة معلومات حول الأثاث.",
   "spotHeroPageTitle": "مستعمل وسبوت",
   "sortByPriceLowHigh": "السعر: من الأقل إلى الأعلى",
-  "sortByPriceHighLow": "السعر: من الأعلى إلى الأقل"
+  "sortByPriceHighLow": "السعر: من الأعلى إلى الأقل",
+  "seoSssTitle": "الأسئلة الشائعة | Sağlam Spot",
+  "seoSssDesc": "إجابات على جميع أسئلتك حول الشراء والتوصيل والضمان.",
+  "seoSearchTitle": "ابحث عن المنتجات | Sağlam Spot",
+  "seoSearchDesc": "اعثر على الأثاث الذي تبحث عنه بالتصفية حسب الفئة والسعر والحالة.",
+  "seoPrivacyTitle": "سياسة الخصوصية | Sağlam Spot",
+  "seoTermsTitle": "شروط الخدمة | Sağlam Spot"
 }

@@ -1825,4 +1825,24 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Баа: кымбаттан арзанга';
+
+  @override
+  String get seoSssTitle => 'Көп берилүүчү суроолор | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Сатып алуу, жеткирүү жана кепилдик боюнча бардык суроолорго жооптор.';
+
+  @override
+  String get seoSearchTitle => 'Товар издөө | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Категория, баа жана абалы боюнча чыпкалап издеген эмерегиңизди табыңыз.';
+
+  @override
+  String get seoPrivacyTitle => 'Купуялык саясаты | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Колдонуу шарттары | Sağlam Spot';
 }

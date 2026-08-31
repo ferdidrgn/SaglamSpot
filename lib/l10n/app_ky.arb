@@ -649,5 +649,11 @@
   "defaultWhatsappGreeting": "Салам, эмерек жөнүндө маалымат алгым келет.",
   "spotHeroPageTitle": "Экинчи кол & Спот",
   "sortByPriceLowHigh": "Баа: арзандан кымбатка",
-  "sortByPriceHighLow": "Баа: кымбаттан арзанга"
+  "sortByPriceHighLow": "Баа: кымбаттан арзанга",
+  "seoSssTitle": "Көп берилүүчү суроолор | Sağlam Spot",
+  "seoSssDesc": "Сатып алуу, жеткирүү жана кепилдик боюнча бардык суроолорго жооптор.",
+  "seoSearchTitle": "Товар издөө | Sağlam Spot",
+  "seoSearchDesc": "Категория, баа жана абалы боюнча чыпкалап издеген эмерегиңизди табыңыз.",
+  "seoPrivacyTitle": "Купуялык саясаты | Sağlam Spot",
+  "seoTermsTitle": "Колдонуу шарттары | Sağlam Spot"
 }

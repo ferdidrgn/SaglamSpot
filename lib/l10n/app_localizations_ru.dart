@@ -1818,4 +1818,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Цена: по убыванию';
+
+  @override
+  String get seoSssTitle => 'Частые вопросы | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Ответы на все вопросы о покупке, доставке и гарантии.';
+
+  @override
+  String get seoSearchTitle => 'Поиск товаров | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Найдите нужную мебель, отфильтровав по категории, цене и состоянию.';
+
+  @override
+  String get seoPrivacyTitle => 'Политика конфиденциальности | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Условия использования | Sağlam Spot';
 }

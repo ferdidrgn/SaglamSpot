@@ -1836,4 +1836,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => 'Preis: absteigend';
+
+  @override
+  String get seoSssTitle => 'Häufige Fragen | Sağlam Spot';
+
+  @override
+  String get seoSssDesc =>
+      'Antworten auf alle Fragen zu Kauf, Lieferung und Garantie.';
+
+  @override
+  String get seoSearchTitle => 'Produkte suchen | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc =>
+      'Finden Sie die gesuchten Möbel durch Filtern nach Kategorie, Preis und Zustand.';
+
+  @override
+  String get seoPrivacyTitle => 'Datenschutzerklärung | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => 'Nutzungsbedingungen | Sağlam Spot';
 }

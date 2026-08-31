@@ -1743,4 +1743,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sortByPriceHighLow => '价格：从高到低';
+
+  @override
+  String get seoSssTitle => '常见问题 | Sağlam Spot';
+
+  @override
+  String get seoSssDesc => '关于购买、配送和保修的所有问题解答。';
+
+  @override
+  String get seoSearchTitle => '搜索商品 | Sağlam Spot';
+
+  @override
+  String get seoSearchDesc => '按类别、价格和成色筛选，找到您想要的家具。';
+
+  @override
+  String get seoPrivacyTitle => '隐私政策 | Sağlam Spot';
+
+  @override
+  String get seoTermsTitle => '服务条款 | Sağlam Spot';
 }
