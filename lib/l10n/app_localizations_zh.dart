@@ -1761,4 +1761,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get seoTermsTitle => '服务条款 | Sağlam Spot';
+
+  @override
+  String get howItWorksEyebrow => '流程';
+
+  @override
+  String get whyUsEyebrow => '我们的优势';
 }

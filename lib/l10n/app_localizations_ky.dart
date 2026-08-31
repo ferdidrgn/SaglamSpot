@@ -1845,4 +1845,10 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get seoTermsTitle => 'Колдонуу шарттары | Sağlam Spot';
+
+  @override
+  String get howItWorksEyebrow => 'ПРОЦЕСС';
+
+  @override
+  String get whyUsEyebrow => 'АРТЫКЧЫЛЫКТАР';
 }

@@ -1822,4 +1822,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get seoTermsTitle => 'شروط الخدمة | Sağlam Spot';
+
+  @override
+  String get howItWorksEyebrow => 'العملية';
+
+  @override
+  String get whyUsEyebrow => 'المزايا';
 }

@@ -3463,6 +3463,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Kullanım Şartları | Sağlam Spot'**
   String get seoTermsTitle;
+
+  /// No description provided for @howItWorksEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'SÜREÇ'**
+  String get howItWorksEyebrow;
+
+  /// No description provided for @whyUsEyebrow.
+  ///
+  /// In tr, this message translates to:
+  /// **'AVANTAJLAR'**
+  String get whyUsEyebrow;
 }
 
 class _AppLocalizationsDelegate

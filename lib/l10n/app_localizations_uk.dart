@@ -1837,4 +1837,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get seoTermsTitle => 'Умови використання | Sağlam Spot';
+
+  @override
+  String get howItWorksEyebrow => 'ПРОЦЕС';
+
+  @override
+  String get whyUsEyebrow => 'ПЕРЕВАГИ';
 }

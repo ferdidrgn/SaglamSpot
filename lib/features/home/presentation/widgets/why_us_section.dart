@@ -52,14 +52,19 @@ class WhyUsSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(context.l10n.whyUsEyebrow,
+                  style: TextStyle(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 3,
+                      fontSize: context.captionSize)),
+              const SizedBox(height: 8),
               Text(context.l10n.whyUsHeading,
                   style: TextStyle(
                       fontFamily: 'Fraunces',
                       fontSize: context.h2Size,
                       fontWeight: FontWeight.w600,
                       color: context.primaryColor)),
-              const SizedBox(height: 4),
-              Container(height: 3, width: 40, color: AppColors.accent),
               const SizedBox(height: 24),
               GridView.builder(
                 shrinkWrap: true,

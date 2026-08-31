@@ -1853,4 +1853,10 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get seoTermsTitle => 'Όροι Χρήσης | Sağlam Spot';
+
+  @override
+  String get howItWorksEyebrow => 'ΔΙΑΔΙΚΑΣΙΑ';
+
+  @override
+  String get whyUsEyebrow => 'ΠΛΕΟΝΕΚΤΗΜΑΤΑ';
 }
