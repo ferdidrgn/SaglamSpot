@@ -131,10 +131,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   _buildArtisanInfo(),
                   const WhyUsSection(),
                   const TestimonialsSection(),
-                  _buildStatsSection(),
-                  // Sayfanın en altına, footer'dan hemen önce ikinci bir
-                  // reklam — kullanıcı sayfanın sonuna kadar geldiğinde de
-                  // bir kazanım fırsatı olsun diye.
+                  // Reklam bilerek koyu istatistik şeridinden ÖNCE, hâlâ
+                  // krem zeminin içinde duruyor — Stats + Footer arasına
+                  // girerse iki koyu blok arasında krem bir yama gibi
+                  // görünüp geçişi sertleştiriyordu. Böylece sayfanın en
+                  // altı tek, kesintisiz bir koyu bant olarak akıyor.
                   const SliverToBoxAdapter(
                     child: Padding(
                       padding:
@@ -143,6 +144,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           type: AdUnitType.multiplex, height: 250),
                     ),
                   ),
+                  _buildStatsSection(),
                   _buildFooter(),
                 ],
               ),
@@ -711,7 +713,18 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: context.hp(8)),
-        decoration: BoxDecoration(color: AppColors.backgroundDark),
+        // Krem sayfa zemininden koyu şeride sert bir kesim yerine yumuşak
+        // bir geçişle iniliyor — üst %18'lik dilim krem tondan koyu tona
+        // erir, geri kalanı düz koyu renkte kalır (footer'la kesintisiz
+        // birleşsin diye).
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.background, AppColors.backgroundDark],
+            stops: const [0.0, 0.18],
+          ),
+        ),
         child: Center(
           child: Wrap(
             alignment: WrapAlignment.center,
