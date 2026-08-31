@@ -454,7 +454,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   Widget _buildProductsHeader() => SliverToBoxAdapter(
         child: Padding(
           padding: context.pagePadding.copyWith(
-              top: context.spacingLarge * 2, bottom: context.spacingLarge),
+              top: context.spacingLarge, bottom: context.spacingLarge * 0.6),
           child: Column(
             children: [
               Text(context.l10n.showcaseEyebrow,
@@ -712,7 +712,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: context.hp(8)),
+        padding: EdgeInsets.symmetric(vertical: context.hp(5)),
         // Krem sayfa zemininden koyu şeride sert bir kesim yerine yumuşak
         // bir geçişle iniliyor — üst %18'lik dilim krem tondan koyu tona
         // erir, geri kalanı düz koyu renkte kalır (footer'la kesintisiz

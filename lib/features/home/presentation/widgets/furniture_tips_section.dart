@@ -23,8 +23,8 @@ class FurnitureTipsSection extends StatelessWidget {
     final tips = _tips(context);
 
     return SliverPadding(
-      padding: context.pagePadding.copyWith(
-          top: context.spacingLarge * 2, bottom: context.spacingLarge * 2),
+      padding: context.pagePadding
+          .copyWith(top: context.spacingLarge, bottom: context.spacingLarge),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
@@ -182,74 +182,84 @@ class FurnitureTip {
 }
 
 List<FurnitureTip> _tips(final BuildContext context) => [
-  FurnitureTip(
-    icon: Icons.weekend_rounded,
-    title: context.l10n.tip1Title,
-    description: context.l10n.tip1Desc,
-    category: context.l10n.tip1Category,
-    image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.cleaning_services_rounded,
-    title: context.l10n.tip2Title,
-    description: context.l10n.tip2Desc,
-    category: context.l10n.tip2Category,
-    image: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.kitchen_rounded,
-    title: context.l10n.tip3Title,
-    description: context.l10n.tip3Desc,
-    category: context.l10n.tip3Category,
-    image: 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.bed_rounded,
-    title: context.l10n.tip4Title,
-    description: context.l10n.tip4Desc,
-    category: context.l10n.tip4Category,
-    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.checkroom_rounded,
-    title: context.l10n.tip5Title,
-    description: context.l10n.tip5Desc,
-    category: context.l10n.tip5Category,
-    image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.forest_rounded,
-    title: context.l10n.tip6Title,
-    description: context.l10n.tip6Desc,
-    category: context.l10n.tip6Category,
-    image: 'https://images.unsplash.com/photo-1601057483204-3b0a4c50d4ac?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.dry_cleaning_rounded,
-    title: context.l10n.tip7Title,
-    description: context.l10n.tip7Desc,
-    category: context.l10n.tip7Category,
-    image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.lightbulb_rounded,
-    title: context.l10n.tip8Title,
-    description: context.l10n.tip8Desc,
-    category: context.l10n.tip8Category,
-    image: 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.space_dashboard_rounded,
-    title: context.l10n.tip9Title,
-    description: context.l10n.tip9Desc,
-    category: context.l10n.tip9Category,
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800',
-  ),
-  FurnitureTip(
-    icon: Icons.deck_rounded,
-    title: context.l10n.tip10Title,
-    description: context.l10n.tip10Desc,
-    category: context.l10n.tip10Category,
-    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=800',
-  ),
-];
+      FurnitureTip(
+        icon: Icons.weekend_rounded,
+        title: context.l10n.tip1Title,
+        description: context.l10n.tip1Desc,
+        category: context.l10n.tip1Category,
+        image:
+            'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.cleaning_services_rounded,
+        title: context.l10n.tip2Title,
+        description: context.l10n.tip2Desc,
+        category: context.l10n.tip2Category,
+        image:
+            'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.kitchen_rounded,
+        title: context.l10n.tip3Title,
+        description: context.l10n.tip3Desc,
+        category: context.l10n.tip3Category,
+        image:
+            'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.bed_rounded,
+        title: context.l10n.tip4Title,
+        description: context.l10n.tip4Desc,
+        category: context.l10n.tip4Category,
+        image:
+            'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.checkroom_rounded,
+        title: context.l10n.tip5Title,
+        description: context.l10n.tip5Desc,
+        category: context.l10n.tip5Category,
+        image:
+            'https://images.unsplash.com/photo-1558997519-83ea9252edf8?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.forest_rounded,
+        title: context.l10n.tip6Title,
+        description: context.l10n.tip6Desc,
+        category: context.l10n.tip6Category,
+        image:
+            'https://images.unsplash.com/photo-1601057483204-3b0a4c50d4ac?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.dry_cleaning_rounded,
+        title: context.l10n.tip7Title,
+        description: context.l10n.tip7Desc,
+        category: context.l10n.tip7Category,
+        image:
+            'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.lightbulb_rounded,
+        title: context.l10n.tip8Title,
+        description: context.l10n.tip8Desc,
+        category: context.l10n.tip8Category,
+        image:
+            'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.space_dashboard_rounded,
+        title: context.l10n.tip9Title,
+        description: context.l10n.tip9Desc,
+        category: context.l10n.tip9Category,
+        image:
+            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800',
+      ),
+      FurnitureTip(
+        icon: Icons.deck_rounded,
+        title: context.l10n.tip10Title,
+        description: context.l10n.tip10Desc,
+        category: context.l10n.tip10Category,
+        image:
+            'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=800',
+      ),
+    ];

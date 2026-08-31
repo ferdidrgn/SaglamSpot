@@ -11,8 +11,8 @@ class TestimonialsSection extends StatelessWidget {
     final testimonials = _testimonials(context);
 
     return SliverPadding(
-      padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 60, vertical: 40),
+      padding:
+          EdgeInsets.symmetric(horizontal: isMobile ? 20 : 60, vertical: 26),
       sliver: SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +79,9 @@ class _TestimonialCard extends StatelessWidget {
               children: List.generate(
                 5,
                 (final i) => Icon(
-                  i < data.rating ? Icons.star_rounded : Icons.star_border_rounded,
+                  i < data.rating
+                      ? Icons.star_rounded
+                      : Icons.star_border_rounded,
                   color: AppColors.accent,
                   size: 20,
                 ),
@@ -143,40 +145,40 @@ class _Testimonial {
 }
 
 List<_Testimonial> _testimonials(final BuildContext context) => [
-  _Testimonial(
-    name: 'Elif Yıldız',
-    location: 'İçerenköy, Ataşehir',
-    comment: context.l10n.testimonial1Comment,
-    rating: 5,
-  ),
-  _Testimonial(
-    name: 'Mehmet Kaya',
-    location: 'Kayışdağı, Ataşehir',
-    comment: context.l10n.testimonial2Comment,
-    rating: 5,
-  ),
-  _Testimonial(
-    name: 'Ayşe Demir',
-    location: 'Küçükbakkalköy, Ataşehir',
-    comment: context.l10n.testimonial3Comment,
-    rating: 4,
-  ),
-  _Testimonial(
-    name: 'Burak Şahin',
-    location: 'Bostancı, Kadıköy',
-    comment: context.l10n.testimonial4Comment,
-    rating: 5,
-  ),
-  _Testimonial(
-    name: 'Zeynep Arslan',
-    location: 'Fındıklı, Ataşehir',
-    comment: context.l10n.testimonial5Comment,
-    rating: 5,
-  ),
-  _Testimonial(
-    name: 'Can Öztürk',
-    location: 'Kozyatağı, Kadıköy',
-    comment: context.l10n.testimonial6Comment,
-    rating: 4,
-  ),
-];
+      _Testimonial(
+        name: 'Elif Yıldız',
+        location: 'İçerenköy, Ataşehir',
+        comment: context.l10n.testimonial1Comment,
+        rating: 5,
+      ),
+      _Testimonial(
+        name: 'Mehmet Kaya',
+        location: 'Kayışdağı, Ataşehir',
+        comment: context.l10n.testimonial2Comment,
+        rating: 5,
+      ),
+      _Testimonial(
+        name: 'Ayşe Demir',
+        location: 'Küçükbakkalköy, Ataşehir',
+        comment: context.l10n.testimonial3Comment,
+        rating: 4,
+      ),
+      _Testimonial(
+        name: 'Burak Şahin',
+        location: 'Bostancı, Kadıköy',
+        comment: context.l10n.testimonial4Comment,
+        rating: 5,
+      ),
+      _Testimonial(
+        name: 'Zeynep Arslan',
+        location: 'Fındıklı, Ataşehir',
+        comment: context.l10n.testimonial5Comment,
+        rating: 5,
+      ),
+      _Testimonial(
+        name: 'Can Öztürk',
+        location: 'Kozyatağı, Kadıköy',
+        comment: context.l10n.testimonial6Comment,
+        rating: 4,
+      ),
+    ];

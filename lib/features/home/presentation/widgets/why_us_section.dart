@@ -8,31 +8,31 @@ class WhyUsSection extends StatelessWidget {
   const WhyUsSection({super.key});
 
   List<_Usp> _items(final BuildContext context) => [
-    _Usp(
-      icon: Icons.verified_user_rounded,
-      title: context.l10n.usp1Title,
-      desc: context.l10n.usp1Desc,
-      color: AppColors.sage,
-    ),
-    _Usp(
-      icon: Icons.savings_rounded,
-      title: context.l10n.usp2Title,
-      desc: context.l10n.usp2Desc,
-      color: AppColors.accent,
-    ),
-    _Usp(
-      icon: Icons.fact_check_rounded,
-      title: context.l10n.usp3Title,
-      desc: context.l10n.usp3Desc,
-      color: AppColors.primary,
-    ),
-    _Usp(
-      icon: Icons.support_agent_rounded,
-      title: context.l10n.usp4Title,
-      desc: context.l10n.usp4Desc,
-      color: AppColors.sageDark,
-    ),
-  ];
+        _Usp(
+          icon: Icons.verified_user_rounded,
+          title: context.l10n.usp1Title,
+          desc: context.l10n.usp1Desc,
+          color: AppColors.sage,
+        ),
+        _Usp(
+          icon: Icons.savings_rounded,
+          title: context.l10n.usp2Title,
+          desc: context.l10n.usp2Desc,
+          color: AppColors.accent,
+        ),
+        _Usp(
+          icon: Icons.fact_check_rounded,
+          title: context.l10n.usp3Title,
+          desc: context.l10n.usp3Desc,
+          color: AppColors.primary,
+        ),
+        _Usp(
+          icon: Icons.support_agent_rounded,
+          title: context.l10n.usp4Title,
+          desc: context.l10n.usp4Desc,
+          color: AppColors.sageDark,
+        ),
+      ];
 
   @override
   Widget build(final BuildContext context) {
@@ -40,8 +40,8 @@ class WhyUsSection extends StatelessWidget {
     final items = _items(context);
 
     return SliverPadding(
-      padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 16 : 60, vertical: 40),
+      padding:
+          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 60, vertical: 26),
       sliver: SliverToBoxAdapter(
         child: Container(
           padding: EdgeInsets.all(isMobile ? 20 : 40),

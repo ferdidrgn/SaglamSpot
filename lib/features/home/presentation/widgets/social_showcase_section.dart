@@ -44,7 +44,7 @@ class SocialShowcaseSection extends StatelessWidget {
   Widget build(final BuildContext context) {
     return SliverPadding(
       padding: context.pagePadding.copyWith(
-          top: context.spacingLarge, bottom: context.spacingLarge * 2),
+          top: context.spacingLarge * 0.6, bottom: context.spacingLarge),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
@@ -63,7 +63,9 @@ class SocialShowcaseSection extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
             const SizedBox(height: 28),
-            context.isMobile ? _buildMobileMasonry(context) : _buildBentoGrid(context),
+            context.isMobile
+                ? _buildMobileMasonry(context)
+                : _buildBentoGrid(context),
           ],
         ),
       ),
@@ -74,7 +76,8 @@ class SocialShowcaseSection extends StatelessWidget {
   // karışık, boşluksuz, referans görseldeki asimetrik ritimle.
   Widget _buildBentoGrid(final BuildContext context) {
     const spacing = 12.0;
-    final rowUnit = context.responsive(mobile: 60.0, tablet: 66.0, desktop: 76.0);
+    final rowUnit =
+        context.responsive(mobile: 60.0, tablet: 66.0, desktop: 76.0);
 
     return LayoutBuilder(
       builder: (final context, final constraints) {

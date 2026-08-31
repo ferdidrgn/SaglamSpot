@@ -8,27 +8,27 @@ class HowItWorksSection extends StatelessWidget {
   const HowItWorksSection({super.key});
 
   List<_Step> _steps(final BuildContext context) => [
-    _Step(
-      icon: Icons.travel_explore_rounded,
-      title: context.l10n.step1Title,
-      desc: context.l10n.step1Desc,
-    ),
-    _Step(
-      icon: Icons.chat_bubble_rounded,
-      title: context.l10n.step2Title,
-      desc: context.l10n.step2Desc,
-    ),
-    _Step(
-      icon: Icons.handshake_rounded,
-      title: context.l10n.step3Title,
-      desc: context.l10n.step3Desc,
-    ),
-    _Step(
-      icon: Icons.local_shipping_rounded,
-      title: context.l10n.step4Title,
-      desc: context.l10n.step4Desc,
-    ),
-  ];
+        _Step(
+          icon: Icons.travel_explore_rounded,
+          title: context.l10n.step1Title,
+          desc: context.l10n.step1Desc,
+        ),
+        _Step(
+          icon: Icons.chat_bubble_rounded,
+          title: context.l10n.step2Title,
+          desc: context.l10n.step2Desc,
+        ),
+        _Step(
+          icon: Icons.handshake_rounded,
+          title: context.l10n.step3Title,
+          desc: context.l10n.step3Desc,
+        ),
+        _Step(
+          icon: Icons.local_shipping_rounded,
+          title: context.l10n.step4Title,
+          desc: context.l10n.step4Desc,
+        ),
+      ];
 
   @override
   Widget build(final BuildContext context) {
@@ -36,8 +36,8 @@ class HowItWorksSection extends StatelessWidget {
     final steps = _steps(context);
 
     return SliverPadding(
-      padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 16 : 60, vertical: 40),
+      padding:
+          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 60, vertical: 26),
       sliver: SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,8 @@ class HowItWorksSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       for (int i = 0; i < steps.length; i++) ...[
-                        Expanded(child: _StepCard(step: steps[i], index: i + 1)),
+                        Expanded(
+                            child: _StepCard(step: steps[i], index: i + 1)),
                         if (i != steps.length - 1)
                           Padding(
                             padding: const EdgeInsets.only(top: 40),
