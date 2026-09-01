@@ -82,9 +82,55 @@ class LivoraStyleShowcaseSection extends ConsumerWidget {
                   fontSize: context.bodySize,
                   height: 1.5),
             ),
+            const SizedBox(height: 18),
+            _buildTrustAvatars(context),
           ],
         ),
       );
+
+  // Referans tasarımdaki "Trusted by 25.000+ happy customers" satırının
+  // karşılığı — gerçek müşteri fotoğrafımız olmadığı için baş harfli,
+  // marka renginde rozetlerle (uydurma yüz fotoğrafı YOK).
+  Widget _buildTrustAvatars(final BuildContext context) {
+    const initials = ['E', 'M', 'A', 'B'];
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 26.0 * initials.length + 14,
+          height: 34,
+          child: Stack(
+            children: [
+              for (int i = 0; i < initials.length; i++)
+                Positioned(
+                  left: i * 22.0,
+                  child: CircleAvatar(
+                    radius: 17,
+                    backgroundColor: AppColors.surface,
+                    child: CircleAvatar(
+                      radius: 15,
+                      backgroundColor:
+                          AppColors.accent.withOpacity(0.85 - i * 0.1),
+                      child: Text(initials[i],
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12)),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text('2.500+ mutlu müşteri',
+            style: TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+                fontSize: context.captionSize)),
+      ],
+    );
+  }
 
   Widget _buildIconRow(final BuildContext context) {
     final items = [
