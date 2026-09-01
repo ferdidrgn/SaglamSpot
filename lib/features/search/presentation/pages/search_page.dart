@@ -13,7 +13,6 @@ import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
-import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
@@ -26,6 +25,7 @@ import '../../../products/presentation/providers/category_meta_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
+import '../widgets/search_product_grid_card.dart';
 
 /// Arama/keşif sayfası — eski tasarımdaki devasa arka plan fotoğraflı hero
 /// yerine, sonuçları hep görünür tutan modern bir "kalıcı yan panel filtre"
@@ -779,12 +779,37 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ref.watch(productViewModeProvider) == ProductViewMode.list;
 
     if (!isListMode) {
+      // Search sayfasına özel, referans "The Shop" tasarımından esinlenen
+      // sade ızgara kartı (SearchProductGridCard) — home/new/spot'ta
+      // kullanılan paylaşılan CustomProductCard'a BİLEREK dokunulmadı,
+      // sadece bu sayfanın ızgara görünümü değişti.
       return [
-        ResponsiveProductSliverGrid(
-          products: products,
-          insertAds: true,
-          onProductTap: (final p) => NavigationHandler.goToProduct(
-              context: context, productId: p.id, productSlug: p.name.toSlug()),
+        SliverPadding(
+          padding: context.responsive(
+              mobile:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              desktop:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0)),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: context.gridColumns(),
+              childAspectRatio: context.cardAspectRatio(),
+              crossAxisSpacing: context.gridSpacing,
+              mainAxisSpacing: context.gridSpacing,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (final context, final index) {
+                if (isAdSlot(index, products.length)) {
+                  return const NativeAdCard();
+                }
+                final realIndex = realIndexForAdGrid(index, products.length);
+                if (realIndex >= products.length)
+                  return const SizedBox.shrink();
+                return SearchProductGridCard(product: products[realIndex]);
+              },
+              childCount: paddedItemCountForAds(products.length),
+            ),
+          ),
         ),
       ];
     }
