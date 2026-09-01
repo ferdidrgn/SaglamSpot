@@ -657,5 +657,13 @@
   "seoPrivacyTitle": "Maxfiylik siyosati | Sağlam Spot",
   "seoTermsTitle": "Foydalanish shartlari | Sağlam Spot",
   "howItWorksEyebrow": "JARAYON",
-  "whyUsEyebrow": "AFZALLIKLAR"
+  "whyUsEyebrow": "AFZALLIKLAR",
+  "searchHeroTitle": "Mebelingizni toping",
+  "searchHeroSubtitle": "Yuzlab yangi va aksiyadagi mahsulotlar orasidan o'zingizga moslarini tanlang.",
+  "featureRow1Title": "20 Yillik Ustalik",
+  "featureRow1Desc": "Har bir buyum yillar tajribasi bilan ehtiyotkorlik bilan tanlanadi.",
+  "featureRow2Title": "Mintaqaviy Yetkazib Berish",
+  "featureRow2Desc": "Tanlangan mahallalarga sug'urtalangan, tez yetkazib berish.",
+  "featureRow3Title": "WhatsApp'da Tezkor Javob",
+  "featureRow3Desc": "Bir necha daqiqada haqiqiy sotuvchidan haqiqiy javob oling."
 }

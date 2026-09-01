@@ -1851,4 +1851,32 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'АРТЫКЧЫЛЫКТАР';
+
+  @override
+  String get searchHeroTitle => 'Эмеректериңизди табыңыз';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Жүздөгөн жаңы жана арзандатылган товарлардын арасынан ылайыгын тандаңыз.';
+
+  @override
+  String get featureRow1Title => '20 Жылдык Чеберчилик';
+
+  @override
+  String get featureRow1Desc =>
+      'Ар бир буюм көп жылдык тажрыйба менен тандалат.';
+
+  @override
+  String get featureRow2Title => 'Аймактык Жеткирүү';
+
+  @override
+  String get featureRow2Desc =>
+      'Тандалган райондорго камсыздандырылган, тез жеткирүү.';
+
+  @override
+  String get featureRow3Title => 'WhatsApp аркылуу тез жооп';
+
+  @override
+  String get featureRow3Desc =>
+      'Бир нече мүнөттө сатуучудан чыныгы жооп алыңыз.';
 }

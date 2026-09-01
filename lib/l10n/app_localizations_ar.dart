@@ -1828,4 +1828,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'المزايا';
+
+  @override
+  String get searchHeroTitle => 'ابحث عن أثاثك';
+
+  @override
+  String get searchHeroSubtitle =>
+      'اكتشف القطعة المناسبة لك من بين مئات المنتجات الجديدة والمعروضة.';
+
+  @override
+  String get featureRow1Title => '20 عامًا من الحرفية';
+
+  @override
+  String get featureRow1Desc => 'يتم اختيار كل قطعة بعناية بخبرة سنوات طويلة.';
+
+  @override
+  String get featureRow2Title => 'توصيل محلي';
+
+  @override
+  String get featureRow2Desc => 'توصيل سريع ومؤمّن إلى الأحياء المختارة.';
+
+  @override
+  String get featureRow3Title => 'رد فوري عبر واتساب';
+
+  @override
+  String get featureRow3Desc => 'احصل على رد حقيقي من صاحب المتجر خلال دقائق.';
 }

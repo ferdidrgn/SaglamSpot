@@ -1859,4 +1859,32 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'ΠΛΕΟΝΕΚΤΗΜΑΤΑ';
+
+  @override
+  String get searchHeroTitle => 'Βρες το έπιπλό σου';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Ανακάλυψε το κατάλληλο κομμάτι ανάμεσα σε εκατοντάδες νέα και μεταχειρισμένα προϊόντα.';
+
+  @override
+  String get featureRow1Title => '20 Χρόνια Τέχνης';
+
+  @override
+  String get featureRow1Desc =>
+      'Κάθε κομμάτι επιλέγεται προσεκτικά με πολυετή εμπειρία.';
+
+  @override
+  String get featureRow2Title => 'Τοπική Παράδοση';
+
+  @override
+  String get featureRow2Desc =>
+      'Ασφαλισμένη, γρήγορη παράδοση σε επιλεγμένες περιοχές.';
+
+  @override
+  String get featureRow3Title => 'Άμεση Απάντηση στο WhatsApp';
+
+  @override
+  String get featureRow3Desc =>
+      'Λάβετε πραγματική απάντηση από τον καταστηματάρχη σε λίγα λεπτά.';
 }

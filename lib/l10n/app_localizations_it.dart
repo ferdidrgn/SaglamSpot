@@ -1855,4 +1855,32 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'VANTAGGI';
+
+  @override
+  String get searchHeroTitle => 'Trova il tuo mobile';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Scopri il pezzo giusto tra centinaia di prodotti nuovi e in offerta.';
+
+  @override
+  String get featureRow1Title => '20 Anni di Artigianato';
+
+  @override
+  String get featureRow1Desc =>
+      'Ogni pezzo è selezionato con cura da anni di esperienza.';
+
+  @override
+  String get featureRow2Title => 'Consegna Locale';
+
+  @override
+  String get featureRow2Desc =>
+      'Consegna assicurata e veloce nei quartieri selezionati.';
+
+  @override
+  String get featureRow3Title => 'Risposta Immediata su WhatsApp';
+
+  @override
+  String get featureRow3Desc =>
+      'Ricevi una risposta vera dal negoziante in pochi minuti.';
 }

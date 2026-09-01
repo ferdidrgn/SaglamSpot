@@ -1842,4 +1842,31 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'AVANTAJLAR';
+
+  @override
+  String get searchHeroTitle => 'Aradığın Mobilyayı Bul';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Yüzlerce spot ve sıfır ürün arasından size en uygun olanı filtreleyerek keşfedin.';
+
+  @override
+  String get featureRow1Title => '20 Yıllık Usta Eli';
+
+  @override
+  String get featureRow1Desc =>
+      'Her parça, yılların verdiği tecrübeyle özenle seçilir.';
+
+  @override
+  String get featureRow2Title => 'Bölgene Özel Teslimat';
+
+  @override
+  String get featureRow2Desc => 'Seçili semtlere sigortalı ve hızlı teslimat.';
+
+  @override
+  String get featureRow3Title => 'WhatsApp\'tan Anında Yanıt';
+
+  @override
+  String get featureRow3Desc =>
+      'Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı.';
 }

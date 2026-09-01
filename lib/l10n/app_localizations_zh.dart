@@ -1767,4 +1767,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => '我们的优势';
+
+  @override
+  String get searchHeroTitle => '寻找您的家具';
+
+  @override
+  String get searchHeroSubtitle => '在数百件新品和特价商品中，发现最适合您的那一件。';
+
+  @override
+  String get featureRow1Title => '20年匠心工艺';
+
+  @override
+  String get featureRow1Desc => '每件家具都经过多年经验的精心挑选。';
+
+  @override
+  String get featureRow2Title => '同城配送';
+
+  @override
+  String get featureRow2Desc => '面向指定区域的有保险、快速配送。';
+
+  @override
+  String get featureRow3Title => 'WhatsApp即时回复';
+
+  @override
+  String get featureRow3Desc => '几分钟内获得店主的真实回复。';
 }

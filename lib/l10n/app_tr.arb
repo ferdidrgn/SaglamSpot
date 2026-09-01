@@ -685,5 +685,13 @@
   "seoPrivacyTitle": "Gizlilik Politikası | Sağlam Spot",
   "seoTermsTitle": "Kullanım Şartları | Sağlam Spot",
   "howItWorksEyebrow": "SÜREÇ",
-  "whyUsEyebrow": "AVANTAJLAR"
+  "whyUsEyebrow": "AVANTAJLAR",
+  "searchHeroTitle": "Aradığın Mobilyayı Bul",
+  "searchHeroSubtitle": "Yüzlerce spot ve sıfır ürün arasından size en uygun olanı filtreleyerek keşfedin.",
+  "featureRow1Title": "20 Yıllık Usta Eli",
+  "featureRow1Desc": "Her parça, yılların verdiği tecrübeyle özenle seçilir.",
+  "featureRow2Title": "Bölgene Özel Teslimat",
+  "featureRow2Desc": "Seçili semtlere sigortalı ve hızlı teslimat.",
+  "featureRow3Title": "WhatsApp'tan Anında Yanıt",
+  "featureRow3Desc": "Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı."
 }

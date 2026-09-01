@@ -657,5 +657,13 @@
   "seoPrivacyTitle": "سياسة الخصوصية | Sağlam Spot",
   "seoTermsTitle": "شروط الخدمة | Sağlam Spot",
   "howItWorksEyebrow": "العملية",
-  "whyUsEyebrow": "المزايا"
+  "whyUsEyebrow": "المزايا",
+  "searchHeroTitle": "ابحث عن أثاثك",
+  "searchHeroSubtitle": "اكتشف القطعة المناسبة لك من بين مئات المنتجات الجديدة والمعروضة.",
+  "featureRow1Title": "20 عامًا من الحرفية",
+  "featureRow1Desc": "يتم اختيار كل قطعة بعناية بخبرة سنوات طويلة.",
+  "featureRow2Title": "توصيل محلي",
+  "featureRow2Desc": "توصيل سريع ومؤمّن إلى الأحياء المختارة.",
+  "featureRow3Title": "رد فوري عبر واتساب",
+  "featureRow3Desc": "احصل على رد حقيقي من صاحب المتجر خلال دقائق."
 }

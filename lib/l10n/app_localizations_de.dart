@@ -1862,4 +1862,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'VORTEILE';
+
+  @override
+  String get searchHeroTitle => 'Finde dein Möbelstück';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Entdecke das passende Stück unter Hunderten von Spot- und Neuangeboten.';
+
+  @override
+  String get featureRow1Title => '20 Jahre Handwerk';
+
+  @override
+  String get featureRow1Desc =>
+      'Jedes Stück wird mit jahrelanger Erfahrung sorgfältig ausgewählt.';
+
+  @override
+  String get featureRow2Title => 'Lokale Lieferung';
+
+  @override
+  String get featureRow2Desc =>
+      'Versicherte, schnelle Lieferung in ausgewählte Stadtteile.';
+
+  @override
+  String get featureRow3Title => 'Sofortige WhatsApp-Antwort';
+
+  @override
+  String get featureRow3Desc =>
+      'Erhalte in Minuten eine echte Antwort von einem echten Händler.';
 }

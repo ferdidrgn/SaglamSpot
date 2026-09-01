@@ -1853,4 +1853,32 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'AFZALLIKLAR';
+
+  @override
+  String get searchHeroTitle => 'Mebelingizni toping';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Yuzlab yangi va aksiyadagi mahsulotlar orasidan o\'zingizga moslarini tanlang.';
+
+  @override
+  String get featureRow1Title => '20 Yillik Ustalik';
+
+  @override
+  String get featureRow1Desc =>
+      'Har bir buyum yillar tajribasi bilan ehtiyotkorlik bilan tanlanadi.';
+
+  @override
+  String get featureRow2Title => 'Mintaqaviy Yetkazib Berish';
+
+  @override
+  String get featureRow2Desc =>
+      'Tanlangan mahallalarga sug\'urtalangan, tez yetkazib berish.';
+
+  @override
+  String get featureRow3Title => 'WhatsApp\'da Tezkor Javob';
+
+  @override
+  String get featureRow3Desc =>
+      'Bir necha daqiqada haqiqiy sotuvchidan haqiqiy javob oling.';
 }

@@ -1843,4 +1843,32 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'ПЕРЕВАГИ';
+
+  @override
+  String get searchHeroTitle => 'Знайдіть свої меблі';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Оберіть підходящий варіант серед сотень нових і уцінених товарів.';
+
+  @override
+  String get featureRow1Title => '20 Років Майстерності';
+
+  @override
+  String get featureRow1Desc =>
+      'Кожен виріб ретельно відбирається з багаторічним досвідом.';
+
+  @override
+  String get featureRow2Title => 'Локальна Доставка';
+
+  @override
+  String get featureRow2Desc =>
+      'Застрахована, швидка доставка у вибрані райони.';
+
+  @override
+  String get featureRow3Title => 'Миттєва Відповідь у WhatsApp';
+
+  @override
+  String get featureRow3Desc =>
+      'Отримайте справжню відповідь від продавця за лічені хвилини.';
 }

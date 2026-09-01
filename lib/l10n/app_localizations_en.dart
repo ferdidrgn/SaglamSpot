@@ -1847,4 +1847,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whyUsEyebrow => 'ADVANTAGES';
+
+  @override
+  String get searchHeroTitle => 'Find Your Furniture';
+
+  @override
+  String get searchHeroSubtitle =>
+      'Discover the right piece for you among hundreds of spot and new listings.';
+
+  @override
+  String get featureRow1Title => '20 Years of Craft';
+
+  @override
+  String get featureRow1Desc =>
+      'Every piece is carefully selected with years of expertise.';
+
+  @override
+  String get featureRow2Title => 'Local Delivery';
+
+  @override
+  String get featureRow2Desc =>
+      'Insured, fast delivery to selected neighborhoods.';
+
+  @override
+  String get featureRow3Title => 'Instant WhatsApp Reply';
+
+  @override
+  String get featureRow3Desc =>
+      'Get a real answer from a real shopkeeper in minutes.';
 }

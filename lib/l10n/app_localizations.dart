@@ -3475,6 +3475,54 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'AVANTAJLAR'**
   String get whyUsEyebrow;
+
+  /// No description provided for @searchHeroTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aradığın Mobilyayı Bul'**
+  String get searchHeroTitle;
+
+  /// No description provided for @searchHeroSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yüzlerce spot ve sıfır ürün arasından size en uygun olanı filtreleyerek keşfedin.'**
+  String get searchHeroSubtitle;
+
+  /// No description provided for @featureRow1Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'20 Yıllık Usta Eli'**
+  String get featureRow1Title;
+
+  /// No description provided for @featureRow1Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her parça, yılların verdiği tecrübeyle özenle seçilir.'**
+  String get featureRow1Desc;
+
+  /// No description provided for @featureRow2Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bölgene Özel Teslimat'**
+  String get featureRow2Title;
+
+  /// No description provided for @featureRow2Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçili semtlere sigortalı ve hızlı teslimat.'**
+  String get featureRow2Desc;
+
+  /// No description provided for @featureRow3Title.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp\'tan Anında Yanıt'**
+  String get featureRow3Title;
+
+  /// No description provided for @featureRow3Desc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı.'**
+  String get featureRow3Desc;
 }
 
 class _AppLocalizationsDelegate

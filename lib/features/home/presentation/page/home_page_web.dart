@@ -33,6 +33,7 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
+import '../widgets/livora_style_showcase_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/testimonials_section.dart';
 import '../widgets/why_us_section.dart';
@@ -83,67 +84,113 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  _buildHeroBanner(availableProducts),
-                  _buildMottoStrip(),
-                  _buildFeatureTicker(),
-                  _buildCatalogGateway(),
-                  _buildTrustBar(),
-                  _buildCategoriesSection(),
-                  _buildProductsHeader(),
-                  _buildDynamicFeaturedGrid(
-                    availableProducts
-                        .where((final p) =>
-                            selectedCategory == null ||
-                            p.category == selectedCategory)
-                        .toList(),
-                    selectedCategory,
-                  ),
-                  if (availableProducts.isNotEmpty)
-                    const SliverToBoxAdapter(
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: AdsenseBanner(
-                            type: AdUnitType.display, height: 250),
-                      ),
-                    ),
-                  _buildRoomsInspirationBanner(),
-                  // Sayfanın tam ortasına — canlı Google Haritalar + Açık/
-                  // Kapalı durumu, gerçek çalışma saatleri ve iletişim
-                  // aksiyonlarıyla, ziyaretçinin "gerçek bir işletme"
-                  // olduğumuzu ilk bakışta gördüğü nokta.
-                  const SliverToBoxAdapter(child: _VisitMapSection()),
-                  const FurnitureTipsSection(),
-                  const SocialShowcaseSection(),
-                  // --- Önceki tasarımların bölümleri: kaldırılmadı, yeni
-                  // vitrin düzeninin altına eklendi. "Popüler Kategoriler"
-                  // artık ayrı bir bölüm değil — verisi yukarıdaki "Yaşam
-                  // Alanına Göre" panelinde kullanılıyor. ---
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: AdsenseBanner(
-                          type: AdUnitType.inArticle, height: 300),
+                  // --- BANT 1: krem zemin — hero'dan ürün ızgarasına kadar
+                  // vitrinin "giriş" bölümü. Referans görsellerdeki gibi
+                  // section'lar arasında belirgin ama yumuşak (aynı sıcak
+                  // aile içinde) zemin geçişleri için sayfa artık tek
+                  // düz krem yerine ayrı renkli bantlara bölündü.
+                  DecoratedSliver(
+                    decoration: BoxDecoration(color: AppColors.background),
+                    sliver: SliverMainAxisGroup(
+                      slivers: [
+                        _buildHeroBanner(availableProducts),
+                        _buildFeatureRow(),
+                        _buildMottoStrip(),
+                        _buildFeatureTicker(),
+                        _buildCatalogGateway(),
+                        _buildTrustBar(),
+                        _buildCategoriesSection(),
+                        _buildProductsHeader(),
+                        _buildDynamicFeaturedGrid(
+                          availableProducts
+                              .where((final p) =>
+                                  selectedCategory == null ||
+                                  p.category == selectedCategory)
+                              .toList(),
+                          selectedCategory,
+                        ),
+                        if (availableProducts.isNotEmpty)
+                          const SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: AdsenseBanner(
+                                  type: AdUnitType.display, height: 250),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                  const HowItWorksSection(),
-                  _buildArtisanInfo(),
-                  const WhyUsSection(),
-                  const TestimonialsSection(),
-                  // Reklam bilerek koyu istatistik şeridinden ÖNCE, hâlâ
-                  // krem zeminin içinde duruyor — Stats + Footer arasına
-                  // girerse iki koyu blok arasında krem bir yama gibi
-                  // görünüp geçişi sertleştiriyordu. Böylece sayfanın en
-                  // altı tek, kesintisiz bir koyu bant olarak akıyor.
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: AdsenseBanner(
-                          type: AdUnitType.multiplex, height: 250),
+                  // --- BANT 2: kırık-beyaz zemin (surface) ---
+                  DecoratedSliver(
+                    decoration: BoxDecoration(color: AppColors.surface),
+                    sliver: SliverMainAxisGroup(
+                      slivers: [
+                        _buildRoomsInspirationBanner(),
+                        // Sayfanın tam ortasına — canlı Google Haritalar +
+                        // Açık/Kapalı durumu, gerçek çalışma saatleri ve
+                        // iletişim aksiyonlarıyla, ziyaretçinin "gerçek bir
+                        // işletme" olduğumuzu ilk bakışta gördüğü nokta.
+                        const SliverToBoxAdapter(child: _VisitMapSection()),
+                        const FurnitureTipsSection(),
+                      ],
                     ),
                   ),
+                  // --- BANT 3: krem zemin ---
+                  DecoratedSliver(
+                    decoration: BoxDecoration(color: AppColors.background),
+                    sliver: SliverMainAxisGroup(
+                      slivers: [
+                        const SocialShowcaseSection(),
+                        // --- Önceki tasarımların bölümleri: kaldırılmadı,
+                        // yeni vitrin düzeninin altına eklendi. "Popüler
+                        // Kategoriler" artık ayrı bir bölüm değil — verisi
+                        // yukarıdaki "Yaşam Alanına Göre" panelinde
+                        // kullanılıyor. ---
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: AdsenseBanner(
+                                type: AdUnitType.inArticle, height: 300),
+                          ),
+                        ),
+                        const HowItWorksSection(),
+                      ],
+                    ),
+                  ),
+                  // --- BANT 4: kırık-beyaz zemin (surface) ---
+                  DecoratedSliver(
+                    decoration: BoxDecoration(color: AppColors.surface),
+                    sliver: SliverMainAxisGroup(
+                      slivers: [
+                        _buildArtisanInfo(),
+                        const WhyUsSection(),
+                        const TestimonialsSection(),
+                        // Reklam bilerek koyu istatistik şeridinden ÖNCE,
+                        // hâlâ açık zeminin içinde duruyor — Stats + Footer
+                        // arasına girerse iki koyu blok arasında açık bir
+                        // yama gibi görünüp geçişi sertleştiriyordu. Böylece
+                        // sayfanın en altı tek, kesintisiz bir koyu bant
+                        // olarak akıyor.
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: AdsenseBanner(
+                                type: AdUnitType.multiplex, height: 250),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // --- BANT 5: karşılaştırma bloğu — mevcut hiçbir şey
+                  // silinmeden/değiştirilmeden, referans tasarımların
+                  // (Livora/InteriorStudio) en beğenilen öğelerini kendi
+                  // renk/veri/rozetlerimizle yeniden yorumlayan, ayrı ve
+                  // bağımsız bir ek bölüm. Kullanıcı hangisini beğenirse
+                  // onu tutacak. ---
+                  const LivoraStyleShowcaseSection(),
                   _buildStatsSection(),
                   _buildFooter(),
                 ],
@@ -291,6 +338,76 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               desktop: 560.0,
               largeDesktop: 620.0),
           child: _HeroBanner(images: _heroImages, featuredPool: featuredPool),
+        ),
+      ),
+    );
+  }
+
+  // Referans tasarımlardaki "hero altına taşan 3 kart" düzeni: hero'nun alt
+  // kenarına hafifçe binen, beyaz/yuvarlak, ikon+başlık+açıklama+CTA
+  // içeren 3 kart. CatalogGateway'deki Sıfır/Spot kartlarıyla ÇAKIŞMASIN
+  // diye içerik bilerek farklı — burada genel güven/hizmet vurguları var.
+  Widget _buildFeatureRow() {
+    final items = [
+      (
+        icon: Icons.workspace_premium_rounded,
+        title: context.l10n.featureRow1Title,
+        desc: context.l10n.featureRow1Desc,
+        onTap: () => NavigationHandler.goToAbout(context),
+      ),
+      (
+        icon: Icons.local_shipping_rounded,
+        title: context.l10n.featureRow2Title,
+        desc: context.l10n.featureRow2Desc,
+        onTap: () => NavigationHandler.goToSSS(context),
+      ),
+      (
+        icon: Icons.chat_bubble_rounded,
+        title: context.l10n.featureRow3Title,
+        desc: context.l10n.featureRow3Desc,
+        onTap: () => SaglamSpotCommunication.launchWhatsApp(),
+      ),
+    ];
+
+    final overlap = context.responsive(mobile: 22.0, desktop: 40.0);
+
+    return SliverToBoxAdapter(
+      child: Transform.translate(
+        offset: Offset(0, -overlap),
+        child: Padding(
+          padding: context.pagePadding.copyWith(top: 0, bottom: 0),
+          child: context.isMobile
+              ? Column(
+                  children: [
+                    for (int i = 0; i < items.length; i++) ...[
+                      if (i > 0) const SizedBox(height: 14),
+                      _FeatureOverlapCard(
+                        icon: items[i].icon,
+                        title: items[i].title,
+                        desc: items[i].desc,
+                        onTap: items[i].onTap,
+                      ),
+                    ],
+                  ],
+                )
+              : IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (int i = 0; i < items.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 18),
+                        Expanded(
+                          child: _FeatureOverlapCard(
+                            icon: items[i].icon,
+                            title: items[i].title,
+                            desc: items[i].desc,
+                            onTap: items[i].onTap,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
         ),
       ),
     );
@@ -1607,6 +1724,86 @@ class _GatewayCard extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+        ),
+      );
+}
+
+/// [_buildFeatureRow]'daki beyaz, hero'nun altına taşan tekil kart.
+class _FeatureOverlapCard extends StatefulWidget {
+  const _FeatureOverlapCard({
+    required this.icon,
+    required this.title,
+    required this.desc,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String desc;
+  final VoidCallback onTap;
+
+  @override
+  State<_FeatureOverlapCard> createState() => _FeatureOverlapCardState();
+}
+
+class _FeatureOverlapCardState extends State<_FeatureOverlapCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(final BuildContext context) => MouseRegion(
+        onEnter: (final _) => setState(() => _isHovered = true),
+        onExit: (final _) => setState(() => _isHovered = false),
+        child: TactilePress(
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            transform: _isHovered
+                ? (Matrix4.identity()..translate(0.0, -4.0))
+                : Matrix4.identity(),
+            padding:
+                EdgeInsets.all(context.responsive(mobile: 18, desktop: 22)),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.08),
+                  blurRadius: _isHovered ? 28 : 20,
+                  offset: Offset(0, _isHovered ? 14 : 10),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: AppColors.accentGradient,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(widget.icon, color: Colors.white, size: 22),
+                ),
+                const SizedBox(height: 14),
+                Text(widget.title,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: context.bodySize,
+                        color: AppColors.textPrimary)),
+                const SizedBox(height: 6),
+                Text(widget.desc,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: context.captionSize,
+                        height: 1.4)),
+              ],
+            ),
           ),
         ),
       );

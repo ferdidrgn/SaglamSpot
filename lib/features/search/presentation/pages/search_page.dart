@@ -92,6 +92,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           SafeArea(
             child: Column(
               children: [
+                if (kIsWeb) _buildSearchHero(context),
                 _buildTopBar(context, searchQuery),
                 if (!showSidebar) _buildCategoryStrip(currentFilters),
                 Divider(height: 1, color: AppColors.border),
@@ -195,6 +196,95 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   // ─────────────────────────────────────────────────────────────
+  // GÖRSEL HERO — arama/filtre paneli fonksiyonel kalsın diye tam ekran
+  // değil, kompakt bir fotoğraf + başlık şeridi (referans "The Shop" ve
+  // "Livora" tasarımlarındaki gibi görsel+yazı ile besleniyor, ama sonuç
+  // alanını sıkıştırmayacak kadar kısa tutuluyor). Yalnızca web'de —
+  // mobil native tarafta dikey alan filtre/sonuçlara ayrılmalı.
+  // ─────────────────────────────────────────────────────────────
+  Widget _buildSearchHero(final BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+        context.responsive(mobile: 12.0, desktop: 18.0),
+        context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+        0,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: SizedBox(
+          height:
+              context.responsive(mobile: 120.0, tablet: 150.0, desktop: 180.0),
+          width: double.infinity,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600',
+                fit: BoxFit.cover,
+                errorBuilder: (final c, final e, final s) =>
+                    Container(color: AppColors.secondary),
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      AppColors.backgroundDark.withOpacity(0.72),
+                      AppColors.backgroundDark.withOpacity(0.18),
+                    ],
+                    stops: const [0.0, 0.9],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal:
+                        context.responsive(mobile: 20.0, desktop: 36.0)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.searchHeroTitle,
+                      style: TextStyle(
+                        fontFamily: 'Fraunces',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontSize: context.responsive(
+                            mobile: 20.0, tablet: 26.0, desktop: 30.0),
+                        height: 1.15,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: context.responsive(
+                              mobile: 220.0, desktop: 380.0)),
+                      child: Text(
+                        context.l10n.searchHeroSubtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.85),
+                          fontSize:
+                              context.responsive(mobile: 12.0, desktop: 14.0),
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────
   // ÜST ÇUBUK — dev arka plan fotoğraflı hero'nun yerini alan, sonuçlarla
   // aynı ekranda her zaman görünen kompakt arama şeridi.
   // ─────────────────────────────────────────────────────────────
@@ -216,9 +306,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             child: GlassSurface(
               height: context.responsive(mobile: 46.0, desktop: 50.0),
               borderRadius: 14,
-              borderColor: _showSearchFocus ? AppColors.textSecondary : null,
+              borderColor: _showSearchFocus ? AppColors.primary : null,
               borderWidth: _showSearchFocus ? 1.4 : null,
-              chromaticEdge: _showSearchFocus,
               child: TextField(
                 controller: _searchController,
                 onChanged: (final val) =>
