@@ -350,21 +350,30 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   Widget _buildFeatureRow() {
     final items = [
       (
+        image:
+            'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=300',
         icon: Icons.workspace_premium_rounded,
         title: context.l10n.featureRow1Title,
         desc: context.l10n.featureRow1Desc,
+        buttonLabel: context.l10n.exploreButton,
         onTap: () => NavigationHandler.goToAbout(context),
       ),
       (
+        image:
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=300',
         icon: Icons.local_shipping_rounded,
         title: context.l10n.featureRow2Title,
         desc: context.l10n.featureRow2Desc,
+        buttonLabel: context.l10n.exploreButton,
         onTap: () => NavigationHandler.goToSSS(context),
       ),
       (
+        image:
+            'https://images.unsplash.com/photo-1520201163981-8cc95007dd2a?q=80&w=300',
         icon: Icons.chat_bubble_rounded,
         title: context.l10n.featureRow3Title,
         desc: context.l10n.featureRow3Desc,
+        buttonLabel: context.l10n.exploreButton,
         onTap: () => SaglamSpotCommunication.launchWhatsApp(),
       ),
     ];
@@ -382,9 +391,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     for (int i = 0; i < items.length; i++) ...[
                       if (i > 0) const SizedBox(height: 14),
                       _FeatureOverlapCard(
+                        image: items[i].image,
                         icon: items[i].icon,
                         title: items[i].title,
                         desc: items[i].desc,
+                        buttonLabel: items[i].buttonLabel,
                         onTap: items[i].onTap,
                       ),
                     ],
@@ -398,9 +409,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         if (i > 0) const SizedBox(width: 18),
                         Expanded(
                           child: _FeatureOverlapCard(
+                            image: items[i].image,
                             icon: items[i].icon,
                             title: items[i].title,
                             desc: items[i].desc,
+                            buttonLabel: items[i].buttonLabel,
                             onTap: items[i].onTap,
                           ),
                         ),
@@ -1732,15 +1745,19 @@ class _GatewayCard extends StatelessWidget {
 /// [_buildFeatureRow]'daki beyaz, hero'nun altına taşan tekil kart.
 class _FeatureOverlapCard extends StatefulWidget {
   const _FeatureOverlapCard({
+    required this.image,
     required this.icon,
     required this.title,
     required this.desc,
+    required this.buttonLabel,
     required this.onTap,
   });
 
+  final String image;
   final IconData icon;
   final String title;
   final String desc;
+  final String buttonLabel;
   final VoidCallback onTap;
 
   @override
@@ -1763,7 +1780,7 @@ class _FeatureOverlapCardState extends State<_FeatureOverlapCard> {
                 ? (Matrix4.identity()..translate(0.0, -4.0))
                 : Matrix4.identity(),
             padding:
-                EdgeInsets.all(context.responsive(mobile: 18, desktop: 22)),
+                EdgeInsets.all(context.responsive(mobile: 16, desktop: 20)),
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(20),
@@ -1779,22 +1796,51 @@ class _FeatureOverlapCardState extends State<_FeatureOverlapCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.accentGradient,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Icon(widget.icon, color: Colors.white, size: 22),
+                // Referans tasarımdaki gibi: küçük görsel solda, başlık
+                // yanında — dekoratif tek başına bir ikon yerine.
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            widget.image,
+                            width: 52,
+                            height: 52,
+                            fit: BoxFit.cover,
+                            errorBuilder: (final c, final e, final s) =>
+                                Container(
+                                    width: 52,
+                                    height: 52,
+                                    color: AppColors.secondary),
+                          ),
+                          Container(
+                            width: 52,
+                            height: 52,
+                            alignment: Alignment.center,
+                            color: Colors.black.withOpacity(0.18),
+                            child: Icon(widget.icon,
+                                color: Colors.white, size: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(widget.title,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: context.bodySize,
+                                color: AppColors.textPrimary)),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 14),
-                Text(widget.title,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: context.bodySize,
-                        color: AppColors.textPrimary)),
-                const SizedBox(height: 6),
+                const SizedBox(height: 10),
                 Text(widget.desc,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -1802,6 +1848,23 @@ class _FeatureOverlapCardState extends State<_FeatureOverlapCard> {
                         color: AppColors.textSecondary,
                         fontSize: context.captionSize,
                         height: 1.4)),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: widget.onTap,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      side: BorderSide(color: AppColors.border),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    child: Text(widget.buttonLabel,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 12.5)),
+                  ),
+                ),
               ],
             ),
           ),
