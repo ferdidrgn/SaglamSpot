@@ -4,6 +4,7 @@ import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../core/widgets/business_info_showcase.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 class AboutPage extends StatefulWidget {
@@ -88,6 +89,8 @@ class _AboutPageState extends State<AboutPage> {
             ),
             const SizedBox(height: 18),
             _buildMobileContactCard(context),
+            const SizedBox(height: 14),
+            const BusinessInfoShowcase(),
           ],
         ),
       ),
@@ -98,7 +101,8 @@ class _AboutPageState extends State<AboutPage> {
         children: [
           IconButton(
             onPressed: () => NavigationHandler.smartGoBack(context),
-            icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+            icon: Icon(Icons.arrow_back_rounded,
+                color: AppColors.mobileTextPrimary),
           ),
           Expanded(
             child: Text(
@@ -134,7 +138,9 @@ class _AboutPageState extends State<AboutPage> {
               child: Text(
                 context.l10n.aboutBadge,
                 style: const TextStyle(
-                    color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w800),
+                    color: Colors.white,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800),
               ),
             ),
             const SizedBox(height: 14),
@@ -152,10 +158,26 @@ class _AboutPageState extends State<AboutPage> {
 
   Widget _buildMobileValues(final BuildContext context) {
     final values = [
-      (Icons.verified_rounded, context.l10n.aboutValue1Title, context.l10n.aboutValue1Desc),
-      (Icons.favorite_rounded, context.l10n.aboutValue2Title, context.l10n.aboutValue2Desc),
-      (Icons.eco_rounded, context.l10n.aboutValue3Title, context.l10n.aboutValue3Desc),
-      (Icons.handshake_rounded, context.l10n.aboutValue4Title, context.l10n.aboutValue4Desc),
+      (
+        Icons.verified_rounded,
+        context.l10n.aboutValue1Title,
+        context.l10n.aboutValue1Desc
+      ),
+      (
+        Icons.favorite_rounded,
+        context.l10n.aboutValue2Title,
+        context.l10n.aboutValue2Desc
+      ),
+      (
+        Icons.eco_rounded,
+        context.l10n.aboutValue3Title,
+        context.l10n.aboutValue3Desc
+      ),
+      (
+        Icons.handshake_rounded,
+        context.l10n.aboutValue4Title,
+        context.l10n.aboutValue4Desc
+      ),
     ];
 
     return Container(
@@ -171,12 +193,15 @@ class _AboutPageState extends State<AboutPage> {
           Text(
             context.l10n.aboutValuesHeading,
             style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: AppColors.mobileTextPrimary),
           ),
           const SizedBox(height: 4),
           Text(
             context.l10n.aboutValuesSubheading,
-            style: TextStyle(fontSize: 12.5, color: AppColors.mobileTextSecondary),
+            style:
+                TextStyle(fontSize: 12.5, color: AppColors.mobileTextSecondary),
           ),
           const SizedBox(height: 14),
           for (final v in values)
@@ -232,7 +257,9 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               context.l10n.aboutContactHeading,
               style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.mobileTextPrimary),
             ),
             const SizedBox(height: 14),
             _MobileContactRow(
@@ -259,7 +286,8 @@ class _AboutPageState extends State<AboutPage> {
                       foregroundColor: AppColors.mobilePrimary,
                       side: BorderSide(color: AppColors.mobilePrimary),
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                 ),
@@ -275,7 +303,8 @@ class _AboutPageState extends State<AboutPage> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                 ),
@@ -975,7 +1004,7 @@ class _AboutPageState extends State<AboutPage> {
       context,
       Icons.phone_outlined,
       context.l10n.aboutContactPhoneLabel,
-      '+90 539 201 9961',
+      SaglamSpotCommunication.displayPhone,
     );
     final item2 = _buildContactItem(
       context,
@@ -1160,70 +1189,12 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  // Map Section
+  // Canlı harita + gerçek zamanlı Açık/Kapalı rozeti + çalışma saatleri —
+  // eskiden burada tıklanınca dışarı yönlendiren SAHTE bir harita ikonu
+  // vardı (gerçek harita gömülü değildi), artık ana sayfadakiyle aynı
+  // gerçek, animasyonlu bileşen kullanılıyor.
   Widget _buildMapSection(final BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: context.responsive(
-          mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          desktop: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        ),
-        height: context.responsive(mobile: 300, desktop: 400),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(
-            context.responsive(mobile: 24.0, desktop: 32.0),
-          ),
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(
-            context.responsive(mobile: 24.0, desktop: 32.0),
-          ),
-          child: GestureDetector(
-            onTap: () => _launchMaps(),
-            child: Container(
-              color: AppColors.background,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.map_outlined,
-                      size: context.responsive(mobile: 60, desktop: 80),
-                      color: AppColors.textTertiary,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      context.l10n.aboutMapHeading,
-                      style: TextStyle(
-                        fontSize: context.responsive(mobile: 18, desktop: 20),
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      context.l10n.aboutMapSubtext,
-                      style: TextStyle(
-                        color: AppColors.textTertiary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    return const SliverToBoxAdapter(child: BusinessInfoShowcase());
   }
 
   Future<void> _launchPhone() async {
@@ -1287,7 +1258,9 @@ class _MobileSection extends StatelessWidget {
             Text(
               body,
               style: TextStyle(
-                  fontSize: 12.5, color: AppColors.mobileTextSecondary, height: 1.55),
+                  fontSize: 12.5,
+                  color: AppColors.mobileTextSecondary,
+                  height: 1.55),
             ),
           ],
         ),
@@ -1324,7 +1297,8 @@ class _MobileContactRow extends StatelessWidget {
                   children: [
                     Text(label,
                         style: TextStyle(
-                            fontSize: 11.5, color: AppColors.mobileTextTertiary)),
+                            fontSize: 11.5,
+                            color: AppColors.mobileTextTertiary)),
                     const SizedBox(height: 2),
                     Text(value,
                         style: TextStyle(

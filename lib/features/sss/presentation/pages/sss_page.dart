@@ -4,6 +4,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../core/widgets/business_info_showcase.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 enum _FaqCategory {
@@ -181,6 +182,11 @@ class _SSSPageState extends State<SSSPage> {
         // FAQ List
         _buildFAQList(context),
 
+        // Canlı harita + gerçek zamanlı Açık/Kapalı rozeti + çalışma
+        // saatleri — bu sayfada daha önce hiç gerçek harita/saat bilgisi
+        // yoktu, sadece "mağazayı ziyaret et" butonu vardı.
+        const SliverToBoxAdapter(child: BusinessInfoShowcase()),
+
         // Contact CTA
         _buildContactCTA(context),
 
@@ -218,6 +224,10 @@ class _SSSPageState extends State<SSSPage> {
               ),
             ),
             SliverToBoxAdapter(child: _buildMobileContactCard(context)),
+            const SliverToBoxAdapter(
+                child: Padding(
+                    padding: EdgeInsets.only(top: 14),
+                    child: BusinessInfoShowcase())),
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
           ],
         ),
