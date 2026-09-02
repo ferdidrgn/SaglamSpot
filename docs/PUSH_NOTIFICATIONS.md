@@ -90,16 +90,71 @@ Test için önce kendi cihazınızda uygulamayı açıp konsoldaki debug
 loglarından (`📲 FCM cihaz token: ...`) token'ı alıp "Send test message"
 ile tek cihaza da gönderebilirsiniz.
 
+## Otomatik bildirimler (Cloud Functions) — artık kod tarafında hazır
+
+Yukarıdaki "elle kampanya gönder" akışının yanına, `functions/index.js`
+içinde iki OTOMATİK bildirim eklendi. Bunlar `firebase deploy --only
+functions` ile deploy edildikten sonra kendiliğinden çalışır, Console'da
+hiçbir şey yapmanız gerekmez:
+
+### 1. Günlük "yeni ürün" özeti (`dailyProductDigest`)
+Her ürün eklendiğinde ayrı ayrı bildirim GÖNDERMEZ (gece yarısı ya da
+art arda çok ürün eklenirse kullanıcıyı rahatsız eder, bildirimleri
+kapatmasına yol açar). Bunun yerine her gün **saat 11:00'de (İstanbul
+saati)** bir kez çalışır, son özetten bu yana kaç yeni ürün eklendiğine
+bakar; varsa TEK bir özet bildirimi gönderir ("3 yeni ürün eklendi"),
+yoksa hiçbir şey göndermez. `all_users` konusuna yayınlanır (herkese).
+
+Saati değiştirmek isterseniz: `functions/index.js` içinde
+`dailyProductDigest`'in `schedule: "0 11 * * *"` satırındaki cron
+ifadesini düzenleyip yeniden deploy edin.
+
+### 2. Fiyat düşüşü bildirimi (`notifyPriceDrop`)
+Bir ürünün fiyatı gerçekten düşünce, SADECE o ürünü favorileyen
+cihazlara anında, kişiye özel bir bildirim gönderir ("Favorin ucuzladı!
+🎉"). Bu, günlük özetten farklı olarak spam riski taşımaz — kişi
+bilerek favorilediği bir ürün için, nadir gerçekleşen bir olayda
+bildirim alır.
+
+Bunun çalışabilmesi için Flutter tarafı, cihazın favorilediği ürün
+ID'lerini `notification_subscriptions/{fcmToken}` Firestore
+dokümanına yazar (bkz. `lib/core/services/favorite_notification_sync.dart`,
+`FavoritesNotifier` her favori ekleme/çıkarmada tetikler).
+
+### ⚠️ Firestore güvenlik kuralı eklemeniz GEREKİYOR
+
+Bu projede Firestore kuralları repo'da değil, Firebase Console'da
+tutuluyor — bu yüzden aşağıdaki kuralı **siz** Console → Firestore
+Database → Rules sekmesinden eklemelisiniz (aksi halde müşteri
+cihazları `notification_subscriptions`'a yazamaz, favori senkronu
+sessizce başarısız olur):
+
+```
+match /notification_subscriptions/{token} {
+  allow read: if false; // sadece Cloud Functions (Admin SDK) okur, kurallardan muaf
+  allow write: if request.resource.data.keys().hasOnly(['productIds', 'updatedAt'])
+               && request.resource.data.productIds is list;
+}
+```
+
 ## Bilinen sınırlamalar
 
-- Belirli kullanıcı gruplarına (örn. "sadece X ürünü sepetinde olanlar")
-  hedefli bildirim göndermek için bir backend/Cloud Function gerekir —
-  şu an sadece "herkese" (`all_users` konusu) yayın yapılabiliyor.
+- Belirli kullanıcı gruplarına hedefli bildirim artık MÜMKÜN (yukarıdaki
+  `notifyPriceDrop` — favorileyenlere özel) ama genel yayın hâlâ sadece
+  "herkese" (`all_users` konusu) ya da "favorileyenlere" şeklinde; daha
+  ince segmentasyon (örn. "sadece belirli bir semtte oturanlar") için ek
+  geliştirme gerekir.
 - Bildirime dokunduğunda belirli bir ürün sayfasına yönlendirme şu an
   YOK — sadece uygulamayı açıyor. Bu, mesaj verisine (`data` alanı) bir
   ürün ID'si eklenerek ve `NotificationService._onNotificationTapped`
   içinde yönlendirme kodu yazılarak eklenebilir (istenirse ayrı bir
-  işte yapılabilir).
+  işte yapılabilir). Yeni fonksiyonlar zaten `data.productId`
+  gönderiyor, sadece istemci tarafında okuyup yönlendirme eklenmesi
+  yeterli.
+- `notifyPriceDrop` gece de anında gönderilir (günlük özetteki gibi
+  "sabaha ertele" mantığı yok) — kişiye özel/nadir bir olay olduğu için
+  bilinçli olarak böyle bırakıldı, istenirse aynı erteleme mantığı buna
+  da eklenebilir.
 - Web'de (tarayıcı) push bildirimleri için ayrıca bir Service Worker
   (`firebase-messaging-sw.js`) ve VAPID anahtarı gerekir — bu turda
   kapsam dışı bırakıldı (sadece Android/iOS native push aktif).

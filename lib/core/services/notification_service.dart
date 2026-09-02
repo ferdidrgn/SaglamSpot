@@ -12,7 +12,8 @@ import 'notification_inbox_cache.dart';
 /// gösterilir — manuel gösterime sadece foreground'da ihtiyaç var, bkz.
 /// NotificationService._onForegroundMessage).
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(final RemoteMessage message) async {
+Future<void> firebaseMessagingBackgroundHandler(
+    final RemoteMessage message) async {
   final title = message.notification?.title ?? message.data['title'] ?? '';
   final body = message.notification?.body ?? message.data['body'] ?? '';
   if (title.isEmpty && body.isEmpty) return;
@@ -42,6 +43,15 @@ final class NotificationService {
 
   static bool _initialized = false;
 
+  /// Bu cihazın FCM push token'ı — init() başarıyla tamamlandıktan sonra
+  /// dolar. Favori bildirim senkronizasyonu (bkz.
+  /// FavoriteNotificationSync) bu değeri Firestore'a yazarak "bu cihaz şu
+  /// ürünleri favoriledi" eşleşmesini kurar. Web'de VAPID anahtarı henüz
+  /// kurulmadığı için (bkz. docs/PUSH_NOTIFICATIONS.md) ya da bildirim
+  /// izni reddedildiğinde null kalabilir — bu durumda favori senkronu
+  /// sessizce atlanır.
+  static String? currentToken;
+
   static Future<void> init() async {
     if (_initialized) return;
     _initialized = true;
@@ -70,6 +80,7 @@ final class NotificationService {
     if (initialMessage != null) await _onNotificationTapped(initialMessage);
 
     final token = await FirebaseMessaging.instance.getToken();
+    currentToken = token;
     debugPrint('📲 FCM cihaz token: $token');
   }
 
@@ -79,7 +90,8 @@ final class NotificationService {
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosInit = DarwinInitializationSettings();
     await _localPlugin.initialize(
-      settings: const InitializationSettings(android: androidInit, iOS: iosInit),
+      settings:
+          const InitializationSettings(android: androidInit, iOS: iosInit),
     );
 
     const channel = AndroidNotificationChannel(

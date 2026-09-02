@@ -25,11 +25,13 @@
  */
 
 const {onCall, onRequest, HttpsError} = require("firebase-functions/v2/https");
-const {onDocumentDeleted} = require("firebase-functions/v2/firestore");
+const {onDocumentDeleted, onDocumentUpdated} = require("firebase-functions/v2/firestore");
+const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {defineSecret} = require("firebase-functions/params");
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore, FieldValue} = require("firebase-admin/firestore");
 const {getStorage} = require("firebase-admin/storage");
+const {getMessaging} = require("firebase-admin/messaging");
 const {randomUUID, createHmac} = require("crypto");
 
 initializeApp();
@@ -178,6 +180,126 @@ exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event
     if (!path) return;
     await bucket.file(path).delete().catch(() => {});
   }));
+});
+
+/**
+ * GÜNLÜK ÜRÜN ÖZETİ BİLDİRİMİ — her ürün eklendiğinde ayrı ayrı bildirim
+ * GÖNDERMEZ (gece yarısı veya art arda çok sayıda ürün eklenirse
+ * kullanıcıyı bildirim yağmuruna tutar, rahatsız eder ve bildirimleri
+ * kapatmasına yol açar). Bunun yerine her gün SABİT bir saatte (11:00,
+ * İstanbul saati) bir kez çalışır: son özetten bu yana kaç yeni ürün
+ * eklendiğine bakar, varsa TEK bir özet bildirimi gönderir
+ * ("3 yeni ürün eklendi"), yoksa hiçbir şey göndermez.
+ *
+ * Ürün dokümanlarındaki `_createdAt` alanı "dd.MM.yyyy, HH:mm" formatında
+ * bir STRING olduğu için Firestore'da tarih aralığı sorgusuna uygun değil
+ * (leksikografik sıralama gerçek tarih sırasıyla eşleşmiyor). Bunun yerine
+ * Firestore'un her dokümana otomatik atadığı, her zaman doğru sıralanan
+ * gerçek zaman damgası olan `doc.createTime` kullanılıyor.
+ */
+exports.dailyProductDigest = onSchedule(
+    {schedule: "0 11 * * *", timeZone: "Europe/Istanbul"},
+    async () => {
+      const db = getFirestore();
+      const configRef = db.doc("system_config/notificationDigest");
+      const configSnap = await configRef.get();
+      const lastSentAt = configSnap.exists && configSnap.data().lastSentAt ?
+        configSnap.data().lastSentAt.toDate() :
+        new Date(Date.now() - 24 * 60 * 60 * 1000); // ilk çalıştırmada: son 24 saat
+
+      const snap = await db.collection("Product")
+          .where("isSold", "==", false)
+          .get();
+
+      const newCount = snap.docs.filter((d) =>
+        d.createTime && d.createTime.toDate() > lastSentAt).length;
+
+      // Bir sonraki pencere için işaretçiyi HER ZAMAN güncelle — 0 yeni
+      // ürün olsa bile, aksi halde eski ürünler her gün "yeni" sayılmaya
+      // devam eder.
+      await configRef.set(
+          {lastSentAt: FieldValue.serverTimestamp()}, {merge: true});
+
+      if (newCount === 0) return;
+
+      const title = "Yeni Ürünler Eklendi! 🛋️";
+      const body = newCount === 1 ?
+        "Mağazaya 1 yeni ürün eklendi, göz atmak ister misiniz?" :
+        `Mağazaya ${newCount} yeni ürün eklendi, göz atmak ister misiniz?`;
+
+      try {
+        await getMessaging().send({
+          topic: "all_users",
+          notification: {title, body},
+          data: {type: "new_products_digest", count: String(newCount)},
+        });
+      } catch (err) {
+        console.error("dailyProductDigest: FCM gönderimi başarısız.", err);
+      }
+    },
+);
+
+/**
+ * FİYAT DÜŞÜŞÜ BİLDİRİMİ — bir ürünün fiyatı gerçekten DÜŞTÜĞÜNDE
+ * (satıldı olarak işaretlenmemişse), o ürünü favorileyen cihazlara
+ * kişiye özel bir bildirim gönderir. Günlük özetten farklı olarak
+ * ANINDA gönderilir — bu, spam değil kişiye özel/nadir bir olay (yalnızca
+ * ürünü bilerek favorileyen kişiye, yalnızca fiyat gerçekten düşünce).
+ *
+ * Hangi cihazın hangi ürünleri favorilediği `notification_subscriptions/
+ * {fcmToken}` dokümanında `productIds` dizisi olarak tutulur — bkz.
+ * Flutter tarafı: lib/core/services/favorite_notification_sync.dart.
+ */
+exports.notifyPriceDrop = onDocumentUpdated("Product/{productId}", async (event) => {
+  const before = event.data.before.data();
+  const after = event.data.after.data();
+  if (!before || !after || after.isSold) return;
+
+  const oldPrice = typeof before.price === "number" ? before.price : null;
+  const newPrice = typeof after.price === "number" ? after.price : null;
+  if (oldPrice === null || newPrice === null || newPrice >= oldPrice) return;
+
+  const productId = event.params.productId;
+  const db = getFirestore();
+
+  const snap = await db.collection("notification_subscriptions")
+      .where("productIds", "array-contains", productId)
+      .get();
+  if (snap.empty) return;
+
+  const tokens = snap.docs.map((d) => d.id);
+  const title = "Favorin Ucuzladı! 🎉";
+  const body = `${after.name || "Favori ürünün"} artık ₺${Math.round(newPrice)}` +
+      ` — az önce ₺${Math.round(oldPrice)} idi.`;
+
+  // FCM tek istekte en fazla 500 token kabul eder — mağaza ölçeğinde asla
+  // aşılmaz ama yine de güvenli olsun diye parçalara bölünüyor.
+  const chunks = [];
+  for (let i = 0; i < tokens.length; i += 500) chunks.push(tokens.slice(i, i + 500));
+
+  const staleTokens = [];
+  for (const chunk of chunks) {
+    try {
+      const response = await getMessaging().sendEachForMulticast({
+        tokens: chunk,
+        notification: {title, body},
+        data: {type: "price_drop", productId},
+      });
+      response.responses.forEach((r, i) => {
+        if (!r.success && r.error &&
+            r.error.code === "messaging/registration-token-not-registered") {
+          staleTokens.push(chunk[i]);
+        }
+      });
+    } catch (err) {
+      console.error("notifyPriceDrop: FCM gönderimi başarısız.", err);
+    }
+  }
+
+  // Artık geçersiz (uygulama silinmiş/token değişmiş) kayıtları temizle —
+  // aksi halde her fiyat değişiminde boşuna sorgulanır dururlar.
+  await Promise.all(staleTokens.map((t) =>
+    db.collection("notification_subscriptions").doc(t).delete().catch(() => {})));
 });
 
 /**
