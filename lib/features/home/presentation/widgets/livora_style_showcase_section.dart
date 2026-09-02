@@ -434,7 +434,11 @@ class _ProductSpotlightCard extends StatelessWidget {
                             color: AppColors.textSecondary,
                             fontSize: context.bodySize,
                             height: 1.5)),
-                  if (product.availableColors.isNotEmpty) ...[
+                  // Renk seçenekleri sadece SIFIR ürünlerde anlamlıdır —
+                  // ikinci el/spot üründe tek, fiziksel bir parça satılır,
+                  // renk "seçilemez" (bkz. Product.availableColors dokümanı).
+                  if (!product.isSpotProduct &&
+                      product.availableColors.isNotEmpty) ...[
                     const SizedBox(height: 14),
                     Row(
                       children: [
