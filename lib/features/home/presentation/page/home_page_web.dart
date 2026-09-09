@@ -94,7 +94,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     sliver: SliverMainAxisGroup(
                       slivers: [
                         _buildHeroBanner(availableProducts),
-                        _buildFeatureRow(),
+                        _buildWhyChooseRow(),
                         _buildMottoStrip(),
                         _buildFeatureTicker(),
                         _buildCatalogGateway(),
@@ -351,105 +351,79 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // kenarına hafifçe binen, beyaz/yuvarlak, ikon+başlık+açıklama+CTA
   // içeren 3 kart. CatalogGateway'deki Sıfır/Spot kartlarıyla ÇAKIŞMASIN
   // diye içerik bilerek farklı — burada genel güven/hizmet vurguları var.
-  Widget _buildFeatureRow() {
+  // Kullanıcı önceki büyük, "havada süzülen" 3'lü kart tasarımını istemedi;
+  // bunun yerine sayfada daha önce olan ve kullanıcının çok sevdiği küçük,
+  // renkli rozet zinciri geri getirildi — aynı 3 gerçek vurgu (usta eli,
+  // bölgesel teslimat, WhatsApp'tan anında yanıt), ama artık zarif, tek
+  // satırlık bir "chip" grubu olarak; her rozet kendi markasal (birbiriyle
+  // tam uyumlu) rengini ve kademeli (staggered) bir beliriş animasyonunu
+  // taşıyor.
+  Widget _buildWhyChooseRow() {
     final items = [
-      (
-        image:
-            'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=300',
-        icon: Icons.workspace_premium_rounded,
-        title: context.l10n.featureRow1Title,
-        desc: context.l10n.featureRow1Desc,
-        buttonLabel: context.l10n.exploreButton,
-        onTap: () => NavigationHandler.goToAbout(context),
-        accentColor: AppColors.accent,
-        // NOT: Kartın kendi başlığı zaten "20 Yıllık Usta Eli" —
-        // buraya AYNI rakamı bir daha koymak yerine (sayfada zaten
-        // stats/artisan/ticker'da var), niteliksel/farklı bir vurgu.
-        statLabel: 'Elde Seçilir',
-        statIcon: Icons.pan_tool_rounded,
-      ),
-      (
-        image:
-            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=300',
-        icon: Icons.local_shipping_rounded,
-        title: context.l10n.featureRow2Title,
-        desc: context.l10n.featureRow2Desc,
-        buttonLabel: context.l10n.exploreButton,
-        onTap: () => NavigationHandler.goToSSS(context),
-        accentColor: AppColors.info,
-        // Yine gerçek — SaglamSpotCommunication.freeDeliveryZones'ın
-        // kendi uzunluğu, sabit yazılmış bir sayı değil.
-        statLabel:
-            '${SaglamSpotCommunication.freeDeliveryZones.length} Bölge',
-        statIcon: Icons.location_on_rounded,
-      ),
-      (
-        image:
-            'https://images.unsplash.com/photo-1520201163981-8cc95007dd2a?q=80&w=300',
-        icon: Icons.chat_bubble_rounded,
-        title: context.l10n.featureRow3Title,
-        desc: context.l10n.featureRow3Desc,
-        buttonLabel: context.l10n.exploreButton,
-        onTap: () => SaglamSpotCommunication.launchWhatsApp(),
-        accentColor: AppColors.success,
-        statLabel: 'Dakikalar İçinde',
-        statIcon: Icons.bolt_rounded,
-      ),
+      (Icons.workspace_premium_rounded, context.l10n.featureRow1Title,
+          AppColors.accent),
+      (Icons.local_shipping_rounded, context.l10n.featureRow2Title,
+          AppColors.info),
+      (Icons.chat_bubble_rounded, context.l10n.featureRow3Title,
+          AppColors.success),
     ];
 
-    // Önceden kartlar hero'nun içine (40px'e kadar) derince gömülüyordu —
-    // biraz daha aşağı, daha nefes alan bir konuma çekildi.
-    final overlap = context.responsive(mobile: 12.0, desktop: 22.0);
-
     return SliverToBoxAdapter(
-      child: Transform.translate(
-        offset: Offset(0, -overlap),
-        child: Padding(
-          padding: context.pagePadding.copyWith(top: 0, bottom: 0),
-          child: context.isMobile
-              ? Column(
-                  children: [
-                    for (int i = 0; i < items.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 16),
-                      _FeatureOverlapCard(
-                        image: items[i].image,
-                        icon: items[i].icon,
-                        title: items[i].title,
-                        desc: items[i].desc,
-                        buttonLabel: items[i].buttonLabel,
-                        onTap: items[i].onTap,
-                        accentColor: items[i].accentColor,
-                        statLabel: items[i].statLabel,
-                        statIcon: items[i].statIcon,
-                        floatIndex: i,
-                      ),
-                    ],
-                  ],
-                )
-              : IntrinsicHeight(
+      child: Padding(
+        padding: context.pagePadding,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+              vertical: context.responsive(mobile: 18, desktop: 24),
+              horizontal: context.responsive(mobile: 14, desktop: 24)),
+          decoration: BoxDecoration(
+            color: AppColors.secondary.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: context.responsive(mobile: 18, desktop: 32),
+            runSpacing: 14,
+            children: [
+              for (int i = 0; i < items.length; i++)
+                RevealFade(
+                  delayMs: i * 90,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      for (int i = 0; i < items.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 18),
-                        Expanded(
-                          child: _FeatureOverlapCard(
-                            image: items[i].image,
-                            icon: items[i].icon,
-                            title: items[i].title,
-                            desc: items[i].desc,
-                            buttonLabel: items[i].buttonLabel,
-                            onTap: items[i].onTap,
-                            accentColor: items[i].accentColor,
-                            statLabel: items[i].statLabel,
-                            statIcon: items[i].statIcon,
-                            floatIndex: i,
+                      Container(
+                        width: 30,
+                        height: 30,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              items[i].$3,
+                              Color.lerp(items[i].$3, Colors.black, 0.2)!,
+                            ],
                           ),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                                color: items[i].$3.withOpacity(0.35),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4)),
+                          ],
                         ),
-                      ],
+                        child: Icon(items[i].$1, color: Colors.white, size: 15),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(items[i].$2,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: context.captionSize,
+                              color: AppColors.textPrimary)),
                     ],
                   ),
                 ),
+            ],
+          ),
         ),
       ),
     );
@@ -1521,225 +1495,6 @@ class _GatewayCard extends StatelessWidget {
                 ],
               ),
             ],
-          ),
-        ),
-      );
-}
-
-/// [_buildFeatureRow]'daki beyaz, hero'nun altına taşan tekil kart.
-/// Her kart kendi rengini taşır (accentColor) ve gerçek bir rakam/olguya
-/// dayanan bir "stat" rozeti gösterir (uydurma değil — bkz. çağıran
-/// kod). Sürekli, çok hafif bir yukarı-aşağı süzülme animasyonu +
-/// hoverda ekstra kalkış ile "havada asılı duruyor" hissi veriyor;
-/// 3 kart farklı fazda (floatIndex) süzülüyor ki hepsi aynı anda
-/// yukarı/aşağı gidip robotik görünmesin.
-class _FeatureOverlapCard extends StatefulWidget {
-  const _FeatureOverlapCard({
-    required this.image,
-    required this.icon,
-    required this.title,
-    required this.desc,
-    required this.buttonLabel,
-    required this.onTap,
-    required this.accentColor,
-    required this.statLabel,
-    required this.statIcon,
-    required this.floatIndex,
-  });
-
-  final String image;
-  final IconData icon;
-  final String title;
-  final String desc;
-  final String buttonLabel;
-  final VoidCallback onTap;
-  final Color accentColor;
-  final String statLabel;
-  final IconData statIcon;
-  final int floatIndex;
-
-  @override
-  State<_FeatureOverlapCard> createState() => _FeatureOverlapCardState();
-}
-
-class _FeatureOverlapCardState extends State<_FeatureOverlapCard>
-    with SingleTickerProviderStateMixin {
-  bool _isHovered = false;
-  late final AnimationController _floatController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 3200),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _floatController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(final BuildContext context) => AnimatedBuilder(
-        animation: _floatController,
-        builder: (final context, final child) {
-          final phase =
-              _floatController.value * 2 * math.pi + widget.floatIndex * 2.1;
-          final floatY = math.sin(phase) * 3.5;
-          return Transform.translate(
-            offset: Offset(0, floatY + (_isHovered ? -4.0 : 0.0)),
-            child: child,
-          );
-        },
-        child: MouseRegion(
-          onEnter: (final _) => setState(() => _isHovered = true),
-          onExit: (final _) => setState(() => _isHovered = false),
-          child: TactilePress(
-            onTap: widget.onTap,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOut,
-              padding:
-                  EdgeInsets.all(context.responsive(mobile: 16, desktop: 20)),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
-                // Nötr bir gölgenin yanına kartın kendi renginde yumuşak
-                // bir "glow" eklendi — sanki kart kendi ışığıyla
-                // yerden yükseliyormuş hissi için.
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.08),
-                    blurRadius: _isHovered ? 30 : 22,
-                    offset: Offset(0, _isHovered ? 18 : 14),
-                  ),
-                  BoxShadow(
-                    color: widget.accentColor
-                        .withOpacity(_isHovered ? 0.32 : 0.22),
-                    blurRadius: _isHovered ? 34 : 24,
-                    spreadRadius: -8,
-                    offset: Offset(0, _isHovered ? 22 : 16),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Küçük görsel solda, başlık yanında — dekoratif tek
-                  // başına bir ikon yerine. İkon artık görselin ÜSTÜNÜ
-                  // karartmıyor; görselin köşesine binen ayrı, kendi
-                  // renginde küçük bir rozet oldu (daha derli toplu).
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(14),
-                            child: Image.network(
-                              widget.image,
-                              width: 52,
-                              height: 52,
-                              fit: BoxFit.cover,
-                              errorBuilder: (final c, final e, final s) =>
-                                  Container(
-                                      width: 52,
-                                      height: 52,
-                                      color: AppColors.secondary),
-                            ),
-                          ),
-                          Positioned(
-                            right: -6,
-                            bottom: -6,
-                            child: Container(
-                              width: 26,
-                              height: 26,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    widget.accentColor,
-                                    Color.lerp(
-                                        widget.accentColor, Colors.black, 0.22)!
-                                  ],
-                                ),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: AppColors.surface, width: 2.5),
-                              ),
-                              child: Icon(widget.icon,
-                                  color: Colors.white, size: 13),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(widget.title,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: context.bodySize,
-                                  color: AppColors.textPrimary)),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(widget.desc,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: context.captionSize,
-                          height: 1.4)),
-                  const SizedBox(height: 12),
-                  // Yeni: her kartın kendi gerçek rakamı/olgusuna dayanan
-                  // küçük bir vurgu rozeti — kartın içini dolduran, ama
-                  // uydurma olmayan bir içerik.
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: widget.accentColor.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(widget.statIcon,
-                            size: 12, color: widget.accentColor),
-                        const SizedBox(width: 5),
-                        Text(widget.statLabel,
-                            style: TextStyle(
-                                color: widget.accentColor,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 11)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: widget.onTap,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.textPrimary,
-                        side: BorderSide(color: AppColors.border),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
-                      child: Text(widget.buttonLabel,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 12.5)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
       );
