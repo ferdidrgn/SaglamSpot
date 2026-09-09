@@ -23,28 +23,14 @@ import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../features/products/data/models/category_meta.dart';
 import '../../../../features/products/domain/entites/product.dart';
 import '../../../../features/products/presentation/providers/category_meta_provider.dart';
-import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../../features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
-/// Bu sayfaya özgü marka kimliği — web'in sıcak kahve/krem paletinden
-/// BİLİNÇLİ olarak ayrı tutulur: web ve mobil app aynı vitrin değil, iki
-/// ayrı deneyim. `AppColors.mobile*` (diğer tüm mobil ekranlarda hâlâ
-/// kullanılan) web ile birebir aynı kahve tonun takma adı olduğu için
-/// BURADA kullanılmıyor; onun yerine, bu sınıfın da belgelediği "Furnishify"
-/// referansındaki adaçayı/sage yeşili kullanılıyor.
-class _StorePalette {
-  _StorePalette._();
-  static Color get primary => AppColors.sage;
-  static Color get primaryDark => AppColors.sageDark;
-  static Color get primaryLight => AppColors.sageLight;
-}
-
 /// Müşteri odaklı, sıfırdan tasarlanmış mobil ana sayfa — "Furnishify"
-/// referansından ilham alan sage renk paleti (bkz. [_StorePalette]), arama
-/// çubuğu, kategori çipleri ve gerçek Firestore ürünlerinden beslenen bir
+/// referansından ilham alan teal/sage renk paleti, arama çubuğu,
+/// kategori çipleri ve gerçek Firestore ürünlerinden beslenen bir
 /// "Öne Çıkanlar" ızgarası. Eski yönetici panelinin yerini alır; panel
 /// artık /admin altında ayrı olarak erişilebilir (bkz. SettingsPage).
 class HomeStorePage extends ConsumerWidget {
@@ -64,16 +50,16 @@ class HomeStorePage extends ConsumerWidget {
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                // Referans "Discover" ekranındaki düzen: ince ikon satırı →
-                // büyük başlık+alt yazı → kategori hapları → doğrudan liste.
-                // Aradaki "Kategoriler" etiketi bilerek yok — hem gerçek
-                // referansta öyle, hem de haplar zaten kendini anlatıyor.
-                SliverToBoxAdapter(child: _buildTopBar(context, ref)),
-                SliverToBoxAdapter(child: _buildDiscoverHeading(context)),
+                SliverToBoxAdapter(child: _buildHeader(context, ref)),
+                SliverToBoxAdapter(child: _buildSearchBar(context)),
+                const SliverToBoxAdapter(child: _HomeHeroSlider()),
+                SliverToBoxAdapter(child: _buildMottoStrip(context)),
+                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
+                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: _CategoryRow())),
+                    child: _buildSectionTitle(
+                        context, context.l10n.sectionCategories)),
+                SliverToBoxAdapter(child: _CategoryRow()),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle(
                     context,
@@ -82,7 +68,7 @@ class HomeStorePage extends ConsumerWidget {
                   ),
                 ),
                 if (featured.isEmpty)
-                  SliverToBoxAdapter(child: _buildEmptyCatalogNotice(context))
+                  const SliverToBoxAdapter(child: SizedBox.shrink())
                 else
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
@@ -119,51 +105,40 @@ class HomeStorePage extends ConsumerWidget {
     return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
 
-  // Referans tasarımdaki gibi ince bir ikon satırı — profil zaten alt
-  // navigasyonda var (bkz. MobileBottomNav), burada tekrarlanmıyor.
-  // Bildirim zili gerçek okunmamış sayısını, sepet gerçek ürün adedini
-  // gösteriyor.
-  Widget _buildTopBar(final BuildContext context, final WidgetRef ref) =>
+  Widget _buildHeader(final BuildContext context, final WidgetRef ref) =>
       Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Expanded(
+              child: Text(
+                context.l10n.storeHeroTitle,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                  color: AppColors.mobileTextPrimary,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
             _NotificationBellButton(
               unreadCount: ref.watch(unreadNotificationCountProvider),
               onTap: () => NavigationHandler.goToNotifications(context),
             ),
-            _CartIconButton(
-              count: ref.watch(cartProvider).length,
-              onTap: () => NavigationHandler.goToCart(context),
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildDiscoverHeading(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              context.l10n.storeHeroTitle,
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-                height: 1.15,
-                color: AppColors.mobileTextPrimary,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              context.l10n.storeHeroSubtitle,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.mobileTextTertiary,
-                height: 1.35,
+            const SizedBox(width: 10),
+            TactilePress(
+              onTap: () => NavigationHandler.goToSettings(context),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.mobilePrimary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.person_rounded,
+                    color: Colors.white, size: 22),
               ),
             ),
           ],
@@ -214,7 +189,7 @@ class HomeStorePage extends ConsumerWidget {
               spacing: 8,
               children: [
                 Icon(Icons.visibility_rounded,
-                    size: 20, color: _StorePalette.primary),
+                    size: 20, color: AppColors.mobilePrimary),
                 Text.rich(
                   TextSpan(
                     style: TextStyle(
@@ -226,7 +201,7 @@ class HomeStorePage extends ConsumerWidget {
                       TextSpan(text: context.l10n.mottoTitlePart1),
                       TextSpan(
                         text: context.l10n.mottoTitlePart2,
-                        style: TextStyle(color: _StorePalette.primary),
+                        style: TextStyle(color: AppColors.mobilePrimary),
                       ),
                     ],
                   ),
@@ -289,7 +264,7 @@ class HomeStorePage extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
-                  color: _StorePalette.primary,
+                  color: AppColors.mobilePrimary,
                 ),
               ),
             ),
@@ -297,38 +272,6 @@ class HomeStorePage extends ConsumerWidget {
       ),
     );
   }
-
-  // Ürün ızgarası boşsa (stokta satılabilir ürün yoksa) sessizce hiçbir şey
-  // göstermek yerine dürüst, sakin bir bildirim — uydurma ürün/veri YOK.
-  Widget _buildEmptyCatalogNotice(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
-          decoration: BoxDecoration(
-            color: AppColors.mobileSurface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.mobileBorder),
-          ),
-          child: Column(
-            children: [
-              Icon(Icons.inventory_2_outlined,
-                  size: 30, color: _StorePalette.primary),
-              const SizedBox(height: 10),
-              Text('Şu anda vitrinde ürün yok',
-                  style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.mobileTextPrimary)),
-              const SizedBox(height: 4),
-              Text('Yeni parçalar eklendiğinde burada göreceksiniz.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 12, color: AppColors.mobileTextTertiary)),
-            ],
-          ),
-        ),
-      );
 }
 
 /// "Story" tarzı hero — kullanıcının paylaştığı referansın en soldaki
@@ -579,6 +522,7 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                           ],
                         ),
                       ),
+
                     ),
                   ),
                 // Sahne değiştirme — dairesel önizlemeler (referanstaki
@@ -630,89 +574,44 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
   }
 }
 
-// Referans tasarımdaki "All / Furniture / Decor / Lighting" hap (pill)
-// satırı — önceki ikon-daire+etiket sütunu yerine, tek satırlık, seçili
-// olanın dolu (koyu sage) göründüğü bir filtre çipi grubu. "Tümü" dışındaki
-// her hap dokununca ilgili kategoriyle arama sayfasına gerçekten götürür
-// (önceki davranış korunuyor); seçili görünüm sadece dokunulan hapı yerel
-// olarak işaretler.
-class _CategoryRow extends ConsumerStatefulWidget {
+class _CategoryRow extends ConsumerWidget {
   @override
-  ConsumerState<_CategoryRow> createState() => _CategoryRowState();
-}
-
-class _CategoryRowState extends ConsumerState<_CategoryRow> {
-  int _selected = 0;
-
-  @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     final categories = ref.watch(orderedActiveCategoriesProvider);
 
     return SizedBox(
-      height: 42,
+      height: 84,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: categories.length + 1,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 8),
+        itemCount: categories.length,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 14),
         itemBuilder: (final context, final index) {
-          final bool isAll = index == 0;
-          final String label = isAll
-              ? context.l10n.conditionAll
-              : categories[index - 1].customLabel ??
-                  categories[index - 1].category.label(context);
-          // Referans tasarımdaki gibi her hapın kendi kategori ikonu var —
-          // "Tümü" için ızgara ikonu, diğerleri için gerçek CategoryMeta
-          // ikonu (aynı ikon web'de de, kategori sayfalarında da kullanılır).
-          final IconData icon =
-              isAll ? Icons.grid_view_rounded : categories[index - 1].icon;
-          final bool isActive = index == _selected;
-
+          final CategoryMeta meta = categories[index];
           return TactilePress(
-            onTap: () {
-              setState(() => _selected = index);
-              if (isAll) {
-                NavigationHandler.goToSearch(context);
-              } else {
-                NavigationHandler.goToSearchWithCategory(
-                    context, categories[index - 1].category.name);
-              }
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color:
-                    isActive ? _StorePalette.primaryDark : AppColors.mobileSurface,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(
-                  color: isActive
-                      ? _StorePalette.primaryDark
-                      : AppColors.mobileBorder,
+            onTap: () => NavigationHandler.goToSearchWithCategory(
+                context, meta.category.name),
+            child: Column(
+              children: [
+                GlassSurface(
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  alignment: Alignment.center,
+                  child:
+                      Icon(meta.icon, color: AppColors.mobilePrimary, size: 24),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon,
-                      size: 15,
-                      color:
-                          isActive ? Colors.white : AppColors.mobileTextSecondary),
-                  const SizedBox(width: 6),
-                  Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color:
-                          isActive ? Colors.white : AppColors.mobileTextSecondary,
-                    ),
-                  ),
-                ],
-              ),
+                const SizedBox(height: 6),
+                Text(
+                  meta.customLabel ?? meta.category.label(context),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.mobileTextSecondary),
+                ),
+              ],
             ),
           );
         },
@@ -863,6 +762,7 @@ class _ProductListRow extends ConsumerWidget {
             ),
           ),
         ],
+
       ),
     );
   }
@@ -919,56 +819,6 @@ class _NotificationBellButton extends StatelessWidget {
       );
 }
 
-/// Referans tasarımdaki sağ üst sepet ikonu — gerçek [cartProvider] adedini
-/// gösterir (uydurma bir nokta/rozet değil).
-class _CartIconButton extends StatelessWidget {
-  final int count;
-  final VoidCallback onTap;
-
-  const _CartIconButton({required this.count, required this.onTap});
-
-  @override
-  Widget build(final BuildContext context) => TactilePress(
-        onTap: onTap,
-        child: GlassSurface(
-          width: 44,
-          height: 44,
-          borderRadius: 22,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Center(
-                child: Icon(Icons.shopping_bag_outlined,
-                    color: AppColors.mobileTextPrimary, size: 21),
-              ),
-              if (count > 0)
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(3),
-                    constraints:
-                        const BoxConstraints(minWidth: 15, minHeight: 15),
-                    decoration: BoxDecoration(
-                      color: _StorePalette.primaryDark,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      count > 9 ? '9+' : '$count',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      );
-}
-
 /// Mobil ana sayfadaki kompakt "işletme bilgisi" kartı — web'deki büyük
 /// harita bölümünün tek-sütunlu karşılığı. Gerçek bir harita önizlemesi +
 /// gerçek zamana göre canlı "Açık/Kapalı" rozeti (dakikada bir kendini
@@ -1006,7 +856,7 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
       child: HudCornerFrame(
         armLength: 18,
         inset: 10,
-        color: _StorePalette.primary,
+        color: AppColors.mobilePrimary,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Column(
@@ -1080,7 +930,7 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                     Row(
                       children: [
                         Icon(Icons.location_on_rounded,
-                            size: 16, color: _StorePalette.primary),
+                            size: 16, color: AppColors.mobilePrimary),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(context.l10n.storeAddress,
@@ -1109,7 +959,7 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                color: _StorePalette.primary,
+                                color: AppColors.mobilePrimary,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Center(
@@ -1131,12 +981,12 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border:
-                                    Border.all(color: _StorePalette.primary),
+                                    Border.all(color: AppColors.mobilePrimary),
                               ),
                               child: Center(
                                 child: Text(context.l10n.directionsButton,
                                     style: TextStyle(
-                                        color: _StorePalette.primary,
+                                        color: AppColors.mobilePrimary,
                                         fontSize: 12.5,
                                         fontWeight: FontWeight.w700)),
                               ),

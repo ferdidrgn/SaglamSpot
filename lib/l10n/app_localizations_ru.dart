@@ -568,7 +568,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'Быстрая, бережная доставка в İçerenköy и на Анатолийскую сторону благополучно доставит твою мебель домой.';
+      'Быстрая застрахованная доставка в İçerenköy и на Анатолийскую сторону благополучно доставит твою мебель домой.';
 
   @override
   String get tipsEyebrow => 'СОВЕТЫ';
@@ -1864,7 +1864,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Бережная, быстрая доставка в выбранные районы.';
+      'Застрахованная, быстрая доставка в выбранные районы.';
 
   @override
   String get featureRow3Title => 'Мгновенный ответ в WhatsApp';

@@ -570,7 +570,7 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'İçerenköy жана Анадолу тарабына тез, этияттык менен ташуу менен эмереги коопсуз үйгө жетет.';
+      'İçerenköy жана Анадолу тарабына тез, камсыздандырылган ташуу менен эмереги коопсуз үйгө жетет.';
 
   @override
   String get tipsEyebrow => 'КЕҢЕШТЕР';
@@ -1871,7 +1871,7 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Тандалган райондорго этияттык менен, тез жеткирүү.';
+      'Тандалган райондорго камсыздандырылган, тез жеткирүү.';
 
   @override
   String get featureRow3Title => 'WhatsApp аркылуу тез жооп';

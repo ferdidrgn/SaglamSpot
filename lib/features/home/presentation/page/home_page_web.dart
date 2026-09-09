@@ -24,7 +24,6 @@ import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -95,7 +94,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     sliver: SliverMainAxisGroup(
                       slivers: [
                         _buildHeroBanner(availableProducts),
-                        _buildWhyChooseRow(),
+                        _buildFeatureRow(),
                         _buildMottoStrip(),
                         _buildFeatureTicker(),
                         _buildCatalogGateway(),
@@ -184,13 +183,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       ],
                     ),
                   ),
-                  // Kullanıcı bu bölümü (Sağlam Spot'tan sonraki krem
-                  // zeminli vitrin bloğu) kaybettikten sonra geri istedi.
-                  // Sahte müşteri yorumları (_buildQuoteRow) ve "Neden
-                  // Bizi Seçmelisiniz" rozet satırı (zaten yukarıda
-                  // _buildWhyChooseRow olarak var) BİLEREK dışarıda
-                  // bırakıldı — bkz. livora_style_showcase_section.dart
-                  // kendi doc yorumu.
+                  // --- BANT 5: karşılaştırma bloğu — mevcut hiçbir şey
+                  // silinmeden/değiştirilmeden, referans tasarımların
+                  // (Livora/InteriorStudio) en beğenilen öğelerini kendi
+                  // renk/veri/rozetlerimizle yeniden yorumlayan, ayrı ve
+                  // bağımsız bir ek bölüm. Kullanıcı hangisini beğenirse
+                  // onu tutacak. ---
                   const LivoraStyleShowcaseSection(),
                   _buildStatsSection(),
                   _buildFooter(),
@@ -348,79 +346,80 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // kenarına hafifçe binen, beyaz/yuvarlak, ikon+başlık+açıklama+CTA
   // içeren 3 kart. CatalogGateway'deki Sıfır/Spot kartlarıyla ÇAKIŞMASIN
   // diye içerik bilerek farklı — burada genel güven/hizmet vurguları var.
-  // Kullanıcı önceki büyük, "havada süzülen" 3'lü kart tasarımını istemedi;
-  // bunun yerine sayfada daha önce olan ve kullanıcının çok sevdiği küçük,
-  // renkli rozet zinciri geri getirildi — aynı 3 gerçek vurgu (usta eli,
-  // bölgesel teslimat, WhatsApp'tan anında yanıt), ama artık zarif, tek
-  // satırlık bir "chip" grubu olarak; her rozet kendi markasal (birbiriyle
-  // tam uyumlu) rengini ve kademeli (staggered) bir beliriş animasyonunu
-  // taşıyor.
-  Widget _buildWhyChooseRow() {
+  Widget _buildFeatureRow() {
     final items = [
-      (Icons.workspace_premium_rounded, context.l10n.featureRow1Title,
-          AppColors.accent),
-      (Icons.local_shipping_rounded, context.l10n.featureRow2Title,
-          AppColors.info),
-      (Icons.chat_bubble_rounded, context.l10n.featureRow3Title,
-          AppColors.success),
+      (
+        image:
+            'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=300',
+        icon: Icons.workspace_premium_rounded,
+        title: context.l10n.featureRow1Title,
+        desc: context.l10n.featureRow1Desc,
+        buttonLabel: context.l10n.exploreButton,
+        onTap: () => NavigationHandler.goToAbout(context),
+      ),
+      (
+        image:
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=300',
+        icon: Icons.local_shipping_rounded,
+        title: context.l10n.featureRow2Title,
+        desc: context.l10n.featureRow2Desc,
+        buttonLabel: context.l10n.exploreButton,
+        onTap: () => NavigationHandler.goToSSS(context),
+      ),
+      (
+        image:
+            'https://images.unsplash.com/photo-1520201163981-8cc95007dd2a?q=80&w=300',
+        icon: Icons.chat_bubble_rounded,
+        title: context.l10n.featureRow3Title,
+        desc: context.l10n.featureRow3Desc,
+        buttonLabel: context.l10n.exploreButton,
+        onTap: () => SaglamSpotCommunication.launchWhatsApp(),
+      ),
     ];
 
+    final overlap = context.responsive(mobile: 22.0, desktop: 40.0);
+
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.pagePadding,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-              vertical: context.responsive(mobile: 18, desktop: 24),
-              horizontal: context.responsive(mobile: 14, desktop: 24)),
-          decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.35),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            spacing: context.responsive(mobile: 18, desktop: 32),
-            runSpacing: 14,
-            children: [
-              for (int i = 0; i < items.length; i++)
-                RevealFade(
-                  delayMs: i * 90,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              items[i].$3,
-                              Color.lerp(items[i].$3, Colors.black, 0.2)!,
-                            ],
-                          ),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                                color: items[i].$3.withOpacity(0.35),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4)),
-                          ],
-                        ),
-                        child: Icon(items[i].$1, color: Colors.white, size: 15),
+      child: Transform.translate(
+        offset: Offset(0, -overlap),
+        child: Padding(
+          padding: context.pagePadding.copyWith(top: 0, bottom: 0),
+          child: context.isMobile
+              ? Column(
+                  children: [
+                    for (int i = 0; i < items.length; i++) ...[
+                      if (i > 0) const SizedBox(height: 14),
+                      _FeatureOverlapCard(
+                        image: items[i].image,
+                        icon: items[i].icon,
+                        title: items[i].title,
+                        desc: items[i].desc,
+                        buttonLabel: items[i].buttonLabel,
+                        onTap: items[i].onTap,
                       ),
-                      const SizedBox(width: 10),
-                      Text(items[i].$2,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: context.captionSize,
-                              color: AppColors.textPrimary)),
+                    ],
+                  ],
+                )
+              : IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (int i = 0; i < items.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 18),
+                        Expanded(
+                          child: _FeatureOverlapCard(
+                            image: items[i].image,
+                            icon: items[i].icon,
+                            title: items[i].title,
+                            desc: items[i].desc,
+                            buttonLabel: items[i].buttonLabel,
+                            onTap: items[i].onTap,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
-            ],
-          ),
         ),
       ),
     );
@@ -611,12 +610,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         Icons.map_rounded,
         context.l10n.freeDeliveryZonesNote(_shortDeliveryZonesLabel),
       ),
-      // NOT: sellerTrustLine de usp1Title de aynı "20 yıllık esnaf
-      // güvencesi" mesajını taşıyordu — şeritte art arda iki kez
-      // görünüyordu. usp1Title kaldı (stats/artisan bölümüyle aynı
-      // vurgu), yerine farklı, gerçek bir alışveriş felsefesi eklendi
-      // (bkz. SSS: "yüz yüze alışveriş" — sssA16).
-      TickerItem(Icons.storefront_rounded, 'Gel, Gör, Karar Ver'),
+      TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
       TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
       TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
     ];
@@ -1492,6 +1486,136 @@ class _GatewayCard extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+        ),
+      );
+}
+
+/// [_buildFeatureRow]'daki beyaz, hero'nun altına taşan tekil kart.
+class _FeatureOverlapCard extends StatefulWidget {
+  const _FeatureOverlapCard({
+    required this.image,
+    required this.icon,
+    required this.title,
+    required this.desc,
+    required this.buttonLabel,
+    required this.onTap,
+  });
+
+  final String image;
+  final IconData icon;
+  final String title;
+  final String desc;
+  final String buttonLabel;
+  final VoidCallback onTap;
+
+  @override
+  State<_FeatureOverlapCard> createState() => _FeatureOverlapCardState();
+}
+
+class _FeatureOverlapCardState extends State<_FeatureOverlapCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(final BuildContext context) => MouseRegion(
+        onEnter: (final _) => setState(() => _isHovered = true),
+        onExit: (final _) => setState(() => _isHovered = false),
+        child: TactilePress(
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            transform: _isHovered
+                ? (Matrix4.identity()..translate(0.0, -4.0))
+                : Matrix4.identity(),
+            padding:
+                EdgeInsets.all(context.responsive(mobile: 16, desktop: 20)),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.08),
+                  blurRadius: _isHovered ? 28 : 20,
+                  offset: Offset(0, _isHovered ? 14 : 10),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Referans tasarımdaki gibi: küçük görsel solda, başlık
+                // yanında — dekoratif tek başına bir ikon yerine.
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            widget.image,
+                            width: 52,
+                            height: 52,
+                            fit: BoxFit.cover,
+                            errorBuilder: (final c, final e, final s) =>
+                                Container(
+                                    width: 52,
+                                    height: 52,
+                                    color: AppColors.secondary),
+                          ),
+                          Container(
+                            width: 52,
+                            height: 52,
+                            alignment: Alignment.center,
+                            color: Colors.black.withOpacity(0.18),
+                            child: Icon(widget.icon,
+                                color: Colors.white, size: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(widget.title,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: context.bodySize,
+                                color: AppColors.textPrimary)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(widget.desc,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: context.captionSize,
+                        height: 1.4)),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: widget.onTap,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      side: BorderSide(color: AppColors.border),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    child: Text(widget.buttonLabel,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 12.5)),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

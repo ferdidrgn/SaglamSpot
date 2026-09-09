@@ -565,7 +565,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'İçerenköy ve Anadolu Yakası\'na hızlı ve özenli taşımayla mobilyan güvenle evine gelsin.';
+      'İçerenköy ve Anadolu Yakası\'na hızlı, sigortalı taşıma ile mobilyan güvenle evine gelsin.';
 
   @override
   String get tipsEyebrow => 'İPUÇLARI';
@@ -1861,7 +1861,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get featureRow2Title => 'Bölgene Özel Teslimat';
 
   @override
-  String get featureRow2Desc => 'Seçili semtlere hızlı ve özenli teslimat.';
+  String get featureRow2Desc => 'Seçili semtlere sigortalı ve hızlı teslimat.';
 
   @override
   String get featureRow3Title => 'WhatsApp\'tan Anında Yanıt';
