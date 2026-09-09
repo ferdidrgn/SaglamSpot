@@ -564,7 +564,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'نقل سريع ومؤمَّن إلى إيچيرينكوي والجانب الأناضولي يوصل أثاثك إلى منزلك بأمان.';
+      'نقل سريع وبعناية إلى إيچيرينكوي والجانب الأناضولي يوصل أثاثك إلى منزلك بأمان.';
 
   @override
   String get tipsEyebrow => 'نصائح';
@@ -1846,7 +1846,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get featureRow2Title => 'توصيل محلي';
 
   @override
-  String get featureRow2Desc => 'توصيل سريع ومؤمّن إلى الأحياء المختارة.';
+  String get featureRow2Desc => 'توصيل سريع وبعناية إلى الأحياء المختارة.';
 
   @override
   String get featureRow3Title => 'رد فوري عبر واتساب';

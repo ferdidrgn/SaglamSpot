@@ -571,7 +571,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'Fast, insured delivery to İçerenköy and the Anatolian side gets your furniture home safely.';
+      'Fast, careful delivery to İçerenköy and the Anatolian side gets your furniture home safely.';
 
   @override
   String get tipsEyebrow => 'TIPS';
@@ -1867,7 +1867,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Insured, fast delivery to selected neighborhoods.';
+      'Fast, careful delivery to selected neighborhoods.';
 
   @override
   String get featureRow3Title => 'Instant WhatsApp Reply';

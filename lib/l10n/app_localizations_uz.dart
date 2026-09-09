@@ -571,7 +571,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'İçerenköy va Anadolu tomoniga tez, sug\'urtalangan tashish mebelingizni xavfsiz uyingizga yetkazadi.';
+      'İçerenköy va Anadolu tomoniga tez, ehtiyotkorlik bilan tashish mebelingizni xavfsiz uyingizga yetkazadi.';
 
   @override
   String get tipsEyebrow => 'MASLAHATLAR';
@@ -1873,7 +1873,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Tanlangan mahallalarga sug\'urtalangan, tez yetkazib berish.';
+      'Tanlangan mahallalarga ehtiyotkorlik bilan, tez yetkazib berish.';
 
   @override
   String get featureRow3Title => 'WhatsApp\'da Tezkor Javob';

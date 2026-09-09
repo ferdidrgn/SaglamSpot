@@ -576,7 +576,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'Γρήγορη, ασφαλισμένη μεταφορά στο İçerenköy και την ασιατική πλευρά φέρνει τα έπιπλά σου με ασφάλεια στο σπίτι σου.';
+      'Γρήγορη, προσεκτική μεταφορά στο İçerenköy και την ασιατική πλευρά φέρνει τα έπιπλά σου με ασφάλεια στο σπίτι σου.';
 
   @override
   String get tipsEyebrow => 'ΣΥΜΒΟΥΛΕΣ';
@@ -1879,7 +1879,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Ασφαλισμένη, γρήγορη παράδοση σε επιλεγμένες περιοχές.';
+      'Προσεκτική, γρήγορη παράδοση σε επιλεγμένες περιοχές.';
 
   @override
   String get featureRow3Title => 'Άμεση Απάντηση στο WhatsApp';

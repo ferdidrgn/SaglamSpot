@@ -1163,7 +1163,7 @@ abstract class AppLocalizations {
   /// No description provided for @step4Desc.
   ///
   /// In tr, this message translates to:
-  /// **'İçerenköy ve Anadolu Yakası\'na hızlı taşıma ile mobilyan güvenle evine gelsin.'**
+  /// **'İçerenköy ve Anadolu Yakası\'na hızlı ve özenli taşımayla mobilyan güvenle evine gelsin.'**
   String get step4Desc;
 
   /// No description provided for @tipsEyebrow.
@@ -3509,7 +3509,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureRow2Desc.
   ///
   /// In tr, this message translates to:
-  /// **'Seçili semtlere hızlı teslimat.'**
+  /// **'Seçili semtlere hızlı ve özenli teslimat.'**
   String get featureRow2Desc;
 
   /// No description provided for @featureRow3Title.

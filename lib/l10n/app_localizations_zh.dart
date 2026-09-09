@@ -546,7 +546,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get step4Title => '送货上门';
 
   @override
-  String get step4Desc => '快速、有保险的运输，将您的家具安全送达 İçerenköy 及安纳托利亚一侧的家中。';
+  String get step4Desc => '快速、细心的运输，将您的家具安全送达 İçerenköy 及安纳托利亚一侧的家中。';
 
   @override
   String get tipsEyebrow => '小贴士';
@@ -1784,7 +1784,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get featureRow2Title => '同城配送';
 
   @override
-  String get featureRow2Desc => '面向指定区域的有保险、快速配送。';
+  String get featureRow2Desc => '面向指定区域的细心、快速配送。';
 
   @override
   String get featureRow3Title => 'WhatsApp即时回复';

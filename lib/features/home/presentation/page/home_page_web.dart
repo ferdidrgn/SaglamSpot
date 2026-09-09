@@ -35,7 +35,6 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
-import '../widgets/livora_style_showcase_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/why_us_section.dart';
 
@@ -184,13 +183,18 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       ],
                     ),
                   ),
-                  // --- BANT 5: karşılaştırma bloğu — mevcut hiçbir şey
-                  // silinmeden/değiştirilmeden, referans tasarımların
-                  // (Livora/InteriorStudio) en beğenilen öğelerini kendi
-                  // renk/veri/rozetlerimizle yeniden yorumlayan, ayrı ve
-                  // bağımsız bir ek bölüm. Kullanıcı hangisini beğenirse
-                  // onu tutacak. ---
-                  const LivoraStyleShowcaseSection(),
+                  // NOT: Burada bir "karşılaştırma/deneme" bölümü
+                  // (LivoraStyleShowcaseSection) vardı — kalıcı olması
+                  // hiç kararlaştırılmamış, kendi belgelediği gibi
+                  // geçiciydi. Sayfanın her yerinde "20+ Yıl", "2.500+
+                  // Müşteri", "esnaf güvencesi" gibi aynı vurguları
+                  // tekrar tekrar ekliyordu, kendi içinde bile aynı
+                  // rakamı iki kez tekrarlıyordu, uydurma müşteri
+                  // yorumları içeriyordu ve "Sigortalı Teslimat" gibi
+                  // gerçek olmayan bir vaat taşıyordu. Kaldırıldı; bu
+                  // vurgular zaten sayfanın kendi bölümlerinde (hero
+                  // altı kartlar, akan şerit, "biz kimiz" ve istatistik
+                  // bölümü) dağınık olmayan, tek bir yerde duruyor.
                   _buildStatsSection(),
                   _buildFooter(),
                 ],
@@ -358,10 +362,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         buttonLabel: context.l10n.exploreButton,
         onTap: () => NavigationHandler.goToAbout(context),
         accentColor: AppColors.accent,
-        // Gerçek bir rakam — stats bölümündeki "20 Yıl Tecrübe" ile aynı
-        // kaynak, uydurma bir sayı DEĞİL.
-        statLabel: '20${context.l10n.statYearsSuffix}',
-        statIcon: Icons.workspace_premium_rounded,
+        // NOT: Kartın kendi başlığı zaten "20 Yıllık Usta Eli" —
+        // buraya AYNI rakamı bir daha koymak yerine (sayfada zaten
+        // stats/artisan/ticker'da var), niteliksel/farklı bir vurgu.
+        statLabel: 'Elde Seçilir',
+        statIcon: Icons.pan_tool_rounded,
       ),
       (
         image:
@@ -635,7 +640,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         Icons.map_rounded,
         context.l10n.freeDeliveryZonesNote(_shortDeliveryZonesLabel),
       ),
-      TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
+      // NOT: sellerTrustLine de usp1Title de aynı "20 yıllık esnaf
+      // güvencesi" mesajını taşıyordu — şeritte art arda iki kez
+      // görünüyordu. usp1Title kaldı (stats/artisan bölümüyle aynı
+      // vurgu), yerine farklı, gerçek bir alışveriş felsefesi eklendi
+      // (bkz. SSS: "yüz yüze alışveriş" — sssA16).
+      TickerItem(Icons.storefront_rounded, 'Gel, Gör, Karar Ver'),
       TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
       TickerItem(Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
     ];
