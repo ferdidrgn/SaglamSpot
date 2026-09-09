@@ -1862,8 +1862,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get featureRow2Title => 'Локальна Доставка';
 
   @override
-  String get featureRow2Desc =>
-      'Дбайлива, швидка доставка у вибрані райони.';
+  String get featureRow2Desc => 'Дбайлива, швидка доставка у вибрані райони.';
 
   @override
   String get featureRow3Title => 'Миттєва Відповідь у WhatsApp';
