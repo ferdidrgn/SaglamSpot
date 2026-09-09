@@ -487,13 +487,21 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
+  // Önceden 4'ü de aynı düz altın ikon rengindeydi ve hiçbirinde giriş
+  // animasyonu yoktu. Her vurguya markanın kendi anlamlı paletinden
+  // (accent/success/warning/info) ayrı bir renk + kademeli (staggered)
+  // bir beliriş animasyonu verildi — sayfanın geri kalanındaki RevealFade
+  // diliyle tutarlı.
   Widget _buildTrustBar() {
     final items = [
-      _trustItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan),
-      _trustItem(Icons.verified_user_rounded, context.l10n.featureDelivery),
-      _trustItem(
-          Icons.sentiment_very_satisfied_rounded, context.l10n.featureService),
-      _trustItem(Icons.local_shipping_rounded, context.l10n.featureShipping),
+      _trustItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan,
+          AppColors.accent, 0),
+      _trustItem(Icons.verified_user_rounded, context.l10n.featureDelivery,
+          AppColors.success, 70),
+      _trustItem(Icons.sentiment_very_satisfied_rounded,
+          context.l10n.featureService, AppColors.warning, 140),
+      _trustItem(Icons.local_shipping_rounded, context.l10n.featureShipping,
+          AppColors.info, 210),
     ];
 
     return SliverToBoxAdapter(
@@ -532,19 +540,46 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  Widget _trustItem(final IconData icon, final String text) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: AppColors.accent, size: context.iconMedium),
-          const SizedBox(width: 10),
-          Flexible(
-            child: Text(text,
-                style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: context.bodySize)),
-          ),
-        ],
+  Widget _trustItem(final IconData icon, final String text,
+          final Color accentColor, final int delayMs) =>
+      RevealFade(
+        delayMs: delayMs,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: context.iconMedium + 14,
+              height: context.iconMedium + 14,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    accentColor,
+                    Color.lerp(accentColor, Colors.black, 0.24)!
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                      color: accentColor.withOpacity(0.35),
+                      blurRadius: 14,
+                      offset: const Offset(0, 6)),
+                ],
+              ),
+              child: Icon(icon, color: Colors.white, size: context.iconMedium * 0.62),
+            ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(text,
+                  style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: context.bodySize)),
+            ),
+          ],
+        ),
       );
 
   /// 6 semtin tamamını değil, ilk ikisini + "ve çevresi" gösterir — akan
