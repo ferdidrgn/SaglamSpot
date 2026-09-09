@@ -5,7 +5,6 @@ import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/widgets/design_system/ambient_mesh_background.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
-import 'package:saglamspot/core/widgets/design_system/google_map_embed.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
 import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
@@ -32,6 +31,7 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
+import '../widgets/newsletter_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/testimonials_section.dart';
 import '../widgets/why_us_section.dart';
@@ -126,6 +126,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   const WhyUsSection(),
                   const TestimonialsSection(),
                   _buildStatsSection(),
+                  const NewsletterSection(),
                   // Sayfanın en altına, footer'dan hemen önce ikinci bir
                   // reklam — kullanıcı sayfanın sonuna kadar geldiğinde de
                   // bir kazanım fırsatı olsun diye.
@@ -233,22 +234,13 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  // Her güven vurgusunun kendi renkli rozeti var (stats bölümüyle aynı
-  // dört-renk mantığı: sıcak altın/kehribar/mavi-gri/adaçayı) — önceki
-  // sürümde 4'ü de tek düze aynı altın ikon rengindeydi ve arka planda
-  // görünen ızgara dokusuyla birlikte sönük duruyordu. Işgara artık hiç
-  // yok (AmbientMeshBackground'dan tamamen kaldırıldı); burada da renk
-  // çeşitliliğiyle canlandırıldı.
   Widget _buildTrustBar() {
     final items = [
-      _trustItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan,
-          AppColors.accent),
-      _trustItem(Icons.verified_user_rounded, context.l10n.featureDelivery,
-          AppColors.success),
-      _trustItem(Icons.sentiment_very_satisfied_rounded,
-          context.l10n.featureService, AppColors.warning),
-      _trustItem(Icons.local_shipping_rounded, context.l10n.featureShipping,
-          AppColors.info),
+      _trustItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan),
+      _trustItem(Icons.verified_user_rounded, context.l10n.featureDelivery),
+      _trustItem(
+          Icons.sentiment_very_satisfied_rounded, context.l10n.featureService),
+      _trustItem(Icons.local_shipping_rounded, context.l10n.featureShipping),
     ];
 
     return SliverToBoxAdapter(
@@ -256,7 +248,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         padding: context.pagePadding,
         child: GlassSurface(
           borderRadius: 20,
-          strong: true,
           chromaticEdge: true,
           padding: EdgeInsets.symmetric(
               vertical: context.responsive(mobile: 20, desktop: 26),
@@ -265,7 +256,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               ? Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 28,
-                  runSpacing: 20,
+                  runSpacing: 18,
                   children: items,
                 )
               : IntrinsicHeight(
@@ -288,32 +279,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  Widget _trustItem(
-          final IconData icon, final String text, final Color accentColor) =>
-      Row(
+  Widget _trustItem(final IconData icon, final String text) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [accentColor, Color.lerp(accentColor, Colors.black, 0.22)!],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                    color: accentColor.withOpacity(0.35),
-                    blurRadius: 14,
-                    offset: const Offset(0, 6)),
-              ],
-            ),
-            child: Icon(icon, color: Colors.white, size: context.iconMedium * 0.7),
-          ),
-          const SizedBox(width: 12),
+          Icon(icon, color: AppColors.accent, size: context.iconMedium),
+          const SizedBox(width: 10),
           Flexible(
             child: Text(text,
                 style: TextStyle(
@@ -656,71 +626,32 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               if (context.isMobile) const SizedBox(height: 28),
               Expanded(
                 flex: context.isMobile ? 0 : 4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    HudCornerFrame(
-                      armLength: 16,
-                      inset: 8,
-                      color: AppColors.accentLight,
-                      child: GoogleMapEmbed(
-                        lat: SaglamSpotCommunication.lat,
-                        lng: SaglamSpotCommunication.lng,
-                        label: context.l10n.brand,
-                        height: context.responsive(mobile: 160, desktop: 190),
-                        borderRadius: context.borderRadius(1.1),
-                        onOpenExternal: SaglamSpotCommunication.openStoreLocation,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TactilePress(
-                      onTap: SaglamSpotCommunication.openStoreLocation,
-                      child: Row(
-                        children: [
-                          Icon(Icons.star_rate_rounded,
-                              size: 16, color: AppColors.accentLight),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text('Google\'da Bizi İnceleyin',
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(0.85),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700)),
-                          ),
-                          Icon(Icons.arrow_forward_rounded,
-                              size: 14, color: Colors.white.withOpacity(0.6)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.1)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _visitInfoRow(
-                              Icons.local_shipping_outlined,
-                              context.l10n.freeDeliveryLabel,
-                              detailWidget: _DeliveryZonesTicker(
-                                  zones: SaglamSpotCommunication.freeDeliveryZones)),
-                          const SizedBox(height: 16),
-                          _visitInfoRow(
-                              Icons.directions_bus_outlined,
-                              context.l10n.busLinesLabel,
-                              detail: SaglamSpotCommunication.getBusLines()
-                                  .entries
-                                  .map((final e) =>
-                                      '${e.key}: ${e.value.join(', ')}')
-                                  .join('\n')),
-                        ],
-                      ),
-                    ),
-                  ],
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.06),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _visitInfoRow(
+                          Icons.local_shipping_outlined,
+                          context.l10n.freeDeliveryLabel,
+                          detailWidget: _DeliveryZonesTicker(
+                              zones: SaglamSpotCommunication.freeDeliveryZones)),
+                      const SizedBox(height: 16),
+                      _visitInfoRow(
+                          Icons.directions_bus_outlined,
+                          context.l10n.busLinesLabel,
+                          detail: SaglamSpotCommunication.getBusLines()
+                              .entries
+                              .map((final e) =>
+                                  '${e.key}: ${e.value.join(', ')}')
+                              .join('\n')),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -759,11 +690,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ],
       );
 
-  // Her istatistiğin KENDİ rengi var — markanın zaten tanımladığı anlamlı
-  // paletten (accent/warning/info/success) seçildi, rastgele bir renk
-  // çarkı değil: sıcak altın = insan/müşteri, kehribar = ödül/tecrübe,
-  // mavi-gri = lojistik/teslimat, adaçayı = güven/doğrulanmış. Önceki
-  // sürümde 4 kart da aynı soluk bej camdı ve koyu zeminle çamurlaşıyordu.
   Widget _buildStatsSection() {
     final stats = [
       {
@@ -771,24 +697,21 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         "decimals": 1,
         "suffix": "K+",
         "label": context.l10n.statHappyCustomer,
-        "icon": Icons.people_alt_rounded,
-        "color": AppColors.accent,
+        "icon": Icons.people_outline
       },
       {
         "target": 20.0,
         "decimals": 0,
         "suffix": context.l10n.statYearsSuffix,
         "label": context.l10n.statExperience,
-        "icon": Icons.workspace_premium_rounded,
-        "color": AppColors.warning,
+        "icon": Icons.workspace_premium_outlined
       },
       {
         "target": 15.0,
         "decimals": 0,
         "suffix": "K+",
         "label": context.l10n.statDelivery,
-        "icon": Icons.local_shipping_rounded,
-        "color": AppColors.info,
+        "icon": Icons.local_shipping_outlined
       },
       {
         "target": 100.0,
@@ -796,21 +719,14 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         "prefix": "%",
         "suffix": "",
         "label": context.l10n.statTrust,
-        "icon": Icons.verified_user_rounded,
-        "color": AppColors.success,
+        "icon": Icons.verified_user_outlined
       },
     ];
 
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: context.hp(8)),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.backgroundDark, AppColors.primaryVariant],
-          ),
-        ),
+        decoration: BoxDecoration(color: AppColors.backgroundDark),
         child: Center(
           child: Wrap(
             alignment: WrapAlignment.center,
@@ -824,7 +740,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       suffix: s["suffix"] as String,
                       label: s["label"] as String,
                       icon: s["icon"] as IconData,
-                      accentColor: s["color"] as Color,
                     ))
                 .toList(),
           ),
@@ -839,63 +754,35 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     required final String suffix,
     required final String label,
     required final IconData icon,
-    required final Color accentColor,
     final String prefix = "",
   }) =>
-      DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(context.borderRadius()),
-          boxShadow: [
-            BoxShadow(
-                color: accentColor.withOpacity(0.32),
-                blurRadius: 30,
-                spreadRadius: -8,
-                offset: const Offset(0, 16)),
+      GlassSurface(
+        width: context.responsive(
+            mobile: context.wp(42), tablet: 200, desktop: 250),
+        padding: const EdgeInsets.all(24),
+        borderRadius: context.borderRadius(),
+        chromaticEdge: true,
+        child: Column(
+          children: [
+            Icon(icon, color: AppColors.accentLight, size: 30),
+            const SizedBox(height: 15),
+            CountUpOnVisible(
+              targetValue: target,
+              prefix: prefix,
+              suffix: suffix,
+              decimalDigits: decimals,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.h3Size,
+                  fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: 5),
+            Text(label.toUpperCase(),
+                style: AppTextStyles.microLabel(
+                    color: Colors.white.withOpacity(0.55),
+                    fontSize: 10,
+                    letterSpacing: 1.6)),
           ],
-        ),
-        child: GlassSurface(
-          width: context.responsive(
-              mobile: context.wp(42), tablet: 200, desktop: 250),
-          padding: const EdgeInsets.all(24),
-          borderRadius: context.borderRadius(),
-          strong: true,
-          chromaticEdge: true,
-          borderColor: accentColor.withOpacity(0.4),
-          child: Column(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [accentColor, Color.lerp(accentColor, Colors.black, 0.28)!],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(icon, color: Colors.white, size: 22),
-              ),
-              const SizedBox(height: 16),
-              CountUpOnVisible(
-                targetValue: target,
-                prefix: prefix,
-                suffix: suffix,
-                decimalDigits: decimals,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: context.h3Size,
-                    fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 6),
-              Text(label.toUpperCase(),
-                  style: AppTextStyles.microLabel(
-                      color: accentColor,
-                      fontSize: 10,
-                      letterSpacing: 1.6)),
-            ],
-          ),
         ),
       );
 
@@ -903,165 +790,110 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // 4 sütunlu düzen: marka + sosyal ikonlar, menü linkleri, gerçek
   // iletişim bilgileri ve bülten kaydı. Hesap/sepet sütunu yok — bu bir
   // showcase sitesi.
-  // Gerçek bir işletme sitesinin footer'ı gibi: marka + kategoriler
-  // (Firestore'daki AKTİF kategorilerden CANLI besleniyor — admin panelden
-  // bir kategori eklenip/kapatıldığında footer da otomatik güncellenir,
-  // sabit bir liste DEĞİL), gezinme, iletişim, çalışma saatleri + WhatsApp
-  // CTA'sı ve altta gerçek yasal sayfalara (Gizlilik/Şartlar/SSS) giden bir
-  // alt çubuk. Hiçbir yere gitmeyen sahte "bültene abone ol" kutusu
-  // kaldırıldı.
-  Widget _buildFooter() {
-    final categories = ref.watch(orderedActiveCategoriesProvider);
-
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.fromLTRB(
-            context.pagePadding.left, 72, context.pagePadding.right, 32),
-        color: AppColors.backgroundDark,
-        child: Column(
-          children: [
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.start,
-              spacing: 40,
-              runSpacing: 42,
-              children: [
-                SizedBox(
-                  width: context.responsive(
-                      mobile: double.infinity, desktop: 260),
-                  child: Column(
-                    crossAxisAlignment: context.isMobile
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Text(context.l10n.brand,
-                          style: const TextStyle(
-                              fontFamily: 'Fraunces',
-                              color: Colors.white,
-                              fontSize: 22,
-                              letterSpacing: 3,
-                              fontWeight: FontWeight.w600)),
-                      const SizedBox(height: 16),
-                      Text(
-                        context.l10n.footerDesc,
-                        textAlign: context.isMobile
-                            ? TextAlign.center
-                            : TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.white.withOpacity(0.4),
-                            fontSize: 13,
-                            height: 1.6),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _FooterSocialIcon(
-                              icon: Icons.chat_bubble_outline_rounded,
-                              onTap: SaglamSpotCommunication.launchWhatsApp),
-                          const SizedBox(width: 10),
-                          _FooterSocialIcon(
-                              icon: Icons.camera_alt_outlined,
-                              onTap: SaglamSpotCommunication.openInstagram),
-                          const SizedBox(width: 10),
-                          _FooterSocialIcon(
-                              icon: Icons.call_outlined,
-                              onTap: SaglamSpotCommunication.makeCall),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                _footerColumn(context.l10n.explore, {
-                  context.l10n.home: () =>
-                      NavigationHandler.goToHome(context),
-                  context.l10n.collections: () =>
-                      NavigationHandler.goToSearch(context),
-                  context.l10n.spotProducts: () =>
-                      NavigationHandler.goToSpotProducts(context),
-                  context.l10n.aboutUs: () =>
-                      NavigationHandler.goToAbout(context),
-                }),
-                if (categories.isNotEmpty)
-                  _footerColumn(context.l10n.sectionCategories, {
-                    for (final meta in categories.take(6))
-                      (meta.customLabel ?? meta.category.label(context)): () =>
-                          NavigationHandler.goToSearchWithCategory(
-                              context, meta.category.toFirestore()),
-                  }),
-                _footerColumn(context.l10n.contact, {
-                  SaglamSpotCommunication.displayPhone:
-                      SaglamSpotCommunication.makeCall,
-                  context.l10n.whatsappCta: SaglamSpotCommunication.launchWhatsApp,
-                  context.l10n.storeAddress:
-                      SaglamSpotCommunication.openStoreLocation,
-                  context.l10n.sss: () => NavigationHandler.goToSSS(context),
-                }),
-                SizedBox(
-                  width: context.responsive(
-                      mobile: double.infinity, desktop: 260),
-                  child: Column(
-                    crossAxisAlignment: context.isMobile
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Text(context.l10n.aboutContactHoursLabel,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13)),
-                      const SizedBox(height: 18),
-                      const _FooterVisitCard(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 48),
-            Container(
-              padding: const EdgeInsets.only(top: 24),
-              decoration: BoxDecoration(
-                border: Border(
-                    top: BorderSide(color: Colors.white.withOpacity(0.08))),
-              ),
-              child: Wrap(
+  Widget _buildFooter() => SliverToBoxAdapter(
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
+              context.pagePadding.left, 72, context.pagePadding.right, 32),
+          color: AppColors.backgroundDark,
+          child: Column(
+            children: [
+              Wrap(
                 alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 20,
-                runSpacing: 12,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                spacing: 40,
+                runSpacing: 42,
                 children: [
-                  Text(context.l10n.allRightsReserved,
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.35), fontSize: 11)),
-                  Wrap(
-                    spacing: 22,
-                    runSpacing: 8,
-                    children: [
-                      _footerLegalLink(context.l10n.settingsPrivacyPolicy,
-                          () => NavigationHandler.goToPrivacyPolicy(context)),
-                      _footerLegalLink(context.l10n.settingsTerms,
-                          () => NavigationHandler.goToTerms(context)),
-                      _footerLegalLink(context.l10n.sss,
-                          () => NavigationHandler.goToSSS(context)),
-                    ],
+                  SizedBox(
+                    width: context.responsive(
+                        mobile: double.infinity, desktop: 260),
+                    child: Column(
+                      crossAxisAlignment: context.isMobile
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
+                      children: [
+                        Text(context.l10n.brand,
+                            style: const TextStyle(
+                                fontFamily: 'Fraunces',
+                                color: Colors.white,
+                                fontSize: 22,
+                                letterSpacing: 3,
+                                fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 16),
+                        Text(
+                          context.l10n.footerDesc,
+                          textAlign: context.isMobile
+                              ? TextAlign.center
+                              : TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.4),
+                              fontSize: 13,
+                              height: 1.6),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _FooterSocialIcon(
+                                icon: Icons.chat_bubble_outline_rounded,
+                                onTap: SaglamSpotCommunication.launchWhatsApp),
+                            const SizedBox(width: 10),
+                            _FooterSocialIcon(
+                                icon: Icons.camera_alt_outlined,
+                                onTap: SaglamSpotCommunication.openInstagram),
+                            const SizedBox(width: 10),
+                            _FooterSocialIcon(
+                                icon: Icons.call_outlined,
+                                onTap: SaglamSpotCommunication.makeCall),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  _footerColumn(context.l10n.explore, {
+                    context.l10n.home: () =>
+                        NavigationHandler.goToHome(context),
+                    context.l10n.collections: () =>
+                        NavigationHandler.goToSearch(context),
+                    context.l10n.spotProducts: () =>
+                        NavigationHandler.goToSpotProducts(context),
+                    context.l10n.aboutUs: () =>
+                        NavigationHandler.goToAbout(context),
+                  }),
+                  _footerColumn(context.l10n.contact, {
+                    SaglamSpotCommunication.displayPhone:
+                        SaglamSpotCommunication.makeCall,
+                    context.l10n.whatsappCta: SaglamSpotCommunication.launchWhatsApp,
+                    context.l10n.storeAddress:
+                        SaglamSpotCommunication.openStoreLocation,
+                    context.l10n.sss: () => NavigationHandler.goToSSS(context),
+                  }),
+                  SizedBox(
+                    width: context.responsive(
+                        mobile: double.infinity, desktop: 260),
+                    child: Column(
+                      crossAxisAlignment: context.isMobile
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
+                      children: [
+                        Text(context.l10n.stayUpdated,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13)),
+                        const SizedBox(height: 18),
+                        const _NewsletterField(),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 56),
+              Text(context.l10n.allRightsReserved,
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.15), fontSize: 10)),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _footerLegalLink(final String label, final VoidCallback onTap) =>
-      InkWell(
-        onTap: onTap,
-        child: Text(label,
-            style: TextStyle(
-                color: Colors.white.withOpacity(0.45),
-                fontSize: 11.5,
-                fontWeight: FontWeight.w600)),
       );
 
   Widget _footerColumn(
@@ -1902,60 +1734,91 @@ class _FooterSocialIcon extends StatelessWidget {
       );
 }
 
-/// Footer'daki eskiden "bültene abone ol" kutusunun yerini alan kart —
-/// hiçbir yere gitmeyen sahte bir form yerine, gerçek çalışma saatlerini
-/// gösterip doğrudan WhatsApp'a açan dürüst bir CTA.
-class _FooterVisitCard extends StatelessWidget {
-  const _FooterVisitCard();
+/// Footer'daki bülten kayıt formu — NewsletterSection'daki ile aynı dürüst
+/// davranış: backend entegrasyonu TODO, ama kullanıcıya anında geri bildirim
+/// veriliyor.
+class _NewsletterField extends StatefulWidget {
+  const _NewsletterField();
 
   @override
-  Widget build(final BuildContext context) => Container(
-        width: context.responsive(mobile: 260, desktop: 240),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  State<_NewsletterField> createState() => _NewsletterFieldState();
+}
+
+class _NewsletterFieldState extends State<_NewsletterField> {
+  final TextEditingController _controller = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _subscribe() {
+    if (!_formKey.currentState!.validate()) return;
+    _controller.clear();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.newsletterSubscribeSuccess)),
+    );
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    return SizedBox(
+      width: context.responsive(mobile: 260, desktop: 240),
+      child: Form(
+        key: _formKey,
+        child: Row(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.schedule_rounded,
-                    size: 16, color: AppColors.accentLight),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    SaglamSpotCommunication.workingHours,
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.65),
-                        fontSize: 12,
-                        height: 1.5),
-                  ),
+            Expanded(
+              child: TextFormField(
+                controller: _controller,
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: context.l10n.emailHint,
+                  hintStyle: TextStyle(
+                      color: Colors.white.withOpacity(0.4), fontSize: 12),
+                  isDense: true,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.06),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.15))),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.15))),
                 ),
-              ],
+                validator: (final value) {
+                  if (value == null || value.isEmpty) return context.l10n.emailRequired;
+                  final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+                  if (!regex.hasMatch(value))
+                    return context.l10n.emailInvalid;
+                  return null;
+                },
+              ),
             ),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: SaglamSpotCommunication.launchWhatsApp,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+            const SizedBox(width: 8),
+            Material(
+              color: AppColors.accent,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: _subscribe,
+                child: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Icon(Icons.arrow_forward_rounded,
+                      color: Colors.white, size: 18),
                 ),
-                icon: const Icon(Icons.chat_bubble_outline_rounded, size: 16),
-                label: Text(context.l10n.whatsappCta,
-                    style: const TextStyle(
-                        fontSize: 12.5, fontWeight: FontWeight.w700)),
               ),
             ),
           ],
         ),
-      );
+      ),
+    );
+  }
 }

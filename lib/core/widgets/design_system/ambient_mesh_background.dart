@@ -2,17 +2,17 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../theme/app_design_tokens.dart';
 
-/// Sayfanın en arkasında oturan yumuşak ambiyans katmanı: yavaşça nefes
-/// alan gradyan-mesh lekeleri + ince bir gren dokusu. Bilinçli olarak
-/// ızgara/blueprint çizgisi İÇERMEZ — düz, sakin bir zemin. Dokunuşları
-/// asla yakalamaz ([IgnorePointer]); tek işi arkadaki cam yüzeylere gerçek
-/// bir ışık/doku kaynağı sağlamak. Renkleri [AppGlassTokens]'tan gelir, bu
-/// yüzden açık/koyu temada otomatik doğru tonu alır.
+/// Sayfanın en arkasında oturan endüstriyel ambiyans katmanı: bir
+/// "blueprint" ızgara dokusu + yavaşça nefes alan gradyan-mesh lekeleri +
+/// ince bir gren dokusu. Dokunuşları asla yakalamaz ([IgnorePointer]); tek
+/// işi arkadaki cam yüzeylere gerçek bir ışık/doku kaynağı sağlamak.
+/// Renkleri [AppGlassTokens]'tan gelir, bu yüzden açık/koyu temada
+/// otomatik doğru tonu alır.
 ///
 /// Hareket, 3 lekenin konumunu 24 saniyelik yavaş bir döngüde kaydıran tek
-/// bir [AnimationController] ile sürülür. Gren dokusu SADECE BİR KEZ
-/// çizilir (`shouldRepaint` sabit false) — animasyon sadece mesh katmanını
-/// etkiler, CPU/GPU maliyeti düşük kalır.
+/// bir [AnimationController] ile sürülür. Izgara ve gren dokusu SADECE BİR
+/// KEZ çizilir (`shouldRepaint` sabit false) — animasyon sadece mesh
+/// katmanını etkiler, CPU/GPU maliyeti düşük kalır.
 class AmbientMeshBackground extends StatefulWidget {
   const AmbientMeshBackground({super.key, this.animate = true});
 
@@ -52,6 +52,9 @@ class _AmbientMeshBackgroundState extends State<AmbientMeshBackground>
         child: Stack(
           fit: StackFit.expand,
           children: [
+            RepaintBoundary(
+              child: CustomPaint(painter: _GridPainter(color: tokens.gridLineColor)),
+            ),
             AnimatedBuilder(
               animation: _controller,
               builder: (final context, final _) => CustomPaint(
@@ -71,6 +74,41 @@ class _AmbientMeshBackgroundState extends State<AmbientMeshBackground>
       ),
     );
   }
+}
+
+/// Endüstriyel "blueprint" ızgarası — 48px ana hatlar + 12px ince alt
+/// bölüm çizgileri. Sabit bir desen olduğu için tek seferlik çizilir.
+class _GridPainter extends CustomPainter {
+  const _GridPainter({required this.color});
+
+  final Color color;
+
+  static const double _minorStep = 24;
+  static const int _majorEvery = 4;
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final minorPaint = Paint()
+      ..color = color.withOpacity(color.opacity * 0.45)
+      ..strokeWidth = 0.6;
+    final majorPaint = Paint()
+      ..color = color
+      ..strokeWidth = 0.8;
+
+    var i = 0;
+    for (double x = 0; x <= size.width; x += _minorStep, i++) {
+      final paint = i % _majorEvery == 0 ? majorPaint : minorPaint;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+    i = 0;
+    for (double y = 0; y <= size.height; y += _minorStep, i++) {
+      final paint = i % _majorEvery == 0 ? majorPaint : minorPaint;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant final _GridPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _MeshPainter extends CustomPainter {
