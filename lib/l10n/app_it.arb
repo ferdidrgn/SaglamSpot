@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "Dalle migliori occasioni dell'usato alla nostra collezione nuova — trova facilmente ciò che cerchi.",
   "onboardingPage3Eyebrow": "ACQUISTA CON FIDUCIA",
   "onboardingPage3Title": "Hai Trovato\nQualcosa? Chiedi Ora",
-  "onboardingPage3Desc": "Contattaci subito su WhatsApp, chiedi il prezzo e tratta direttamente — senza intermediari.",
+  "onboardingPage3Desc": "Contattaci subito su WhatsApp, chiedi il prezzo e ricevi la nostra offerta equa — senza intermediari.",
   "favoritesTitle": "I Miei Preferiti",
   "favoritesEmptyTitle": "La tua lista dei preferiti è vuota",
   "favoritesEmptyDesc": "Tocca l'icona a forma di cuore sui prodotti che ti piacciono per aggiungerli ai preferiti.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Legale",
   "recentlyViewedTitle": "Visti di Recente",
   "productTrustBadgeVerified": "Venditore Verificato",
-  "productTrustBadgeNegotiate": "Tratta su WhatsApp",
+  "productTrustBadgeNegotiate": "Prezzi equi su WhatsApp",
   "productTrustBadgeDelivery": "Consegna in loco",
   "howToBuyTitle": "Come acquistare?",
   "howToBuyStep1Title": "Scrivi su WhatsApp",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "SPOT",
   "gatewaySpotTitleShort": "Offerte",
   "spotHeroEyebrow": "DEPOSITO OFFERTE",
-  "spotHeroSubtitle": "Usati ma pratici. Articoli quasi nuovi per ogni budget. Margine di trattativa.",
+  "spotHeroSubtitle": "Usati ma pratici. Articoli quasi nuovi per ogni budget, a prezzi equi.",
   "spotHeroDealCount": "{count}+ offerte",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Margine di trattativa",
+  "spotStatNegotiable": "Prezzi Equi",
   "spotStatUsed": "Usato",
   "spotShowcaseBadgeTitle": "Completamente revisionato",
   "spotShowcaseBadgeSubtitle": "Ogni articolo viene controllato singolarmente prima della consegna.",

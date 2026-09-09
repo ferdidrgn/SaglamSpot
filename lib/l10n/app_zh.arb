@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "从超值二手好物到全新系列,轻松找到心仪之选。",
   "onboardingPage3Eyebrow": "安心购物,值得信赖",
   "onboardingPage3Title": "看中了?\n立即咨询",
-  "onboardingPage3Desc": "一键联系WhatsApp,直接询价议价,无需中间商。",
+  "onboardingPage3Desc": "一键联系WhatsApp,直接询价,即可获得我们的公道报价,无需中间商。",
   "favoritesTitle": "我的收藏",
   "favoritesEmptyTitle": "您的收藏夹为空",
   "favoritesEmptyDesc": "点击喜欢的商品上的心形图标,将其添加到收藏夹。",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "法律信息",
   "recentlyViewedTitle": "最近浏览",
   "productTrustBadgeVerified": "认证卖家",
-  "productTrustBadgeNegotiate": "通过WhatsApp议价",
+  "productTrustBadgeNegotiate": "WhatsApp公道价格",
   "productTrustBadgeDelivery": "现场交货",
   "howToBuyTitle": "如何购买？",
   "howToBuyStep1Title": "在WhatsApp上留言",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "限时",
   "gatewaySpotTitleShort": "优惠",
   "spotHeroEyebrow": "优惠仓库",
-  "spotHeroSubtitle": "二手但实用。适合各种预算的近全新商品，可议价。",
+  "spotHeroSubtitle": "二手但实用。适合各种预算的近全新商品，价格公道。",
   "spotHeroDealCount": "{count}+ 项优惠",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "可议价",
+  "spotStatNegotiable": "价格公道",
   "spotStatUsed": "二手",
   "spotShowcaseBadgeTitle": "全面翻新",
   "spotShowcaseBadgeSubtitle": "每件商品在交付前都经过单独检查。",

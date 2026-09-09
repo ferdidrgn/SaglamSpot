@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "От выгодных предложений б/у до новой коллекции — легко найдите то, что искали.",
   "onboardingPage3Eyebrow": "ПОКУПАЙТЕ С УВЕРЕННОСТЬЮ",
   "onboardingPage3Title": "Нашли Что-то?\nСпросите Сейчас",
-  "onboardingPage3Desc": "Свяжитесь с нами в WhatsApp одним касанием, узнайте цену и договоритесь напрямую.",
+  "onboardingPage3Desc": "Свяжитесь с нами в WhatsApp одним касанием, узнайте цену и получите наше честное предложение напрямую.",
   "favoritesTitle": "Мои Избранные",
   "favoritesEmptyTitle": "Ваш список избранного пуст",
   "favoritesEmptyDesc": "Нажмите на значок сердца на понравившихся товарах, чтобы добавить их в избранное.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Правовая информация",
   "recentlyViewedTitle": "Недавно просмотренные",
   "productTrustBadgeVerified": "Проверенный продавец",
-  "productTrustBadgeNegotiate": "Торг через WhatsApp",
+  "productTrustBadgeNegotiate": "Честные цены в WhatsApp",
   "productTrustBadgeDelivery": "Доставка на месте",
   "howToBuyTitle": "Как купить?",
   "howToBuyStep1Title": "Написать в WhatsApp",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "СПОТ",
   "gatewaySpotTitleShort": "Предложения",
   "spotHeroEyebrow": "СКЛАД ВЫГОДНЫХ ПРЕДЛОЖЕНИЙ",
-  "spotHeroSubtitle": "Бывшие в употреблении, но практичные вещи. Товары как новые на любой бюджет. Возможен торг.",
+  "spotHeroSubtitle": "Бывшие в употреблении, но практичные вещи. Товары как новые на любой бюджет, по честным ценам.",
   "spotHeroDealCount": "{count}+ предложений",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Возможен торг",
+  "spotStatNegotiable": "Честные цены",
   "spotStatUsed": "Б/у",
   "spotShowcaseBadgeTitle": "Полностью восстановлено",
   "spotShowcaseBadgeSubtitle": "Каждый товар проверяется индивидуально перед доставкой.",

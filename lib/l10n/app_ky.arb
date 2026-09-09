@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "Колдонулган мүмкүнчүлүктөрдөн жаңы коллекцияга чейин — издегениңизди оңой табыңыз.",
   "onboardingPage3Eyebrow": "ИШЕНИМДҮҮ САТЫП АЛУУ",
   "onboardingPage3Title": "Жактыңызбы?\nАзыр Жазыңыз",
-  "onboardingPage3Desc": "WhatsApp аркылуу бир басуу менен байланышыңыз, баа сураңыз, түз сүйлөшүңүз.",
+  "onboardingPage3Desc": "WhatsApp аркылуу бир басуу менен байланышыңыз, баа сураңыз, адилеттүү сунушубузду билиңиз.",
   "favoritesTitle": "Тандалмаларым",
   "favoritesEmptyTitle": "Тандалмалар тизмеңиз бош",
   "favoritesEmptyDesc": "Жаккан заттарды тандалмаларга кошуу үчүн жүрөк белгисине басыңыз.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Юридикалык",
   "recentlyViewedTitle": "Жакында көрүлгөндөр",
   "productTrustBadgeVerified": "Текшерилген Сатуучу",
-  "productTrustBadgeNegotiate": "WhatsApp аркылуу сүйлөшүү",
+  "productTrustBadgeNegotiate": "WhatsApp аркылуу адилет баа",
   "productTrustBadgeDelivery": "Жеринде жеткирүү",
   "howToBuyTitle": "Кантип сатып алам?",
   "howToBuyStep1Title": "WhatsApp'ка жазыңыз",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "СПОТ",
   "gatewaySpotTitleShort": "Сунуштар",
   "spotHeroEyebrow": "СУНУШТАР ДЕПОСУ",
-  "spotHeroSubtitle": "Колдонулган, бирок пайдалуу. Ар кандай бюджетке ылайыктуу, жаңыдай буюмдар. Соода мүмкүн.",
+  "spotHeroSubtitle": "Колдонулган, бирок пайдалуу. Ар кандай бюджетке ылайыктуу, жаңыдай буюмдар, адилет баада.",
   "spotHeroDealCount": "{count}+ сунуш",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Соода мүмкүн",
+  "spotStatNegotiable": "Адилет баалар",
   "spotStatUsed": "Колдонулган",
   "spotShowcaseBadgeTitle": "Толук калыбына келтирилген",
   "spotShowcaseBadgeSubtitle": "Ар бир буюм жеткирилерден мурун жеке текшерилет.",

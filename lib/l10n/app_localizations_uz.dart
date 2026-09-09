@@ -1092,7 +1092,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'WhatsApp orqali bir bosishda bog\'laning, narxni so\'rang, to\'g\'ridan-to\'g\'ri kelishing.';
+      'WhatsApp orqali bir bosishda bog\'laning, narxni so\'rang, adolatli taklifimizni bilib oling.';
 
   @override
   String get favoritesTitle => 'Sevimlilarim';
@@ -1501,7 +1501,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get productTrustBadgeVerified => 'Tasdiqlangan Sotuvchi';
 
   @override
-  String get productTrustBadgeNegotiate => 'WhatsApp orqali kelishish';
+  String get productTrustBadgeNegotiate => 'WhatsApp orqali qulay narx';
 
   @override
   String get productTrustBadgeDelivery => 'Joyida yetkazib berish';
@@ -1695,7 +1695,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Ishlatilgan, ammo foydali. Har qanday byudjet uchun yangidek mahsulotlar. Kelishish imkoniyati bor.';
+      'Ishlatilgan, ammo foydali. Har qanday byudjet uchun yangidek mahsulotlar, qulay narxlarda.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1703,7 +1703,7 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Kelishish mumkin';
+  String get spotStatNegotiable => 'Qulay narxlar';
 
   @override
   String get spotStatUsed => 'Ishlatilgan';

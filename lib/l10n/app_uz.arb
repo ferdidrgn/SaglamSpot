@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "Ajoyib ishlatilgan takliflardan yangi kolleksiyagacha — izlaganingizni osongina toping.",
   "onboardingPage3Eyebrow": "ISHONCH BILAN XARID QILING",
   "onboardingPage3Title": "Yoqdimi?\nHozir Yozing",
-  "onboardingPage3Desc": "WhatsApp orqali bir bosishda bog'laning, narxni so'rang, to'g'ridan-to'g'ri kelishing.",
+  "onboardingPage3Desc": "WhatsApp orqali bir bosishda bog'laning, narxni so'rang, adolatli taklifimizni bilib oling.",
   "favoritesTitle": "Sevimlilarim",
   "favoritesEmptyTitle": "Sevimlilar ro'yxatingiz bo'sh",
   "favoritesEmptyDesc": "Yoqqan mahsulotlarni sevimlilarga qo'shish uchun yurak belgisiga bosing.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Huquqiy",
   "recentlyViewedTitle": "Yaqinda ko'rilganlar",
   "productTrustBadgeVerified": "Tasdiqlangan Sotuvchi",
-  "productTrustBadgeNegotiate": "WhatsApp orqali kelishish",
+  "productTrustBadgeNegotiate": "WhatsApp orqali qulay narx",
   "productTrustBadgeDelivery": "Joyida yetkazib berish",
   "howToBuyTitle": "Qanday sotib olaman?",
   "howToBuyStep1Title": "WhatsApp'ga yozing",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "SPOT",
   "gatewaySpotTitleShort": "Takliflar",
   "spotHeroEyebrow": "TAKLIFLAR OMBORI",
-  "spotHeroSubtitle": "Ishlatilgan, ammo foydali. Har qanday byudjet uchun yangidek mahsulotlar. Kelishish imkoniyati bor.",
+  "spotHeroSubtitle": "Ishlatilgan, ammo foydali. Har qanday byudjet uchun yangidek mahsulotlar, qulay narxlarda.",
   "spotHeroDealCount": "{count}+ taklif",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Kelishish mumkin",
+  "spotStatNegotiable": "Qulay narxlar",
   "spotStatUsed": "Ishlatilgan",
   "spotShowcaseBadgeTitle": "To'liq yangilangan",
   "spotShowcaseBadgeSubtitle": "Har bir mahsulot yetkazishdan oldin alohida tekshiriladi.",

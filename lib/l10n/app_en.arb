@@ -375,7 +375,7 @@
   "onboardingPage2Desc": "From great second-hand finds to our brand-new collection — easily find exactly what you're looking for.",
   "onboardingPage3Eyebrow": "SHOP WITH CONFIDENCE",
   "onboardingPage3Title": "Found\nSomething? Ask Now",
-  "onboardingPage3Desc": "Reach us instantly on WhatsApp, ask about pricing, and negotiate directly — no middlemen.",
+  "onboardingPage3Desc": "Reach us instantly on WhatsApp, ask about pricing, and get our fair offer directly — no middlemen.",
   "favoritesTitle": "My Favorites",
   "favoritesEmptyTitle": "Your Favorites List Is Empty",
   "favoritesEmptyDesc": "Tap the heart icon on products you like to add them to your favorites.",
@@ -510,7 +510,7 @@
   "settingsLegalSection": "Legal",
   "recentlyViewedTitle": "Recently Viewed",
   "productTrustBadgeVerified": "Verified Seller",
-  "productTrustBadgeNegotiate": "Negotiate on WhatsApp",
+  "productTrustBadgeNegotiate": "Fair Pricing on WhatsApp",
   "productTrustBadgeDelivery": "On-site Delivery",
   "howToBuyTitle": "How to Buy?",
   "howToBuyStep1Title": "Message on WhatsApp",
@@ -623,7 +623,7 @@
   "gatewaySpotEyebrowShort": "SPOT",
   "gatewaySpotTitleShort": "Deals",
   "spotHeroEyebrow": "DEAL WAREHOUSE",
-  "spotHeroSubtitle": "Used but practical. Like-new items for every budget. Room to negotiate.",
+  "spotHeroSubtitle": "Used but practical. Like-new items for every budget, at fair prices.",
   "spotHeroDealCount": "{count}+ Deals",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -632,7 +632,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Room to Negotiate",
+  "spotStatNegotiable": "Fair Prices",
   "spotStatUsed": "Used",
   "spotShowcaseBadgeTitle": "Fully Refurbished",
   "spotShowcaseBadgeSubtitle": "Every item is individually checked before delivery.",

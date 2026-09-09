@@ -1090,7 +1090,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'Reach us instantly on WhatsApp, ask about pricing, and negotiate directly — no middlemen.';
+      'Reach us instantly on WhatsApp, ask about pricing, and get our fair offer directly — no middlemen.';
 
   @override
   String get favoritesTitle => 'My Favorites';
@@ -1496,7 +1496,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get productTrustBadgeVerified => 'Verified Seller';
 
   @override
-  String get productTrustBadgeNegotiate => 'Negotiate on WhatsApp';
+  String get productTrustBadgeNegotiate => 'Fair Pricing on WhatsApp';
 
   @override
   String get productTrustBadgeDelivery => 'On-site Delivery';
@@ -1689,7 +1689,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Used but practical. Like-new items for every budget. Room to negotiate.';
+      'Used but practical. Like-new items for every budget, at fair prices.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1697,7 +1697,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Room to Negotiate';
+  String get spotStatNegotiable => 'Fair Prices';
 
   @override
   String get spotStatUsed => 'Used';

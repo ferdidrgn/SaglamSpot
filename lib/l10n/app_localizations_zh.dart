@@ -1036,7 +1036,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingPage3Title => '看中了?\n立即咨询';
 
   @override
-  String get onboardingPage3Desc => '一键联系WhatsApp,直接询价议价,无需中间商。';
+  String get onboardingPage3Desc => '一键联系WhatsApp,直接询价,即可获得我们的公道报价,无需中间商。';
 
   @override
   String get favoritesTitle => '我的收藏';
@@ -1431,7 +1431,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get productTrustBadgeVerified => '认证卖家';
 
   @override
-  String get productTrustBadgeNegotiate => '通过WhatsApp议价';
+  String get productTrustBadgeNegotiate => 'WhatsApp公道价格';
 
   @override
   String get productTrustBadgeDelivery => '现场交货';
@@ -1618,7 +1618,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get spotHeroEyebrow => '优惠仓库';
 
   @override
-  String get spotHeroSubtitle => '二手但实用。适合各种预算的近全新商品，可议价。';
+  String get spotHeroSubtitle => '二手但实用。适合各种预算的近全新商品，价格公道。';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1626,7 +1626,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => '可议价';
+  String get spotStatNegotiable => '价格公道';
 
   @override
   String get spotStatUsed => '二手';
