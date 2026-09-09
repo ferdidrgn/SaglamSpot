@@ -19,6 +19,10 @@ final class SaglamSpotCommunication {
   static const double _lat = 40.9691;
   static const double _lng = 29.1105;
 
+  /// Harita gömme (embed) gibi dışarıdan da erişilmesi gereken yerler için.
+  static double get lat => _lat;
+  static double get lng => _lng;
+
   // --- 📞 İLETİŞİM AKSİYONLARI ---
 
   /// WhatsApp hattını başlatır
