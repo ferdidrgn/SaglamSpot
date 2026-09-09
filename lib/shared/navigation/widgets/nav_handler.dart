@@ -115,11 +115,6 @@ class NavigationHandler {
   /// Kullanım Koşulları sayfasına git
   static void goToTerms(final BuildContext context) => context.go('/terms');
 
-  // ✅ MOBİL TAB NAVIGATION (ROUTER)
-  static void goToDiscoverWithCategory(
-          final BuildContext context, final String category) =>
-      context.go('/discover?category=$category');
-
   /// Web'de belirli bir bölüme (Hakkımızda, İletişim vb.) kaydır
   //static void scrollToWebSection(final String section) => NavigationKeys.webNavKey.currentState?.scrollToSection(section);
 
