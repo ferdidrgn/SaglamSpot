@@ -83,12 +83,19 @@ class HomeStorePage extends ConsumerWidget {
                 else
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-                    sliver: SliverList.separated(
-                      itemCount: featured.length,
-                      separatorBuilder: (final _, final __) =>
-                          const SizedBox(height: 18),
-                      itemBuilder: (final context, final index) =>
-                          _ProductListRow(product: featured[index]),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 14,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 0.68,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (final context, final index) =>
+                            _ProductGridCard(product: featured[index]),
+                        childCount: featured.length,
+                      ),
                     ),
                   ),
                 SliverToBoxAdapter(child: _buildSearchBar(context)),
@@ -611,20 +618,22 @@ class _CategoryRowState extends ConsumerState<_CategoryRow> {
   }
 }
 
-/// Referans "Discover" ekranındaki satır kartı — solda metin (isim, durum,
-/// fiyat), sağda büyük görsel, sağ üstte kalp. Referans tasarımda bu alanda
-/// yıldız puanı + yorum sayısı var, ama [Product] modelinde rating alanı
-/// YOK — uydurmak yerine, kullanıcının doğrudan istediği gerçek bir ayrım
-/// gösteriliyor: ürün SIFIR mı yoksa İKİNCİ EL mi (bkz. isSpotProduct).
-class _ProductListRow extends ConsumerWidget {
+/// Referans "Discover the Best Furniture" ekranındaki 2 sütunlu ızgara
+/// kartı — büyük görsel üstte, sol üstte durum rozeti (referansta "NEW"
+/// yazan kırmızı rozetin karşılığı, ama uydurma değil: gerçekten SIFIR mı
+/// yoksa İKİNCİ EL mi, bkz. isSpotProduct), sağ üstte gerçek favori kalbi,
+/// altta isim + fiyat + gerçek sepete ekleme düğmesi.
+class _ProductGridCard extends ConsumerWidget {
   final Product product;
 
-  const _ProductListRow({required this.product});
+  const _ProductGridCard({required this.product});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final isFavorite =
         ref.watch(favoritesProvider).any((final p) => p.id == product.id);
+    final inCart =
+        ref.watch(cartProvider).any((final i) => i.product.id == product.id);
     final isNew = !product.isSpotProduct;
     final conditionColor =
         isNew ? NewCollectionPalette.accent : SpotPalette.accent;
@@ -637,101 +646,146 @@ class _ProductListRow extends ConsumerWidget {
         productId: product.id,
         productSlug: product.name.toSlug(),
       ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4, right: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25,
-                            color: AppColors.mobileTextPrimary),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.mobileSurface,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 16,
+                offset: const Offset(0, 6)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(20)),
+                    child: OptimizedCachedImage(
+                      imageUrl: product.imagesUrl.isNotEmpty
+                          ? product.imagesUrl.first
+                          : '',
+                      fit: BoxFit.cover,
+                      borderRadius: 0,
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: conditionColor,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 9, vertical: 3),
+                      child: Text(
+                        conditionLabel.toUpperCase(),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: GestureDetector(
+                      onTap: () =>
+                          ref.read(favoritesProvider.notifier).toggle(product),
+                      child: Container(
+                        width: 28,
+                        height: 28,
                         decoration: BoxDecoration(
-                          color: conditionColor.withOpacity(0.14),
-                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white.withOpacity(0.92),
+                          shape: BoxShape.circle,
                         ),
-                        child: Text(
-                          conditionLabel,
-                          style: TextStyle(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w800,
-                              color: conditionColor),
+                        child: Icon(
+                          isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          size: 14,
+                          color: isFavorite
+                              ? AppColors.error
+                              : AppColors.mobileTextSecondary,
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${product.price.toStringAsFixed(0)}₺',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.mobileTextPrimary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.mobileTextPrimary),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    product.category.label(context),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 10.5, color: AppColors.mobileTextTertiary),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${product.price.toStringAsFixed(0)}₺',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.mobileTextPrimary),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () =>
+                            ref.read(cartProvider.notifier).toggle(product),
+                        child: Container(
+                          width: 26,
+                          height: 26,
+                          decoration: BoxDecoration(
+                            color: inCart
+                                ? _StorePalette.primaryDark
+                                : _StorePalette.primaryDark.withOpacity(0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            inCart
+                                ? Icons.shopping_bag_rounded
+                                : Icons.add_rounded,
+                            size: 14,
+                            color: inCart
+                                ? Colors.white
+                                : _StorePalette.primaryDark,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(18),
-                child: OptimizedCachedImage(
-                  imageUrl: product.imagesUrl.isNotEmpty
-                      ? product.imagesUrl.first
-                      : '',
-                  width: 132,
-                  height: 112,
-                  fit: BoxFit.cover,
-                  borderRadius: 0,
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: -4,
-            right: -4,
-            child: GestureDetector(
-              onTap: () =>
-                  ref.read(favoritesProvider.notifier).toggle(product),
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: AppColors.mobileSurface,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2)),
-                  ],
-                ),
-                child: Icon(
-                  isFavorite
-                      ? Icons.favorite_rounded
-                      : Icons.favorite_border_rounded,
-                  size: 16,
-                  color:
-                      isFavorite ? AppColors.error : AppColors.mobileTextTertiary,
-                ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
