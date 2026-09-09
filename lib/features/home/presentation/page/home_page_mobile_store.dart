@@ -28,9 +28,22 @@ import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
+/// Bu sayfaya özgü marka kimliği — web'in sıcak kahve/krem paletinden
+/// BİLİNÇLİ olarak ayrı tutulur: web ve mobil app aynı vitrin değil, iki
+/// ayrı deneyim. `AppColors.mobile*` (diğer tüm mobil ekranlarda hâlâ
+/// kullanılan) web ile birebir aynı kahve tonun takma adı olduğu için
+/// BURADA kullanılmıyor; onun yerine, bu sınıfın da belgelediği "Furnishify"
+/// referansındaki adaçayı/sage yeşili kullanılıyor.
+class _StorePalette {
+  _StorePalette._();
+  static Color get primary => AppColors.sage;
+  static Color get primaryDark => AppColors.sageDark;
+  static Color get primaryLight => AppColors.sageLight;
+}
+
 /// Müşteri odaklı, sıfırdan tasarlanmış mobil ana sayfa — "Furnishify"
-/// referansından ilham alan teal/sage renk paleti, arama çubuğu,
-/// kategori çipleri ve gerçek Firestore ürünlerinden beslenen bir
+/// referansından ilham alan sage renk paleti (bkz. [_StorePalette]), arama
+/// çubuğu, kategori çipleri ve gerçek Firestore ürünlerinden beslenen bir
 /// "Öne Çıkanlar" ızgarası. Eski yönetici panelinin yerini alır; panel
 /// artık /admin altında ayrı olarak erişilebilir (bkz. SettingsPage).
 class HomeStorePage extends ConsumerWidget {
@@ -132,7 +145,7 @@ class HomeStorePage extends ConsumerWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.mobilePrimary,
+                  color: _StorePalette.primary,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.person_rounded,
@@ -187,7 +200,7 @@ class HomeStorePage extends ConsumerWidget {
               spacing: 8,
               children: [
                 Icon(Icons.visibility_rounded,
-                    size: 20, color: AppColors.mobilePrimary),
+                    size: 20, color: _StorePalette.primary),
                 Text.rich(
                   TextSpan(
                     style: TextStyle(
@@ -199,7 +212,7 @@ class HomeStorePage extends ConsumerWidget {
                       TextSpan(text: context.l10n.mottoTitlePart1),
                       TextSpan(
                         text: context.l10n.mottoTitlePart2,
-                        style: TextStyle(color: AppColors.mobilePrimary),
+                        style: TextStyle(color: _StorePalette.primary),
                       ),
                     ],
                   ),
@@ -262,7 +275,7 @@ class HomeStorePage extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.mobilePrimary,
+                  color: _StorePalette.primary,
                 ),
               ),
             ),
@@ -347,8 +360,8 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
                             begin: Alignment.bottomLeft,
                             end: Alignment.topRight,
                             colors: [
-                              AppColors.mobilePrimaryDark.withOpacity(0.75),
-                              AppColors.mobilePrimaryDark.withOpacity(0.05),
+                              _StorePalette.primaryDark.withOpacity(0.75),
+                              _StorePalette.primaryDark.withOpacity(0.05),
                             ],
                           ),
                         ),
@@ -413,44 +426,73 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
       );
 }
 
-class _CategoryRow extends ConsumerWidget {
+// Referans tasarımdaki "All / Furniture / Decor / Lighting" hap (pill)
+// satırı — önceki ikon-daire+etiket sütunu yerine, tek satırlık, seçili
+// olanın dolu (koyu sage) göründüğü bir filtre çipi grubu. "Tümü" dışındaki
+// her hap dokununca ilgili kategoriyle arama sayfasına gerçekten götürür
+// (önceki davranış korunuyor); seçili görünüm sadece dokunulan hapı yerel
+// olarak işaretler.
+class _CategoryRow extends ConsumerStatefulWidget {
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
+  ConsumerState<_CategoryRow> createState() => _CategoryRowState();
+}
+
+class _CategoryRowState extends ConsumerState<_CategoryRow> {
+  int _selected = 0;
+
+  @override
+  Widget build(final BuildContext context) {
     final categories = ref.watch(orderedActiveCategoriesProvider);
 
     return SizedBox(
-      height: 84,
+      height: 42,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: categories.length,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 14),
+        itemCount: categories.length + 1,
+        separatorBuilder: (final _, final __) => const SizedBox(width: 8),
         itemBuilder: (final context, final index) {
-          final CategoryMeta meta = categories[index];
+          final bool isAll = index == 0;
+          final String label = isAll
+              ? context.l10n.conditionAll
+              : categories[index - 1].customLabel ??
+                  categories[index - 1].category.label(context);
+          final bool isActive = index == _selected;
+
           return TactilePress(
-            onTap: () => NavigationHandler.goToSearchWithCategory(
-                context, meta.category.name),
-            child: Column(
-              children: [
-                GlassSurface(
-                  width: 56,
-                  height: 56,
-                  borderRadius: 18,
-                  alignment: Alignment.center,
-                  child:
-                      Icon(meta.icon, color: AppColors.mobilePrimary, size: 24),
+            onTap: () {
+              setState(() => _selected = index);
+              if (isAll) {
+                NavigationHandler.goToSearch(context);
+              } else {
+                NavigationHandler.goToSearchWithCategory(
+                    context, categories[index - 1].category.name);
+              }
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color:
+                    isActive ? _StorePalette.primaryDark : AppColors.mobileSurface,
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: isActive
+                      ? _StorePalette.primaryDark
+                      : AppColors.mobileBorder,
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  meta.customLabel ?? meta.category.label(context),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.mobileTextSecondary),
+              ),
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: isActive ? Colors.white : AppColors.mobileTextSecondary,
                 ),
-              ],
+              ),
             ),
           );
         },
@@ -541,7 +583,7 @@ class _ProductCard extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.mobileAccent,
+                            color: _StorePalette.primaryDark,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -626,7 +668,7 @@ class _ProductCard extends ConsumerWidget {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w900,
-                                color: AppColors.mobilePrimary),
+                                color: _StorePalette.primary),
                           ),
                         ),
                         GestureDetector(
@@ -637,8 +679,8 @@ class _ProductCard extends ConsumerWidget {
                             height: 26,
                             decoration: BoxDecoration(
                               color: inCart
-                                  ? AppColors.mobilePrimary
-                                  : AppColors.mobilePrimary.withOpacity(0.12),
+                                  ? _StorePalette.primary
+                                  : _StorePalette.primary.withOpacity(0.12),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -648,7 +690,7 @@ class _ProductCard extends ConsumerWidget {
                               size: 14,
                               color: inCart
                                   ? Colors.white
-                                  : AppColors.mobilePrimary,
+                                  : _StorePalette.primary,
                             ),
                           ),
                         ),
@@ -753,7 +795,7 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
       child: HudCornerFrame(
         armLength: 18,
         inset: 10,
-        color: AppColors.mobilePrimary,
+        color: _StorePalette.primary,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Column(
@@ -827,7 +869,7 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                     Row(
                       children: [
                         Icon(Icons.location_on_rounded,
-                            size: 16, color: AppColors.mobilePrimary),
+                            size: 16, color: _StorePalette.primary),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(context.l10n.storeAddress,
@@ -856,7 +898,7 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                color: AppColors.mobilePrimary,
+                                color: _StorePalette.primary,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Center(
@@ -878,12 +920,12 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border:
-                                    Border.all(color: AppColors.mobilePrimary),
+                                    Border.all(color: _StorePalette.primary),
                               ),
                               child: Center(
                                 child: Text(context.l10n.directionsButton,
                                     style: TextStyle(
-                                        color: AppColors.mobilePrimary,
+                                        color: _StorePalette.primary,
                                         fontSize: 12.5,
                                         fontWeight: FontWeight.w700)),
                               ),
