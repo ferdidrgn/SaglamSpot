@@ -639,12 +639,13 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       _visitInfoRow(
                           Icons.local_shipping_outlined,
                           context.l10n.freeDeliveryLabel,
-                          SaglamSpotCommunication.freeDeliveryZones.join(', ')),
+                          detailWidget: _DeliveryZonesTicker(
+                              zones: SaglamSpotCommunication.freeDeliveryZones)),
                       const SizedBox(height: 16),
                       _visitInfoRow(
                           Icons.directions_bus_outlined,
                           context.l10n.busLinesLabel,
-                          SaglamSpotCommunication.getBusLines()
+                          detail: SaglamSpotCommunication.getBusLines()
                               .entries
                               .map((final e) =>
                                   '${e.key}: ${e.value.join(', ')}')
@@ -658,8 +659,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ),
       );
 
-  Widget _visitInfoRow(
-          final IconData icon, final String title, final String detail) =>
+  Widget _visitInfoRow(final IconData icon, final String title,
+          {final String? detail, final Widget? detailWidget}) =>
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -674,12 +675,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         fontSize: 13)),
-                const SizedBox(height: 4),
-                Text(detail,
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12,
-                        height: 1.4)),
+                const SizedBox(height: 6),
+                if (detailWidget != null)
+                  detailWidget
+                else
+                  Text(detail ?? '',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontSize: 12,
+                          height: 1.4)),
               ],
             ),
           ),
@@ -1625,6 +1629,88 @@ class _FeaturedCardFallback extends StatelessWidget {
       color: AppColors.secondary,
       child: Icon(Icons.chair_rounded,
           size: 18, color: AppColors.textTertiary));
+}
+
+/// Ücretsiz teslimat yapılan semtleri tek upuzun cümle halinde ("İçerenköy,
+/// Fındıklı, Kayışdağı, ...") değil, kısa rozetler halinde sonsuz akan bir
+/// "kargo rotası" şeridinde gösterir — dar sağ panelde metnin taşmasını da
+/// önler. `InfiniteTicker` ile aynı sürekli-kaydırma mantığı, ama koyu
+/// zemine uygun hafif, camsı bir görünümle.
+class _DeliveryZonesTicker extends StatefulWidget {
+  final List<String> zones;
+
+  const _DeliveryZonesTicker({required this.zones});
+
+  @override
+  State<_DeliveryZonesTicker> createState() => _DeliveryZonesTickerState();
+}
+
+class _DeliveryZonesTickerState extends State<_DeliveryZonesTicker>
+    with SingleTickerProviderStateMixin {
+  final ScrollController _scrollController = ScrollController();
+  late final AnimationController _controller;
+  double _offset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(days: 1),
+    )..addListener(_tick);
+    _controller.repeat();
+  }
+
+  void _tick() {
+    if (!_scrollController.hasClients) return;
+    _offset += 0.3;
+    _scrollController.jumpTo(_offset);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) => SizedBox(
+        height: 26,
+        child: ListView.builder(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (final context, final index) {
+            final zone = widget.zones[index % widget.zones.length];
+            return Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.white.withOpacity(0.14)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.location_on_rounded,
+                        size: 11, color: AppColors.accentLight),
+                    const SizedBox(width: 5),
+                    Text(zone,
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
 }
 
 class _FooterSocialIcon extends StatelessWidget {

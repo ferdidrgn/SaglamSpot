@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:saglamspot/features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
+import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -19,8 +20,11 @@ import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/presentation/providers/product_provider.dart';
+import '../../data/models/category_meta.dart';
 import '../../domain/entites/product.dart';
+import '../providers/favorites_provider.dart';
 
 /// "Spot / İkinci El Ürünler" — KÖKLÜ, ikinci kez baştan tasarlandı.
 enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
@@ -69,6 +73,24 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       case ProductCategory.other: return Icons.category_outlined;
     }
   }
+
+  // Ürünün gerçekten ne zaman eklendiğini gösterir (product_detail_page'deki
+  // ile aynı mantık) — sahte "4.9 puan" yerine dürüst, gerçek bir veri.
+  String? _listedLabel(final BuildContext context, final Product product) {
+    final parsed = DateTime.tryParse(product.createdAt);
+    if (parsed == null) return null;
+    final days = DateTime.now().difference(parsed).inDays;
+    if (days <= 0) return context.l10n.listedToday;
+    if (days < 7) return context.l10n.listedDaysAgo(days);
+    return context.l10n.listedWeeksAgo((days / 7).floor());
+  }
+
+  Widget _spotImageFallback() => Container(
+        color: const Color(0xFFEEEEEE),
+        child: const Center(
+          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFBDBDBD)),
+        ),
+      );
 
   @override
   Widget build(final BuildContext context) {
@@ -132,15 +154,15 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                   ),
 
                   // ======================================================
-                  // YENİ EKLENEN BÖLÜM: "Tatlı, Renkli, Web'e uygun" Tasarım
-                  // Görseldeki gibi, ama sağa yaslı ve web boyutlarında.
-                  // Ürünlerin hemen altına (reklamdan önce) eklendi.
+                  // AKAN FIRSAT ŞERİDİ: Üstteki sabit ızgaradan farklı olarak
+                  // burada mevcut filtreye uyan TÜM fırsatlar, durmadan
+                  // kayan bir "kargo bandı" gibi göz önünden geçer.
                   // ======================================================
-                  if (filtered.isNotEmpty && context.isDesktop)
+                  if (filtered.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                        child: _buildSweetWebDesign(context, filtered),
+                        child: _buildFeaturedDealsShowcase(context, filtered),
                       ),
                     ),
 
@@ -674,10 +696,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // TEK KART (SIFIRDAN - EditorialProductCard KULLANILMADI)
   // ================================================================
   Widget _buildSingleSpotCard(BuildContext context, Product product) {
-    final imageUrl = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80';
+    final imageUrl = product.imagesUrl.isNotEmpty ? product.imagesUrl.first : null;
+    final isFavorite = ref.watch(favoritesProvider).any((final p) => p.id == product.id);
+    final listedLabel = _listedLabel(context, product);
 
     return GestureDetector(
-      onTap: () => context.push('/product/${product.id}'),
+      onTap: () => NavigationHandler.goToProduct(
+          context: context, productId: product.id, productSlug: product.name.toSlug()),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -701,16 +726,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: const Color(0xFFEEEEEE),
-                        child: const Center(
-                          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFBDBDBD)),
-                        ),
-                      ),
-                    ),
+                    child: imageUrl != null
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _spotImageFallback(),
+                          )
+                        : _spotImageFallback(),
                   ),
 
                   // Kategori etiketi (sol üst)
@@ -746,13 +768,20 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                   Positioned(
                     top: 12,
                     right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
+                    child: GestureDetector(
+                      onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFavorite ? Icons.favorite_rounded : Icons.favorite_border,
+                          size: 18,
+                          color: isFavorite ? const Color(0xFFE65100) : const Color(0xFF1A1A1A),
+                        ),
                       ),
-                      child: const Icon(Icons.favorite_border, size: 18, color: Color(0xFF1A1A1A)),
                     ),
                   ),
 
@@ -820,49 +849,55 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 1. SATIR: Puan + Stok
+                        // 1. SATIR: İkinci El durumu + eklenme zamanı
                         Row(
                           children: [
-                            const Icon(Icons.star, size: 14, color: Color(0xFFF59E0B)),
+                            const Icon(Icons.recycling_rounded, size: 13, color: Color(0xFF16A34A)),
                             const SizedBox(width: 4),
                             const Text(
-                              "4.9",
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151)),
+                              "İkinci El",
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF16A34A)),
                             ),
-                            const SizedBox(width: 8),
-                            Container(width: 3, height: 3, decoration: const BoxDecoration(color: Color(0xFFD1D5DB), shape: BoxShape.circle)),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.check_circle, size: 12, color: Color(0xFF16A34A)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              "Stokta",
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF16A34A)),
-                            ),
+                            if (listedLabel != null) ...[
+                              const SizedBox(width: 8),
+                              Container(width: 3, height: 3, decoration: const BoxDecoration(color: Color(0xFFD1D5DB), shape: BoxShape.circle)),
+                              const SizedBox(width: 8),
+                              Icon(Icons.schedule_rounded, size: 12, color: const Color(0xFF9CA3AF)),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  listedLabel,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF6B7280)),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                         const SizedBox(height: 6),
 
-                        // 2. SATIR: SIFIR + Popülerlik
+                        // 2. SATIR: Pazarlık payı vurgusu
                         Row(
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF0F7F0),
+                                color: const Color(0xFFFFF3E0),
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFFC8E6C9)),
+                                border: Border.all(color: const Color(0xFFFFCC80)),
                               ),
-                              child: const Text(
-                                "SIFIR",
-                                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Color(0xFF2E7D32), letterSpacing: 0.5),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.handshake_outlined, size: 11, color: Color(0xFFE65100)),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    "PAZARLIĞA AÇIK",
+                                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Color(0xFFE65100), letterSpacing: 0.4),
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.trending_up, size: 12, color: Color(0xFFF59E0B)),
-                            const SizedBox(width: 4),
-                            const Text(
-                              "Çok tercih edilen",
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: Color(0xFF6B7280)),
                             ),
                           ],
                         ),
@@ -912,38 +947,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ============================================================
-  // YENİ! "TATLI RENKLİ WEB TASARIMI" (Görseldeki gibi)
-  // Sağa yaslı, web boyutlarında, pastel renkler.
+  // AKAN FIRSAT ŞERİDİ — durmadan kayan, gerçek stoktan beslenen bir
+  // "kargo bandı" görünümü. Yukarıdaki sabit ızgaradan farklı bir his
+  // vermesi için elle kaydırılmaz; kendi kendine akar, dokununca ürüne
+  // götürür. Artık uydurma İspanyolca ürün adları / dolar fiyatları
+  // yerine sayfanın kendi (filtrelenmiş) gerçek ürünlerini gösterir.
   // ============================================================
-  Widget _buildSweetWebDesign(BuildContext context, List<Product> products) {
-    final isDesktop = context.isDesktop;
-    if (!isDesktop) return const SizedBox.shrink();
-
-    // Görselden esinlenerek oluşturulmuş renkli kartlar
-    final List<Map<String, dynamic>> featuredItems = [
-      {
-        'title': 'Sillones',
-        'subtitle': 'Temporada 2022',
-        'price': 50,
-        'color': const Color(0xFFFFC107), // Sarı
-        'image': 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=400&q=80',
-      },
-      {
-        'title': 'Butaca rosa',
-        'subtitle': 'Nuevo ingreso',
-        'price': 85,
-        'color': const Color(0xFFE8D5B7), // Bej
-        'image': 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80',
-      },
-      {
-        'title': 'Butaca amarilla',
-        'subtitle': 'Andy Room',
-        'price': 60,
-        'color': const Color(0xFFFF9800), // Turuncu
-        'image': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80',
-      },
-    ];
-
+  Widget _buildFeaturedDealsShowcase(BuildContext context, List<Product> products) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -961,175 +971,26 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Icon(Icons.local_fire_department_rounded, size: 20, color: Color(0xFFE65100)),
+              const SizedBox(width: 8),
               Text(
-                "Öne Çıkan Fırsatlar",
+                "Fırsatlar Akıyor",
                 style: GoogleFonts.fraunces(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF1A1A1A),
                 ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text("Tümünü Gör", style: TextStyle(fontWeight: FontWeight.w600)),
-              ),
             ],
           ),
+          const SizedBox(height: 4),
+          const Text(
+            "Mevcut fırsatlar önünüzden kayarken keşfedin, dokunduğunuzda ürüne gider.",
+            style: TextStyle(fontSize: 12.5, color: Color(0xFF6B7280)),
+          ),
           const SizedBox(height: 16),
-
-          // 3'lü Web Kart Grid'i (Sağa yaslı görünüm)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: featuredItems.map((item) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: _buildSweetCard(
-                    context,
-                    title: item['title'],
-                    subtitle: item['subtitle'],
-                    price: item['price'],
-                    color: item['color'],
-                    imageUrl: item['image'],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSweetCard(BuildContext context, {
-    required String title,
-    required String subtitle,
-    required int price,
-    required Color color,
-    required String imageUrl,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Görsel alanı
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                // "Nuevo ingreso" / etiket
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      subtitle,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                    ),
-                  ),
-                ),
-                // Kalp ikonu
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.favorite_border, size: 18, color: Color(0xFF1A1A1A)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // İçerik
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.fraunces(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1A1A1A),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: const Color(0xFF1A1A1A).withOpacity(0.6),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "\$$price",
-                      style: GoogleFonts.fraunces(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A1A),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Row(
-                        children: [
-                          Text(
-                            "İncele",
-                            style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward_rounded, size: 12, color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          _FlowingDealsStrip(products: products),
         ],
       ),
     );
@@ -1435,6 +1296,180 @@ class _ViewToggle extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ============================================================
+// AKAN FIRSAT ŞERİDİ WIDGET'LARI
+// ============================================================
+
+/// Sağdan sola durmadan akan bir kart şeridi — `InfiniteTicker` ile aynı
+/// sonsuz-kaydırma deseni (AnimationController + jumpTo), ama zengin ürün
+/// kartlarıyla. Modulo indeksleme sayesinde tek bir ürün olsa bile akış
+/// kesintisiz döner.
+class _FlowingDealsStrip extends StatefulWidget {
+  final List<Product> products;
+
+  const _FlowingDealsStrip({required this.products});
+
+  @override
+  State<_FlowingDealsStrip> createState() => _FlowingDealsStripState();
+}
+
+class _FlowingDealsStripState extends State<_FlowingDealsStrip>
+    with SingleTickerProviderStateMixin {
+  final ScrollController _scrollController = ScrollController();
+  late final AnimationController _controller;
+  double _offset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(days: 1),
+    )..addListener(_tick);
+    _controller.repeat();
+  }
+
+  void _tick() {
+    if (!_scrollController.hasClients) return;
+    _offset += 0.55;
+    _scrollController.jumpTo(_offset);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    if (widget.products.isEmpty) return const SizedBox.shrink();
+    return SizedBox(
+      height: 236,
+      child: ListView.builder(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (final context, final index) {
+          final product = widget.products[index % widget.products.length];
+          return Padding(
+            padding: const EdgeInsets.only(right: 14),
+            child: _FlowingDealCard(product: product),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Akan şeritteki tek bir ürün kartı — gerçek görsel, gerçek ₺ fiyatı ve
+/// kategorisine göre pastelleştirilmiş bir zemin rengi kullanır.
+class _FlowingDealCard extends ConsumerWidget {
+  final Product product;
+
+  const _FlowingDealCard({required this.product});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final meta = defaultCategoryMeta[product.category] ?? defaultCategoryMeta[ProductCategory.other]!;
+    final pastel = Color.lerp(meta.color, Colors.white, 0.78)!;
+    final imageUrl = product.imagesUrl.isNotEmpty ? product.imagesUrl.first : null;
+    final isFavorite = ref.watch(favoritesProvider).any((final p) => p.id == product.id);
+
+    return TactilePress(
+      onTap: () => NavigationHandler.goToProduct(
+          context: context, productId: product.id, productSlug: product.name.toSlug()),
+      child: Container(
+        width: 168,
+        decoration: BoxDecoration(
+          color: pastel,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(color: meta.color.withOpacity(0.18), blurRadius: 14, offset: const Offset(0, 6)),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 4 / 3,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: imageUrl != null
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                Center(child: Icon(meta.icon, size: 30, color: meta.color)),
+                          )
+                        : Center(child: Icon(meta.icon, size: 30, color: meta.color)),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
+                      child: CircleAvatar(
+                        radius: 13,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          isFavorite ? Icons.favorite_rounded : Icons.favorite_border,
+                          size: 13,
+                          color: isFavorite ? const Color(0xFFE65100) : const Color(0xFF1A1A1A),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.category.label(context).toUpperCase(),
+                          style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                              color: meta.color),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          product.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.fraunces(
+                              fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF1A1A1A)),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "₺${product.price.toStringAsFixed(0)}",
+                      style: GoogleFonts.fraunces(
+                          fontSize: 16, fontWeight: FontWeight.w700, color: const Color(0xFF1A1A1A)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
