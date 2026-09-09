@@ -22,6 +22,7 @@ import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../features/products/data/models/category_meta.dart';
 import '../../../../features/products/domain/entites/product.dart';
 import '../../../../features/products/presentation/providers/category_meta_provider.dart';
+import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../../features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
@@ -463,12 +464,27 @@ class _ProductCard extends ConsumerWidget {
 
   const _ProductCard({required this.product});
 
+  // Referans tasarımdaki yıldız/yorum sayısı satırının karşılığı — ama
+  // Product modelinde rating/review alanı YOK, uydurma bir puan
+  // göstermek yerine gerçek bir veri: ürünün ne zaman eklendiği.
+  String? _listedLabel(final BuildContext context) {
+    final parsed = DateTime.tryParse(product.createdAt);
+    if (parsed == null) return null;
+    final days = DateTime.now().difference(parsed).inDays;
+    if (days <= 0) return context.l10n.listedToday;
+    if (days < 7) return context.l10n.listedDaysAgo(days);
+    return context.l10n.listedWeeksAgo((days / 7).floor());
+  }
+
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final inCart =
         ref.watch(cartProvider).any((final i) => i.product.id == product.id);
+    final isFavorite =
+        ref.watch(favoritesProvider).any((final p) => p.id == product.id);
     final meta = defaultCategoryMeta[product.category] ??
         defaultCategoryMeta[ProductCategory.other]!;
+    final listed = _listedLabel(context);
 
     return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
@@ -480,18 +496,25 @@ class _ProductCard extends ConsumerWidget {
       // aynı canlı dil.
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-                color: meta.color.withOpacity(0.28),
+                color: meta.color.withOpacity(0.24),
                 blurRadius: 22,
                 spreadRadius: -4,
                 offset: const Offset(0, 10)),
           ],
         ),
-        child: GlassSurface(
-          borderRadius: 18,
-          chromaticEdge: true,
+        // Referans görseldeki pastel/kategoriye uyumlu zemin — sabit tek
+        // bir sage yerine, uygulamanın her yerinde kullanılan gerçek
+        // kategori rengiyle (meta.color) çok hafif tonlanmış bir yüzey.
+        child: Container(
+          decoration: BoxDecoration(
+            color:
+                Color.alphaBlend(meta.color.withOpacity(0.07), AppColors.mobileSurface),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: meta.color.withOpacity(0.14)),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -501,7 +524,7 @@ class _ProductCard extends ConsumerWidget {
                   children: [
                     ClipRRect(
                       borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(18)),
+                          const BorderRadius.vertical(top: Radius.circular(20)),
                       child: OptimizedCachedImage(
                         imageUrl: product.imagesUrl.isNotEmpty
                             ? product.imagesUrl.first
@@ -530,23 +553,31 @@ class _ProductCard extends ConsumerWidget {
                           ),
                         ),
                       ),
+                    // Referans görseldeki kalp ikonu — artık gerçekten
+                    // çalışan favori listesine bağlı (favoritesProvider),
+                    // web/arama tarafındaki SearchProductGridCard ile aynı
+                    // desen.
                     Positioned(
+                      top: 8,
                       right: 8,
-                      bottom: 8,
                       child: GestureDetector(
                         onTap: () =>
-                            ref.read(cartProvider.notifier).toggle(product),
+                            ref.read(favoritesProvider.notifier).toggle(product),
                         child: Container(
-                          width: 30,
-                          height: 30,
-                          decoration: const BoxDecoration(
-                              color: Colors.white, shape: BoxShape.circle),
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.92),
+                            shape: BoxShape.circle,
+                          ),
                           child: Icon(
-                            inCart
-                                ? Icons.shopping_bag_rounded
-                                : Icons.add_rounded,
-                            size: 16,
-                            color: AppColors.mobilePrimary,
+                            isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            size: 15,
+                            color: isFavorite
+                                ? AppColors.error
+                                : AppColors.mobileTextSecondary,
                           ),
                         ),
                       ),
@@ -559,6 +590,24 @@ class _ProductCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Icon(meta.icon, size: 11, color: meta.color),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            listed ?? product.category.label(context),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.mobileTextTertiary),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
                     Text(
                       product.name,
                       maxLines: 1,
@@ -568,13 +617,42 @@ class _ProductCard extends ConsumerWidget {
                           fontWeight: FontWeight.w700,
                           color: AppColors.mobileTextPrimary),
                     ),
-                    const SizedBox(height: 3),
-                    Text(
-                      '${product.price.toStringAsFixed(0)}₺',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.mobilePrimary),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${product.price.toStringAsFixed(0)}₺',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.mobilePrimary),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () =>
+                              ref.read(cartProvider.notifier).toggle(product),
+                          child: Container(
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              color: inCart
+                                  ? AppColors.mobilePrimary
+                                  : AppColors.mobilePrimary.withOpacity(0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              inCart
+                                  ? Icons.shopping_bag_rounded
+                                  : Icons.add_rounded,
+                              size: 14,
+                              color: inCart
+                                  ? Colors.white
+                                  : AppColors.mobilePrimary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
