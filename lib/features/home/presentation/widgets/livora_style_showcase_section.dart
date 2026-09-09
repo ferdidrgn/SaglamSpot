@@ -133,11 +133,14 @@ class LivoraStyleShowcaseSection extends ConsumerWidget {
   }
 
   Widget _buildIconRow(final BuildContext context) {
+    // NOT: "Kolay İade — 30 gün içinde" bilerek burada YOK — ikinci el
+    // esnaf usulü çalıştığımız için iade kabul edemiyoruz (bkz. SSS:
+    // sssQ17/sssA17). Var olmayan bir politikayı vaat etmek yerine gerçek
+    // 3 vurgu bırakıldı.
     final items = [
       (Icons.verified_rounded, 'Kaliteli Malzeme', 'Özenle seçilir'),
       (Icons.handyman_rounded, 'El İşçiliği', 'Ustaların emeği'),
       (Icons.eco_rounded, 'Sürdürülebilir Seçim', 'Çevre dostu tercih'),
-      (Icons.assignment_return_rounded, 'Kolay İade', '30 gün içinde'),
     ];
 
     return Padding(

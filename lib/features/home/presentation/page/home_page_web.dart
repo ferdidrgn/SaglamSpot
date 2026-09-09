@@ -36,7 +36,6 @@ import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
 import '../widgets/livora_style_showcase_section.dart';
 import '../widgets/social_showcase_section.dart';
-import '../widgets/testimonials_section.dart';
 import '../widgets/why_us_section.dart';
 
 /// Ana sayfa — referans alınan vitrin/katalog düzenine göre sıfırdan
@@ -167,7 +166,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       slivers: [
                         _buildArtisanInfo(),
                         const WhyUsSection(),
-                        const TestimonialsSection(),
                         // Reklam bilerek koyu istatistik şeridinden ÖNCE,
                         // hâlâ açık zeminin içinde duruyor — Stats + Footer
                         // arasına girerse iki koyu blok arasında açık bir
