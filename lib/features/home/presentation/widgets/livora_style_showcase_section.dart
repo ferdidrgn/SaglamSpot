@@ -7,18 +7,15 @@ import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 
-/// Krem zeminli, sayfanın alt kısmındaki bağımsız vitrin bloğu — kullanıcı
-/// bu bölümü kaybettikten sonra geri istedi, bu yüzden kalıcı bir sayfa
-/// bölümü olarak korunuyor. Aynı ürünler ve verilerle, ana ızgaradan daha
-/// sade bir sunum sağlıyor.
+/// DENEME/KARŞILAŞTIRMA BÖLÜMÜ — kullanıcının paylaştığı referans
+/// tasarımların (Livora/InteriorStudio) en beğenilen öğelerini kendi
+/// marka renklerimiz, kendi rozetlerimiz ve kendi gerçek ürün verimizle
+/// yeniden yorumlar. Mevcut hiçbir section'ın yerini almaz — sayfanın en
+/// altına, ayrı ve bağımsız bir blok olarak eklenir; kullanıcı hangi
+/// tasarımı beğenirse onu tutacak.
 ///
-/// NOT: Bu widget'ın "quote"/müşteri yorumları bölümü BİLEREK burada YOK —
-/// uydurma isim/alıntı (Elif Y./Mehmet K./Ayşe D.) içerdiği için ayrıca
-/// kaldırılmıştı (bkz. testimonials_section.dart'ın kaldırılma gerekçesi).
-/// "Neden Bizi Seçmelisiniz" rozet satırı da BİLEREK burada YOK — aynı
-/// içerik artık home_page_web.dart içindeki _buildWhyChooseRow'da, hero'nun
-/// hemen altında tek bir yerde duruyor; burada tekrarlanırsa aynı vurgu
-/// sayfada iki kez görünür.
+/// NOT: Buradaki metinler bilerek l10n'e taşınmadı (deneme amaçlı, kalıcı
+/// olması durumunda 11 dile çevrilip ARB dosyalarına taşınmalı).
 class LivoraStyleShowcaseSection extends ConsumerWidget {
   const LivoraStyleShowcaseSection({super.key});
 
@@ -39,15 +36,19 @@ class LivoraStyleShowcaseSection extends ConsumerWidget {
             _buildLabel(context),
             SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
             _buildIconRow(context),
+            SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
             if (spotlight != null) ...[
-              SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
               Padding(
                 padding: context.pagePadding.copyWith(top: 0, bottom: 0),
                 child: _ProductSpotlightCard(product: spotlight),
               ),
+              SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
             ],
-            SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
             _buildAccentBanner(context),
+            SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
+            _buildWhyChooseRow(context),
+            SizedBox(height: context.responsive(mobile: 28, desktop: 40)),
+            _buildQuoteRow(context),
           ],
         ),
       ),
@@ -87,8 +88,9 @@ class LivoraStyleShowcaseSection extends ConsumerWidget {
         ),
       );
 
-  // Gerçek müşteri fotoğrafımız olmadığı için baş harfli, marka renginde
-  // rozetlerle (uydurma yüz fotoğrafı YOK).
+  // Referans tasarımdaki "Trusted by 25.000+ happy customers" satırının
+  // karşılığı — gerçek müşteri fotoğrafımız olmadığı için baş harfli,
+  // marka renginde rozetlerle (uydurma yüz fotoğrafı YOK).
   Widget _buildTrustAvatars(final BuildContext context) {
     const initials = ['E', 'M', 'A', 'B'];
     return Row(
@@ -236,6 +238,126 @@ class LivoraStyleShowcaseSection extends ConsumerWidget {
           ),
         ),
       );
+
+  Widget _buildWhyChooseRow(final BuildContext context) {
+    final items = [
+      (Icons.workspace_premium_outlined, '20+ Yıl Tecrübe'),
+      (Icons.people_outline_rounded, '2.500+ Mutlu Müşteri'),
+      (Icons.verified_user_outlined, 'Sigortalı Teslimat'),
+      (Icons.storefront_outlined, 'Yerel Esnaf Güvencesi'),
+    ];
+
+    return Padding(
+      padding: context.pagePadding.copyWith(top: 0, bottom: 0),
+      child: Container(
+        padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 32)),
+        decoration: BoxDecoration(
+          color: AppColors.secondary.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: context.responsive(mobile: 20, desktop: 36),
+          runSpacing: 16,
+          children: [
+            for (final item in items)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(item.$1, color: AppColors.accent, size: 22),
+                  const SizedBox(width: 8),
+                  Text(item.$2,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: context.captionSize,
+                          color: AppColors.textPrimary)),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuoteRow(final BuildContext context) {
+    final quotes = [
+      (
+        'Ürün tam anlattıkları gibi geldi, teslimat da çok hızlıydı.',
+        'Elif Y.',
+        5,
+      ),
+      (
+        'Esnaf gibi değil dost gibi ilgilendiler, kesinlikle tavsiye ederim.',
+        'Mehmet K.',
+        5,
+      ),
+      (
+        'Spot ürün aldık ama sıfır gibi geldi, çok memnun kaldık.',
+        'Ayşe D.',
+        4,
+      ),
+    ];
+
+    return Padding(
+      padding: context.pagePadding.copyWith(top: 0, bottom: 0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 20,
+        runSpacing: 20,
+        children: [
+          for (final q in quotes)
+            SizedBox(
+              width: context.responsive(mobile: 280, desktop: 300),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: List.generate(
+                      5,
+                      (final i) => Icon(
+                        i < q.$3
+                            ? Icons.star_rounded
+                            : Icons.star_border_rounded,
+                        color: AppColors.accent,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text('"${q.$1}"',
+                      style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontStyle: FontStyle.italic,
+                          fontSize: context.captionSize,
+                          height: 1.5)),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 14,
+                        backgroundColor: AppColors.secondary,
+                        child: Text(q.$2.characters.first,
+                            style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(q.$2,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12.5,
+                              color: AppColors.textPrimary)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ProductSpotlightCard extends StatelessWidget {

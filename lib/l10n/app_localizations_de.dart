@@ -576,7 +576,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'Schneller, sorgfältiger Transport nach İçerenköy und die anatolische Seite bringt deine Möbel sicher nach Hause.';
+      'Schneller, versicherter Transport nach İçerenköy und die anatolische Seite bringt deine Möbel sicher nach Hause.';
 
   @override
   String get tipsEyebrow => 'TIPPS';
@@ -1882,7 +1882,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Schnelle, sorgfältige Lieferung in ausgewählte Stadtteile.';
+      'Versicherte, schnelle Lieferung in ausgewählte Stadtteile.';
 
   @override
   String get featureRow3Title => 'Sofortige WhatsApp-Antwort';

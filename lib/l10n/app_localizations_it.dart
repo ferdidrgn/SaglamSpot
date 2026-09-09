@@ -574,7 +574,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get step4Desc =>
-      'Trasporto rapido e curato a İçerenköy e nel lato anatolico porta i tuoi mobili a casa in sicurezza.';
+      'Trasporto rapido e assicurato a İçerenköy e nel lato anatolico porta i tuoi mobili a casa in sicurezza.';
 
   @override
   String get tipsEyebrow => 'CONSIGLI';
@@ -1875,7 +1875,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get featureRow2Desc =>
-      'Consegna curata e veloce nei quartieri selezionati.';
+      'Consegna assicurata e veloce nei quartieri selezionati.';
 
   @override
   String get featureRow3Title => 'Risposta Immediata su WhatsApp';
