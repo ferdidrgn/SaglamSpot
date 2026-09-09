@@ -116,6 +116,24 @@ final class SaglamSpotCommunication {
   static String get workingHours =>
       "Pzt-Cmt: 09:00 - 22:00\nPazar: 10:00 - 20:00";
 
+  /// Şu anda mağaza açık mı? workingHours'taki KURALLA birebir aynı mantık,
+  /// gerçek zamana göre canlı hesaplanır (Pzt-Cmt 09:00-22:00, Pazar
+  /// 10:00-20:00) — sabit bir metin değil.
+  static bool get isOpenNow {
+    final now = DateTime.now();
+    final isSunday = now.weekday == DateTime.sunday;
+    final openHour = isSunday ? 10 : 9;
+    final closeHour = isSunday ? 20 : 22;
+    final minutesNow = now.hour * 60 + now.minute;
+    return minutesNow >= openHour * 60 && minutesNow < closeHour * 60;
+  }
+
+  /// Bugünün çalışma saati etiketi (örn. "Bugün 09:00 - 22:00").
+  static String get todayHoursLabel {
+    final isSunday = DateTime.now().weekday == DateTime.sunday;
+    return isSunday ? "Bugün 10:00 - 20:00" : "Bugün 09:00 - 22:00";
+  }
+
   // --- 🛠 YARDIMCI METOT ---
   static Future<void> _launch(Uri url) async {
     try {

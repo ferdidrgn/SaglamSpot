@@ -68,6 +68,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final productsAsync = ref.watch(productsProvider);
     final availableProducts = ref.watch(availableProductsProvider);
     final selectedCategory = ref.watch(searchFiltersProvider).category;
+    final newCount = ref.watch(newDealsProductsProvider).length;
+    final spotCount = ref.watch(spotDealsProductsProvider).length;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -86,6 +88,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   _buildHeroBanner(availableProducts),
                   _buildTrustBar(),
                   _buildFeatureTicker(),
+                  _buildConditionShowcase(newCount, spotCount),
                   _buildCategoriesSection(),
                   _buildProductsHeader(),
                   _buildDynamicFeaturedGrid(
@@ -317,6 +320,118 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       ),
     );
   }
+
+  /// "Gelmeden Gör, Beğenince Gel." — SIFIR (hiç kullanılmamış) ve SPOT
+  /// (ikinci el) koleksiyonlarına ayrı ayrı giden, GERÇEK stok sayılarıyla
+  /// beslenen ikili bir vitrin banner'ı. Sabit metin değil —
+  /// newDealsProductsProvider / spotDealsProductsProvider'dan gelen canlı
+  /// sayılar kullanılır.
+  Widget _buildConditionShowcase(final int newCount, final int spotCount) =>
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: context.pagePadding.copyWith(
+              top: context.spacing, bottom: context.spacingLarge),
+          child: Column(
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.remove_red_eye_outlined,
+                      color: AppColors.accentDark, size: context.h3Size * 0.72),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: TextStyle(
+                            fontFamily: 'Fraunces',
+                            fontSize: context.h3Size,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary),
+                        children: [
+                          const TextSpan(text: 'Gelmeden Gör, '),
+                          TextSpan(
+                              text: 'Beğenince Gel.',
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: AppColors.accentDark)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Dükkâna gelmeden önce vitrinimizi gez, istediğini bulunca bize uğra.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textSecondary, fontSize: context.bodySize),
+              ),
+              SizedBox(height: context.spacingLarge),
+              context.isMobile
+                  ? Column(
+                      children: [
+                        _ConditionCollectionCard(
+                          eyebrow: 'SIFIR KOLEKSİYON',
+                          title: 'Zamansız Parçalar',
+                          subtitle: 'Hiç kullanılmamış, yeni gibi mobilyalar.',
+                          count: newCount,
+                          eyebrowColor: AppColors.success,
+                          buttonColor: AppColors.primary,
+                          motifIcon: Icons.weekend_rounded,
+                          buttonLabel: 'Koleksiyonu Gör',
+                          onTap: () => NavigationHandler.goToNewProducts(context),
+                        ),
+                        const SizedBox(height: 16),
+                        _ConditionCollectionCard(
+                          eyebrow: 'SPOT FIRSATLAR',
+                          title: 'Kullanılmış, Sağlam',
+                          subtitle: 'İkinci el ama kullanışlı, cebe uygun fiyatlarla.',
+                          count: spotCount,
+                          eyebrowColor: const Color(0xFFE65100),
+                          buttonColor: const Color(0xFFE65100),
+                          motifIcon: Icons.sell_rounded,
+                          buttonLabel: 'Fırsatları Gör',
+                          onTap: () => NavigationHandler.goToSpotProducts(context),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: _ConditionCollectionCard(
+                            eyebrow: 'SIFIR KOLEKSİYON',
+                            title: 'Zamansız Parçalar',
+                            subtitle: 'Hiç kullanılmamış, yeni gibi mobilyalar.',
+                            count: newCount,
+                            eyebrowColor: AppColors.success,
+                            buttonColor: AppColors.primary,
+                            motifIcon: Icons.weekend_rounded,
+                            buttonLabel: 'Koleksiyonu Gör',
+                            onTap: () => NavigationHandler.goToNewProducts(context),
+                          ),
+                        ),
+                        SizedBox(width: context.spacingLarge),
+                        Expanded(
+                          child: _ConditionCollectionCard(
+                            eyebrow: 'SPOT FIRSATLAR',
+                            title: 'Kullanılmış, Sağlam',
+                            subtitle: 'İkinci el ama kullanışlı, cebe uygun fiyatlarla.',
+                            count: spotCount,
+                            eyebrowColor: const Color(0xFFE65100),
+                            buttonColor: const Color(0xFFE65100),
+                            motifIcon: Icons.sell_rounded,
+                            buttonLabel: 'Fırsatları Gör',
+                            onTap: () => NavigationHandler.goToSpotProducts(context),
+                          ),
+                        ),
+                      ],
+                    ),
+            ],
+          ),
+        ),
+      );
 
   Widget _buildProductsHeader() => SliverToBoxAdapter(
         child: Padding(
@@ -871,13 +986,13 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           ? CrossAxisAlignment.center
                           : CrossAxisAlignment.start,
                       children: [
-                        Text(context.l10n.stayUpdated,
-                            style: const TextStyle(
+                        const Text('KONUM & ÇALIŞMA SAATİ',
+                            style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13)),
                         const SizedBox(height: 18),
-                        const _NewsletterField(),
+                        const _FooterVisitCard(),
                       ],
                     ),
                   ),
@@ -916,6 +1031,117 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   ),
                 )),
           ],
+        ),
+      );
+}
+
+/// "Gelmeden Gör, Beğenince Gel." banner'ının SIFIR/SPOT kartlarından
+/// biri — gerçek stok sayısı + hafif dekoratif motif (soluk mobilya
+/// silüeti + birkaç nokta) + tek renkli CTA butonu.
+class _ConditionCollectionCard extends StatelessWidget {
+  final String eyebrow;
+  final String title;
+  final String subtitle;
+  final int count;
+  final Color eyebrowColor;
+  final Color buttonColor;
+  final IconData motifIcon;
+  final String buttonLabel;
+  final VoidCallback onTap;
+
+  const _ConditionCollectionCard({
+    required this.eyebrow,
+    required this.title,
+    required this.subtitle,
+    required this.count,
+    required this.eyebrowColor,
+    required this.buttonColor,
+    required this.motifIcon,
+    required this.buttonLabel,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(final BuildContext context) => TactilePress(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(context.responsive(mobile: 24, desktop: 32)),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(context.borderRadius(1.4)),
+            border: Border.all(color: eyebrowColor.withOpacity(0.16)),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                right: -14,
+                top: -14,
+                child: Icon(motifIcon, size: 92, color: eyebrowColor.withOpacity(0.07)),
+              ),
+              Positioned(
+                right: 34,
+                top: 18,
+                child: Icon(Icons.circle, size: 5, color: eyebrowColor.withOpacity(0.25)),
+              ),
+              Positioned(
+                right: 58,
+                top: 44,
+                child: Icon(Icons.circle, size: 3, color: eyebrowColor.withOpacity(0.2)),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(eyebrow,
+                      style: AppTextStyles.microLabel(
+                          color: eyebrowColor,
+                          letterSpacing: 2,
+                          fontSize: context.captionSize)),
+                  const SizedBox(height: 10),
+                  Text(title,
+                      style: TextStyle(
+                          fontFamily: 'Fraunces',
+                          fontSize: context.h3Size,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 8),
+                  Text(subtitle,
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: context.bodySize)),
+                  SizedBox(height: context.spacing),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 10,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: eyebrowColor.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text('$count ürün',
+                            style: TextStyle(
+                                color: eyebrowColor, fontWeight: FontWeight.w700, fontSize: 12)),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: buttonColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        ),
+                        icon: const Icon(Icons.arrow_forward_rounded, size: 14),
+                        label: Text(buttonLabel,
+                            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 }
@@ -1648,90 +1874,80 @@ class _FooterSocialIcon extends StatelessWidget {
       );
 }
 
-/// Footer'daki bülten kayıt formu — NewsletterSection'daki ile aynı dürüst
-/// davranış: backend entegrasyonu TODO, ama kullanıcıya anında geri bildirim
-/// veriliyor.
-class _NewsletterField extends StatefulWidget {
-  const _NewsletterField();
-
-  @override
-  State<_NewsletterField> createState() => _NewsletterFieldState();
-}
-
-class _NewsletterFieldState extends State<_NewsletterField> {
-  final TextEditingController _controller = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _subscribe() {
-    if (!_formKey.currentState!.validate()) return;
-    _controller.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.newsletterSubscribeSuccess)),
-    );
-  }
+/// Footer'daki "KONUM & ÇALIŞMA SAATİ" kartı — mağazanın GERÇEK zamana
+/// göre şu an açık mı kapalı mı olduğunu (workingHours kuralına göre canlı
+/// hesaplanır), bugünün saatini, adresi ve doğrudan haritayı açan bir
+/// butonu gösterir.
+class _FooterVisitCard extends StatelessWidget {
+  const _FooterVisitCard();
 
   @override
   Widget build(final BuildContext context) {
-    return SizedBox(
+    final isOpen = SaglamSpotCommunication.isOpenNow;
+    final statusColor = isOpen ? AppColors.success : AppColors.error;
+
+    return Container(
       width: context.responsive(mobile: 260, desktop: 240),
-      child: Form(
-        key: _formKey,
-        child: Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _controller,
-                style: const TextStyle(color: Colors.white, fontSize: 13),
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: context.l10n.emailHint,
-                  hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.4), fontSize: 12),
-                  isDense: true,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.06),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.white.withOpacity(0.15))),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: Colors.white.withOpacity(0.15))),
-                ),
-                validator: (final value) {
-                  if (value == null || value.isEmpty) return context.l10n.emailRequired;
-                  final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-                  if (!regex.hasMatch(value))
-                    return context.l10n.emailInvalid;
-                  return null;
-                },
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle),
               ),
-            ),
-            const SizedBox(width: 8),
-            Material(
-              color: AppColors.accent,
-              borderRadius: BorderRadius.circular(10),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: _subscribe,
-                child: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Icon(Icons.arrow_forward_rounded,
-                      color: Colors.white, size: 18),
-                ),
+              const SizedBox(width: 6),
+              Text(
+                isOpen ? 'ŞU AN AÇIK' : 'ŞU AN KAPALI',
+                style: TextStyle(
+                    color: statusColor, fontWeight: FontWeight.w800, fontSize: 11, letterSpacing: 0.3),
               ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text('· ${SaglamSpotCommunication.todayHoursLabel}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.location_on_rounded, size: 15, color: AppColors.accentLight),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(context.l10n.storeAddress,
+                    style: TextStyle(color: Colors.white.withOpacity(0.65), fontSize: 12, height: 1.4)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: SaglamSpotCommunication.openStoreLocation,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                side: BorderSide(color: Colors.white.withOpacity(0.25)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              icon: const Icon(Icons.map_outlined, size: 16),
+              label: const Text('Haritada Aç',
+                  style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700)),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
