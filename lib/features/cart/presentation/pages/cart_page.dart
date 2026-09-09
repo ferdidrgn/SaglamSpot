@@ -216,7 +216,7 @@ class _CartPageState extends ConsumerState<CartPage> {
               ElevatedButton(
                 onPressed: () => NavigationHandler.goToHome(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.mobilePrimary,
+                  backgroundColor: AppColors.sageDark,
                   foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
@@ -283,7 +283,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                   style: const TextStyle(
                       fontWeight: FontWeight.w800, fontSize: 14.5)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.mobilePrimary,
+                backgroundColor: AppColors.sageDark,
                 foregroundColor: Colors.white,
                 disabledBackgroundColor: AppColors.mobileMutedDark,
                 shape: const StadiumBorder(),
@@ -320,7 +320,7 @@ class _CartItemCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: isSelected
-              ? AppColors.mobilePrimary.withOpacity(0.4)
+              ? AppColors.sageDark.withOpacity(0.4)
               : AppColors.mobileBorder,
         ),
         boxShadow: [
@@ -343,12 +343,12 @@ class _CartItemCard extends ConsumerWidget {
                 height: 20,
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.mobilePrimary
+                      ? AppColors.sageDark
                       : AppColors.mobileSurface,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.mobilePrimary
+                        ? AppColors.sageDark
                         : AppColors.mobileMutedDark,
                     width: 1.6,
                   ),
@@ -400,7 +400,7 @@ class _CartItemCard extends ConsumerWidget {
                     style: TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.mobilePrimary),
+                        color: AppColors.sageDark),
                   ),
                   const SizedBox(height: 8),
                   _QtyStepper(
@@ -571,7 +571,7 @@ class _RecentlyViewedSection extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.w900,
-                                  color: AppColors.mobilePrimary),
+                                  color: AppColors.sageDark),
                             ),
                           ],
                         ),
