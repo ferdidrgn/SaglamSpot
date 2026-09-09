@@ -547,6 +547,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ],
       );
 
+  /// 6 semtin tamamını değil, ilk ikisini + "ve çevresi" gösterir — akan
+  /// şeritteki tek bir çipin devasa büyümesini önler. Tam liste hâlâ
+  /// BusinessInfoShowcase / footer'daki konum kartında eksiksiz duruyor.
+  String get _shortDeliveryZonesLabel {
+    final zones = SaglamSpotCommunication.freeDeliveryZones;
+    if (zones.length <= 2) return zones.join(', ');
+    return '${zones.take(2).join(', ')} ve çevresi';
+  }
+
   /// Sonsuz kayan güven/marka şeridi — referans "Luma & Living" tasarımının
   /// `_buildBrandLogos` bölümünün karşılığı. Uydurma marka isimleri yerine
   /// gerçek güven/hizmet vurgularımızı aynı görsel dille kullanır.
@@ -561,11 +570,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       // Ücretsiz teslimat gerçek bir vaat, ama sınırsız değil — şeritte
       // genel "teslimat" rozetinin yanına, hangi bölgelerle sınırlı
       // olduğunu netleştiren ayrı bir not ekleniyor (yanlış beklenti
-      // oluşmasın diye).
+      // oluşmasın diye). TÜM 6 semti tek satırda saymak yerine (tek bir
+      // devasa uzun çip, akışın ritmini bozuyordu) kısa bir özet
+      // kullanılıyor — tam liste zaten Bize Uğra/footer kartlarında var.
       TickerItem(
         Icons.map_rounded,
-        context.l10n.freeDeliveryZonesNote(
-            SaglamSpotCommunication.freeDeliveryZones.join(', ')),
+        context.l10n.freeDeliveryZonesNote(_shortDeliveryZonesLabel),
       ),
       TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
       TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
