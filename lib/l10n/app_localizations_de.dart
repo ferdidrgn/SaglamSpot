@@ -1100,7 +1100,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'Erreichen Sie uns sofort über WhatsApp, fragen Sie nach dem Preis und verhandeln Sie direkt.';
+      'Erreichen Sie uns sofort über WhatsApp, fragen Sie nach dem Preis und erhalten Sie direkt unser faires Angebot.';
 
   @override
   String get favoritesTitle => 'Meine Favoriten';
@@ -1508,7 +1508,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get productTrustBadgeVerified => 'Verifizierter Verkäufer';
 
   @override
-  String get productTrustBadgeNegotiate => 'Verhandeln über WhatsApp';
+  String get productTrustBadgeNegotiate => 'Faire Preise über WhatsApp';
 
   @override
   String get productTrustBadgeDelivery => 'Lieferung vor Ort';
@@ -1702,7 +1702,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Gebraucht, aber praktisch. Wie neu wirkende Möbel für jedes Budget. Verhandlungsspielraum vorhanden.';
+      'Gebraucht, aber praktisch. Wie neu wirkende Möbel für jedes Budget, zu fairen Preisen.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1710,7 +1710,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Verhandlungsspielraum';
+  String get spotStatNegotiable => 'Faire Preise';
 
   @override
   String get spotStatUsed => 'Gebraucht';

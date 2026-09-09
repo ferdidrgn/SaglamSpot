@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "Von tollen Gebrauchtmöbeln bis zur brandneuen Kollektion — finden Sie ganz einfach, was Sie suchen.",
   "onboardingPage3Eyebrow": "SICHER EINKAUFEN",
   "onboardingPage3Title": "Etwas gefunden?\nJetzt Fragen",
-  "onboardingPage3Desc": "Erreichen Sie uns sofort über WhatsApp, fragen Sie nach dem Preis und verhandeln Sie direkt.",
+  "onboardingPage3Desc": "Erreichen Sie uns sofort über WhatsApp, fragen Sie nach dem Preis und erhalten Sie direkt unser faires Angebot.",
   "favoritesTitle": "Meine Favoriten",
   "favoritesEmptyTitle": "Ihre Favoritenliste ist leer",
   "favoritesEmptyDesc": "Tippen Sie auf das Herzsymbol bei Produkten, die Ihnen gefallen, um sie zu Ihren Favoriten hinzuzufügen.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Rechtliches",
   "recentlyViewedTitle": "Zuletzt angesehen",
   "productTrustBadgeVerified": "Verifizierter Verkäufer",
-  "productTrustBadgeNegotiate": "Verhandeln über WhatsApp",
+  "productTrustBadgeNegotiate": "Faire Preise über WhatsApp",
   "productTrustBadgeDelivery": "Lieferung vor Ort",
   "howToBuyTitle": "Wie kaufe ich?",
   "howToBuyStep1Title": "Auf WhatsApp schreiben",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "SPOT",
   "gatewaySpotTitleShort": "Angebote",
   "spotHeroEyebrow": "ANGEBOTSLAGER",
-  "spotHeroSubtitle": "Gebraucht, aber praktisch. Wie neu wirkende Möbel für jedes Budget. Verhandlungsspielraum vorhanden.",
+  "spotHeroSubtitle": "Gebraucht, aber praktisch. Wie neu wirkende Möbel für jedes Budget, zu fairen Preisen.",
   "spotHeroDealCount": "{count}+ Angebote",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Verhandlungsspielraum",
+  "spotStatNegotiable": "Faire Preise",
   "spotStatUsed": "Gebraucht",
   "spotShowcaseBadgeTitle": "Generalüberholt",
   "spotShowcaseBadgeSubtitle": "Jedes Stück wird vor der Lieferung einzeln überprüft.",

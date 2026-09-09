@@ -2117,7 +2117,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingPage3Desc.
   ///
   /// In tr, this message translates to:
-  /// **'Tek dokunuşla WhatsApp\'tan ulaşın, fiyat sorun, pazarlık edin.'**
+  /// **'Tek dokunuşla WhatsApp\'tan ulaşın, fiyatı sorun, uygun teklifimizi öğrenin.'**
   String get onboardingPage3Desc;
 
   /// No description provided for @favoritesTitle.
@@ -2843,7 +2843,7 @@ abstract class AppLocalizations {
   /// No description provided for @productTrustBadgeNegotiate.
   ///
   /// In tr, this message translates to:
-  /// **'WhatsApp\'tan Pazarlık'**
+  /// **'WhatsApp\'tan Uygun Fiyat'**
   String get productTrustBadgeNegotiate;
 
   /// No description provided for @productTrustBadgeDelivery.
@@ -3185,7 +3185,7 @@ abstract class AppLocalizations {
   /// No description provided for @spotHeroSubtitle.
   ///
   /// In tr, this message translates to:
-  /// **'Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.'**
+  /// **'Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler, uygun fiyatlarla.'**
   String get spotHeroSubtitle;
 
   /// No description provided for @spotHeroDealCount.
@@ -3197,7 +3197,7 @@ abstract class AppLocalizations {
   /// No description provided for @spotStatNegotiable.
   ///
   /// In tr, this message translates to:
-  /// **'Pazarlık Payı Mevcut'**
+  /// **'Uygun Fiyatlar'**
   String get spotStatNegotiable;
 
   /// No description provided for @spotStatUsed.

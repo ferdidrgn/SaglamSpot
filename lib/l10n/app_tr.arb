@@ -375,7 +375,7 @@
   "onboardingPage2Desc": "İkinci el fırsatlardan sıfır koleksiyona kadar — aradığınızı kolayca bulun.",
   "onboardingPage3Eyebrow": "GÜVENLE ALIŞVERİŞ",
   "onboardingPage3Title": "Beğendiniz mi?\nHemen Yazın",
-  "onboardingPage3Desc": "Tek dokunuşla WhatsApp'tan ulaşın, fiyat sorun, pazarlık edin.",
+  "onboardingPage3Desc": "Tek dokunuşla WhatsApp'tan ulaşın, fiyatı sorun, uygun teklifimizi öğrenin.",
   "favoritesTitle": "Favorilerim",
   "favoritesEmptyTitle": "Favori Listeniz Boş",
   "favoritesEmptyDesc": "Beğendiğiniz ürünleri kalp ikonuna dokunarak favorilerinize ekleyin.",
@@ -510,7 +510,7 @@
   "settingsLegalSection": "Yasal",
   "recentlyViewedTitle": "Son Görüntülenenler",
   "productTrustBadgeVerified": "Satıcı Onaylı",
-  "productTrustBadgeNegotiate": "WhatsApp'tan Pazarlık",
+  "productTrustBadgeNegotiate": "WhatsApp'tan Uygun Fiyat",
   "productTrustBadgeDelivery": "Yerinde Teslim",
   "howToBuyTitle": "Nasıl Satın Alırım?",
   "howToBuyStep1Title": "WhatsApp'tan Yaz",
@@ -623,7 +623,7 @@
   "gatewaySpotEyebrowShort": "SPOT",
   "gatewaySpotTitleShort": "Fırsatlar",
   "spotHeroEyebrow": "FIRSAT DEPOSU",
-  "spotHeroSubtitle": "Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.",
+  "spotHeroSubtitle": "Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler, uygun fiyatlarla.",
   "spotHeroDealCount": "{count}+ Fırsat",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -632,7 +632,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Pazarlık Payı Mevcut",
+  "spotStatNegotiable": "Uygun Fiyatlar",
   "spotStatUsed": "Kullanılmış",
   "spotShowcaseBadgeTitle": "Elden Geçirildi",
   "spotShowcaseBadgeSubtitle": "Her ürün teslimden önce tek tek kontrol edilir.",

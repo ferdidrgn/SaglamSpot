@@ -1082,7 +1082,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'تواصلوا معنا فوراً عبر واتساب، اسألوا عن السعر وتفاوضوا مباشرة دون وسطاء.';
+      'تواصلوا معنا فوراً عبر واتساب، اسألوا عن السعر واحصلوا على عرضنا العادل مباشرة دون وسطاء.';
 
   @override
   String get favoritesTitle => 'مفضلتي';
@@ -1482,7 +1482,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get productTrustBadgeVerified => 'بائع موثّق';
 
   @override
-  String get productTrustBadgeNegotiate => 'التفاوض عبر واتساب';
+  String get productTrustBadgeNegotiate => 'أسعار مناسبة عبر واتساب';
 
   @override
   String get productTrustBadgeDelivery => 'التسليم في الموقع';
@@ -1672,7 +1672,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'مستعملة لكنها عملية. منتجات تبدو جديدة تناسب كل ميزانية. هامش للتفاوض متاح.';
+      'مستعملة لكنها عملية. منتجات تبدو جديدة تناسب كل ميزانية، بأسعار مناسبة.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1680,7 +1680,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'هامش للتفاوض';
+  String get spotStatNegotiable => 'أسعار مناسبة';
 
   @override
   String get spotStatUsed => 'مستعمل';

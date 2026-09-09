@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "من الصفقات المستعملة الرائعة إلى مجموعتنا الجديدة — اعثروا بسهولة على ما تبحثون عنه.",
   "onboardingPage3Eyebrow": "تسوقوا بثقة",
   "onboardingPage3Title": "أعجبكم شيء؟\nراسلونا الآن",
-  "onboardingPage3Desc": "تواصلوا معنا فوراً عبر واتساب، اسألوا عن السعر وتفاوضوا مباشرة دون وسطاء.",
+  "onboardingPage3Desc": "تواصلوا معنا فوراً عبر واتساب، اسألوا عن السعر واحصلوا على عرضنا العادل مباشرة دون وسطاء.",
   "favoritesTitle": "مفضلتي",
   "favoritesEmptyTitle": "قائمة المفضلة لديك فارغة",
   "favoritesEmptyDesc": "اضغط على أيقونة القلب على المنتجات التي تعجبك لإضافتها إلى المفضلة.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "قانوني",
   "recentlyViewedTitle": "شوهد مؤخرًا",
   "productTrustBadgeVerified": "بائع موثّق",
-  "productTrustBadgeNegotiate": "التفاوض عبر واتساب",
+  "productTrustBadgeNegotiate": "أسعار مناسبة عبر واتساب",
   "productTrustBadgeDelivery": "التسليم في الموقع",
   "howToBuyTitle": "كيف أشتري؟",
   "howToBuyStep1Title": "راسلنا عبر واتساب",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "سبوت",
   "gatewaySpotTitleShort": "عروض",
   "spotHeroEyebrow": "مستودع العروض",
-  "spotHeroSubtitle": "مستعملة لكنها عملية. منتجات تبدو جديدة تناسب كل ميزانية. هامش للتفاوض متاح.",
+  "spotHeroSubtitle": "مستعملة لكنها عملية. منتجات تبدو جديدة تناسب كل ميزانية، بأسعار مناسبة.",
   "spotHeroDealCount": "{count}+ عرضًا",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "هامش للتفاوض",
+  "spotStatNegotiable": "أسعار مناسبة",
   "spotStatUsed": "مستعمل",
   "spotShowcaseBadgeTitle": "تم فحصه وتجديده",
   "spotShowcaseBadgeSubtitle": "يتم فحص كل قطعة على حدة قبل التسليم.",

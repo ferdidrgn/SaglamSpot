@@ -1099,7 +1099,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'Επικοινωνήστε άμεσα μέσω WhatsApp, ρωτήστε για τιμές και διαπραγματευτείτε απευθείας.';
+      'Επικοινωνήστε άμεσα μέσω WhatsApp, ρωτήστε για τιμές και μάθετε την δίκαιη προσφορά μας απευθείας.';
 
   @override
   String get favoritesTitle => 'Τα Αγαπημένα μου';
@@ -1507,7 +1507,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get productTrustBadgeVerified => 'Επαληθευμένος Πωλητής';
 
   @override
-  String get productTrustBadgeNegotiate => 'Διαπραγμάτευση μέσω WhatsApp';
+  String get productTrustBadgeNegotiate => 'Δίκαιες Τιμές μέσω WhatsApp';
 
   @override
   String get productTrustBadgeDelivery => 'Παράδοση επί τόπου';
@@ -1701,7 +1701,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Μεταχειρισμένα αλλά χρηστικά. Σαν καινούρια, για κάθε προϋπολογισμό. Χωράει διαπραγμάτευση.';
+      'Μεταχειρισμένα αλλά χρηστικά. Σαν καινούρια, για κάθε προϋπολογισμό, σε δίκαιες τιμές.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1709,7 +1709,7 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Χωράει Διαπραγμάτευση';
+  String get spotStatNegotiable => 'Δίκαιες Τιμές';
 
   @override
   String get spotStatUsed => 'Μεταχειρισμένο';

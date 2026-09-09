@@ -1085,7 +1085,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'Tek dokunuşla WhatsApp\'tan ulaşın, fiyat sorun, pazarlık edin.';
+      'Tek dokunuşla WhatsApp\'tan ulaşın, fiyatı sorun, uygun teklifimizi öğrenin.';
 
   @override
   String get favoritesTitle => 'Favorilerim';
@@ -1490,7 +1490,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get productTrustBadgeVerified => 'Satıcı Onaylı';
 
   @override
-  String get productTrustBadgeNegotiate => 'WhatsApp\'tan Pazarlık';
+  String get productTrustBadgeNegotiate => 'WhatsApp\'tan Uygun Fiyat';
 
   @override
   String get productTrustBadgeDelivery => 'Yerinde Teslim';
@@ -1684,7 +1684,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler. Pazarlık payı açıktır.';
+      'Kullanılmış ama kullanışlı. Her bütçeye uygun, yeni gibi ürünler, uygun fiyatlarla.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1692,7 +1692,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Pazarlık Payı Mevcut';
+  String get spotStatNegotiable => 'Uygun Fiyatlar';
 
   @override
   String get spotStatUsed => 'Kullanılmış';

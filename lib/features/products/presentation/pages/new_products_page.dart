@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +9,8 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
+import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
@@ -20,6 +23,7 @@ import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
+import '../providers/favorites_provider.dart';
 
 enum _SortMode { newest, priceLowHigh, priceHighLow, popular }
 
@@ -116,8 +120,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     final productsAsync = ref.watch(productsProvider);
     final isDesktop = context.isDesktop;
 
-    return Scaffold(
+    // Önceden bu sayfanın native mobilde ne alt navigasyonu ne de gerçek bir
+    // geri tuşu vardı (yalnızca üst kabuğun hamburger/Drawer'ına bağlıydı,
+    // donanım geri tuşu uygulamadan çıkma riski taşıyordu). Artık Ana
+    // Sayfa'yla aynı, tutarlı mobil kabuğu kullanıyor.
+    final scaffold = Scaffold(
       backgroundColor: const Color(0xFFFAF8F5),
+      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
         error: (final e, final _) => _buildErrorState(context, e.toString()),
@@ -198,6 +207,8 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         },
       ),
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   // ============================================================
@@ -1036,17 +1047,36 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       ),
                     ),
                   ),
-                  // Favori butonu (sağ üst)
+                  // Favori butonu (sağ üst) — önceden sadece dekoratifti,
+                  // hiçbir şeye bağlı değildi (Spot sayfasındaki aynı ikon
+                  // gerçekten çalışıyordu, burada dokununca hiçbir şey
+                  // olmuyordu). Artık gerçek favori listesine bağlı.
                   Positioned(
                     top: 12,
                     right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle),
-                      child: const Icon(Icons.favorite_border,
-                          size: 18, color: Color(0xFF3D3630)),
-                    ),
+                    child: Consumer(builder: (final context, final ref, final _) {
+                      final isFavorite = ref
+                          .watch(favoritesProvider)
+                          .any((final p) => p.id == product.id);
+                      return GestureDetector(
+                        onTap: () =>
+                            ref.read(favoritesProvider.notifier).toggle(product),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          child: Icon(
+                            isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border,
+                            size: 18,
+                            color: isFavorite
+                                ? AppColors.error
+                                : const Color(0xFF3D3630),
+                          ),
+                        ),
+                      );
+                    }),
                   ),
                   // Fiyat etiketi (görsel alt sağ)
                   Positioned(

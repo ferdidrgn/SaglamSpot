@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,8 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_wear_tier_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
+import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
@@ -96,8 +99,13 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
 
-    return Scaffold(
+    // Önceden bu sayfanın native mobilde ne alt navigasyonu ne de gerçek bir
+    // geri tuşu vardı (yalnızca üst kabuğun hamburger/Drawer'ına bağlıydı,
+    // donanım geri tuşu uygulamadan çıkma riski taşıyordu). Artık Ana
+    // Sayfa'yla aynı, tutarlı mobil kabuğu kullanıyor.
+    final scaffold = Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
+      bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: productsAsync.when(
         loading: () => const FullPageShimmer(),
         error: (final e, final _) => _buildErrorState(context, e.toString()),
@@ -198,6 +206,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         },
       ),
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   // ============================================================

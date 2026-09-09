@@ -15,6 +15,7 @@ import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
+import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -70,23 +71,25 @@ class HomeStorePage extends ConsumerWidget {
                   const SliverToBoxAdapter(child: SizedBox.shrink())
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.72,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (final context, final index) =>
-                            _ProductCard(product: featured[index]),
-                        childCount: featured.length,
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                    sliver: SliverList.separated(
+                      itemCount: featured.length,
+                      separatorBuilder: (final _, final __) =>
+                          const SizedBox(height: 16),
+                      // Kartlar sayfa açılır açılmaz hepsi birden değil,
+                      // kuşak kuşak (cascade) belirir — daha "canlı", mobil
+                      // uygulama hissi için.
+                      itemBuilder: (final context, final index) => RevealFade(
+                        delayMs: 60 * (index % 8),
+                        child: _ProductListRow(product: featured[index]),
                       ),
                     ),
                   ),
-                const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(child: _buildSearchBar(context)),
+                const SliverToBoxAdapter(child: _HomeStoryHero()),
+                SliverToBoxAdapter(child: _buildMottoStrip(context)),
+                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
+                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(
                     child: _buildSectionTitle(
                         context, context.l10n.visitUsHeading)),
@@ -271,11 +274,14 @@ class HomeStorePage extends ConsumerWidget {
   }
 }
 
-/// Otomatik ilerleyen görsel slider — web'deki hero banner'ın (aynı 3
-/// fotoğraf, aynı 6 saniyelik döngü) mobil karşılığı. PageView + Timer
-/// ile web'deki `_HeroBanner` deseniyle birebir aynı mantığı kullanır.
-class _HomeHeroSlider extends StatefulWidget {
-  const _HomeHeroSlider();
+/// "Story" tarzı hero — kullanıcının paylaştığı referansın en soldaki
+/// Instagram-story esintili ekranının ana sayfaya gömülü karşılığı: üstte
+/// ince sahne-ilerleme çubuğu, marka rozeti, altta gerçek bir ürünü öne
+/// çıkaran yüzen kart (isim + fiyat + gerçek sepete ekle) ve sahne
+/// değiştirmek için dairesel önizlemeler. Fotoğraflar ve döngü mantığı web
+/// hero banner'ıyla aynı (3 fotoğraf, 6 saniye).
+class _HomeStoryHero extends ConsumerStatefulWidget {
+  const _HomeStoryHero();
 
   static const List<String> _images = [
     'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200',
@@ -284,10 +290,10 @@ class _HomeHeroSlider extends StatefulWidget {
   ];
 
   @override
-  State<_HomeHeroSlider> createState() => _HomeHeroSliderState();
+  ConsumerState<_HomeStoryHero> createState() => _HomeStoryHeroState();
 }
 
-class _HomeHeroSliderState extends State<_HomeHeroSlider> {
+class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   Timer? _timer;
@@ -297,7 +303,7 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
     super.initState();
     _timer = Timer.periodic(const Duration(seconds: 6), (final _) {
       if (!mounted) return;
-      final next = (_currentPage + 1) % _HomeHeroSlider._images.length;
+      final next = (_currentPage + 1) % _HomeStoryHero._images.length;
       _pageController.animateToPage(
         next,
         duration: const Duration(milliseconds: 600),
@@ -313,103 +319,259 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
     super.dispose();
   }
 
+  void _goToScene(final int index) {
+    _timer?.cancel();
+    _pageController.animateToPage(index,
+        duration: const Duration(milliseconds: 400), curve: Curves.easeOut);
+    _timer = Timer.periodic(const Duration(seconds: 6), (final _) {
+      if (!mounted) return;
+      final next = (_currentPage + 1) % _HomeStoryHero._images.length;
+      _pageController.animateToPage(next,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOutCubic);
+    });
+  }
+
   @override
-  Widget build(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
-        child: HudCornerFrame(
-          armLength: 18,
-          inset: 10,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: SizedBox(
-              height: 170,
-              child: Stack(
-                children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    itemCount: _HomeHeroSlider._images.length,
-                    onPageChanged: (final index) =>
-                        setState(() => _currentPage = index),
-                    itemBuilder: (final context, final index) =>
-                        OptimizedCachedImage(
-                      imageUrl: _HomeHeroSlider._images[index],
-                      height: 170,
-                      width: double.infinity,
-                      borderRadius: 0,
-                    ),
+  Widget build(final BuildContext context) {
+    final available = ref.watch(availableProductsProvider);
+    final spotlight = available.isNotEmpty ? available.first : null;
+    final inCart = spotlight != null &&
+        ref.watch(cartProvider).any((final i) => i.product.id == spotlight.id);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
+      child: HudCornerFrame(
+        armLength: 18,
+        inset: 10,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: SizedBox(
+            height: 340,
+            child: Stack(
+              children: [
+                PageView.builder(
+                  controller: _pageController,
+                  itemCount: _HomeStoryHero._images.length,
+                  onPageChanged: (final index) =>
+                      setState(() => _currentPage = index),
+                  itemBuilder: (final context, final index) =>
+                      OptimizedCachedImage(
+                    imageUrl: _HomeStoryHero._images[index],
+                    height: 340,
+                    width: double.infinity,
+                    borderRadius: 0,
                   ),
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            colors: [
-                              AppColors.mobilePrimaryDark.withOpacity(0.75),
-                              AppColors.mobilePrimaryDark.withOpacity(0.05),
-                            ],
-                          ),
+                ),
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            _StorePalette.primaryDark.withOpacity(0.9),
+                            _StorePalette.primaryDark.withOpacity(0.35),
+                            _StorePalette.primaryDark.withOpacity(0.28),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
-                    left: 20,
-                    right: 20,
-                    bottom: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.l10n.storeHeroEyebrow,
-                          style: AppTextStyles.microLabel(
-                            color: Colors.white.withOpacity(0.85),
-                            fontSize: 11,
-                            letterSpacing: 1.8,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          context.l10n.storeHeroSubtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            height: 1.35,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    right: 16,
-                    bottom: 12,
+                ),
+                // Hikaye ilerleme çubuğu — referanstaki üst şerit.
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  top: 14,
+                  child: IgnorePointer(
                     child: Row(
                       children: [
-                        for (int i = 0; i < _HomeHeroSlider._images.length; i++)
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            margin: const EdgeInsets.only(left: 5),
-                            width: i == _currentPage ? 16 : 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: Colors.white
-                                  .withOpacity(i == _currentPage ? 0.95 : 0.5),
-                              borderRadius: BorderRadius.circular(3),
+                        for (int i = 0; i < _HomeStoryHero._images.length; i++)
+                          Expanded(
+                            child: Container(
+                              height: 3,
+                              margin: EdgeInsets.only(
+                                  right: i == _HomeStoryHero._images.length - 1
+                                      ? 0
+                                      : 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white
+                                    .withOpacity(i <= _currentPage ? 0.95 : 0.35),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
                             ),
                           ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                // Marka rozeti — referanstaki "Home vibes" satırının yerine,
+                // uydurma bir "6 saat önce" damgası olmadan gerçek marka
+                // vurgumuz.
+                Positioned(
+                  left: 16,
+                  top: 26,
+                  child: IgnorePointer(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 22,
+                          height: 22,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.storefront_rounded,
+                              size: 12, color: _StorePalette.primaryDark),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          context.l10n.storeHeroEyebrow,
+                          style: AppTextStyles.microLabel(
+                            color: Colors.white,
+                            fontSize: 10.5,
+                            letterSpacing: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Yüzen ürün kartı — referanstaki "Accent armchair $189.00"
+                // kartının karşılığı, ama uydurma bir ürün değil: gerçek
+                // vitrindeki ilk ürün, gerçek sepete ekleme düğmesiyle.
+                if (spotlight != null)
+                  Positioned(
+                    left: 16,
+                    right: 16,
+                    bottom: 44,
+                    child: TactilePress(
+                      onTap: () => NavigationHandler.goToProduct(
+                        context: context,
+                        productId: spotlight.id,
+                        productSlug: spotlight.name.toSlug(),
+                      ),
+                      pressScale: 0.98,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.96),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: OptimizedCachedImage(
+                                imageUrl: spotlight.imagesUrl.isNotEmpty
+                                    ? spotlight.imagesUrl.first
+                                    : '',
+                                width: 44,
+                                height: 44,
+                                fit: BoxFit.cover,
+                                borderRadius: 0,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(spotlight.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 13,
+                                          color: AppColors.mobileTextPrimary)),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                      '${spotlight.price.toStringAsFixed(0)}₺',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 13,
+                                          color: _StorePalette.primaryDark)),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => ref
+                                  .read(cartProvider.notifier)
+                                  .toggle(spotlight),
+                              child: Container(
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  color: _StorePalette.primaryDark,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  inCart
+                                      ? Icons.shopping_bag_rounded
+                                      : Icons.add_rounded,
+                                  color: Colors.white,
+                                  size: 17,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    ),
+                  ),
+                // Sahne değiştirme — dairesel önizlemeler (referanstaki
+                // altdaki story-avatar sırasının karşılığı).
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 12,
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < _HomeStoryHero._images.length; i++)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: GestureDetector(
+                            onTap: () => _goToScene(i),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 34,
+                              height: 34,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(
+                                      i == _currentPage ? 0.95 : 0.4),
+                                  width: i == _currentPage ? 2 : 1,
+                                ),
+                              ),
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: OptimizedCachedImage(
+                                  imageUrl: _HomeStoryHero._images[i],
+                                  fit: BoxFit.cover,
+                                  borderRadius: 0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 class _CategoryRow extends ConsumerWidget {
@@ -458,17 +620,28 @@ class _CategoryRow extends ConsumerWidget {
   }
 }
 
-class _ProductCard extends ConsumerWidget {
+/// Referans "Discover" ekranındaki satır kartı — solda metin (isim, durum,
+/// fiyat), sağda pastel tonlu, yuvarlak köşeli bir çerçeve içindeki görsel,
+/// sağ üstte gerçek favori kalbi. Referans tasarımda bu alanda yıldız puanı
+/// + yorum sayısı var, ama [Product] modelinde rating alanı YOK — uydurmak
+/// yerine, kullanıcının doğrudan istediği gerçek bir ayrım gösteriliyor:
+/// ürün SIFIR mı yoksa İKİNCİ EL mi (bkz. isSpotProduct).
+class _ProductListRow extends ConsumerWidget {
   final Product product;
 
-  const _ProductCard({required this.product});
+  const _ProductListRow({required this.product});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final inCart =
-        ref.watch(cartProvider).any((final i) => i.product.id == product.id);
+    final isFavorite =
+        ref.watch(favoritesProvider).any((final p) => p.id == product.id);
     final meta = defaultCategoryMeta[product.category] ??
         defaultCategoryMeta[ProductCategory.other]!;
+    final isNew = !product.isSpotProduct;
+    final conditionColor =
+        isNew ? NewCollectionPalette.accent : SpotPalette.accent;
+    final conditionLabel =
+        isNew ? context.l10n.conditionNew : context.l10n.conditionUsed;
 
     return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
@@ -476,112 +649,120 @@ class _ProductCard extends ConsumerWidget {
         productId: product.id,
         productSlug: product.name.toSlug(),
       ),
-      // Kategori renkli "radiant" glow — web'deki CustomProductCard ile
-      // aynı canlı dil.
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-                color: meta.color.withOpacity(0.28),
-                blurRadius: 22,
-                spreadRadius: -4,
-                offset: const Offset(0, 10)),
-          ],
-        ),
-        child: GlassSurface(
-          borderRadius: 18,
-          chromaticEdge: true,
-          child: Column(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(18)),
-                      child: OptimizedCachedImage(
-                        imageUrl: product.imagesUrl.isNotEmpty
-                            ? product.imagesUrl.first
-                            : '',
-                        fit: BoxFit.cover,
-                        borderRadius: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4, right: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25,
+                            color: AppColors.mobileTextPrimary),
                       ),
-                    ),
-                    if (!product.isSpotProduct)
-                      Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.mobileAccent,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            context.l10n.newProductBadge,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.w800),
-                          ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 9, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: conditionColor.withOpacity(0.14),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          conditionLabel,
+                          style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              color: conditionColor),
                         ),
                       ),
-                    Positioned(
-                      right: 8,
-                      bottom: 8,
-                      child: GestureDetector(
-                        onTap: () =>
-                            ref.read(cartProvider.notifier).toggle(product),
-                        child: Container(
-                          width: 30,
-                          height: 30,
-                          decoration: const BoxDecoration(
-                              color: Colors.white, shape: BoxShape.circle),
-                          child: Icon(
-                            inCart
-                                ? Icons.shopping_bag_rounded
-                                : Icons.add_rounded,
-                            size: 16,
-                            color: AppColors.mobilePrimary,
-                          ),
-                        ),
+                      const SizedBox(height: 10),
+                      Text(
+                        '${product.price.toStringAsFixed(0)}₺',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.mobileTextPrimary),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.mobileTextPrimary),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      '${product.price.toStringAsFixed(0)}₺',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.mobilePrimary),
-                    ),
-                  ],
+              // Referans görseldeki gibi görsel, kategori rengiyle hafif
+              // tonlanmış yuvarlak köşeli bir çerçeve içinde — çıplak
+              // dikdörtgen bir fotoğraf yerine.
+              Container(
+                width: 132,
+                height: 112,
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: meta.color.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: OptimizedCachedImage(
+                    imageUrl: product.imagesUrl.isNotEmpty
+                        ? product.imagesUrl.first
+                        : '',
+                    fit: BoxFit.cover,
+                    borderRadius: 0,
+                  ),
                 ),
               ),
             ],
           ),
-        ),
+          Positioned(
+            top: -4,
+            right: -4,
+            child: GestureDetector(
+              onTap: () =>
+                  ref.read(favoritesProvider.notifier).toggle(product),
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: AppColors.mobileSurface,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2)),
+                  ],
+                ),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 320),
+                  switchInCurve: Curves.elasticOut,
+                  switchOutCurve: Curves.easeOut,
+                  transitionBuilder: (final child, final animation) =>
+                      ScaleTransition(scale: animation, child: child),
+                  child: Icon(
+                    isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    key: ValueKey(isFavorite),
+                    size: 16,
+                    color:
+                        isFavorite ? AppColors.error : AppColors.mobileTextTertiary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+
       ),
     );
   }

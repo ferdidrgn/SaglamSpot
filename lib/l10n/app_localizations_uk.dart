@@ -1089,7 +1089,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'Зв\'яжіться з нами у WhatsApp одним дотиком, дізнайтеся ціну та домовляйтеся напряму.';
+      'Зв\'яжіться з нами у WhatsApp одним дотиком, дізнайтеся ціну та отримайте нашу чесну пропозицію напряму.';
 
   @override
   String get favoritesTitle => 'Мої Улюблені';
@@ -1493,7 +1493,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get productTrustBadgeVerified => 'Перевірений продавець';
 
   @override
-  String get productTrustBadgeNegotiate => 'Торг через WhatsApp';
+  String get productTrustBadgeNegotiate => 'Чесні ціни у WhatsApp';
 
   @override
   String get productTrustBadgeDelivery => 'Доставка на місці';
@@ -1686,7 +1686,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Вживані, але практичні. Майже нові товари для будь-якого бюджету. Можливий торг.';
+      'Вживані, але практичні. Майже нові товари для будь-якого бюджету, за чесними цінами.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1694,7 +1694,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Можливий торг';
+  String get spotStatNegotiable => 'Чесні ціни';
 
   @override
   String get spotStatUsed => 'Вживане';
@@ -1862,8 +1862,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get featureRow2Title => 'Локальна Доставка';
 
   @override
-  String get featureRow2Desc =>
-      'Застрахована, швидка доставка у вибрані райони.';
+  String get featureRow2Desc => 'Дбайлива, швидка доставка у вибрані райони.';
 
   @override
   String get featureRow3Title => 'Миттєва Відповідь у WhatsApp';

@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "Від вигідних пропозицій б/в до нової колекції — легко знайдіть те, що шукали.",
   "onboardingPage3Eyebrow": "КУПУЙТЕ З ВПЕВНЕНІСТЮ",
   "onboardingPage3Title": "Знайшли Щось?\nЗапитайте Зараз",
-  "onboardingPage3Desc": "Зв'яжіться з нами у WhatsApp одним дотиком, дізнайтеся ціну та домовляйтеся напряму.",
+  "onboardingPage3Desc": "Зв'яжіться з нами у WhatsApp одним дотиком, дізнайтеся ціну та отримайте нашу чесну пропозицію напряму.",
   "favoritesTitle": "Мої Улюблені",
   "favoritesEmptyTitle": "Ваш список улюблених порожній",
   "favoritesEmptyDesc": "Натисніть на значок серця на товарах, які вам сподобались, щоб додати їх в улюблені.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Правова інформація",
   "recentlyViewedTitle": "Нещодавно переглянуті",
   "productTrustBadgeVerified": "Перевірений продавець",
-  "productTrustBadgeNegotiate": "Торг через WhatsApp",
+  "productTrustBadgeNegotiate": "Чесні ціни у WhatsApp",
   "productTrustBadgeDelivery": "Доставка на місці",
   "howToBuyTitle": "Як купити?",
   "howToBuyStep1Title": "Написати у WhatsApp",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "СПОТ",
   "gatewaySpotTitleShort": "Пропозиції",
   "spotHeroEyebrow": "СКЛАД ВИГІДНИХ ПРОПОЗИЦІЙ",
-  "spotHeroSubtitle": "Вживані, але практичні. Майже нові товари для будь-якого бюджету. Можливий торг.",
+  "spotHeroSubtitle": "Вживані, але практичні. Майже нові товари для будь-якого бюджету, за чесними цінами.",
   "spotHeroDealCount": "{count}+ пропозицій",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Можливий торг",
+  "spotStatNegotiable": "Чесні ціни",
   "spotStatUsed": "Вживане",
   "spotShowcaseBadgeTitle": "Повністю відновлено",
   "spotShowcaseBadgeSubtitle": "Кожен товар індивідуально перевіряється перед доставкою.",

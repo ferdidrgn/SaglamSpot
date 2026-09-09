@@ -5,6 +5,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/notification_inbox_cache.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
@@ -49,7 +50,10 @@ class NotificationsPage extends ConsumerWidget {
       ),
     );
 
-    return scaffold;
+    // Diğer ikincil sayfalarla (Sepet, Favoriler, Ayarlar, Arama) tutarlı
+    // geri tuşu davranışı — önceden burada eksikti, donanım geri tuşu bu
+    // sayfada farklı davranıyordu.
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   Widget _buildHeader(

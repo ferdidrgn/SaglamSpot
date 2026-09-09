@@ -1091,7 +1091,7 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'WhatsApp аркылуу бир басуу менен байланышыңыз, баа сураңыз, түз сүйлөшүңүз.';
+      'WhatsApp аркылуу бир басуу менен байланышыңыз, баа сураңыз, адилеттүү сунушубузду билиңиз.';
 
   @override
   String get favoritesTitle => 'Тандалмаларым';
@@ -1499,7 +1499,7 @@ class AppLocalizationsKy extends AppLocalizations {
   String get productTrustBadgeVerified => 'Текшерилген Сатуучу';
 
   @override
-  String get productTrustBadgeNegotiate => 'WhatsApp аркылуу сүйлөшүү';
+  String get productTrustBadgeNegotiate => 'WhatsApp аркылуу адилет баа';
 
   @override
   String get productTrustBadgeDelivery => 'Жеринде жеткирүү';
@@ -1693,7 +1693,7 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Колдонулган, бирок пайдалуу. Ар кандай бюджетке ылайыктуу, жаңыдай буюмдар. Соода мүмкүн.';
+      'Колдонулган, бирок пайдалуу. Ар кандай бюджетке ылайыктуу, жаңыдай буюмдар, адилет баада.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1701,7 +1701,7 @@ class AppLocalizationsKy extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Соода мүмкүн';
+  String get spotStatNegotiable => 'Адилет баалар';
 
   @override
   String get spotStatUsed => 'Колдонулган';

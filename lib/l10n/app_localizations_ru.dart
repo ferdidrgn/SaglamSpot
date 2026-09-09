@@ -1089,7 +1089,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onboardingPage3Desc =>
-      'Свяжитесь с нами в WhatsApp одним касанием, узнайте цену и договоритесь напрямую.';
+      'Свяжитесь с нами в WhatsApp одним касанием, узнайте цену и получите наше честное предложение напрямую.';
 
   @override
   String get favoritesTitle => 'Мои Избранные';
@@ -1494,7 +1494,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get productTrustBadgeVerified => 'Проверенный продавец';
 
   @override
-  String get productTrustBadgeNegotiate => 'Торг через WhatsApp';
+  String get productTrustBadgeNegotiate => 'Честные цены в WhatsApp';
 
   @override
   String get productTrustBadgeDelivery => 'Доставка на месте';
@@ -1687,7 +1687,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get spotHeroSubtitle =>
-      'Бывшие в употреблении, но практичные вещи. Товары как новые на любой бюджет. Возможен торг.';
+      'Бывшие в употреблении, но практичные вещи. Товары как новые на любой бюджет, по честным ценам.';
 
   @override
   String spotHeroDealCount(int count) {
@@ -1695,7 +1695,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get spotStatNegotiable => 'Возможен торг';
+  String get spotStatNegotiable => 'Честные цены';
 
   @override
   String get spotStatUsed => 'Б/у';

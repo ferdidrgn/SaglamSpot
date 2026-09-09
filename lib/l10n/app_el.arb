@@ -333,7 +333,7 @@
   "onboardingPage2Desc": "Από εξαιρετικές μεταχειρισμένες ευκαιρίες έως τη νέα μας συλλογή — βρείτε εύκολα αυτό που ψάχνετε.",
   "onboardingPage3Eyebrow": "ΑΓΟΡΑΣΤΕ ΜΕ ΕΜΠΙΣΤΟΣΥΝΗ",
   "onboardingPage3Title": "Βρήκατε Κάτι;\nΡωτήστε Τώρα",
-  "onboardingPage3Desc": "Επικοινωνήστε άμεσα μέσω WhatsApp, ρωτήστε για τιμές και διαπραγματευτείτε απευθείας.",
+  "onboardingPage3Desc": "Επικοινωνήστε άμεσα μέσω WhatsApp, ρωτήστε για τιμές και μάθετε την δίκαιη προσφορά μας απευθείας.",
   "favoritesTitle": "Τα Αγαπημένα μου",
   "favoritesEmptyTitle": "Η λίστα αγαπημένων σας είναι άδεια",
   "favoritesEmptyDesc": "Πατήστε το εικονίδιο καρδιάς στα προϊόντα που σας αρέσουν για να τα προσθέσετε στα αγαπημένα σας.",
@@ -482,7 +482,7 @@
   "settingsLegalSection": "Νομικά",
   "recentlyViewedTitle": "Πρόσφατα Προβεβλημένα",
   "productTrustBadgeVerified": "Επαληθευμένος Πωλητής",
-  "productTrustBadgeNegotiate": "Διαπραγμάτευση μέσω WhatsApp",
+  "productTrustBadgeNegotiate": "Δίκαιες Τιμές μέσω WhatsApp",
   "productTrustBadgeDelivery": "Παράδοση επί τόπου",
   "howToBuyTitle": "Πώς αγοράζω;",
   "howToBuyStep1Title": "Γράψτε στο WhatsApp",
@@ -595,7 +595,7 @@
   "gatewaySpotEyebrowShort": "SPOT",
   "gatewaySpotTitleShort": "Προσφορές",
   "spotHeroEyebrow": "ΑΠΟΘΗΚΗ ΠΡΟΣΦΟΡΩΝ",
-  "spotHeroSubtitle": "Μεταχειρισμένα αλλά χρηστικά. Σαν καινούρια, για κάθε προϋπολογισμό. Χωράει διαπραγμάτευση.",
+  "spotHeroSubtitle": "Μεταχειρισμένα αλλά χρηστικά. Σαν καινούρια, για κάθε προϋπολογισμό, σε δίκαιες τιμές.",
   "spotHeroDealCount": "{count}+ Προσφορές",
   "@spotHeroDealCount": {
     "placeholders": {
@@ -604,7 +604,7 @@
       }
     }
   },
-  "spotStatNegotiable": "Χωράει Διαπραγμάτευση",
+  "spotStatNegotiable": "Δίκαιες Τιμές",
   "spotStatUsed": "Μεταχειρισμένο",
   "spotShowcaseBadgeTitle": "Πλήρως Ανακαινισμένο",
   "spotShowcaseBadgeSubtitle": "Κάθε προϊόν ελέγχεται ξεχωριστά πριν την παράδοση.",
