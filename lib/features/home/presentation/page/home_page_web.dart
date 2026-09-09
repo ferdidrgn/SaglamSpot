@@ -35,6 +35,7 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
+import '../widgets/livora_style_showcase_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/why_us_section.dart';
 
@@ -183,18 +184,14 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       ],
                     ),
                   ),
-                  // NOT: Burada bir "karşılaştırma/deneme" bölümü
-                  // (LivoraStyleShowcaseSection) vardı — kalıcı olması
-                  // hiç kararlaştırılmamış, kendi belgelediği gibi
-                  // geçiciydi. Sayfanın her yerinde "20+ Yıl", "2.500+
-                  // Müşteri", "esnaf güvencesi" gibi aynı vurguları
-                  // tekrar tekrar ekliyordu, kendi içinde bile aynı
-                  // rakamı iki kez tekrarlıyordu, uydurma müşteri
-                  // yorumları içeriyordu ve "Sigortalı Teslimat" gibi
-                  // gerçek olmayan bir vaat taşıyordu. Kaldırıldı; bu
-                  // vurgular zaten sayfanın kendi bölümlerinde (hero
-                  // altı kartlar, akan şerit, "biz kimiz" ve istatistik
-                  // bölümü) dağınık olmayan, tek bir yerde duruyor.
+                  // Kullanıcı bu bölümü (Sağlam Spot'tan sonraki krem
+                  // zeminli vitrin bloğu) kaybettikten sonra geri istedi.
+                  // Sahte müşteri yorumları (_buildQuoteRow) ve "Neden
+                  // Bizi Seçmelisiniz" rozet satırı (zaten yukarıda
+                  // _buildWhyChooseRow olarak var) BİLEREK dışarıda
+                  // bırakıldı — bkz. livora_style_showcase_section.dart
+                  // kendi doc yorumu.
+                  const LivoraStyleShowcaseSection(),
                   _buildStatsSection(),
                   _buildFooter(),
                 ],
