@@ -14,6 +14,7 @@ import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
+import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -92,8 +93,14 @@ class HomeStorePage extends ConsumerWidget {
                         childAspectRatio: 0.68,
                       ),
                       delegate: SliverChildBuilderDelegate(
-                        (final context, final index) =>
-                            _ProductGridCard(product: featured[index]),
+                        // Kartlar sayfa açılır açılmaz hepsi birden değil,
+                        // kuşak kuşak (cascade) belirir — daha "canlı", mobil
+                        // uygulama hissi için.
+                        (final context, final index) => RevealFade(
+                          delayMs: 60 * (index % 8),
+                          child:
+                              _ProductGridCard(product: featured[index]),
+                        ),
                         childCount: featured.length,
                       ),
                     ),
@@ -707,14 +714,24 @@ class _ProductGridCard extends ConsumerWidget {
                           color: Colors.white.withOpacity(0.92),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          size: 14,
-                          color: isFavorite
-                              ? AppColors.error
-                              : AppColors.mobileTextSecondary,
+                        // Kalp artık sadece renk değiştirmiyor — dokununca
+                        // hafifçe "zıplayarak" büyüyüp yerine oturuyor.
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 320),
+                          switchInCurve: Curves.elasticOut,
+                          switchOutCurve: Curves.easeOut,
+                          transitionBuilder: (final child, final animation) =>
+                              ScaleTransition(scale: animation, child: child),
+                          child: Icon(
+                            isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            key: ValueKey(isFavorite),
+                            size: 14,
+                            color: isFavorite
+                                ? AppColors.error
+                                : AppColors.mobileTextSecondary,
+                          ),
                         ),
                       ),
                     ),
