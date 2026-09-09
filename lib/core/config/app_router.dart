@@ -241,12 +241,26 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
       GoRoute(
         path: '/cart',
         name: 'cart',
-        pageBuilder: (final context, final state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const CartPage(),
-          transitionsBuilder: focalTransition,
-          transitionDuration: const Duration(milliseconds: 400),
-        ),
+        // WhatsApp'ta esnafa giden "Tüm ürünler: .../cart?items=...&sig=..."
+        // linkine tıklanınca, aynı imza mekanizmasıyla (product linkleriyle
+        // AYNI HMAC anahtarı) doğrulanan bir liste varsa sepete otomatik
+        // yüklenir — esnaf mesajı tek tek okuyup ürün aramak yerine, sepeti
+        // doğrudan uygulamada, gerçek ürün kartlarıyla görür.
+        pageBuilder: (final context, final state) {
+          final String rawItems = state.uri.queryParameters['items'] ?? '';
+          final String inboundSig = state.uri.queryParameters['sig'] ?? '';
+          final bool hasSharedItems = rawItems.isNotEmpty &&
+              DeepLinkSecurityEngine.verifySignedIdentifier(
+                  rawItems, inboundSig);
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: CartPage(
+                sharedItemsParam: hasSharedItems ? rawItems : null),
+            transitionsBuilder: focalTransition,
+            transitionDuration: const Duration(milliseconds: 400),
+          );
+        },
       ),
       GoRoute(
         path: '/favorites',

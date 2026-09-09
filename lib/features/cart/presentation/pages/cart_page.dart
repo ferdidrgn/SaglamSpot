@@ -8,6 +8,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/products/domain/entites/product.dart';
+import '../../../../features/products/presentation/providers/product_provider.dart';
 import '../../../../features/products/presentation/providers/recently_viewed_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
@@ -22,7 +23,13 @@ import '../providers/cart_provider.dart';
 /// bölümü ürün detayına her girişte otomatik güncellenen ayrı bir
 /// provider'dan (recentlyViewedProvider) beslenir.
 class CartPage extends ConsumerStatefulWidget {
-  const CartPage({super.key});
+  const CartPage({super.key, this.sharedItemsParam});
+
+  /// WhatsApp'a giden sepet linkinden (`/cart?items=...&sig=...`) geldiyse
+  /// — imzası app_router.dart'ta ZATEN doğrulanmış, "id:adet,id:adet"
+  /// biçimindeki ham parametre. Genelde esnafın kendi telefonunda açtığı
+  /// linkten gelir: müşterinin gönderdiği ürünler otomatik sepete yüklenir.
+  final String? sharedItemsParam;
 
   @override
   ConsumerState<CartPage> createState() => _CartPageState();
@@ -33,6 +40,31 @@ class _CartPageState extends ConsumerState<CartPage> {
   // otomatik olarak seçili başlar — burada ayrıca bir şey yapmaya gerek
   // yok, sadece "işareti kaldırılanlar" tutuluyor.
   final Set<String> _uncheckedIds = {};
+  bool _appliedSharedItems = false;
+
+  // Paylaşılan sepet linkindeki ürünleri gerçek katalogdan bulup mevcut
+  // sepete ekler — katalog (productsProvider) yüklenene kadar bekler,
+  // sonra TEK SEFER uygulanır (build() her tetiklendiğinde tekrar
+  // eklenmesin diye _appliedSharedItems bayrağı kullanılıyor).
+  void _applySharedItemsIfNeeded(final List<Product> catalog) {
+    if (_appliedSharedItems || widget.sharedItemsParam == null) return;
+    final wanted =
+        FurnitureShareService.decodeCartItemsParam(widget.sharedItemsParam!);
+    if (wanted.isEmpty) {
+      _appliedSharedItems = true;
+      return;
+    }
+    final notifier = ref.read(cartProvider.notifier);
+    for (final entry in wanted.entries) {
+      final product = catalog
+          .cast<Product?>()
+          .firstWhere((final p) => p?.id == entry.key, orElse: () => null);
+      if (product == null) continue;
+      notifier.add(product);
+      notifier.setQuantity(product.id, entry.value);
+    }
+    _appliedSharedItems = true;
+  }
 
   bool _isSelected(final String productId) =>
       !_uncheckedIds.contains(productId);
@@ -92,8 +124,14 @@ class _CartPageState extends ConsumerState<CartPage> {
         items.fold<double>(0, (final sum, final item) => sum + item.subtotal);
     buffer.write(
         '${context.l10n.cartTotalLabel}: ${total.toStringAsFixed(0)}₺\n\n');
-    buffer.write(context.l10n
-        .cartWhatsappAllProductsLine(FurnitureShareService.storeUrl));
+    // Yukarıdaki tek tek ürün linklerine EK olarak, TÜM sepeti (doğru
+    // adetlerle) tek linkte taşıyan imzalı bir bağlantı — bu linke tıklayan
+    // (genelde esnaf) ürünleri mesajdan okuyup tek tek aramak yerine,
+    // uygulamada aynı sepeti, gerçek ürün kartlarıyla doğrudan görür (bkz.
+    // app_router.dart '/cart').
+    final cartUrl = FurnitureShareService.generateCartUrl(
+        items.map((final i) => (productId: i.product.id, quantity: i.quantity)));
+    buffer.write(context.l10n.cartWhatsappAllProductsLine(cartUrl));
     SaglamSpotCommunication.launchWhatsApp(message: buffer.toString());
   }
 
@@ -107,6 +145,17 @@ class _CartPageState extends ConsumerState<CartPage> {
     final int selectedCount = selectedItems.fold<int>(
         0, (final sum, final item) => sum + item.quantity);
     final recentlyViewed = ref.watch(recentlyViewedProvider);
+
+    // Paylaşılan sepet linkinden geldiyse, katalog yüklenir yüklenmez
+    // (bir sonraki frame'de, build sırasında state değiştirmemek için)
+    // ürünleri gerçek sepete yükle.
+    if (!_appliedSharedItems && widget.sharedItemsParam != null) {
+      ref.watch(productsProvider).whenData((final catalog) {
+        WidgetsBinding.instance.addPostFrameCallback((final _) {
+          if (mounted) _applySharedItemsIfNeeded(catalog);
+        });
+      });
+    }
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,

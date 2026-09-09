@@ -39,6 +39,40 @@ final class FurnitureShareService {
     return "$_domain/product/$safeSlugWithId?sig=$signature";
   }
 
+  // ─────────────────────────────────────────────────────────────
+  // SEPET DERİN BAĞLANTISI — müşteri WhatsApp'tan "sepeti gönder" dediğinde
+  // mesaja TEK bir link eklenir; o linki açan kişi (genelde esnaf, kendi
+  // telefonunda) uygulamada AYNI ürün+adet listesiyle dolu bir sepet
+  // görür — mesaj metnini tek tek okuyup ürünleri tek tek aramak yerine.
+  // ─────────────────────────────────────────────────────────────
+
+  /// "id1:adet1,id2:adet2" formatında, tek kaynaktan encode/decode.
+  static String encodeCartItemsParam(
+      final Iterable<({String productId, int quantity})> items) {
+    return items.map((final i) => '${i.productId}:${i.quantity}').join(',');
+  }
+
+  /// Bozuk/eksik parçaları sessizce atlar — imzası zaten ayrı doğrulanıyor,
+  /// burada tek amaç güvenli parse.
+  static Map<String, int> decodeCartItemsParam(final String raw) {
+    final result = <String, int>{};
+    for (final part in raw.split(',')) {
+      final pieces = part.split(':');
+      if (pieces.length != 2) continue;
+      final qty = int.tryParse(pieces[1]);
+      if (qty == null || qty < 1 || pieces[0].isEmpty) continue;
+      result[pieces[0]] = qty;
+    }
+    return result;
+  }
+
+  static String generateCartUrl(
+      final Iterable<({String productId, int quantity})> items) {
+    final itemsParam = encodeCartItemsParam(items);
+    final signature = signProductId(itemsParam);
+    return "$_domain/cart?items=${Uri.encodeComponent(itemsParam)}&sig=$signature";
+  }
+
   /// 📤 Ürün Paylaş
   static Future<void> shareProduct({
     required final String productId,
