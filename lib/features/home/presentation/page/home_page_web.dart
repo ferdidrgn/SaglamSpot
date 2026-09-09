@@ -356,6 +356,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         desc: context.l10n.featureRow1Desc,
         buttonLabel: context.l10n.exploreButton,
         onTap: () => NavigationHandler.goToAbout(context),
+        accentColor: AppColors.accent,
+        // Gerçek bir rakam — stats bölümündeki "20 Yıl Tecrübe" ile aynı
+        // kaynak, uydurma bir sayı DEĞİL.
+        statLabel: '20${context.l10n.statYearsSuffix}',
+        statIcon: Icons.workspace_premium_rounded,
       ),
       (
         image:
@@ -365,6 +370,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         desc: context.l10n.featureRow2Desc,
         buttonLabel: context.l10n.exploreButton,
         onTap: () => NavigationHandler.goToSSS(context),
+        accentColor: AppColors.info,
+        // Yine gerçek — SaglamSpotCommunication.freeDeliveryZones'ın
+        // kendi uzunluğu, sabit yazılmış bir sayı değil.
+        statLabel:
+            '${SaglamSpotCommunication.freeDeliveryZones.length} Bölge',
+        statIcon: Icons.location_on_rounded,
       ),
       (
         image:
@@ -374,10 +385,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         desc: context.l10n.featureRow3Desc,
         buttonLabel: context.l10n.exploreButton,
         onTap: () => SaglamSpotCommunication.launchWhatsApp(),
+        accentColor: AppColors.success,
+        statLabel: 'Dakikalar İçinde',
+        statIcon: Icons.bolt_rounded,
       ),
     ];
 
-    final overlap = context.responsive(mobile: 22.0, desktop: 40.0);
+    // Önceden kartlar hero'nun içine (40px'e kadar) derince gömülüyordu —
+    // biraz daha aşağı, daha nefes alan bir konuma çekildi.
+    final overlap = context.responsive(mobile: 12.0, desktop: 22.0);
 
     return SliverToBoxAdapter(
       child: Transform.translate(
@@ -388,7 +404,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               ? Column(
                   children: [
                     for (int i = 0; i < items.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 14),
+                      if (i > 0) const SizedBox(height: 16),
                       _FeatureOverlapCard(
                         image: items[i].image,
                         icon: items[i].icon,
@@ -396,6 +412,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         desc: items[i].desc,
                         buttonLabel: items[i].buttonLabel,
                         onTap: items[i].onTap,
+                        accentColor: items[i].accentColor,
+                        statLabel: items[i].statLabel,
+                        statIcon: items[i].statIcon,
+                        floatIndex: i,
                       ),
                     ],
                   ],
@@ -414,6 +434,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                             desc: items[i].desc,
                             buttonLabel: items[i].buttonLabel,
                             onTap: items[i].onTap,
+                            accentColor: items[i].accentColor,
+                            statLabel: items[i].statLabel,
+                            statIcon: items[i].statIcon,
+                            floatIndex: i,
                           ),
                         ),
                       ],
@@ -1492,6 +1516,12 @@ class _GatewayCard extends StatelessWidget {
 }
 
 /// [_buildFeatureRow]'daki beyaz, hero'nun altına taşan tekil kart.
+/// Her kart kendi rengini taşır (accentColor) ve gerçek bir rakam/olguya
+/// dayanan bir "stat" rozeti gösterir (uydurma değil — bkz. çağıran
+/// kod). Sürekli, çok hafif bir yukarı-aşağı süzülme animasyonu +
+/// hoverda ekstra kalkış ile "havada asılı duruyor" hissi veriyor;
+/// 3 kart farklı fazda (floatIndex) süzülüyor ki hepsi aynı anda
+/// yukarı/aşağı gidip robotik görünmesin.
 class _FeatureOverlapCard extends StatefulWidget {
   const _FeatureOverlapCard({
     required this.image,
@@ -1500,6 +1530,10 @@ class _FeatureOverlapCard extends StatefulWidget {
     required this.desc,
     required this.buttonLabel,
     required this.onTap,
+    required this.accentColor,
+    required this.statLabel,
+    required this.statIcon,
+    required this.floatIndex,
   });
 
   final String image;
@@ -1508,113 +1542,192 @@ class _FeatureOverlapCard extends StatefulWidget {
   final String desc;
   final String buttonLabel;
   final VoidCallback onTap;
+  final Color accentColor;
+  final String statLabel;
+  final IconData statIcon;
+  final int floatIndex;
 
   @override
   State<_FeatureOverlapCard> createState() => _FeatureOverlapCardState();
 }
 
-class _FeatureOverlapCardState extends State<_FeatureOverlapCard> {
+class _FeatureOverlapCardState extends State<_FeatureOverlapCard>
+    with SingleTickerProviderStateMixin {
   bool _isHovered = false;
+  late final AnimationController _floatController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 3200),
+  )..repeat();
 
   @override
-  Widget build(final BuildContext context) => MouseRegion(
-        onEnter: (final _) => setState(() => _isHovered = true),
-        onExit: (final _) => setState(() => _isHovered = false),
-        child: TactilePress(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            transform: _isHovered
-                ? (Matrix4.identity()..translate(0.0, -4.0))
-                : Matrix4.identity(),
-            padding:
-                EdgeInsets.all(context.responsive(mobile: 16, desktop: 20)),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.08),
-                  blurRadius: _isHovered ? 28 : 20,
-                  offset: Offset(0, _isHovered ? 14 : 10),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Referans tasarımdaki gibi: küçük görsel solda, başlık
-                // yanında — dekoratif tek başına bir ikon yerine.
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Stack(
+  void dispose() {
+    _floatController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) => AnimatedBuilder(
+        animation: _floatController,
+        builder: (final context, final child) {
+          final phase =
+              _floatController.value * 2 * math.pi + widget.floatIndex * 2.1;
+          final floatY = math.sin(phase) * 3.5;
+          return Transform.translate(
+            offset: Offset(0, floatY + (_isHovered ? -4.0 : 0.0)),
+            child: child,
+          );
+        },
+        child: MouseRegion(
+          onEnter: (final _) => setState(() => _isHovered = true),
+          onExit: (final _) => setState(() => _isHovered = false),
+          child: TactilePress(
+            onTap: widget.onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              padding:
+                  EdgeInsets.all(context.responsive(mobile: 16, desktop: 20)),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(20),
+                // Nötr bir gölgenin yanına kartın kendi renginde yumuşak
+                // bir "glow" eklendi — sanki kart kendi ışığıyla
+                // yerden yükseliyormuş hissi için.
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(_isHovered ? 0.12 : 0.08),
+                    blurRadius: _isHovered ? 30 : 22,
+                    offset: Offset(0, _isHovered ? 18 : 14),
+                  ),
+                  BoxShadow(
+                    color: widget.accentColor
+                        .withOpacity(_isHovered ? 0.32 : 0.22),
+                    blurRadius: _isHovered ? 34 : 24,
+                    spreadRadius: -8,
+                    offset: Offset(0, _isHovered ? 22 : 16),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Küçük görsel solda, başlık yanında — dekoratif tek
+                  // başına bir ikon yerine. İkon artık görselin ÜSTÜNÜ
+                  // karartmıyor; görselin köşesine binen ayrı, kendi
+                  // renginde küçük bir rozet oldu (daha derli toplu).
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          Image.network(
-                            widget.image,
-                            width: 52,
-                            height: 52,
-                            fit: BoxFit.cover,
-                            errorBuilder: (final c, final e, final s) =>
-                                Container(
-                                    width: 52,
-                                    height: 52,
-                                    color: AppColors.secondary),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.network(
+                              widget.image,
+                              width: 52,
+                              height: 52,
+                              fit: BoxFit.cover,
+                              errorBuilder: (final c, final e, final s) =>
+                                  Container(
+                                      width: 52,
+                                      height: 52,
+                                      color: AppColors.secondary),
+                            ),
                           ),
-                          Container(
-                            width: 52,
-                            height: 52,
-                            alignment: Alignment.center,
-                            color: Colors.black.withOpacity(0.18),
-                            child: Icon(widget.icon,
-                                color: Colors.white, size: 20),
+                          Positioned(
+                            right: -6,
+                            bottom: -6,
+                            child: Container(
+                              width: 26,
+                              height: 26,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    widget.accentColor,
+                                    Color.lerp(
+                                        widget.accentColor, Colors.black, 0.22)!
+                                  ],
+                                ),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: AppColors.surface, width: 2.5),
+                              ),
+                              child: Icon(widget.icon,
+                                  color: Colors.white, size: 13),
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(widget.title,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: context.bodySize,
-                                color: AppColors.textPrimary)),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(widget.title,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: context.bodySize,
+                                  color: AppColors.textPrimary)),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(widget.desc,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: context.captionSize,
-                        height: 1.4)),
-                const SizedBox(height: 14),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: widget.onTap,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: BorderSide(color: AppColors.border),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                    child: Text(widget.buttonLabel,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 12.5)),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  Text(widget.desc,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: context.captionSize,
+                          height: 1.4)),
+                  const SizedBox(height: 12),
+                  // Yeni: her kartın kendi gerçek rakamı/olgusuna dayanan
+                  // küçük bir vurgu rozeti — kartın içini dolduran, ama
+                  // uydurma olmayan bir içerik.
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: widget.accentColor.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(widget.statIcon,
+                            size: 12, color: widget.accentColor),
+                        const SizedBox(width: 5),
+                        Text(widget.statLabel,
+                            style: TextStyle(
+                                color: widget.accentColor,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 11)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: widget.onTap,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textPrimary,
+                        side: BorderSide(color: AppColors.border),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      child: Text(widget.buttonLabel,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 12.5)),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
