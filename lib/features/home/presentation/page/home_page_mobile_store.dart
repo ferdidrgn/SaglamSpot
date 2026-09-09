@@ -79,7 +79,7 @@ class HomeStorePage extends ConsumerWidget {
                   ),
                 ),
                 if (featured.isEmpty)
-                  const SliverToBoxAdapter(child: SizedBox.shrink())
+                  SliverToBoxAdapter(child: _buildEmptyCatalogNotice(context))
                 else
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
@@ -289,6 +289,38 @@ class HomeStorePage extends ConsumerWidget {
       ),
     );
   }
+
+  // Ürün ızgarası boşsa (stokta satılabilir ürün yoksa) sessizce hiçbir şey
+  // göstermek yerine dürüst, sakin bir bildirim — uydurma ürün/veri YOK.
+  Widget _buildEmptyCatalogNotice(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+          decoration: BoxDecoration(
+            color: AppColors.mobileSurface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.mobileBorder),
+          ),
+          child: Column(
+            children: [
+              Icon(Icons.inventory_2_outlined,
+                  size: 30, color: _StorePalette.primary),
+              const SizedBox(height: 10),
+              Text('Şu anda vitrinde ürün yok',
+                  style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.mobileTextPrimary)),
+              const SizedBox(height: 4),
+              Text('Yeni parçalar eklendiğinde burada göreceksiniz.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 12, color: AppColors.mobileTextTertiary)),
+            ],
+          ),
+        ),
+      );
 }
 
 /// Otomatik ilerleyen görsel slider — web'deki hero banner'ın (aynı 3
@@ -333,6 +365,11 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
     super.dispose();
   }
 
+  // Kullanıcı daha "etkileşimli", daha koyu/canlı bir açılış hissi istedi
+  // (referans: koyu yeşil gradyanlı "Make Space For Something Better"
+  // kartı). Boy uzatıldı, alt gradyan koyulaştırıldı, büyük kalın başlık
+  // eklendi ve artık gerçekten dokunulabilir bir "Keşfet" CTA butonu var
+  // (öncesinde bu alan tamamen dekoratifti).
   @override
   Widget build(final BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
@@ -340,9 +377,9 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
           armLength: 18,
           inset: 10,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(28),
             child: SizedBox(
-              height: 170,
+              height: 250,
               child: Stack(
                 children: [
                   PageView.builder(
@@ -353,7 +390,7 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
                     itemBuilder: (final context, final index) =>
                         OptimizedCachedImage(
                       imageUrl: _HomeHeroSlider._images[index],
-                      height: 170,
+                      height: 250,
                       width: double.infinity,
                       borderRadius: 0,
                     ),
@@ -363,10 +400,11 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
                             colors: [
-                              _StorePalette.primaryDark.withOpacity(0.75),
+                              _StorePalette.primaryDark.withOpacity(0.92),
+                              _StorePalette.primaryDark.withOpacity(0.55),
                               _StorePalette.primaryDark.withOpacity(0.05),
                             ],
                           ),
@@ -376,51 +414,101 @@ class _HomeHeroSliderState extends State<_HomeHeroSlider> {
                   ),
                   Positioned(
                     left: 20,
-                    right: 20,
-                    bottom: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
+                    top: 18,
+                    child: IgnorePointer(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.16),
+                          borderRadius: BorderRadius.circular(30),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: Text(
                           context.l10n.storeHeroEyebrow,
                           style: AppTextStyles.microLabel(
-                            color: Colors.white.withOpacity(0.85),
-                            fontSize: 11,
-                            letterSpacing: 1.8,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          context.l10n.storeHeroSubtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            height: 1.35,
+                            fontSize: 10.5,
+                            letterSpacing: 1.6,
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                   Positioned(
-                    right: 16,
-                    bottom: 12,
+                    left: 20,
+                    right: 20,
+                    bottom: 66,
+                    child: IgnorePointer(
+                      child: Text(
+                        context.l10n.storeHeroTitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          height: 1.18,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 20,
+                    right: 20,
+                    bottom: 18,
                     child: Row(
                       children: [
-                        for (int i = 0; i < _HomeHeroSlider._images.length; i++)
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            margin: const EdgeInsets.only(left: 5),
-                            width: i == _currentPage ? 16 : 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: Colors.white
-                                  .withOpacity(i == _currentPage ? 0.95 : 0.5),
-                              borderRadius: BorderRadius.circular(3),
+                        Expanded(
+                          child: TactilePress(
+                            onTap: () => NavigationHandler.goToSearch(context),
+                            pressScale: 0.97,
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    context.l10n.exploreButton,
+                                    style: TextStyle(
+                                        color: _StorePalette.primaryDark,
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Icon(Icons.arrow_forward_rounded,
+                                      size: 16,
+                                      color: _StorePalette.primaryDark),
+                                ],
+                              ),
                             ),
                           ),
+                        ),
+                        const SizedBox(width: 10),
+                        Row(
+                          children: [
+                            for (int i = 0;
+                                i < _HomeHeroSlider._images.length;
+                                i++)
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 250),
+                                margin: const EdgeInsets.only(left: 5),
+                                width: i == _currentPage ? 16 : 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(
+                                      i == _currentPage ? 0.95 : 0.5),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -463,6 +551,11 @@ class _CategoryRowState extends ConsumerState<_CategoryRow> {
               ? context.l10n.conditionAll
               : categories[index - 1].customLabel ??
                   categories[index - 1].category.label(context);
+          // Referans tasarımdaki gibi her hapın kendi kategori ikonu var —
+          // "Tümü" için ızgara ikonu, diğerleri için gerçek CategoryMeta
+          // ikonu (aynı ikon web'de de, kategori sayfalarında da kullanılır).
+          final IconData icon =
+              isAll ? Icons.grid_view_rounded : categories[index - 1].icon;
           final bool isActive = index == _selected;
 
           return TactilePress(
@@ -477,7 +570,7 @@ class _CategoryRowState extends ConsumerState<_CategoryRow> {
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color:
@@ -489,15 +582,26 @@ class _CategoryRowState extends ConsumerState<_CategoryRow> {
                       : AppColors.mobileBorder,
                 ),
               ),
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isActive ? Colors.white : AppColors.mobileTextSecondary,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon,
+                      size: 15,
+                      color:
+                          isActive ? Colors.white : AppColors.mobileTextSecondary),
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color:
+                          isActive ? Colors.white : AppColors.mobileTextSecondary,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
