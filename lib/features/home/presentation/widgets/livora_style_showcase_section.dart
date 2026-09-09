@@ -243,7 +243,7 @@ class LivoraStyleShowcaseSection extends ConsumerWidget {
     final items = [
       (Icons.workspace_premium_outlined, '20+ Yıl Tecrübe'),
       (Icons.people_outline_rounded, '2.500+ Mutlu Müşteri'),
-      (Icons.verified_user_outlined, 'Sigortalı Teslimat'),
+      (Icons.verified_user_outlined, 'Hızlı Teslimat'),
       (Icons.storefront_outlined, 'Yerel Esnaf Güvencesi'),
     ];
 

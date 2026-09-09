@@ -24,6 +24,7 @@ import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
+import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
