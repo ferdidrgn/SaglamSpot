@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
@@ -19,7 +18,6 @@ import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
-import '../../../../features/products/data/models/category_meta.dart';
 import '../../../../features/products/domain/entites/product.dart';
 import '../../../../features/products/presentation/providers/category_meta_provider.dart';
 import '../../../../features/products/presentation/providers/favorites_provider.dart';
@@ -63,16 +61,16 @@ class HomeStorePage extends ConsumerWidget {
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                SliverToBoxAdapter(child: _buildHeader(context, ref)),
-                SliverToBoxAdapter(child: _buildSearchBar(context)),
-                const SliverToBoxAdapter(child: _HomeHeroSlider()),
-                SliverToBoxAdapter(child: _buildMottoStrip(context)),
-                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
-                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
+                // Referans "Discover" ekranındaki düzen: ince ikon satırı →
+                // büyük başlık+alt yazı → kategori hapları → doğrudan liste.
+                // Aradaki "Kategoriler" etiketi bilerek yok — hem gerçek
+                // referansta öyle, hem de haplar zaten kendini anlatıyor.
+                SliverToBoxAdapter(child: _buildTopBar(context, ref)),
+                SliverToBoxAdapter(child: _buildDiscoverHeading(context)),
                 SliverToBoxAdapter(
-                    child: _buildSectionTitle(
-                        context, context.l10n.sectionCategories)),
-                SliverToBoxAdapter(child: _CategoryRow()),
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: _CategoryRow())),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle(
                     context,
@@ -84,23 +82,20 @@ class HomeStorePage extends ConsumerWidget {
                   const SliverToBoxAdapter(child: SizedBox.shrink())
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.72,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (final context, final index) =>
-                            _ProductCard(product: featured[index]),
-                        childCount: featured.length,
-                      ),
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                    sliver: SliverList.separated(
+                      itemCount: featured.length,
+                      separatorBuilder: (final _, final __) =>
+                          const SizedBox(height: 18),
+                      itemBuilder: (final context, final index) =>
+                          _ProductListRow(product: featured[index]),
                     ),
                   ),
-                const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(child: _buildSearchBar(context)),
+                const SliverToBoxAdapter(child: _HomeHeroSlider()),
+                SliverToBoxAdapter(child: _buildMottoStrip(context)),
+                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
+                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(
                     child: _buildSectionTitle(
                         context, context.l10n.visitUsHeading)),
@@ -116,40 +111,51 @@ class HomeStorePage extends ConsumerWidget {
     return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
 
-  Widget _buildHeader(final BuildContext context, final WidgetRef ref) =>
+  // Referans tasarımdaki gibi ince bir ikon satırı — profil zaten alt
+  // navigasyonda var (bkz. MobileBottomNav), burada tekrarlanmıyor.
+  // Bildirim zili gerçek okunmamış sayısını, sepet gerçek ürün adedini
+  // gösteriyor.
+  Widget _buildTopBar(final BuildContext context, final WidgetRef ref) =>
       Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Text(
-                context.l10n.storeHeroTitle,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                  color: AppColors.mobileTextPrimary,
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
             _NotificationBellButton(
               unreadCount: ref.watch(unreadNotificationCountProvider),
               onTap: () => NavigationHandler.goToNotifications(context),
             ),
-            const SizedBox(width: 10),
-            TactilePress(
-              onTap: () => NavigationHandler.goToSettings(context),
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: _StorePalette.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 22),
+            _CartIconButton(
+              count: ref.watch(cartProvider).length,
+              onTap: () => NavigationHandler.goToCart(context),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildDiscoverHeading(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.storeHeroTitle,
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                height: 1.15,
+                color: AppColors.mobileTextPrimary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              context.l10n.storeHeroSubtitle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.mobileTextTertiary,
+                height: 1.35,
               ),
             ),
           ],
@@ -501,32 +507,25 @@ class _CategoryRowState extends ConsumerState<_CategoryRow> {
   }
 }
 
-class _ProductCard extends ConsumerWidget {
+/// Referans "Discover" ekranındaki satır kartı — solda metin (isim, durum,
+/// fiyat), sağda büyük görsel, sağ üstte kalp. Referans tasarımda bu alanda
+/// yıldız puanı + yorum sayısı var, ama [Product] modelinde rating alanı
+/// YOK — uydurmak yerine, kullanıcının doğrudan istediği gerçek bir ayrım
+/// gösteriliyor: ürün SIFIR mı yoksa İKİNCİ EL mi (bkz. isSpotProduct).
+class _ProductListRow extends ConsumerWidget {
   final Product product;
 
-  const _ProductCard({required this.product});
-
-  // Referans tasarımdaki yıldız/yorum sayısı satırının karşılığı — ama
-  // Product modelinde rating/review alanı YOK, uydurma bir puan
-  // göstermek yerine gerçek bir veri: ürünün ne zaman eklendiği.
-  String? _listedLabel(final BuildContext context) {
-    final parsed = DateTime.tryParse(product.createdAt);
-    if (parsed == null) return null;
-    final days = DateTime.now().difference(parsed).inDays;
-    if (days <= 0) return context.l10n.listedToday;
-    if (days < 7) return context.l10n.listedDaysAgo(days);
-    return context.l10n.listedWeeksAgo((days / 7).floor());
-  }
+  const _ProductListRow({required this.product});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final inCart =
-        ref.watch(cartProvider).any((final i) => i.product.id == product.id);
     final isFavorite =
         ref.watch(favoritesProvider).any((final p) => p.id == product.id);
-    final meta = defaultCategoryMeta[product.category] ??
-        defaultCategoryMeta[ProductCategory.other]!;
-    final listed = _listedLabel(context);
+    final isNew = !product.isSpotProduct;
+    final conditionColor =
+        isNew ? NewCollectionPalette.accent : SpotPalette.accent;
+    final conditionLabel =
+        isNew ? context.l10n.conditionNew : context.l10n.conditionUsed;
 
     return TactilePress(
       onTap: () => NavigationHandler.goToProduct(
@@ -534,174 +533,101 @@ class _ProductCard extends ConsumerWidget {
         productId: product.id,
         productSlug: product.name.toSlug(),
       ),
-      // Kategori renkli "radiant" glow — web'deki CustomProductCard ile
-      // aynı canlı dil.
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: meta.color.withOpacity(0.24),
-                blurRadius: 22,
-                spreadRadius: -4,
-                offset: const Offset(0, 10)),
-          ],
-        ),
-        // Referans görseldeki pastel/kategoriye uyumlu zemin — sabit tek
-        // bir sage yerine, uygulamanın her yerinde kullanılan gerçek
-        // kategori rengiyle (meta.color) çok hafif tonlanmış bir yüzey.
-        child: Container(
-          decoration: BoxDecoration(
-            color:
-                Color.alphaBlend(meta.color.withOpacity(0.07), AppColors.mobileSurface),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: meta.color.withOpacity(0.14)),
-          ),
-          child: Column(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(20)),
-                      child: OptimizedCachedImage(
-                        imageUrl: product.imagesUrl.isNotEmpty
-                            ? product.imagesUrl.first
-                            : '',
-                        fit: BoxFit.cover,
-                        borderRadius: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4, right: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25,
+                            color: AppColors.mobileTextPrimary),
                       ),
-                    ),
-                    if (!product.isSpotProduct)
-                      Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: _StorePalette.primaryDark,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            context.l10n.newProductBadge,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.w800),
-                          ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 9, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: conditionColor.withOpacity(0.14),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          conditionLabel,
+                          style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              color: conditionColor),
                         ),
                       ),
-                    // Referans görseldeki kalp ikonu — artık gerçekten
-                    // çalışan favori listesine bağlı (favoritesProvider),
-                    // web/arama tarafındaki SearchProductGridCard ile aynı
-                    // desen.
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: GestureDetector(
-                        onTap: () =>
-                            ref.read(favoritesProvider.notifier).toggle(product),
-                        child: Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.92),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            isFavorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            size: 15,
-                            color: isFavorite
-                                ? AppColors.error
-                                : AppColors.mobileTextSecondary,
-                          ),
-                        ),
+                      const SizedBox(height: 10),
+                      Text(
+                        '${product.price.toStringAsFixed(0)}₺',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.mobileTextPrimary),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(meta.icon, size: 11, color: meta.color),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            listed ?? product.category.label(context),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.mobileTextTertiary),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      product.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.mobileTextPrimary),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${product.price.toStringAsFixed(0)}₺',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                                color: _StorePalette.primary),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () =>
-                              ref.read(cartProvider.notifier).toggle(product),
-                          child: Container(
-                            width: 26,
-                            height: 26,
-                            decoration: BoxDecoration(
-                              color: inCart
-                                  ? _StorePalette.primary
-                                  : _StorePalette.primary.withOpacity(0.12),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              inCart
-                                  ? Icons.shopping_bag_rounded
-                                  : Icons.add_rounded,
-                              size: 14,
-                              color: inCart
-                                  ? Colors.white
-                                  : _StorePalette.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: OptimizedCachedImage(
+                  imageUrl: product.imagesUrl.isNotEmpty
+                      ? product.imagesUrl.first
+                      : '',
+                  width: 132,
+                  height: 112,
+                  fit: BoxFit.cover,
+                  borderRadius: 0,
                 ),
               ),
             ],
           ),
-        ),
+          Positioned(
+            top: -4,
+            right: -4,
+            child: GestureDetector(
+              onTap: () =>
+                  ref.read(favoritesProvider.notifier).toggle(product),
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: AppColors.mobileSurface,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2)),
+                  ],
+                ),
+                child: Icon(
+                  isFavorite
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                  size: 16,
+                  color:
+                      isFavorite ? AppColors.error : AppColors.mobileTextTertiary,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -744,6 +670,56 @@ class _NotificationBellButton extends StatelessWidget {
                     ),
                     child: Text(
                       unreadCount > 9 ? '9+' : '$unreadCount',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+}
+
+/// Referans tasarımdaki sağ üst sepet ikonu — gerçek [cartProvider] adedini
+/// gösterir (uydurma bir nokta/rozet değil).
+class _CartIconButton extends StatelessWidget {
+  final int count;
+  final VoidCallback onTap;
+
+  const _CartIconButton({required this.count, required this.onTap});
+
+  @override
+  Widget build(final BuildContext context) => TactilePress(
+        onTap: onTap,
+        child: GlassSurface(
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Center(
+                child: Icon(Icons.shopping_bag_outlined,
+                    color: AppColors.mobileTextPrimary, size: 21),
+              ),
+              if (count > 0)
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    constraints:
+                        const BoxConstraints(minWidth: 15, minHeight: 15),
+                    decoration: BoxDecoration(
+                      color: _StorePalette.primaryDark,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      count > 9 ? '9+' : '$count',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                           color: Colors.white,
