@@ -12,8 +12,10 @@ import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
+import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
+import '../../../../core/widgets/design_system/infinite_ticker.dart';
 import '../../../../core/widgets/design_system/product_image_switcher.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
@@ -21,6 +23,7 @@ import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
+import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entites/product.dart';
 
@@ -36,14 +39,17 @@ class SpotProductsPage extends ConsumerStatefulWidget {
 
 class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
   ProductCategory? _selectedCategory;
   _SortMode _selectedSort = _SortMode.newest;
   RangeValues _priceRange = const RangeValues(0, 50000);
   bool _priceFilterActive = false;
+  String _searchQuery = '';
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -107,6 +113,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 slivers: [
                   SliverToBoxAdapter(
                       child: _buildMasthead(context, products.length)),
+
+                  SliverToBoxAdapter(child: _buildTrustTicker(context)),
 
                   SliverToBoxAdapter(child: _buildAphorismSection(context)),
 
@@ -536,6 +544,38 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // ============================================================
   // 2. ARAMA + FİLTRELER (Üstte Yatay)
   // ============================================================
+  // Bu sayfada hiç akan/flowing bir şerit yoktu — anasayfadaki
+  // InfiniteTicker motifiyle aynı görsel dili buraya da taşıyor. 6 semtin
+  // tamamını tek çipe sığdırmak yerine (anasayfadaki ticker'da yaşanan
+  // aynı sorun) ilk ikisi + "ve çevresi" kullanılıyor.
+  String get _shortDeliveryZonesLabel {
+    final zones = SaglamSpotCommunication.freeDeliveryZones;
+    if (zones.length <= 2) return zones.join(', ');
+    return '${zones.take(2).join(', ')} ve çevresi';
+  }
+
+  Widget _buildTrustTicker(final BuildContext context) => Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: context.responsive(mobile: 12, desktop: 18)),
+        child: InfiniteTicker(
+          height: context.responsive(mobile: 54, desktop: 64),
+          items: [
+            TickerItem(Icons.verified_rounded,
+                context.l10n.productTrustBadgeVerified),
+            TickerItem(Icons.handshake_rounded,
+                context.l10n.productTrustBadgeNegotiate),
+            TickerItem(Icons.recycling_rounded, context.l10n.spotStatUsed),
+            TickerItem(
+              Icons.map_rounded,
+              context.l10n.freeDeliveryZonesNote(_shortDeliveryZonesLabel),
+            ),
+            TickerItem(Icons.local_shipping_rounded,
+                context.l10n.productTrustBadgeDelivery),
+            TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
+          ],
+        ),
+      );
+
   Widget _buildSearchAndFilters(BuildContext context, int resultCount) {
     final isDesktop = context.isDesktop;
 
@@ -555,7 +595,10 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       ),
       child: Row(
         children: [
-          // Arama (Sol)
+          // Arama (Sol) — artık gerçekten filtreliyor: ürün adında
+          // _searchQuery geçmeyenler ızgaradan elenir (bkz. _filterProducts).
+          // Önceden burada sadece dekoratif, hiçbir şey yapmayan bir Text
+          // vardı.
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 20, right: 12),
@@ -565,17 +608,36 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                       size: 20, color: Color(0xFF5A5A5A)),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      context.l10n.spotSearchHint,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (final value) =>
+                          setState(() => _searchQuery = value),
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF5A5A5A),
+                        color: Color(0xFF1A1A1A),
+                      ),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        hintText: context.l10n.spotSearchHint,
+                        hintStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF5A5A5A),
+                        ),
                       ),
                     ),
                   ),
+                  if (_searchQuery.isNotEmpty)
+                    GestureDetector(
+                      onTap: () => setState(() {
+                        _searchController.clear();
+                        _searchQuery = '';
+                      }),
+                      child: const Icon(Icons.close_rounded,
+                          size: 18, color: Color(0xFF9E9E9E)),
+                    ),
                 ],
               ),
             ),
@@ -854,6 +916,8 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // TEK KART (SIFIRDAN - EditorialProductCard KULLANILMADI)
   // ================================================================
   Widget _buildSingleSpotCard(BuildContext context, Product product) {
+    final isFavorite =
+        ref.watch(favoritesProvider).any((final p) => p.id == product.id);
     return GestureDetector(
       onTap: () => NavigationHandler.goToProduct(
         context: context,
@@ -960,18 +1024,34 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                         ),
                       ),
 
-                      // Favori butonu (sağ üst)
+                      // Favori butonu (sağ üst) — artık gerçekten çalışıyor:
+                      // favoritesProvider'ı değiştiriyor (bu da fiyat düşünce
+                      // bildirim alabilmek için Firestore'a senkronize
+                      // ediliyor, bkz. favorites_provider.dart). Kartın kendi
+                      // onTap'ına düşmesin diye ayrı bir GestureDetector.
                       Positioned(
                         top: 12,
                         right: 12,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
+                        child: GestureDetector(
+                          onTap: () => ref
+                              .read(favoritesProvider.notifier)
+                              .toggle(product),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFavorite
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border,
+                              size: 18,
+                              color: isFavorite
+                                  ? SpotPalette.accent
+                                  : const Color(0xFF1A1A1A),
+                            ),
                           ),
-                          child: const Icon(Icons.favorite_border,
-                              size: 18, color: Color(0xFF1A1A1A)),
                         ),
                       ),
 
@@ -1420,6 +1500,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     if (_selectedCategory != null) {
       filtered =
           filtered.where((final p) => p.category == _selectedCategory).toList();
+    }
+    if (_searchQuery.trim().isNotEmpty) {
+      final query = _searchQuery.trim().toLowerCase();
+      filtered = filtered
+          .where((final p) => p.name.toLowerCase().contains(query))
+          .toList();
     }
     filtered = filtered
         .where((final p) =>

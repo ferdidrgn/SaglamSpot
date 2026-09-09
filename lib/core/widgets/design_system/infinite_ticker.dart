@@ -103,11 +103,20 @@ class _TickerChip extends StatelessWidget {
           children: [
             Icon(item.icon, size: 24, color: AppColors.accent),
             const SizedBox(width: 12),
-            Text(item.label,
-                style: AppTextStyles.microLabel(
-                    fontSize: 17,
-                    letterSpacing: 1.2,
-                    color: AppColors.textPrimary)),
+            // maxWidth + ellipsis: uzun/dinamik (semt listesi gibi
+            // interpolasyonlu) bir etiket geldiğinde bile bu tek çip,
+            // şeritteki komşularının çok üstünde genişleyip akışın
+            // ritmini bozmasın diye.
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 340),
+              child: Text(item.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.microLabel(
+                      fontSize: 17,
+                      letterSpacing: 1.2,
+                      color: AppColors.textPrimary)),
+            ),
             const SizedBox(width: 26),
             Icon(Icons.circle, size: 6, color: AppColors.border),
           ],
