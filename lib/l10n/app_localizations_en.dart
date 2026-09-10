@@ -1370,6 +1370,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navCart => 'Cart';
 
   @override
+  String get navFavorites => 'Favorites';
+
+  @override
   String get navProfile => 'Profile';
 
   @override

@@ -1364,6 +1364,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navCart => 'Sepet';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'Profil';
 
   @override

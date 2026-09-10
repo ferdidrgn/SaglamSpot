@@ -1375,6 +1375,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get navCart => 'Savat';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'Profil';
 
   @override

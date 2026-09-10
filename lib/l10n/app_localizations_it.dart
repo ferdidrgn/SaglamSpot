@@ -1377,6 +1377,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get navCart => 'Carrello';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'Profilo';
 
   @override

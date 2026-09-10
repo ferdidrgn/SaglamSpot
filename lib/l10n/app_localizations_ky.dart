@@ -1373,6 +1373,9 @@ class AppLocalizationsKy extends AppLocalizations {
   String get navCart => 'Себет';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'Профиль';
 
   @override

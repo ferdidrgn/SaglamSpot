@@ -1381,6 +1381,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get navCart => 'Καλάθι';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'Προφίλ';
 
   @override

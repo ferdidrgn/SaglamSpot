@@ -2612,6 +2612,12 @@ abstract class AppLocalizations {
   /// **'Sepet'**
   String get navCart;
 
+  /// No description provided for @navFavorites.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favoriler'**
+  String get navFavorites;
+
   /// No description provided for @navProfile.
   ///
   /// In tr, this message translates to:

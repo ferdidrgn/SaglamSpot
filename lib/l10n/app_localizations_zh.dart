@@ -1308,6 +1308,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navCart => '购物车';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => '我的';
 
   @override

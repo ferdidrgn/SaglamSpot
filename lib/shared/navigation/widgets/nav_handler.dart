@@ -71,6 +71,11 @@ class NavigationHandler {
   /// Arama sayfasına git
   static void goToSearch(final BuildContext context) => context.go('/search');
 
+  /// Keşfet sayfasına git (Sıfır + Spot birleşik, mobil native sekmesi).
+  /// [isSpot] verilirse ilgili segment (Sıfır/Spot) önceden seçili açılır.
+  static void goToDiscover(final BuildContext context, {final bool? isSpot}) =>
+      context.go(isSpot == null ? '/discover' : '/discover?condition=${isSpot ? 'spot' : 'new'}');
+
   /// Arama sayfasına, belirli bir kategori önceden seçili olacak şekilde git.
   /// [category] null ise normal /search sayfasına gider.
   static void goToSearchWithCategory(

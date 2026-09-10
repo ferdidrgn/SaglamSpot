@@ -1368,6 +1368,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navCart => 'Корзина';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'Профиль';
 
   @override

@@ -1356,6 +1356,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navCart => 'السلة';
 
   @override
+  String get navFavorites => 'Favoriler';
+
+  @override
   String get navProfile => 'الملف الشخصي';
 
   @override

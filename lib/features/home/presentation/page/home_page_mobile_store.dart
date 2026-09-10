@@ -19,10 +19,12 @@ import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../../core/widgets/whatsapp_quick_fab.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../features/products/data/models/category_meta.dart';
 import '../../../../features/products/domain/entites/product.dart';
 import '../../../../features/products/presentation/providers/category_meta_provider.dart';
+import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../../features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
@@ -44,6 +46,7 @@ class HomeStorePage extends ConsumerWidget {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: const MobileBottomNav(),
+      floatingActionButton: kIsWeb ? null : const WhatsAppQuickFab(),
       body: Stack(
         children: [
           SafeArea(
@@ -52,7 +55,7 @@ class HomeStorePage extends ConsumerWidget {
               slivers: [
                 SliverToBoxAdapter(child: _buildHeader(context, ref)),
                 SliverToBoxAdapter(child: _buildSearchBar(context)),
-                const SliverToBoxAdapter(child: _HomeHeroSlider()),
+                const SliverToBoxAdapter(child: _HomeStoryHero()),
                 SliverToBoxAdapter(child: _buildMottoStrip(context)),
                 const SliverToBoxAdapter(child: _MobileCatalogGateway()),
                 SliverToBoxAdapter(child: _buildFeatureTicker(context)),
@@ -85,11 +88,6 @@ class HomeStorePage extends ConsumerWidget {
                       ),
                     ),
                   ),
-                SliverToBoxAdapter(child: _buildSearchBar(context)),
-                const SliverToBoxAdapter(child: _HomeStoryHero()),
-                SliverToBoxAdapter(child: _buildMottoStrip(context)),
-                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
-                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
                 SliverToBoxAdapter(
                     child: _buildSectionTitle(
                         context, context.l10n.visitUsHeading)),
@@ -371,9 +369,9 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                           colors: [
-                            _StorePalette.primaryDark.withOpacity(0.9),
-                            _StorePalette.primaryDark.withOpacity(0.35),
-                            _StorePalette.primaryDark.withOpacity(0.28),
+                            AppColors.mobilePrimaryDark.withOpacity(0.9),
+                            AppColors.mobilePrimaryDark.withOpacity(0.35),
+                            AppColors.mobilePrimaryDark.withOpacity(0.28),
                           ],
                         ),
                       ),
@@ -426,7 +424,7 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(Icons.storefront_rounded,
-                              size: 12, color: _StorePalette.primaryDark),
+                              size: 12, color: AppColors.mobilePrimaryDark),
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -495,7 +493,7 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.w800,
                                           fontSize: 13,
-                                          color: _StorePalette.primaryDark)),
+                                          color: AppColors.mobilePrimaryDark)),
                                 ],
                               ),
                             ),
@@ -507,7 +505,7 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                                 width: 34,
                                 height: 34,
                                 decoration: BoxDecoration(
-                                  color: _StorePalette.primaryDark,
+                                  color: AppColors.mobilePrimaryDark,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -1034,7 +1032,7 @@ class _MobileCatalogGateway extends ConsumerWidget {
               accent: NewCollectionPalette.accent,
               headingFontFamily: NewCollectionPalette.headingFont,
               icon: Icons.chair_rounded,
-              onTap: () => NavigationHandler.goToNewProducts(context),
+              onTap: () => NavigationHandler.goToDiscover(context, isSpot: false),
             ),
           ),
           const SizedBox(width: 12),
@@ -1050,7 +1048,7 @@ class _MobileCatalogGateway extends ConsumerWidget {
               accent: SpotPalette.accent,
               headingFontFamily: null,
               icon: Icons.local_offer_rounded,
-              onTap: () => NavigationHandler.goToSpotProducts(context),
+              onTap: () => NavigationHandler.goToDiscover(context, isSpot: true),
             ),
           ),
         ],

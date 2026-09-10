@@ -10,6 +10,7 @@ import 'package:saglamspot/shared/navigation/providers/navigation_keys.dart';
 import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
+import '../../features/products/presentation/pages/discover_page.dart';
 import '../../features/products/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/page/admin_dashboard_page.dart'
     deferred as admin;
@@ -235,6 +236,22 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
           key: state.pageKey,
           child: const SearchPage(),
           transitionsBuilder: shimmerSlideTransition,
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: '/discover',
+        name: 'discover',
+        // Mobil native shell'in "Keşfet" sekmesi — Sıfır ve Spot'u tek
+        // ekranda segment kontrolüyle birleştirir. Web bu rotayı hiç
+        // göstermez (üst nav'da yok), sadece /new ve /spot bağımsız
+        // SEO'lu sekmeler olarak kalır.
+        pageBuilder: (final context, final state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: DiscoverPage(
+            initialSpot: state.uri.queryParameters['condition'] == 'spot',
+          ),
+          transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),
         ),
       ),
