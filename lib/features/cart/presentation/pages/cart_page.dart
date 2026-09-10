@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
@@ -171,11 +172,44 @@ class _CartPageState extends ConsumerState<CartPage> {
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                       children: [
                         for (final item in items) ...[
-                          _CartItemCard(
-                            item: item,
-                            isSelected: _isSelected(item.product.id),
-                            onToggleSelected: () => _toggle(item.product.id),
-                          ),
+                          // Mobilde native app'lerde alışılmış "kaydırıp
+                          // kaldır" jesti checkbox'ın ÜSTÜNE eklenir —
+                          // seçim/adet kontrolü kalır, sağa kaydırmak da
+                          // ürünü sepetten çıkarır.
+                          kIsWeb
+                              ? _CartItemCard(
+                                  item: item,
+                                  isSelected: _isSelected(item.product.id),
+                                  onToggleSelected: () =>
+                                      _toggle(item.product.id),
+                                )
+                              : Dismissible(
+                                  key: ValueKey(item.product.id),
+                                  direction: DismissDirection.endToStart,
+                                  onDismissed: (final _) {
+                                    HapticFeedback.mediumImpact();
+                                    ref
+                                        .read(cartProvider.notifier)
+                                        .remove(item.product.id);
+                                  },
+                                  background: Container(
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.error,
+                                      borderRadius: BorderRadius.circular(18),
+                                    ),
+                                    child: const Icon(Icons.delete_rounded,
+                                        color: Colors.white),
+                                  ),
+                                  child: _CartItemCard(
+                                    item: item,
+                                    isSelected: _isSelected(item.product.id),
+                                    onToggleSelected: () =>
+                                        _toggle(item.product.id),
+                                  ),
+                                ),
                           const SizedBox(height: 12),
                         ],
                         if (recentlyViewed.isNotEmpty) ...[

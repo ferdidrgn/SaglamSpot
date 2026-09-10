@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
@@ -31,6 +32,7 @@ class SettingsPage extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final bool isAdminLoggedIn =
         authState.value != null && !authState.isLoading;
+    final int unreadCount = ref.watch(unreadNotificationCountProvider);
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
@@ -59,6 +61,13 @@ class SettingsPage extends ConsumerWidget {
                   accent: AppColors.error,
                   label: context.l10n.favoritesTitle,
                   onTap: () => NavigationHandler.goToFavorites(context),
+                ),
+                _SettingsTile(
+                  icon: Icons.notifications_rounded,
+                  accent: AppColors.mobileAccent,
+                  label: context.l10n.notificationsTitle,
+                  badgeCount: unreadCount,
+                  onTap: () => NavigationHandler.goToNotifications(context),
                 ),
                 const _LanguageTile(),
                 if (isAdminLoggedIn)
@@ -248,12 +257,14 @@ class _SettingsTile extends StatelessWidget {
   final Color? accent;
   final String label;
   final VoidCallback onTap;
+  final int badgeCount;
 
   const _SettingsTile({
     required this.icon,
     required this.label,
     required this.onTap,
     this.accent,
+    this.badgeCount = 0,
   });
 
   @override
@@ -275,8 +286,27 @@ class _SettingsTile extends StatelessWidget {
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.mobileTextPrimary)),
-      trailing: Icon(Icons.chevron_right_rounded,
-          size: 20, color: AppColors.mobileTextTertiary),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (badgeCount > 0)
+            Container(
+              margin: const EdgeInsets.only(right: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.error,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                badgeCount > 9 ? '9+' : '$badgeCount',
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+              ),
+            ),
+          Icon(Icons.chevron_right_rounded,
+              size: 20, color: AppColors.mobileTextTertiary),
+        ],
+      ),
     );
   }
 }

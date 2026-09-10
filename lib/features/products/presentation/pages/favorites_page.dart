@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
+import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../../core/widgets/whatsapp_quick_fab.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -25,6 +28,9 @@ class FavoritesPage extends ConsumerWidget {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
+      floatingActionButton: !kIsWeb && favorites.isNotEmpty
+          ? const WhatsAppQuickFab()
+          : null,
       body: SafeArea(
         child: Column(
           children: [
@@ -49,18 +55,30 @@ class FavoritesPage extends ConsumerWidget {
             Expanded(
               child: favorites.isEmpty
                   ? _buildEmptyState(context)
-                  : GridView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.72,
-                      ),
-                      itemCount: favorites.length,
-                      itemBuilder: (final context, final index) =>
-                          _FavoriteCard(product: favorites[index]),
-                    ),
+                  : (kIsWeb
+                      ? GridView.builder(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.72,
+                          ),
+                          itemCount: favorites.length,
+                          itemBuilder: (final context, final index) =>
+                              _FavoriteCard(product: favorites[index]),
+                        )
+                      // Mobilde native app'lerde alışılmış "kaydırıp kaldır"
+                      // listesi — ızgara yerine, her satırda ürünün gerçek
+                      // bilgisi + doğrudan WhatsApp'tan sorma kısayolu.
+                      : ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                          itemCount: favorites.length,
+                          separatorBuilder: (final _, final __) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (final context, final index) =>
+                              _FavoriteSwipeRow(product: favorites[index]),
+                        )),
             ),
           ],
         ),
@@ -95,6 +113,109 @@ class FavoritesPage extends ConsumerWidget {
           ),
         ),
       );
+}
+
+/// Mobil favoriler listesindeki satır — sağdan sola kaydırılınca favoriden
+/// kaldırır (native app'lerde alışılmış "swipe to remove" jesti), üstüne
+/// dokununca ürün detayına gider, sağ uçtaki WhatsApp düğmesiyle doğrudan
+/// esnafa sorulabilir.
+class _FavoriteSwipeRow extends ConsumerWidget {
+  final Product product;
+  const _FavoriteSwipeRow({required this.product});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    return Dismissible(
+      key: ValueKey(product.id),
+      direction: DismissDirection.endToStart,
+      onDismissed: (final _) {
+        HapticFeedback.mediumImpact();
+        ref.read(favoritesProvider.notifier).remove(product.id);
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: AppColors.error,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Icon(Icons.delete_rounded, color: Colors.white),
+      ),
+      child: GestureDetector(
+        onTap: () => NavigationHandler.goToProduct(
+          context: context,
+          productId: product.id,
+          productSlug: product.name.toSlug(),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AppColors.mobileSurface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.mobileBorder),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: OptimizedCachedImage(
+                  imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                  width: 68,
+                  height: 68,
+                  fit: BoxFit.cover,
+                  borderRadius: 0,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.mobileTextPrimary)),
+                    const SizedBox(height: 4),
+                    Text(
+                      product.isSold
+                          ? context.l10n.sold
+                          : '${product.price.toStringAsFixed(0)}₺',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: product.isSold
+                              ? AppColors.error
+                              : AppColors.mobilePrimary),
+                    ),
+                  ],
+                ),
+              ),
+              Material(
+                color: AppColors.mobileAccent.withOpacity(0.12),
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => FurnitureShareService.contactAboutProduct(
+                    productId: product.id,
+                    productName: product.name,
+                    price: product.price,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(9),
+                    child: Icon(Icons.chat_rounded,
+                        size: 18, color: AppColors.mobileAccentDark),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _FavoriteCard extends ConsumerWidget {
