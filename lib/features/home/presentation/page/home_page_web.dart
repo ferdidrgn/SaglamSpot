@@ -10,6 +10,7 @@ import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
 import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
+import 'package:saglamspot/core/widgets/design_system/reveal_fade.dart';
 import 'package:saglamspot/core/widgets/design_system/tactile_press.dart';
 import 'package:saglamspot/core/widgets/google_maps_embed.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
@@ -34,7 +35,6 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
 import '../widgets/how_it_works_section.dart';
-import '../widgets/livora_style_showcase_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/why_us_section.dart';
 
@@ -183,13 +183,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       ],
                     ),
                   ),
-                  // --- BANT 5: karşılaştırma bloğu — mevcut hiçbir şey
-                  // silinmeden/değiştirilmeden, referans tasarımların
-                  // (Livora/InteriorStudio) en beğenilen öğelerini kendi
-                  // renk/veri/rozetlerimizle yeniden yorumlayan, ayrı ve
-                  // bağımsız bir ek bölüm. Kullanıcı hangisini beğenirse
-                  // onu tutacak. ---
-                  const LivoraStyleShowcaseSection(),
                   _buildStatsSection(),
                   _buildFooter(),
                 ],
