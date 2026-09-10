@@ -62,9 +62,11 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   @override
   Widget build(final BuildContext context) {
-    ref.listen<AsyncValue<void>>(productMutationProvider, (final previous, final next) {
+    ref.listen<AsyncValue<void>>(productMutationProvider,
+        (final previous, final next) {
       if (next is AsyncData) {
-        final bool studioQuotaHit = StudioImageService.quotaExceededNotifier.value;
+        final bool studioQuotaHit =
+            StudioImageService.quotaExceededNotifier.value;
         StudioImageService.quotaExceededNotifier.value = false;
         _snack(context.l10n.productAddedSuccess, success: true);
         if (studioQuotaHit) {
@@ -80,7 +82,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           Navigator.of(context).pop();
         }
       }
-      if (next is AsyncError) _snack(context.l10n.authOrConnectionError, error: true);
+      if (next is AsyncError)
+        _snack(context.l10n.authOrConnectionError, error: true);
     });
 
     final mutationState = ref.watch(productMutationProvider);
@@ -97,96 +100,106 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AdminFormSection(
-                title: context.l10n.productImages,
-                icon: Icons.photo_library_rounded,
-                child: _imageSection(),
-              ),
-
-              AdminFormSection(
-                title: context.l10n.generalInfo,
-                icon: Icons.info_rounded,
-                child: Column(
-                  children: [
-                    AdminFormField(
-                        controller: _name,
-                        label: context.l10n.productNameLabel,
-                        icon: Icons.shopping_bag_rounded),
-                    AdminFormField(
-                        controller: _price,
-                        label: context.l10n.price,
-                        icon: Icons.attach_money_rounded,
-                        numeric: true),
-                    AdminFormField(
-                        controller: _desc,
-                        label: context.l10n.descriptionLabel,
-                        icon: Icons.description_rounded,
-                        lines: 3),
-                  ],
-                ),
-              ),
-
-              AdminFormSection(
-                title: context.l10n.category,
-                icon: Icons.category_rounded,
-                child: CategoryFormSelector(
-                  selected: _selectedCategory,
-                  onSelect: (final c) => setState(() => _selectedCategory = c),
-                ),
-              ),
-
-              AdminFormSection(
-                title: context.l10n.statusLabel,
-                icon: Icons.inventory_2_rounded,
-                child: AdminFormSwitch(
-                  title: context.l10n.spotSecondHand,
-                  subtitle: _isSecondHand
-                      ? context.l10n.secondHandHint
-                      : context.l10n.newProductHint,
-                  value: _isSecondHand,
-                  onChanged: (final v) => setState(() => _isSecondHand = v),
-                ),
-              ),
-
-              // Yıpranma seviyesi SADECE ikinci el ürünlerde gösterilir —
-              // vitrindeki "durum rozeti" bu bilgiyi kullanır (bkz.
-              // spot_products_page.dart). Boş bırakılırsa kartta rozet
-              // görünmez, uydurma bir değer ATANMAZ.
-              if (_isSecondHand)
-                AdminFormSection(
-                  title: 'Ürün Durumu',
-                  icon: Icons.fact_check_outlined,
-                  child: WearTierFormSelector(
-                    selected: _selectedWearTier,
-                    onSelect: (final t) => setState(() => _selectedWearTier = t),
+          child: Center(
+            child: ConstrainedBox(
+              // Geniş masaüstü pencerelerinde form tüm ekrana yayılıp
+              // okunması zorlaşmasın diye — telefon genişliğinde zaten
+              // etkisiz (ekran ondan dar).
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AdminFormSection(
+                    title: context.l10n.productImages,
+                    icon: Icons.photo_library_rounded,
+                    child: _imageSection(),
                   ),
-                ),
 
-              // Renk seçenekleri SADECE sıfır ürünlerde gösterilir — ikinci el
-              // ürünlerde tek bir fiziksel parça satıldığı için anlamsız olur
-              // (bkz. product_color_section.dart, vitrin tarafındaki aynı mantık).
-              if (!_isSecondHand)
-                AdminFormSection(
-                  title: context.l10n.colorOptionsOptional,
-                  icon: Icons.palette_rounded,
-                  child: ColorVariantPicker(
-                    selectedHexColors: _selectedColors,
-                    onChanged: (final colors) =>
-                        setState(() => _selectedColors = colors),
+                  AdminFormSection(
+                    title: context.l10n.generalInfo,
+                    icon: Icons.info_rounded,
+                    child: Column(
+                      children: [
+                        AdminFormField(
+                            controller: _name,
+                            label: context.l10n.productNameLabel,
+                            icon: Icons.shopping_bag_rounded),
+                        AdminFormField(
+                            controller: _price,
+                            label: context.l10n.price,
+                            icon: Icons.attach_money_rounded,
+                            numeric: true),
+                        AdminFormField(
+                            controller: _desc,
+                            label: context.l10n.descriptionLabel,
+                            icon: Icons.description_rounded,
+                            lines: 3),
+                      ],
+                    ),
                   ),
-                ),
 
-              const SizedBox(height: 8),
-              AdminSubmitButton(
-                label: context.l10n.save,
-                isLoading: mutationState.isLoading,
-                onTap: _submit,
+                  AdminFormSection(
+                    title: context.l10n.category,
+                    icon: Icons.category_rounded,
+                    child: CategoryFormSelector(
+                      selected: _selectedCategory,
+                      onSelect: (final c) =>
+                          setState(() => _selectedCategory = c),
+                    ),
+                  ),
+
+                  AdminFormSection(
+                    title: context.l10n.statusLabel,
+                    icon: Icons.inventory_2_rounded,
+                    child: AdminFormSwitch(
+                      title: context.l10n.spotSecondHand,
+                      subtitle: _isSecondHand
+                          ? context.l10n.secondHandHint
+                          : context.l10n.newProductHint,
+                      value: _isSecondHand,
+                      onChanged: (final v) => setState(() => _isSecondHand = v),
+                    ),
+                  ),
+
+                  // Yıpranma seviyesi SADECE ikinci el ürünlerde gösterilir —
+                  // vitrindeki "durum rozeti" bu bilgiyi kullanır (bkz.
+                  // spot_products_page.dart). Boş bırakılırsa kartta rozet
+                  // görünmez, uydurma bir değer ATANMAZ.
+                  if (_isSecondHand)
+                    AdminFormSection(
+                      title: 'Ürün Durumu',
+                      icon: Icons.fact_check_outlined,
+                      child: WearTierFormSelector(
+                        selected: _selectedWearTier,
+                        onSelect: (final t) =>
+                            setState(() => _selectedWearTier = t),
+                      ),
+                    ),
+
+                  // Renk seçenekleri SADECE sıfır ürünlerde gösterilir — ikinci el
+                  // ürünlerde tek bir fiziksel parça satıldığı için anlamsız olur
+                  // (bkz. product_color_section.dart, vitrin tarafındaki aynı mantık).
+                  if (!_isSecondHand)
+                    AdminFormSection(
+                      title: context.l10n.colorOptionsOptional,
+                      icon: Icons.palette_rounded,
+                      child: ColorVariantPicker(
+                        selectedHexColors: _selectedColors,
+                        onChanged: (final colors) =>
+                            setState(() => _selectedColors = colors),
+                      ),
+                    ),
+
+                  const SizedBox(height: 8),
+                  AdminSubmitButton(
+                    label: context.l10n.save,
+                    isLoading: mutationState.isLoading,
+                    onTap: _submit,
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 24),
-            ],
+            ),
           ),
         ),
       ),
@@ -196,7 +209,9 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   // ---------------- ACTIONS ----------------
 
   Future<void> _submit() async {
-    if (_name.text.trim().isEmpty || _price.text.trim().isEmpty || _images.isEmpty) {
+    if (_name.text.trim().isEmpty ||
+        _price.text.trim().isEmpty ||
+        _images.isEmpty) {
       _snack(context.l10n.fillRequiredFields, error: true);
       return;
     }
@@ -246,7 +261,9 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         content: Row(
           children: [
             const SizedBox(
-                width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4)),
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(strokeWidth: 2.4)),
             const SizedBox(width: 16),
             Expanded(child: Text(context.l10n.studioPreparingWait)),
           ],
@@ -260,7 +277,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   // ---------------- UI HELPERS ----------------
 
   Widget _imageSection() {
-    final showStudioTile = _isGeneratingStudio || _studioImageUrl != null || _studioFailed;
+    final showStudioTile =
+        _isGeneratingStudio || _studioImageUrl != null || _studioFailed;
     final itemCount = _images.length + (showStudioTile ? 1 : 0) + 1;
 
     return SizedBox(
@@ -326,7 +344,10 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       _isGeneratingStudio = true;
       _studioFailed = false;
     });
-    _studioFuture = _images.first.readAsBytes().then(StudioImageService.generate).then((final outcome) {
+    _studioFuture = _images.first
+        .readAsBytes()
+        .then(StudioImageService.generate)
+        .then((final outcome) {
       if (!mounted) return;
       setState(() {
         _isGeneratingStudio = false;
@@ -337,7 +358,9 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           _studioImageUrl = null;
           _studioFailed = true;
           if (outcome.errorMessage != null) {
-            _snack('${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}', error: true);
+            _snack(
+                '${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}',
+                error: true);
           }
         } else {
           // Kota doldu — sessizce (StudioQuotaExceededNotice zaten kaydet
@@ -349,7 +372,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     });
   }
 
-  void _snack(final String msg, {final bool success = false, final bool error = false}) {
+  void _snack(final String msg,
+      {final bool success = false, final bool error = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: success

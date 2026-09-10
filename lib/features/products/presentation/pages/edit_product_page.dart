@@ -73,7 +73,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
     if (_currentProduct != null) {
       _nameController = TextEditingController(text: _currentProduct!.name);
-      _priceController = TextEditingController(text: _currentProduct!.price.toString());
+      _priceController =
+          TextEditingController(text: _currentProduct!.price.toString());
       _descController = TextEditingController(text: _currentProduct!.desc);
       _isSold = _currentProduct!.isSold;
       _isSpotProduct = _currentProduct!.isSpotProduct;
@@ -121,94 +122,103 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AdminFormSection(
-                    title: context.l10n.productImages,
-                    icon: Icons.photo_library_rounded,
-                    child: _buildImagePreview(),
-                  ),
-                  AdminFormSection(
-                    title: context.l10n.generalInfo,
-                    icon: Icons.info_rounded,
-                    child: Column(
-                      children: [
-                        AdminFormField(
-                            controller: _nameController,
-                            label: context.l10n.productNameLabel,
-                            icon: Icons.shopping_bag_rounded),
-                        AdminFormField(
-                            controller: _priceController,
-                            label: context.l10n.price,
-                            icon: Icons.attach_money_rounded,
-                            numeric: true),
-                        AdminFormField(
-                            controller: _descController,
-                            label: context.l10n.descriptionLabel,
-                            icon: Icons.description_rounded,
-                            lines: 3),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  AdminFormSection(
-                    title: context.l10n.category,
-                    icon: Icons.category_rounded,
-                    child: CategoryFormSelector(
-                      selected: _selectedCategory,
-                      onSelect: (final c) => setState(() => _selectedCategory = c),
-                    ),
-                  ),
-                  AdminFormSection(
-                    title: context.l10n.statusLabel,
-                    icon: Icons.inventory_2_rounded,
-                    child: Column(
-                      children: [
-                        AdminFormSwitch(
-                          title: context.l10n.sold,
-                          value: _isSold,
-                          onChanged: (final v) => setState(() => _isSold = v),
-                        ),
-                        const Divider(height: 20),
-                        AdminFormSwitch(
-                          title: context.l10n.spotSecondHand,
-                          subtitle: _isSpotProduct
-                              ? context.l10n.secondHandHint
-                              : context.l10n.newProductHint,
-                          value: _isSpotProduct,
-                          onChanged: (final v) => setState(() => _isSpotProduct = v),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (_isSpotProduct)
-                    AdminFormSection(
-                      title: 'Ürün Durumu',
-                      icon: Icons.fact_check_outlined,
-                      child: WearTierFormSelector(
-                        selected: _selectedWearTier,
-                        onSelect: (final t) => setState(() => _selectedWearTier = t),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 720),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AdminFormSection(
+                        title: context.l10n.productImages,
+                        icon: Icons.photo_library_rounded,
+                        child: _buildImagePreview(),
                       ),
-                    ),
-                  if (!_isSpotProduct)
-                    AdminFormSection(
-                      title: context.l10n.colorOptionsOptional,
-                      icon: Icons.palette_rounded,
-                      child: ColorVariantPicker(
-                        selectedHexColors: _selectedColors,
-                        onChanged: (final colors) =>
-                            setState(() => _selectedColors = colors),
+                      AdminFormSection(
+                        title: context.l10n.generalInfo,
+                        icon: Icons.info_rounded,
+                        child: Column(
+                          children: [
+                            AdminFormField(
+                                controller: _nameController,
+                                label: context.l10n.productNameLabel,
+                                icon: Icons.shopping_bag_rounded),
+                            AdminFormField(
+                                controller: _priceController,
+                                label: context.l10n.price,
+                                icon: Icons.attach_money_rounded,
+                                numeric: true),
+                            AdminFormField(
+                                controller: _descController,
+                                label: context.l10n.descriptionLabel,
+                                icon: Icons.description_rounded,
+                                lines: 3),
+                          ],
+                        ),
                       ),
-                    ),
-                  const SizedBox(height: 8),
-                  AdminSubmitButton(
-                    label: context.l10n.saveChanges,
-                    isLoading: mutationState.isLoading,
-                    onTap: _handleUpdate,
+                      const SizedBox(height: 16),
+                      AdminFormSection(
+                        title: context.l10n.category,
+                        icon: Icons.category_rounded,
+                        child: CategoryFormSelector(
+                          selected: _selectedCategory,
+                          onSelect: (final c) =>
+                              setState(() => _selectedCategory = c),
+                        ),
+                      ),
+                      AdminFormSection(
+                        title: context.l10n.statusLabel,
+                        icon: Icons.inventory_2_rounded,
+                        child: Column(
+                          children: [
+                            AdminFormSwitch(
+                              title: context.l10n.sold,
+                              value: _isSold,
+                              onChanged: (final v) =>
+                                  setState(() => _isSold = v),
+                            ),
+                            const Divider(height: 20),
+                            AdminFormSwitch(
+                              title: context.l10n.spotSecondHand,
+                              subtitle: _isSpotProduct
+                                  ? context.l10n.secondHandHint
+                                  : context.l10n.newProductHint,
+                              value: _isSpotProduct,
+                              onChanged: (final v) =>
+                                  setState(() => _isSpotProduct = v),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_isSpotProduct)
+                        AdminFormSection(
+                          title: 'Ürün Durumu',
+                          icon: Icons.fact_check_outlined,
+                          child: WearTierFormSelector(
+                            selected: _selectedWearTier,
+                            onSelect: (final t) =>
+                                setState(() => _selectedWearTier = t),
+                          ),
+                        ),
+                      if (!_isSpotProduct)
+                        AdminFormSection(
+                          title: context.l10n.colorOptionsOptional,
+                          icon: Icons.palette_rounded,
+                          child: ColorVariantPicker(
+                            selectedHexColors: _selectedColors,
+                            onChanged: (final colors) =>
+                                setState(() => _selectedColors = colors),
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      AdminSubmitButton(
+                        label: context.l10n.saveChanges,
+                        isLoading: mutationState.isLoading,
+                        onTap: _handleUpdate,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                ],
+                ),
               ),
             ),
           ),
@@ -219,8 +229,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   Widget _buildImagePreview() {
     final bool usingNew = _newSelectedImages.isNotEmpty;
-    final bool showStudioTile =
-        usingNew && (_isGeneratingStudio || _studioImageUrl != null || _studioFailed);
+    final bool showStudioTile = usingNew &&
+        (_isGeneratingStudio || _studioImageUrl != null || _studioFailed);
     final int existingCount = usingNew ? 0 : _currentProduct!.imagesUrl.length;
     final int baseCount = usingNew ? _newSelectedImages.length : existingCount;
     final int itemCount = baseCount + (showStudioTile ? 1 : 0) + 1;
@@ -251,8 +261,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
             }
             return PhotoThumbnail(
               image: NetworkImage(_currentProduct!.imagesUrl[i]),
-              onDelete: () => setState(
-                  () => _currentProduct = _currentProduct!.copyWith(
+              onDelete: () => setState(() => _currentProduct = _currentProduct!
+                  .copyWith(
                       imagesUrl: [..._currentProduct!.imagesUrl]..removeAt(i))),
             );
           }
@@ -297,8 +307,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       _isGeneratingStudio = true;
       _studioFailed = false;
     });
-    _studioFuture =
-        _bytesOf(_newSelectedImages.first).then(StudioImageService.generate).then((final outcome) {
+    _studioFuture = _bytesOf(_newSelectedImages.first)
+        .then(StudioImageService.generate)
+        .then((final outcome) {
       if (!mounted) return;
       setState(() {
         _isGeneratingStudio = false;
@@ -311,7 +322,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           if (outcome.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               backgroundColor: AppColors.error,
-              content: Text('${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}'),
+              content: Text(
+                  '${context.l10n.studioGenerationFailed}: ${outcome.errorMessage}'),
             ));
           }
         } else {
@@ -330,7 +342,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
         content: Row(
           children: [
             const SizedBox(
-                width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4)),
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(strokeWidth: 2.4)),
             const SizedBox(width: 16),
             Expanded(child: Text(context.l10n.studioPreparingWait)),
           ],
@@ -366,8 +380,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       // Yeni fotoğraf seçilmediyse mevcut stüdyo görselini koru (alan
       // belirtilmezse copyWith zaten eskisini tutar); seçildiyse yeni
       // üretilen (veya üretilemediyse boş) versiyonla değiştir.
-      studioImagesUrl:
-          pickedNewImages ? (_studioImageUrl != null ? [_studioImageUrl!] : const []) : null,
+      studioImagesUrl: pickedNewImages
+          ? (_studioImageUrl != null ? [_studioImageUrl!] : const [])
+          : null,
     );
 
     await ref.read(productMutationProvider.notifier).updateProduct(
