@@ -11,7 +11,7 @@ import '../../features/auth/presentation/page/login_page.dart';
 import '../../features/auth/presentation/provider/auth_provider_notifier.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
 import '../../features/products/presentation/pages/favorites_page.dart';
-import '../../features/home/presentation/page/home_page_mobile.dart'
+import '../../features/home/presentation/page/admin_dashboard_page.dart'
     deferred as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
 import '../../features/info/presentation/pages/about_page.dart';
@@ -331,7 +331,7 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
           // parçaya (chunk) alınır.
           child: DeferredWidget(
             libraryLoader: admin.loadLibrary,
-            builder: (final context) => admin.HomePage(),
+            builder: (final context) => admin.AdminDashboardPage(),
           ),
           transitionsBuilder: focalTransition,
           transitionDuration: const Duration(milliseconds: 400),

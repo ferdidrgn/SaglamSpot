@@ -18,17 +18,17 @@ import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_mutation_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 
-/// Mobil Yönetici Paneli — Ana Sayfa. Stok/satılan ürünleri yönetmek için
-/// kategoriye göre filtrelenebilir, hızlı özet istatistikli bir kontrol
-/// paneli.
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+/// Yönetici (Esnaf) Paneli — Kontrol Odası. Stok/satılan ürünleri yönetmek
+/// için kategoriye göre filtrelenebilir, hızlı özet istatistikli bir
+/// kontrol paneli.
+class AdminDashboardPage extends ConsumerStatefulWidget {
+  const AdminDashboardPage({super.key});
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageState();
+  ConsumerState<AdminDashboardPage> createState() => _AdminDashboardPageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage>
+class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController = TabController(length: 2, vsync: this);
   ProductCategory? _selectedCategory;
