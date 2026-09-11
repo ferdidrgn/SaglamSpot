@@ -16,6 +16,7 @@ import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
+import '../../../../core/widgets/design_system/section_heading.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -243,30 +244,10 @@ class HomeStorePage extends ConsumerWidget {
       {final VoidCallback? onSeeAll}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 22, 20, 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              color: AppColors.mobileTextPrimary,
-            ),
-          ),
-          if (onSeeAll != null)
-            GestureDetector(
-              onTap: onSeeAll,
-              child: Text(
-                context.l10n.seeAll,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.mobilePrimary,
-                ),
-              ),
-            ),
-        ],
+      child: SectionHeading(
+        title: title,
+        color: AppColors.mobilePrimary,
+        onSeeAll: onSeeAll,
       ),
     );
   }
@@ -395,8 +376,8 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                                       ? 0
                                       : 5),
                               decoration: BoxDecoration(
-                                color: Colors.white
-                                    .withOpacity(i <= _currentPage ? 0.95 : 0.35),
+                                color: Colors.white.withOpacity(
+                                    i <= _currentPage ? 0.95 : 0.35),
                                 borderRadius: BorderRadius.circular(3),
                               ),
                             ),
@@ -488,8 +469,7 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                                           fontSize: 13,
                                           color: AppColors.mobileTextPrimary)),
                                   const SizedBox(height: 2),
-                                  Text(
-                                      '${spotlight.price.toStringAsFixed(0)}₺',
+                                  Text('${spotlight.price.toStringAsFixed(0)}₺',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w800,
                                           fontSize: 13,
@@ -520,7 +500,6 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                           ],
                         ),
                       ),
-
                     ),
                   ),
                 // Sahne değiştirme — dairesel önizlemeler (referanstaki
@@ -725,8 +704,7 @@ class _ProductListRow extends ConsumerWidget {
             top: -4,
             right: -4,
             child: GestureDetector(
-              onTap: () =>
-                  ref.read(favoritesProvider.notifier).toggle(product),
+              onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
               child: Container(
                 width: 30,
                 height: 30,
@@ -752,15 +730,15 @@ class _ProductListRow extends ConsumerWidget {
                         : Icons.favorite_border_rounded,
                     key: ValueKey(isFavorite),
                     size: 16,
-                    color:
-                        isFavorite ? AppColors.error : AppColors.mobileTextTertiary,
+                    color: isFavorite
+                        ? AppColors.error
+                        : AppColors.mobileTextTertiary,
                   ),
                 ),
               ),
             ),
           ),
         ],
-
       ),
     );
   }
@@ -1032,7 +1010,8 @@ class _MobileCatalogGateway extends ConsumerWidget {
               accent: NewCollectionPalette.accent,
               headingFontFamily: NewCollectionPalette.headingFont,
               icon: Icons.chair_rounded,
-              onTap: () => NavigationHandler.goToDiscover(context, isSpot: false),
+              onTap: () =>
+                  NavigationHandler.goToDiscover(context, isSpot: false),
             ),
           ),
           const SizedBox(width: 12),
@@ -1048,7 +1027,8 @@ class _MobileCatalogGateway extends ConsumerWidget {
               accent: SpotPalette.accent,
               headingFontFamily: null,
               icon: Icons.local_offer_rounded,
-              onTap: () => NavigationHandler.goToDiscover(context, isSpot: true),
+              onTap: () =>
+                  NavigationHandler.goToDiscover(context, isSpot: true),
             ),
           ),
         ],

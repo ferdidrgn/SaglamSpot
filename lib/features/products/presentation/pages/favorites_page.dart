@@ -28,9 +28,8 @@ class FavoritesPage extends ConsumerWidget {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
-      floatingActionButton: !kIsWeb && favorites.isNotEmpty
-          ? const WhatsAppQuickFab()
-          : null,
+      floatingActionButton:
+          !kIsWeb && favorites.isNotEmpty ? const WhatsAppQuickFab() : null,
       body: SafeArea(
         child: Column(
           children: [
@@ -40,7 +39,8 @@ class FavoritesPage extends ConsumerWidget {
                 children: [
                   IconButton(
                     onPressed: () => NavigationHandler.smartGoBack(context),
-                    icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
+                    icon: Icon(Icons.arrow_back_rounded,
+                        color: AppColors.mobileTextPrimary),
                   ),
                   Expanded(
                     child: Text(context.l10n.favoritesTitle,
@@ -58,7 +58,8 @@ class FavoritesPage extends ConsumerWidget {
                   : (kIsWeb
                       ? GridView.builder(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 12,
                             mainAxisSpacing: 12,
@@ -97,18 +98,24 @@ class FavoritesPage extends ConsumerWidget {
               Container(
                 width: 96,
                 height: 96,
-                decoration: BoxDecoration(color: AppColors.mobileCardBg, shape: BoxShape.circle),
-                child: Icon(Icons.favorite_border_rounded, size: 40, color: AppColors.mobileMutedDark),
+                decoration: BoxDecoration(
+                    color: AppColors.mobileCardBg, shape: BoxShape.circle),
+                child: Icon(Icons.favorite_border_rounded,
+                    size: 40, color: AppColors.mobileMutedDark),
               ),
               const SizedBox(height: 20),
               Text(context.l10n.favoritesEmptyTitle,
                   style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary)),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.mobileTextPrimary)),
               const SizedBox(height: 8),
               Text(context.l10n.favoritesEmptyDesc,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 13.5, color: AppColors.mobileTextSecondary, height: 1.5)),
+                      fontSize: 13.5,
+                      color: AppColors.mobileTextSecondary,
+                      height: 1.5)),
             ],
           ),
         ),
@@ -157,9 +164,16 @@ class _FavoriteSwipeRow extends ConsumerWidget {
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(5),
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(16),
+                ),
                 child: OptimizedCachedImage(
-                  imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                  imageUrl: product.imagesUrl.isNotEmpty
+                      ? product.imagesUrl.first
+                      : '',
                   width: 68,
                   height: 68,
                   fit: BoxFit.cover,
@@ -223,7 +237,8 @@ class _FavoriteCard extends ConsumerWidget {
   const _FavoriteCard({required this.product});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) => GestureDetector(
+  Widget build(final BuildContext context, final WidgetRef ref) =>
+      GestureDetector(
         onTap: () => NavigationHandler.goToProduct(
           context: context,
           productId: product.id,
@@ -232,7 +247,13 @@ class _FavoriteCard extends ConsumerWidget {
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.mobileSurface,
-            borderRadius: BorderRadius.circular(18),
+            // CustomProductCard'la aynı asimetrik köşe imzası.
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(6),
+              topRight: Radius.circular(22),
+              bottomLeft: Radius.circular(6),
+              bottomRight: Radius.circular(6),
+            ),
             border: Border.all(color: AppColors.mobileBorder),
           ),
           child: Column(
@@ -242,9 +263,14 @@ class _FavoriteCard extends ConsumerWidget {
                 child: Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(21),
+                      ),
                       child: OptimizedCachedImage(
-                        imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                        imageUrl: product.imagesUrl.isNotEmpty
+                            ? product.imagesUrl.first
+                            : '',
                         width: double.infinity,
                         height: double.infinity,
                         borderRadius: 0,
@@ -253,17 +279,20 @@ class _FavoriteCard extends ConsumerWidget {
                     ),
                     if (product.isSold)
                       Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
+                        top: 0,
+                        left: 0,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(14)),
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(9, 6, 8, 7),
                             color: AppColors.error,
-                            borderRadius: BorderRadius.circular(20),
+                            child: Text(context.l10n.sold.toUpperCase(),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w800)),
                           ),
-                          child: Text(context.l10n.sold,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800)),
                         ),
                       ),
                     Positioned(
@@ -274,10 +303,13 @@ class _FavoriteCard extends ConsumerWidget {
                         shape: const CircleBorder(),
                         child: InkWell(
                           customBorder: const CircleBorder(),
-                          onTap: () => ref.read(favoritesProvider.notifier).remove(product.id),
+                          onTap: () => ref
+                              .read(favoritesProvider.notifier)
+                              .remove(product.id),
                           child: const Padding(
                             padding: EdgeInsets.all(6),
-                            child: Icon(Icons.favorite_rounded, size: 16, color: Colors.white),
+                            child: Icon(Icons.favorite_rounded,
+                                size: 16, color: Colors.white),
                           ),
                         ),
                       ),

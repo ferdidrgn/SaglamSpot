@@ -14,6 +14,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
+import '../../../../core/widgets/design_system/section_heading.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
@@ -852,53 +853,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: color.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    title.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: context.responsive(
-                          mobile: 16.0, tablet: 18.0, desktop: 22.0),
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      height: 1,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            color.withOpacity(0.5),
-                            color.withOpacity(0.0),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              SectionHeading(title: title, color: color),
               const SizedBox(height: 6),
               Padding(
-                padding: const EdgeInsets.only(left: 52),
+                padding: const EdgeInsets.only(left: 25),
                 child: Text(
                   context.l10n.pieces(count),
                   style: TextStyle(

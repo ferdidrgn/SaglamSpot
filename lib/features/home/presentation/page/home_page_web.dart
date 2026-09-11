@@ -11,6 +11,7 @@ import 'package:saglamspot/core/widgets/design_system/hud_corner_frame.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
 import 'package:saglamspot/core/widgets/design_system/kinetic_beam_skeleton.dart';
 import 'package:saglamspot/core/widgets/design_system/reveal_fade.dart';
+import 'package:saglamspot/core/widgets/design_system/section_heading.dart';
 import 'package:saglamspot/core/widgets/design_system/tactile_press.dart';
 import 'package:saglamspot/core/widgets/google_maps_embed.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
@@ -559,7 +560,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       offset: const Offset(0, 6)),
                 ],
               ),
-              child: Icon(icon, color: Colors.white, size: context.iconMedium * 0.62),
+              child: Icon(icon,
+                  color: Colors.white, size: context.iconMedium * 0.62),
             ),
             const SizedBox(width: 12),
             Flexible(
@@ -622,22 +624,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         child: Padding(
           padding: context.pagePadding.copyWith(
               top: context.spacingLarge, bottom: context.spacingLarge * 0.6),
-          child: Column(
-            children: [
-              Text(context.l10n.showcaseEyebrow,
-                  style: AppTextStyles.microLabel(
-                      color: AppColors.accent,
-                      letterSpacing: 3,
-                      fontSize: context.captionSize)),
-              const SizedBox(height: 8),
-              Text(context.l10n.newCollection,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontFamily: 'Fraunces',
-                      fontSize: context.h2Size,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary)),
-            ],
+          child: SectionHeading(
+            eyebrow: context.l10n.showcaseEyebrow,
+            title: context.l10n.newCollection,
           ),
         ),
       );

@@ -45,6 +45,14 @@ class ProductDetailPage extends ConsumerStatefulWidget {
   ConsumerState<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
+/// Uygulamanın tek asimetrik köşe imzası — CustomProductCard'la aynı.
+const BorderRadius _galleryShape = BorderRadius.only(
+  topLeft: Radius.circular(8),
+  topRight: Radius.circular(34),
+  bottomLeft: Radius.circular(34),
+  bottomRight: Radius.circular(8),
+);
+
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     with TickerProviderStateMixin {
   int _selectedImageIndex = 0;
@@ -337,7 +345,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             decoration: BoxDecoration(
               color: _pc(context,
                   mobile: AppColors.mobileSurface, web: AppColors.surface),
-              borderRadius: BorderRadius.circular(28),
+              // Kartlarla (CustomProductCard) aynı asimetrik köşe imzası.
+              borderRadius: _galleryShape,
               boxShadow: [
                 BoxShadow(
                   color: _pc(context,
@@ -352,7 +361,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: _galleryShape,
                   child: Hero(
                     tag: 'product-${product.id}',
                     child: PageView.builder(
@@ -387,17 +396,18 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                 ),
 
-                // Durum rozeti — sade, tek renk, ürünün gerçek durumunu yansıtır.
+                // Durum etiketi — kartlarla aynı, keskin köşeye flush oturan
+                // imza (bkz. CustomProductCard'daki köşe etiketi).
                 Positioned(
-                  top: 18,
-                  left: 18,
+                  top: 0,
+                  left: 0,
                   child: _StatusPill(product: product),
                 ),
 
                 if (product.isSold)
                   Positioned.fill(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: _galleryShape,
                       child: Container(
                         color: Colors.black.withOpacity(0.45),
                         alignment: Alignment.center,
@@ -1342,35 +1352,37 @@ class _StatusPill extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final bool spot = product.isSpotProduct;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: (spot
-                ? _pc(context,
-                    mobile: AppColors.mobileAccentDark,
-                    web: AppColors.accentDark)
-                : AppColors.success)
-            .withOpacity(0.95),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            spot ? Icons.inventory_2_rounded : Icons.new_releases_rounded,
-            size: 12,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            spot ? context.l10n.usedProductBadge : context.l10n.newProductBadge,
-            style: const TextStyle(
-                fontSize: 10.5,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                letterSpacing: 0.8),
-          ),
-        ],
+    final Color color = spot
+        ? _pc(context,
+            mobile: AppColors.mobileAccentDark, web: AppColors.accentDark)
+        : AppColors.success;
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(18)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 9, 12, 10),
+        color: color,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              spot ? Icons.inventory_2_rounded : Icons.new_releases_rounded,
+              size: 12,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              (spot
+                      ? context.l10n.usedProductBadge
+                      : context.l10n.newProductBadge)
+                  .toUpperCase(),
+              style: const TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.6),
+            ),
+          ],
+        ),
       ),
     );
   }

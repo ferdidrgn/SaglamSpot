@@ -30,7 +30,8 @@ class AdminDashboardPage extends ConsumerStatefulWidget {
 
 class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabController = TabController(length: 2, vsync: this);
+  late final TabController _tabController =
+      TabController(length: 2, vsync: this);
   ProductCategory? _selectedCategory;
 
   @override
@@ -49,16 +50,17 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     final inStock = ref.watch(availableProductsProvider);
     final sold = ref.watch(soldProductsProvider);
 
-    List<Product> filtered(final List<Product> list) => _selectedCategory == null
-        ? list
-        : list.where((final p) => p.category == _selectedCategory).toList();
+    List<Product> filtered(final List<Product> list) =>
+        _selectedCategory == null
+            ? list
+            : list.where((final p) => p.category == _selectedCategory).toList();
 
     return Scaffold(
       backgroundColor: AppColors.mobileBackground,
       appBar: _buildAppBar(context),
       body: productsAsync.when(
-        loading: () =>
-            Center(child: CircularProgressIndicator(color: AppColors.mobileAccent)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: AppColors.mobileAccent)),
         error: (final e, final _) => Center(child: Text('Hata: $e')),
         data: (final _) => Column(
           children: [
@@ -120,19 +122,22 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
       context: context,
       builder: (final context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(context.l10n.brand, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(context.l10n.brand,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         content: Text(context.l10n.logoutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(context.l10n.cancel, style: const TextStyle(color: Colors.grey)),
+            child: Text(context.l10n.cancel,
+                style: const TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: Text(context.l10n.logout),
           ),
@@ -201,7 +206,10 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
             unselectedLabelStyle:
                 const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             dividerColor: Colors.transparent,
-            tabs: [_buildTab(context.l10n.stock, stock), _buildTab(context.l10n.sold, sold)],
+            tabs: [
+              _buildTab(context.l10n.stock, stock),
+              _buildTab(context.l10n.sold, sold)
+            ],
           ),
         ),
       );
@@ -220,20 +228,22 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(count.toString(),
-                  style:
-                      const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      fontSize: 11, fontWeight: FontWeight.bold)),
             ),
           ],
         ),
       );
 
-  Widget _buildAddButton(final BuildContext context) => FloatingActionButton.extended(
+  Widget _buildAddButton(final BuildContext context) =>
+      FloatingActionButton.extended(
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (final _) => const AddProductPage())),
         backgroundColor: AppColors.mobileAccent,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: Text(context.l10n.addProductFab,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold)),
       );
 }
 
@@ -280,10 +290,12 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(value,
                 style: TextStyle(
-                    fontSize: 17, fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
                     color: AppColors.mobileTextPrimary)),
             Text(label,
-                style: TextStyle(fontSize: 10.5, color: AppColors.mobileTextTertiary)),
+                style: TextStyle(
+                    fontSize: 10.5, color: AppColors.mobileTextTertiary)),
           ],
         ),
       );
@@ -301,7 +313,8 @@ class _ProductGrid extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.inbox_rounded, size: 48, color: AppColors.mobileTextTertiary),
+            Icon(Icons.inbox_rounded,
+                size: 48, color: AppColors.mobileTextTertiary),
             const SizedBox(height: 10),
             Text(context.l10n.emptyCategoryProducts,
                 style: TextStyle(color: AppColors.mobileTextTertiary)),
@@ -360,39 +373,48 @@ class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
         scale: _isPressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: 120),
         child: Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: AppColors.mobileCardBg,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-              color: AppColors.mobilePrimary.withOpacity(0.10),
-              blurRadius: 24,
-              offset: const Offset(0, 12)),
-          BoxShadow(
-              color: AppColors.mobileTextPrimary.withOpacity(0.04),
-              blurRadius: 6,
-              offset: const Offset(0, 2)),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: _ImageArea(product: product)),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _InfoArea(product: product),
-                const SizedBox(height: 8),
-                _ActionBar(product: product),
-              ],
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: AppColors.mobileCardBg,
+            // Müşteri tarafındaki kartlarla (CustomProductCard) AYNI
+            // asimetrik köşe imzası — kontrol odası da uygulamanın geri
+            // kalanıyla aynı görsel dili konuşuyor.
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(28),
+              bottomLeft: Radius.circular(28),
+              bottomRight: Radius.circular(8),
             ),
+            boxShadow: [
+              BoxShadow(
+                  color: AppColors.mobilePrimary.withOpacity(0.10),
+                  blurRadius: 24,
+                  offset: const Offset(0, 12)),
+              BoxShadow(
+                  color: AppColors.mobileTextPrimary.withOpacity(0.04),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2)),
+            ],
           ),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: _ImageArea(product: product)),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _InfoArea(product: product),
+                    const SizedBox(height: 8),
+                    _ActionBar(product: product),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -430,7 +452,7 @@ class _ImageArea extends ConsumerWidget {
                         size: 48, color: AppColors.mobileTextTertiary),
                   ),
           ),
-          Positioned(top: 10, left: 10, child: _StatusBadge(product: product)),
+          Positioned(top: 0, left: 0, child: _StatusBadge(product: product)),
         ],
       );
 }
@@ -451,7 +473,9 @@ class _InfoArea extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.mobileTextPrimary),
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+              color: AppColors.mobileTextPrimary),
         ),
         const SizedBox(height: 4),
         Row(
@@ -477,7 +501,9 @@ class _InfoArea extends StatelessWidget {
         Text(
           '${product.price.toStringAsFixed(0)} ₺',
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.mobilePrimary),
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              color: AppColors.mobilePrimary),
         ),
       ],
     );
@@ -543,17 +569,20 @@ class _ActionBar extends ConsumerWidget {
       builder: (final _) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: Text(context.l10n.deleteProductTitle),
-        content: Text('${product.name} ${context.l10n.deleteProductConfirmSuffix}'),
+        content:
+            Text('${product.name} ${context.l10n.deleteProductConfirmSuffix}'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: Text(context.l10n.cancel)),
+              onPressed: () => Navigator.pop(context),
+              child: Text(context.l10n.cancel)),
           TextButton(
             onPressed: () {
               ref.read(productMutationProvider.notifier).delete(product.id);
               Navigator.pop(context);
             },
             child: Text(context.l10n.yesDelete,
-                style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: AppColors.error, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -568,18 +597,24 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        gradient: product.isSold
-            ? AppColors.mobilePrimaryGradient
-            : AppColors.mobileAccentGradient,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        product.isSold ? context.l10n.sold : context.l10n.stock,
-        style: const TextStyle(
-            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(14)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 7, 11, 8),
+        decoration: BoxDecoration(
+          gradient: product.isSold
+              ? AppColors.mobilePrimaryGradient
+              : AppColors.mobileAccentGradient,
+        ),
+        child: Text(
+          (product.isSold ? context.l10n.sold : context.l10n.stock)
+              .toUpperCase(),
+          style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.4),
+        ),
       ),
     );
   }

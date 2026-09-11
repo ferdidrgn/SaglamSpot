@@ -14,13 +14,12 @@ import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/favorites_provider.dart';
 
-/// Search sayfasının IZGARA görünümü için, referans "The Shop" tasarımından
-/// esinlenen sade/temiz kart: büyük görsel üstte, kalp (favori) ve paylaş
-/// ikonları görselin üstünde — ama ikisi de GERÇEK işlev yapıyor (sahte
-/// dekor değil). Altta isim/kategori/fiyat + bizim gerçek rozetlerimiz
-/// (Sıfır/İkinci El, yıpranma seviyesi). Yalnızca search sayfasında
-/// kullanılır — CustomProductCard (home/new/spot'ta kullanılan paylaşılan
-/// kart) BİLEREK değiştirilmedi.
+/// Arama sayfasının IZGARA kartı — uygulamanın yeni asimetrik köşe/camsı
+/// taban şeridi diliyle (bkz. CustomProductCard) hizalandı: görsel artık
+/// kartın tamamını kaplıyor, isim/kategori/fiyat görselin üstündeki camsı
+/// bir şeritte. Favori ve paylaş burada GERÇEK işlevli kalmaya devam
+/// ediyor (CustomProductCard'ta bilerek yok) — arama sonuçlarında hızlı
+/// favorileme beklenen bir davranış.
 class SearchProductGridCard extends ConsumerStatefulWidget {
   const SearchProductGridCard({super.key, required this.product});
 
@@ -33,6 +32,13 @@ class SearchProductGridCard extends ConsumerStatefulWidget {
 
 class _SearchProductGridCardState extends ConsumerState<SearchProductGridCard> {
   bool _isHovered = false;
+
+  static const BorderRadius _shape = BorderRadius.only(
+    topLeft: Radius.circular(30),
+    topRight: Radius.circular(8),
+    bottomLeft: Radius.circular(8),
+    bottomRight: Radius.circular(30),
+  );
 
   @override
   Widget build(final BuildContext context) {
@@ -57,136 +63,149 @@ class _SearchProductGridCardState extends ConsumerState<SearchProductGridCard> {
               ? (Matrix4.identity()..translate(0.0, -3.0))
               : Matrix4.identity(),
           decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.border.withOpacity(0.6)),
+            borderRadius: _shape,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.08 : 0.04),
-                blurRadius: _isHovered ? 18 : 10,
-                offset: Offset(0, _isHovered ? 10 : 5),
+                color: Colors.black.withOpacity(_isHovered ? 0.14 : 0.08),
+                blurRadius: _isHovered ? 22 : 14,
+                offset: Offset(0, _isHovered ? 12 : 6),
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(17)),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Container(color: AppColors.secondary),
-                      if (product.imagesUrl.isNotEmpty)
-                        OptimizedCachedImage(
-                          imageUrl: product.imagesUrl.first,
-                          fit: BoxFit.cover,
-                          borderRadius: 0,
-                        )
-                      else
-                        Center(
-                            child: Icon(Icons.chair_rounded,
-                                size: 36, color: AppColors.textTertiary)),
-                      Positioned(
-                        top: 10,
-                        left: 10,
-                        child: _ConditionPill(
-                            isSpotProduct: product.isSpotProduct),
-                      ),
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: Column(
-                          children: [
-                            _RoundGlassButton(
-                              icon: isFavorite
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_rounded,
-                              iconColor: isFavorite ? SpotPalette.accent : null,
-                              onTap: () => ref
-                                  .read(favoritesProvider.notifier)
-                                  .toggle(product),
-                            ),
-                            const SizedBox(height: 6),
-                            _RoundGlassButton(
-                              icon: Icons.ios_share_rounded,
-                              onTap: () => FurnitureShareService.shareProduct(
-                                productId: product.id,
-                                productName: product.name,
-                                price: product.price.toStringAsFixed(0),
-                              ),
-                            ),
+          child: ClipRRect(
+            borderRadius: _shape,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(color: AppColors.secondary),
+                if (product.imagesUrl.isNotEmpty)
+                  OptimizedCachedImage(
+                    imageUrl: product.imagesUrl.first,
+                    fit: BoxFit.cover,
+                    borderRadius: 0,
+                  )
+                else
+                  Center(
+                      child: Icon(Icons.chair_rounded,
+                          size: 36, color: AppColors.textTertiary)),
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.72),
+                            Colors.transparent
                           ],
+                          stops: const [0.0, 0.6],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: _CornerTag(isSpotProduct: product.isSpotProduct),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Column(
+                    children: [
+                      _RoundGlassButton(
+                        icon: isFavorite
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        iconColor: isFavorite ? SpotPalette.accent : null,
+                        onTap: () => ref
+                            .read(favoritesProvider.notifier)
+                            .toggle(product),
+                      ),
+                      const SizedBox(height: 6),
+                      _RoundGlassButton(
+                        icon: Icons.ios_share_rounded,
+                        onTap: () => FurnitureShareService.shareProduct(
+                          productId: product.id,
+                          productName: product.name,
+                          price: product.price.toStringAsFixed(0),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontFamily: 'Fraunces',
-                          color: AppColors.textPrimary,
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 3),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(meta.icon, size: 11, color: meta.color),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            product.category.label(context),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: meta.color,
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (product.isSpotProduct && product.wearTier != null) ...[
+                Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 10,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontFamily: 'Fraunces',
+                            color: Colors.white,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w600),
+                      ),
                       const SizedBox(height: 3),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(product.wearTier!.icon,
-                              size: 11, color: product.wearTier!.color),
+                          Icon(meta.icon, size: 11, color: meta.color),
                           const SizedBox(width: 4),
-                          Text(product.wearTier!.label,
+                          Flexible(
+                            child: Text(
+                              product.category.label(context),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: product.wearTier!.color)),
+                                  color: meta.color,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          if (product.isSpotProduct &&
+                              product.wearTier != null) ...[
+                            const SizedBox(width: 6),
+                            Icon(product.wearTier!.icon,
+                                size: 11, color: Colors.white70),
+                            const SizedBox(width: 3),
+                            Text(product.wearTier!.label,
+                                style: const TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white70)),
+                          ],
                         ],
                       ),
-                    ],
-                    const SizedBox(height: 6),
-                    Text(
-                      '₺${product.price.toStringAsFixed(0)}',
-                      style: TextStyle(
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
                           color: AppColors.accent,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900),
-                    ),
-                  ],
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text(
+                          '₺${product.price.toStringAsFixed(0)}',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -194,8 +213,10 @@ class _SearchProductGridCardState extends ConsumerState<SearchProductGridCard> {
   }
 }
 
-class _ConditionPill extends StatelessWidget {
-  const _ConditionPill({required this.isSpotProduct});
+/// Kartın keskin köşesine flush oturan durum etiketi — CustomProductCard'la
+/// aynı görsel imza.
+class _CornerTag extends StatelessWidget {
+  const _CornerTag({required this.isSpotProduct});
 
   final bool isSpotProduct;
 
@@ -203,22 +224,22 @@ class _ConditionPill extends StatelessWidget {
   Widget build(final BuildContext context) {
     final color =
         isSpotProduct ? SpotPalette.accent : NewCollectionPalette.badgeGreen;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: isSpotProduct ? Colors.white.withOpacity(0.9) : color,
-        borderRadius: BorderRadius.circular(30),
-        border: isSpotProduct ? Border.all(color: color, width: 1.2) : null,
-      ),
-      child: Text(
-        isSpotProduct
-            ? context.l10n.usedProductBadge
-            : context.l10n.productCardNewBadge,
-        style: TextStyle(
-          color: isSpotProduct ? color : Colors.white,
-          fontSize: 10.5,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.4,
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(16)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 8, 12, 9),
+        color: color,
+        child: Text(
+          (isSpotProduct
+                  ? context.l10n.usedProductBadge
+                  : context.l10n.productCardNewBadge)
+              .toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.4,
+          ),
         ),
       ),
     );
@@ -226,8 +247,7 @@ class _ConditionPill extends StatelessWidget {
 }
 
 /// Görselin üstünde yüzen, buzlu-cam hissi veren yuvarlak ikon butonu —
-/// kalp (favori) ve paylaş için. Referans tasarımdaki kalp/sepet
-/// ikonlarının karşılığı, ama GERÇEK işlevle (favorilere ekler/paylaşır).
+/// kalp (favori) ve paylaş için.
 class _RoundGlassButton extends StatelessWidget {
   const _RoundGlassButton({
     required this.icon,

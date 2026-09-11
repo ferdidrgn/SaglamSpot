@@ -130,8 +130,8 @@ class _CartPageState extends ConsumerState<CartPage> {
     // (genelde esnaf) ürünleri mesajdan okuyup tek tek aramak yerine,
     // uygulamada aynı sepeti, gerçek ürün kartlarıyla doğrudan görür (bkz.
     // app_router.dart '/cart').
-    final cartUrl = FurnitureShareService.generateCartUrl(
-        items.map((final i) => (productId: i.product.id, quantity: i.quantity)));
+    final cartUrl = FurnitureShareService.generateCartUrl(items
+        .map((final i) => (productId: i.product.id, quantity: i.quantity)));
     buffer.write(context.l10n.cartWhatsappAllProductsLine(cartUrl));
     SaglamSpotCommunication.launchWhatsApp(message: buffer.toString());
   }
@@ -425,9 +425,8 @@ class _CartItemCard extends ConsumerWidget {
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.sageDark
-                      : AppColors.mobileSurface,
+                  color:
+                      isSelected ? AppColors.sageDark : AppColors.mobileSurface,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
                     color: isSelected
@@ -449,12 +448,22 @@ class _CartItemCard extends ConsumerWidget {
               productId: product.id,
               productSlug: product.name.toSlug(),
             ),
-            child: OptimizedCachedImage(
-              imageUrl:
-                  product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
-              width: 64,
-              height: 64,
-              borderRadius: 14,
+            // CustomProductCard/ProductListCard'la aynı asimetrik köşe
+            // imzası — küçük sepet/favori satırlarına da taşındı.
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(14),
+                topRight: Radius.circular(4),
+                bottomLeft: Radius.circular(4),
+                bottomRight: Radius.circular(14),
+              ),
+              child: OptimizedCachedImage(
+                imageUrl:
+                    product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+                width: 64,
+                height: 64,
+                borderRadius: 0,
+              ),
             ),
           ),
           const SizedBox(width: 12),

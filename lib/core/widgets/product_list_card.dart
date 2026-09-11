@@ -9,9 +9,9 @@ import '../theme/app_colors.dart';
 import '../theme/catalog_theme.dart';
 import 'optimized_cached_image.dart';
 
-/// Işaret görselindeki liste görünümü için: yatay, geniş, tek satırlık
-/// ürün kartı. Işıklık kartla (CustomProductCard) aynı marka dilini
-/// (yuvarlak köşe, yumuşak gölge) korur, sadece yerleşimi farklıdır.
+/// Liste görünümü için: yatay, geniş, tek satırlık ürün kartı.
+/// CustomProductCard'ın yeni asimetrik köşe + köşe-etiketi dilini
+/// küçük görsel karesine taşır — kart genelinde tekrar eden aynı imza.
 class ProductListCard extends StatefulWidget {
   final Product product;
 
@@ -57,42 +57,66 @@ class _ProductListCardState extends State<ProductListCard> {
           ),
           child: Row(
             children: [
-              // Kategori renginde ince bir vurgu şeridi — premium his için.
-              Container(
-                width: 4,
-                height: 96,
-                decoration: BoxDecoration(
-                  color: meta?.color ?? AppColors.primary,
-                  borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(22)),
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(22),
+                    topRight: Radius.circular(6),
+                    bottomLeft: Radius.circular(6),
+                    bottomRight: Radius.circular(22),
+                  ),
                   child: SizedBox(
                     width: 96,
                     height: 96,
-                    child: product.imagesUrl.isNotEmpty
-                        ? OptimizedCachedImage(
-                            imageUrl: product.imagesUrl.first,
-                            width: 96,
-                            height: 96,
-                            fit: BoxFit.cover,
-                            borderRadius: 0,
-                          )
-                        : Container(
-                            color: AppColors.secondary,
-                            child: Icon(Icons.chair_alt_rounded,
-                                color: AppColors.textTertiary)),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        product.imagesUrl.isNotEmpty
+                            ? OptimizedCachedImage(
+                                imageUrl: product.imagesUrl.first,
+                                width: 96,
+                                height: 96,
+                                fit: BoxFit.cover,
+                                borderRadius: 0,
+                              )
+                            : Container(
+                                color: AppColors.secondary,
+                                child: Icon(Icons.chair_alt_rounded,
+                                    color: AppColors.textTertiary)),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(10)),
+                            child: Container(
+                              width: 18,
+                              height: 18,
+                              alignment: Alignment.center,
+                              color: product.isSpotProduct
+                                  ? SpotPalette.accent
+                                  : NewCollectionPalette.badgeGreen,
+                              child: Icon(
+                                product.isSpotProduct
+                                    ? Icons.local_offer_rounded
+                                    : Icons.auto_awesome_rounded,
+                                size: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 4),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12).copyWith(right: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 12)
+                      .copyWith(right: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -119,7 +143,8 @@ class _ProductListCardState extends State<ProductListCard> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontSize: 15.5, fontWeight: FontWeight.w800,
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w800,
                             color: AppColors.textPrimary),
                       ),
                       const SizedBox(height: 8),
