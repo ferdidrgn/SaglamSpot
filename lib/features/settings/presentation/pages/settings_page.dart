@@ -167,7 +167,13 @@ class SettingsPage extends ConsumerWidget {
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           gradient: AppColors.mobilePrimaryGradient,
-          borderRadius: BorderRadius.circular(20),
+          // Uygulamanın kart/panel genelindeki asimetrik köşe imzası.
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(26),
+            bottomLeft: Radius.circular(26),
+            bottomRight: Radius.circular(8),
+          ),
         ),
         child: Row(
           children: [
@@ -236,7 +242,12 @@ class _SettingsCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.mobileSurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(6),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(6),
+        ),
         border: Border.all(color: AppColors.mobileBorder),
       ),
       child: Column(
@@ -300,7 +311,9 @@ class _SettingsTile extends StatelessWidget {
               child: Text(
                 badgeCount > 9 ? '9+' : '$badgeCount',
                 style: const TextStyle(
-                    color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800),
               ),
             ),
           Icon(Icons.chevron_right_rounded,
@@ -333,7 +346,12 @@ class _ThemeModeCard extends ConsumerWidget {
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: AppColors.mobileSurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(6),
+          topRight: Radius.circular(18),
+          bottomLeft: Radius.circular(18),
+          bottomRight: Radius.circular(6),
+        ),
         border: Border.all(color: AppColors.mobileBorder),
       ),
       child: Row(

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_shapes.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
 /// Yönetici girişi. NOT: Önceki tasarımda uygulamanın markasıyla (zümrüt +
@@ -39,8 +40,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading;
-    final errorMessage =
-        authState.hasError ? (authState.error?.toString() ?? 'Bilinmeyen hata') : null;
+    final errorMessage = authState.hasError
+        ? (authState.error?.toString() ?? 'Bilinmeyen hata')
+        : null;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -83,7 +85,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const SizedBox(height: 6),
                   Text(
                     context.l10n.adminLoginSubtitle,
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14.5),
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 14.5),
                   ),
                   const SizedBox(height: 40),
 
@@ -91,7 +94,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: AppShapes.asymmetric(radius: 32, small: 8),
                       boxShadow: [
                         BoxShadow(
                             color: AppColors.textPrimary.withOpacity(0.06),
