@@ -14,6 +14,7 @@ import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../data/models/category_meta.dart';
 import '../providers/favorites_provider.dart';
@@ -144,7 +145,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       );
     });
 
-    return productAsync.when(
+    final Widget content = productAsync.when(
       loading: () => Scaffold(
         backgroundColor: _pc(context,
             mobile: AppColors.mobileBackground, web: AppColors.background),
@@ -215,6 +216,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         );
       },
     );
+
+    return kIsWeb ? content : BackToHomeGuard(child: content);
   }
 
   // ════════════════════════════════════════════════════════════
@@ -734,6 +737,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             ? context.l10n.conditionUsed
             : context.l10n.productSpecConditionNew,
       ),
+      // Ölçü ve malzeme SADECE doluysa gösterilir — eski ilanlarda bu
+      // alanlar yok, uydurma bir değer koyulmaz.
+      if (product.dimensions != null && product.dimensions!.isNotEmpty)
+        (Icons.straighten_rounded, context.l10n.dimensionsLabel, product.dimensions!),
+      if (product.material != null && product.material!.isNotEmpty)
+        (Icons.texture_rounded, context.l10n.materialLabel, product.material!),
       (
         Icons.local_shipping_rounded,
         context.l10n.specDelivery,

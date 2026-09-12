@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -82,6 +83,15 @@ final class NotificationService {
     final token = await FirebaseMessaging.instance.getToken();
     currentToken = token;
     debugPrint('📲 FCM cihaz token: $token');
+  }
+
+  /// Kullanıcıyı doğrudan İŞLETİM SİSTEMİ bildirim ayarlarına götürür
+  /// (uygulama izni reddettikten sonra `requestPermission()` bir daha
+  /// sistem diyaloğu göstermez — tek çıkış yolu budur). Web'de bu tür bir
+  /// sistem ayarı sayfası yok, bu yüzden sessizce hiçbir şey yapmaz.
+  static Future<void> openSystemNotificationSettings() async {
+    if (kIsWeb) return;
+    await AppSettings.openAppSettings(type: AppSettingsType.notification);
   }
 
   static Future<void> _initLocalNotifications() async {

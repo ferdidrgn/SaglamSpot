@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/util/comminucation_actions.dart';
@@ -68,6 +69,12 @@ class SettingsPage extends ConsumerWidget {
                   label: context.l10n.notificationsTitle,
                   badgeCount: unreadCount,
                   onTap: () => NavigationHandler.goToNotifications(context),
+                ),
+                _SettingsTile(
+                  icon: Icons.notifications_active_rounded,
+                  accent: AppColors.info,
+                  label: context.l10n.settingsNotificationPermission,
+                  onTap: NotificationService.openSystemNotificationSettings,
                 ),
                 const _LanguageTile(),
                 if (isAdminLoggedIn)

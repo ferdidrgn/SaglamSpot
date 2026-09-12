@@ -32,6 +32,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _descController;
+  late TextEditingController _dimensionsController;
+  late TextEditingController _materialController;
 
   List<dynamic> _newSelectedImages = [];
   final ImageSelector _imageSelector = ImageSelector();
@@ -46,6 +48,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
   bool _isSold = false;
   bool _isSpotProduct = false;
+  bool _isReserved = false;
   ProductCategory? _selectedCategory;
   List<String> _selectedColors = [];
   ProductWearTier? _selectedWearTier;
@@ -76,8 +79,13 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       _priceController =
           TextEditingController(text: _currentProduct!.price.toString());
       _descController = TextEditingController(text: _currentProduct!.desc);
+      _dimensionsController =
+          TextEditingController(text: _currentProduct!.dimensions ?? '');
+      _materialController =
+          TextEditingController(text: _currentProduct!.material ?? '');
       _isSold = _currentProduct!.isSold;
       _isSpotProduct = _currentProduct!.isSpotProduct;
+      _isReserved = _currentProduct!.isReserved;
       // Önceden hiç düzenlenemeyen iki alan — artık formda mevcutlar.
       _selectedCategory = _currentProduct!.category;
       _selectedColors = List<String>.from(_currentProduct!.availableColors);
@@ -86,6 +94,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       _nameController = TextEditingController();
       _priceController = TextEditingController();
       _descController = TextEditingController();
+      _dimensionsController = TextEditingController();
+      _materialController = TextEditingController();
     }
   }
 
@@ -94,6 +104,8 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     _nameController.dispose();
     _priceController.dispose();
     _descController.dispose();
+    _dimensionsController.dispose();
+    _materialController.dispose();
     super.dispose();
   }
 
@@ -152,6 +164,16 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                                 label: context.l10n.descriptionLabel,
                                 icon: Icons.description_rounded,
                                 lines: 3),
+                            AdminFormField(
+                                controller: _dimensionsController,
+                                label: context.l10n.dimensionsLabel,
+                                icon: Icons.straighten_rounded,
+                                hintText: context.l10n.dimensionsHint),
+                            AdminFormField(
+                                controller: _materialController,
+                                label: context.l10n.materialLabel,
+                                icon: Icons.texture_rounded,
+                                hintText: context.l10n.materialHint),
                           ],
                         ),
                       ),
@@ -173,9 +195,24 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                             AdminFormSwitch(
                               title: context.l10n.sold,
                               value: _isSold,
-                              onChanged: (final v) =>
-                                  setState(() => _isSold = v),
+                              onChanged: (final v) => setState(() {
+                                _isSold = v;
+                                // Satıldı işaretlenince rezerve durumu
+                                // anlamsızlaşır — biri satıldıysa artık
+                                // "başkası için ayrılmış" olamaz.
+                                if (v) _isReserved = false;
+                              }),
                             ),
+                            if (!_isSold) ...[
+                              const Divider(height: 20),
+                              AdminFormSwitch(
+                                title: context.l10n.reservedToggleLabel,
+                                subtitle: context.l10n.reservedHint,
+                                value: _isReserved,
+                                onChanged: (final v) =>
+                                    setState(() => _isReserved = v),
+                              ),
+                            ],
                             const Divider(height: 20),
                             AdminFormSwitch(
                               title: context.l10n.spotSecondHand,
@@ -365,12 +402,31 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       if (!mounted) return;
     }
 
+    final double newPrice =
+        double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0;
+    // Fiyat gerçekten düşürüldüyse eski fiyatı sakla — kartlardaki
+    // "İndirimde" rozeti bunu kullanır (bkz. custom_product_card.dart).
+    // Fiyat artmış/aynı kalmışsa dokunma: rozet zaten previousPrice >
+    // price koşuluna bakıyor, kendiliğinden görünmez olur.
+    final double? newPreviousPrice =
+        (newPrice < _currentProduct!.price && _currentProduct!.price > 0)
+            ? _currentProduct!.price
+            : null;
+
     final updatedProduct = _currentProduct!.copyWith(
       name: _nameController.text.trim(),
       desc: _descController.text.trim(),
-      price: double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0,
+      price: newPrice,
+      previousPrice: newPreviousPrice,
       isSold: _isSold,
       isSpotProduct: _isSpotProduct,
+      isReserved: _isReserved,
+      dimensions: _dimensionsController.text.trim().isEmpty
+          ? null
+          : _dimensionsController.text.trim(),
+      material: _materialController.text.trim().isEmpty
+          ? null
+          : _materialController.text.trim(),
       // Önceden burada hiç güncellenmiyordu — kategori ve renkler artık
       // formdan değiştirilip kaydedilebiliyor.
       category: _selectedCategory ?? _currentProduct!.category,

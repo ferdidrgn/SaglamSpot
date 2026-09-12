@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
 /// Yönetici girişi. NOT: Önceki tasarımda uygulamanın markasıyla (zümrüt +
@@ -43,7 +45,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         ? (authState.error?.toString() ?? 'Bilinmeyen hata')
         : null;
 
-    return Scaffold(
+    final Widget scaffold = Scaffold(
       backgroundColor: AppColors.background,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -146,6 +148,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         ),
       ),
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   void _submit() {

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
+import 'nav_handler.dart';
 
-/// Alt navigasyon çubuğunun Ana Sayfa DIŞINDAKİ köklerinde (Keşfet/Sepet/
-/// Profil) kullanılır: sekmeler birbirinin "üstünde" değil yan yana
-/// olduğu için doğal bir geri-yığını (back stack) yoktur — cihazın geri
-/// tuşuna basınca uygulamadan aniden ÇIKMAK yerine Ana Sayfa sekmesine
-/// döner.
+/// Uygulamanın HEMEN HEMEN TÜM sayfa geçişleri `context.go(...)` ile
+/// yapılıyor (GoRouter'ın push/pop yığını değil, tek-konumlu bir
+/// "değiştirme" mantığı) — bu yüzden `Navigator.canPop` çoğu sayfada
+/// zaten false'tur. Bu guard olmadan cihazın geri tuşuna basmak Flutter'ın
+/// varsayılan davranışına düşer: yığın boşsa UYGULAMADAN ANINDA ÇIKAR.
+///
+/// Bunun yerine [NavigationHandler.smartGoBack] çağrılır: önce "nereden
+/// geldiyse oraya" (`from` query parametresi), sonra gerçek bir
+/// Navigator yığını varsa ona pop, hiçbiri yoksa (bu sayfa zaten bir
+/// giriş noktasıysa) Ana Sayfa'ya döner — "her şey sırasıyla geri gitmeli,
+/// en sonda ana sayfaya inmeli" davranışı budur.
 class BackToHomeGuard extends StatelessWidget {
   final Widget child;
 
@@ -19,7 +25,7 @@ class BackToHomeGuard extends StatelessWidget {
       canPop: false,
       onPopInvokedWithResult: (final didPop, final result) {
         if (didPop) return;
-        context.go('/');
+        NavigationHandler.smartGoBack(context);
       },
       child: child,
     );

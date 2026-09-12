@@ -405,6 +405,31 @@ class AppLocalizationsTr extends AppLocalizations {
   String get colorOptionsOptional => 'Renk Seçenekleri (opsiyonel)';
 
   @override
+  String get dimensionsLabel => 'Ölçüler (opsiyonel)';
+
+  @override
+  String get dimensionsHint => 'Örn: 220 x 90 x 85 cm';
+
+  @override
+  String get materialLabel => 'Malzeme (opsiyonel)';
+
+  @override
+  String get materialHint => 'Örn: Masif Meşe, Kadife Kumaş';
+
+  @override
+  String get reservedToggleLabel => 'Rezerve Edildi';
+
+  @override
+  String get reservedHint =>
+      'Bir müşteri için ayrıldı — hâlâ vitrinde görünür ama rozetli';
+
+  @override
+  String get reservedBadge => 'REZERVE';
+
+  @override
+  String get priceDropBadge => 'İndirimde';
+
+  @override
   String get noImagesYet => 'Henüz görsel eklenmedi';
 
   @override
@@ -1442,6 +1467,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsAdminLogin => 'Yönetici Girişi';
+
+  @override
+  String get settingsNotificationPermission => 'Bildirim İzinleri';
+
+  @override
+  String get notificationsEnablePermissionTooltip =>
+      'Bildirim izni ver / ayarları aç';
 
   @override
   String get settingsAppVersion => 'Uygulama Sürümü';

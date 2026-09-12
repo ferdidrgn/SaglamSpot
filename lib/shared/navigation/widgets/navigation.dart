@@ -87,6 +87,13 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   }
 
   Widget _buildLogo() {
+    // NOT: Bu logo dar (telefon genişliği) AppBar'da hamburger + dil
+    // seçici + arama ikonuyla YAN YANA sığmak zorunda. Sabit 90x90'lık bir
+    // görsel (AppBar yüksekliği ~60'ken) hem dikeyde hem yatayda taşma
+    // (RenderFlex overflow) hatası veriyordu — bkz. SSS/Hakkımızda
+    // sayfalarının üstünde görülen "OVERFLOWED BY" şeridi. AppBar
+    // yüksekliğiyle orantılı, responsive bir boyuta indirildi.
+    final double logoSize = context.responsive(mobile: 34, tablet: 48, desktop: 56);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -95,20 +102,23 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           curve: Curves.easeInOut,
           child: Image.asset(
             'assets/images/saglam_spot_logo_mark.png',
-            width: 90,
-            height: 90,
+            width: logoSize,
+            height: logoSize,
             fit: BoxFit.contain,
           ),
         ),
         SizedBox(width: context.responsive(mobile: 4, tablet: 6, desktop: 8)),
-        Text(
-          context.l10n.brand,
-          style: TextStyle(
-            color: kIsWeb ? AppColors.textPrimary : AppColors.mobileTextPrimary,
-            fontWeight: FontWeight.w900,
-            fontSize: context.responsive(mobile: 15, tablet: 19, desktop: 22),
-            letterSpacing: -0.2,
-            height: 1,
+        Flexible(
+          child: Text(
+            context.l10n.brand,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: kIsWeb ? AppColors.textPrimary : AppColors.mobileTextPrimary,
+              fontWeight: FontWeight.w900,
+              fontSize: context.responsive(mobile: 15, tablet: 19, desktop: 22),
+              letterSpacing: -0.2,
+              height: 1,
+            ),
           ),
         ),
       ],

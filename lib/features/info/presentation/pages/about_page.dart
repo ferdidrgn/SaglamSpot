@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:saglamspot/core/common/enum/enums.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
@@ -5,6 +6,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/business_info_showcase.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 class AboutPage extends StatefulWidget {
@@ -17,7 +19,10 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(final BuildContext context) {
-    if (context.isMobile) return _buildMobileScaffold(context);
+    if (context.isMobile) {
+      final mobileScaffold = _buildMobileScaffold(context);
+      return kIsWeb ? mobileScaffold : BackToHomeGuard(child: mobileScaffold);
+    }
 
     return CustomScrollView(
       slivers: [

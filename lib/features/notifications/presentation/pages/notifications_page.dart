@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/notification_inbox_cache.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
@@ -72,6 +73,12 @@ class NotificationsPage extends ConsumerWidget {
                 style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
               ),
+            ),
+            IconButton(
+              tooltip: context.l10n.notificationsEnablePermissionTooltip,
+              onPressed: NotificationService.openSystemNotificationSettings,
+              icon: Icon(Icons.notifications_active_outlined,
+                  color: AppColors.mobileTextSecondary),
             ),
             if (items.isNotEmpty)
               PopupMenuButton<_MenuAction>(

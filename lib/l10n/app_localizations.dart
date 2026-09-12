@@ -866,6 +866,54 @@ abstract class AppLocalizations {
   /// **'Renk Seçenekleri (opsiyonel)'**
   String get colorOptionsOptional;
 
+  /// No description provided for @dimensionsLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ölçüler (opsiyonel)'**
+  String get dimensionsLabel;
+
+  /// No description provided for @dimensionsHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: 220 x 90 x 85 cm'**
+  String get dimensionsHint;
+
+  /// No description provided for @materialLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Malzeme (opsiyonel)'**
+  String get materialLabel;
+
+  /// No description provided for @materialHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: Masif Meşe, Kadife Kumaş'**
+  String get materialHint;
+
+  /// No description provided for @reservedToggleLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rezerve Edildi'**
+  String get reservedToggleLabel;
+
+  /// No description provided for @reservedHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir müşteri için ayrıldı — hâlâ vitrinde görünür ama rozetli'**
+  String get reservedHint;
+
+  /// No description provided for @reservedBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'REZERVE'**
+  String get reservedBadge;
+
+  /// No description provided for @priceDropBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndirimde'**
+  String get priceDropBadge;
+
   /// No description provided for @noImagesYet.
   ///
   /// In tr, this message translates to:
@@ -2767,6 +2815,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Yönetici Girişi'**
   String get settingsAdminLogin;
+
+  /// No description provided for @settingsNotificationPermission.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim İzinleri'**
+  String get settingsNotificationPermission;
+
+  /// No description provided for @notificationsEnablePermissionTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim izni ver / ayarları aç'**
+  String get notificationsEnablePermissionTooltip;
 
   /// No description provided for @settingsAppVersion.
   ///

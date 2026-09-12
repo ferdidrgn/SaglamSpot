@@ -410,6 +410,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get colorOptionsOptional => 'Color Options (optional)';
 
   @override
+  String get dimensionsLabel => 'Dimensions (optional)';
+
+  @override
+  String get dimensionsHint => 'e.g. 220 x 90 x 85 cm';
+
+  @override
+  String get materialLabel => 'Material (optional)';
+
+  @override
+  String get materialHint => 'e.g. Solid Oak, Velvet Fabric';
+
+  @override
+  String get reservedToggleLabel => 'Reserved';
+
+  @override
+  String get reservedHint => 'Held for a customer — still visible but badged';
+
+  @override
+  String get reservedBadge => 'RESERVED';
+
+  @override
+  String get priceDropBadge => 'Price drop';
+
+  @override
   String get noImagesYet => 'No images added yet';
 
   @override
@@ -1448,6 +1472,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAdminLogin => 'Admin Login';
+
+  @override
+  String get settingsNotificationPermission => 'Notification Permissions';
+
+  @override
+  String get notificationsEnablePermissionTooltip =>
+      'Allow notifications / open settings';
 
   @override
   String get settingsAppVersion => 'App Version';

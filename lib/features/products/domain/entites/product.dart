@@ -14,6 +14,27 @@ class Product extends Equatable {
   final bool isSold;
   final bool isSpotProduct;
 
+  /// Biri ilgilenip esnafla konuşurken başka bir müşterinin boşuna
+  /// gelmesini/sormasını önlemek için ara durum. `isSold == true` her
+  /// zaman öncelikli sayılır (satılan bir ürün aynı zamanda rezerve
+  /// görünmez) — esnaf elle işaretler, uydurma bir zaman aşımı yok.
+  final bool isReserved;
+
+  /// Serbest metin ölçü bilgisi (örn: "220 x 90 x 85 cm"). Mobilyada en
+  /// çok sorulan bilgi ama daha önce modelde hiç yoktu — esnaf bunu
+  /// açıklama alanına elle yazıyordu. Boşsa hiç gösterilmez.
+  final String? dimensions;
+
+  /// Serbest metin malzeme/kumaş bilgisi (örn: "Masif Meşe", "Kadife
+  /// Kumaş"). Opsiyonel, boşsa hiç gösterilmez.
+  final String? material;
+
+  /// Fiyat gerçekten düşürüldüyse bir önceki fiyat — sadece "İndirimde"
+  /// rozetini göstermek için (bkz. custom_product_card.dart). Esnaf
+  /// fiyatı her güncellediğinde otomatik olarak eski fiyata ayarlanır
+  /// (bkz. EditProductPage._handleUpdate); manuel girilmez.
+  final double? previousPrice;
+
   /// Sadece SIFIR (isSpotProduct == false) ürünlerde anlamlıdır. İkinci el/spot
   /// ürünlerde tek bir fiziksel parça satıldığı için renk seçeneği gösterilmez.
   /// Hex renk kodları olarak saklanır (örn: '#2E7D6B'). Boşsa hiç gösterilmez.
@@ -41,6 +62,10 @@ class Product extends Equatable {
     required this.imagesUrl,
     required this.isSold,
     required this.isSpotProduct,
+    this.isReserved = false,
+    this.dimensions,
+    this.material,
+    this.previousPrice,
     this.availableColors = const [],
     this.studioImagesUrl = const [],
     this.wearTier,
@@ -74,6 +99,10 @@ class Product extends Equatable {
         imagesUrl,
         isSold,
         isSpotProduct,
+        isReserved,
+        dimensions,
+        material,
+        previousPrice,
         availableColors,
         studioImagesUrl,
         wearTier,
@@ -91,6 +120,10 @@ class Product extends Equatable {
     final List<String>? imagesUrl,
     final bool? isSold,
     final bool? isSpotProduct,
+    final bool? isReserved,
+    final String? dimensions,
+    final String? material,
+    final double? previousPrice,
     final List<String>? availableColors,
     final List<String>? studioImagesUrl,
     final ProductWearTier? wearTier,
@@ -107,6 +140,10 @@ class Product extends Equatable {
         imagesUrl: imagesUrl ?? this.imagesUrl,
         isSold: isSold ?? this.isSold,
         isSpotProduct: isSpotProduct ?? this.isSpotProduct,
+        isReserved: isReserved ?? this.isReserved,
+        dimensions: dimensions ?? this.dimensions,
+        material: material ?? this.material,
+        previousPrice: previousPrice ?? this.previousPrice,
         availableColors: availableColors ?? this.availableColors,
         studioImagesUrl: studioImagesUrl ?? this.studioImagesUrl,
         wearTier: wearTier ?? this.wearTier,

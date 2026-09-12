@@ -10,6 +10,10 @@ class ProductModel {
   final List<String> imagesUrl;
   final bool isSold;
   final bool isSpotProduct;
+  final bool isReserved;
+  final String? dimensions;
+  final String? material;
+  final double? previousPrice;
   final List<String> availableColors;
   final List<String> studioImagesUrl;
 
@@ -29,6 +33,10 @@ class ProductModel {
     required this.isSold,
     required this.isSpotProduct,
     required this.imagesUrl,
+    this.isReserved = false,
+    this.dimensions,
+    this.material,
+    this.previousPrice,
     this.availableColors = const [],
     this.studioImagesUrl = const [],
     this.wearTier,
@@ -47,7 +55,11 @@ class ProductModel {
         isSold: data['isSold'] ?? false,
         isSpotProduct: data['isSpotProduct'] ?? false,
         imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
-        // Eski dokümanlarda bu alan yok, boş liste ile güvenli varsayılan.
+        // Eski dokümanlarda bu alanlar yok, güvenli varsayılanlar.
+        isReserved: data['isReserved'] ?? false,
+        dimensions: data['dimensions'] as String?,
+        material: data['material'] as String?,
+        previousPrice: (data['previousPrice'] as num?)?.toDouble(),
         availableColors: List<String>.from(data['availableColors'] ?? []),
         studioImagesUrl: List<String>.from(data['studioImagesUrl'] ?? []),
         wearTier: data['wearTier'] as String?,
@@ -64,6 +76,10 @@ class ProductModel {
         'price': price,
         'isSold': isSold,
         'isSpotProduct': isSpotProduct,
+        'isReserved': isReserved,
+        'dimensions': dimensions,
+        'material': material,
+        'previousPrice': previousPrice,
         'imagesUrl': imagesUrl,
         'availableColors': availableColors,
         'studioImagesUrl': studioImagesUrl,

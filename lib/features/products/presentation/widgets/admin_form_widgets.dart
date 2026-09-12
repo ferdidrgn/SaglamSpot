@@ -63,6 +63,7 @@ class AdminFormField extends StatelessWidget {
   final IconData icon;
   final bool numeric;
   final int lines;
+  final String? hintText;
 
   const AdminFormField({
     super.key,
@@ -71,6 +72,7 @@ class AdminFormField extends StatelessWidget {
     required this.icon,
     this.numeric = false,
     this.lines = 1,
+    this.hintText,
   });
 
   @override
@@ -84,7 +86,9 @@ class AdminFormField extends StatelessWidget {
           style: TextStyle(color: AppColors.textPrimary, fontSize: 14.5),
           decoration: InputDecoration(
             labelText: label,
+            hintText: hintText,
             labelStyle: TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
+            hintStyle: TextStyle(color: AppColors.textTertiary.withOpacity(0.6), fontSize: 13),
             prefixIcon: Icon(icon, color: AppColors.onSecondary, size: 20),
             filled: true,
             fillColor: AppColors.secondary,

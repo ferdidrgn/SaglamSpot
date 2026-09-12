@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
@@ -55,7 +57,7 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
             ? list
             : list.where((final p) => p.category == _selectedCategory).toList();
 
-    return Scaffold(
+    final Widget scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       appBar: _buildAppBar(context),
       body: productsAsync.when(
@@ -87,6 +89,8 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
       ),
       floatingActionButton: _buildAddButton(context),
     );
+
+    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   PreferredSizeWidget _buildAppBar(final BuildContext context) => AppBar(

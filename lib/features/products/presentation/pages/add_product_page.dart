@@ -27,6 +27,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   final _name = TextEditingController();
   final _desc = TextEditingController();
   final _price = TextEditingController();
+  final _dimensions = TextEditingController();
+  final _material = TextEditingController();
   ProductCategory? _selectedCategory;
   List<String> _selectedColors = [];
   ProductWearTier? _selectedWearTier;
@@ -57,6 +59,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     _name.dispose();
     _desc.dispose();
     _price.dispose();
+    _dimensions.dispose();
+    _material.dispose();
     super.dispose();
   }
 
@@ -134,6 +138,16 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                             label: context.l10n.descriptionLabel,
                             icon: Icons.description_rounded,
                             lines: 3),
+                        AdminFormField(
+                            controller: _dimensions,
+                            label: context.l10n.dimensionsLabel,
+                            icon: Icons.straighten_rounded,
+                            hintText: context.l10n.dimensionsHint),
+                        AdminFormField(
+                            controller: _material,
+                            label: context.l10n.materialLabel,
+                            icon: Icons.texture_rounded,
+                            hintText: context.l10n.materialHint),
                       ],
                     ),
                   ),
@@ -240,6 +254,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
       isSold: false,
       isSpotProduct: _isSecondHand,
+      dimensions: _dimensions.text.trim().isEmpty ? null : _dimensions.text.trim(),
+      material: _material.text.trim().isEmpty ? null : _material.text.trim(),
       imagesUrl: const [],
       availableColors: _isSecondHand ? const [] : _selectedColors,
       studioImagesUrl: _studioImageUrl != null ? [_studioImageUrl!] : const [],
