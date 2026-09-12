@@ -448,22 +448,12 @@ class _CartItemCard extends ConsumerWidget {
               productId: product.id,
               productSlug: product.name.toSlug(),
             ),
-            // CustomProductCard/ProductListCard'la aynı asimetrik köşe
-            // imzası — küçük sepet/favori satırlarına da taşındı.
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(14),
-                topRight: Radius.circular(4),
-                bottomLeft: Radius.circular(4),
-                bottomRight: Radius.circular(14),
-              ),
-              child: OptimizedCachedImage(
-                imageUrl:
-                    product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
-                width: 64,
-                height: 64,
-                borderRadius: 0,
-              ),
+            child: OptimizedCachedImage(
+              imageUrl:
+                  product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+              width: 64,
+              height: 64,
+              borderRadius: 14,
             ),
           ),
           const SizedBox(width: 12),

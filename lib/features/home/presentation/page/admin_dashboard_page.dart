@@ -376,15 +376,7 @@ class _LuxuryProductCardState extends ConsumerState<LuxuryProductCard> {
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             color: AppColors.mobileCardBg,
-            // Müşteri tarafındaki kartlarla (CustomProductCard) AYNI
-            // asimetrik köşe imzası — kontrol odası da uygulamanın geri
-            // kalanıyla aynı görsel dili konuşuyor.
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(28),
-              bottomLeft: Radius.circular(28),
-              bottomRight: Radius.circular(8),
-            ),
+            borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
                   color: AppColors.mobilePrimary.withOpacity(0.10),
@@ -452,7 +444,7 @@ class _ImageArea extends ConsumerWidget {
                         size: 48, color: AppColors.mobileTextTertiary),
                   ),
           ),
-          Positioned(top: 0, left: 0, child: _StatusBadge(product: product)),
+          Positioned(top: 10, left: 10, child: _StatusBadge(product: product)),
         ],
       );
 }
@@ -597,24 +589,18 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(14)),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(12, 7, 11, 8),
-        decoration: BoxDecoration(
-          gradient: product.isSold
-              ? AppColors.mobilePrimaryGradient
-              : AppColors.mobileAccentGradient,
-        ),
-        child: Text(
-          (product.isSold ? context.l10n.sold : context.l10n.stock)
-              .toUpperCase(),
-          style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.4),
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        gradient: product.isSold
+            ? AppColors.mobilePrimaryGradient
+            : AppColors.mobileAccentGradient,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        product.isSold ? context.l10n.sold : context.l10n.stock,
+        style: const TextStyle(
+            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
       ),
     );
   }

@@ -3,7 +3,6 @@ import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_shapes.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/business_info_showcase.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -380,7 +379,7 @@ class _SSSPageState extends State<SSSPage> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: AppColors.mobilePrimaryGradient,
-          borderRadius: AppShapes.asymmetric(radius: 24, small: 8),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           children: [

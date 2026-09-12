@@ -3,7 +3,6 @@ import 'package:saglamspot/core/common/enum/enums.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_shapes.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/business_info_showcase.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -125,7 +124,7 @@ class _AboutPageState extends State<AboutPage> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: AppColors.mobilePrimaryGradient,
-          borderRadius: AppShapes.asymmetric(radius: 26, small: 8),
+          borderRadius: BorderRadius.circular(22),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,7 +408,7 @@ class _AboutPageState extends State<AboutPage> {
       height: context.responsive(mobile: 300, desktop: 500),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: AppShapes.asymmetric(radius: 32, small: 8),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -419,7 +418,7 @@ class _AboutPageState extends State<AboutPage> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: AppShapes.asymmetric(radius: 32, small: 8),
+        borderRadius: BorderRadius.circular(24),
         child: Container(
           color: AppColors.accent.withOpacity(0.1),
           child: Center(
@@ -656,7 +655,7 @@ class _AboutPageState extends State<AboutPage> {
       ),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: AppShapes.asymmetric(radius: 28, small: 8),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -862,9 +861,8 @@ class _AboutPageState extends State<AboutPage> {
         ),
         decoration: BoxDecoration(
           color: AppColors.accent.withOpacity(0.08),
-          borderRadius: AppShapes.asymmetric(
-            radius: context.responsive(mobile: 28.0, desktop: 36.0),
-            small: 8,
+          borderRadius: BorderRadius.circular(
+            context.responsive(mobile: 24.0, desktop: 32.0),
           ),
           border: Border.all(color: AppColors.accent.withOpacity(0.3)),
         ),

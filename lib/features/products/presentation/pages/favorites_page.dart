@@ -164,12 +164,7 @@ class _FavoriteSwipeRow extends ConsumerWidget {
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(5),
-                  bottomLeft: Radius.circular(5),
-                  bottomRight: Radius.circular(16),
-                ),
+                borderRadius: BorderRadius.circular(14),
                 child: OptimizedCachedImage(
                   imageUrl: product.imagesUrl.isNotEmpty
                       ? product.imagesUrl.first
@@ -247,13 +242,7 @@ class _FavoriteCard extends ConsumerWidget {
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.mobileSurface,
-            // CustomProductCard'la aynı asimetrik köşe imzası.
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(6),
-              topRight: Radius.circular(22),
-              bottomLeft: Radius.circular(6),
-              bottomRight: Radius.circular(6),
-            ),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(color: AppColors.mobileBorder),
           ),
           child: Column(
@@ -263,10 +252,8 @@ class _FavoriteCard extends ConsumerWidget {
                 child: Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        topRight: Radius.circular(21),
-                      ),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(18)),
                       child: OptimizedCachedImage(
                         imageUrl: product.imagesUrl.isNotEmpty
                             ? product.imagesUrl.first
@@ -279,20 +266,20 @@ class _FavoriteCard extends ConsumerWidget {
                     ),
                     if (product.isSold)
                       Positioned(
-                        top: 0,
-                        left: 0,
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                              bottomRight: Radius.circular(14)),
-                          child: Container(
-                            padding: const EdgeInsets.fromLTRB(9, 6, 8, 7),
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
                             color: AppColors.error,
-                            child: Text(context.l10n.sold.toUpperCase(),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 9.5,
-                                    fontWeight: FontWeight.w800)),
+                            borderRadius: BorderRadius.circular(20),
                           ),
+                          child: Text(context.l10n.sold,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w800)),
                         ),
                       ),
                     Positioned(

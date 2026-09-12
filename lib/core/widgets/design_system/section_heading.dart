@@ -3,12 +3,10 @@ import '../../common/extentions/app_context_ui_extension.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 
-/// Uygulamanın YENİ, tek ve tutarlı "bölüm başlığı" motifi — eskiden her
-/// sayfa kendi başlık stilini (ortalanmış eyebrow+başlık, ya da düz renkli
-/// çubuk) icat ediyordu. Artık her yerde AYNI imza: kartlardaki asimetrik
-/// köşe dilinin başlıklardaki karşılığı olan, eğik kesilmiş (paralelkenar)
-/// bir renk bloğu + solda eyebrow/başlık + sağda opsiyonel "Tümünü Gör"
-/// eylemi.
+/// Uygulamanın tek ve tutarlı "bölüm başlığı" motifi — sade, sıcak/krem
+/// referans vitrine uygun: küçük eyebrow + serif başlık, sağda opsiyonel
+/// "Tümünü Gör" bağlantısı. Kalın renkli grafik öğe YOK — sakin, bol
+/// boşluklu bir his hedefleniyor.
 class SectionHeading extends StatelessWidget {
   const SectionHeading({
     super.key,
@@ -28,16 +26,10 @@ class SectionHeading extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final Color accent = color ?? AppColors.accent;
-    final double barHeight = context.responsive(mobile: 30.0, desktop: 40.0);
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        ClipPath(
-          clipper: const _SkewedBarClipper(),
-          child: Container(width: 13, height: barHeight, color: accent),
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +45,7 @@ class SectionHeading extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontFamily: 'Fraunces',
-                  fontSize: context.responsive(mobile: 20.0, desktop: 26.0),
+                  fontSize: context.responsive(mobile: 19.0, desktop: 25.0),
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                   height: 1.15,
@@ -70,7 +62,8 @@ class SectionHeading extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(seeAllLabel ?? context.l10n.seeAll,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 13)),
                 const SizedBox(width: 4),
                 const Icon(Icons.arrow_forward_rounded, size: 15),
               ],
@@ -79,22 +72,4 @@ class SectionHeading extends StatelessWidget {
       ],
     );
   }
-}
-
-class _SkewedBarClipper extends CustomClipper<Path> {
-  const _SkewedBarClipper();
-
-  @override
-  Path getClip(final Size size) {
-    final double skew = size.height * 0.3;
-    return Path()
-      ..moveTo(skew, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width - skew, size.height)
-      ..lineTo(0, size.height)
-      ..close();
-  }
-
-  @override
-  bool shouldReclip(covariant final CustomClipper<Path> oldClipper) => false;
 }

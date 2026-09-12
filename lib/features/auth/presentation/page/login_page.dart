@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_shapes.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
 /// Yönetici girişi. NOT: Önceki tasarımda uygulamanın markasıyla (zümrüt +
@@ -94,7 +93,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: AppShapes.asymmetric(radius: 32, small: 8),
+                      borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
                             color: AppColors.textPrimary.withOpacity(0.06),

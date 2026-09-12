@@ -60,55 +60,22 @@ class _ProductListCardState extends State<ProductListCard> {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(22),
-                    topRight: Radius.circular(6),
-                    bottomLeft: Radius.circular(6),
-                    bottomRight: Radius.circular(22),
-                  ),
+                  borderRadius: BorderRadius.circular(16),
                   child: SizedBox(
                     width: 96,
                     height: 96,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        product.imagesUrl.isNotEmpty
-                            ? OptimizedCachedImage(
-                                imageUrl: product.imagesUrl.first,
-                                width: 96,
-                                height: 96,
-                                fit: BoxFit.cover,
-                                borderRadius: 0,
-                              )
-                            : Container(
-                                color: AppColors.secondary,
-                                child: Icon(Icons.chair_alt_rounded,
-                                    color: AppColors.textTertiary)),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10)),
-                            child: Container(
-                              width: 18,
-                              height: 18,
-                              alignment: Alignment.center,
-                              color: product.isSpotProduct
-                                  ? SpotPalette.accent
-                                  : NewCollectionPalette.badgeGreen,
-                              child: Icon(
-                                product.isSpotProduct
-                                    ? Icons.local_offer_rounded
-                                    : Icons.auto_awesome_rounded,
-                                size: 10,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: product.imagesUrl.isNotEmpty
+                        ? OptimizedCachedImage(
+                            imageUrl: product.imagesUrl.first,
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            borderRadius: 0,
+                          )
+                        : Container(
+                            color: AppColors.secondary,
+                            child: Icon(Icons.chair_alt_rounded,
+                                color: AppColors.textTertiary)),
                   ),
                 ),
               ),
