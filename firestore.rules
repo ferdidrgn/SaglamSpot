@@ -1,0 +1,82 @@
+rules_version = '2';
+
+// Sağlam Spot — Firestore Güvenlik Kuralları
+//
+// Bu dosya daha önce hiç repoda yoktu (kurallar yalnızca Firebase
+// Console'da elle yönetiliyordu — kod incelemesi/versiyon kontrolü dışında
+// kalıyordu). Aşağıdaki kurallar, kod tabanındaki GERÇEK erişim
+// desenlerine göre yazıldı (bkz. auth_provider_notifier.dart,
+// product_mutation_provider.dart, favorite_notification_sync.dart,
+// category_meta_provider.dart, functions/index.js).
+//
+// DEPLOY ETMEDEN ÖNCE: Bu, canlı projedeki MEVCUT kuralların üzerine
+// yazılır. Firebase Console → Firestore → Rules sekmesinden şu anki
+// kuralları önce yedekleyin/karşılaştırın, sonra:
+//   firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // "Admin" = Firebase Auth ile giriş yapmış VE admins/{email}
+    // koleksiyonunda kendi e-postasına ait bir doküman olan kullanıcı.
+    // Uygulamada admin OLMAYAN hiçbir hesap oturum açmıyor (müşteri
+    // tarafı tamamen anonim geziniyor) — ama bu kontrol yine de tek
+    // başına isSignedIn()'e güvenmek yerine gerçek yetkiyi doğrular.
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    // Ürün kataloğu — web/mobil vitrin herkese açık (SEO dahil), sadece
+    // admin panel yazabilir/silebilir.
+    match /Product/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Kategori görsel meta verisi (ikon/renk/sıra/özel etiket) — herkes
+    // okuyabilir, sadece admin yazabilir.
+    match /CategoryMeta/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admin doğrulama kapısı — bir kullanıcı SADECE kendi e-postasına
+    // karşılık gelen dokümanı okuyabilir (signIn() sonrası "ben admin
+    // miyim?" kontrolü, bkz. auth_provider_notifier.dart). Koleksiyonun
+    // TAMAMINI listeleyemez (aksi halde tüm admin e-postaları sızardı).
+    // Ekleme/çıkarma yalnızca Firebase Console veya Admin SDK ile.
+    match /admins/{email} {
+      allow get: if isSignedIn() && request.auth.token.email == email;
+      allow list, write: if false;
+    }
+
+    // Favori fiyat-düşüşü bildirimi eşleşmesi — girişsiz/anonim cihazlar
+    // kendi FCM token'ı altında yazar (bkz.
+    // favorite_notification_sync.dart). İstemci bunu HİÇBİR ZAMAN geri
+    // okumuyor; sadece Cloud Functions (Admin SDK, bu kurallardan muaf)
+    // okuyor — read tamamen kapalı. Yazmada temel şekil doğrulaması var.
+    match /notification_subscriptions/{token} {
+      allow read: if false;
+      allow create, update: if request.resource.data.keys().hasOnly(['productIds', 'updatedAt'])
+        && request.resource.data.productIds is list
+        && request.resource.data.productIds.size() <= 200;
+      allow delete: if true;
+    }
+
+    // Sunucu-içi işletme durumu (remove.bg aylık kota sayacı, günlük
+    // bildirim özetinin son gönderim zamanı) — SADECE Cloud Functions'ın
+    // Admin SDK'sı okur/yazar; istemcinin buna hiçbir zaman ihtiyacı yok.
+    match /system_config/{doc} {
+      allow read, write: if false;
+    }
+
+    // Tanımlanmamış her şey: kapalı.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Sağlam Spot — Firebase Storage Güvenlik Kuralları
+//
+// Bu dosya da repoda hiç yoktu. Gerçek yükleme yollarına göre yazıldı:
+// - product_images/{productId}/{n}.jpg → admin panelden DOĞRUDAN istemci
+//   SDK'sıyla yükleniyor (bkz. product_remote_data_source_impl.dart).
+// - studio_images/*.png → SADECE Cloud Function (removeProductBackground,
+//   Admin SDK ile — bu kurallardan zaten muaf) yazıyor. functions/
+//   index.js'teki kendi yorumu bunu doğruluyor: "istemci tarafında onlara
+//   delete izni veren bir kural hiç tanımlanmamıştı" — yani istemciden
+//   yazma zaten hiç çalışmıyordu, burada bunu AÇIKÇA ve kalıcı olarak
+//   kapatıyoruz.
+//
+// DEPLOY ETMEDEN ÖNCE: mevcut canlı kuralların üzerine yazar. Önce
+// Firebase Console → Storage → Rules ile karşılaştırın, sonra:
+//   firebase deploy --only storage
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null &&
+        firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email));
+    }
+
+    match /product_images/{productId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /studio_images/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
