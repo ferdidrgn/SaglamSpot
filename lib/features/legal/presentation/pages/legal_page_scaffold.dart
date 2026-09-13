@@ -7,7 +7,8 @@ import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 
 /// Gizlilik Politikası ve Kullanım Koşulları sayfalarının paylaştığı ortak
 /// düzen: geri butonlu başlık + "şu an sadece Türkçe" uyarı şeridi (dil
-/// Türkçe değilse) + kaydırılabilir içerik.
+/// Türkçe VEYA İngilizce değilse — bu iki dilde artık gerçek çeviri var,
+/// diğer 9 dil hâlâ Türkçe içeriğe düşüyor) + kaydırılabilir içerik.
 class LegalPageScaffold extends StatelessWidget {
   final String title;
   final VoidCallback onBack;
@@ -22,7 +23,9 @@ class LegalPageScaffold extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final bool isTurkish = Localizations.localeOf(context).languageCode == 'tr';
+    final String languageCode = Localizations.localeOf(context).languageCode;
+    final bool hasLocalizedLegalContent =
+        languageCode == 'tr' || languageCode == 'en';
 
     final Widget scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
@@ -52,7 +55,7 @@ class LegalPageScaffold extends StatelessWidget {
                 ],
               ),
             ),
-            if (!isTurkish)
+            if (!hasLocalizedLegalContent)
               Container(
                 margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
