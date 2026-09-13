@@ -91,6 +91,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryWhite => 'Beyaz Eşya';
 
   @override
+  String get categoryLighting => 'Aydınlatma';
+
+  @override
+  String get categoryHomeTextile => 'Ev Tekstili';
+
+  @override
+  String get categoryDecor => 'Dekorasyon & Aksesuar';
+
+  @override
+  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+
+  @override
+  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+
+  @override
+  String get categoryKidsFurniture => 'Bebek & Çocuk';
+
+  @override
   String get categoryOther => 'Diğer';
 
   @override
@@ -1632,7 +1650,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get catalogCategoryTitleWhite => 'Beyaz Eşya';
 
   @override
-  String get catalogCategoryTitleOther => 'Dekorasyon';
+  String get catalogCategoryTitleLighting => 'Aydınlatma';
+
+  @override
+  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+
+  @override
+  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+
+  @override
+  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+
+  @override
+  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+
+  @override
+  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
+
+  @override
+  String get catalogCategoryTitleOther => 'Diğer Ürünler';
 
   @override
   String get mottoTitlePart1 => 'Gelmeden Gör, ';

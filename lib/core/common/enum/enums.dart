@@ -3,7 +3,21 @@ import '../extentions/app_context_ui_extension.dart';
 
 enum AppLanguage { tr, en }
 
-enum ProductCategory { sofa, chair, table, bed, wardrobe, white, other }
+enum ProductCategory {
+  sofa,
+  chair,
+  table,
+  bed,
+  wardrobe,
+  white,
+  lighting,
+  homeTextile,
+  decor,
+  officeFurniture,
+  outdoorGarden,
+  kidsFurniture,
+  other,
+}
 
 enum ProductCondition {
   all,

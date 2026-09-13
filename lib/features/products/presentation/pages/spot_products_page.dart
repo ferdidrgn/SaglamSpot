@@ -71,6 +71,18 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         return context.l10n.catalogCategoryTitleWardrobe;
       case ProductCategory.white:
         return context.l10n.catalogCategoryTitleWhite;
+      case ProductCategory.lighting:
+        return context.l10n.catalogCategoryTitleLighting;
+      case ProductCategory.homeTextile:
+        return context.l10n.catalogCategoryTitleHomeTextile;
+      case ProductCategory.decor:
+        return context.l10n.catalogCategoryTitleDecor;
+      case ProductCategory.officeFurniture:
+        return context.l10n.catalogCategoryTitleOfficeFurniture;
+      case ProductCategory.outdoorGarden:
+        return context.l10n.catalogCategoryTitleOutdoorGarden;
+      case ProductCategory.kidsFurniture:
+        return context.l10n.catalogCategoryTitleKidsFurniture;
       case ProductCategory.other:
         return context.l10n.catalogCategoryTitleOther;
     }
@@ -90,6 +102,18 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         return Icons.door_sliding_outlined;
       case ProductCategory.white:
         return Icons.kitchen_outlined;
+      case ProductCategory.lighting:
+        return Icons.lightbulb_outline_rounded;
+      case ProductCategory.homeTextile:
+        return Icons.checkroom_outlined;
+      case ProductCategory.decor:
+        return Icons.living_outlined;
+      case ProductCategory.officeFurniture:
+        return Icons.meeting_room_outlined;
+      case ProductCategory.outdoorGarden:
+        return Icons.yard_outlined;
+      case ProductCategory.kidsFurniture:
+        return Icons.child_friendly_outlined;
       case ProductCategory.other:
         return Icons.category_outlined;
     }

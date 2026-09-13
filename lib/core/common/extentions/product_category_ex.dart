@@ -13,6 +13,12 @@ extension ProductCategoryExtension on ProductCategory? {
       ProductCategory.bed => l10n.categoryBed,
       ProductCategory.wardrobe => l10n.categoryWardrobe,
       ProductCategory.white => l10n.categoryWhite,
+      ProductCategory.lighting => l10n.categoryLighting,
+      ProductCategory.homeTextile => l10n.categoryHomeTextile,
+      ProductCategory.decor => l10n.categoryDecor,
+      ProductCategory.officeFurniture => l10n.categoryOfficeFurniture,
+      ProductCategory.outdoorGarden => l10n.categoryOutdoorGarden,
+      ProductCategory.kidsFurniture => l10n.categoryKidsFurniture,
       ProductCategory.other => l10n.categoryOther,
     };
   }

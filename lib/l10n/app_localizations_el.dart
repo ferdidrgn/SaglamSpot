@@ -94,6 +94,24 @@ class AppLocalizationsEl extends AppLocalizations {
   String get categoryWhite => 'Οικιακές συσκευές';
 
   @override
+  String get categoryLighting => 'Aydınlatma';
+
+  @override
+  String get categoryHomeTextile => 'Ev Tekstili';
+
+  @override
+  String get categoryDecor => 'Dekorasyon & Aksesuar';
+
+  @override
+  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+
+  @override
+  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+
+  @override
+  String get categoryKidsFurniture => 'Bebek & Çocuk';
+
+  @override
   String get categoryOther => 'Άλλο';
 
   @override
@@ -1647,6 +1665,24 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get catalogCategoryTitleWhite => 'Οικιακές Συσκευές';
+
+  @override
+  String get catalogCategoryTitleLighting => 'Aydınlatma';
+
+  @override
+  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+
+  @override
+  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+
+  @override
+  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+
+  @override
+  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+
+  @override
+  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
 
   @override
   String get catalogCategoryTitleOther => 'Διακόσμηση';

@@ -91,6 +91,24 @@ class AppLocalizationsUk extends AppLocalizations {
   String get categoryWhite => 'Побутова техніка';
 
   @override
+  String get categoryLighting => 'Aydınlatma';
+
+  @override
+  String get categoryHomeTextile => 'Ev Tekstili';
+
+  @override
+  String get categoryDecor => 'Dekorasyon & Aksesuar';
+
+  @override
+  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+
+  @override
+  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+
+  @override
+  String get categoryKidsFurniture => 'Bebek & Çocuk';
+
+  @override
   String get categoryOther => 'Інше';
 
   @override
@@ -1632,6 +1650,24 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get catalogCategoryTitleWhite => 'Побутова техніка';
+
+  @override
+  String get catalogCategoryTitleLighting => 'Aydınlatma';
+
+  @override
+  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+
+  @override
+  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+
+  @override
+  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+
+  @override
+  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+
+  @override
+  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
 
   @override
   String get catalogCategoryTitleOther => 'Декор';

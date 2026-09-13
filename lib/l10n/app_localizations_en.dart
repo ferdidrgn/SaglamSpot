@@ -92,6 +92,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryWhite => 'White Goods';
 
   @override
+  String get categoryLighting => 'Lighting';
+
+  @override
+  String get categoryHomeTextile => 'Home Textile';
+
+  @override
+  String get categoryDecor => 'Decor & Accessories';
+
+  @override
+  String get categoryOfficeFurniture => 'Office Furniture';
+
+  @override
+  String get categoryOutdoorGarden => 'Garden & Balcony';
+
+  @override
+  String get categoryKidsFurniture => 'Baby & Kids';
+
+  @override
   String get categoryOther => 'Other';
 
   @override
@@ -1635,7 +1653,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get catalogCategoryTitleWhite => 'Appliances';
 
   @override
-  String get catalogCategoryTitleOther => 'Decor';
+  String get catalogCategoryTitleLighting => 'Lighting';
+
+  @override
+  String get catalogCategoryTitleHomeTextile => 'Rugs & Home Textile';
+
+  @override
+  String get catalogCategoryTitleDecor => 'Decor & Accessories';
+
+  @override
+  String get catalogCategoryTitleOfficeFurniture => 'Office Furniture';
+
+  @override
+  String get catalogCategoryTitleOutdoorGarden => 'Garden & Balcony';
+
+  @override
+  String get catalogCategoryTitleKidsFurniture => 'Baby & Kids Room';
+
+  @override
+  String get catalogCategoryTitleOther => 'Other Items';
 
   @override
   String get mottoTitlePart1 => 'See Before You Come, ';

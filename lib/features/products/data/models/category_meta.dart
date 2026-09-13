@@ -78,6 +78,7 @@ const Map<String, IconData> _iconRegistry = {
   'yard': Icons.yard_rounded,
   'living': Icons.living_rounded,
   'meeting_room': Icons.meeting_room_rounded,
+  'child_friendly': Icons.child_friendly_rounded,
 };
 
 /// Firestore'a hiç dokunulmadıysa kullanılacak, canlı ve şık renklerle
@@ -119,10 +120,46 @@ final Map<ProductCategory, CategoryMeta> defaultCategoryMeta = {
     color: Color(0xFF5A8A6B), // Adaçayı yeşili
     order: 5,
   ),
+  ProductCategory.lighting: const CategoryMeta(
+    category: ProductCategory.lighting,
+    icon: Icons.lightbulb_rounded,
+    color: Color(0xFFE0A458), // Sıcak amber
+    order: 6,
+  ),
+  ProductCategory.homeTextile: const CategoryMeta(
+    category: ProductCategory.homeTextile,
+    icon: Icons.checkroom_rounded,
+    color: Color(0xFFC97B84), // Toz pembe/terakota
+    order: 7,
+  ),
+  ProductCategory.decor: const CategoryMeta(
+    category: ProductCategory.decor,
+    icon: Icons.living_rounded,
+    color: Color(0xFF8A5A7A), // Mürdüm
+    order: 8,
+  ),
+  ProductCategory.officeFurniture: const CategoryMeta(
+    category: ProductCategory.officeFurniture,
+    icon: Icons.meeting_room_rounded,
+    color: Color(0xFF43536B), // Kayrak mavisi
+    order: 9,
+  ),
+  ProductCategory.outdoorGarden: const CategoryMeta(
+    category: ProductCategory.outdoorGarden,
+    icon: Icons.yard_rounded,
+    color: Color(0xFF4FA8D8), // Açık gökyüzü mavisi
+    order: 10,
+  ),
+  ProductCategory.kidsFurniture: const CategoryMeta(
+    category: ProductCategory.kidsFurniture,
+    icon: Icons.child_friendly_rounded,
+    color: Color(0xFFE0724A), // Canlı mercan
+    order: 11,
+  ),
   ProductCategory.other: const CategoryMeta(
     category: ProductCategory.other,
     icon: Icons.category_rounded,
     color: Color(0xFF7A7F87), // Nötr gri
-    order: 6,
+    order: 12,
   ),
 };

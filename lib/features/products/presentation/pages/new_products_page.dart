@@ -72,6 +72,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         return context.l10n.catalogCategoryTitleWardrobe;
       case ProductCategory.white:
         return context.l10n.catalogCategoryTitleWhite;
+      case ProductCategory.lighting:
+        return context.l10n.catalogCategoryTitleLighting;
+      case ProductCategory.homeTextile:
+        return context.l10n.catalogCategoryTitleHomeTextile;
+      case ProductCategory.decor:
+        return context.l10n.catalogCategoryTitleDecor;
+      case ProductCategory.officeFurniture:
+        return context.l10n.catalogCategoryTitleOfficeFurniture;
+      case ProductCategory.outdoorGarden:
+        return context.l10n.catalogCategoryTitleOutdoorGarden;
+      case ProductCategory.kidsFurniture:
+        return context.l10n.catalogCategoryTitleKidsFurniture;
       case ProductCategory.other:
         return context.l10n.catalogCategoryTitleOther;
     }
@@ -91,6 +103,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         return Icons.door_sliding_outlined;
       case ProductCategory.white:
         return Icons.kitchen_outlined;
+      case ProductCategory.lighting:
+        return Icons.lightbulb_outline_rounded;
+      case ProductCategory.homeTextile:
+        return Icons.checkroom_outlined;
+      case ProductCategory.decor:
+        return Icons.living_outlined;
+      case ProductCategory.officeFurniture:
+        return Icons.meeting_room_outlined;
+      case ProductCategory.outdoorGarden:
+        return Icons.yard_outlined;
+      case ProductCategory.kidsFurniture:
+        return Icons.child_friendly_outlined;
       case ProductCategory.other:
         return Icons.category_outlined;
     }
@@ -110,6 +134,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         return 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80';
       case ProductCategory.white:
         return 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.lighting:
+        return 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.homeTextile:
+        return 'https://images.unsplash.com/photo-1600166898405-da9535204843?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.decor:
+        return 'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.officeFurniture:
+        return 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.outdoorGarden:
+        return 'https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.kidsFurniture:
+        return 'https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=800&q=80';
       case ProductCategory.other:
         return 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80';
     }

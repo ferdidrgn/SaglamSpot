@@ -254,6 +254,42 @@ abstract class AppLocalizations {
   /// **'Beyaz Eşya'**
   String get categoryWhite;
 
+  /// No description provided for @categoryLighting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aydınlatma'**
+  String get categoryLighting;
+
+  /// No description provided for @categoryHomeTextile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ev Tekstili'**
+  String get categoryHomeTextile;
+
+  /// No description provided for @categoryDecor.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dekorasyon & Aksesuar'**
+  String get categoryDecor;
+
+  /// No description provided for @categoryOfficeFurniture.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ofis Mobilyası'**
+  String get categoryOfficeFurniture;
+
+  /// No description provided for @categoryOutdoorGarden.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bahçe & Balkon'**
+  String get categoryOutdoorGarden;
+
+  /// No description provided for @categoryKidsFurniture.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bebek & Çocuk'**
+  String get categoryKidsFurniture;
+
   /// No description provided for @categoryOther.
   ///
   /// In tr, this message translates to:
@@ -3092,10 +3128,46 @@ abstract class AppLocalizations {
   /// **'Beyaz Eşya'**
   String get catalogCategoryTitleWhite;
 
+  /// No description provided for @catalogCategoryTitleLighting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aydınlatma'**
+  String get catalogCategoryTitleLighting;
+
+  /// No description provided for @catalogCategoryTitleHomeTextile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Halı & Ev Tekstili'**
+  String get catalogCategoryTitleHomeTextile;
+
+  /// No description provided for @catalogCategoryTitleDecor.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dekorasyon & Aksesuar'**
+  String get catalogCategoryTitleDecor;
+
+  /// No description provided for @catalogCategoryTitleOfficeFurniture.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ofis Mobilyası'**
+  String get catalogCategoryTitleOfficeFurniture;
+
+  /// No description provided for @catalogCategoryTitleOutdoorGarden.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bahçe & Balkon'**
+  String get catalogCategoryTitleOutdoorGarden;
+
+  /// No description provided for @catalogCategoryTitleKidsFurniture.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bebek & Çocuk Odası'**
+  String get catalogCategoryTitleKidsFurniture;
+
   /// No description provided for @catalogCategoryTitleOther.
   ///
   /// In tr, this message translates to:
-  /// **'Dekorasyon'**
+  /// **'Diğer Ürünler'**
   String get catalogCategoryTitleOther;
 
   /// No description provided for @mottoTitlePart1.
