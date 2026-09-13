@@ -57,6 +57,14 @@ class _CustomProductCardState extends State<CustomProductCard> {
                 blurRadius: _isHovered ? 22 : 14,
                 offset: Offset(0, _isHovered ? 10 : 6),
               ),
+              // Kategori renkli yumuşak "radiant" parıltı — eski kart
+              // dilinden geri getirildi, kartlara hafif bir canlılık katıyor.
+              BoxShadow(
+                color: meta.color.withOpacity(_isHovered ? 0.32 : 0.18),
+                blurRadius: _isHovered ? 32 : 26,
+                spreadRadius: -8,
+                offset: Offset(0, _isHovered ? 20 : 16),
+              ),
             ],
           ),
           child: Column(
@@ -196,33 +204,56 @@ class _CircleIconButton extends StatelessWidget {
       );
 }
 
-/// Sade, düz-renk durum etiketi — referanstaki minimal, tek satırlık
-/// rozetlerle aynı sakinlikte. Sıfır = yeşil, Spot = turuncu (marka rengi
-/// aynı kaldı, sadece görsel-üstü büyük bloktan küçük hap'e döndü).
+/// "Sıfır" (dolgun/solid, yeşil) ve "İkinci El" (ince kenarlıklı/outlined,
+/// turuncu) rozet ayrımı — kullanıcının "daha şık, göz oyunları güzel"
+/// dediği eski karttan geri getirildi: iki durumun aynı düz-beyaz hapla
+/// değil, dolu/boş kontrastıyla bir bakışta ayırt edilmesi.
 class _ConditionTag extends StatelessWidget {
   final bool isSpotProduct;
   const _ConditionTag({required this.isSpotProduct});
 
   @override
   Widget build(final BuildContext context) {
-    final Color color =
-        isSpotProduct ? SpotPalette.accent : NewCollectionPalette.badgeGreen;
-    final String label = isSpotProduct
-        ? context.l10n.usedProductBadge
-        : context.l10n.productCardNewBadge;
+    if (!isSpotProduct) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: NewCollectionPalette.badgeGreen,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: NewCollectionPalette.badgeGreen.withOpacity(0.4),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Text(
+          context.l10n.productCardNewBadge,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.5,
+          ),
+        ),
+      );
+    }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.92),
+        color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: SpotPalette.accent, width: 1.3),
       ),
       child: Text(
-        label,
+        context.l10n.usedProductBadge,
         style: TextStyle(
-          color: color,
+          color: SpotPalette.accent,
           fontSize: 10.5,
           fontWeight: FontWeight.w700,
+          letterSpacing: 0.5,
         ),
       ),
     );
