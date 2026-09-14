@@ -241,11 +241,16 @@ class _SettingsCard extends StatelessWidget {
   Widget build(final BuildContext context) {
     if (children.isEmpty) return const SizedBox.shrink();
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.mobileSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.mobileBorder),
       ),
+      // clipBehavior yukarıda: ListTile'ların kendi (köşesiz/dikdörtgen)
+      // dokunma/hover mürekkep efekti, kartın yuvarlak dış köşesinden
+      // taşıp köşelerde çirkin küçük kare çıkıntılar oluşturuyordu —
+      // Container'ı kırpmak bunu kalıcı olarak engelliyor.
       child: Column(
         children: [
           for (int i = 0; i < children.length; i++) ...[
@@ -320,9 +325,13 @@ class _SettingsTile extends StatelessWidget {
   }
 }
 
-/// Görünüm seçici — sadece kendi marka renklerimiz: Açık / Koyu. Cihazın
-/// sistem ayarına bırakan bir "Sistem" seçeneği bilerek YOK — kullanıcı
-/// her zaman bizim tanımladığımız iki paletten birini seçiyor.
+/// Görünüm seçici — Açık / Sistem / Koyu. "Sistem" seçilirse uygulama
+/// telefonun genel açık/koyu tercihini otomatik takip eder (ThemeMode.system,
+/// bkz. theme_mode_provider.dart — alt yapı zaten hazırdı, burada sadece
+/// üçüncü seçenek arayüze eklendi). Marka renk paleti (zümrüt/altın vb.)
+/// her iki modda da AYNI kalır — değişen sadece açık/koyu zemin, telefonun
+/// duvar kağıdından dinamik vurgu rengi (Material You) ÇEKİLMEZ; bu bilinçli
+/// bir tercih, marka kimliğinin her cihazda tutarlı kalması için.
 class _ThemeModeCard extends ConsumerWidget {
   const _ThemeModeCard();
 
@@ -334,6 +343,11 @@ class _ThemeModeCard extends ConsumerWidget {
         ThemeMode.light,
         Icons.light_mode_rounded,
         context.l10n.settingsThemeLight
+      ),
+      (
+        ThemeMode.system,
+        Icons.brightness_auto_rounded,
+        context.l10n.settingsThemeSystem
       ),
       (ThemeMode.dark, Icons.dark_mode_rounded, context.l10n.settingsThemeDark),
     ];

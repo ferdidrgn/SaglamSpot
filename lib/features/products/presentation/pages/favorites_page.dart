@@ -34,23 +34,16 @@ class FavoritesPage extends ConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () => NavigationHandler.smartGoBack(context),
-                    icon: Icon(Icons.arrow_back_rounded,
-                        color: AppColors.mobileTextPrimary),
-                  ),
-                  Expanded(
-                    child: Text(context.l10n.favoritesTitle,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.mobileTextPrimary)),
-                  ),
-                ],
-              ),
+              // Bu sayfa alt tab bar'ın bir kökü — geri gidilecek bir "önceki
+              // sayfa" kavramı yok, bu yüzden geri oku UI/UX hatasıydı
+              // (kaldırıldı, diğer tab kökleriyle - Ana Sayfa/Keşfet/Profil -
+              // tutarlı).
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 4),
+              child: Text(context.l10n.favoritesTitle,
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.mobileTextPrimary)),
             ),
             Expanded(
               child: favorites.isEmpty

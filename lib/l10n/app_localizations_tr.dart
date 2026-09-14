@@ -367,11 +367,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get month_12 => 'Aralık';
 
   @override
-  String get noProductFoundTitle => 'Aradığınız Kriterde Ürün Bulunamadı';
+  String get noProductFoundTitle => 'Şu An Satışta Böyle Bir Ürün Yok';
 
   @override
   String get noProductFoundDescription =>
-      'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz';
+      'Aradığınız kriterlere uyan bir ürünümüz şu anda stokta bulunmuyor. Stoklarımız sık değişir — farklı bir arama deneyebilir veya filtreleri temizleyip güncel ürünlerimize göz atabilirsiniz.';
 
   @override
   String get adminPanelTitle => 'Yönetici Paneli';

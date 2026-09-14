@@ -797,13 +797,13 @@ abstract class AppLocalizations {
   /// No description provided for @noProductFoundTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Aradığınız Kriterde Ürün Bulunamadı'**
+  /// **'Şu An Satışta Böyle Bir Ürün Yok'**
   String get noProductFoundTitle;
 
   /// No description provided for @noProductFoundDescription.
   ///
   /// In tr, this message translates to:
-  /// **'Farklı filtreler deneyebilir veya arama teriminizi değiştirebilirsiniz'**
+  /// **'Aradığınız kriterlere uyan bir ürünümüz şu anda stokta bulunmuyor. Stoklarımız sık değişir — farklı bir arama deneyebilir veya filtreleri temizleyip güncel ürünlerimize göz atabilirsiniz.'**
   String get noProductFoundDescription;
 
   /// No description provided for @adminPanelTitle.

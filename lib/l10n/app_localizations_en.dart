@@ -371,11 +371,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get month_12 => 'December';
 
   @override
-  String get noProductFoundTitle => 'No Products Found for Your Criteria';
+  String get noProductFoundTitle => 'Nothing Like This For Sale Right Now';
 
   @override
   String get noProductFoundDescription =>
-      'You can try different filters or change your search term';
+      'We don\'t currently have a product in stock matching your search. Our stock changes often — try a different search, or clear the filters to browse our current products.';
 
   @override
   String get adminPanelTitle => 'Admin Panel';
