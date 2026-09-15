@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Universal Links: WhatsApp'ta paylaşılan https://saglamspotcu.web.app/product/...
+	     ve /cart?items=...&sig=... linklerine tıklanınca, uygulama yüklüyse
+	     Safari yerine DOĞRUDAN uygulama açılsın diye gerekli. Bu dosyanın
+	     tek başına var olması yeterli değil — Apple Developer Portal'da bu
+	     App ID için "Associated Domains" capability'si AÇIK olmalı VE
+	     web/.well-known/apple-app-site-association dosyasındaki "appID"
+	     alanı gerçek Apple Team ID ile doldurulmuş olmalı (bkz. o dosyadaki
+	     TODO notu). -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:saglamspotcu.web.app</string>
+	</array>
+</dict>
+</plist>

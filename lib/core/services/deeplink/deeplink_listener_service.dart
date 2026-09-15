@@ -42,20 +42,30 @@ final class DeeplinkListener {
     final String path = uri.path;
     if (path.isEmpty || path == '/') return;
 
-    debugPrint('🔗 Deeplink yakalandı: $path');
+    // KRİTİK: `uri.query` (ör. `sig=...` / `items=...&sig=...`) burada
+    // ATLANIRSA hem /product/:slugWithId?sig= hem /cart?items=&sig=
+    // rotalarındaki DeepLinkSecurityEngine.verifySignedIdentifier çağrısı
+    // boş bir imzayla çalışır ve HER ZAMAN false döner — App Links/
+    // Universal Links ile (cold start VEYA warm start) açılan gerçek,
+    // doğru imzalı bir link bile mobilde "GÜVENLİK DOĞRULAMASI BAŞARISIZ"
+    // ekranına düşer, sepet linki de paylaşılan ürünleri hiç yüklemez.
+    // Bu yüzden sorgu dizesi MUTLAKA path'e geri eklenir.
+    final String location = uri.query.isEmpty ? path : '$path?${uri.query}';
+
+    debugPrint('🔗 Deeplink yakalandı: $location');
 
     // Mevcut konum kontrolü (Sonsuz döngü ve gereksiz render önleyici)
-    final currentPath = router.routerDelegate.currentConfiguration.fullPath;
-    if (currentPath == path) {
-      debugPrint('ℹ️ Zaten hedef sayfadasınız: $path');
+    final currentPath = router.routerDelegate.currentConfiguration.uri.toString();
+    if (currentPath == location) {
+      debugPrint('ℹ️ Zaten hedef sayfadasınız: $location');
       return;
     }
 
     try {
       // Tarayıcı geçmişi ve URL çubuğu senkronizasyonu için 'go' kullanıyoruz
-      router.go(path);
+      router.go(location);
     } catch (e) {
-      debugPrint('❌ Geçersiz Deeplink Yolu: $path');
+      debugPrint('❌ Geçersiz Deeplink Yolu: $location');
     }
   }
 

@@ -90,7 +90,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- 🔗 App Links / Deeplink Yapılandırması -->
+            <!-- 🔗 App Links / Deeplink Yapılandırması
+                 /product (ürün detay) VE /cart (WhatsApp'tan gelen "sepeti
+                 gönder" linki, bkz. FurnitureShareService.generateCartUrl)
+                 — ikisi de aynı imzalı-link mekanizmasını kullanıyor, bu
+                 yüzden ikisi de OS seviyesinde app'e yönlenmeli. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -104,6 +108,14 @@
                 <data
                     android:host="saglamspotcu.web.app"
                     android:pathPrefix="/product"
+                    android:scheme="http" />
+                <data
+                    android:host="saglamspotcu.web.app"
+                    android:pathPrefix="/cart"
+                    android:scheme="https" />
+                <data
+                    android:host="saglamspotcu.web.app"
+                    android:pathPrefix="/cart"
                     android:scheme="http" />
             </intent-filter>
 
