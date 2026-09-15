@@ -112,6 +112,47 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryOther => 'Diğer';
 
   @override
+  String get categorySettingsTitle => 'Kategori Ayarları';
+
+  @override
+  String get categorySettingsTooltip => 'Kategori Ayarları';
+
+  @override
+  String get categorySettingsSubtitle =>
+      'Her kategorinin ikonunu, rengini, sırasını ve görünürlüğünü buradan düzenleyebilirsin — Firebase Console\'a girmene gerek yok.';
+
+  @override
+  String get categorySettingsSaved => 'Kategori güncellendi';
+
+  @override
+  String get categorySettingsSaveError => 'Kategori kaydedilemedi, tekrar dene';
+
+  @override
+  String get categoryInactiveBadge => 'Pasif';
+
+  @override
+  String get categoryActiveLabel => 'Aktif';
+
+  @override
+  String get categoryActiveHint => 'Kapalıyken bu kategori uygulamada gizlenir';
+
+  @override
+  String get customLabelOptional => 'Özel Etiket (opsiyonel)';
+
+  @override
+  String get customLabelHint =>
+      'Boş bırakılırsa kategorinin çevrilmiş varsayılan ismi kullanılır.';
+
+  @override
+  String get iconLabel => 'İkon';
+
+  @override
+  String get colorLabel => 'Renk';
+
+  @override
+  String get orderLabel => 'Sıra';
+
+  @override
   String get condition => 'Durum';
 
   @override

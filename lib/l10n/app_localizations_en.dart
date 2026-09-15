@@ -113,6 +113,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryOther => 'Other';
 
   @override
+  String get categorySettingsTitle => 'Category Settings';
+
+  @override
+  String get categorySettingsTooltip => 'Category Settings';
+
+  @override
+  String get categorySettingsSubtitle =>
+      'Edit each category\'s icon, color, order and visibility here — no need to open Firebase Console.';
+
+  @override
+  String get categorySettingsSaved => 'Category updated';
+
+  @override
+  String get categorySettingsSaveError =>
+      'Couldn\'t save the category, try again';
+
+  @override
+  String get categoryInactiveBadge => 'Inactive';
+
+  @override
+  String get categoryActiveLabel => 'Active';
+
+  @override
+  String get categoryActiveHint =>
+      'When off, this category is hidden in the app';
+
+  @override
+  String get customLabelOptional => 'Custom Label (optional)';
+
+  @override
+  String get customLabelHint =>
+      'Leave empty to use the category\'s translated default name.';
+
+  @override
+  String get iconLabel => 'Icon';
+
+  @override
+  String get colorLabel => 'Color';
+
+  @override
+  String get orderLabel => 'Order';
+
+  @override
   String get condition => 'Condition';
 
   @override

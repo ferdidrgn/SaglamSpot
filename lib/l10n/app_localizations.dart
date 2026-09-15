@@ -296,6 +296,84 @@ abstract class AppLocalizations {
   /// **'Diğer'**
   String get categoryOther;
 
+  /// No description provided for @categorySettingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori Ayarları'**
+  String get categorySettingsTitle;
+
+  /// No description provided for @categorySettingsTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori Ayarları'**
+  String get categorySettingsTooltip;
+
+  /// No description provided for @categorySettingsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her kategorinin ikonunu, rengini, sırasını ve görünürlüğünü buradan düzenleyebilirsin — Firebase Console\'a girmene gerek yok.'**
+  String get categorySettingsSubtitle;
+
+  /// No description provided for @categorySettingsSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori güncellendi'**
+  String get categorySettingsSaved;
+
+  /// No description provided for @categorySettingsSaveError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori kaydedilemedi, tekrar dene'**
+  String get categorySettingsSaveError;
+
+  /// No description provided for @categoryInactiveBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pasif'**
+  String get categoryInactiveBadge;
+
+  /// No description provided for @categoryActiveLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif'**
+  String get categoryActiveLabel;
+
+  /// No description provided for @categoryActiveHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapalıyken bu kategori uygulamada gizlenir'**
+  String get categoryActiveHint;
+
+  /// No description provided for @customLabelOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Etiket (opsiyonel)'**
+  String get customLabelOptional;
+
+  /// No description provided for @customLabelHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Boş bırakılırsa kategorinin çevrilmiş varsayılan ismi kullanılır.'**
+  String get customLabelHint;
+
+  /// No description provided for @iconLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkon'**
+  String get iconLabel;
+
+  /// No description provided for @colorLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Renk'**
+  String get colorLabel;
+
+  /// No description provided for @orderLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıra'**
+  String get orderLabel;
+
   /// No description provided for @condition.
   ///
   /// In tr, this message translates to:

@@ -14,6 +14,7 @@ import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
+import '../../../products/presentation/pages/admin_category_settings_page.dart';
 import '../../../products/presentation/pages/edit_product_page.dart';
 import '../../../products/presentation/providers/gallery_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -114,6 +115,12 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
           ),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.tune_rounded, color: AppColors.mobileTextSecondary),
+            tooltip: context.l10n.categorySettingsTooltip,
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (final _) => const AdminCategorySettingsPage())),
+          ),
           IconButton(
             icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
             onPressed: () => _confirmLogout(context),
