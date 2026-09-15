@@ -1601,6 +1601,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsThemeDark => 'Dark';
 
   @override
+  String get settingsDynamicColorTitle => 'Use My Phone\'s Color';
+
+  @override
+  String get settingsDynamicColorSubtitle =>
+      'Light/dark mode stays the same — only accent colors adapt to your phone\'s wallpaper theme (Android 12+)';
+
+  @override
   String get notificationsTitle => 'Notifications';
 
   @override

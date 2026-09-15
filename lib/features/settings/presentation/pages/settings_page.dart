@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -7,6 +8,7 @@ import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/dynamic_color_provider.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/language_selector.dart';
@@ -14,6 +16,7 @@ import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
+import '../../../products/presentation/widgets/admin_form_widgets.dart';
 
 /// Profil / Ayarlar sayfası. Uygulamada müşteri hesap sistemi yok —
 /// bu yüzden giriş/kayıt gerektirmez; dil, iletişim, kurumsal sayfalar
@@ -90,6 +93,10 @@ class SettingsPage extends ConsumerWidget {
             _SectionLabel(context.l10n.settingsAppearanceSection),
             const SizedBox(height: 10),
             const _ThemeModeCard(),
+            if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
+              const SizedBox(height: 12),
+              const _DynamicColorCard(),
+            ],
             const SizedBox(height: 24),
             _SectionLabel(context.l10n.settingsGeneralSection),
             const SizedBox(height: 10),
@@ -398,6 +405,36 @@ class _ThemeModeCard extends ConsumerWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// "Telefonumun Rengini Kullan" anahtarı — açılırsa uygulama, Android
+/// duvar kağıdından türeyen Material You rengine göre (marka sabit
+/// paleti yerine) yeniden renklenir. Sadece Android'de gösterilir (bkz.
+/// üstteki `if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)`
+/// — iOS/web'de böyle bir sistem rengi kavramı yok.
+class _DynamicColorCard extends ConsumerWidget {
+  const _DynamicColorCard();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final enabled = ref.watch(dynamicColorEnabledProvider);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.mobileSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.mobileBorder),
+      ),
+      child: AdminFormSwitch(
+        title: context.l10n.settingsDynamicColorTitle,
+        subtitle: context.l10n.settingsDynamicColorSubtitle,
+        value: enabled,
+        onChanged: (final v) =>
+            ref.read(dynamicColorEnabledProvider.notifier).set(v),
       ),
     );
   }

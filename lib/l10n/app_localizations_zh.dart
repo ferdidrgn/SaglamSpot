@@ -1536,6 +1536,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsThemeDark => '深色';
 
   @override
+  String get settingsDynamicColorTitle => 'Telefonumun Rengini Kullan';
+
+  @override
+  String get settingsDynamicColorSubtitle =>
+      'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)';
+
+  @override
   String get notificationsTitle => '通知';
 
   @override

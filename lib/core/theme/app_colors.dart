@@ -10,38 +10,107 @@ class AppColors {
   static bool get _dark => _brightness == Brightness.dark;
 
   // ================================================================
+  // ANDROID MATERIAL YOU / "TELEFONUMUN TEMASI" DESTEĞİ
+  // ================================================================
+  // Kullanıcı Ayarlar'dan "Telefonumun Rengini Kullan"ı açarsa (Android
+  // 12+, dynamic_color paketi ile main.dart'ta yakalanır), aşağıdaki
+  // KANONİK renk getter'ları sabit marka hex'leri yerine cihazın duvar
+  // kağıdından türeyen ColorScheme'i kullanır. Kapalıyken veya şema
+  // yoksa (iOS/web/eski Android) hiçbir şey değişmez — sabit palet aynen
+  // çalışır. Semantik durum renkleri (error/success/warning/info) VE
+  // "dark mode sabit referans" sabitleri BİLEREK dinamikleştirilmedi;
+  // onlar markadan/temadan bağımsız anlam taşıyor.
+  static bool _useDynamicColor = false;
+  static ColorScheme? _dynamicLight;
+  static ColorScheme? _dynamicDark;
+
+  static void configureDynamicColor({
+    required final bool enabled,
+    required final ColorScheme? light,
+    required final ColorScheme? dark,
+  }) {
+    _useDynamicColor = enabled;
+    _dynamicLight = light;
+    _dynamicDark = dark;
+  }
+
+  static ColorScheme? get _dynamicScheme {
+    if (!_useDynamicColor) return null;
+    return _dark ? _dynamicDark : _dynamicLight;
+  }
+
+  static Color _darken(final Color color, [final double amount = 0.18]) {
+    final hsl = HSLColor.fromColor(color);
+    return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
+  }
+
+  // ================================================================
   // KANONİK RENKLER — tüm diğer isimler bunlara işaret eder.
   // ================================================================
   static const Color white = Colors.white;
   static const Color black = Color(0xFF2A1F17);
   static const Color textLight = white;
 
-  static Color get primary => _dark ? const Color(0xFFE0B074) : const Color(0xFF3E2F23);
-  static Color get primaryDark => _dark ? const Color(0xFFC79868) : const Color(0xFF241A13);
-  static Color get primaryLight => _dark ? const Color(0xFFF0D4A8) : const Color(0xFF6B5744);
+  static Color get primary =>
+      _dynamicScheme?.primary ??
+      (_dark ? const Color(0xFFE0B074) : const Color(0xFF3E2F23));
+  static Color get primaryDark => _dynamicScheme != null
+      ? _darken(_dynamicScheme!.primary)
+      : (_dark ? const Color(0xFFC79868) : const Color(0xFF241A13));
+  static Color get primaryLight =>
+      _dynamicScheme?.primaryContainer ??
+      (_dark ? const Color(0xFFF0D4A8) : const Color(0xFF6B5744));
 
-  static Color get accent => _dark ? const Color(0xFFE8B573) : const Color(0xFFA9714B);
-  static Color get accentDark => _dark ? const Color(0xFFD09850) : const Color(0xFF8B5A3A);
-  static Color get accentLight => _dark ? const Color(0xFFF2D4A0) : const Color(0xFFC79868);
+  static Color get accent =>
+      _dynamicScheme?.tertiary ??
+      (_dark ? const Color(0xFFE8B573) : const Color(0xFFA9714B));
+  static Color get accentDark => _dynamicScheme != null
+      ? _darken(_dynamicScheme!.tertiary)
+      : (_dark ? const Color(0xFFD09850) : const Color(0xFF8B5A3A));
+  static Color get accentLight =>
+      _dynamicScheme?.tertiaryContainer ??
+      (_dark ? const Color(0xFFF2D4A0) : const Color(0xFFC79868));
 
   // Koyu temada "surface/card" bilerek zeminden BELİRGİN şekilde daha açık
   // tutuluyor (gerçek bir "elevated card" hissi için) — önceki sürümde
   // hepsi birbirine çok yakın koyu kahve tonlarıydı ve her şey birbirine
   // karışıyordu.
-  static Color get background => _dark ? const Color(0xFF1C140E) : const Color(0xFFF5EFE6);
-  static Color get surface => _dark ? const Color(0xFF3D2E22) : const Color(0xFFFFFDF9);
-  static Color get secondary => _dark ? const Color(0xFF4A3826) : const Color(0xFFEDE3D3);
-  static Color get secondaryVariant => _dark ? const Color(0xFF5C4630) : const Color(0xFFE0D3BC);
+  static Color get background =>
+      _dynamicScheme?.surface ??
+      (_dark ? const Color(0xFF1C140E) : const Color(0xFFF5EFE6));
+  static Color get surface =>
+      _dynamicScheme?.surfaceContainerHigh ??
+      (_dark ? const Color(0xFF3D2E22) : const Color(0xFFFFFDF9));
+  static Color get secondary =>
+      _dynamicScheme?.surfaceContainer ??
+      (_dark ? const Color(0xFF4A3826) : const Color(0xFFEDE3D3));
+  static Color get secondaryVariant =>
+      _dynamicScheme?.surfaceContainerHighest ??
+      (_dark ? const Color(0xFF5C4630) : const Color(0xFFE0D3BC));
 
-  static Color get muted => _dark ? const Color(0xFF8A7560) : const Color(0xFFCFC0A8);
-  static Color get mutedDark => _dark ? const Color(0xFFA8927A) : const Color(0xFFB5A488);
+  static Color get muted =>
+      _dynamicScheme?.outlineVariant ??
+      (_dark ? const Color(0xFF8A7560) : const Color(0xFFCFC0A8));
+  static Color get mutedDark =>
+      _dynamicScheme?.outline ??
+      (_dark ? const Color(0xFFA8927A) : const Color(0xFFB5A488));
 
-  static Color get textPrimary => _dark ? const Color(0xFFF7F0E6) : const Color(0xFF3E2F23);
-  static Color get textSecondary => _dark ? const Color(0xFFDCCBB4) : const Color(0xFF6B5744);
-  static Color get textTertiary => _dark ? const Color(0xFFB4A088) : const Color(0xFF8F7D6B);
+  static Color get textPrimary =>
+      _dynamicScheme?.onSurface ??
+      (_dark ? const Color(0xFFF7F0E6) : const Color(0xFF3E2F23));
+  static Color get textSecondary =>
+      _dynamicScheme?.onSurfaceVariant ??
+      (_dark ? const Color(0xFFDCCBB4) : const Color(0xFF6B5744));
+  static Color get textTertiary => _dynamicScheme != null
+      ? Color.lerp(_dynamicScheme!.onSurfaceVariant, _dynamicScheme!.surface, 0.35)!
+      : (_dark ? const Color(0xFFB4A088) : const Color(0xFF8F7D6B));
 
-  static Color get border => _dark ? const Color(0xFF5C4630) : const Color(0xFFE0D3BC);
-  static Color get divider => _dark ? const Color(0xFF4A3826) : const Color(0xFFEDE3D3);
+  static Color get border =>
+      _dynamicScheme?.outlineVariant ??
+      (_dark ? const Color(0xFF5C4630) : const Color(0xFFE0D3BC));
+  static Color get divider =>
+      _dynamicScheme?.outlineVariant ??
+      (_dark ? const Color(0xFF4A3826) : const Color(0xFFEDE3D3));
 
   // --- SEMANTİK RENKLER (durum bildirimi — markadan bağımsız) ---
   static Color get error => _dark ? const Color(0xFFE08A70) : const Color(0xFFB4543A);

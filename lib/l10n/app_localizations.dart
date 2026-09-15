@@ -3038,6 +3038,18 @@ abstract class AppLocalizations {
   /// **'Koyu'**
   String get settingsThemeDark;
 
+  /// No description provided for @settingsDynamicColorTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonumun Rengini Kullan'**
+  String get settingsDynamicColorTitle;
+
+  /// No description provided for @settingsDynamicColorSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)'**
+  String get settingsDynamicColorSubtitle;
+
   /// No description provided for @notificationsTitle.
   ///
   /// In tr, this message translates to:

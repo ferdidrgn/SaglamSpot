@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,10 +9,12 @@ import 'core/config/app_router.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/services/admin_session_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
+import 'core/services/dynamic_color_cache.dart';
 import 'core/services/onboarding_cache.dart';
 import 'core/services/theme_mode_cache.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/dynamic_color_provider.dart';
 import 'core/theme/theme_mode_provider.dart';
 import 'l10n/app_localizations.dart';
 
@@ -70,6 +73,9 @@ void main() async {
   // konum kararını senkron verebilmesi için önceden yüklenir
   await OnboardingCache.load();
 
+  // 7. "Telefonumun temasını kullan" (Android Material You) tercihi
+  await DynamicColorCache.load();
+
   runApp(
       const ProviderScope(observers: [], child: MyApp())
   );
@@ -107,60 +113,80 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     final appTheme = ref.watch(appThemeProvider);
     final localeAsync = ref.watch(localeControllerProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final useDynamicColor = ref.watch(dynamicColorEnabledProvider);
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'Sağlam Spot',
-      scrollBehavior: MouseDragScrollBehavior(),
-      theme: appTheme.lightTheme,
-      darkTheme: appTheme.darkTheme,
-      themeMode: themeMode,
-      locale: localeAsync.value ?? const Locale('tr'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: _router,
-      builder: (final BuildContext context, final Widget? child) {
-        // AppColors.X sabitleri her yerde `static const` yerine artık birer
-        // GETTER — bu yüzden Flutter'ın kendiliğinden "bu widget'ları
-        // yeniden çiz" demesi için bir sebebi yok (statik bir değişkenin
-        // değişmesi hiçbir Element'i kirli işaretlemez). Görünüm her
-        // değiştiğinde tüm ağacı GERÇEKTEN yeniden inşa ettirmek için:
-        // 1) o anki efektif parlaklığı hesapla, 2) AppColors'a bildir,
-        // 3) alt ağacı o parlaklığa göre KEY'le — key değişince Flutter
-        // eski Element'leri atıp sıfırdan kurar, tüm AppColors.X
-        // çağrıları güncel değerle yeniden değerlendirilir.
-        final effectiveBrightness = switch (themeMode) {
-          ThemeMode.light => Brightness.light,
-          ThemeMode.dark => Brightness.dark,
-          ThemeMode.system => MediaQuery.platformBrightnessOf(context),
-        };
-        AppColors.setBrightness(effectiveBrightness);
+    // DynamicColorBuilder yalnızca Android 12+ (ve destekleyen diğer
+    // platformlarda) gerçek bir ColorScheme döner; iOS/web/eski Android'de
+    // ikisi de null gelir ve AppColors sessizce sabit marka paletine döner
+    // (bkz. configureDynamicColor).
+    return DynamicColorBuilder(
+      builder: (final lightDynamic, final darkDynamic) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'Sağlam Spot',
+          scrollBehavior: MouseDragScrollBehavior(),
+          theme: appTheme.lightTheme,
+          darkTheme: appTheme.darkTheme,
+          themeMode: themeMode,
+          locale: localeAsync.value ?? const Locale('tr'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _router,
+          builder: (final BuildContext context, final Widget? child) {
+            // AppColors.X sabitleri her yerde `static const` yerine artık birer
+            // GETTER — bu yüzden Flutter'ın kendiliğinden "bu widget'ları
+            // yeniden çiz" demesi için bir sebebi yok (statik bir değişkenin
+            // değişmesi hiçbir Element'i kirli işaretlemez). Görünüm her
+            // değiştiğinde tüm ağacı GERÇEKTEN yeniden inşa ettirmek için:
+            // 1) o anki efektif parlaklığı hesapla, 2) AppColors'a bildir,
+            // 3) alt ağacı o parlaklığa göre KEY'le — key değişince Flutter
+            // eski Element'leri atıp sıfırdan kurar, tüm AppColors.X
+            // çağrıları güncel değerle yeniden değerlendirilir.
+            final effectiveBrightness = switch (themeMode) {
+              ThemeMode.light => Brightness.light,
+              ThemeMode.dark => Brightness.dark,
+              ThemeMode.system => MediaQuery.platformBrightnessOf(context),
+            };
+            AppColors.setBrightness(effectiveBrightness);
+            AppColors.configureDynamicColor(
+              enabled: useDynamicColor,
+              light: lightDynamic,
+              dark: darkDynamic,
+            );
 
-        return MediaQuery(
-          // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
-          data: MediaQuery.of(context).copyWith(
-            textScaler: const TextScaler.linear(1.0),
-          ),
-          // Ctrl+K / Cmd+K artık HER sayfada çalışıyor. NOT: Önceki
-          // sürüm Shortcuts+Actions+Focus(autofocus:true) kullanıyordu —
-          // autofocus:true tüm uygulamayı saran bir Focus düğümünde
-          // henüz layout tamamlanmadan odak sıralaması hesaplamaya
-          // çalışıyordu ("RenderBox was not laid out" hatası) ve bu da
-          // art arda hata/rebuild döngüsüne girip sayfayı kilitliyordu.
-          // CallbackShortcuts hiçbir Focus düğümüne ihtiyaç duymadığı
-          // için bu sorunu tamamen ortadan kaldırıyor.
-          child: CallbackShortcuts(
-            bindings: <ShortcutActivator, VoidCallback>{
-              LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
-                  () => _router.go('/search'),
-              LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
-                  () => _router.go('/search'),
-            },
-            child: KeyedSubtree(
-              key: ValueKey(effectiveBrightness),
-              child: child ?? const SizedBox.shrink(),
-            ),
-          ),
+            return MediaQuery(
+              // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
+              data: MediaQuery.of(context).copyWith(
+                textScaler: const TextScaler.linear(1.0),
+              ),
+              // Ctrl+K / Cmd+K artık HER sayfada çalışıyor. NOT: Önceki
+              // sürüm Shortcuts+Actions+Focus(autofocus:true) kullanıyordu —
+              // autofocus:true tüm uygulamayı saran bir Focus düğümünde
+              // henüz layout tamamlanmadan odak sıralaması hesaplamaya
+              // çalışıyordu ("RenderBox was not laid out" hatası) ve bu da
+              // art arda hata/rebuild döngüsüne girip sayfayı kilitliyordu.
+              // CallbackShortcuts hiçbir Focus düğümüne ihtiyaç duymadığı
+              // için bu sorunu tamamen ortadan kaldırıyor.
+              child: CallbackShortcuts(
+                bindings: <ShortcutActivator, VoidCallback>{
+                  LogicalKeySet(
+                          LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
+                      () => _router.go('/search'),
+                  LogicalKeySet(
+                          LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
+                      () => _router.go('/search'),
+                },
+                child: KeyedSubtree(
+                  // Parlaklık VEYA dinamik renk tercihi/şeması değiştiğinde
+                  // alt ağacı sıfırdan kurdurmak için ikisini de anahtara
+                  // katıyoruz.
+                  key: ValueKey(
+                      '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              ),
+            );
+          },
         );
       },
     );

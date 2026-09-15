@@ -1598,6 +1598,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsThemeDark => 'Koyu';
 
   @override
+  String get settingsDynamicColorTitle => 'Telefonumun Rengini Kullan';
+
+  @override
+  String get settingsDynamicColorSubtitle =>
+      'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)';
+
+  @override
   String get notificationsTitle => 'Bildirimler';
 
   @override
