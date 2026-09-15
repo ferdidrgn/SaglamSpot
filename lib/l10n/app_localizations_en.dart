@@ -2072,4 +2072,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firebaseOpenNotificationSettings => 'Open Notification Settings';
+
+  @override
+  String get productStatsTooltip => 'Statistics';
+
+  @override
+  String get productStatsTitle => 'Statistics';
+
+  @override
+  String get productStatsTotalViews => 'Total Views (Web + Mobile)';
+
+  @override
+  String get productStatsWeb => 'Web';
+
+  @override
+  String get productStatsMobile => 'Mobile';
+
+  @override
+  String productStatsAvailableSection(int count) {
+    return 'Available Products ($count)';
+  }
+
+  @override
+  String productStatsSoldSection(int count) {
+    return 'Sold Products ($count)';
+  }
+
+  @override
+  String get productStatsEmpty => 'No products yet';
+
+  @override
+  String productStatsRowBreakdown(int web, int mobile) {
+    return 'Web: $web · Mobile: $mobile';
+  }
 }

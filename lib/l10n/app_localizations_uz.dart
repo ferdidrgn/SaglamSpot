@@ -2079,4 +2079,37 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get firebaseOpenNotificationSettings => 'Bildirim Ayarlarını Aç';
+
+  @override
+  String get productStatsTooltip => 'İstatistikler';
+
+  @override
+  String get productStatsTitle => 'İstatistikler';
+
+  @override
+  String get productStatsTotalViews => 'Toplam Görüntülenme (Web + Mobil)';
+
+  @override
+  String get productStatsWeb => 'Web';
+
+  @override
+  String get productStatsMobile => 'Mobil';
+
+  @override
+  String productStatsAvailableSection(int count) {
+    return 'Mevcut Ürünler ($count)';
+  }
+
+  @override
+  String productStatsSoldSection(int count) {
+    return 'Satılmış Ürünler ($count)';
+  }
+
+  @override
+  String get productStatsEmpty => 'Henüz ürün yok';
+
+  @override
+  String productStatsRowBreakdown(int web, int mobile) {
+    return 'Web: $web · Mobil: $mobile';
+  }
 }

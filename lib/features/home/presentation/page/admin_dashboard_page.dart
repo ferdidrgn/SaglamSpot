@@ -16,6 +16,7 @@ import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
 import '../../../products/presentation/pages/edit_product_page.dart';
 import 'admin_firebase_services_page.dart';
+import 'admin_product_stats_page.dart';
 import '../../../products/presentation/providers/gallery_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_mutation_provider.dart';
@@ -115,6 +116,12 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
           ),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.bar_chart_rounded, color: AppColors.mobileTextSecondary),
+            tooltip: context.l10n.productStatsTooltip,
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (final _) => const AdminProductStatsPage())),
+          ),
           IconButton(
             icon: Icon(Icons.cloud_outlined, color: AppColors.mobileTextSecondary),
             tooltip: context.l10n.firebaseServicesTooltip,

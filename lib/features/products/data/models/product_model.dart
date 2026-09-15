@@ -21,6 +21,11 @@ class ProductModel {
   /// tutulur. Eski dokümanlarda yok — null güvenli varsayılan.
   final String? wearTier;
 
+  /// Ürün detay sayfasının platforma göre AYRI görüntülenme sayaçları —
+  /// bkz. product.dart'taki aynı alanların dokümantasyonu.
+  final int viewCountWeb;
+  final int viewCountMobile;
+
   const ProductModel({
     required this.id,
     required this.createdAt,
@@ -40,6 +45,8 @@ class ProductModel {
     this.availableColors = const [],
     this.studioImagesUrl = const [],
     this.wearTier,
+    this.viewCountWeb = 0,
+    this.viewCountMobile = 0,
   });
 
   factory ProductModel.fromFirestore(final Map<String, dynamic> data) =>
@@ -63,6 +70,8 @@ class ProductModel {
         availableColors: List<String>.from(data['availableColors'] ?? []),
         studioImagesUrl: List<String>.from(data['studioImagesUrl'] ?? []),
         wearTier: data['wearTier'] as String?,
+        viewCountWeb: (data['viewCountWeb'] as num?)?.toInt() ?? 0,
+        viewCountMobile: (data['viewCountMobile'] as num?)?.toInt() ?? 0,
       );
 
   Map<String, dynamic> toFirestore() => {
@@ -84,5 +93,7 @@ class ProductModel {
         'availableColors': availableColors,
         'studioImagesUrl': studioImagesUrl,
         'wearTier': wearTier,
+        'viewCountWeb': viewCountWeb,
+        'viewCountMobile': viewCountMobile,
       };
 }

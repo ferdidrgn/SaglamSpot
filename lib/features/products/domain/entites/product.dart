@@ -50,6 +50,15 @@ class Product extends Equatable {
   /// gerçek yıpranma seviyesi. Sıfır ürünlerde ve eski ilanlarda null'dır.
   final ProductWearTier? wearTier;
 
+  /// Bu ürünün detay sayfasının kaç kez açıldığı — platforma göre AYRI
+  /// sayılır (bkz. product_detail_page.dart'taki artırma noktası ve
+  /// firestore.rules'daki "sadece bu iki alanı 1 artırabilir" kuralı).
+  /// Ziyaretçi kimliği/oturumu TUTULMAZ, sadece ham sayaç — bu yüzden aynı
+  /// kişi sayfayı iki kez açarsa iki kez sayılır (kasıtlı: basit ve
+  /// dürüst bir "ilgi" göstergesi, tekil ziyaretçi analitiği değil).
+  final int viewCountWeb;
+  final int viewCountMobile;
+
   const Product({
     required this.id,
     required this.createdAt,
@@ -69,6 +78,8 @@ class Product extends Equatable {
     this.availableColors = const [],
     this.studioImagesUrl = const [],
     this.wearTier,
+    this.viewCountWeb = 0,
+    this.viewCountMobile = 0,
   });
 
   factory Product.empty() => Product(
@@ -106,6 +117,8 @@ class Product extends Equatable {
         availableColors,
         studioImagesUrl,
         wearTier,
+        viewCountWeb,
+        viewCountMobile,
       ];
 
   Product copyWith({
@@ -127,6 +140,8 @@ class Product extends Equatable {
     final List<String>? availableColors,
     final List<String>? studioImagesUrl,
     final ProductWearTier? wearTier,
+    final int? viewCountWeb,
+    final int? viewCountMobile,
   }) =>
       Product(
         id: id ?? this.id,
@@ -147,5 +162,7 @@ class Product extends Equatable {
         availableColors: availableColors ?? this.availableColors,
         studioImagesUrl: studioImagesUrl ?? this.studioImagesUrl,
         wearTier: wearTier ?? this.wearTier,
+        viewCountWeb: viewCountWeb ?? this.viewCountWeb,
+        viewCountMobile: viewCountMobile ?? this.viewCountMobile,
       );
 }

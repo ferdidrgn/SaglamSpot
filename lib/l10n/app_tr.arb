@@ -768,5 +768,38 @@
   "firebaseTokenUnavailable": "Bu cihaz için henüz bildirim belirteci yok",
   "firebasePermissionGranted": "Bildirim izni verildi",
   "firebasePermissionDenied": "Bildirim izni verilmedi",
-  "firebaseOpenNotificationSettings": "Bildirim Ayarlarını Aç"
+  "firebaseOpenNotificationSettings": "Bildirim Ayarlarını Aç",
+  "productStatsTooltip": "İstatistikler",
+  "productStatsTitle": "İstatistikler",
+  "productStatsTotalViews": "Toplam Görüntülenme (Web + Mobil)",
+  "productStatsWeb": "Web",
+  "productStatsMobile": "Mobil",
+  "productStatsAvailableSection": "Mevcut Ürünler ({count})",
+  "@productStatsAvailableSection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "productStatsSoldSection": "Satılmış Ürünler ({count})",
+  "@productStatsSoldSection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "productStatsEmpty": "Henüz ürün yok",
+  "productStatsRowBreakdown": "Web: {web} · Mobil: {mobile}",
+  "@productStatsRowBreakdown": {
+    "placeholders": {
+      "web": {
+        "type": "int"
+      },
+      "mobile": {
+        "type": "int"
+      }
+    }
+  }
 }

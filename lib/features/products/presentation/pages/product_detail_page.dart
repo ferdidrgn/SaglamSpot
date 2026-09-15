@@ -8,6 +8,7 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/config/seo/wrapper/seo_service.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
+import '../../../../core/services/product_view_tracker.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
@@ -185,6 +186,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           _trackedProductId = product.id;
           WidgetsBinding.instance.addPostFrameCallback((final _) =>
               ref.read(recentlyViewedProvider.notifier).track(product));
+          // Admin > İstatistikler sayfasındaki "en çok görüntülenen ürün"
+          // sayacı — platforma göre AYRI (bkz. firestore.rules'daki
+          // isValidViewIncrement). Sessizce başarısız olur (izin/ağ
+          // sorunu ürün detayını göstermeyi ASLA engellemez).
+          ProductViewTracker.trackView(product.id);
         }
 
         return Scaffold(

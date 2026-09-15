@@ -3889,6 +3889,60 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Bildirim Ayarlarını Aç'**
   String get firebaseOpenNotificationSettings;
+
+  /// No description provided for @productStatsTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'İstatistikler'**
+  String get productStatsTooltip;
+
+  /// No description provided for @productStatsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İstatistikler'**
+  String get productStatsTitle;
+
+  /// No description provided for @productStatsTotalViews.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Görüntülenme (Web + Mobil)'**
+  String get productStatsTotalViews;
+
+  /// No description provided for @productStatsWeb.
+  ///
+  /// In tr, this message translates to:
+  /// **'Web'**
+  String get productStatsWeb;
+
+  /// No description provided for @productStatsMobile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobil'**
+  String get productStatsMobile;
+
+  /// No description provided for @productStatsAvailableSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mevcut Ürünler ({count})'**
+  String productStatsAvailableSection(int count);
+
+  /// No description provided for @productStatsSoldSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satılmış Ürünler ({count})'**
+  String productStatsSoldSection(int count);
+
+  /// No description provided for @productStatsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz ürün yok'**
+  String get productStatsEmpty;
+
+  /// No description provided for @productStatsRowBreakdown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Web: {web} · Mobil: {mobile}'**
+  String productStatsRowBreakdown(int web, int mobile);
 }
 
 class _AppLocalizationsDelegate

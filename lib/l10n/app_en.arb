@@ -768,5 +768,38 @@
   "firebaseTokenUnavailable": "No notification token yet for this device",
   "firebasePermissionGranted": "Notification permission granted",
   "firebasePermissionDenied": "Notification permission not granted",
-  "firebaseOpenNotificationSettings": "Open Notification Settings"
+  "firebaseOpenNotificationSettings": "Open Notification Settings",
+  "productStatsTooltip": "Statistics",
+  "productStatsTitle": "Statistics",
+  "productStatsTotalViews": "Total Views (Web + Mobile)",
+  "productStatsWeb": "Web",
+  "productStatsMobile": "Mobile",
+  "productStatsAvailableSection": "Available Products ({count})",
+  "@productStatsAvailableSection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "productStatsSoldSection": "Sold Products ({count})",
+  "@productStatsSoldSection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "productStatsEmpty": "No products yet",
+  "productStatsRowBreakdown": "Web: {web} · Mobile: {mobile}",
+  "@productStatsRowBreakdown": {
+    "placeholders": {
+      "web": {
+        "type": "int"
+      },
+      "mobile": {
+        "type": "int"
+      }
+    }
+  }
 }

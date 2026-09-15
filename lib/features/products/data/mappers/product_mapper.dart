@@ -25,6 +25,8 @@ extension ProductModelMapper on ProductModel {
         availableColors: availableColors,
         studioImagesUrl: studioImagesUrl,
         wearTier: wearTier.toProductWearTier(),
+        viewCountWeb: viewCountWeb,
+        viewCountMobile: viewCountMobile,
       );
 }
 
@@ -49,5 +51,7 @@ extension ProductEntityMapper on Product {
         availableColors: availableColors,
         studioImagesUrl: studioImagesUrl,
         wearTier: wearTier.toFirestore(),
+        viewCountWeb: viewCountWeb,
+        viewCountMobile: viewCountMobile,
       );
 }

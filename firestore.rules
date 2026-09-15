@@ -30,11 +30,26 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
     }
 
+    // "Kaç kişi bu ürünün detay sayfasını açtı" sayacı — ziyaretçi kimliği
+    // TUTULMAZ, sadece platforma göre (web/mobil) ayrı ham bir sayaç
+    // (bkz. product_detail_page.dart). Herkesin (girişsiz ziyaretçiler
+    // dahil) yazabilmesi gerekiyor ama SADECE bu iki alanı, SADECE 1
+    // artırarak — başka hiçbir alanı değiştiremez, sayacı geriye
+    // alamaz/sıfırlayamaz/sıçratamaz.
+    function isValidViewIncrement(field) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field])
+        && request.resource.data[field] == resource.data.get(field, 0) + 1;
+    }
+
     // Ürün kataloğu — web/mobil vitrin herkese açık (SEO dahil), sadece
-    // admin panel yazabilir/silebilir.
+    // admin panel yazabilir/silebilir/oluşturabilir. Görüntülenme sayacı
+    // istisnası yukarıda tanımlı.
     match /Product/{productId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || isValidViewIncrement('viewCountWeb')
+        || isValidViewIncrement('viewCountMobile');
     }
 
     // Kategori görsel meta verisi (ikon/renk/sıra/özel etiket) — herkes
