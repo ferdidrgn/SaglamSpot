@@ -12,12 +12,13 @@ import 'design_system/product_image_switcher.dart';
 import 'gallery_section.dart';
 import 'optimized_cached_image.dart';
 
-/// "Sakin Vitrin" kartı — kullanıcının paylaştığı referans (sıcak/krem
-/// tonlu, sade, bol boşluklu premium mobilya vitrini) doğrultusunda
-/// sadeleştirildi: tek tip, geniş yuvarlak köşe; görsel kendi çerçevesinde
-/// üstte, isim/kategori/fiyat görselin ÜSTÜNE değil ALTINA, aynı kartın
-/// sakin krem/beyaz gövdesine oturuyor. Görsel-üstü yazı, keskin köşe,
-/// renkli parıltı gibi "gürültülü" öğeler kasıtlı olarak kaldırıldı.
+/// "Asimetrik Vitrin Kartı" — kullanıcının "eski tasarım daha şıktı, geri
+/// dön" isteğiyle geri getirildi: fotoğraf kartın TAMAMINI kaplıyor, bilgi
+/// camsı bir taban şeritte görselin üstüne oturuyor, köşeler simetrik
+/// değil — tek bir köşe (sağ üst) keskin/"kesik", karşı köşe (sol alt)
+/// belirgin şekilde yuvarlak. Bu keskin/yuvarlak köşe zıtlığı ve köşeye
+/// oturan durum etiketi uygulamanın imzası. Sepete ekleme YOK; tek dürüst
+/// eylem yine ürün detayına gitmek.
 class CustomProductCard extends StatefulWidget {
   final Product product;
 
@@ -30,7 +31,12 @@ class CustomProductCard extends StatefulWidget {
 class _CustomProductCardState extends State<CustomProductCard> {
   bool _isHovered = false;
 
-  static const BorderRadius _shape = BorderRadius.all(Radius.circular(20));
+  static const BorderRadius _shape = BorderRadius.only(
+    topLeft: Radius.circular(8),
+    topRight: Radius.circular(34),
+    bottomLeft: Radius.circular(34),
+    bottomRight: Radius.circular(8),
+  );
 
   @override
   Widget build(final BuildContext context) {
@@ -43,116 +49,84 @@ class _CustomProductCardState extends State<CustomProductCard> {
       child: GestureDetector(
         onTap: () => _navigateToProductDetail(context),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
+          duration: const Duration(milliseconds: 250),
           curve: Curves.easeOut,
-          transform: _isHovered
-              ? (Matrix4.identity()..translate(0.0, -2.0))
-              : Matrix4.identity(),
           decoration: BoxDecoration(
-            color: AppColors.card,
             borderRadius: _shape,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(_isHovered ? 0.09 : 0.05),
-                blurRadius: _isHovered ? 22 : 14,
-                offset: Offset(0, _isHovered ? 10 : 6),
+                color: Colors.black.withOpacity(_isHovered ? 0.10 : 0.06),
+                blurRadius: _isHovered ? 26 : 18,
+                offset: Offset(0, _isHovered ? 16 : 10),
               ),
-              // Kategori renkli yumuşak "radiant" parıltı — eski kart
-              // dilinden geri getirildi, kartlara hafif bir canlılık katıyor.
+              // Kategori renkli "radiant" glow — /new ve /spot'taki canlı
+              // kart diliyle tutarlı.
               BoxShadow(
-                color: meta.color.withOpacity(_isHovered ? 0.32 : 0.18),
-                blurRadius: _isHovered ? 32 : 26,
+                color: meta.color.withOpacity(_isHovered ? 0.38 : 0.22),
+                blurRadius: _isHovered ? 34 : 26,
                 spreadRadius: -8,
-                offset: Offset(0, _isHovered ? 20 : 16),
+                offset: Offset(0, _isHovered ? 22 : 16),
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(20)),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Container(color: AppColors.secondary),
-                      Hero(
-                        tag: 'prod_img_${widget.product.id}',
-                        child: AnimatedScale(
-                          scale: _isHovered ? 1.04 : 1.0,
-                          duration: const Duration(milliseconds: 400),
-                          curve: Curves.easeOutCubic,
-                          child: ProductImageSwitcher(
-                            images: widget.product.imagesUrl,
-                            dotsAtTop: true,
-                            imageBuilder: (final url) => OptimizedCachedImage(
-                              imageUrl: url,
-                              fit: BoxFit.cover,
-                              borderRadius: 0,
-                              errorBuilder: (final c, final u, final e) =>
-                                  const _ImageFallback(),
-                            ),
-                            fallback: const _ImageFallback(),
-                          ),
-                        ),
+          child: ClipRRect(
+            borderRadius: _shape,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(color: AppColors.secondary),
+                Hero(
+                  tag: 'prod_img_${widget.product.id}',
+                  child: AnimatedScale(
+                    scale: _isHovered ? 1.06 : 1.0,
+                    duration: const Duration(milliseconds: 450),
+                    curve: Curves.easeOutCubic,
+                    child: ProductImageSwitcher(
+                      images: widget.product.imagesUrl,
+                      dotsAtTop: true,
+                      imageBuilder: (final url) => OptimizedCachedImage(
+                        imageUrl: url,
+                        fit: BoxFit.cover,
+                        borderRadius: 0,
+                        errorBuilder: (final c, final u, final e) =>
+                            const _ImageFallback(),
                       ),
-                      Positioned(
-                        top: 10,
-                        left: 10,
-                        child: _ConditionTag(
-                            isSpotProduct: widget.product.isSpotProduct),
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 10,
-                        child: _CircleIconButton(
-                          icon: Icons.fullscreen_rounded,
-                          onTap: () => _openGallery(context),
-                        ),
-                      ),
-                    ],
+                      fallback: const _ImageFallback(),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.product.name,
-                      style: TextStyle(
-                          fontFamily: 'Fraunces',
-                          color: AppColors.textPrimary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      widget.product.category.label(context),
-                      style: TextStyle(
-                          color: AppColors.textTertiary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 7),
-                    Text(
-                      '₺${widget.product.price.toStringAsFixed(0)}',
-                      style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
-                    ),
-                  ],
+                // Görseli her zaman biraz karartan sabit bir alt gradyan —
+                // camsı bilgi şeridinin okunurluğunu garanti eder, hover'a
+                // bağlı değil.
+                const Positioned.fill(
+                  child: IgnorePointer(child: _BottomScrim()),
                 ),
-              ),
-            ],
+                // Durum etiketi — keskin (sağ üst) köşeye flush oturan,
+                // eski hap-rozetin yerini alan köşe etiketi.
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: _CornerConditionTag(
+                      isSpotProduct: widget.product.isSpotProduct),
+                ),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: _GlassIconButton(
+                    icon: Icons.fullscreen_rounded,
+                    onTap: () => _openGallery(context),
+                  ),
+                ),
+                // Taban bilgi şeridi — camsı, görselin üstüne oturan, isim +
+                // kategori + fiyatı TEK şeritte toplayan yeni bilgi bloğu.
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: _InfoStrip(product: widget.product, meta: meta),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -174,6 +148,92 @@ class _CustomProductCardState extends State<CustomProductCard> {
       );
 }
 
+class _BottomScrim extends StatelessWidget {
+  const _BottomScrim();
+
+  @override
+  Widget build(final BuildContext context) => DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [Colors.black.withOpacity(0.72), Colors.transparent],
+            stops: const [0.0, 0.62],
+          ),
+        ),
+      );
+}
+
+class _InfoStrip extends StatelessWidget {
+  final Product product;
+  final CategoryMeta meta;
+
+  const _InfoStrip({required this.product, required this.meta});
+
+  @override
+  Widget build(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(14, 0, 12, 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    product.name,
+                    style: const TextStyle(
+                        fontFamily: 'Fraunces',
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        height: 1.15),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(meta.icon, size: 11, color: meta.color),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          product.category.label(context),
+                          style: TextStyle(
+                              color: meta.color,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w700),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.accent,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Text(
+                '₺${product.price.toStringAsFixed(0)}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
 class _ImageFallback extends StatelessWidget {
   const _ImageFallback();
 
@@ -183,77 +243,56 @@ class _ImageFallback extends StatelessWidget {
           Icon(Icons.chair_rounded, size: 40, color: AppColors.textTertiary));
 }
 
-class _CircleIconButton extends StatelessWidget {
+class _GlassIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _CircleIconButton({required this.icon, required this.onTap});
+  const _GlassIconButton({required this.icon, required this.onTap});
 
   @override
   Widget build(final BuildContext context) => Material(
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withOpacity(0.22),
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(7),
-            child: Icon(icon, color: AppColors.textPrimary, size: 16),
+            padding: const EdgeInsets.all(8),
+            child: Icon(icon, color: Colors.white, size: 18),
           ),
         ),
       );
 }
 
-/// "Sıfır" (dolgun/solid, yeşil) ve "İkinci El" (ince kenarlıklı/outlined,
-/// turuncu) rozet ayrımı — kullanıcının "daha şık, göz oyunları güzel"
-/// dediği eski karttan geri getirildi: iki durumun aynı düz-beyaz hapla
-/// değil, dolu/boş kontrastıyla bir bakışta ayırt edilmesi.
-class _ConditionTag extends StatelessWidget {
+/// Kartın keskin (sağ üst) köşesine flush oturan durum etiketi — eski
+/// yüzen hap-rozetin yerini alıyor. Sıfır = dolgun yeşil, Spot = dolgun
+/// turuncu (bkz. catalog_theme.dart) — sadece ŞEKLİ değişti, renk dili
+/// sitenin geri kalanıyla (iki kapı kartı, filtre çipleri) aynı kaldı.
+class _CornerConditionTag extends StatelessWidget {
   final bool isSpotProduct;
-  const _ConditionTag({required this.isSpotProduct});
+  const _CornerConditionTag({required this.isSpotProduct});
 
   @override
   Widget build(final BuildContext context) {
-    if (!isSpotProduct) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: NewCollectionPalette.badgeGreen,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: NewCollectionPalette.badgeGreen.withOpacity(0.4),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+    final Color color =
+        isSpotProduct ? SpotPalette.accent : NewCollectionPalette.badgeGreen;
+    final String label = isSpotProduct
+        ? context.l10n.usedProductBadge
+        : context.l10n.productCardNewBadge;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(16)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 8, 14, 9),
+        color: color,
         child: Text(
-          context.l10n.productCardNewBadge,
+          label.toUpperCase(),
           style: const TextStyle(
             color: Colors.white,
             fontSize: 10.5,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.6,
           ),
-        ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: SpotPalette.accent, width: 1.3),
-      ),
-      child: Text(
-        context.l10n.usedProductBadge,
-        style: TextStyle(
-          color: SpotPalette.accent,
-          fontSize: 10.5,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );
