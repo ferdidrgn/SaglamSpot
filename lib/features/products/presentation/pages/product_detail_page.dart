@@ -9,8 +9,10 @@ import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/config/seo/wrapper/seo_service.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
+import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
@@ -46,8 +48,15 @@ class ProductDetailPage extends ConsumerStatefulWidget {
   ConsumerState<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
-/// Sakin, tek tip yuvarlak köşe — CustomProductCard'la aynı sade dil.
-const BorderRadius _galleryShape = BorderRadius.all(Radius.circular(24));
+/// CustomProductCard'daki İMZA köşe diliyle BİREBİR aynı: tek köşe (sol üst)
+/// keskin/kesik, karşı köşe (sağ alt) belirgin yuvarlak. Galeri artık
+/// sitenin geri kalanıyla aynı asimetrik "vitrin" hissini taşıyor.
+const BorderRadius _galleryShape = BorderRadius.only(
+  topLeft: Radius.circular(8),
+  topRight: Radius.circular(34),
+  bottomLeft: Radius.circular(34),
+  bottomRight: Radius.circular(8),
+);
 
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     with TickerProviderStateMixin {
@@ -329,11 +338,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   }
 
   // ════════════════════════════════════════════════════════════
-  // GALERİ — sade, beyaz, yumuşak gölgeli. Renk/dalga denemesi kaldırıldı.
+  // GALERİ — CustomProductCard'daki asimetrik köşe + kategori renkli
+  // "radiant" glow gölge diliyle hizalı. Renk/dalga denemesi kaldırıldı.
   // ════════════════════════════════════════════════════════════
 
   Widget _buildGallery(final BuildContext context, final Product product,
       {required final double height}) {
+    final meta = defaultCategoryMeta[product.category];
+    final Color glowColor = meta?.color ??
+        _pc(context, mobile: AppColors.mobileAccent, web: AppColors.accent);
+
     return FadeTransition(
       opacity: _stagger(0),
       child: Column(
@@ -350,9 +364,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   color: _pc(context,
                           mobile: AppColors.mobileTextPrimary,
                           web: AppColors.textPrimary)
-                      .withOpacity(0.06),
-                  blurRadius: 32,
-                  offset: const Offset(0, 12),
+                      .withOpacity(0.07),
+                  blurRadius: 30,
+                  offset: const Offset(0, 14),
+                ),
+                // Kategori renkli "radiant" glow — kartlardaki imzayla aynı.
+                BoxShadow(
+                  color: glowColor.withOpacity(0.28),
+                  blurRadius: 44,
+                  spreadRadius: -12,
+                  offset: const Offset(0, 24),
                 ),
               ],
             ),
@@ -394,11 +415,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                 ),
 
-                // Durum rozeti — sade, tek renk, ürünün gerçek durumunu yansıtır.
+                // Durum etiketi — kartlardaki (_CornerConditionTag) ile AYNI
+                // görsel imza: galerinin keskin (sol üst) köşesine flush oturur.
                 Positioned(
-                  top: 18,
-                  left: 18,
-                  child: _StatusPill(product: product),
+                  top: 0,
+                  left: 0,
+                  child: _ConditionCornerTag(product: product),
                 ),
 
                 if (product.isSold)
@@ -642,20 +664,17 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             ),
             SizedBox(height: context.spacingLarge),
 
-            // Güven rozetleri + eklenme tarihi
-            _buildTrustRow(context, product),
+            // Güven rozetleri + eklenme tarihi — tek, belirgin blok.
+            _buildTrustBlock(context, product),
             SizedBox(height: context.spacingLarge),
 
             // Renk seçenekleri / tek parça bilgisi
             ProductColorSection(product: product),
             SizedBox(height: context.spacingLarge),
 
-            // Açıklama
-            _buildDescription(context, product),
-            SizedBox(height: context.spacingLarge),
-
-            // Özellik ızgarası
-            _buildSpecs(context, product),
+            // Açıklama + özellik ızgarası — TEK bir "Ürün Detayları" bloğunda,
+            // aralarında ince bir ayırıcı çizgiyle.
+            _buildDetailsBlock(context, product),
             SizedBox(height: context.spacingLarge),
 
             // Satıcı kartı
@@ -673,6 +692,38 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       ),
     );
   }
+
+  // ════════════════════════════════════════════════════════════
+  // ÜRÜN DETAYLARI — açıklama + özellik ızgarası artık iki ayrı, dağınık
+  // parça değil; kullanıcının istediği gibi TEK, belirgin bir blokta,
+  // aralarında ince bir ayırıcı çizgiyle bir arada.
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildDetailsBlock(final BuildContext context, final Product product) =>
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: _pc(context,
+              mobile: AppColors.mobileSurface, web: AppColors.surface),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+              color: _pc(context,
+                  mobile: AppColors.mobileBorder, web: AppColors.border)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDescription(context, product),
+            SizedBox(height: context.spacingLarge * 0.75),
+            Divider(
+                height: 1,
+                color: _pc(context,
+                    mobile: AppColors.mobileBorder, web: AppColors.border)),
+            SizedBox(height: context.spacingLarge * 0.75),
+            _buildSpecs(context, product),
+          ],
+        ),
+      );
 
   Widget _buildDescription(final BuildContext context, final Product product) {
     final isLong = product.desc.length > 140;
@@ -770,14 +821,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         return FadeTransition(
           opacity: _stagger(0.3 + index * 0.05),
           child: Container(
+            // Artık _buildDetailsBlock'un içinde iç içe kutu — kendi
+            // kenarlığı/gölgesi yok, sadece hafif bir zemin farkı.
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: _pc(context,
-                  mobile: AppColors.mobileSurface, web: AppColors.surface),
+                  mobile: AppColors.mobileBackground,
+                  web: AppColors.background),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                  color: _pc(context,
-                      mobile: AppColors.mobileBorder, web: AppColors.border)),
             ),
             child: Row(
               children: [
@@ -841,27 +892,66 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     return context.l10n.listedWeeksAgo((days / 7).floor());
   }
 
-  Widget _buildTrustRow(final BuildContext context, final Product product) {
+  /// Güven rozetleri artık sayfada yüzen dağınık hap-çipler değil; TEK,
+  /// belirgin bir blokta bir araya getirilmiş — eklenme tarihi de aynı
+  /// bloğun altında, ince bir ayırıcıyla ayrı bir satırda.
+  Widget _buildTrustBlock(final BuildContext context, final Product product) {
     final listed = _listedLabel(context, product);
     return FadeTransition(
       opacity: _stagger(0.22),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          _TrustChip(
-              icon: Icons.verified_rounded,
-              label: context.l10n.productTrustBadgeVerified),
-          _TrustChip(
-              icon: Icons.chat_bubble_rounded,
-              label: context.l10n.productTrustBadgeNegotiate),
-          _TrustChip(
-              icon: Icons.local_shipping_rounded,
-              label: context.l10n.productTrustBadgeDelivery),
-          if (listed != null)
-            _TrustChip(
-                icon: Icons.schedule_rounded, label: listed, subtle: true),
-        ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        decoration: BoxDecoration(
+          color: _pc(context,
+              mobile: AppColors.mobileCardBg, web: AppColors.secondary),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: 20,
+              runSpacing: 14,
+              children: [
+                _TrustTile(
+                    icon: Icons.verified_rounded,
+                    label: context.l10n.productTrustBadgeVerified),
+                _TrustTile(
+                    icon: Icons.chat_bubble_rounded,
+                    label: context.l10n.productTrustBadgeNegotiate),
+                _TrustTile(
+                    icon: Icons.local_shipping_rounded,
+                    label: context.l10n.productTrustBadgeDelivery),
+              ],
+            ),
+            if (listed != null) ...[
+              SizedBox(height: 14),
+              Divider(
+                  height: 1,
+                  color: _pc(context,
+                      mobile: AppColors.mobileBorder, web: AppColors.border)),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.schedule_rounded,
+                      size: 14,
+                      color: _pc(context,
+                          mobile: AppColors.mobileTextTertiary,
+                          web: AppColors.textTertiary)),
+                  const SizedBox(width: 6),
+                  Text(listed,
+                      style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          color: _pc(context,
+                              mobile: AppColors.mobileTextTertiary,
+                              web: AppColors.textTertiary))),
+                ],
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -1035,35 +1125,66 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   // BENZER ÜRÜNLER
   // ════════════════════════════════════════════════════════════
 
+  /// Benzer ürünler artık düz/stilsiz bir liste değil: kendi tam-genişlik,
+  /// hafif tonlanmış "bant"ında oturan, ayrı bir bölüm gibi okunan bir blok
+  /// — ve içindeki kartlar rastgele basit kutular değil, sitenin GERÇEK
+  /// imza kartı (CustomProductCard: asimetrik köşe + kategori renkli glow +
+  /// köşe etiketi) — tekrar icat etmek yerine doğrudan yeniden kullanılıyor.
   Widget _buildSimilarSection(
       final BuildContext context, final List<Product> similar) {
-    return Padding(
-      padding: EdgeInsets.only(top: context.spacingLarge, bottom: 8),
+    final cardWidth = context.responsive(mobile: 168.0, desktop: 190.0);
+    final cardHeight = context.responsive(mobile: 216.0, desktop: 232.0);
+    const verticalBreathingRoom = 16.0; // Kartın "radiant glow" gölgesi için.
+
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: context.spacingLarge),
+      padding: EdgeInsets.symmetric(vertical: context.spacingLarge * 0.85),
+      color: _pc(context,
+              mobile: AppColors.mobileCardBg, web: AppColors.secondary)
+          .withOpacity(0.55),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-            child: Text(context.l10n.similarProducts,
-                style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
+            child: Row(
+              children: [
+                Icon(Icons.auto_awesome_rounded,
+                    size: 18,
                     color: _pc(context,
-                        mobile: AppColors.mobileTextPrimary,
-                        web: AppColors.textPrimary))),
+                        mobile: AppColors.mobileAccent,
+                        web: AppColors.accent)),
+                const SizedBox(width: 8),
+                Text(context.l10n.similarProducts,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                        color: _pc(context,
+                            mobile: AppColors.mobileTextPrimary,
+                            web: AppColors.textPrimary))),
+              ],
+            ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           SizedBox(
-            height: 220,
+            height: cardHeight + verticalBreathingRoom * 2,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding:
                   EdgeInsets.symmetric(horizontal: context.pagePadding.left),
               itemCount: similar.length,
               separatorBuilder: (final _, final __) =>
-                  const SizedBox(width: 14),
-              itemBuilder: (final context, final index) =>
-                  _SimilarProductCard(product: similar[index]),
+                  const SizedBox(width: 16),
+              itemBuilder: (final context, final index) => Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: verticalBreathingRoom),
+                child: SizedBox(
+                  width: cardWidth,
+                  height: cardHeight,
+                  child: CustomProductCard(product: similar[index]),
+                ),
+              ),
             ),
           ),
         ],
@@ -1241,55 +1362,40 @@ class _HalfActionButton extends StatelessWidget {
   }
 }
 
-class _TrustChip extends StatelessWidget {
+/// Güven bloğu içindeki tek bir madde: dolgu daireli ikon + kalın etiket —
+/// eski yüzen hap-çipin yerini alan, daha "gövdeli" bir hiyerarşi.
+class _TrustTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final bool subtle;
 
-  const _TrustChip(
-      {required this.icon, required this.label, this.subtle = false});
+  const _TrustTile({required this.icon, required this.label});
 
   @override
-  Widget build(final BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: subtle
-              ? Colors.transparent
-              : _pc(context,
-                  mobile: AppColors.mobileCardBg, web: AppColors.secondary),
-          borderRadius: BorderRadius.circular(30),
-          border: subtle
-              ? Border.all(
+  Widget build(final BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: _pc(context,
+                  mobile: AppColors.mobileSurface, web: AppColors.surface),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon,
+                size: 15,
+                color: _pc(context,
+                    mobile: AppColors.mobilePrimary, web: AppColors.primary)),
+          ),
+          const SizedBox(width: 8),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
                   color: _pc(context,
-                      mobile: AppColors.mobileBorder, web: AppColors.border))
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon,
-                size: 13,
-                color: subtle
-                    ? _pc(context,
-                        mobile: AppColors.mobileTextTertiary,
-                        web: AppColors.textTertiary)
-                    : _pc(context,
-                        mobile: AppColors.mobilePrimary,
-                        web: AppColors.primary)),
-            const SizedBox(width: 6),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w700,
-                    color: subtle
-                        ? _pc(context,
-                            mobile: AppColors.mobileTextTertiary,
-                            web: AppColors.textTertiary)
-                        : _pc(context,
-                            mobile: AppColors.mobileTextPrimary,
-                            web: AppColors.textPrimary))),
-          ],
-        ),
+                      mobile: AppColors.mobileTextPrimary,
+                      web: AppColors.textPrimary))),
+        ],
       );
 }
 
@@ -1347,43 +1453,48 @@ class _HowToBuyStep extends StatelessWidget {
       );
 }
 
-class _StatusPill extends StatelessWidget {
+/// Kartlardaki (_CornerConditionTag, bkz. custom_product_card.dart) ile
+/// BİREBİR aynı görsel imza: galerinin keskin (sol üst) köşesine flush
+/// oturan, dolgun tek renk köşe etiketi — eski yüzen hap-rozetin yerini
+/// alıyor. Renk dili de aynı kaynaktan (catalog_theme.dart): Sıfır = yeşil,
+/// İkinci El/Spot = turuncu.
+class _ConditionCornerTag extends StatelessWidget {
   final Product product;
 
-  const _StatusPill({required this.product});
+  const _ConditionCornerTag({required this.product});
 
   @override
   Widget build(final BuildContext context) {
     final bool spot = product.isSpotProduct;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: (spot
-                ? _pc(context,
-                    mobile: AppColors.mobileAccentDark,
-                    web: AppColors.accentDark)
-                : AppColors.success)
-            .withOpacity(0.95),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            spot ? Icons.inventory_2_rounded : Icons.new_releases_rounded,
-            size: 12,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            spot ? context.l10n.usedProductBadge : context.l10n.newProductBadge,
-            style: const TextStyle(
-                fontSize: 10.5,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                letterSpacing: 0.8),
-          ),
-        ],
+    final Color color =
+        spot ? SpotPalette.accent : NewCollectionPalette.badgeGreen;
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(18)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 11),
+        color: color,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              spot ? Icons.inventory_2_rounded : Icons.new_releases_rounded,
+              size: 13,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              (spot
+                      ? context.l10n.usedProductBadge
+                      : context.l10n.newProductBadge)
+                  .toUpperCase(),
+              style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.7),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1426,75 +1537,6 @@ class _StudioToggle extends StatelessWidget {
       );
 }
 
-class _SimilarProductCard extends StatelessWidget {
-  final Product product;
-
-  const _SimilarProductCard({required this.product});
-
-  @override
-  Widget build(final BuildContext context) => GestureDetector(
-        onTap: () => NavigationHandler.goToProduct(
-          context: context,
-          productId: product.id,
-          productSlug: product.name.toSlug(),
-        ),
-        child: Container(
-          width: 160,
-          decoration: BoxDecoration(
-            color: _pc(context,
-                mobile: AppColors.mobileSurface, web: AppColors.surface),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-                color: _pc(context,
-                    mobile: AppColors.mobileBorder, web: AppColors.border)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
-                child: OptimizedCachedImage(
-                  imageUrl: product.imagesUrl.first,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  borderRadius: 0,
-                  errorBuilder: (final c, final u, final e) => Container(
-                      height: 120,
-                      color: _pc(context,
-                          mobile: AppColors.mobileCardBg,
-                          web: AppColors.secondary),
-                      child: const Icon(Icons.chair_alt_rounded)),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(product.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w700,
-                            color: _pc(context,
-                                mobile: AppColors.mobileTextPrimary,
-                                web: AppColors.textPrimary))),
-                    const SizedBox(height: 4),
-                    Text('₺${product.price.toStringAsFixed(0)}',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w900,
-                            color: _pc(context,
-                                mobile: AppColors.mobilePrimary,
-                                web: AppColors.textPrimary))),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-}
+// _SimilarProductCard kaldırıldı — "Benzer Ürünler" artık sitenin GERÇEK
+// imza kartı olan CustomProductCard'ı yeniden kullanıyor (bkz.
+// _buildSimilarSection), ayrı/basit bir kart yeniden icat edilmiyor.
