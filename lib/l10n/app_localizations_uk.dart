@@ -1105,6 +1105,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get onboardingStart => 'Почати';
 
   @override
+  String get onboardingNext => 'İleri';
+
+  @override
+  String get onboardingCategoriesChip => '13 Kategori';
+
+  @override
+  String get onboardingBargainChip => 'Pazarlık Payı';
+
+  @override
+  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+
+  @override
   String get onboardingPage1Eyebrow => 'ЛАСКАВО ПРОСИМО В SAĞLAM SPOT';
 
   @override

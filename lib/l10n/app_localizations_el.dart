@@ -1115,6 +1115,18 @@ class AppLocalizationsEl extends AppLocalizations {
   String get onboardingStart => 'Ξεκινήστε';
 
   @override
+  String get onboardingNext => 'İleri';
+
+  @override
+  String get onboardingCategoriesChip => '13 Kategori';
+
+  @override
+  String get onboardingBargainChip => 'Pazarlık Payı';
+
+  @override
+  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+
+  @override
   String get onboardingPage1Eyebrow => 'ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟ SAĞLAM SPOT';
 
   @override

@@ -1105,6 +1105,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingStart => 'Get Started';
 
   @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingCategoriesChip => '13 Categories';
+
+  @override
+  String get onboardingBargainChip => 'Room to Negotiate';
+
+  @override
+  String get onboardingFastReplyChip => 'Fast Reply';
+
+  @override
   String get onboardingPage1Eyebrow => 'WELCOME TO SAĞLAM SPOT';
 
   @override

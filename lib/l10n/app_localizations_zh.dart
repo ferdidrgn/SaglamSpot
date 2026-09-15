@@ -1055,6 +1055,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingStart => '开始使用';
 
   @override
+  String get onboardingNext => 'İleri';
+
+  @override
+  String get onboardingCategoriesChip => '13 Kategori';
+
+  @override
+  String get onboardingBargainChip => 'Pazarlık Payı';
+
+  @override
+  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+
+  @override
   String get onboardingPage1Eyebrow => '欢迎来到 SAĞLAM SPOT';
 
   @override

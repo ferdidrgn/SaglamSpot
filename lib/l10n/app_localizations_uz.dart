@@ -1108,6 +1108,18 @@ class AppLocalizationsUz extends AppLocalizations {
   String get onboardingStart => 'Boshlash';
 
   @override
+  String get onboardingNext => 'İleri';
+
+  @override
+  String get onboardingCategoriesChip => '13 Kategori';
+
+  @override
+  String get onboardingBargainChip => 'Pazarlık Payı';
+
+  @override
+  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+
+  @override
   String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'GA XUSH KELIBSIZ';
 
   @override

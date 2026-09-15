@@ -1101,6 +1101,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get onboardingStart => 'Başla';
 
   @override
+  String get onboardingNext => 'İleri';
+
+  @override
+  String get onboardingCategoriesChip => '13 Kategori';
+
+  @override
+  String get onboardingBargainChip => 'Pazarlık Payı';
+
+  @override
+  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+
+  @override
   String get onboardingPage1Eyebrow => 'SAĞLAM SPOT\'A HOŞ GELDİNİZ';
 
   @override

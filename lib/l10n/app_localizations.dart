@@ -2150,6 +2150,30 @@ abstract class AppLocalizations {
   /// **'Başla'**
   String get onboardingStart;
 
+  /// No description provided for @onboardingNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'İleri'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingCategoriesChip.
+  ///
+  /// In tr, this message translates to:
+  /// **'13 Kategori'**
+  String get onboardingCategoriesChip;
+
+  /// No description provided for @onboardingBargainChip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pazarlık Payı'**
+  String get onboardingBargainChip;
+
+  /// No description provided for @onboardingFastReplyChip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hızlı Yanıt'**
+  String get onboardingFastReplyChip;
+
   /// No description provided for @onboardingPage1Eyebrow.
   ///
   /// In tr, this message translates to:
