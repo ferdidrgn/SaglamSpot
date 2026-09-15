@@ -15,7 +15,6 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/section_heading.dart';
-import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
@@ -358,18 +357,19 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
+  // Keşfet sayfasındaki "yan dönük" kategori rayıyla AYNI görsel dili
+  // (kategori renginde vurgu çubuğu + seçili/soluk kalınlık farkı) kullanır,
+  // ama Search sayfası dikey alanı sonuç ızgarasına ayırdığı için dikey ray
+  // yerine üstte tek satır, yatay kaydırılabilir bir şerit olarak gösterilir.
   Widget _buildCategoryStrip(final dynamic filters) => Container(
         color: AppColors.surface,
         padding: EdgeInsets.symmetric(
             vertical:
-                context.responsive(mobile: 6.0, tablet: 8.0, desktop: 8.0)),
-        child: DynamicCategoryChips(
+                context.responsive(mobile: 8.0, tablet: 8.0, desktop: 8.0)),
+        child: _HorizontalCategoryRail(
           selected: filters.category as ProductCategory?,
           onSelect: (final category) =>
               ref.read(searchFiltersProvider.notifier).setCategory(category),
-          padding: EdgeInsets.symmetric(
-              horizontal: context.responsive(
-                  mobile: 12.0, tablet: 20.0, desktop: 32.0)),
         ),
       );
 
@@ -904,6 +904,100 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         builder: (final _) => FilterSheet(
             onApplyFilters: () => Navigator.pop(context),
             onResetFilters: _resetAll),
+      );
+}
+
+/// Keşfet sayfasındaki `_RotatedCategoryRail` ile aynı görsel dili taşıyan,
+/// yatay/üst versiyon: her kategori etiketi altında, kategori rengiyle
+/// boyanmış bir vurgu çubuğu — seçiliyse kalın/koyu metin + uzun çubuk,
+/// değilse soluk/ince metin + çubuk yok. 13 kategori ekrana sığmayabileceği
+/// için yatay kaydırılabilir.
+class _HorizontalCategoryRail extends ConsumerWidget {
+  final ProductCategory? selected;
+  final ValueChanged<ProductCategory?> onSelect;
+
+  const _HorizontalCategoryRail(
+      {required this.selected, required this.onSelect});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final categories = ref.watch(orderedActiveCategoriesProvider);
+
+    return SizedBox(
+      height: 42,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(
+            horizontal: context.responsive(
+                mobile: 12.0, tablet: 20.0, desktop: 32.0)),
+        children: [
+          _HorizontalRailLabel(
+            label: context.l10n.conditionAll,
+            color: AppColors.primary,
+            isSelected: selected == null,
+            onTap: () => onSelect(null),
+          ),
+          for (final meta in categories)
+            _HorizontalRailLabel(
+              label: meta.customLabel ?? meta.category.label(context),
+              color: meta.color,
+              isSelected: selected == meta.category,
+              onTap: () => onSelect(meta.category),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HorizontalRailLabel extends StatelessWidget {
+  final String label;
+  final Color color;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _HorizontalRailLabel({
+    required this.label,
+    required this.color,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(final BuildContext context) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: isSelected ? 13.5 : 12.5,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  color:
+                      isSelected ? AppColors.textPrimary : AppColors.textTertiary,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 5),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                height: 3,
+                width: isSelected ? 22 : 0,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
 }
 
