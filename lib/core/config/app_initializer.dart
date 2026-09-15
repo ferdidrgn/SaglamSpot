@@ -10,6 +10,7 @@ import '../ads/ads_manager.dart';
 import '../services/app_check_service.dart';
 import '../services/firebase_feature_prefs.dart';
 import '../services/notification_service.dart';
+import '../services/onboarding_cache.dart';
 import '../services/remote_config_service.dart';
 import '../util/date_formatter.dart';
 import '../util/platform_checker.dart';
@@ -108,6 +109,14 @@ abstract final class AppInitializer {
   }
 
   static Future<void> _safeInitializeNotifications() async {
+    // İlk açılışta (native + ev içi tanıtım henüz gösterilmemiş) bildirim
+    // izni isteğini BURADA değil, onboarding tamamlandığı anda istiyoruz
+    // (bkz. HouseWalkthroughOnboardingScreen._finish) — aksi halde kullanıcı
+    // uygulamanın arayüzünü hiç görmeden ilk karede sistem izin diyaloğuyla
+    // karşılaşıyordu. Web'de onboarding hiç gösterilmediği için (bkz.
+    // app_router.dart) ve zaten onboarding'i görmüş cihazlarda davranış
+    // DEĞİŞMEDEN aynı şekilde burada, uygulama açılışında istenir.
+    if (!kIsWeb && !OnboardingCache.hasSeenOnboarding) return;
     try {
       await NotificationService.init();
     } catch (e) {

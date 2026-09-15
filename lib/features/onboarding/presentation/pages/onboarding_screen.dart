@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/onboarding_cache.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -54,6 +56,20 @@ class _HouseWalkthroughOnboardingScreenState
 
   Future<void> _finish(final BuildContext context) async {
     await OnboardingCache.markSeen();
+
+    // Bildirim izni burada, ev içi tanıtım biter bitmez istenir —
+    // AppInitializer artık bu isteği (kullanıcı uygulamanın arayüzünü hiç
+    // görmeden karşısına çıkmasın diye) onboarding bitene kadar ERTELİYOR
+    // (bkz. app_initializer.dart _safeInitializeNotifications). init() zaten
+    // tek seferlik çalışır (_initialized bayrağı) — burada DUPLICATE bir izin
+    // isteği YARATMIYORUZ, sadece daha önce ertelenmiş isteği tetikliyoruz.
+    // `unawaited`: "Başla" dokunuşu anasayfaya hemen geçsin, sistem izin
+    // diyaloğu onun üstünde kendiliğinden belirir — kullanıcıyı burada
+    // bekletmiyoruz. Uygulamanın kullandığı TEK cihaz izni bildirimdir
+    // (konum izni yok, bkz. GoogleMapsEmbed/SaglamSpotCommunication —
+    // sabit mağaza adresi gösterirler), bu yüzden art arda diyalog riski yok.
+    unawaited(NotificationService.init());
+
     if (context.mounted) NavigationHandler.goToHome(context);
   }
 

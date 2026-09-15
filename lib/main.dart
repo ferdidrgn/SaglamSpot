@@ -58,20 +58,22 @@ void main() async {
   // 2. İşletim sistemi arayüz düzen kurallarını (Edge-to-Edge) yarış durumuna düşmeden hemen işlet
   AppInitializer.configureSystemUIPreBoot();
 
-  // 3. Arka plan servis ağını arayüz çizimini engellemeyecek şekilde asenkron olarak ayağa kaldır
+  // 3. Ev içi tanıtım (onboarding) daha önce gösterildi mi — hem router'ın
+  // ilk konum kararını, hem de AppInitializer'ın bildirim izni isteğini
+  // ertelemesi gerekip gerekmediğini senkron verebilmesi için AppInitializer.
+  // init()'ten ÖNCE yüklenir (bkz. AppInitializer._safeInitializeNotifications).
+  await OnboardingCache.load();
+
+  // 4. Arka plan servis ağını arayüz çizimini engellemeyecek şekilde asenkron olarak ayağa kaldır
   await AppInitializer.init(binding);
 
-  // 4. Bu cihazda daha önce yönetici girişi yapılmış mı — router'ın ilk
+  // 5. Bu cihazda daha önce yönetici girişi yapılmış mı — router'ın ilk
   // yönlendirme kararını senkron verebilmesi için runApp'ten önce yüklenir
   await AdminSessionCache.load();
 
-  // 5. Kayıtlı görünüm (açık/koyu/sistem) tercihi — ilk karede yanlış
+  // 6. Kayıtlı görünüm (açık/koyu/sistem) tercihi — ilk karede yanlış
   // temanın bir an görünüp değişmesini (flash) önlemek için önceden yüklenir
   await ThemeModeCache.load();
-
-  // 6. Ev içi tanıtım (onboarding) daha önce gösterildi mi — router'ın ilk
-  // konum kararını senkron verebilmesi için önceden yüklenir
-  await OnboardingCache.load();
 
   // 7. "Telefonumun temasını kullan" (Android Material You) tercihi
   await DynamicColorCache.load();
