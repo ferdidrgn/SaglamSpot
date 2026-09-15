@@ -1,3 +1,4 @@
+# Tüm arama motoru botları (Googlebot, Bingbot, Yandex dahil) için genel kural.
 User-agent: *
 Allow: /
 Disallow: /admin
@@ -7,6 +8,44 @@ Disallow: /settings
 Disallow: /notifications
 Disallow: /login
 Disallow: /onboarding
+Disallow: /discover
+
+# Aşağıdaki bot bazlı bloklar genel kuralla aynıdır — Google/Bing/Yandex
+# webmaster araçlarında (Search Console, Bing Webmaster Tools, Yandex
+# Webmaster) bot bazlı denetim yapılırken açıkça görünsün diye ayrıca
+# belirtilmiştir.
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /favorites
+Disallow: /settings
+Disallow: /notifications
+Disallow: /login
+Disallow: /onboarding
+Disallow: /discover
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /favorites
+Disallow: /settings
+Disallow: /notifications
+Disallow: /login
+Disallow: /onboarding
+Disallow: /discover
+
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /favorites
+Disallow: /settings
+Disallow: /notifications
+Disallow: /login
+Disallow: /onboarding
+Disallow: /discover
 
 Sitemap: https://saglamspotcu.web.app/sitemap.xml
 Sitemap: https://saglamspotcu.web.app/sitemap-products.xml

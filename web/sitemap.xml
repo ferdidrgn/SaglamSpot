@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  NOT (ürün detay sayfaları / dinamik sitemap):
+  Bu dosya yalnızca STATİK, kullanıcı girişi/ürün verisi olmayan rotaları
+  kapsar. /product/:slugWithId altındaki ürün detay sayfaları Firestore'daki
+  canlı ürün verisine (slug+id, fiyat, stok durumu) bağlı olarak SÜREKLİ
+  değiştiği ve elle bu dosyaya yazılamayacağı için burada YOKTUR — bu
+  bilinçli bir tercihtir, eksiklik değildir.
+
+  firebase.json'da zaten "/sitemap-products.xml" yolu bir Cloud Function'a
+  (rewrites -> "function": "sitemap") yönlendirilmiş durumda; robots.txt de
+  bu ikinci sitemap'i ayrıca bildiriyor (Sitemap: .../sitemap-products.xml).
+  Bu depoda ("functions/" dizini) o fonksiyonun ürün verisini Firestore'dan
+  okuyup <urlset> XML'i olarak üreten gerçek implementasyonu henüz YOKTUR —
+  bu, bu SEO görevinin kapsamı dışında, AYRI bir backend/Cloud Functions
+  görevi olarak ele alınmalıdır (bkz. görev raporu).
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://saglamspotcu.web.app/</loc>
@@ -35,5 +51,17 @@
         <lastmod>2026-08-31</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://saglamspotcu.web.app/privacy</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://saglamspotcu.web.app/terms</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
     </url>
 </urlset>

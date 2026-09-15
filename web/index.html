@@ -28,12 +28,32 @@
 
      <link rel="canonical" href="https://saglamspotcu.web.app/"/>
 
+    <!-- hreflang notu: Uygulama 11 dili destekliyor (lib/l10n/app_localizations_*.dart)
+         ama dil değişimi İSTEMCİ TARAFINDA (cihaz/tarayıcı diline göre veya
+         kullanıcı seçimiyle) yapılıyor — her dil için AYRI bir URL/rota yok,
+         hepsi aynı https://saglamspotcu.web.app/... adresini paylaşıyor.
+         Google'ın kendi rehberi hreflang'i yalnızca HER dil için gerçekten
+         farklı bir URL varken önerir; aynı URL için hreflang eklemek yanlış
+         sinyal olur. Bu yüzden bilinçli olarak eklenmedi — ileride /en, /ru
+         gibi dile özel rotalar/URL'ler eklenirse burada hreflang alternate
+         linkleri tanımlanmalı. -->
+
+
     <!-- ================= OPEN GRAPH (DEFAULT) ================= -->
     <meta property="og:site_name" content="Sağlam Spot">
     <meta property="og:title" content="Sağlam Spot – Spot & Sıfır Mobilya">
     <meta property="og:description"
           content="Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot 20 yıllık esnaf güvencesiyle.">
-    <meta property="og:image" content="https://saglamspotcu.web.app/assets/og_default.png">
+    <!-- Not: og:image/twitter:image web/icons/Icon-512.png dosyasına işaret
+         eder (build/web/icons/Icon-512.png olarak statik kopyalanır, bkz.
+         manifest.json) — önceki değer (/assets/og_default.png) repoda hiç
+         var olmayan, 404 dönen bir dosyaya işaret ediyordu; paylaşım
+         önizlemelerinde (WhatsApp/Facebook/Twitter) kırık görsel olarak
+         çıkıyordu. Marka için özel, 1200x630 oranlı bir OG görseli
+         hazırlanınca bu yol o dosyayla güncellenmeli. -->
+    <meta property="og:image" content="https://saglamspotcu.web.app/icons/Icon-512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
     <meta property="og:url" content="https://saglamspotcu.web.app">
     <meta property="og:type" content="website">
 
@@ -52,7 +72,7 @@
     <meta name="twitter:title" content="Sağlam Spot – Spot & Sıfır Mobilya">
     <meta name="twitter:description"
           content="Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot.">
-    <meta name="twitter:image" content="https://saglamspotcu.web.app/assets/og_default.png">
+    <meta name="twitter:image" content="https://saglamspotcu.web.app/icons/Icon-512.png">
 
     <!-- ================= STRUCTURED DATA ================= -->
     <script type="application/ld+json">
