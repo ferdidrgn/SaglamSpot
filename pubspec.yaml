@@ -93,28 +93,41 @@ flutter:
 # ================================================
 # NATIVE SPLASH SCREEN CONFIGURATION
 # ================================================
+# Renkler AppColors (lib/core/theme/app_colors.dart) ile TEK TEK eşleşir:
+#   açık: AppColors.background  -> #F5EFE6
+#   koyu: AppColors.darkBackground (= dark modda AppColors.background) -> #1C140E
+# Böylece native splash'ten Flutter'ın ilk karesine geçiş renkte SIÇRAMA
+# yapmaz (önceki sürümde color_dark yanlışlıkla #241A13 idi — bu, koyu
+# temanın gerçek scaffold rengi değil, AppColors.primaryDark/backgroundDark
+# gibi FARKLI bir sabitti; buradan düzeltildi).
 flutter_native_splash:
-  color: "#F5EFE6" #
-  image: "assets/images/saglam_spot_logo_full.png" #
+  # Android <12 / iOS: tam logo (marka adı dahil) — bu yüzeylerde
+  # Android 12'nin aksine görsel boyutu/oranı serbest.
+  color: "#F5EFE6"
+  image: "assets/images/saglam_spot_logo_full.png"
+  color_dark: "#1C140E"
+  image_dark: "assets/images/saglam_spot_logo_full.png"
 
-  android_12:
-    image: "assets/images/saglam_spot_logo_full.png" #
-    color: "#F5EFE6" #
-    image_dark: "assets/images/saglam_spot_logo_full.png" #
-    color_dark: "#241A13" #
-    icon_background_color: "#F5EFE6" #
+  android_gravity: center
+  ios_content_mode: center
 
-  color_dark: "#241A13" #
-  image_dark: "assets/images/saglam_spot_logo_full.png" #
-  android_navbar_color: "#F5EFE6" #
-
-  android: true #
-  ios: true #
-  web: false #
-
-  android_gravity: center #
-  ios_content_mode: center #
+  android: true
+  ios: true
+  web: false
 
   # CRITICAL REFACTOR: Uçtan uca ekran uyarılarını ezmemek adına false yapıldı.
   # Tam ekran bayrağı (fullscreen: true) Android 15 cihazlarda çakışma hatası üretir.
   fullscreen: false
+
+  # Android 12+ (yeni SplashScreen API): arkaplan + ayrı bir "ikon" katmanı
+  # olarak render edilir ve ikonun yalnızca iç 2/3'lük "safe zone"u görünür
+  # kalır (kenarlar sistem tarafından maskelenir) — bu yüzden marka adı
+  # yazılı tam logo yerine KARE, şeffaf zeminli "mark" (ikon) kullanılıyor;
+  # aksi halde kelime/harfler dairesel maskeyle kırpılırdı.
+  android_12:
+    image: "assets/images/saglam_spot_logo_mark.png"
+    color: "#F5EFE6"
+    icon_background_color: "#F5EFE6"
+    image_dark: "assets/images/saglam_spot_logo_mark.png"
+    color_dark: "#1C140E"
+    icon_background_color_dark: "#1C140E"

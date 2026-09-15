@@ -1,4 +1,5 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/dynamic_color_provider.dart';
 import 'core/theme/theme_mode_provider.dart';
+import 'features/splash/presentation/widgets/app_launch_splash_overlay.dart';
 import 'l10n/app_localizations.dart';
 
 /// Flutter web/masaüstünde varsayılan olarak fare ile "tıkla-sürükle" kaydırma
@@ -169,22 +171,24 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               // art arda hata/rebuild döngüsüne girip sayfayı kilitliyordu.
               // CallbackShortcuts hiçbir Focus düğümüne ihtiyaç duymadığı
               // için bu sorunu tamamen ortadan kaldırıyor.
-              child: CallbackShortcuts(
-                bindings: <ShortcutActivator, VoidCallback>{
-                  LogicalKeySet(
-                          LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
-                      () => _router.go('/search'),
-                  LogicalKeySet(
-                          LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
-                      () => _router.go('/search'),
-                },
-                child: KeyedSubtree(
-                  // Parlaklık VEYA dinamik renk tercihi/şeması değiştiğinde
-                  // alt ağacı sıfırdan kurdurmak için ikisini de anahtara
-                  // katıyoruz.
-                  key: ValueKey(
-                      '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
-                  child: child ?? const SizedBox.shrink(),
+              child: _buildAppContent(
+                child: CallbackShortcuts(
+                  bindings: <ShortcutActivator, VoidCallback>{
+                    LogicalKeySet(
+                            LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
+                        () => _router.go('/search'),
+                    LogicalKeySet(
+                            LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
+                        () => _router.go('/search'),
+                  },
+                  child: KeyedSubtree(
+                    // Parlaklık VEYA dinamik renk tercihi/şeması değiştiğinde
+                    // alt ağacı sıfırdan kurdurmak için ikisini de anahtara
+                    // katıyoruz.
+                    key: ValueKey(
+                        '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
+                    child: child ?? const SizedBox.shrink(),
+                  ),
                 ),
               ),
             );
@@ -192,5 +196,20 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
         );
       },
     );
+  }
+
+  /// Native (Android/iOS) açılış ekranı kapanıp Flutter ilk kareyi
+  /// çizdiği anda üstüne binen, kısa ömürlü markalı geçiş katmanını
+  /// ekler — go_router'ın initialLocation'ı (AdminSessionCache/
+  /// OnboardingCache'in main()'de senkron yüklenmiş kararı) burada
+  /// HİÇ etkilenmez; [child] her zaman olduğu gibi arkada normal
+  /// şekilde inşa edilir, [AppLaunchSplashOverlay] sadece görsel bir
+  /// katman olarak üstüne biner ve kendini kısa sürede eritir.
+  ///
+  /// Web'de flutter_native_splash zaten devre dışı (bkz. pubspec.yaml),
+  /// bu yüzden bu katman yalnızca native mobilde çalışır.
+  Widget _buildAppContent({required final Widget child}) {
+    if (kIsWeb) return child;
+    return AppLaunchSplashOverlay(child: child);
   }
 }
