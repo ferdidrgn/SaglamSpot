@@ -46,6 +46,25 @@ function currentMonthKey() {
 }
 
 /**
+ * Bu callable fonksiyon SADECE admin panelinden çağrılmalı — Firestore
+ * kurallarındaki isAdmin() ile AYNI kontrolü burada da (Admin SDK ile)
+ * tekrarlıyoruz. Callable fonksiyonlar varsayılan olarak kimliksiz
+ * istemcilerden de çağrılabilir; bu kontrol olmadan herkes (girişsiz
+ * ziyaretçiler dahil) remove.bg'nin aylık 50 isteklik ücretsiz kotasını
+ * admin hiç fotoğraf yüklemeden tüketebilirdi.
+ */
+async function assertIsAdmin(request) {
+  const email = request.auth && request.auth.token && request.auth.token.email;
+  if (!email) {
+    throw new HttpsError("unauthenticated", "Bu işlem için giriş yapmış bir admin hesabı gerekli.");
+  }
+  const adminDoc = await getFirestore().doc(`admins/${email}`).get();
+  if (!adminDoc.exists) {
+    throw new HttpsError("permission-denied", "Bu işlem sadece admin hesapları için kullanılabilir.");
+  }
+}
+
+/**
  * Kotadan bir hak "rezerve eder" (transaction içinde okuyup artırır).
  * Ay değiştiyse sayaç otomatik sıfırlanır. Rezervasyon başarısızsa
  * (kota dolu) false döner — remove.bg'ye hiç istek gitmez.
@@ -80,6 +99,8 @@ exports.removeProductBackground = onCall(
       // ÇIPLAK BAYT olarak gönderiliyor (base64) — bu sayede önce
       // Storage'a yükleyip sonra URL üretmek gibi ekstra bir adıma/gecikmeye
       // gerek kalmıyor, seçimden hemen sonra önizleme üretilebiliyor.
+      await assertIsAdmin(request);
+
       const imageBase64 = request.data && request.data.imageBase64;
       if (!imageBase64 || typeof imageBase64 !== "string") {
         throw new HttpsError("invalid-argument", "imageBase64 gerekli.");
