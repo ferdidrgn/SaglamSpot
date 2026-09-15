@@ -15,7 +15,8 @@ import '../../features/products/presentation/pages/favorites_page.dart';
 import '../../features/home/presentation/page/admin_dashboard_page.dart'
     deferred as admin;
 import '../../features/home/presentation/page/wrapper/app_home_page.dart';
-import '../../features/info/presentation/pages/about_page.dart';
+import '../../features/info/presentation/pages/about_page.dart'
+    deferred as info_about;
 import '../../features/legal/presentation/pages/privacy_policy_page.dart'
     deferred as legal_privacy;
 import '../../features/legal/presentation/pages/terms_page.dart'
@@ -26,7 +27,7 @@ import '../../features/products/presentation/pages/spot_products_page.dart';
 import '../../features/search/presentation/pages/search_page.dart';
 import '../../features/notifications/presentation/pages/notifications_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../features/sss/presentation/pages/sss_page.dart';
+import '../../features/sss/presentation/pages/sss_page.dart' deferred as sss;
 import '../../shared/navigation/widgets/navigation.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../services/admin_session_cache.dart';
@@ -205,10 +206,17 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
                 path: '/about',
                 name: 'about',
                 pageBuilder: (final context, final state) =>
-                    const CustomTransitionPage(
-                  child: AboutPage(),
+                    CustomTransitionPage(
+                  key: state.pageKey,
+                  // Hakkımızda sayfası nadiren ziyaret edilir — web'de ana
+                  // pakete değil, ayrı bir parçaya (chunk) alınır (bkz.
+                  // DeferredWidget).
+                  child: DeferredWidget(
+                    libraryLoader: info_about.loadLibrary,
+                    builder: (final context) => info_about.AboutPage(),
+                  ),
                   transitionsBuilder: focalTransition,
-                  transitionDuration: Duration(milliseconds: 400),
+                  transitionDuration: const Duration(milliseconds: 400),
                 ),
               ),
             ],
@@ -219,10 +227,17 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
                 path: '/sss',
                 name: 'sss',
                 pageBuilder: (final context, final state) =>
-                    const CustomTransitionPage(
-                  child: SSSPage(),
+                    CustomTransitionPage(
+                  key: state.pageKey,
+                  // SSS sayfası nadiren ziyaret edilir — web'de ana pakete
+                  // değil, ayrı bir parçaya (chunk) alınır (bkz.
+                  // DeferredWidget).
+                  child: DeferredWidget(
+                    libraryLoader: sss.loadLibrary,
+                    builder: (final context) => sss.SSSPage(),
+                  ),
                   transitionsBuilder: focalTransition,
-                  transitionDuration: Duration(milliseconds: 400),
+                  transitionDuration: const Duration(milliseconds: 400),
                 ),
               ),
             ],

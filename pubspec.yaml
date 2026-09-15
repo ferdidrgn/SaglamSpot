@@ -22,11 +22,8 @@ dependencies:
   dartz:
   flutter_riverpod: ^3.0.3
   riverpod_annotation: ^3.0.3
-  freezed_annotation:
-  json_annotation:
 
   # Network & Storage
-  dio:
   flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.3.2
   connectivity_plus: ^6.0.3
@@ -69,11 +66,8 @@ dev_dependencies:
     sdk: flutter
   # Generators
   flutter_lints:
-  injectable_generator:
   build_runner: ^2.4.9
-  freezed:
   riverpod_generator: ^3.0.3
-  json_serializable:
   flutter_native_splash: ^2.4.1
 
 flutter:
