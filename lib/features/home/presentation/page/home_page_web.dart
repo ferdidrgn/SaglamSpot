@@ -24,6 +24,7 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
+import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/dynamic_category_chips.dart';
@@ -833,14 +834,34 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ),
       );
 
+  // Önceki sürümde burada uydurma pazarlama rakamları vardı ("2.5K+ mutlu
+  // müşteri", "15K+ teslimat", "%100 güven" gibi hiçbir gerçek veriye
+  // dayanmayan sayılar). Artık her rakam doğrudan Firestore'dan beslenen
+  // Riverpod provider'larından geliyor: aktif ürün sayısı, aktif kategori
+  // sayısı ve tamamlanmış (satılmış) ürün sayısı. Gerçek bir karşılığı
+  // olmayan "mutlu müşteri sayısı" ve "%güven" rakamları uydurulmak yerine
+  // tamamen kaldırıldı — 20 yıllık esnaflık ise uygulamanın başka
+  // yerlerinde de (usp1Title/sellerTrustLine) kullanılan, gerçek ve
+  // doğrulanabilir bir işletme bilgisi olduğu için korundu.
   Widget _buildStatsSection() {
+    final productCount = ref.watch(availableProductsProvider).length;
+    final categoryCount = ref.watch(orderedActiveCategoriesProvider).length;
+    final deliveredCount = ref.watch(soldProductsProvider).length;
+
     final stats = [
       {
-        "target": 2.5,
-        "decimals": 1,
-        "suffix": "K+",
-        "label": context.l10n.statHappyCustomer,
-        "icon": Icons.people_outline
+        "target": productCount.toDouble(),
+        "decimals": 0,
+        "suffix": "",
+        "label": context.l10n.statProducts,
+        "icon": Icons.inventory_2_outlined
+      },
+      {
+        "target": categoryCount.toDouble(),
+        "decimals": 0,
+        "suffix": "",
+        "label": context.l10n.sectionCategories,
+        "icon": Icons.category_outlined
       },
       {
         "target": 20.0,
@@ -850,19 +871,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         "icon": Icons.workspace_premium_outlined
       },
       {
-        "target": 15.0,
+        "target": deliveredCount.toDouble(),
         "decimals": 0,
-        "suffix": "K+",
+        "suffix": "",
         "label": context.l10n.statDelivery,
         "icon": Icons.local_shipping_outlined
-      },
-      {
-        "target": 100.0,
-        "decimals": 0,
-        "prefix": "%",
-        "suffix": "",
-        "label": context.l10n.statTrust,
-        "icon": Icons.verified_user_outlined
       },
     ];
 

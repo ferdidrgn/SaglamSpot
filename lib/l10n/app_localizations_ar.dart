@@ -255,6 +255,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statHappyCustomer => 'عميل سعيد';
 
   @override
+  String get statProducts => 'منتج';
+
+  @override
   String get statExperience => 'الخبرة';
 
   @override

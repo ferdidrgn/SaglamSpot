@@ -256,6 +256,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get statHappyCustomer => 'Mutlu Müşteri';
 
   @override
+  String get statProducts => 'Ürün';
+
+  @override
   String get statExperience => 'Tecrübe';
 
   @override

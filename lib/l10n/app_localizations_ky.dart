@@ -259,6 +259,9 @@ class AppLocalizationsKy extends AppLocalizations {
   String get statHappyCustomer => 'Ыраазы кардар';
 
   @override
+  String get statProducts => 'Товарлар';
+
+  @override
   String get statExperience => 'Тажрыйба';
 
   @override

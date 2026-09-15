@@ -257,6 +257,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get statHappyCustomer => 'Довольный клиент';
 
   @override
+  String get statProducts => 'Товары';
+
+  @override
   String get statExperience => 'Опыт';
 
   @override

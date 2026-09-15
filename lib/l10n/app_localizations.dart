@@ -578,6 +578,12 @@ abstract class AppLocalizations {
   /// **'Mutlu Müşteri'**
   String get statHappyCustomer;
 
+  /// No description provided for @statProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün'**
+  String get statProducts;
+
   /// No description provided for @statExperience.
   ///
   /// In tr, this message translates to:

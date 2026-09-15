@@ -260,6 +260,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get statHappyCustomer => 'Ευχαριστημένος πελάτης';
 
   @override
+  String get statProducts => 'Προϊόντα';
+
+  @override
   String get statExperience => 'Εμπειρία';
 
   @override

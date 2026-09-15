@@ -253,6 +253,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get statHappyCustomer => '满意客户';
 
   @override
+  String get statProducts => '商品';
+
+  @override
   String get statExperience => '经验';
 
   @override

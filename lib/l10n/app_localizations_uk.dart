@@ -256,6 +256,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get statHappyCustomer => 'Задоволений клієнт';
 
   @override
+  String get statProducts => 'Товари';
+
+  @override
   String get statExperience => 'Досвід';
 
   @override

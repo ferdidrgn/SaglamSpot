@@ -258,6 +258,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get statHappyCustomer => 'Mamnun mijoz';
 
   @override
+  String get statProducts => 'Mahsulotlar';
+
+  @override
   String get statExperience => 'Tajriba';
 
   @override
