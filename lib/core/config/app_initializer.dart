@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import '../ads/ads_manager.dart';
 import '../services/app_check_service.dart';
+import '../services/firebase_feature_prefs.dart';
 import '../services/notification_service.dart';
 import '../services/remote_config_service.dart';
 import '../util/date_formatter.dart';
@@ -23,6 +25,11 @@ abstract final class AppInitializer {
       await DateFormatter.initializeLocale();
       debugPrint(
           '🔐 Güvenli depolama alt yapısı ve yerelleştirme modülleri aktif.');
+
+      // Admin > Firebase Servisleri ekranından değiştirilen Çökme Raporu/
+      // Analitik tercihini Firebase'e bağlanmadan ÖNCE oku — SDK'lara bu
+      // tercihi Firebase başlatılır başlatılmaz uygulayabilelim diye.
+      await FirebaseFeaturePrefs.load();
 
       // Çekirdek bulut motorlarını (Firebase) ve yerel AppCheck bütünlüğünü başlat
       await _bootstrapFirebaseAndCoreEngines();
@@ -66,7 +73,15 @@ abstract final class AppInitializer {
         await AppCheckService
             .init(); // Sizin özgün yerel App Check başlatıcınız
 
+        // Admin ekranından kayıtlı Çökme Raporu/Analitik tercihini SDK'lara
+        // bildir — kullanıcı bir önceki oturumda kapattıysa bu oturumda da
+        // kapalı kalsın.
+        await FirebaseAnalytics.instance
+            .setAnalyticsCollectionEnabled(FirebaseFeaturePrefs.analyticsEnabled);
+
         if (!kIsWeb) {
+          await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+              FirebaseFeaturePrefs.crashlyticsEnabled);
           _setupCrashlyticsPipeline();
         }
       }

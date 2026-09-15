@@ -113,49 +113,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryOther => 'Other';
 
   @override
-  String get categorySettingsTitle => 'Category Settings';
-
-  @override
-  String get categorySettingsTooltip => 'Category Settings';
-
-  @override
-  String get categorySettingsSubtitle =>
-      'Edit each category\'s icon, color, order and visibility here — no need to open Firebase Console.';
-
-  @override
-  String get categorySettingsSaved => 'Category updated';
-
-  @override
-  String get categorySettingsSaveError =>
-      'Couldn\'t save the category, try again';
-
-  @override
-  String get categoryInactiveBadge => 'Inactive';
-
-  @override
-  String get categoryActiveLabel => 'Active';
-
-  @override
-  String get categoryActiveHint =>
-      'When off, this category is hidden in the app';
-
-  @override
-  String get customLabelOptional => 'Custom Label (optional)';
-
-  @override
-  String get customLabelHint =>
-      'Leave empty to use the category\'s translated default name.';
-
-  @override
-  String get iconLabel => 'Icon';
-
-  @override
-  String get colorLabel => 'Color';
-
-  @override
-  String get orderLabel => 'Order';
-
-  @override
   String get condition => 'Condition';
 
   @override
@@ -2010,4 +1967,109 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get featureRow3Desc =>
       'Get a real answer from a real shopkeeper in minutes.';
+
+  @override
+  String get firebaseServicesTooltip => 'Firebase Services';
+
+  @override
+  String get firebaseServicesTitle => 'Firebase Services';
+
+  @override
+  String get firebaseCrashlyticsTitle => 'Crash Reporting';
+
+  @override
+  String get firebaseCrashlyticsToggle => 'Send Crash Reports';
+
+  @override
+  String get firebaseCrashlyticsSubtitle =>
+      'If turned off, app errors are not reported to Firebase';
+
+  @override
+  String get firebaseChecking => 'Checking…';
+
+  @override
+  String get firebaseCrashedLastSession =>
+      'The app crashed in the previous session';
+
+  @override
+  String get firebaseNoCrashLastSession => 'No crash in the previous session';
+
+  @override
+  String get firebaseStatsConsoleOnly =>
+      'Detailed crash statistics are only viewable in the Firebase Console';
+
+  @override
+  String get firebaseAnalyticsTitle => 'Usage Analytics';
+
+  @override
+  String get firebaseAnalyticsToggle => 'Collect Usage Analytics';
+
+  @override
+  String get firebaseAnalyticsSubtitle =>
+      'If turned off, in-app usage data is not collected';
+
+  @override
+  String get firebaseRemoteConfigTitle => 'Remote Config';
+
+  @override
+  String firebaseAdsEnabledValue(String value) {
+    return 'Ads: $value';
+  }
+
+  @override
+  String get firebaseValueOn => 'On';
+
+  @override
+  String get firebaseValueOff => 'Off';
+
+  @override
+  String firebaseLastFetch(String time) {
+    return 'Last updated: $time';
+  }
+
+  @override
+  String get firebaseRefreshConfig => 'Refresh Now';
+
+  @override
+  String get firebaseConfigConsoleOnly =>
+      'Values can only be changed from Firebase Console > Remote Config — here you can only view and refresh the current value';
+
+  @override
+  String get firebaseConfigRefreshed => 'Remote Config updated';
+
+  @override
+  String get firebaseConfigUnchanged => 'Remote Config is already up to date';
+
+  @override
+  String get firebaseAppCheckTitle => 'App Check';
+
+  @override
+  String get firebaseAppCheckWebUnsupported => 'App Check is not used on web';
+
+  @override
+  String get firebaseActive => 'Active';
+
+  @override
+  String get firebaseAppCheckDesc =>
+      'A security layer verifying requests come from a genuine app instance — cannot be turned off';
+
+  @override
+  String get firebaseNotificationsTitle => 'Notifications (FCM)';
+
+  @override
+  String get firebaseTokenAvailable =>
+      'A notification token exists for this device';
+
+  @override
+  String get firebaseTokenUnavailable =>
+      'No notification token yet for this device';
+
+  @override
+  String get firebasePermissionGranted => 'Notification permission granted';
+
+  @override
+  String get firebasePermissionDenied => 'Notification permission not granted';
+
+  @override
+  String get firebaseOpenNotificationSettings => 'Open Notification Settings';
 }

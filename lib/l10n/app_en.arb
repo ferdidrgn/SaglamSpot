@@ -44,19 +44,6 @@
   "categoryOutdoorGarden": "Garden & Balcony",
   "categoryKidsFurniture": "Baby & Kids",
   "categoryOther": "Other",
-  "categorySettingsTitle": "Category Settings",
-  "categorySettingsTooltip": "Category Settings",
-  "categorySettingsSubtitle": "Edit each category's icon, color, order and visibility here — no need to open Firebase Console.",
-  "categorySettingsSaved": "Category updated",
-  "categorySettingsSaveError": "Couldn't save the category, try again",
-  "categoryInactiveBadge": "Inactive",
-  "categoryActiveLabel": "Active",
-  "categoryActiveHint": "When off, this category is hidden in the app",
-  "customLabelOptional": "Custom Label (optional)",
-  "customLabelHint": "Leave empty to use the category's translated default name.",
-  "iconLabel": "Icon",
-  "colorLabel": "Color",
-  "orderLabel": "Order",
   "condition": "Condition",
   "conditionAll": "All",
   "conditionNew": "New",
@@ -736,5 +723,50 @@
   "featureRow2Title": "Local Delivery",
   "featureRow2Desc": "Insured, fast delivery to selected neighborhoods.",
   "featureRow3Title": "Instant WhatsApp Reply",
-  "featureRow3Desc": "Get a real answer from a real shopkeeper in minutes."
+  "featureRow3Desc": "Get a real answer from a real shopkeeper in minutes.",
+  "firebaseServicesTooltip": "Firebase Services",
+  "firebaseServicesTitle": "Firebase Services",
+  "firebaseCrashlyticsTitle": "Crash Reporting",
+  "firebaseCrashlyticsToggle": "Send Crash Reports",
+  "firebaseCrashlyticsSubtitle": "If turned off, app errors are not reported to Firebase",
+  "firebaseChecking": "Checking…",
+  "firebaseCrashedLastSession": "The app crashed in the previous session",
+  "firebaseNoCrashLastSession": "No crash in the previous session",
+  "firebaseStatsConsoleOnly": "Detailed crash statistics are only viewable in the Firebase Console",
+  "firebaseAnalyticsTitle": "Usage Analytics",
+  "firebaseAnalyticsToggle": "Collect Usage Analytics",
+  "firebaseAnalyticsSubtitle": "If turned off, in-app usage data is not collected",
+  "firebaseRemoteConfigTitle": "Remote Config",
+  "firebaseAdsEnabledValue": "Ads: {value}",
+  "@firebaseAdsEnabledValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "firebaseValueOn": "On",
+  "firebaseValueOff": "Off",
+  "firebaseLastFetch": "Last updated: {time}",
+  "@firebaseLastFetch": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "firebaseRefreshConfig": "Refresh Now",
+  "firebaseConfigConsoleOnly": "Values can only be changed from Firebase Console > Remote Config — here you can only view and refresh the current value",
+  "firebaseConfigRefreshed": "Remote Config updated",
+  "firebaseConfigUnchanged": "Remote Config is already up to date",
+  "firebaseAppCheckTitle": "App Check",
+  "firebaseAppCheckWebUnsupported": "App Check is not used on web",
+  "firebaseActive": "Active",
+  "firebaseAppCheckDesc": "A security layer verifying requests come from a genuine app instance — cannot be turned off",
+  "firebaseNotificationsTitle": "Notifications (FCM)",
+  "firebaseTokenAvailable": "A notification token exists for this device",
+  "firebaseTokenUnavailable": "No notification token yet for this device",
+  "firebasePermissionGranted": "Notification permission granted",
+  "firebasePermissionDenied": "Notification permission not granted",
+  "firebaseOpenNotificationSettings": "Open Notification Settings"
 }

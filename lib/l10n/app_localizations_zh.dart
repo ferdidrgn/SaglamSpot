@@ -110,47 +110,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get categoryOther => '其他';
 
   @override
-  String get categorySettingsTitle => 'Kategori Ayarları';
-
-  @override
-  String get categorySettingsTooltip => 'Kategori Ayarları';
-
-  @override
-  String get categorySettingsSubtitle =>
-      'Her kategorinin ikonunu, rengini, sırasını ve görünürlüğünü buradan düzenleyebilirsin — Firebase Console\'a girmene gerek yok.';
-
-  @override
-  String get categorySettingsSaved => 'Kategori güncellendi';
-
-  @override
-  String get categorySettingsSaveError => 'Kategori kaydedilemedi, tekrar dene';
-
-  @override
-  String get categoryInactiveBadge => 'Pasif';
-
-  @override
-  String get categoryActiveLabel => 'Aktif';
-
-  @override
-  String get categoryActiveHint => 'Kapalıyken bu kategori uygulamada gizlenir';
-
-  @override
-  String get customLabelOptional => 'Özel Etiket (opsiyonel)';
-
-  @override
-  String get customLabelHint =>
-      'Boş bırakılırsa kategorinin çevrilmiş varsayılan ismi kullanılır.';
-
-  @override
-  String get iconLabel => 'İkon';
-
-  @override
-  String get colorLabel => 'Renk';
-
-  @override
-  String get orderLabel => 'Sıra';
-
-  @override
   String get condition => '状态';
 
   @override
@@ -1925,4 +1884,109 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get featureRow3Desc => '几分钟内获得店主的真实回复。';
+
+  @override
+  String get firebaseServicesTooltip => 'Firebase Servisleri';
+
+  @override
+  String get firebaseServicesTitle => 'Firebase Servisleri';
+
+  @override
+  String get firebaseCrashlyticsTitle => 'Çökme Raporlama';
+
+  @override
+  String get firebaseCrashlyticsToggle => 'Çökme Raporlarını Gönder';
+
+  @override
+  String get firebaseCrashlyticsSubtitle =>
+      'Kapatılırsa uygulama hataları Firebase\'e bildirilmez';
+
+  @override
+  String get firebaseChecking => 'Kontrol ediliyor…';
+
+  @override
+  String get firebaseCrashedLastSession => 'Bir önceki oturumda uygulama çöktü';
+
+  @override
+  String get firebaseNoCrashLastSession => 'Bir önceki oturumda çökme olmadı';
+
+  @override
+  String get firebaseStatsConsoleOnly =>
+      'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir';
+
+  @override
+  String get firebaseAnalyticsTitle => 'Kullanım Analitiği';
+
+  @override
+  String get firebaseAnalyticsToggle => 'Kullanım Analitiği Topla';
+
+  @override
+  String get firebaseAnalyticsSubtitle =>
+      'Kapatılırsa uygulama içi kullanım verisi toplanmaz';
+
+  @override
+  String get firebaseRemoteConfigTitle => 'Remote Config';
+
+  @override
+  String firebaseAdsEnabledValue(String value) {
+    return 'Reklamlar: $value';
+  }
+
+  @override
+  String get firebaseValueOn => 'Açık';
+
+  @override
+  String get firebaseValueOff => 'Kapalı';
+
+  @override
+  String firebaseLastFetch(String time) {
+    return 'Son güncelleme: $time';
+  }
+
+  @override
+  String get firebaseRefreshConfig => 'Şimdi Güncelle';
+
+  @override
+  String get firebaseConfigConsoleOnly =>
+      'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz';
+
+  @override
+  String get firebaseConfigRefreshed => 'Remote Config güncellendi';
+
+  @override
+  String get firebaseConfigUnchanged => 'Remote Config zaten güncel';
+
+  @override
+  String get firebaseAppCheckTitle => 'App Check';
+
+  @override
+  String get firebaseAppCheckWebUnsupported =>
+      'App Check web\'de kullanılmıyor';
+
+  @override
+  String get firebaseActive => 'Aktif';
+
+  @override
+  String get firebaseAppCheckDesc =>
+      'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz';
+
+  @override
+  String get firebaseNotificationsTitle => 'Bildirimler (FCM)';
+
+  @override
+  String get firebaseTokenAvailable =>
+      'Bu cihaz için bildirim belirteci mevcut';
+
+  @override
+  String get firebaseTokenUnavailable =>
+      'Bu cihaz için henüz bildirim belirteci yok';
+
+  @override
+  String get firebasePermissionGranted => 'Bildirim izni verildi';
+
+  @override
+  String get firebasePermissionDenied => 'Bildirim izni verilmedi';
+
+  @override
+  String get firebaseOpenNotificationSettings => 'Bildirim Ayarlarını Aç';
 }

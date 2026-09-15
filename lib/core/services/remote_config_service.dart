@@ -30,4 +30,28 @@ abstract final class RemoteConfigService {
   }
 
   static bool get adsEnabled => adsEnabledNotifier.value;
+
+  /// Admin > Firebase Servisleri sayfasındaki "Şimdi Güncelle" butonu için —
+  /// [init]'in aksine varsayılanları/ayarları tekrar yazmaz, sadece Firebase
+  /// Console'daki GÜNCEL değerleri yeniden çeker. Değerlerin KENDİSİ hâlâ
+  /// sadece Console'dan değiştirilebilir — istemci SDK'sı bilerek salt
+  /// okunur, burada sadece en güncel değeri görmeyi/yenilemeyi sağlıyoruz.
+  static Future<bool> refresh() async {
+    try {
+      final activated = await _remoteConfig.fetchAndActivate();
+      adsEnabledNotifier.value = _remoteConfig.getBool('adsEnabled');
+      return activated;
+    } catch (e) {
+      debugPrint('☁️ RemoteConfig yenileme hatası: $e');
+      return false;
+    }
+  }
+
+  /// Ham parametre listesi — admin ekranında salt okunur gösterim için.
+  static Map<String, RemoteConfigValue> get allValues => _remoteConfig.getAll();
+
+  static DateTime get lastFetchTime => _remoteConfig.lastFetchTime;
+
+  static RemoteConfigFetchStatus get lastFetchStatus =>
+      _remoteConfig.lastFetchStatus;
 }

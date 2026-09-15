@@ -44,19 +44,6 @@
   "categoryOutdoorGarden": "Bahçe & Balkon",
   "categoryKidsFurniture": "Bebek & Çocuk",
   "categoryOther": "Diğer",
-  "categorySettingsTitle": "Kategori Ayarları",
-  "categorySettingsTooltip": "Kategori Ayarları",
-  "categorySettingsSubtitle": "Her kategorinin ikonunu, rengini, sırasını ve görünürlüğünü buradan düzenleyebilirsin — Firebase Console'a girmene gerek yok.",
-  "categorySettingsSaved": "Kategori güncellendi",
-  "categorySettingsSaveError": "Kategori kaydedilemedi, tekrar dene",
-  "categoryInactiveBadge": "Pasif",
-  "categoryActiveLabel": "Aktif",
-  "categoryActiveHint": "Kapalıyken bu kategori uygulamada gizlenir",
-  "customLabelOptional": "Özel Etiket (opsiyonel)",
-  "customLabelHint": "Boş bırakılırsa kategorinin çevrilmiş varsayılan ismi kullanılır.",
-  "iconLabel": "İkon",
-  "colorLabel": "Renk",
-  "orderLabel": "Sıra",
   "condition": "Durum",
   "conditionAll": "Tümü",
   "conditionNew": "Sıfır",
@@ -736,5 +723,50 @@
   "featureRow2Title": "Bölgene Özel Teslimat",
   "featureRow2Desc": "Seçili semtlere sigortalı ve hızlı teslimat.",
   "featureRow3Title": "WhatsApp'tan Anında Yanıt",
-  "featureRow3Desc": "Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı."
+  "featureRow3Desc": "Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı.",
+  "firebaseServicesTooltip": "Firebase Servisleri",
+  "firebaseServicesTitle": "Firebase Servisleri",
+  "firebaseCrashlyticsTitle": "Çökme Raporlama",
+  "firebaseCrashlyticsToggle": "Çökme Raporlarını Gönder",
+  "firebaseCrashlyticsSubtitle": "Kapatılırsa uygulama hataları Firebase'e bildirilmez",
+  "firebaseChecking": "Kontrol ediliyor…",
+  "firebaseCrashedLastSession": "Bir önceki oturumda uygulama çöktü",
+  "firebaseNoCrashLastSession": "Bir önceki oturumda çökme olmadı",
+  "firebaseStatsConsoleOnly": "Detaylı çökme istatistikleri yalnızca Firebase Console'da görüntülenebilir",
+  "firebaseAnalyticsTitle": "Kullanım Analitiği",
+  "firebaseAnalyticsToggle": "Kullanım Analitiği Topla",
+  "firebaseAnalyticsSubtitle": "Kapatılırsa uygulama içi kullanım verisi toplanmaz",
+  "firebaseRemoteConfigTitle": "Remote Config",
+  "firebaseAdsEnabledValue": "Reklamlar: {value}",
+  "@firebaseAdsEnabledValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "firebaseValueOn": "Açık",
+  "firebaseValueOff": "Kapalı",
+  "firebaseLastFetch": "Son güncelleme: {time}",
+  "@firebaseLastFetch": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "firebaseRefreshConfig": "Şimdi Güncelle",
+  "firebaseConfigConsoleOnly": "Değerler yalnızca Firebase Console > Remote Config'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz",
+  "firebaseConfigRefreshed": "Remote Config güncellendi",
+  "firebaseConfigUnchanged": "Remote Config zaten güncel",
+  "firebaseAppCheckTitle": "App Check",
+  "firebaseAppCheckWebUnsupported": "App Check web'de kullanılmıyor",
+  "firebaseActive": "Aktif",
+  "firebaseAppCheckDesc": "İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz",
+  "firebaseNotificationsTitle": "Bildirimler (FCM)",
+  "firebaseTokenAvailable": "Bu cihaz için bildirim belirteci mevcut",
+  "firebaseTokenUnavailable": "Bu cihaz için henüz bildirim belirteci yok",
+  "firebasePermissionGranted": "Bildirim izni verildi",
+  "firebasePermissionDenied": "Bildirim izni verilmedi",
+  "firebaseOpenNotificationSettings": "Bildirim Ayarlarını Aç"
 }

@@ -52,7 +52,7 @@ class CategoryMeta {
   ) {
     return fallback.copyWith(
       customLabel: data['label'] as String?,
-      icon: categoryIconRegistry[data['icon'] as String?] ?? fallback.icon,
+      icon: _iconRegistry[data['icon'] as String?] ?? fallback.icon,
       color: data['colorHex'] != null
           ? Color(int.parse((data['colorHex'] as String).replaceFirst('#', '0xFF')))
           : fallback.color,
@@ -64,10 +64,8 @@ class CategoryMeta {
 
 /// Firestore'da string olarak saklanan ikon isimlerini gerçek [IconData]'ya
 /// çeviren küçük bir kayıt defteri. Admin panelden yeni ikon eklemek
-/// istersen sadece burayı büyütmen yeterli. PUBLIC: admin kategori ayarları
-/// ekranı (AdminCategorySettingsPage) ikon seçici burada tanımlı sabit
-/// kelime dağarcığını doğrudan kullanır — ayrı bir liste tutulmaz.
-const Map<String, IconData> categoryIconRegistry = {
+/// istersen sadece burayı büyütmen yeterli.
+const Map<String, IconData> _iconRegistry = {
   'weekend': Icons.weekend_rounded,
   'chair': Icons.chair_rounded,
   'table_restaurant': Icons.table_restaurant_rounded,

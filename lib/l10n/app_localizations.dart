@@ -296,84 +296,6 @@ abstract class AppLocalizations {
   /// **'Diğer'**
   String get categoryOther;
 
-  /// No description provided for @categorySettingsTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kategori Ayarları'**
-  String get categorySettingsTitle;
-
-  /// No description provided for @categorySettingsTooltip.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kategori Ayarları'**
-  String get categorySettingsTooltip;
-
-  /// No description provided for @categorySettingsSubtitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Her kategorinin ikonunu, rengini, sırasını ve görünürlüğünü buradan düzenleyebilirsin — Firebase Console\'a girmene gerek yok.'**
-  String get categorySettingsSubtitle;
-
-  /// No description provided for @categorySettingsSaved.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kategori güncellendi'**
-  String get categorySettingsSaved;
-
-  /// No description provided for @categorySettingsSaveError.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kategori kaydedilemedi, tekrar dene'**
-  String get categorySettingsSaveError;
-
-  /// No description provided for @categoryInactiveBadge.
-  ///
-  /// In tr, this message translates to:
-  /// **'Pasif'**
-  String get categoryInactiveBadge;
-
-  /// No description provided for @categoryActiveLabel.
-  ///
-  /// In tr, this message translates to:
-  /// **'Aktif'**
-  String get categoryActiveLabel;
-
-  /// No description provided for @categoryActiveHint.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kapalıyken bu kategori uygulamada gizlenir'**
-  String get categoryActiveHint;
-
-  /// No description provided for @customLabelOptional.
-  ///
-  /// In tr, this message translates to:
-  /// **'Özel Etiket (opsiyonel)'**
-  String get customLabelOptional;
-
-  /// No description provided for @customLabelHint.
-  ///
-  /// In tr, this message translates to:
-  /// **'Boş bırakılırsa kategorinin çevrilmiş varsayılan ismi kullanılır.'**
-  String get customLabelHint;
-
-  /// No description provided for @iconLabel.
-  ///
-  /// In tr, this message translates to:
-  /// **'İkon'**
-  String get iconLabel;
-
-  /// No description provided for @colorLabel.
-  ///
-  /// In tr, this message translates to:
-  /// **'Renk'**
-  String get colorLabel;
-
-  /// No description provided for @orderLabel.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sıra'**
-  String get orderLabel;
-
   /// No description provided for @condition.
   ///
   /// In tr, this message translates to:
@@ -3781,6 +3703,192 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı.'**
   String get featureRow3Desc;
+
+  /// No description provided for @firebaseServicesTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Firebase Servisleri'**
+  String get firebaseServicesTooltip;
+
+  /// No description provided for @firebaseServicesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Firebase Servisleri'**
+  String get firebaseServicesTitle;
+
+  /// No description provided for @firebaseCrashlyticsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çökme Raporlama'**
+  String get firebaseCrashlyticsTitle;
+
+  /// No description provided for @firebaseCrashlyticsToggle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çökme Raporlarını Gönder'**
+  String get firebaseCrashlyticsToggle;
+
+  /// No description provided for @firebaseCrashlyticsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapatılırsa uygulama hataları Firebase\'e bildirilmez'**
+  String get firebaseCrashlyticsSubtitle;
+
+  /// No description provided for @firebaseChecking.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrol ediliyor…'**
+  String get firebaseChecking;
+
+  /// No description provided for @firebaseCrashedLastSession.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir önceki oturumda uygulama çöktü'**
+  String get firebaseCrashedLastSession;
+
+  /// No description provided for @firebaseNoCrashLastSession.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir önceki oturumda çökme olmadı'**
+  String get firebaseNoCrashLastSession;
+
+  /// No description provided for @firebaseStatsConsoleOnly.
+  ///
+  /// In tr, this message translates to:
+  /// **'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir'**
+  String get firebaseStatsConsoleOnly;
+
+  /// No description provided for @firebaseAnalyticsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Analitiği'**
+  String get firebaseAnalyticsTitle;
+
+  /// No description provided for @firebaseAnalyticsToggle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Analitiği Topla'**
+  String get firebaseAnalyticsToggle;
+
+  /// No description provided for @firebaseAnalyticsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapatılırsa uygulama içi kullanım verisi toplanmaz'**
+  String get firebaseAnalyticsSubtitle;
+
+  /// No description provided for @firebaseRemoteConfigTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Remote Config'**
+  String get firebaseRemoteConfigTitle;
+
+  /// No description provided for @firebaseAdsEnabledValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklamlar: {value}'**
+  String firebaseAdsEnabledValue(String value);
+
+  /// No description provided for @firebaseValueOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık'**
+  String get firebaseValueOn;
+
+  /// No description provided for @firebaseValueOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapalı'**
+  String get firebaseValueOff;
+
+  /// No description provided for @firebaseLastFetch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son güncelleme: {time}'**
+  String firebaseLastFetch(String time);
+
+  /// No description provided for @firebaseRefreshConfig.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şimdi Güncelle'**
+  String get firebaseRefreshConfig;
+
+  /// No description provided for @firebaseConfigConsoleOnly.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz'**
+  String get firebaseConfigConsoleOnly;
+
+  /// No description provided for @firebaseConfigRefreshed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Remote Config güncellendi'**
+  String get firebaseConfigRefreshed;
+
+  /// No description provided for @firebaseConfigUnchanged.
+  ///
+  /// In tr, this message translates to:
+  /// **'Remote Config zaten güncel'**
+  String get firebaseConfigUnchanged;
+
+  /// No description provided for @firebaseAppCheckTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'App Check'**
+  String get firebaseAppCheckTitle;
+
+  /// No description provided for @firebaseAppCheckWebUnsupported.
+  ///
+  /// In tr, this message translates to:
+  /// **'App Check web\'de kullanılmıyor'**
+  String get firebaseAppCheckWebUnsupported;
+
+  /// No description provided for @firebaseActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif'**
+  String get firebaseActive;
+
+  /// No description provided for @firebaseAppCheckDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz'**
+  String get firebaseAppCheckDesc;
+
+  /// No description provided for @firebaseNotificationsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler (FCM)'**
+  String get firebaseNotificationsTitle;
+
+  /// No description provided for @firebaseTokenAvailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu cihaz için bildirim belirteci mevcut'**
+  String get firebaseTokenAvailable;
+
+  /// No description provided for @firebaseTokenUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu cihaz için henüz bildirim belirteci yok'**
+  String get firebaseTokenUnavailable;
+
+  /// No description provided for @firebasePermissionGranted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim izni verildi'**
+  String get firebasePermissionGranted;
+
+  /// No description provided for @firebasePermissionDenied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim izni verilmedi'**
+  String get firebasePermissionDenied;
+
+  /// No description provided for @firebaseOpenNotificationSettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Ayarlarını Aç'**
+  String get firebaseOpenNotificationSettings;
 }
 
 class _AppLocalizationsDelegate
