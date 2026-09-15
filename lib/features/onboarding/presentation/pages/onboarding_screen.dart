@@ -7,15 +7,13 @@ import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
 /// "Ev içi tanıtım" — sadece ilk açılışta, native mobilde gösterilir (bkz.
-/// app_router.dart initialLocation + OnboardingCache). SEKİZİNCİ SÜRÜM:
-/// kullanıcının paylaştığı referansa ("Sitora") BİREBİR göre — tam ekran,
-/// DİKEY formatlı gerçek fotoğraf, markanın kendi renginde tek-tonlu bir
-/// renk grafiği (ColorFiltered, BlendMode.color) ile boyanmış, üstte küçük
-/// logo rozeti + "Hoş Geldiniz" satırı, ortada büyük başlık + kısa
-/// açıklama, altta yüzen beyaz "Başla" hapı. Önceki iki sürüm (soyut
-/// dekoratif öğeler / bölünmüş fotoğraf+kart) reddedildi — bu sürüm hiçbir
-/// ekstra süsleme eklemiyor, sadece referanstaki net, tek fotoğraflı dili
-/// birebir uyguluyor.
+/// app_router.dart initialLocation + OnboardingCache). DOKUZUNCU SÜRÜM:
+/// kullanıcı metin/renk/şekli en beğendiği hale (ilk fotoğraflı sürüm —
+/// alt kenara yaslı eyebrow + büyük Fraunces başlık + açıklama, marka
+/// renginde alttan karartma, tam genişlik CTA) GERİ DÖNDÜRDÜ; tek istek
+/// fotoğrafların TAMAMEN değişmesiydi — bu yüzden üç sayfanın da fotoğrafı
+/// daha önce hiç kullanılmamış, farklı gerçek mobilya/iç mekan fotoğraflarıyla
+/// değiştirildi (dikey/portre kırpma korunuyor).
 class HouseWalkthroughOnboardingScreen extends StatefulWidget {
   const HouseWalkthroughOnboardingScreen({super.key});
 
@@ -25,23 +23,32 @@ class HouseWalkthroughOnboardingScreen extends StatefulWidget {
 }
 
 class _HouseWalkthroughOnboardingScreenState
-    extends State<HouseWalkthroughOnboardingScreen> {
+    extends State<HouseWalkthroughOnboardingScreen> with TickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _pageIndex = 0;
   static const int _pageCount = 3;
+
+  /// Sayfa yerleşince metnin oynadığı "pop" — sayfa her değiştiğinde
+  /// baştan oynatılır.
+  late final AnimationController _revealController =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 850))..forward();
 
   @override
   void initState() {
     super.initState();
     _pageController.addListener(() {
       final page = _pageController.page?.round() ?? 0;
-      if (page != _pageIndex) setState(() => _pageIndex = page);
+      if (page != _pageIndex) {
+        setState(() => _pageIndex = page);
+        _revealController.forward(from: 0);
+      }
     });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _revealController.dispose();
     super.dispose();
   }
 
@@ -61,244 +68,225 @@ class _HouseWalkthroughOnboardingScreenState
 
   @override
   Widget build(final BuildContext context) {
-    // Dikey (portre) kadraj için Unsplash'e h= parametresiyle 9:16'ya
-    // yakın bir kırpma isteniyor — tam ekran fotoğraf hiçbir zaman yatay
-    // görünmesin diye.
+    // Fotoğraflar baştan aşağı yenilendi (önceki üç sürümde hep aynı
+    // koltuk/masa/sandalye fotoğrafları kullanılmıştı) — dikey/portre
+    // kırpma (h= parametresi) korunuyor.
     final pages = [
       (
         context.l10n.onboardingPage1Eyebrow,
         context.l10n.onboardingPage1Title,
         context.l10n.onboardingPage1Desc,
-        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=900&h=1600&q=85',
+        // Sıcak, davetkâr yatak odası sahnesi.
+        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&h=1600&q=85',
       ),
       (
         context.l10n.onboardingPage2Eyebrow,
         context.l10n.onboardingPage2Title,
         context.l10n.onboardingPage2Desc,
-        'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=900&h=1600&q=85',
+        // Dolap/depolama — "her bütçeye uygun çeşitlilik" hissi.
+        'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=900&h=1600&q=85',
       ),
       (
         context.l10n.onboardingPage3Eyebrow,
         context.l10n.onboardingPage3Title,
         context.l10n.onboardingPage3Desc,
-        'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=900&h=1600&q=85',
+        // Sıcak aydınlatma — "hemen yazın, konuşalım" davetkâr atmosferi.
+        'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=900&h=1600&q=85',
       ),
     ];
 
     return Scaffold(
       backgroundColor: AppColors.mobilePrimaryDark,
-      body: PageView.builder(
-        controller: _pageController,
-        physics: const BouncingScrollPhysics(),
-        itemCount: _pageCount,
-        itemBuilder: (final context, final index) {
-          final (eyebrow, title, desc, imageUrl) = pages[index];
-          return _OnboardingPage(
-            eyebrow: eyebrow,
-            title: title,
-            desc: desc,
-            imageUrl: imageUrl,
-            pageIndex: _pageIndex,
-            pageCount: _pageCount,
-            isLast: _pageIndex == _pageCount - 1,
-            onSkip: () => _finish(context),
-            onNext: _next,
-          );
-        },
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            itemCount: _pageCount,
+            itemBuilder: (final context, final index) {
+              final (eyebrow, title, desc, imageUrl) = pages[index];
+              return AnimatedBuilder(
+                animation: _revealController,
+                builder: (final context, final _) => _OnboardingPage(
+                  imageUrl: imageUrl,
+                  reveal: Curves.easeOutCubic.transform(_revealController.value),
+                  eyebrow: eyebrow,
+                  title: title,
+                  desc: desc,
+                ),
+              );
+            },
+          ),
+
+          // ── Sabit üst-alt kontrol katmanı ──
+          SafeArea(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: TextButton(
+                      onPressed: () => _finish(context),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.black.withOpacity(0.22),
+                        shape: const StadiumBorder(),
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      ),
+                      child: Text(context.l10n.onboardingSkip,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13.5)),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 0, 28, 28),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(_pageCount, (final i) {
+                          final selected = i == _pageIndex;
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 220),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: selected ? 26 : 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          );
+                        }),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: _next,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.mobileAccent,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: const StadiumBorder(),
+                          ),
+                          child: _pageIndex == _pageCount - 1
+                              ? Text(context.l10n.onboardingStart,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w800, fontSize: 15.5))
+                              : const Icon(Icons.arrow_forward_rounded, size: 22),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Tek bir sayfa — referanstaki gibi TAM EKRAN dikey fotoğraf, markanın
-/// rengiyle tek-tonlu boyanmış (ColorFiltered), üstte logo+eyebrow, ortada
-/// büyük başlık+açıklama, altta yüzen beyaz CTA hapı + sayfa noktaları.
+/// Tek bir sayfa: tam ekran gerçek fotoğraf + marka renginde alttan yukarı
+/// karartma + üstüne oturan eyebrow/başlık/açıklama (alt kenara yaslı).
+/// Kullanıcının "en güzeliydi" dediği, ilk fotoğraflı sürümün metin/renk/
+/// şekli — değişen tek şey fotoğrafların kendisi.
 class _OnboardingPage extends StatelessWidget {
+  final String imageUrl;
+  final double reveal;
   final String eyebrow;
   final String title;
   final String desc;
-  final String imageUrl;
-  final int pageIndex;
-  final int pageCount;
-  final bool isLast;
-  final VoidCallback onSkip;
-  final VoidCallback onNext;
 
   const _OnboardingPage({
+    required this.imageUrl,
+    required this.reveal,
     required this.eyebrow,
     required this.title,
     required this.desc,
-    required this.imageUrl,
-    required this.pageIndex,
-    required this.pageCount,
-    required this.isLast,
-    required this.onSkip,
-    required this.onNext,
   });
 
   @override
   Widget build(final BuildContext context) => Stack(
         fit: StackFit.expand,
         children: [
-          // Tam ekran fotoğraf — markanın aksan rengiyle tek-tonlu boyanmış
-          // (referanstaki turuncu "duoton" grafik efektinin karşılığı).
-          ColorFiltered(
-            colorFilter: ColorFilter.mode(AppColors.mobileAccent, BlendMode.color),
-            child: OptimizedCachedImage(
-              imageUrl: imageUrl,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-              borderRadius: 0,
-              errorBuilder: (final c, final u, final e) => DecoratedBox(
-                decoration: BoxDecoration(gradient: AppColors.mobilePrimaryGradient),
+          OptimizedCachedImage(
+            imageUrl: imageUrl,
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+            borderRadius: 0,
+            errorBuilder: (final c, final u, final e) => DecoratedBox(
+              decoration: BoxDecoration(gradient: AppColors.mobilePrimaryGradient),
+            ),
+          ),
+          // Marka renginde (sabit siyah değil), alttan yukarı güçlü karartma.
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  AppColors.mobilePrimaryDark.withOpacity(0.92),
+                  AppColors.mobilePrimaryDark.withOpacity(0.55),
+                  AppColors.mobilePrimaryDark.withOpacity(0.05),
+                ],
+                stops: const [0.0, 0.45, 0.78],
               ),
             ),
           ),
-          // Okunurluk için üstten ve alttan hafif karartma.
-          const Positioned.fill(
-            child: IgnorePointer(child: _EdgeScrim()),
-          ),
-
-          SafeArea(
+          Align(
+            alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+              padding: const EdgeInsets.fromLTRB(28, 0, 28, 168),
+              child: Opacity(
+                opacity: reveal.clamp(0.0, 1.0),
+                child: Transform.translate(
+                  offset: Offset(0, (1 - reveal) * 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
+                      Text(
+                        eyebrow.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          letterSpacing: 3,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.mobileAccentLight,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        title,
+                        style: GoogleFonts.fraunces(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w600,
+                          height: 1.1,
                           color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.asset(
-                          'assets/images/saglam_spot_logo_mark.png',
-                          width: 24,
-                          height: 24,
-                          fit: BoxFit.contain,
                         ),
                       ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: onSkip,
-                        child: Text(context.l10n.onboardingSkip,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 13.5)),
+                      const SizedBox(height: 12),
+                      Text(
+                        desc,
+                        style: const TextStyle(
+                            fontSize: 14, height: 1.5, color: Colors.white70),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    eyebrow,
-                    style: const TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white70,
-                    ),
-                  ),
-                  const Spacer(flex: 3),
-                  Text(
-                    title,
-                    style: GoogleFonts.fraunces(
-                      fontSize: 38,
-                      fontWeight: FontWeight.w600,
-                      height: 1.06,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    desc,
-                    style: const TextStyle(
-                      fontSize: 14.5,
-                      height: 1.5,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Spacer(flex: 4),
-                  Row(
-                    children: [
-                      Material(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        child: InkWell(
-                          onTap: onNext,
-                          borderRadius: BorderRadius.circular(30),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(24, 15, 18, 15),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  isLast
-                                      ? context.l10n.onboardingStart
-                                      : context.l10n.onboardingNext,
-                                  style: TextStyle(
-                                    color: AppColors.mobilePrimaryDark,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 14.5,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Icon(Icons.arrow_forward_rounded,
-                                    size: 18, color: AppColors.mobilePrimaryDark),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: List.generate(pageCount, (final i) {
-                          final selected = i == pageIndex;
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 220),
-                            margin: const EdgeInsets.only(left: 5),
-                            width: selected ? 20 : 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(selected ? 0.95 : 0.4),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
         ],
-      );
-}
-
-class _EdgeScrim extends StatelessWidget {
-  const _EdgeScrim();
-
-  @override
-  Widget build(final BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withOpacity(0.38),
-              Colors.transparent,
-              Colors.transparent,
-              Colors.black.withOpacity(0.55),
-            ],
-            stops: const [0.0, 0.28, 0.55, 1.0],
-          ),
-        ),
       );
 }
