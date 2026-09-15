@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/admin_session_cache.dart';
@@ -10,7 +13,18 @@ import '../../../../core/services/firestore_provider.dart';
 final authProvider =
     NotifierProvider<AuthNotifier, AsyncValue<User?>>(AuthNotifier.new);
 
+/// Bu notifier bir [BuildContext] taşımadığı (dolayısıyla context.l10n'a
+/// erişemediği) için hata durumlarını yerelleştirilmiş metin yerine STABİL
+/// BİR KOD olarak state'e yazar (aşağıdaki `err*` sabitleri, ya da
+/// [FirebaseAuthException.code]'un kendisi). Kodu kullanıcıya gösterilecek
+/// yerelleştirilmiş metne çeviren yer login_page.dart'taki
+/// authErrorMessage() fonksiyonudur.
 class AuthNotifier extends Notifier<AsyncValue<User?>> {
+  static const String errEmptyCredentials = 'empty-credentials';
+  static const String errUserNotFound = 'post-login-user-null';
+  static const String errAdminCheckTimeout = 'admin-check-timeout';
+  static const String errNotAdmin = 'not-admin';
+
   FirebaseAuth get _auth => FirebaseAuth.instance;
 
   @override
@@ -38,10 +52,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
     final trimmedEmail = email.trim();
 
     if (trimmedEmail.isEmpty || password.isEmpty) {
-      state = AsyncValue.error(
-        'E-posta ve şifre boş bırakılamaz.',
-        StackTrace.current,
-      );
+      state = AsyncValue.error(errEmptyCredentials, StackTrace.current);
       return;
     }
 
@@ -56,24 +67,28 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
 
       final user = credential.user;
       if (user == null) {
-        state = AsyncValue.error('Kullanıcı bulunamadı.', StackTrace.current);
+        state = AsyncValue.error(errUserNotFound, StackTrace.current);
         return;
       }
 
       // Admin kontrolü — Firestore'daki admins koleksiyonu
       final db = ref.read(firestoreProvider);
-      final adminDoc =
-          await db.collection('admins').doc(user.email).get().timeout(
-                const Duration(seconds: 10),
-                onTimeout: () =>
-                    throw Exception('Yetki kontrolü zaman aşımına uğradı.'),
-              );
+      final DocumentSnapshot<Map<String, dynamic>> adminDoc;
+      try {
+        adminDoc = await db
+            .collection('admins')
+            .doc(user.email)
+            .get()
+            .timeout(const Duration(seconds: 10));
+      } on TimeoutException {
+        state = AsyncValue.error(errAdminCheckTimeout, StackTrace.current);
+        return;
+      }
 
       if (!adminDoc.exists) {
         // Yetkisiz kullanıcı — hemen çıkış yap
         await _auth.signOut();
-        state = AsyncValue.error(
-            'Bu hesabın yönetici yetkisi bulunmuyor.', StackTrace.current);
+        state = AsyncValue.error(errNotAdmin, StackTrace.current);
         return;
       }
 
@@ -82,10 +97,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
       await AdminSessionCache.setAdminLoggedIn(true);
       state = AsyncValue.data(user);
     } on FirebaseAuthException catch (e) {
-      state = AsyncValue.error(
-        _mapFirebaseError(e.code),
-        StackTrace.current,
-      );
+      state = AsyncValue.error(e.code, StackTrace.current);
     } catch (e) {
       state = AsyncValue.error(e.toString(), StackTrace.current);
     }
@@ -98,16 +110,4 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
     await AdminSessionCache.setAdminLoggedIn(false);
     state = const AsyncValue.data(null);
   }
-
-  String _mapFirebaseError(final String code) => switch (code) {
-        'invalid-email' => 'Geçersiz e-posta adresi.',
-        'user-disabled' => 'Bu hesap devre dışı bırakılmış.',
-        'user-not-found' => 'Bu e-posta ile kayıtlı kullanıcı bulunamadı.',
-        'wrong-password' => 'Şifre hatalı.',
-        'invalid-credential' => 'E-posta veya şifre hatalı.',
-        'too-many-requests' =>
-          'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.',
-        'network-request-failed' => 'İnternet bağlantınızı kontrol edin.',
-        _ => 'Giriş başarısız: $code',
-      };
 }

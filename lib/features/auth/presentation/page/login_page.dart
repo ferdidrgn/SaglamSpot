@@ -41,9 +41,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading;
-    final errorMessage = authState.hasError
-        ? (authState.error?.toString() ?? 'Bilinmeyen hata')
-        : null;
+    final errorMessage =
+        authState.hasError ? _authErrorMessage(context, authState.error) : null;
 
     final Widget scaffold = Scaffold(
       backgroundColor: AppColors.background,
@@ -158,6 +157,43 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           _emailController.text,
           _passController.text,
         );
+  }
+
+  /// AuthNotifier hataları context'i olmadığı için stabil bir KOD olarak
+  /// tutar (bkz. AuthNotifier.err* sabitleri ve FirebaseAuthException.code).
+  /// Bu kodu burada, context.l10n erişimi olan tek yerde, kullanıcıya
+  /// gösterilecek yerelleştirilmiş metne çeviriyoruz.
+  String _authErrorMessage(final BuildContext context, final Object? error) {
+    final l10n = context.l10n;
+    final code = error?.toString() ?? '';
+    switch (code) {
+      case AuthNotifier.errEmptyCredentials:
+        return l10n.authErrorEmptyCredentials;
+      case AuthNotifier.errUserNotFound:
+        return l10n.authErrorUserNotFound;
+      case AuthNotifier.errAdminCheckTimeout:
+        return l10n.authErrorAdminCheckTimeout;
+      case AuthNotifier.errNotAdmin:
+        return l10n.authErrorNotAdmin;
+      case 'invalid-email':
+        return l10n.authErrorInvalidEmail;
+      case 'user-disabled':
+        return l10n.authErrorUserDisabled;
+      case 'user-not-found':
+        return l10n.authErrorAccountNotFound;
+      case 'wrong-password':
+        return l10n.authErrorWrongPassword;
+      case 'invalid-credential':
+        return l10n.authErrorInvalidCredential;
+      case 'too-many-requests':
+        return l10n.authErrorTooManyRequests;
+      case 'network-request-failed':
+        return l10n.error_check_connection;
+      default:
+        return code.isEmpty
+            ? l10n.authErrorUnknown
+            : l10n.authErrorGeneric(code);
+    }
   }
 
   Widget _buildSubmitButton(final bool isLoading) => Container(

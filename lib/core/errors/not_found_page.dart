@@ -2,6 +2,7 @@
 // 404 ERROR PAGE
 // ═══════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
+import 'package:saglamspot/core/common/extentions/app_context_ui_extension.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 
@@ -29,7 +30,7 @@ class NotFoundPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                '404 - Sayfa Bulunamadı',
+                context.l10n.notFoundTitle,
                 style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 22,
@@ -39,7 +40,7 @@ class NotFoundPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Yol: $errorPath',
+                  child: Text(context.l10n.notFoundPathPrefix(errorPath!),
                       style: TextStyle(color: AppColors.textTertiary),
                       textAlign: TextAlign.center),
                 ),
@@ -64,7 +65,7 @@ class NotFoundPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14))),
                   onPressed: () => NavigationHandler.goToHome(context),
-                  child: const Text('Ana Sayfaya Dön'),
+                  child: Text(context.l10n.notFoundBackHome),
                 ),
               )
             ],

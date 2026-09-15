@@ -113,6 +113,14 @@
   "footerDesc": "20 yılı aşkın tecrübemizle İstanbul'un her noktasına kaliteyi ve güveni taşıyoruz.",
   "allRightsReserved": "© 2026 SAĞLAM SPOT TİCARET. TÜM HAKLARI SAKLIDIR.",
   "errorOccurred": "Bir hata oluştu",
+  "deferredLoadError": "Yüklenemedi: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "productNotFound": "Ürün bulunamadı",
   "noImages": "Görsel Yok",
   "error_check_connection": "İnternet bağlantınızı kontrol edin.",
@@ -122,6 +130,16 @@
   "status_waiting_connection": "Bağlantı bekleniyor...",
   "error_no_internet_auto_retry": "İnternet bağlantınız yok.\nBağlantı sağlandığında otomatik olarak devam edeceksiniz.",
   "goBack": "Geri Dön",
+  "notFoundTitle": "404 - Sayfa Bulunamadı",
+  "notFoundPathPrefix": "Yol: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "notFoundBackHome": "Ana Sayfaya Dön",
   "galleryEmpty": "Galeri boş",
   "month_1": "Ocak",
   "month_2": "Şubat",
@@ -152,6 +170,7 @@
   "spotSecondHand": "Spot / İkinci El",
   "secondHandHint": "Tek parça — renk seçeneği gösterilmeyecek",
   "newProductHint": "Sıfır ürün — renk seçeneği ekleyebilirsin",
+  "productConditionSectionTitle": "Ürün Durumu",
   "colorOptionsOptional": "Renk Seçenekleri (opsiyonel)",
   "dimensionsLabel": "Ölçüler (opsiyonel)",
   "dimensionsHint": "Örn: 220 x 90 x 85 cm",
@@ -174,6 +193,25 @@
   "emailLabel": "E-posta",
   "passwordLabel": "Şifre",
   "loginButton": "Giriş Yap",
+  "authErrorEmptyCredentials": "E-posta ve şifre boş bırakılamaz.",
+  "authErrorUserNotFound": "Kullanıcı bulunamadı.",
+  "authErrorAdminCheckTimeout": "Yetki kontrolü zaman aşımına uğradı.",
+  "authErrorNotAdmin": "Bu hesabın yönetici yetkisi bulunmuyor.",
+  "authErrorInvalidEmail": "Geçersiz e-posta adresi.",
+  "authErrorUserDisabled": "Bu hesap devre dışı bırakılmış.",
+  "authErrorAccountNotFound": "Bu e-posta ile kayıtlı kullanıcı bulunamadı.",
+  "authErrorWrongPassword": "Şifre hatalı.",
+  "authErrorInvalidCredential": "E-posta veya şifre hatalı.",
+  "authErrorTooManyRequests": "Çok fazla deneme. Lütfen daha sonra tekrar deneyin.",
+  "authErrorGeneric": "Giriş başarısız: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "authErrorUnknown": "Bilinmeyen hata",
   "sponsored": "Sponsorlu",
   "addProductFab": "Ürün Ekle",
   "singlePieceNotice": "Bu, ikinci el / spot bir üründür — stokta tek parça vardır, renk ve görsel tamamen fotoğraflardaki gibidir.",
@@ -347,6 +385,7 @@
   "aboutMapSubtext": "Yol tarifi almak için haritaya dokunun",
   "newProductsBadgeEyebrow": "NEW COLLECTION",
   "newProductsTitle": "Yeni\nKoleksiyon",
+  "newProductsSearchHint": "Mobilya, koltuk, masa veya kategori ara...",
   "productsBadgeLabel": "ÜRÜN",
   "breadcrumbHome": "Ana Sayfa",
   "statTotalProducts": "TOPLAM ÜRÜN",

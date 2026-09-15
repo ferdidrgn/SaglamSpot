@@ -228,7 +228,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                       ),
                       if (_isSpotProduct)
                         AdminFormSection(
-                          title: 'Ürün Durumu',
+                          title: context.l10n.productConditionSectionTitle,
                           icon: Icons.fact_check_outlined,
                           child: WearTierFormSelector(
                             selected: _selectedWearTier,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../common/extentions/app_context_ui_extension.dart';
 
 /// Bir Dart `deferred as` kütüphanesini ilk kullanımda indirip yükleyen
 /// sarmalayıcı — web derlemesinde bu kütüphanenin kodu ana `main.dart.js`
@@ -34,7 +35,8 @@ class DeferredWidget extends StatelessWidget {
           if (snapshot.hasError) {
             return Scaffold(
               body: Center(
-                child: Text('Yüklenemedi: ${snapshot.error}'),
+                child: Text(
+                    context.l10n.deferredLoadError(snapshot.error.toString())),
               ),
             );
           }

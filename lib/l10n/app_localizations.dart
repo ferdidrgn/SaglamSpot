@@ -668,6 +668,12 @@ abstract class AppLocalizations {
   /// **'Bir hata oluştu'**
   String get errorOccurred;
 
+  /// No description provided for @deferredLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yüklenemedi: {error}'**
+  String deferredLoadError(String error);
+
   /// No description provided for @productNotFound.
   ///
   /// In tr, this message translates to:
@@ -721,6 +727,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Geri Dön'**
   String get goBack;
+
+  /// No description provided for @notFoundTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'404 - Sayfa Bulunamadı'**
+  String get notFoundTitle;
+
+  /// No description provided for @notFoundPathPrefix.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yol: {path}'**
+  String notFoundPathPrefix(String path);
+
+  /// No description provided for @notFoundBackHome.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana Sayfaya Dön'**
+  String get notFoundBackHome;
 
   /// No description provided for @galleryEmpty.
   ///
@@ -902,6 +926,12 @@ abstract class AppLocalizations {
   /// **'Sıfır ürün — renk seçeneği ekleyebilirsin'**
   String get newProductHint;
 
+  /// No description provided for @productConditionSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Durumu'**
+  String get productConditionSectionTitle;
+
   /// No description provided for @colorOptionsOptional.
   ///
   /// In tr, this message translates to:
@@ -1033,6 +1063,78 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Giriş Yap'**
   String get loginButton;
+
+  /// No description provided for @authErrorEmptyCredentials.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta ve şifre boş bırakılamaz.'**
+  String get authErrorEmptyCredentials;
+
+  /// No description provided for @authErrorUserNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı bulunamadı.'**
+  String get authErrorUserNotFound;
+
+  /// No description provided for @authErrorAdminCheckTimeout.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yetki kontrolü zaman aşımına uğradı.'**
+  String get authErrorAdminCheckTimeout;
+
+  /// No description provided for @authErrorNotAdmin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu hesabın yönetici yetkisi bulunmuyor.'**
+  String get authErrorNotAdmin;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçersiz e-posta adresi.'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorUserDisabled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu hesap devre dışı bırakılmış.'**
+  String get authErrorUserDisabled;
+
+  /// No description provided for @authErrorAccountNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu e-posta ile kayıtlı kullanıcı bulunamadı.'**
+  String get authErrorAccountNotFound;
+
+  /// No description provided for @authErrorWrongPassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifre hatalı.'**
+  String get authErrorWrongPassword;
+
+  /// No description provided for @authErrorInvalidCredential.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta veya şifre hatalı.'**
+  String get authErrorInvalidCredential;
+
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.'**
+  String get authErrorTooManyRequests;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In tr, this message translates to:
+  /// **'Giriş başarısız: {code}'**
+  String authErrorGeneric(String code);
+
+  /// No description provided for @authErrorUnknown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bilinmeyen hata'**
+  String get authErrorUnknown;
 
   /// No description provided for @sponsored.
   ///
@@ -1945,6 +2047,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Yeni\nKoleksiyon'**
   String get newProductsTitle;
+
+  /// No description provided for @newProductsSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobilya, koltuk, masa veya kategori ara...'**
+  String get newProductsSearchHint;
 
   /// No description provided for @productsBadgeLabel.
   ///

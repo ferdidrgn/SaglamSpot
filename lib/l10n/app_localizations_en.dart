@@ -306,6 +306,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorOccurred => 'An error occurred';
 
   @override
+  String deferredLoadError(String error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
   String get productNotFound => 'Product not found';
 
   @override
@@ -333,6 +338,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goBack => 'Go Back';
+
+  @override
+  String get notFoundTitle => '404 - Page Not Found';
+
+  @override
+  String notFoundPathPrefix(String path) {
+    return 'Path: $path';
+  }
+
+  @override
+  String get notFoundBackHome => 'Back to Home';
 
   @override
   String get galleryEmpty => 'Gallery is empty';
@@ -428,6 +444,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newProductHint => 'New product — you can add color options';
 
   @override
+  String get productConditionSectionTitle => 'Product Condition';
+
+  @override
   String get colorOptionsOptional => 'Color Options (optional)';
 
   @override
@@ -492,6 +511,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginButton => 'Log In';
+
+  @override
+  String get authErrorEmptyCredentials => 'Email and password cannot be empty.';
+
+  @override
+  String get authErrorUserNotFound => 'User not found.';
+
+  @override
+  String get authErrorAdminCheckTimeout => 'Authorization check timed out.';
+
+  @override
+  String get authErrorNotAdmin =>
+      'This account does not have admin privileges.';
+
+  @override
+  String get authErrorInvalidEmail => 'Invalid email address.';
+
+  @override
+  String get authErrorUserDisabled => 'This account has been disabled.';
+
+  @override
+  String get authErrorAccountNotFound => 'No user found with this email.';
+
+  @override
+  String get authErrorWrongPassword => 'Incorrect password.';
+
+  @override
+  String get authErrorInvalidCredential => 'Incorrect email or password.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Too many attempts. Please try again later.';
+
+  @override
+  String authErrorGeneric(String code) {
+    return 'Sign in failed: $code';
+  }
+
+  @override
+  String get authErrorUnknown => 'Unknown error';
 
   @override
   String get sponsored => 'Sponsored';
@@ -1000,6 +1059,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newProductsTitle => 'New\nCollection';
+
+  @override
+  String get newProductsSearchHint =>
+      'Search furniture, sofa, table or category...';
 
   @override
   String get productsBadgeLabel => 'PRODUCTS';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../common/extentions/app_context_ui_extension.dart';
 
 /// Mobil (Android/iOS) derlemesinde gömülü `<iframe>` yok — bunun yerine
 /// tıklanınca gerçek Google Haritalar uygulamasını/sayfasını açan, aynı
@@ -34,13 +35,13 @@ class GoogleMapsEmbed extends StatelessWidget {
           color: const Color(0xFFEDE3D3),
           child: InkWell(
             onTap: _open,
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.map_rounded, size: 40, color: Color(0xFF8B5A3A)),
-                  SizedBox(height: 10),
-                  Text('Haritada Aç',
+                  const Icon(Icons.map_rounded, size: 40, color: Color(0xFF8B5A3A)),
+                  const SizedBox(height: 10),
+                  Text(context.l10n.openInMapsButton,
                       style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF3E2F23))),
                 ],
               ),

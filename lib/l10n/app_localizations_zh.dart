@@ -298,6 +298,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get errorOccurred => '发生错误';
 
   @override
+  String deferredLoadError(String error) {
+    return 'Yüklenemedi: $error';
+  }
+
+  @override
   String get productNotFound => '未找到产品';
 
   @override
@@ -323,6 +328,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get goBack => '返回';
+
+  @override
+  String get notFoundTitle => '404 - Sayfa Bulunamadı';
+
+  @override
+  String notFoundPathPrefix(String path) {
+    return 'Yol: $path';
+  }
+
+  @override
+  String get notFoundBackHome => 'Ana Sayfaya Dön';
 
   @override
   String get galleryEmpty => '图库为空';
@@ -415,6 +431,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newProductHint => '全新产品 — 您可以添加颜色选项';
 
   @override
+  String get productConditionSectionTitle => 'Ürün Durumu';
+
+  @override
   String get colorOptionsOptional => '颜色选项（可选）';
 
   @override
@@ -480,6 +499,47 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get loginButton => '登录';
+
+  @override
+  String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
+
+  @override
+  String get authErrorUserNotFound => 'Kullanıcı bulunamadı.';
+
+  @override
+  String get authErrorAdminCheckTimeout =>
+      'Yetki kontrolü zaman aşımına uğradı.';
+
+  @override
+  String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+
+  @override
+  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
+
+  @override
+  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış.';
+
+  @override
+  String get authErrorAccountNotFound =>
+      'Bu e-posta ile kayıtlı kullanıcı bulunamadı.';
+
+  @override
+  String get authErrorWrongPassword => 'Şifre hatalı.';
+
+  @override
+  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String authErrorGeneric(String code) {
+    return 'Giriş başarısız: $code';
+  }
+
+  @override
+  String get authErrorUnknown => 'Bilinmeyen hata';
 
   @override
   String get sponsored => '广告';
@@ -951,6 +1011,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get newProductsTitle => '新品\n系列';
+
+  @override
+  String get newProductsSearchHint =>
+      'Mobilya, koltuk, masa veya kategori ara...';
 
   @override
   String get productsBadgeLabel => '件产品';

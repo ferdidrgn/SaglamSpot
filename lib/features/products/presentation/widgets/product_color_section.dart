@@ -54,8 +54,7 @@ class _ProductColorSectionState extends State<ProductColorSection> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                'Bu, ikinci el / spot bir üründür — stokta tek parça vardır, '
-                'renk ve görsel tamamen fotoğraflardaki gibidir.',
+                context.l10n.singlePieceNotice,
                 style: TextStyle(
                     fontSize: 12.5,
                     color: textPrimary.withOpacity(0.8),
@@ -77,7 +76,7 @@ class _ProductColorSectionState extends State<ProductColorSection> {
       children: [
         Row(
           children: [
-            Text('Renk Seçenekleri',
+            Text(context.l10n.colorOptionsTitle,
                 style: TextStyle(
                     fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary)),
             const SizedBox(width: 8),
@@ -87,7 +86,7 @@ class _ProductColorSectionState extends State<ProductColorSection> {
                 color: AppColors.success.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text('SIFIR ÜRÜN',
+              child: Text(context.l10n.newProductBadge,
                   style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,

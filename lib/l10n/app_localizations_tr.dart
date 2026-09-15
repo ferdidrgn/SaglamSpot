@@ -303,6 +303,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get errorOccurred => 'Bir hata oluştu';
 
   @override
+  String deferredLoadError(String error) {
+    return 'Yüklenemedi: $error';
+  }
+
+  @override
   String get productNotFound => 'Ürün bulunamadı';
 
   @override
@@ -329,6 +334,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get goBack => 'Geri Dön';
+
+  @override
+  String get notFoundTitle => '404 - Sayfa Bulunamadı';
+
+  @override
+  String notFoundPathPrefix(String path) {
+    return 'Yol: $path';
+  }
+
+  @override
+  String get notFoundBackHome => 'Ana Sayfaya Dön';
 
   @override
   String get galleryEmpty => 'Galeri boş';
@@ -423,6 +439,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get newProductHint => 'Sıfır ürün — renk seçeneği ekleyebilirsin';
 
   @override
+  String get productConditionSectionTitle => 'Ürün Durumu';
+
+  @override
   String get colorOptionsOptional => 'Renk Seçenekleri (opsiyonel)';
 
   @override
@@ -488,6 +507,47 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loginButton => 'Giriş Yap';
+
+  @override
+  String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
+
+  @override
+  String get authErrorUserNotFound => 'Kullanıcı bulunamadı.';
+
+  @override
+  String get authErrorAdminCheckTimeout =>
+      'Yetki kontrolü zaman aşımına uğradı.';
+
+  @override
+  String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+
+  @override
+  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
+
+  @override
+  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış.';
+
+  @override
+  String get authErrorAccountNotFound =>
+      'Bu e-posta ile kayıtlı kullanıcı bulunamadı.';
+
+  @override
+  String get authErrorWrongPassword => 'Şifre hatalı.';
+
+  @override
+  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String authErrorGeneric(String code) {
+    return 'Giriş başarısız: $code';
+  }
+
+  @override
+  String get authErrorUnknown => 'Bilinmeyen hata';
 
   @override
   String get sponsored => 'Sponsorlu';
@@ -995,6 +1055,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get newProductsTitle => 'Yeni\nKoleksiyon';
+
+  @override
+  String get newProductsSearchHint =>
+      'Mobilya, koltuk, masa veya kategori ara...';
 
   @override
   String get productsBadgeLabel => 'ÜRÜN';

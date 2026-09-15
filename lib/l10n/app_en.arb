@@ -113,6 +113,14 @@
   "footerDesc": "With over 20 years of experience, we bring quality and trust to every corner of Istanbul.",
   "allRightsReserved": "© 2026 SAGLAM SPOT TRADE. ALL RIGHTS RESERVED.",
   "errorOccurred": "An error occurred",
+  "deferredLoadError": "Failed to load: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "productNotFound": "Product not found",
   "noImages": "No Images",
   "error_check_connection": "Please check your internet connection.",
@@ -122,6 +130,16 @@
   "status_waiting_connection": "Waiting for connection...",
   "error_no_internet_auto_retry": "No internet connection.\nThe app will continue automatically once the connection is restored.",
   "goBack": "Go Back",
+  "notFoundTitle": "404 - Page Not Found",
+  "notFoundPathPrefix": "Path: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "notFoundBackHome": "Back to Home",
   "galleryEmpty": "Gallery is empty",
   "month_1": "January",
   "month_2": "February",
@@ -152,6 +170,7 @@
   "spotSecondHand": "Spot / Second-Hand",
   "secondHandHint": "Single piece — color options won't be shown",
   "newProductHint": "New product — you can add color options",
+  "productConditionSectionTitle": "Product Condition",
   "colorOptionsOptional": "Color Options (optional)",
   "dimensionsLabel": "Dimensions (optional)",
   "dimensionsHint": "e.g. 220 x 90 x 85 cm",
@@ -174,6 +193,25 @@
   "emailLabel": "Email",
   "passwordLabel": "Password",
   "loginButton": "Log In",
+  "authErrorEmptyCredentials": "Email and password cannot be empty.",
+  "authErrorUserNotFound": "User not found.",
+  "authErrorAdminCheckTimeout": "Authorization check timed out.",
+  "authErrorNotAdmin": "This account does not have admin privileges.",
+  "authErrorInvalidEmail": "Invalid email address.",
+  "authErrorUserDisabled": "This account has been disabled.",
+  "authErrorAccountNotFound": "No user found with this email.",
+  "authErrorWrongPassword": "Incorrect password.",
+  "authErrorInvalidCredential": "Incorrect email or password.",
+  "authErrorTooManyRequests": "Too many attempts. Please try again later.",
+  "authErrorGeneric": "Sign in failed: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "authErrorUnknown": "Unknown error",
   "sponsored": "Sponsored",
   "addProductFab": "Add Product",
   "singlePieceNotice": "This is a second-hand / spot item — only one piece is in stock, and the color/appearance is exactly as shown in the photos.",
@@ -347,6 +385,7 @@
   "aboutMapSubtext": "Tap the map for directions",
   "newProductsBadgeEyebrow": "NEW COLLECTION",
   "newProductsTitle": "New\nCollection",
+  "newProductsSearchHint": "Search furniture, sofa, table or category...",
   "productsBadgeLabel": "PRODUCTS",
   "breadcrumbHome": "Home",
   "statTotalProducts": "TOTAL PRODUCTS",

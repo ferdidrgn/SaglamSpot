@@ -181,7 +181,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                   // görünmez, uydurma bir değer ATANMAZ.
                   if (_isSecondHand)
                     AdminFormSection(
-                      title: 'Ürün Durumu',
+                      title: context.l10n.productConditionSectionTitle,
                       icon: Icons.fact_check_outlined,
                       child: WearTierFormSelector(
                         selected: _selectedWearTier,

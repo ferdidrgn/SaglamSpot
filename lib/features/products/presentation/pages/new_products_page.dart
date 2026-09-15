@@ -519,7 +519,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             _tickerText("KELEBEK"),
             _tickerText("ENZA HOME"),
             _tickerText("İPEK MOBİLYA"),
-            _tickerText("SPOT FIRSATLAR"),
+            _tickerText(context.l10n.gatewaySpotEyebrow),
           ],
         ),
       ),
@@ -781,7 +781,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF2C241E)),
               decoration: InputDecoration(
-                hintText: "Mobilya, koltuk, masa veya kategori ara...",
+                hintText: context.l10n.newProductsSearchHint,
                 hintStyle: GoogleFonts.inter(
                     fontSize: 14, color: const Color(0xFFA69C92)),
                 border: InputBorder.none,

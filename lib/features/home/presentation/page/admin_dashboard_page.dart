@@ -65,7 +65,8 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
       body: productsAsync.when(
         loading: () => Center(
             child: CircularProgressIndicator(color: AppColors.mobileAccent)),
-        error: (final e, final _) => Center(child: Text('Hata: $e')),
+        error: (final e, final _) =>
+            Center(child: Text(context.l10n.productsLoadError(e.toString()))),
         data: (final _) => Column(
           children: [
             _buildStatsRow(inStock.length, sold.length),
