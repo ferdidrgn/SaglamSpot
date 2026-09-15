@@ -1,0 +1,35 @@
+name: CI Checks
+
+# Hızlı geri bildirim için deploy workflow'larından AYRI, hafif bir kontrol:
+# her PR'da ve her dala push'ta `flutter analyze` + `flutter test` çalıştırır.
+# Secret gerektirmez, deploy adımlarını tetiklemez.
+on:
+  pull_request:
+  push:
+
+concurrency:
+  group: ci-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Flutter SDK kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları al
+        run: flutter pub get
+
+      - name: Statik analiz (flutter analyze)
+        run: flutter analyze
+
+      - name: Testleri çalıştır
+        run: flutter test

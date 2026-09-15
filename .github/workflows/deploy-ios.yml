@@ -1,0 +1,56 @@
+name: iOS Build Check
+
+# KAPSAM: Bu workflow sadece iOS tarafında derlemenin/build'in kırılıp kırılmadığını
+# doğrular (imzasız/--no-codesign build). TestFlight veya App Store'a YÜKLEME YAPMAZ.
+#
+# NEDEN: Gerçek bir kod imzalama (code signing) ve App Store Connect'e yükleme kurulumu;
+# geçerli bir Apple Developer hesabı, dağıtım sertifikaları, provisioning profile'lar ve
+# (Fastlane match kullanılacaksa) özel bir "match" git deposu + şifreleme parolası gerektirir.
+# Bunlar bu repodan ayrı, kullanıcının kendi Apple Developer ortamında kurması gereken
+# hassas ve kişiye özel varlıklardır. Yarım/yanıltıcı bir imzalama adımı eklemek yerine
+# bu adım BİLİNÇLİ olarak kapsam dışı bırakılmıştır.
+#
+# KULLANICI İÇİN: TestFlight/App Store dağıtımını otomatikleştirmek isterseniz, bu workflow'u
+# genişletmek yerine ayrıca "Xcode Cloud" (App Store Connect üzerinden) veya "Fastlane match"
+# (bkz. https://docs.fastlane.tools/actions/match/) kurmanız önerilir. Fastlane match seçilirse
+# ek olarak şu secret'lar gerekecektir: MATCH_GIT_URL, MATCH_PASSWORD, APP_STORE_CONNECT_API_KEY
+# (veya APPLE_ID + APP_SPECIFIC_PASSWORD), ASC_KEY_ID, ASC_ISSUER_ID.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-ios-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-check:
+    name: iOS Build Doğrulama (--no-codesign)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Flutter SDK kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları al
+        run: flutter pub get
+
+      - name: CocoaPods bağımlılıklarını kur
+        run: |
+          cd ios
+          if [ -f Podfile ]; then
+            pod install --repo-update
+          else
+            echo "ios/Podfile bulunamadı, CocoaPods adımı atlanıyor (proje Swift Package Manager kullanıyor olabilir)."
+          fi
+
+      - name: iOS build (imzasız, sadece doğrulama)
+        run: flutter build ipa --no-codesign
+
+      # Buradan sonrası (imzalama + TestFlight/App Store yüklemesi) BİLİNÇLİ olarak
+      # kapsam dışıdır. Yukarıdaki dosya başlığındaki notlara bakın.

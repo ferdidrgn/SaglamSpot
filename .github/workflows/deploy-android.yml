@@ -1,0 +1,70 @@
+name: Deploy Android (Play Console)
+
+# main dalına her push'ta imzalı bir Android App Bundle (AAB) üretilir ve
+# Google Play Console'daki "internal" test track'ine yüklenir.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-android-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build & Upload AAB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Flutter SDK kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları al
+        run: flutter pub get
+
+      # ANDROID_KEYSTORE_BASE64: `base64 -i upload-keystore.jks | tr -d '\n'` çıktısı.
+      # KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD: keystore oluştururken belirlenen değerler.
+      - name: Keystore'u decode et ve key.properties oluştur
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
+      # GOOGLE_SERVICES_JSON: Firebase Console > Project Settings > General > "Your apps" >
+      # Android uygulaması > google-services.json dosyasının TAM içeriği.
+      # NOT: com.google.gms.google-services Gradle eklentisi bu dosya olmadan build'i
+      # BAŞARISIZ yapar (repo'da .gitignore ile hariç tutulmuş), bu yüzden bu secret ZORUNLUDUR.
+      - name: google-services.json oluştur
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
+
+      - name: App Bundle build (release)
+        run: flutter build appbundle --release
+
+      # PLAY_STORE_SERVICE_ACCOUNT_JSON: Play Console > Setup > API access üzerinden
+      # bağlanan Google Cloud servis hesabının indirilen JSON anahtarının TAMAMI.
+      # NOT: track "internal" olarak ayarlandı — production'a otomatik yayın YAPILMIYOR.
+      # Yükleme sonrası Play Console > Internal testing ekranından incelenip elle
+      # bir üst track'e (alpha/beta/production) terfi ettirilmesi önerilir.
+      - name: Google Play Console'a yükle (internal track)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.ferdidrgn.saglamspot
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed

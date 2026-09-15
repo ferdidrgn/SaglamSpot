@@ -1,0 +1,41 @@
+name: Deploy Web (Firebase Hosting)
+
+# main dalına her push'ta web build alınır ve Firebase Hosting'e (saglamspotcu sitesi,
+# proje: saglamspotflutter-2a1a8) canlıya deploy edilir.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-web-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Flutter SDK kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları al
+        run: flutter pub get
+
+      - name: Web build (release)
+        run: flutter build web --release
+
+      # FIREBASE_SERVICE_ACCOUNT: Firebase Console > Project Settings > Service Accounts
+      # > Generate new private key ile üretilen JSON'un TAMAMI bu secret'a yapıştırılmalı.
+      - name: Firebase Hosting'e deploy et
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          projectId: saglamspotflutter-2a1a8
+          channelId: live
