@@ -132,3 +132,8 @@ fastlane/test_output
 node_modules/
 .pnpm-store/
 android/app/google-services.json
+
+# -----------------------
+# CLAUDE CODE (Agent worktree'leri vb. — harness'e özel, commit edilmez)
+# -----------------------
+.claude/
