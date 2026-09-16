@@ -12,7 +12,8 @@ plugins {
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
+val hasKeystore = keystorePropertiesFile.exists()
+if (hasKeystore) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
@@ -25,8 +26,10 @@ android {
         applicationId = "com.ferdidrgn.saglamspot"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+
+        // 🔒 Google Play çakışmasını önlemek için sürüm kodunu 15 yaptık
+        versionCode = 15
+        versionName = flutter.versionName ?: "1.0.0"
         multiDexEnabled = true
 
         // Network Security Config (SSL pinning + cleartext block)
@@ -43,17 +46,26 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String?
-            keyPassword = keystoreProperties["keyPassword"] as String?
             val storeFilePath = keystoreProperties["storeFile"] as String?
-            storeFile = storeFilePath?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String?
+            if (!storeFilePath.isNullOrEmpty()) {
+                keyAlias = keystoreProperties["keyAlias"] as String?
+                keyPassword = keystoreProperties["keyPassword"] as String?
+                storeFile = file(storeFilePath)
+                storePassword = keystoreProperties["storePassword"] as String?
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            // key.properties ve storeFile eksiksiz tanımlıysa release ile, değilse null/debug ile derler
+            val releaseSigning = signingConfigs.getByName("release")
+            signingConfig =
+                if (releaseSigning.storeFile != null && releaseSigning.storeFile!!.exists()) {
+                    releaseSigning
+                } else {
+                    signingConfigs.getByName("debug")
+                }
 
             // 🛡️ Güvenlik, Obfuscation & Optimizasyon
             isMinifyEnabled = true
