@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../ads/ad_gate_provider.dart';
 import 'revenue_cat_service.dart';
 
 /// "6 Aylık Reklamsız Üyelik" için sadeleştirilmiş durum modeli. Tek doğru
@@ -76,6 +77,10 @@ class SubscriptionStatusNotifier extends AsyncNotifier<SubscriptionStatus> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(kAdsRemovedPrefsKey, isActive);
+      // Reklam widget'ları AdGateCache'in bellek-içi kopyasını okuyor —
+      // SharedPreferences'a yazmak tek başına onları GÜNCELLEMEZ, aynı
+      // anahtarı okuyan adsEnabledProvider'ı da burada yeniden yüklüyoruz.
+      await ref.read(adsEnabledProvider.notifier).reload();
     } catch (e) {
       debugPrint('💳 ads_removed SharedPreferences yazma hatası: $e');
     }

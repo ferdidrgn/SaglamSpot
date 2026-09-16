@@ -523,6 +523,9 @@ class _SubscriptionCardState extends ConsumerState<_SubscriptionCard> {
       }
 
       final customerInfo = await RevenueCatService.purchasePackage(package);
+      // applyCustomerInfo hem abonelik durumunu hem de (dahili olarak)
+      // reklamların gösterilip gösterilmeyeceğine karar veren
+      // adsEnabledProvider'ı ANINDA yeniden yükler.
       await ref
           .read(subscriptionStatusProvider.notifier)
           .applyCustomerInfo(customerInfo);
