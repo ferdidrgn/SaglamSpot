@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
@@ -77,16 +78,28 @@ class HomeStorePage extends ConsumerWidget {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
                     sliver: SliverList.separated(
-                      itemCount: featured.length,
+                      itemCount: paddedItemCountForAds(featured.length),
                       separatorBuilder: (final _, final __) =>
                           const SizedBox(height: 16),
                       // Kartlar sayfa açılır açılmaz hepsi birden değil,
                       // kuşak kuşak (cascade) belirir — daha "canlı", mobil
-                      // uygulama hissi için.
-                      itemBuilder: (final context, final index) => RevealFade(
-                        delayMs: 60 * (index % 8),
-                        child: _ProductListRow(product: featured[index]),
-                      ),
+                      // uygulama hissi için. Reklamlar ürün kartıyla AYNI
+                      // çerçevede araya serpiştirilir (bkz.
+                      // ad_grid_helper.dart) — liste kısaysa her 5 üründe bir.
+                      itemBuilder: (final context, final index) {
+                        if (isAdSlot(index, featured.length)) {
+                          return const SizedBox(
+                              height: 140, child: NativeAdCard());
+                        }
+                        final realIndex =
+                            realIndexForAdGrid(index, featured.length);
+                        if (realIndex >= featured.length)
+                          return const SizedBox.shrink();
+                        return RevealFade(
+                          delayMs: 60 * (realIndex % 8),
+                          child: _ProductListRow(product: featured[realIndex]),
+                        );
+                      },
                     ),
                   ),
                 SliverToBoxAdapter(

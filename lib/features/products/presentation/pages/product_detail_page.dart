@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
+import '../../../../core/ads/interstitial_ad_manager.dart';
 import '../../../../core/ads/widgets/platform_bottom_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
@@ -122,10 +123,17 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       final solid = _scrollController.offset > 180;
       if (solid != _isAppBarSolid) setState(() => _isAppBarSolid = solid);
     });
+    // Bir sonraki eşikte interstitial hazır olsun diye erkenden yükle
+    // (web'de/reklamlar kapalıyken no-op — bkz. InterstitialAdManager).
+    InterstitialAdManager.instance.preload();
   }
 
   @override
   void dispose() {
+    // Kullanıcı bu ürün detay sayfasından ayrılıyor — art arda N. ürün
+    // detay sayfası kapatmaysa (bkz. InterstitialAdManager) BİR KEZ geçiş
+    // reklamı gösterilir. Web'de ve reklamlar kapalıyken no-op.
+    InterstitialAdManager.instance.onProductDetailClosed();
     _scrollController.dispose();
     _galleryController.dispose();
     _entrance.dispose();

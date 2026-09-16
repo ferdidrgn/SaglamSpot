@@ -15,6 +15,12 @@ class ResponsiveProductGrid extends ConsumerWidget {
   final bool shrinkWrap;
   final ScrollPhysics? physics;
 
+  /// true (varsayılan) ise ürünlerin arasına ürün kartıyla aynı çerçeveye
+  /// sahip "doğal" reklam kartları serpiştirilir (bkz. ad_grid_helper.dart):
+  /// liste kısaysa her 5, uzunsa her 10 üründe bir. DiscoverPage bu widget'ı
+  /// kullanıyor — daha önce bu ızgarada HİÇ reklam yoktu.
+  final bool insertAds;
+
   const ResponsiveProductGrid({
     super.key,
     required this.products,
@@ -22,6 +28,7 @@ class ResponsiveProductGrid extends ConsumerWidget {
     this.onProductTap,
     this.shrinkWrap = false,
     this.physics,
+    this.insertAds = true,
   });
 
   @override
@@ -48,10 +55,16 @@ class ResponsiveProductGrid extends ConsumerWidget {
         crossAxisSpacing: spacing,
         mainAxisSpacing: spacing,
       ),
-      itemCount: products.length,
+      itemCount:
+          insertAds ? paddedItemCountForAds(products.length) : products.length,
       itemBuilder: (final context, final index) {
-        final product = products[index];
-        return CustomProductCard(product: product);
+        if (insertAds && isAdSlot(index, products.length)) {
+          return const NativeAdCard();
+        }
+        final realIndex =
+            insertAds ? realIndexForAdGrid(index, products.length) : index;
+        if (realIndex >= products.length) return const SizedBox.shrink();
+        return CustomProductCard(product: products[realIndex]);
       },
     );
   }

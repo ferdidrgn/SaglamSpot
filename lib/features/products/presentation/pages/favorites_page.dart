@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
@@ -58,20 +59,41 @@ class FavoritesPage extends ConsumerWidget {
                             mainAxisSpacing: 12,
                             childAspectRatio: 0.72,
                           ),
-                          itemCount: favorites.length,
-                          itemBuilder: (final context, final index) =>
-                              _FavoriteCard(product: favorites[index]),
+                          // Reklamlar ürün kartıyla AYNI çerçevede araya
+                          // serpiştirilir (bkz. ad_grid_helper.dart).
+                          itemCount: paddedItemCountForAds(favorites.length),
+                          itemBuilder: (final context, final index) {
+                            if (isAdSlot(index, favorites.length)) {
+                              return const NativeAdCard();
+                            }
+                            final realIndex = realIndexForAdGrid(
+                                index, favorites.length);
+                            if (realIndex >= favorites.length)
+                              return const SizedBox.shrink();
+                            return _FavoriteCard(
+                                product: favorites[realIndex]);
+                          },
                         )
                       // Mobilde native app'lerde alışılmış "kaydırıp kaldır"
                       // listesi — ızgara yerine, her satırda ürünün gerçek
                       // bilgisi + doğrudan WhatsApp'tan sorma kısayolu.
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-                          itemCount: favorites.length,
+                          itemCount: paddedItemCountForAds(favorites.length),
                           separatorBuilder: (final _, final __) =>
                               const SizedBox(height: 12),
-                          itemBuilder: (final context, final index) =>
-                              _FavoriteSwipeRow(product: favorites[index]),
+                          itemBuilder: (final context, final index) {
+                            if (isAdSlot(index, favorites.length)) {
+                              return const SizedBox(
+                                  height: 140, child: NativeAdCard());
+                            }
+                            final realIndex = realIndexForAdGrid(
+                                index, favorites.length);
+                            if (realIndex >= favorites.length)
+                              return const SizedBox.shrink();
+                            return _FavoriteSwipeRow(
+                                product: favorites[realIndex]);
+                          },
                         )),
             ),
           ],
