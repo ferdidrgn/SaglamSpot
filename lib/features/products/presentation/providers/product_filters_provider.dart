@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../domain/entites/product.dart';
 import 'product_provider.dart';
-
 part 'product_filters_provider.g.dart';
 
 @riverpod
