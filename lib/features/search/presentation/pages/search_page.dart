@@ -26,6 +26,7 @@ import '../../../products/presentation/providers/category_meta_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
+import '../widgets/search_page_sidebar.dart';
 import '../widgets/search_product_grid_card.dart';
 
 /// Arama/keşif sayfası — eski tasarımdaki devasa arka plan fotoğraflı hero
@@ -298,7 +299,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       ),
       child: Row(
         children: [
-          _RoundIconButton(
+          RoundIconButton(
             icon: Icons.arrow_back_rounded,
             onTap: () => NavigationHandler.smartGoBack(context),
           ),
@@ -399,7 +400,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           children: [
             _sidebarTitle(context.l10n.category),
             const SizedBox(height: 12),
-            _SidebarCategoryRow(
+            SidebarCategoryRow(
               label: context.l10n.conditionAll,
               icon: Icons.grid_view_rounded,
               color: AppColors.textSecondary,
@@ -409,7 +410,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   ref.read(searchFiltersProvider.notifier).setCategory(null),
             ),
             for (final meta in categories)
-              _SidebarCategoryRow(
+              SidebarCategoryRow(
                 label: meta.customLabel ?? meta.category.label(context),
                 icon: meta.icon,
                 color: meta.color,
@@ -426,13 +427,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             const SizedBox(height: 20),
             _sidebarTitle(context.l10n.condition),
             const SizedBox(height: 12),
-            _SidebarConditionSelector(filters: filters),
+            SidebarConditionSelector(filters: filters),
             const SizedBox(height: 20),
             Divider(color: AppColors.border, height: 1),
             const SizedBox(height: 20),
             _sidebarTitle(context.l10n.priceRange),
             const SizedBox(height: 14),
-            _SidebarPriceRange(filters: filters),
+            SidebarPriceRange(filters: filters),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -923,219 +924,4 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             onApplyFilters: () => Navigator.pop(context),
             onResetFilters: _resetAll),
       );
-}
-
-/// Üst çubuktaki geri butonu — sade, yuvarlak, ikon tabanlı.
-class _RoundIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _RoundIconButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(final BuildContext context) => Material(
-        color: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.border),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: onTap,
-          child: SizedBox(
-            width: context.responsive(mobile: 46.0, desktop: 50.0),
-            height: context.responsive(mobile: 46.0, desktop: 50.0),
-            child: Icon(icon, color: AppColors.textPrimary, size: 20),
-          ),
-        ),
-      );
-}
-
-/// Yan paneldeki kategori satırı: ikon + isim + adet, seçiliyse vurgulanır.
-class _SidebarCategoryRow extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color color;
-  final int count;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _SidebarCategoryRow({
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.count,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(final BuildContext context) => InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          margin: const EdgeInsets.only(bottom: 4),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-          decoration: BoxDecoration(
-            color: selected ? color.withOpacity(0.12) : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Icon(icon,
-                  size: 18, color: selected ? color : AppColors.textSecondary),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: selected
-                        ? AppColors.textPrimary
-                        : AppColors.textSecondary,
-                  ),
-                ),
-              ),
-              Text('$count',
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textTertiary)),
-            ],
-          ),
-        ),
-      );
-}
-
-/// Yan paneldeki durum seçici — üç eşit segment (Tümü / Sıfır / İkinci El).
-class _SidebarConditionSelector extends ConsumerWidget {
-  final dynamic filters;
-
-  const _SidebarConditionSelector({required this.filters});
-
-  @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final notifier = ref.read(searchFiltersProvider.notifier);
-    final current = filters.condition ?? ProductCondition.all;
-
-    return Row(
-      children: ProductCondition.values.map((final cond) {
-        final isSelected = current == cond;
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-                right: cond == ProductCondition.values.last ? 0 : 8),
-            child: InkWell(
-              onTap: () => notifier.setCondition(cond),
-              borderRadius: BorderRadius.circular(12),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : AppColors.secondary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  cond.label(context),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-}
-
-/// Yan paneldeki fiyat aralığı — eski dialog+metin kutuları yerine tek
-/// bakışta anlaşılan bir RangeSlider.
-class _SidebarPriceRange extends ConsumerStatefulWidget {
-  final dynamic filters;
-
-  const _SidebarPriceRange({required this.filters});
-
-  @override
-  ConsumerState<_SidebarPriceRange> createState() => _SidebarPriceRangeState();
-}
-
-class _SidebarPriceRangeState extends ConsumerState<_SidebarPriceRange> {
-  static const double _cap = 100000;
-  late RangeValues _localValues;
-
-  @override
-  void initState() {
-    super.initState();
-    _localValues = RangeValues(
-      widget.filters.minPrice.toDouble().clamp(0, _cap),
-      widget.filters.maxPrice.toDouble().clamp(0, _cap),
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant final _SidebarPriceRange oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _localValues = RangeValues(
-      widget.filters.minPrice.toDouble().clamp(0, _cap),
-      widget.filters.maxPrice.toDouble().clamp(0, _cap),
-    );
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('₺${_localValues.start.toInt()}',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary)),
-            Text(
-                '₺${_localValues.end.toInt()}${_localValues.end >= _cap ? '+' : ''}',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary)),
-          ],
-        ),
-        SliderTheme(
-          data: SliderTheme.of(context).copyWith(
-            activeTrackColor: AppColors.accent,
-            inactiveTrackColor: AppColors.border,
-            thumbColor: AppColors.accent,
-            overlayColor: AppColors.accent.withOpacity(0.15),
-            rangeThumbShape:
-                const RoundRangeSliderThumbShape(enabledThumbRadius: 8),
-            trackHeight: 3,
-          ),
-          child: RangeSlider(
-            values: _localValues,
-            min: 0,
-            max: _cap,
-            divisions: 100,
-            onChanged: (final values) => setState(() => _localValues = values),
-            onChangeEnd: (final values) => ref
-                .read(searchFiltersProvider.notifier)
-                .setPriceRange(values.start, values.end),
-          ),
-        ),
-      ],
-    );
-  }
 }
