@@ -15,6 +15,10 @@
 ![Platforms](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-6E56CF?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Private-red?style=for-the-badge)
 
+[![CI Checks](https://github.com/ferdidrgn/SaglamSpot/actions/workflows/ci-checks.yml/badge.svg)](https://github.com/ferdidrgn/SaglamSpot/actions/workflows/ci-checks.yml)
+[![Deploy Web](https://github.com/ferdidrgn/SaglamSpot/actions/workflows/deploy-web.yml/badge.svg)](https://github.com/ferdidrgn/SaglamSpot/actions/workflows/deploy-web.yml)
+[![Deploy Android](https://github.com/ferdidrgn/SaglamSpot/actions/workflows/deploy-android.yml/badge.svg)](https://github.com/ferdidrgn/SaglamSpot/actions/workflows/deploy-android.yml)
+
 **🌐 [Canlı Site](https://saglamspotcu.web.app) &nbsp;·&nbsp; 📱 [Play Store](https://play.google.com/store/apps/details?id=com.ferdidrgn.saglamspot) &nbsp;·&nbsp; 🗺️ [Mağaza Konumu](https://www.google.com/maps/place/Sa%C4%9Flam+Spot)**
 
 </div>
@@ -82,19 +86,26 @@ Uygulama iki farklı kimliği tek bir Flutter kod tabanında birleştirir:
 ✓ 11 dilde tam lokalizasyon    →  TR · EN · DE · RU · AR · EL · IT · KY · UK · UZ · ZH
 ✓ Uçtan uca SEO altyapısı      →  Dinamik meta/OG etiketleri, JSON-LD, sitemap, robots.txt
 ✓ İmzalı deep link'ler         →  HMAC-SHA256 korumalı, sahte ürün linki üretilemez
+✓ App Links / Universal Links  →  Yüklüyse app'i, yüklü değilse web'i açan platform deep link'i
 ✓ PWA desteği                  →  manifest.json + offline-ready yapı
 ✓ AdSense entegrasyonu         →  Display / in-article / multiplex reklam birimleri
+✓ Tam SEO paketi                →  robots.txt, sitemap, ads.txt/app-ads.txt, Google/Yandex/Bing doğrulaması
 ```
 
 ### 📱 Mobil Uygulama
 
 ```
-✓ Yönetici paneli               →  Firebase Auth + Firestore admin doğrulaması
+✓ Yönetici paneli               →  Firebase Auth + Firestore admin doğrulaması + canlı istatistikler
 ✓ Tam ürün CRUD'u               →  Ekle, düzenle, sil, çoklu görsel yükle
 ✓ AI destekli stüdyo görsel     →  remove.bg entegrasyonu ile arka plan temizleme
-✓ AdMob reklamları              →  Banner + Native, Remote Config ile aç/kapa
+✓ Ürün analitiği                →  Hangi ürüne web'den/mobilden kaç kez bakılmış (Admin > İstatistikler)
+✓ Firebase Servisleri paneli    →  Crashlytics/Analytics/Remote Config/App Check durumunu tek ekrandan izle
+✓ AdMob reklamları              →  Banner + Native + Interstitial, Remote Config kill-switch ile aç/kapa
+✓ Material You                  →  Telefonun sistem tema rengini uygulamaya yansıtan dinamik renk desteği
+✓ Markalı açılış ekranı          →  Native splash (Android 12+ dahil) + in-app geçiş animasyonu
 ✓ Çevrimdışı koruma             →  Bağlantı kesilince otomatik yeniden bağlanma ekranı
-✓ Push bildirimleri             →  Firebase Cloud Messaging altyapısı
+✓ Push + uygulama içi bildirim  →  Yeni ürün/fiyat düşüşü anlık bildirim (Firebase Cloud Messaging)
+✓ Tam lokalizasyon               →  Statik string yok, tüm arayüz context.l10n üzerinden
 ```
 
 ### 🎨 Tasarım Dili
@@ -168,11 +179,13 @@ Bu sayede `google_mobile_ads` gibi mobil-özel paketler **web bundle'ına hiç d
 | 🔐 Auth | E-posta/şifre + admin doğrulama |
 | 🗄️ Firestore | Ürün veritabanı |
 | 📦 Storage | Ürün görselleri |
-| ⚡ Cloud Functions | remove.bg proxy + dinamik sitemap |
+| ⚡ Cloud Functions | remove.bg proxy, dinamik sitemap, bildirim tetikleyicileri |
+| 📬 Cloud Messaging | Push + uygulama içi bildirimler |
 | 📊 Analytics | Kullanıcı davranışı |
-| 🐛 Crashlytics | Çökme raporlama |
-| 🚩 Remote Config | Feature flag (`adsEnabled`) |
+| 🐛 Crashlytics | Çökme raporlama (admin panelinden aç/kapa) |
+| 🚩 Remote Config | `adsEnabled`, bakım modu, zorunlu güncelleme, interstitial sıklığı |
 | 🛡️ App Check | Play Integrity / DeviceCheck |
+| 🚀 App Distribution | CI ile otomatik beta dağıtımı |
 
 </td><td valign="top" width="50%">
 
@@ -181,9 +194,8 @@ Bu sayede `google_mobile_ads` gibi mobil-özel paketler **web bundle'ına hiç d
 | | |
 |---|---|
 | `dartz` | Functional error handling (`Either`) |
-| `freezed` | Immutable model sınıfları |
-| `json_serializable` | JSON (de)serialization |
 | `equatable` | Değer karşılaştırması |
+| Riverpod code-gen | `@riverpod` ile otomatik provider üretimi |
 
 **UI & Medya**
 
@@ -199,9 +211,10 @@ Bu sayede `google_mobile_ads` gibi mobil-özel paketler **web bundle'ına hiç d
 
 | | |
 |---|---|
-| `google_mobile_ads` | AdMob (yalnızca mobil derlemede) |
-| AdSense (HTML) | Web reklamları |
-| `share_plus` | HMAC imzalı ürün paylaşımı |
+| `google_mobile_ads` | AdMob banner/native/interstitial (yalnızca mobil derlemede) |
+| AdSense (HTML) | Web reklamları — display/in-article/multiplex |
+| Ürün-kartı reklamları | Her 5-10 üründe bir, ürün kartıyla aynı çerçevede |
+| `share_plus` / `app_links` | HMAC imzalı paylaşım + platform deep link (App/Universal Links) |
 
 </td></tr>
 </table>
@@ -244,6 +257,8 @@ https://saglamspotcu.web.app/sitemap-products.xml     → Firestore'dan canlı �
 - Sayfa geçişlerinde `SeoRouteObserver` → `document.title`, `<meta name="description">`, OpenGraph/Twitter Card ve `<link rel="canonical">` **gerçek zamanlı** güncellenir (Google, Yandex, Bing, Safari/WhatsApp paylaşım botları dahil).
 - Ürün detay sayfası kendi SEO enjeksiyonunu yapar — sosyal medyada paylaşılan bir link, jenerik değil **gerçek ürün fotoğrafı/adı/fiyatıyla** önizleme gösterir.
 - `functions/index.js`'teki `sitemap` Cloud Function'ı, uygulamanın kendi HMAC imzalama şemasını Node.js'te birebir replike eder — üretilen linkler mobil uygulamanın güvenlik doğrulamasından geçer.
+- **Arama motoru doğrulaması**: Google Search Console, Yandex Webmaster ve Bing Webmaster Tools için siteye özel doğrulama uçları hazır (`web/index.html` meta etiketleri + `web/yandex_*.html`).
+- **`web/.well-known/assetlinks.json`** (Android App Links) ve **`web/.well-known/apple-app-site-association`** (iOS Universal Links) — uygulama yüklüyse doğrudan app'i, yüklü değilse web sürümünü açan platform deep link doğrulaması.
 
 ---
 
@@ -258,7 +273,7 @@ git clone https://github.com/ferdidrgn/saglamspot.git && cd saglamspot
 # 2️⃣  Bağımlılıkları yükle
 flutter pub get
 
-# 3️⃣  Kod üretimini çalıştır (freezed, riverpod_generator, json_serializable)
+# 3️⃣  Kod üretimini çalıştır (riverpod_generator)
 dart run build_runner build --delete-conflicting-outputs
 
 # 4️⃣  Lokalizasyon dosyalarını üret (11 dil)
@@ -319,9 +334,12 @@ lib/
 └── 🧭 shared/navigation/     GoRouter konfigürasyonu, navigasyon handler'ları
 
 functions/                   Firebase Cloud Functions (Node.js 22)
-├── removeProductBackground   remove.bg proxy, aylık kota takibi
+├── removeProductBackground   remove.bg proxy, admin doğrulamalı, aylık kota takibi
 ├── onProductDeleted           Storage temizliği (orphan görsel önleme)
-└── sitemap                    Firestore'dan dinamik ürün sitemap'i
+├── onProductCreated           Yeni öne çıkan ürün için anlık push bildirimi
+├── dailyProductDigest         Günlük "yeni ürünler" özet bildirimi (spam'i önler)
+├── notifyPriceDrop            Favorilenen ürünün fiyatı düşünce anlık bildirim
+└── sitemap                    Firestore'dan dinamik ürün sitemap'i (HMAC imzalı linkler)
 ```
 
 ---
@@ -344,6 +362,22 @@ functions/                   Firebase Cloud Functions (Node.js 22)
 ---
 
 ## 🚢 Deployment
+
+**Otomatik (GitHub Actions)** — `main` dalına her push'ta tetiklenir:
+
+| Workflow | Ne yapar |
+|---|---|
+| `.github/workflows/deploy-web.yml` | `flutter build web --release` → Firebase Hosting'e canlı deploy |
+| `.github/workflows/deploy-android.yml` | İmzalı AAB build → Play Console'a (`internal` track) yükleme, versionCode'u otomatik artırır |
+| `.github/workflows/deploy-ios.yml` | `flutter build ipa --no-codesign` ile derleme doğrulaması |
+| `.github/workflows/distribute-android-beta.yml` | İmzasız debug APK → Firebase App Distribution (test grubu) |
+| `.github/workflows/ci-checks.yml` | Her PR/push'ta `flutter analyze` + `flutter test` |
+
+Gerekli GitHub Secrets'ların tam listesi ve nasıl üretileceği → [`.github/workflows/README.md`](.github/workflows/README.md).
+
+<details>
+<summary><b>🔧 Manuel deployment</b> (yerel makineden)</summary>
+<br/>
 
 <table>
 <tr><td width="33%" valign="top">
@@ -373,7 +407,7 @@ firebase deploy --only functions
 </td></tr>
 </table>
 
-> ⚠️ CI ortamında Android release build'i `key.properties` + keystore dosyası olmadan başarısız olur — bu dosyaların CI secret'ları üzerinden güvenli şekilde sağlanması gerekir.
+</details>
 
 ---
 
@@ -406,9 +440,9 @@ Bu proje, AI agent'larla (Claude Code dahil) çalışacak şekilde yapılandır�
 
 <div align="center">
 
-| Platform | Mimari | State | Dil Desteği | Firebase Servisi |
-|:---:|:---:|:---:|:---:|:---:|
-| Android · iOS · Web | Clean Architecture | Riverpod 3 | 11 dil 🌍 | 8 servis |
+| Platform | Mimari | State | Dil Desteği | Firebase Servisi | CI/CD |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| Android · iOS · Web | Clean Architecture | Riverpod 3 | 11 dil 🌍 | 9 servis | 5 otomatik pipeline |
 
 </div>
 
