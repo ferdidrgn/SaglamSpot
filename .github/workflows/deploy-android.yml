@@ -52,8 +52,14 @@ jobs:
       - name: google-services.json oluştur
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
 
+      # Play Store aynı versionCode'u İKİ KEZ kabul etmez — pubspec.yaml'daki
+      # "+N" build numarasını elle artırmayı unutmak klasik bir hata kaynağı.
+      # Unix timestamp (saniye) HER ZAMAN artan ve mevcut manuel numaradan
+      # (şu an +13) kesin büyük bir değer olduğu için versionCode olarak
+      # kullanılır — pubspec.yaml'a hiç dokunulmadan her build'de otomatik
+      # benzersiz bir sürüm kodu üretir.
       - name: App Bundle build (release)
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --build-number=$(date +%s)
 
       # PLAY_STORE_SERVICE_ACCOUNT_JSON: Play Console > Setup > API access üzerinden
       # bağlanan Google Cloud servis hesabının indirilen JSON anahtarının TAMAMI.
