@@ -82,6 +82,17 @@ service cloud.firestore {
       allow delete: if true;
     }
 
+    // Yeni sıfır/spot ürün duyuruları — sadece Cloud Functions (Admin SDK,
+    // bkz. functions/index.js > onProductCreated) yazar; herkes okuyabilir
+    // çünkü istemci (Flutter) uygulama içi bildirim gelen kutusunu bu
+    // kayıtlarla senkronlamak için okur (bkz.
+    // core/providers/notification_inbox_provider.dart). Kişisel/gizli
+    // hiçbir veri İÇERMEZ (sadece başlık/metin/ürün id/zaman damgası).
+    match /notification_broadcasts/{broadcastId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Sunucu-içi işletme durumu (remove.bg aylık kota sayacı, günlük
     // bildirim özetinin son gönderim zamanı) — SADECE Cloud Functions'ın
     // Admin SDK'sı okur/yazar; istemcinin buna hiçbir zaman ihtiyacı yok.

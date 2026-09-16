@@ -25,7 +25,7 @@
  */
 
 const {onCall, onRequest, HttpsError} = require("firebase-functions/v2/https");
-const {onDocumentDeleted, onDocumentUpdated} = require("firebase-functions/v2/firestore");
+const {onDocumentCreated, onDocumentDeleted, onDocumentUpdated} = require("firebase-functions/v2/firestore");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {defineSecret} = require("firebase-functions/params");
 const {initializeApp} = require("firebase-admin/app");
@@ -201,6 +201,54 @@ exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event
     if (!path) return;
     await bucket.file(path).delete().catch(() => {});
   }));
+});
+
+/**
+ * YENİ SIFIR/SPOT ÜRÜN BİLDİRİMİ — dailyProductDigest'in aksine (ki o
+ * TÜM yeni ürünleri, spam'i önlemek için günde BİR KEZ özetler) bu
+ * fonksiyon SADECE `isSpotProduct: true` olarak eklenen — nadir, öne
+ * çıkan — ürünler için ANINDA bir bildirim gönderir. Sıradan (spot
+ * olmayan) bir ürün eklendiğinde TETİKLENMEZ; bu yüzden dailyProductDigest'in
+ * bilinçli "günlük özet" tasarımıyla ÇAKIŞMAZ, onu TAMAMLAR.
+ *
+ * Hem push (FCM, `all_users` konusuna) HEM DE uygulama içi bildirim gelen
+ * kutusu için: aynı bilgiyi `notification_broadcasts` koleksiyonuna da
+ * yazar — bkz. Flutter tarafı: lib/core/providers/notification_inbox_provider.dart
+ * (_syncBroadcastFeed). Böylece push mesajı cihaza o an ulaşmasa bile
+ * (bildirim izni az önce verilmiş, cihaz o an çevrimdışıymış vb.)
+ * bildirim, kullanıcı bir sonraki açılışta uygulamayı açtığında gelen
+ * kutusunda kaybolmadan görünür.
+ */
+exports.onProductCreated = onDocumentCreated("Product/{productId}", async (event) => {
+  const data = event.data && event.data.data();
+  if (!data || data.isSold || !data.isSpotProduct) return;
+
+  const productId = event.params.productId;
+  const title = "Yeni Sıfır/Spot Ürün! ✨";
+  const body = data.name ?
+    `${data.name} mağazaya eklendi, hemen göz atın.` :
+    "Mağazaya yeni bir sıfır/spot ürün eklendi, hemen göz atın.";
+
+  const db = getFirestore();
+
+  await Promise.all([
+    getMessaging().send({
+      topic: "all_users",
+      notification: {title, body},
+      data: {type: "new_spot_product", productId},
+    }).catch((err) => {
+      console.error("onProductCreated: FCM gönderimi başarısız.", err);
+    }),
+    db.collection("notification_broadcasts").add({
+      title,
+      body,
+      type: "new_spot_product",
+      productId,
+      createdAt: FieldValue.serverTimestamp(),
+    }).catch((err) => {
+      console.error("onProductCreated: Firestore yazımı başarısız.", err);
+    }),
+  ]);
 });
 
 /**

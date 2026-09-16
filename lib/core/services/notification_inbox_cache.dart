@@ -104,4 +104,30 @@ final class NotificationInboxCache {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
   }
+
+  /// Uzaktan (Firestore `notification_broadcasts` — bkz.
+  /// notification_inbox_provider.dart) gelen bildirimleri yerel gelen
+  /// kutusuyla birleştirir. Zaten CİHAZDA olan bir kayıt (aynı [id]) asla
+  /// üzerine yazılmaz — kullanıcının "okundu" durumu korunur. Sadece
+  /// cihazda HİÇ olmayan (örn. bildirim izni yeni verildi, push cihaza
+  /// ulaşamadan önce yollanmış vb.) kayıtlar eklenir.
+  static Future<List<AppNotification>> mergeRemote(
+      final List<AppNotification> remote) async {
+    final items = await load();
+    final existingIds = items.map((final n) => n.id).toSet();
+
+    var changed = false;
+    for (final notification in remote) {
+      if (existingIds.add(notification.id)) {
+        items.add(notification);
+        changed = true;
+      }
+    }
+
+    if (!changed) return items;
+
+    items.sort((final a, final b) => b.receivedAt.compareTo(a.receivedAt));
+    await _save(items);
+    return items;
+  }
 }
