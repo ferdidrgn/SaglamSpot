@@ -13,7 +13,6 @@ import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
-import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/section_heading.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
