@@ -3908,6 +3908,24 @@ abstract class AppLocalizations {
   /// **'Kapalı'**
   String get firebaseValueOff;
 
+  /// No description provided for @firebaseMaintenanceModeValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bakım modu: {value}'**
+  String firebaseMaintenanceModeValue(String value);
+
+  /// No description provided for @firebaseForceUpdateMinVersionValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zorunlu güncelleme eşiği: {value}'**
+  String firebaseForceUpdateMinVersionValue(String value);
+
+  /// No description provided for @firebaseInterstitialIntervalValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklam arası min. ürün aralığı: {value}'**
+  String firebaseInterstitialIntervalValue(int value);
+
   /// No description provided for @firebaseLastFetch.
   ///
   /// In tr, this message translates to:
@@ -4099,6 +4117,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin.'**
   String get subscriptionUnavailable;
+
+  /// No description provided for @maintenancePageTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bakımdayız'**
+  String get maintenancePageTitle;
+
+  /// No description provided for @maintenancePageDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.'**
+  String get maintenancePageDesc;
+
+  /// No description provided for @maintenancePageRetry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar Dene'**
+  String get maintenancePageRetry;
+
+  /// No description provided for @forceUpdatePageTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güncelleme Gerekli'**
+  String get forceUpdatePageTitle;
+
+  /// No description provided for @forceUpdatePageDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.'**
+  String get forceUpdatePageDesc;
+
+  /// No description provided for @forceUpdatePageButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şimdi Güncelle'**
+  String get forceUpdatePageButton;
 }
 
 class _AppLocalizationsDelegate

@@ -786,6 +786,30 @@
   },
   "firebaseValueOn": "Açık",
   "firebaseValueOff": "Kapalı",
+  "firebaseMaintenanceModeValue": "Bakım modu: {value}",
+  "@firebaseMaintenanceModeValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "firebaseForceUpdateMinVersionValue": "Zorunlu güncelleme eşiği: {value}",
+  "@firebaseForceUpdateMinVersionValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "firebaseInterstitialIntervalValue": "Reklam arası min. ürün aralığı: {value}",
+  "@firebaseInterstitialIntervalValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
   "firebaseLastFetch": "Son güncelleme: {time}",
   "@firebaseLastFetch": {
     "placeholders": {
@@ -855,5 +879,11 @@
   "subscriptionPurchaseButtonLabel": "6 Aylık Reklamsız Üyelik — Satın Al",
   "subscriptionPurchaseSuccess": "Reklamsız üyelik aktif edildi.",
   "subscriptionPurchaseError": "Satın alma tamamlanamadı, lütfen tekrar deneyin.",
-  "subscriptionUnavailable": "Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin."
+  "subscriptionUnavailable": "Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin.",
+  "maintenancePageTitle": "Bakımdayız",
+  "maintenancePageDesc": "Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.",
+  "maintenancePageRetry": "Tekrar Dene",
+  "forceUpdatePageTitle": "Güncelleme Gerekli",
+  "forceUpdatePageDesc": "Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.",
+  "forceUpdatePageButton": "Şimdi Güncelle"
 }

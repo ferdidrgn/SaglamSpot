@@ -2083,6 +2083,21 @@ class AppLocalizationsUk extends AppLocalizations {
   String get firebaseValueOff => 'Kapalı';
 
   @override
+  String firebaseMaintenanceModeValue(String value) {
+    return 'Bakım modu: $value';
+  }
+
+  @override
+  String firebaseForceUpdateMinVersionValue(String value) {
+    return 'Zorunlu güncelleme eşiği: $value';
+  }
+
+  @override
+  String firebaseInterstitialIntervalValue(int value) {
+    return 'Reklam arası min. ürün aralığı: $value';
+  }
+
+  @override
   String firebaseLastFetch(String time) {
     return 'Son güncelleme: $time';
   }
@@ -2203,4 +2218,24 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get subscriptionUnavailable =>
       'Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String get maintenancePageTitle => 'Bakımdayız';
+
+  @override
+  String get maintenancePageDesc =>
+      'Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.';
+
+  @override
+  String get maintenancePageRetry => 'Tekrar Dene';
+
+  @override
+  String get forceUpdatePageTitle => 'Güncelleme Gerekli';
+
+  @override
+  String get forceUpdatePageDesc =>
+      'Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.';
+
+  @override
+  String get forceUpdatePageButton => 'Şimdi Güncelle';
 }

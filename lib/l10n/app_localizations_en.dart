@@ -2086,6 +2086,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firebaseValueOff => 'Off';
 
   @override
+  String firebaseMaintenanceModeValue(String value) {
+    return 'Maintenance mode: $value';
+  }
+
+  @override
+  String firebaseForceUpdateMinVersionValue(String value) {
+    return 'Forced update threshold: $value';
+  }
+
+  @override
+  String firebaseInterstitialIntervalValue(int value) {
+    return 'Min. products between interstitials: $value';
+  }
+
+  @override
   String firebaseLastFetch(String time) {
     return 'Last updated: $time';
   }
@@ -2205,4 +2220,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionUnavailable =>
       'This product is currently unavailable, please try again later.';
+
+  @override
+  String get maintenancePageTitle => 'Under Maintenance';
+
+  @override
+  String get maintenancePageDesc =>
+      'Sağlam Spot is temporarily unavailable due to short maintenance work. We\'ll be back shortly.';
+
+  @override
+  String get maintenancePageRetry => 'Try Again';
+
+  @override
+  String get forceUpdatePageTitle => 'Update Required';
+
+  @override
+  String get forceUpdatePageDesc =>
+      'Please update the app from the store to continue. This version is no longer supported.';
+
+  @override
+  String get forceUpdatePageButton => 'Update Now';
 }

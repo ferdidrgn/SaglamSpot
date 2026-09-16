@@ -151,6 +151,26 @@ class _AdminFirebaseServicesPageState
                   ),
                   const SizedBox(height: 6),
                   _InfoLine(
+                    icon: Icons.build_outlined,
+                    text: context.l10n.firebaseMaintenanceModeValue(
+                        RemoteConfigService.maintenanceMode
+                            ? context.l10n.firebaseValueOn
+                            : context.l10n.firebaseValueOff),
+                  ),
+                  const SizedBox(height: 6),
+                  _InfoLine(
+                    icon: Icons.system_update_outlined,
+                    text: context.l10n.firebaseForceUpdateMinVersionValue(
+                        RemoteConfigService.forceUpdateMinVersion),
+                  ),
+                  const SizedBox(height: 6),
+                  _InfoLine(
+                    icon: Icons.ads_click_outlined,
+                    text: context.l10n.firebaseInterstitialIntervalValue(
+                        RemoteConfigService.minInterstitialIntervalProducts),
+                  ),
+                  const SizedBox(height: 6),
+                  _InfoLine(
                     icon: Icons.schedule_rounded,
                     text: context.l10n.firebaseLastFetch(
                         _formatTime(RemoteConfigService.lastFetchTime)),

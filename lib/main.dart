@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'core/ads/ad_gate_provider.dart';
 import 'core/config/app_initializer.dart';
 import 'core/config/app_router.dart';
+import 'core/config/remote_config_gate.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/services/admin_session_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
@@ -193,7 +194,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                     // katıyoruz.
                     key: ValueKey(
                         '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
-                    child: child ?? const SizedBox.shrink(),
+                    child: RemoteConfigGate(
+                        child: child ?? const SizedBox.shrink()),
                   ),
                 ),
               ),
