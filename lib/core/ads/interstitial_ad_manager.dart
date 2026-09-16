@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'ad_gate_provider.dart';
 import 'ads_manager.dart';
 import '../common/enum/enums.dart';
+import '../services/remote_config_service.dart';
 
 /// Kullanıcıyı boğmadan ARA SIRA gösterilen geçiş (interstitial) reklamı.
 ///
@@ -34,15 +34,18 @@ final class InterstitialAdManager {
 
   /// Önceden yükleme — uygulama açılışında veya bir ürün detay sayfası
   /// ilk açıldığında çağrılabilir; eşiğe ulaşıldığında reklamın hazır
-  /// olma ihtimalini artırır. Reklamlar kapalıysa (RemoteConfig VEYA
-  /// `ads_removed`) veya web'deyse hiçbir şey yapmaz.
+  /// olma ihtimalini artırır. Reklamlar RemoteConfig'ten kapatılmışsa
+  /// veya web'deyse hiçbir şey yapmaz.
   void preload() {
-    if (kIsWeb || !AdGateCache.adsEnabled) return;
+    if (kIsWeb || !RemoteConfigService.adsEnabled) return;
     _load();
   }
 
   void _load() {
-    if (kIsWeb || _isLoading || _ad != null || !AdGateCache.adsEnabled) return;
+    if (kIsWeb ||
+        _isLoading ||
+        _ad != null ||
+        !RemoteConfigService.adsEnabled) return;
     _isLoading = true;
     InterstitialAd.load(
       adUnitId: AdManager.getAdUnitId(AdUnitType.interstitial),
@@ -82,7 +85,9 @@ final class InterstitialAdManager {
   /// sayar ve/veya bir sonraki gösterim için arka planda reklamı
   /// hazırlar.
   void onProductDetailClosed() {
-    if (kIsWeb || !AdGateCache.adsEnabled || _isShowing) return;
+    if (kIsWeb || !RemoteConfigService.adsEnabled || _isShowing) {
+      return;
+    }
 
     _closedCount++;
     if (_closedCount < _kOpenThreshold) {

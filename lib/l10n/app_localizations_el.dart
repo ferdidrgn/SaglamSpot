@@ -2199,43 +2199,6 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
-  String get settingsSubscriptionSection => 'Üyelik';
-
-  @override
-  String get subscriptionRemoveAdsTitle => '6 Aylık Reklamsız Üyelik';
-
-  @override
-  String get subscriptionRemoveAdsDescription =>
-      'Reklamları kaldırın, 6 ay boyunca kesintisiz kullanın.';
-
-  @override
-  String subscriptionActiveUntil(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: 'Aktif — bitişe $days gün',
-      one: 'Aktif — bitişe 1 gün',
-      zero: 'Aktif — bugün sona eriyor',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get subscriptionPurchaseButtonLabel =>
-      '6 Aylık Reklamsız Üyelik — Satın Al';
-
-  @override
-  String get subscriptionPurchaseSuccess => 'Reklamsız üyelik aktif edildi.';
-
-  @override
-  String get subscriptionPurchaseError =>
-      'Satın alma tamamlanamadı, lütfen tekrar deneyin.';
-
-  @override
-  String get subscriptionUnavailable =>
-      'Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin.';
-
-  @override
   String get maintenancePageTitle => 'Bakımdayız';
 
   @override

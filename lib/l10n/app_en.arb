@@ -865,21 +865,6 @@
       }
     }
   },
-  "settingsSubscriptionSection": "Membership",
-  "subscriptionRemoveAdsTitle": "6-Month Ad-Free Membership",
-  "subscriptionRemoveAdsDescription": "Remove ads and enjoy an uninterrupted experience for 6 months.",
-  "subscriptionActiveUntil": "{days, plural, =0{Active — expires today} =1{Active — 1 day left} other{Active — {days} days left}}",
-  "@subscriptionActiveUntil": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "subscriptionPurchaseButtonLabel": "6-Month Ad-Free Membership — Buy Now",
-  "subscriptionPurchaseSuccess": "Ad-free membership activated.",
-  "subscriptionPurchaseError": "Purchase could not be completed, please try again.",
-  "subscriptionUnavailable": "This product is currently unavailable, please try again later.",
   "maintenancePageTitle": "Under Maintenance",
   "maintenancePageDesc": "Sağlam Spot is temporarily unavailable due to short maintenance work. We'll be back shortly.",
   "maintenancePageRetry": "Try Again",

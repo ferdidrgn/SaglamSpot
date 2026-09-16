@@ -90,27 +90,14 @@ class PrivacyPolicyPage extends StatelessWidget {
               '• Web sitemizde Google AdSense çerez (cookie) kullanabilir; '
               'tarayıcı ayarlarınızdan çerezleri yönetebilirsiniz.',
         ),
-        const _Section(
-          title: '7. Uygulama İçi Satın Alma (Reklamsız Deneyim)',
-          body:
-              'Uygulama içinde isteğe bağlı olarak 6 aylık "reklamsız deneyim" '
-              'aboneliği satın alınabilir. Bu satın alma işlemi doğrudan Apple '
-              'App Store veya Google Play üzerinden gerçekleştirilir; kart/'
-              'banka bilgileriniz bize ulaşmaz, bu bilgileri toplamayız veya '
-              'saklamayız. Abonelik durumunuzu doğrulamak için RevenueCat '
-              'adlı üçüncü taraf bir abonelik yönetim hizmeti kullanılır; bu '
-              'hizmete yalnızca anonim bir cihaz/kullanıcı kimliği ve '
-              'abonelik durumu iletilir. Aboneliği istediğiniz zaman App '
-              'Store/Google Play hesap ayarlarınızdan iptal edebilirsiniz.',
-        ),
         _Section(
-          title: '8. Haklarınız ve İletişim',
+          title: '7. Haklarınız ve İletişim',
           body:
               'Gizlilikle ilgili sorularınız için bize ${SaglamSpotCommunication.email} '
               'adresinden ulaşabilirsiniz.',
         ),
         const _Section(
-          title: '9. Değişiklikler',
+          title: '8. Değişiklikler',
           body:
               'Bu politika zaman zaman güncellenebilir; önemli değişiklikler '
               'uygulama içinde duyurulur.',
@@ -185,27 +172,14 @@ class PrivacyPolicyPage extends StatelessWidget {
               '• Our website may use Google AdSense cookies; you can manage '
               'cookies from your browser settings.',
         ),
-        const _Section(
-          title: '7. In-App Purchases (Ad-Free Experience)',
-          body:
-              'The app offers an optional 6-month "ad-free experience" '
-              'subscription. This purchase is processed directly through '
-              'the Apple App Store or Google Play; we do not receive, '
-              'collect, or store your card/bank details. To verify your '
-              'subscription status we use a third-party subscription '
-              'management service called RevenueCat; only an anonymous '
-              'device/user identifier and subscription status are shared '
-              'with it. You can cancel your subscription at any time from '
-              'your App Store/Google Play account settings.',
-        ),
         _Section(
-          title: '8. Your Rights and Contact',
+          title: '7. Your Rights and Contact',
           body:
               'For privacy-related questions, you can reach us at '
               '${SaglamSpotCommunication.email}.',
         ),
         const _Section(
-          title: '9. Changes',
+          title: '8. Changes',
           body:
               'This policy may be updated from time to time; significant '
               'changes will be announced within the app.',

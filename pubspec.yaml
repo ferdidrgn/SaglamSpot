@@ -50,11 +50,6 @@ dependencies:
   # Google Services
   google_mobile_ads:
 
-  # Satın Alma / Abonelik (RevenueCat) — "6 Aylık Reklamsız Üyelik" tek dijital
-  # ürünün entitlement/abonelik durumu buradan yönetilir (bkz.
-  # core/services/subscription/). Web'de (kIsWeb) kullanılmaz, init() no-op'tur.
-  purchases_flutter: ^10.12.0
-
   app_links: ^6.1.1
 
   # UI Components

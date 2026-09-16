@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'core/ads/ad_gate_provider.dart';
 import 'core/config/app_initializer.dart';
 import 'core/config/app_router.dart';
 import 'core/config/remote_config_gate.dart';
@@ -81,11 +80,6 @@ void main() async {
 
   // 7. "Telefonumun temasını kullan" (Android Material You) tercihi
   await DynamicColorCache.load();
-
-  // 8. Reklamlar bir abonelik/satın alma ile kaldırılmış mı — reklam
-  // widget'larının ilk karede yanlış (kısa süreliğine reklamlı/reklamsız)
-  // durumu gösterip hemen değişmesini önlemek için önceden yüklenir.
-  await AdGateCache.load();
 
   runApp(
       const ProviderScope(observers: [], child: MyApp())
