@@ -118,16 +118,22 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.bar_chart_rounded, color: AppColors.mobileTextSecondary),
+            icon: Icon(Icons.bar_chart_rounded,
+                color: AppColors.mobileTextSecondary),
             tooltip: context.l10n.productStatsTooltip,
-            onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (final _) => const AdminProductStatsPage())),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (final _) => const AdminProductStatsPage())),
           ),
           IconButton(
-            icon: Icon(Icons.cloud_outlined, color: AppColors.mobileTextSecondary),
+            icon: Icon(Icons.cloud_outlined,
+                color: AppColors.mobileTextSecondary),
             tooltip: context.l10n.firebaseServicesTooltip,
-            onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (final _) => const AdminFirebaseServicesPage())),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (final _) => const AdminFirebaseServicesPage())),
           ),
           IconButton(
             icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
@@ -345,7 +351,12 @@ class _ProductGrid extends StatelessWidget {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: context.gridColumns(2),
+        // Önceden masaüstünde de sabit 2 sütun kalıyordu (context.gridColumns(2)
+        // → isMobile:2, isTablet:3, desktop parametresi=2), yani geniş
+        // ekranlarda mobildekiyle AYNI dar ızgara görünüyordu. Varsayılan
+        // (4) masaüstünde daha fazla ürünü aynı anda göstererek diğer
+        // ürün ızgaralarıyla (bkz. ResponsiveProductGrid) tutarlı hale getirir.
+        crossAxisCount: context.gridColumns(),
         childAspectRatio: 0.58,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,

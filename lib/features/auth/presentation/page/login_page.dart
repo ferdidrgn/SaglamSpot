@@ -52,95 +52,103 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Marka amblemi
-                  Container(
-                    width: 88,
-                    height: 88,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                            color: AppColors.primary.withOpacity(0.35),
-                            blurRadius: 24,
-                            offset: const Offset(0, 10)),
-                      ],
+              // Genişlik sınırı yoktu — bu form TextField'ları içeriyor,
+              // onlar mevcut tüm genişliği doldurmak ister; masaüstünde
+              // formu makul bir genişlikte tutuyoruz (mobilde <420px zaten
+              // ekran genişliği olduğu için hiçbir etkisi yok).
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Marka amblemi
+                    Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.primary.withOpacity(0.35),
+                              blurRadius: 24,
+                              offset: const Offset(0, 10)),
+                        ],
+                      ),
+                      child: const Icon(Icons.storefront_rounded,
+                          size: 40, color: Colors.white),
                     ),
-                    child: const Icon(Icons.storefront_rounded,
-                        size: 40, color: Colors.white),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    context.l10n.loginBrand,
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 26,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.5,
+                    const SizedBox(height: 24),
+                    Text(
+                      context.l10n.loginBrand,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.5,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    context.l10n.adminLoginSubtitle,
-                    style: TextStyle(
-                        color: AppColors.textSecondary, fontSize: 14.5),
-                  ),
-                  const SizedBox(height: 40),
+                    const SizedBox(height: 6),
+                    Text(
+                      context.l10n.adminLoginSubtitle,
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 14.5),
+                    ),
+                    const SizedBox(height: 40),
 
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                            color: AppColors.textPrimary.withOpacity(0.06),
-                            blurRadius: 30,
-                            offset: const Offset(0, 12)),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        _buildInput(
-                          controller: _emailController,
-                          label: context.l10n.emailLabel,
-                          icon: Icons.alternate_email_rounded,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          enabled: !isLoading,
-                        ),
-                        const SizedBox(height: 14),
-                        _buildInput(
-                          controller: _passController,
-                          label: context.l10n.passwordLabel,
-                          icon: Icons.lock_rounded,
-                          isObscure: _obscurePassword,
-                          textInputAction: TextInputAction.done,
-                          enabled: !isLoading,
-                          onSubmitted: (_) => _submit(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off_rounded
-                                  : Icons.visibility_rounded,
-                              color: AppColors.textTertiary,
-                              size: 20,
-                            ),
-                            onPressed: () => setState(
-                                () => _obscurePassword = !_obscurePassword),
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.textPrimary.withOpacity(0.06),
+                              blurRadius: 30,
+                              offset: const Offset(0, 12)),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildInput(
+                            controller: _emailController,
+                            label: context.l10n.emailLabel,
+                            icon: Icons.alternate_email_rounded,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            enabled: !isLoading,
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        _buildSubmitButton(isLoading),
-                        if (errorMessage != null) _buildErrorCard(errorMessage),
-                      ],
+                          const SizedBox(height: 14),
+                          _buildInput(
+                            controller: _passController,
+                            label: context.l10n.passwordLabel,
+                            icon: Icons.lock_rounded,
+                            isObscure: _obscurePassword,
+                            textInputAction: TextInputAction.done,
+                            enabled: !isLoading,
+                            onSubmitted: (_) => _submit(),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded,
+                                color: AppColors.textTertiary,
+                                size: 20,
+                              ),
+                              onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          _buildSubmitButton(isLoading),
+                          if (errorMessage != null)
+                            _buildErrorCard(errorMessage),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
           ),

@@ -53,11 +53,15 @@ class FavoritesPage extends ConsumerWidget {
                       ? GridView.builder(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            // Sabit 2 sütun masaüstünde çok geniş boşluklu
+                            // kartlara yol açıyordu — diğer ızgaralarla
+                            // (bkz. ResponsiveProductGrid) tutarlı olsun diye
+                            // context.gridColumns() kullanıldı.
+                            crossAxisCount: context.gridColumns(),
                             crossAxisSpacing: 12,
                             mainAxisSpacing: 12,
-                            childAspectRatio: 0.72,
+                            childAspectRatio: context.cardAspectRatio(),
                           ),
                           // Reklamlar ürün kartıyla AYNI çerçevede araya
                           // serpiştirilir (bkz. ad_grid_helper.dart).

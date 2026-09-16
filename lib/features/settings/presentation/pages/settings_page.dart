@@ -44,138 +44,149 @@ class SettingsPage extends ConsumerWidget {
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-          children: [
-            Text(
-              context.l10n.settingsTitle,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: AppColors.mobileTextPrimary,
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildProfileHeader(context),
-            const SizedBox(height: 28),
-            _SectionLabel(context.l10n.settingsAccountSection),
-            const SizedBox(height: 10),
-            _SettingsCard(
+        // Bu sayfa doğrudan (bir web "shell" sarmalayıcısı olmadan)
+        // render ediliyor — masaüstünde bir genişlik sınırı olmadan liste
+        // tam ekran genişliğine yayılıp satırları çirkin biçimde
+        // geriyordu. Mobilde (width < 640) Center/ConstrainedBox'ın hiçbir
+        // görsel etkisi yok, mevcut padding AYNEN korunuyor.
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
               children: [
-                _SettingsTile(
-                  icon: Icons.favorite_rounded,
-                  accent: AppColors.error,
-                  label: context.l10n.favoritesTitle,
-                  onTap: () => NavigationHandler.goToFavorites(context),
-                ),
-                _SettingsTile(
-                  icon: Icons.notifications_rounded,
-                  accent: AppColors.mobileAccent,
-                  label: context.l10n.notificationsTitle,
-                  badgeCount: unreadCount,
-                  onTap: () => NavigationHandler.goToNotifications(context),
-                ),
-                _SettingsTile(
-                  icon: Icons.notifications_active_rounded,
-                  accent: AppColors.info,
-                  label: context.l10n.settingsNotificationPermission,
-                  onTap: NotificationService.openSystemNotificationSettings,
-                ),
-                const _LanguageTile(),
-                if (isAdminLoggedIn)
-                  _SettingsTile(
-                    icon: Icons.admin_panel_settings_rounded,
-                    accent: AppColors.mobilePrimary,
-                    label: context.l10n.settingsAdminLogin,
-                    onTap: () => NavigationHandler.goToAdmin(context),
+                Text(
+                  context.l10n.settingsTitle,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.mobileTextPrimary,
                   ),
+                ),
+                const SizedBox(height: 20),
+                _buildProfileHeader(context),
+                const SizedBox(height: 28),
+                _SectionLabel(context.l10n.settingsAccountSection),
+                const SizedBox(height: 10),
+                _SettingsCard(
+                  children: [
+                    _SettingsTile(
+                      icon: Icons.favorite_rounded,
+                      accent: AppColors.error,
+                      label: context.l10n.favoritesTitle,
+                      onTap: () => NavigationHandler.goToFavorites(context),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.notifications_rounded,
+                      accent: AppColors.mobileAccent,
+                      label: context.l10n.notificationsTitle,
+                      badgeCount: unreadCount,
+                      onTap: () => NavigationHandler.goToNotifications(context),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.notifications_active_rounded,
+                      accent: AppColors.info,
+                      label: context.l10n.settingsNotificationPermission,
+                      onTap: NotificationService.openSystemNotificationSettings,
+                    ),
+                    const _LanguageTile(),
+                    if (isAdminLoggedIn)
+                      _SettingsTile(
+                        icon: Icons.admin_panel_settings_rounded,
+                        accent: AppColors.mobilePrimary,
+                        label: context.l10n.settingsAdminLogin,
+                        onTap: () => NavigationHandler.goToAdmin(context),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _SectionLabel(context.l10n.settingsSubscriptionSection),
+                const SizedBox(height: 10),
+                const _SubscriptionCard(),
+                const SizedBox(height: 24),
+                _SectionLabel(context.l10n.settingsAppearanceSection),
+                const SizedBox(height: 10),
+                const _ThemeModeCard(),
+                if (!kIsWeb &&
+                    defaultTargetPlatform == TargetPlatform.android) ...[
+                  const SizedBox(height: 12),
+                  const _DynamicColorCard(),
+                ],
+                const SizedBox(height: 24),
+                _SectionLabel(context.l10n.settingsGeneralSection),
+                const SizedBox(height: 10),
+                _SettingsCard(
+                  children: [
+                    _SettingsTile(
+                      icon: Icons.storefront_rounded,
+                      accent: AppColors.mobilePrimary,
+                      label: context.l10n.aboutUs,
+                      onTap: () => NavigationHandler.goToAbout(context),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.quiz_rounded,
+                      accent: AppColors.mobileAccentDark,
+                      label: context.l10n.sss,
+                      onTap: () => NavigationHandler.goToSSS(context),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.call_rounded,
+                      accent: AppColors.info,
+                      label: context.l10n.settingsCallUs,
+                      onTap: SaglamSpotCommunication.makeCall,
+                    ),
+                    _SettingsTile(
+                      icon: Icons.chat_bubble_rounded,
+                      accent: AppColors.success,
+                      label: context.l10n.whatsappCta,
+                      onTap: () => SaglamSpotCommunication.launchWhatsApp(
+                          message: context.l10n.defaultWhatsappGreeting),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _SectionLabel(context.l10n.settingsAppSection),
+                const SizedBox(height: 10),
+                _SettingsCard(
+                  children: [
+                    _SettingsTile(
+                      icon: Icons.star_rounded,
+                      accent: AppColors.mobileAccentDark,
+                      label: context.l10n.settingsRateApp,
+                      onTap: FurnitureShareService.openStoreListingForReview,
+                    ),
+                    _SettingsTile(
+                      icon: Icons.ios_share_rounded,
+                      accent: AppColors.info,
+                      label: context.l10n.settingsShareApp,
+                      onTap: FurnitureShareService.shareApp,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _SectionLabel(context.l10n.settingsLegalSection),
+                const SizedBox(height: 10),
+                _SettingsCard(
+                  children: [
+                    _SettingsTile(
+                      icon: Icons.privacy_tip_rounded,
+                      accent: AppColors.mobilePrimary,
+                      label: context.l10n.settingsPrivacyPolicy,
+                      onTap: () => NavigationHandler.goToPrivacyPolicy(context),
+                    ),
+                    _SettingsTile(
+                      icon: Icons.description_rounded,
+                      accent: AppColors.mobilePrimary,
+                      label: context.l10n.settingsTerms,
+                      onTap: () => NavigationHandler.goToTerms(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const _AppVersionFooter(),
               ],
             ),
-            const SizedBox(height: 24),
-            _SectionLabel(context.l10n.settingsSubscriptionSection),
-            const SizedBox(height: 10),
-            const _SubscriptionCard(),
-            const SizedBox(height: 24),
-            _SectionLabel(context.l10n.settingsAppearanceSection),
-            const SizedBox(height: 10),
-            const _ThemeModeCard(),
-            if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
-              const SizedBox(height: 12),
-              const _DynamicColorCard(),
-            ],
-            const SizedBox(height: 24),
-            _SectionLabel(context.l10n.settingsGeneralSection),
-            const SizedBox(height: 10),
-            _SettingsCard(
-              children: [
-                _SettingsTile(
-                  icon: Icons.storefront_rounded,
-                  accent: AppColors.mobilePrimary,
-                  label: context.l10n.aboutUs,
-                  onTap: () => NavigationHandler.goToAbout(context),
-                ),
-                _SettingsTile(
-                  icon: Icons.quiz_rounded,
-                  accent: AppColors.mobileAccentDark,
-                  label: context.l10n.sss,
-                  onTap: () => NavigationHandler.goToSSS(context),
-                ),
-                _SettingsTile(
-                  icon: Icons.call_rounded,
-                  accent: AppColors.info,
-                  label: context.l10n.settingsCallUs,
-                  onTap: SaglamSpotCommunication.makeCall,
-                ),
-                _SettingsTile(
-                  icon: Icons.chat_bubble_rounded,
-                  accent: AppColors.success,
-                  label: context.l10n.whatsappCta,
-                  onTap: () => SaglamSpotCommunication.launchWhatsApp(
-                      message: context.l10n.defaultWhatsappGreeting),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _SectionLabel(context.l10n.settingsAppSection),
-            const SizedBox(height: 10),
-            _SettingsCard(
-              children: [
-                _SettingsTile(
-                  icon: Icons.star_rounded,
-                  accent: AppColors.mobileAccentDark,
-                  label: context.l10n.settingsRateApp,
-                  onTap: FurnitureShareService.openStoreListingForReview,
-                ),
-                _SettingsTile(
-                  icon: Icons.ios_share_rounded,
-                  accent: AppColors.info,
-                  label: context.l10n.settingsShareApp,
-                  onTap: FurnitureShareService.shareApp,
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _SectionLabel(context.l10n.settingsLegalSection),
-            const SizedBox(height: 10),
-            _SettingsCard(
-              children: [
-                _SettingsTile(
-                  icon: Icons.privacy_tip_rounded,
-                  accent: AppColors.mobilePrimary,
-                  label: context.l10n.settingsPrivacyPolicy,
-                  onTap: () => NavigationHandler.goToPrivacyPolicy(context),
-                ),
-                _SettingsTile(
-                  icon: Icons.description_rounded,
-                  accent: AppColors.mobilePrimary,
-                  label: context.l10n.settingsTerms,
-                  onTap: () => NavigationHandler.goToTerms(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const _AppVersionFooter(),
-          ],
+          ),
         ),
       ),
     );

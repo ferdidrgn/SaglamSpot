@@ -609,29 +609,38 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               ),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.productsFound(count),
-                  style: TextStyle(
-                    fontSize: context.responsive(
-                        mobile: 17.0, tablet: 18.0, desktop: 19.0),
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                    letterSpacing: -0.3,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.productsFound(count),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: context.responsive(
+                          mobile: 17.0, tablet: 18.0, desktop: 19.0),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                      letterSpacing: -0.3,
+                    ),
                   ),
-                ),
-                Text(
-                  context.l10n.resultsFor(query),
-                  style: TextStyle(
-                    fontSize: context.responsive(
-                        mobile: 12.5, tablet: 13.0, desktop: 13.5),
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w400,
+                  Text(
+                    // Kullanıcının yazdığı arama sorgusu keyfi uzunlukta
+                    // olabilir — Expanded + ellipsis olmadan geniş
+                    // ekranlarda bile RenderFlex taşması riski vardı.
+                    context.l10n.resultsFor(query),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: context.responsive(
+                          mobile: 12.5, tablet: 13.0, desktop: 13.5),
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -928,8 +937,8 @@ class _HorizontalCategoryRail extends ConsumerWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(
-            horizontal: context.responsive(
-                mobile: 12.0, tablet: 20.0, desktop: 32.0)),
+            horizontal:
+                context.responsive(mobile: 12.0, tablet: 20.0, desktop: 32.0)),
         children: [
           _HorizontalRailLabel(
             label: context.l10n.conditionAll,
@@ -980,8 +989,9 @@ class _HorizontalRailLabel extends StatelessWidget {
                 style: TextStyle(
                   fontSize: isSelected ? 13.5 : 12.5,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  color:
-                      isSelected ? AppColors.textPrimary : AppColors.textTertiary,
+                  color: isSelected
+                      ? AppColors.textPrimary
+                      : AppColors.textTertiary,
                   letterSpacing: 0.1,
                 ),
               ),
