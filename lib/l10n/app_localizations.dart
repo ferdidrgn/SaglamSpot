@@ -4051,6 +4051,54 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Web: {web} · Mobil: {mobile}'**
   String productStatsRowBreakdown(int web, int mobile);
+
+  /// No description provided for @settingsSubscriptionSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üyelik'**
+  String get settingsSubscriptionSection;
+
+  /// No description provided for @subscriptionRemoveAdsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'6 Aylık Reklamsız Üyelik'**
+  String get subscriptionRemoveAdsTitle;
+
+  /// No description provided for @subscriptionRemoveAdsDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklamları kaldırın, 6 ay boyunca kesintisiz kullanın.'**
+  String get subscriptionRemoveAdsDescription;
+
+  /// No description provided for @subscriptionActiveUntil.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days, plural, =0{Aktif — bugün sona eriyor} =1{Aktif — bitişe 1 gün} other{Aktif — bitişe {days} gün}}'**
+  String subscriptionActiveUntil(int days);
+
+  /// No description provided for @subscriptionPurchaseButtonLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'6 Aylık Reklamsız Üyelik — Satın Al'**
+  String get subscriptionPurchaseButtonLabel;
+
+  /// No description provided for @subscriptionPurchaseSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklamsız üyelik aktif edildi.'**
+  String get subscriptionPurchaseSuccess;
+
+  /// No description provided for @subscriptionPurchaseError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın alma tamamlanamadı, lütfen tekrar deneyin.'**
+  String get subscriptionPurchaseError;
+
+  /// No description provided for @subscriptionUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin.'**
+  String get subscriptionUnavailable;
 }
 
 class _AppLocalizationsDelegate

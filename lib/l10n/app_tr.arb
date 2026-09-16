@@ -840,5 +840,20 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsSubscriptionSection": "Üyelik",
+  "subscriptionRemoveAdsTitle": "6 Aylık Reklamsız Üyelik",
+  "subscriptionRemoveAdsDescription": "Reklamları kaldırın, 6 ay boyunca kesintisiz kullanın.",
+  "subscriptionActiveUntil": "{days, plural, =0{Aktif — bugün sona eriyor} =1{Aktif — bitişe 1 gün} other{Aktif — bitişe {days} gün}}",
+  "@subscriptionActiveUntil": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionPurchaseButtonLabel": "6 Aylık Reklamsız Üyelik — Satın Al",
+  "subscriptionPurchaseSuccess": "Reklamsız üyelik aktif edildi.",
+  "subscriptionPurchaseError": "Satın alma tamamlanamadı, lütfen tekrar deneyin.",
+  "subscriptionUnavailable": "Bu ürün şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin."
 }

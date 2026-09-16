@@ -2168,4 +2168,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String productStatsRowBreakdown(int web, int mobile) {
     return 'Web: $web · Mobile: $mobile';
   }
+
+  @override
+  String get settingsSubscriptionSection => 'Membership';
+
+  @override
+  String get subscriptionRemoveAdsTitle => '6-Month Ad-Free Membership';
+
+  @override
+  String get subscriptionRemoveAdsDescription =>
+      'Remove ads and enjoy an uninterrupted experience for 6 months.';
+
+  @override
+  String subscriptionActiveUntil(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Active — $days days left',
+      one: 'Active — 1 day left',
+      zero: 'Active — expires today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get subscriptionPurchaseButtonLabel =>
+      '6-Month Ad-Free Membership — Buy Now';
+
+  @override
+  String get subscriptionPurchaseSuccess => 'Ad-free membership activated.';
+
+  @override
+  String get subscriptionPurchaseError =>
+      'Purchase could not be completed, please try again.';
+
+  @override
+  String get subscriptionUnavailable =>
+      'This product is currently unavailable, please try again later.';
 }

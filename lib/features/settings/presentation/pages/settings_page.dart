@@ -7,6 +7,8 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../core/services/subscription/revenue_cat_service.dart';
+import '../../../../core/services/subscription/subscription_status_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/dynamic_color_provider.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
@@ -89,6 +91,10 @@ class SettingsPage extends ConsumerWidget {
                   ),
               ],
             ),
+            const SizedBox(height: 24),
+            _SectionLabel(context.l10n.settingsSubscriptionSection),
+            const SizedBox(height: 10),
+            const _SubscriptionCard(),
             const SizedBox(height: 24),
             _SectionLabel(context.l10n.settingsAppearanceSection),
             const SizedBox(height: 10),
@@ -486,6 +492,166 @@ class _AppVersionFooter extends ConsumerWidget {
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// "6 Aylık Reklamsız Üyelik" kartı — uygulamada satılan TEK dijital ürün.
+/// Durum tamamen RevenueCat'ten (bkz. subscriptionStatusProvider) okunur;
+/// kendi backend'imizde ayrı bir satın alma kaydı YOKTUR. Aktifse bitişe
+/// kalan gün sayısını, değilse satın alma butonunu gösterir.
+class _SubscriptionCard extends ConsumerStatefulWidget {
+  const _SubscriptionCard();
+
+  @override
+  ConsumerState<_SubscriptionCard> createState() => _SubscriptionCardState();
+}
+
+class _SubscriptionCardState extends ConsumerState<_SubscriptionCard> {
+  bool _purchasing = false;
+
+  Future<void> _handlePurchase() async {
+    if (_purchasing) return;
+    setState(() => _purchasing = true);
+    try {
+      final package = await RevenueCatService.getSixMonthRemoveAdsPackage();
+      if (!mounted) return;
+      if (package == null) {
+        _showResultSnack(context.l10n.subscriptionUnavailable, isError: true);
+        return;
+      }
+
+      final customerInfo = await RevenueCatService.purchasePackage(package);
+      await ref
+          .read(subscriptionStatusProvider.notifier)
+          .applyCustomerInfo(customerInfo);
+
+      if (!mounted) return;
+      _showResultSnack(context.l10n.subscriptionPurchaseSuccess,
+          isError: false);
+    } catch (e) {
+      // Kullanıcı mağaza diyaloğunu iptal ettiyse sessizce yut — hata değil.
+      if (RevenueCatService.isUserCancelledError(e)) return;
+      if (!mounted) return;
+      _showResultSnack(context.l10n.subscriptionPurchaseError, isError: true);
+    } finally {
+      if (mounted) setState(() => _purchasing = false);
+    }
+  }
+
+  void _showResultSnack(final String message, {required final bool isError}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: isError ? AppColors.error : AppColors.success,
+        content: Text(message, style: const TextStyle(color: Colors.white)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final statusAsync = ref.watch(subscriptionStatusProvider);
+    final status = statusAsync.value ?? SubscriptionStatus.none;
+    final int daysLeft = status.expiresAt != null
+        ? status.expiresAt!.difference(DateTime.now()).inDays.clamp(0, 999)
+        : 0;
+    final bool busy = _purchasing || statusAsync.isLoading;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.mobileSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.mobileBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: AppColors.mobileAccentDark.withOpacity(0.14),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.workspace_premium_rounded,
+                    size: 17, color: AppColors.mobileAccentDark),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.subscriptionRemoveAdsTitle,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.mobileTextPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      context.l10n.subscriptionRemoveAdsDescription,
+                      style: TextStyle(
+                          fontSize: 12, color: AppColors.mobileTextTertiary),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          if (status.isActive)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.success.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                context.l10n.subscriptionActiveUntil(daysLeft),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.success,
+                ),
+              ),
+            )
+          else
+            GestureDetector(
+              onTap: busy ? null : _handlePurchase,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: AppColors.mobilePrimaryGradient,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: busy
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : Text(
+                        context.l10n.subscriptionPurchaseButtonLabel,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+              ),
+            ),
+        ],
       ),
     );
   }

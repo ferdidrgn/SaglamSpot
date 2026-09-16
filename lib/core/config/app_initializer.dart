@@ -12,6 +12,7 @@ import '../services/firebase_feature_prefs.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_cache.dart';
 import '../services/remote_config_service.dart';
+import '../services/subscription/revenue_cat_service.dart';
 import '../util/date_formatter.dart';
 import '../util/platform_checker.dart';
 import 'firebase_options.dart';
@@ -41,6 +42,15 @@ abstract final class AppInitializer {
         _safeInitializeAdEngine(),
         _safeInitializeNotifications(),
       ]));
+
+      // "6 Aylık Reklamsız Üyelik" (RevenueCat) — sadece native platformlarda
+      // anlamlı (web'de zaten gerçek bir mağaza/ödeme akışı yok, bkz.
+      // RevenueCatService sınıf yorumu). Diğer başlatmaların SIRASINI
+      // bozmamak için mevcut adımların EN SONUNA, ayrı ve bağımsız (await
+      // edilmeyen) bir arka plan görevi olarak eklendi.
+      if (!kIsWeb) {
+        unawaited(_safeInitializeRevenueCat());
+      }
 
       debugPrint('🚀 Sağlam Spot Kurumsal Sistem Mimarisi Başarıyla Yüklendi.');
     } catch (e, stack) {
@@ -106,6 +116,14 @@ abstract final class AppInitializer {
       // şekilde tetikliyor ve konsola "MissingPluginException" atıyordu.
       await AdManager.initialize();
     } catch (_) {}
+  }
+
+  static Future<void> _safeInitializeRevenueCat() async {
+    try {
+      await RevenueCatService.init();
+    } catch (e) {
+      debugPrint('💳 RevenueCat başlatma hattı atlandı: $e');
+    }
   }
 
   static Future<void> _safeInitializeNotifications() async {
