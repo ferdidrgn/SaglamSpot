@@ -91,7 +91,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     sliver: SliverMainAxisGroup(
                       slivers: [
                         _buildHeroBanner(availableProducts),
-                        _buildFeatureRow(),
                         _buildMottoStrip(),
                         _buildFeatureTicker(),
                         _buildCatalogGateway(),
@@ -327,89 +326,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               desktop: 560.0,
               largeDesktop: 620.0),
           child: HeroBanner(images: _heroImages, featuredPool: featuredPool),
-        ),
-      ),
-    );
-  }
-
-  // Referans tasarımlardaki "hero altına taşan 3 kart" düzeni: hero'nun alt
-  // kenarına hafifçe binen, beyaz/yuvarlak, ikon+başlık+açıklama+CTA
-  // içeren 3 kart. CatalogGateway'deki Sıfır/Spot kartlarıyla ÇAKIŞMASIN
-  // diye içerik bilerek farklı — burada genel güven/hizmet vurguları var.
-  Widget _buildFeatureRow() {
-    final items = [
-      (
-        image:
-            'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=300',
-        icon: Icons.workspace_premium_rounded,
-        title: context.l10n.featureRow1Title,
-        desc: context.l10n.featureRow1Desc,
-        buttonLabel: context.l10n.exploreButton,
-        onTap: () => NavigationHandler.goToAbout(context),
-      ),
-      (
-        image:
-            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=300',
-        icon: Icons.local_shipping_rounded,
-        title: context.l10n.featureRow2Title,
-        desc: context.l10n.featureRow2Desc,
-        buttonLabel: context.l10n.exploreButton,
-        onTap: () => NavigationHandler.goToSSS(context),
-      ),
-      (
-        image:
-            'https://images.unsplash.com/photo-1520201163981-8cc95007dd2a?q=80&w=300',
-        icon: Icons.chat_bubble_rounded,
-        title: context.l10n.featureRow3Title,
-        desc: context.l10n.featureRow3Desc,
-        buttonLabel: context.l10n.exploreButton,
-        onTap: () => SaglamSpotCommunication.launchWhatsApp(),
-      ),
-    ];
-
-    final overlap = context.responsive(mobile: 22.0, desktop: 40.0);
-
-    return SliverToBoxAdapter(
-      child: Transform.translate(
-        offset: Offset(0, -overlap),
-        child: Padding(
-          padding: context.pagePadding.copyWith(top: 0, bottom: 0),
-          child: context.isMobile
-              ? Column(
-                  children: [
-                    for (int i = 0; i < items.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 14),
-                      FeatureOverlapCard(
-                        image: items[i].image,
-                        icon: items[i].icon,
-                        title: items[i].title,
-                        desc: items[i].desc,
-                        buttonLabel: items[i].buttonLabel,
-                        onTap: items[i].onTap,
-                      ),
-                    ],
-                  ],
-                )
-              : IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (int i = 0; i < items.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 18),
-                        Expanded(
-                          child: FeatureOverlapCard(
-                            image: items[i].image,
-                            icon: items[i].icon,
-                            title: items[i].title,
-                            desc: items[i].desc,
-                            buttonLabel: items[i].buttonLabel,
-                            onTap: items[i].onTap,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
         ),
       ),
     );
@@ -662,6 +578,18 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800',
     ProductCategory.white:
         'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=800',
+    ProductCategory.lighting:
+        'https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?q=80&w=800',
+    ProductCategory.homeTextile:
+        'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=800',
+    ProductCategory.decor:
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800',
+    ProductCategory.officeFurniture:
+        'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=800',
+    ProductCategory.outdoorGarden:
+        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800',
+    ProductCategory.kidsFurniture:
+        'https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=800',
     ProductCategory.other:
         'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800',
   };

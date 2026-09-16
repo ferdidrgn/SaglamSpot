@@ -61,14 +61,20 @@ class ProductModel {
         price: (data['price'] as num?)?.toDouble() ?? 0.0,
         isSold: data['isSold'] ?? false,
         isSpotProduct: data['isSpotProduct'] ?? false,
-        imagesUrl: List<String>.from(data['imagesUrl'] ?? []),
+        // Boş string girdiler (ör. başarısız bir yükleme sonrası dizide
+        // kalan) kart üzerinde kırık-görsel ikonuna düşmesin diye filtrelenir.
+        imagesUrl: List<String>.from(data['imagesUrl'] ?? [])
+            .where((final u) => u.isNotEmpty)
+            .toList(),
         // Eski dokümanlarda bu alanlar yok, güvenli varsayılanlar.
         isReserved: data['isReserved'] ?? false,
         dimensions: data['dimensions'] as String?,
         material: data['material'] as String?,
         previousPrice: (data['previousPrice'] as num?)?.toDouble(),
         availableColors: List<String>.from(data['availableColors'] ?? []),
-        studioImagesUrl: List<String>.from(data['studioImagesUrl'] ?? []),
+        studioImagesUrl: List<String>.from(data['studioImagesUrl'] ?? [])
+            .where((final u) => u.isNotEmpty)
+            .toList(),
         wearTier: data['wearTier'] as String?,
         viewCountWeb: (data['viewCountWeb'] as num?)?.toInt() ?? 0,
         viewCountMobile: (data['viewCountMobile'] as num?)?.toInt() ?? 0,
