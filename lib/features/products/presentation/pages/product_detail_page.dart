@@ -11,8 +11,8 @@ import '../../../../core/config/seo/wrapper/seo_service.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/product_view_tracker.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../core/util/platform_color_picker.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/gallery_section.dart';
@@ -27,15 +27,7 @@ import '../providers/product_filters_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/recently_viewed_provider.dart';
 import '../widgets/product_color_section.dart';
-
-/// Uygulama artık TEK bir marka paleti kullanıyor (teal/sage — eski sıcak
-/// espresso/ahşap palet kaldırıldı, bkz. app_colors.dart). Bu yardımcı
-/// jenerik bırakıldı (Color VEYA Gradient dönebilir) — mobile/web kolları
-/// artık aynı değeri döndürse de çağrı yerlerini tek tek değiştirmemek
-/// için korunuyor.
-T _pc<T>(final BuildContext context,
-        {required final T mobile, required final T web}) =>
-    context.isMobile ? mobile : web;
+import '../widgets/product_detail_small_widgets.dart';
 
 /// Ürün Detay Sayfası — sıfırdan, sade ve premium bir tasarım anlayışıyla
 /// yeniden inşa edildi. Renkli/dalgalı zemin denemesi tamamen kaldırıldı;
@@ -165,21 +157,21 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
 
     final Widget content = productAsync.when(
       loading: () => Scaffold(
-        backgroundColor: _pc(context,
+        backgroundColor: platformPick(context,
             mobile: AppColors.mobileBackground, web: AppColors.background),
         body: Center(
             child: CircularProgressIndicator(
-                color: _pc(context,
+                color: platformPick(context,
                     mobile: AppColors.mobilePrimary, web: AppColors.primary))),
       ),
       error: (final e, final _) => Scaffold(
-        backgroundColor: _pc(context,
+        backgroundColor: platformPick(context,
             mobile: AppColors.mobileBackground, web: AppColors.background),
         appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
         body: Center(
           child: Text(context.l10n.productLoadError('$e'),
               style: TextStyle(
-                  color: _pc(context,
+                  color: platformPick(context,
                       mobile: AppColors.mobileTextPrimary,
                       web: AppColors.textPrimary))),
         ),
@@ -202,7 +194,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         }
 
         return Scaffold(
-          backgroundColor: _pc(context,
+          backgroundColor: platformPick(context,
               mobile: AppColors.mobileBackground, web: AppColors.background),
           body: Stack(
             children: [
@@ -251,14 +243,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       SliverAppBar(
         pinned: true,
         backgroundColor: _isAppBarSolid
-            ? _pc(context,
+            ? platformPick(context,
                 mobile: AppColors.mobileSurface, web: AppColors.surface)
             : Colors.transparent,
         elevation: _isAppBarSolid ? 1 : 0,
         surfaceTintColor: Colors.transparent,
         leading: Padding(
           padding: const EdgeInsets.all(8),
-          child: _RoundIconButton(
+          child: RoundIconButton(
             icon: Icons.arrow_back_ios_new_rounded,
             onTap: () => NavigationHandler.smartGoBack(context),
           ),
@@ -270,7 +262,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  color: _pc(context,
+                  color: platformPick(context,
                       mobile: AppColors.mobileTextPrimary,
                       web: AppColors.textPrimary),
                   fontSize: 15,
@@ -279,7 +271,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         actions: [
           Padding(
             padding: const EdgeInsets.all(8),
-            child: _RoundIconButton(
+            child: RoundIconButton(
               icon: Icons.ios_share_rounded,
               onTap: () => FurnitureShareService.shareProduct(
                 productId: product.id,
@@ -290,13 +282,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           ),
           Padding(
             padding: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
-            child: _RoundIconButton(
+            child: RoundIconButton(
               icon: _isFavorite(product)
                   ? Icons.favorite_rounded
                   : Icons.favorite_border_rounded,
               iconColor: _isFavorite(product)
                   ? AppColors.error
-                  : _pc(context,
+                  : platformPick(context,
                       mobile: AppColors.mobileTextPrimary,
                       web: AppColors.textPrimary),
               onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
@@ -360,7 +352,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       {required final double height}) {
     final meta = defaultCategoryMeta[product.category];
     final Color glowColor = meta?.color ??
-        _pc(context, mobile: AppColors.mobileAccent, web: AppColors.accent);
+        platformPick(context, mobile: AppColors.mobileAccent, web: AppColors.accent);
 
     return FadeTransition(
       opacity: _stagger(0),
@@ -369,13 +361,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           Container(
             height: height,
             decoration: BoxDecoration(
-              color: _pc(context,
+              color: platformPick(context,
                   mobile: AppColors.mobileSurface, web: AppColors.surface),
               // Kartlarla (CustomProductCard) aynı asimetrik köşe imzası.
               borderRadius: _galleryShape,
               boxShadow: [
                 BoxShadow(
-                  color: _pc(context,
+                  color: platformPick(context,
                           mobile: AppColors.mobileTextPrimary,
                           web: AppColors.textPrimary)
                       .withOpacity(0.07),
@@ -434,7 +426,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 Positioned(
                   top: 0,
                   left: 0,
-                  child: _ConditionCornerTag(product: product),
+                  child: ConditionCornerTag(product: product),
                 ),
 
                 if (product.isSold)
@@ -482,7 +474,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   Positioned(
                     bottom: 16,
                     left: 16,
-                    child: _StudioToggle(
+                    child: StudioToggle(
                       isStudio: _showStudioVersion,
                       onTap: () => setState(
                           () => _showStudioVersion = !_showStudioVersion),
@@ -561,10 +553,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: selected
-                        ? _pc(context,
+                        ? platformPick(context,
                             mobile: AppColors.mobileAccent,
                             web: AppColors.accent)
-                        : _pc(context,
+                        : platformPick(context,
                             mobile: AppColors.mobileBorder,
                             web: AppColors.border),
                     width: selected ? 2 : 1,
@@ -572,7 +564,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   boxShadow: selected
                       ? [
                           BoxShadow(
-                              color: _pc(context,
+                              color: platformPick(context,
                                       mobile: AppColors.mobileAccent,
                                       web: AppColors.accent)
                                   .withOpacity(0.25),
@@ -624,7 +616,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
                     color: meta?.color ??
-                        _pc(context,
+                        platformPick(context,
                             mobile: AppColors.mobileTextSecondary,
                             web: AppColors.textSecondary),
                   ),
@@ -639,7 +631,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               style: TextStyle(
                 fontSize: context.responsive(mobile: 24, desktop: 30),
                 fontWeight: FontWeight.w800,
-                color: _pc(context,
+                color: platformPick(context,
                     mobile: AppColors.mobileTextPrimary,
                     web: AppColors.textPrimary),
                 height: 1.2,
@@ -658,7 +650,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   style: TextStyle(
                     fontSize: context.responsive(mobile: 34, desktop: 42),
                     fontWeight: FontWeight.w900,
-                    color: _pc(context,
+                    color: platformPick(context,
                         mobile: AppColors.mobilePrimary,
                         web: AppColors.textPrimary),
                     letterSpacing: -1,
@@ -670,7 +662,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: _pc(context,
+                          color: platformPick(context,
                               mobile: AppColors.mobilePrimary,
                               web: AppColors.textSecondary))),
                 ),
@@ -717,11 +709,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: _pc(context,
+          color: platformPick(context,
               mobile: AppColors.mobileSurface, web: AppColors.surface),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-              color: _pc(context,
+              color: platformPick(context,
                   mobile: AppColors.mobileBorder, web: AppColors.border)),
         ),
         child: Column(
@@ -731,7 +723,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             SizedBox(height: context.spacingLarge * 0.75),
             Divider(
                 height: 1,
-                color: _pc(context,
+                color: platformPick(context,
                     mobile: AppColors.mobileBorder, web: AppColors.border)),
             SizedBox(height: context.spacingLarge * 0.75),
             _buildSpecs(context, product),
@@ -752,13 +744,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 15,
-                color: _pc(context,
+                color: platformPick(context,
                     mobile: AppColors.mobileTextPrimary,
                     web: AppColors.textPrimary))),
         const SizedBox(height: 8),
         Text(text,
             style: TextStyle(
-                color: _pc(context,
+                color: platformPick(context,
                     mobile: AppColors.mobileTextSecondary,
                     web: AppColors.textSecondary),
                 fontSize: 14,
@@ -774,7 +766,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     ? context.l10n.readLess
                     : context.l10n.readMore,
                 style: TextStyle(
-                    color: _pc(context,
+                    color: platformPick(context,
                         mobile: AppColors.mobilePrimary,
                         web: AppColors.accentDark),
                     fontWeight: FontWeight.w700,
@@ -839,7 +831,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             // kenarlığı/gölgesi yok, sadece hafif bir zemin farkı.
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: _pc(context,
+              color: platformPick(context,
                   mobile: AppColors.mobileBackground,
                   web: AppColors.background),
               borderRadius: BorderRadius.circular(16),
@@ -850,14 +842,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: _pc(context,
+                    color: platformPick(context,
                         mobile: AppColors.mobileCardBg,
                         web: AppColors.secondary),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(icon,
                       size: 17,
-                      color: _pc(context,
+                      color: platformPick(context,
                           mobile: AppColors.mobilePrimary,
                           web: AppColors.onSecondary)),
                 ),
@@ -870,7 +862,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                       Text(label,
                           style: TextStyle(
                               fontSize: 10.5,
-                              color: _pc(context,
+                              color: platformPick(context,
                                   mobile: AppColors.mobileTextTertiary,
                                   web: AppColors.textTertiary))),
                       Text(value,
@@ -879,7 +871,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                           style: TextStyle(
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,
-                              color: _pc(context,
+                              color: platformPick(context,
                                   mobile: AppColors.mobileTextPrimary,
                                   web: AppColors.textPrimary))),
                     ],
@@ -916,7 +908,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         decoration: BoxDecoration(
-          color: _pc(context,
+          color: platformPick(context,
               mobile: AppColors.mobileCardBg, web: AppColors.secondary),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -927,13 +919,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               spacing: 20,
               runSpacing: 14,
               children: [
-                _TrustTile(
+                TrustTile(
                     icon: Icons.verified_rounded,
                     label: context.l10n.productTrustBadgeVerified),
-                _TrustTile(
+                TrustTile(
                     icon: Icons.chat_bubble_rounded,
                     label: context.l10n.productTrustBadgeNegotiate),
-                _TrustTile(
+                TrustTile(
                     icon: Icons.local_shipping_rounded,
                     label: context.l10n.productTrustBadgeDelivery),
               ],
@@ -942,7 +934,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               SizedBox(height: 14),
               Divider(
                   height: 1,
-                  color: _pc(context,
+                  color: platformPick(context,
                       mobile: AppColors.mobileBorder, web: AppColors.border)),
               const SizedBox(height: 10),
               Row(
@@ -950,7 +942,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 children: [
                   Icon(Icons.schedule_rounded,
                       size: 14,
-                      color: _pc(context,
+                      color: platformPick(context,
                           mobile: AppColors.mobileTextTertiary,
                           web: AppColors.textTertiary)),
                   const SizedBox(width: 6),
@@ -958,7 +950,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                       style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w600,
-                          color: _pc(context,
+                          color: platformPick(context,
                               mobile: AppColors.mobileTextTertiary,
                               web: AppColors.textTertiary))),
                 ],
@@ -998,7 +990,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: _pc(context,
+          color: platformPick(context,
               mobile: AppColors.mobileCardBg, web: AppColors.secondary),
           borderRadius: BorderRadius.circular(22),
         ),
@@ -1009,13 +1001,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
-                    color: _pc(context,
+                    color: platformPick(context,
                         mobile: AppColors.mobileTextPrimary,
                         web: AppColors.textPrimary))),
             const SizedBox(height: 14),
             for (int i = 0; i < steps.length; i++) ...[
               if (i != 0) const SizedBox(height: 12),
-              _HowToBuyStep(
+              HowToBuyStep(
                   index: i + 1,
                   icon: steps[i].$1,
                   title: steps[i].$2,
@@ -1032,11 +1024,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: _pc(context,
+            color: platformPick(context,
                 mobile: AppColors.mobileSurface, web: AppColors.surface),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-                color: _pc(context,
+                color: platformPick(context,
                     mobile: AppColors.mobileBorder, web: AppColors.border)),
           ),
           child: Row(
@@ -1045,7 +1037,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  gradient: _pc(context,
+                  gradient: platformPick(context,
                       mobile: AppColors.mobilePrimaryGradient,
                       web: AppColors.primaryGradient),
                   shape: BoxShape.circle,
@@ -1065,7 +1057,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                             style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 14,
-                                color: _pc(context,
+                                color: platformPick(context,
                                     mobile: AppColors.mobileTextPrimary,
                                     web: AppColors.textPrimary))),
                         const SizedBox(width: 4),
@@ -1076,14 +1068,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     Text(context.l10n.sellerTrustLine,
                         style: TextStyle(
                             fontSize: 11.5,
-                            color: _pc(context,
+                            color: platformPick(context,
                                 mobile: AppColors.mobileTextTertiary,
                                 web: AppColors.textTertiary))),
                   ],
                 ),
               ),
               Icon(Icons.chevron_right_rounded,
-                  color: _pc(context,
+                  color: platformPick(context,
                       mobile: AppColors.mobileTextTertiary,
                       web: AppColors.textTertiary)),
             ],
@@ -1101,7 +1093,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     final bool inCart = _inCart(product);
     return Row(
       children: [
-        _RoundIconButton(
+        RoundIconButton(
           size: 52,
           icon: Icons.call_rounded,
           filled: true,
@@ -1109,7 +1101,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _HalfActionButton(
+          child: HalfActionButton(
             label: inCart
                 ? context.l10n.addedToCartMessage
                 : context.l10n.addToCartCta,
@@ -1120,7 +1112,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _HalfActionButton(
+          child: HalfActionButton(
             label: context.l10n.whatsappCta,
             icon: Icons.chat_bubble_rounded,
             filled: false,
@@ -1154,7 +1146,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
       width: double.infinity,
       margin: EdgeInsets.only(top: context.spacingLarge),
       padding: EdgeInsets.symmetric(vertical: context.spacingLarge * 0.85),
-      color: _pc(context,
+      color: platformPick(context,
               mobile: AppColors.mobileCardBg, web: AppColors.secondary)
           .withOpacity(0.55),
       child: Column(
@@ -1166,7 +1158,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
               children: [
                 Icon(Icons.auto_awesome_rounded,
                     size: 18,
-                    color: _pc(context,
+                    color: platformPick(context,
                         mobile: AppColors.mobileAccent,
                         web: AppColors.accent)),
                 const SizedBox(width: 8),
@@ -1174,7 +1166,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                     style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 18,
-                        color: _pc(context,
+                        color: platformPick(context,
                             mobile: AppColors.mobileTextPrimary,
                             web: AppColors.textPrimary))),
               ],
@@ -1220,7 +1212,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         padding: EdgeInsets.fromLTRB(
             16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
-          color: _pc(context,
+          color: platformPick(context,
               mobile: AppColors.mobileSurface, web: AppColors.surface),
           boxShadow: [
             BoxShadow(
@@ -1231,7 +1223,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
         ),
         child: Row(
           children: [
-            _RoundIconButton(
+            RoundIconButton(
               size: 52,
               icon: Icons.call_rounded,
               filled: true,
@@ -1239,7 +1231,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: _HalfActionButton(
+              child: HalfActionButton(
                 label: _inCart(product)
                     ? context.l10n.addedToCartMessage
                     : context.l10n.addToCartCta,
@@ -1252,7 +1244,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: _HalfActionButton(
+              child: HalfActionButton(
                 label: context.l10n.whatsappCta,
                 icon: Icons.chat_bubble_rounded,
                 filled: false,
@@ -1269,288 +1261,3 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
     );
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-// KÜÇÜK YARDIMCI WIDGET'LAR
-// ══════════════════════════════════════════════════════════════
-
-class _RoundIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final double size;
-  final bool filled;
-  final Color? iconColor;
-
-  const _RoundIconButton({
-    required this.icon,
-    required this.onTap,
-    this.size = 40,
-    this.filled = false,
-    this.iconColor,
-  });
-
-  @override
-  Widget build(final BuildContext context) => Material(
-        color: filled
-            ? _pc(context,
-                mobile: AppColors.mobileCardBg, web: AppColors.secondary)
-            : _pc(context,
-                mobile: AppColors.mobileSurface, web: AppColors.surface),
-        shape: const CircleBorder(),
-        elevation: filled ? 0 : 2,
-        shadowColor: Colors.black.withOpacity(0.1),
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const CircleBorder(),
-          child: SizedBox(
-            width: size,
-            height: size,
-            child: Icon(icon,
-                size: size * 0.42,
-                color: iconColor ??
-                    (filled
-                        ? _pc(context,
-                            mobile: AppColors.mobilePrimary,
-                            web: AppColors.primary)
-                        : _pc(context,
-                            mobile: AppColors.mobileTextPrimary,
-                            web: AppColors.textPrimary))),
-          ),
-        ),
-      );
-}
-
-/// Sepete Ekle ve WhatsApp'ı EŞİT AĞIRLIKLI iki yarım-genişlik butona
-/// ayırır — biri diğerinin gölgesinde kalmasın diye. `filled == true`
-/// dolgu (birincil, sepet), `false` ise sadece kenarlıklı (ikincil,
-/// WhatsApp) çizilir.
-class _HalfActionButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool filled;
-
-  const _HalfActionButton(
-      {required this.label,
-      required this.icon,
-      required this.onTap,
-      required this.filled});
-
-  @override
-  Widget build(final BuildContext context) {
-    final Color accent =
-        _pc(context, mobile: AppColors.mobilePrimary, web: AppColors.primary);
-    final Color fg = filled ? Colors.white : accent;
-
-    return Material(
-      color: filled ? accent : Colors.transparent,
-      shape: StadiumBorder(
-          side:
-              filled ? BorderSide.none : BorderSide(color: accent, width: 1.6)),
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const StadiumBorder(),
-        child: Container(
-          height: 52,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, color: fg, size: 17),
-              const SizedBox(width: 7),
-              Flexible(
-                child: Text(label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: fg,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 13.5)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Güven bloğu içindeki tek bir madde: dolgu daireli ikon + kalın etiket —
-/// eski yüzen hap-çipin yerini alan, daha "gövdeli" bir hiyerarşi.
-class _TrustTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _TrustTile({required this.icon, required this.label});
-
-  @override
-  Widget build(final BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: _pc(context,
-                  mobile: AppColors.mobileSurface, web: AppColors.surface),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon,
-                size: 15,
-                color: _pc(context,
-                    mobile: AppColors.mobilePrimary, web: AppColors.primary)),
-          ),
-          const SizedBox(width: 8),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: _pc(context,
-                      mobile: AppColors.mobileTextPrimary,
-                      web: AppColors.textPrimary))),
-        ],
-      );
-}
-
-class _HowToBuyStep extends StatelessWidget {
-  final int index;
-  final IconData icon;
-  final String title;
-  final String desc;
-
-  const _HowToBuyStep(
-      {required this.index,
-      required this.icon,
-      required this.title,
-      required this.desc});
-
-  @override
-  Widget build(final BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              gradient: _pc(context,
-                  mobile: AppColors.mobileAccentGradient,
-                  web: AppColors.accentGradient),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: Colors.white, size: 16),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('$index. $title',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 13.5,
-                        color: _pc(context,
-                            mobile: AppColors.mobileTextPrimary,
-                            web: AppColors.textPrimary))),
-                const SizedBox(height: 2),
-                Text(desc,
-                    style: TextStyle(
-                        fontSize: 12,
-                        height: 1.4,
-                        color: _pc(context,
-                            mobile: AppColors.mobileTextSecondary,
-                            web: AppColors.textSecondary))),
-              ],
-            ),
-          ),
-        ],
-      );
-}
-
-/// Kartlardaki (_CornerConditionTag, bkz. custom_product_card.dart) ile
-/// BİREBİR aynı görsel imza: galerinin keskin (sol üst) köşesine flush
-/// oturan, dolgun tek renk köşe etiketi — eski yüzen hap-rozetin yerini
-/// alıyor. Renk dili de aynı kaynaktan (catalog_theme.dart): Sıfır = yeşil,
-/// İkinci El/Spot = turuncu.
-class _ConditionCornerTag extends StatelessWidget {
-  final Product product;
-
-  const _ConditionCornerTag({required this.product});
-
-  @override
-  Widget build(final BuildContext context) {
-    final bool spot = product.isSpotProduct;
-    final Color color =
-        spot ? SpotPalette.accent : NewCollectionPalette.badgeGreen;
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(18)),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 11),
-        color: color,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              spot ? Icons.inventory_2_rounded : Icons.new_releases_rounded,
-              size: 13,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              (spot
-                      ? context.l10n.usedProductBadge
-                      : context.l10n.newProductBadge)
-                  .toUpperCase(),
-              style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: 0.7),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// "Mağaza" (orijinal) / "Stüdyo" (remove.bg, arka plansız) görsel geçişi.
-class _StudioToggle extends StatelessWidget {
-  final bool isStudio;
-  final VoidCallback onTap;
-
-  const _StudioToggle({required this.isStudio, required this.onTap});
-
-  @override
-  Widget build(final BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.55),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.auto_awesome_rounded, size: 13, color: Colors.white),
-              const SizedBox(width: 6),
-              Text(
-                isStudio
-                    ? context.l10n.studioPhotoLabel
-                    : context.l10n.storePhotoLabel,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-        ),
-      );
-}
-
-// _SimilarProductCard kaldırıldı — "Benzer Ürünler" artık sitenin GERÇEK
-// imza kartı olan CustomProductCard'ı yeniden kullanıyor (bkz.
-// _buildSimilarSection), ayrı/basit bir kart yeniden icat edilmiyor.
