@@ -1,0 +1,83 @@
+name: Distribute Android Beta (Firebase App Distribution)
+
+# `deploy-android.yml`den AYRI ve BAĞIMSIZ bir workflow: o dosya imzalı bir
+# release AAB'yi Play Console'a yükler, bu dosya ise İMZASIZ bir DEBUG APK'yı
+# test/beta grubuna (QA, esnaf, erken erişim) Firebase App Distribution
+# üzerinden dağıtır — Play Console incelemesi beklemeden, dakikalar içinde.
+#
+# NOT: Firebase App Distribution bir Flutter/Dart paketi DEĞİL — App Store'a
+# eklenecek bir bağımlılık yok, sadece CI/CD zamanında (burada) çalışan bir
+# CLI adımı. Bu yüzden pubspec.yaml'da hiçbir değişiklik gerekmiyor.
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+    inputs:
+      releaseNotes:
+        description: "Test grubuna gösterilecek sürüm notu (opsiyonel)"
+        required: false
+        default: "Otomatik beta dağıtımı"
+
+concurrency:
+  group: distribute-android-beta-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-distribute:
+    name: Debug APK Build & Dağıt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Flutter SDK kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları al
+        run: flutter pub get
+
+      # google-services.json burada da gerekli (com.google.gms.google-services
+      # eklentisi olmadan hiçbir Android build başarılı olmaz) — bkz.
+      # deploy-android.yml'deki aynı adımın notu. Aynı secret paylaşılır.
+      #
+      # TODO: GOOGLE_SERVICES_JSON secret'ı henüz eklenmedi — repo Settings >
+      # Secrets and variables > Actions üzerinden ekleyin (deploy-android.yml
+      # ile aynı değer).
+      - name: google-services.json oluştur
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
+
+      # Bilinçli olarak DEBUG build — beta/test dağıtımı için imzalama
+      # (upload keystore) şart değil, bu workflow release imzalama
+      # secret'larına (ANDROID_KEYSTORE_BASE64 vb.) hiç ihtiyaç duymaz.
+      - name: Debug APK build
+        run: flutter build apk --debug
+
+      # TODO: aşağıdaki iki secret henüz eklenmedi — gerçek değerler
+      # olmadan bu adım "credentials/app not found" gibi bir hatayla
+      # BAŞARISIZ olur (beklenen bir durum, bkz. workflows/README.md).
+      #
+      # FIREBASE_APP_ID: Firebase Console > Project Settings > General >
+      # "Your apps" > Android uygulaması > "App ID" (google-services.json
+      # içindeki mobilesdk_app_id ile aynı değer).
+      #
+      # FIREBASE_APP_DISTRIBUTION_SERVICE_ACCOUNT: Google Cloud Console >
+      # IAM & Admin > Service Accounts ile oluşturulan, "Firebase App
+      # Distribution Admin" rolüne sahip bir servis hesabının indirilen
+      # JSON anahtarının TAM içeriği.
+      - name: Firebase App Distribution'a yükle
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_APP_DISTRIBUTION_SERVICE_ACCOUNT }}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-debug.apk
+          releaseNotes: ${{ github.event.inputs.releaseNotes || format('Otomatik beta — commit {0}', github.sha) }}

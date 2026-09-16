@@ -15,6 +15,7 @@ New repository secret**.
 | `deploy-web.yml` | push → `main` | `flutter build web --release` + Firebase Hosting'e deploy |
 | `deploy-android.yml` | push → `main` | İmzalı `flutter build appbundle --release` + Play Console'a yükleme (`internal` track) |
 | `deploy-ios.yml` | push → `main` | `flutter build ipa --no-codesign` ile SADECE derleme doğrulaması (imzalama/yükleme YOK — bkz. dosya içindeki not) |
+| `distribute-android-beta.yml` | push → `develop` veya manuel (`workflow_dispatch`) | İmzasız `flutter build apk --debug` + Firebase App Distribution ile test grubuna dağıtım |
 | `ci-checks.yml` | her PR + her dala push | `flutter analyze` + `flutter test` (hızlı geri bildirim, secret gerektirmez) |
 
 ## Gerekli GitHub Secrets listesi
@@ -65,6 +66,25 @@ secret'lar gerekecektir: `MATCH_GIT_URL`, `MATCH_PASSWORD`,
 `APP_STORE_CONNECT_API_KEY` (veya `APPLE_ID` + uygulamaya özel şifre), `ASC_KEY_ID`,
 `ASC_ISSUER_ID`.
 
+### Android beta dağıtımı (`distribute-android-beta.yml`)
+
+- **`GOOGLE_SERVICES_JSON`** — `deploy-android.yml` ile AYNI secret/değer (yukarıya bakın).
+- **`FIREBASE_APP_ID`**
+  Firebase Console > Project Settings > General > "Your apps" > Android
+  uygulaması > "App ID" (google-services.json içindeki `mobilesdk_app_id`
+  ile aynı değer).
+- **`FIREBASE_APP_DISTRIBUTION_SERVICE_ACCOUNT`**
+  Google Cloud Console > IAM & Admin > Service Accounts ile oluşturulan,
+  "Firebase App Distribution Admin" rolüne sahip bir servis hesabının
+  indirilen JSON anahtarının tüm içeriği.
+
+  **Not:** Bu workflow İMZASIZ bir debug APK dağıtır (test/QA amaçlı) —
+  `ANDROID_KEYSTORE_BASE64` gibi release imzalama secret'larına ihtiyaç
+  duymaz. Ayrıca Firebase Console > App Distribution > Testers &
+  Groups altında `testers` adında bir grup oluşturup test edecek
+  kişilerin e-postalarını eklemeniz gerekir (workflow bu grup adına
+  dağıtır).
+
 ### CI checks (`ci-checks.yml`)
 
 Secret gerektirmez.
@@ -79,4 +99,6 @@ KEY_ALIAS
 KEY_PASSWORD
 GOOGLE_SERVICES_JSON
 PLAY_STORE_SERVICE_ACCOUNT_JSON
+FIREBASE_APP_ID
+FIREBASE_APP_DISTRIBUTION_SERVICE_ACCOUNT
 ```
