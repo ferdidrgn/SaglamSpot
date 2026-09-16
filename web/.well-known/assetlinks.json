@@ -8,7 +8,7 @@
       "namespace": "android_app",
       "package_name": "com.ferdidrgn.saglamspot",
       "sha256_cert_fingerprints": [
-        "TODO_SHA256_FINGERPRINT_BURAYA_GIRILECEK — 'keytool -list -v -keystore <release-keystore-dosyan>.jks -alias <alias>' ile üretin"
+        "A3:E4:AE:D5:F7:D9:EC:A2:DC:7D:44:69:BB:98:DB:04:C8:63:73:37:7B:40:03:06:D8:83:1D:75:9F:BA:68:0D"
       ]
     }
   }

@@ -802,14 +802,6 @@
       }
     }
   },
-  "firebaseInterstitialIntervalValue": "Reklam arası min. ürün aralığı: {value}",
-  "@firebaseInterstitialIntervalValue": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
   "firebaseLastFetch": "Son güncelleme: {time}",
   "@firebaseLastFetch": {
     "placeholders": {

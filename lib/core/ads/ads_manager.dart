@@ -43,12 +43,6 @@ final class AdManager {
       case AdUnitType.native:
         return 'ca-app-pub-3940256099942544/2247696110';
 
-      case AdUnitType.interstitial:
-        // Google'ın resmi test interstitial birimleri.
-        return PlatformChecker.isAndroid
-            ? 'ca-app-pub-3940256099942544/1033173712'
-            : 'ca-app-pub-3940256099942544/4411468910';
-
       default:
         return '';
     }
@@ -65,16 +59,6 @@ final class AdManager {
         return PlatformChecker.isAndroid
             ? 'ca-app-pub-5779807348211992/2655077678'
             : 'IOS_NATIVE_ID';
-
-      case AdUnitType.interstitial:
-        // TODO: AdMob konsolunda gerçek interstitial reklam birimleri
-        // oluşturulup ID'ler buraya yazılana kadar yer tutucu — gerçek bir
-        // canlı ID OLMADIĞI için uydurulmadı (bkz. görev notu: mevcut canlı
-        // ID'lere dokunma). Bu haliyle üretimde yükleme sessizce
-        // başarısız olur (onAdFailedToLoad), uygulamayı ÇÖKERTMEZ.
-        return PlatformChecker.isAndroid
-            ? 'ANDROID_INTERSTITIAL_ID'
-            : 'IOS_INTERSTITIAL_ID';
 
       default:
         return '';

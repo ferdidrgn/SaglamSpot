@@ -3920,12 +3920,6 @@ abstract class AppLocalizations {
   /// **'Zorunlu güncelleme eşiği: {value}'**
   String firebaseForceUpdateMinVersionValue(String value);
 
-  /// No description provided for @firebaseInterstitialIntervalValue.
-  ///
-  /// In tr, this message translates to:
-  /// **'Reklam arası min. ürün aralığı: {value}'**
-  String firebaseInterstitialIntervalValue(int value);
-
   /// No description provided for @firebaseLastFetch.
   ///
   /// In tr, this message translates to:

@@ -46,7 +46,6 @@ enum ProductWearTier { likeNew, good, wellLoved }
 enum AdUnitType {
   banner, // Mobil Banner
   native, // Mobil Native
-  interstitial, // Mobil Geçiş (Interstitial) — SADECE native, web'de kullanılmaz
   display, // Web Görüntülü
   inArticle, // Web Yazı İçi
   multiplex, // Web Benzer Ürünler Altı

@@ -2109,11 +2109,6 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
-  String firebaseInterstitialIntervalValue(int value) {
-    return 'Reklam arası min. ürün aralığı: $value';
-  }
-
-  @override
   String firebaseLastFetch(String time) {
     return 'Son güncelleme: $time';
   }

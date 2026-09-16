@@ -2096,11 +2096,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String firebaseInterstitialIntervalValue(int value) {
-    return 'Min. products between interstitials: $value';
-  }
-
-  @override
   String firebaseLastFetch(String time) {
     return 'Last updated: $time';
   }

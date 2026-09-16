@@ -802,14 +802,6 @@
       }
     }
   },
-  "firebaseInterstitialIntervalValue": "Min. products between interstitials: {value}",
-  "@firebaseInterstitialIntervalValue": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
   "firebaseLastFetch": "Last updated: {time}",
   "@firebaseLastFetch": {
     "placeholders": {

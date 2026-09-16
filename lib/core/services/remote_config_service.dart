@@ -29,7 +29,6 @@ abstract final class RemoteConfigService {
         'adsEnabled': true,
         'maintenance_mode': false,
         'force_update_min_version': '0.0.0',
-        'min_interstitial_interval_products': 8,
       });
 
       await _remoteConfig.setConfigSettings(RemoteConfigSettings(
@@ -61,17 +60,6 @@ abstract final class RemoteConfigService {
 
   static String get forceUpdateMinVersion =>
       forceUpdateMinVersionNotifier.value;
-
-  /// Ürün listeleme akışına serpiştirilen native reklamlardan (bkz.
-  /// core/ads/widgets/ad_grid_helper.dart) FARKLI olarak, TAM SAYFA
-  /// (interstitial) reklamın kaç ürün detayı görüntülemesinde bir
-  /// gösterileceği — kod içine gömülü sabit bir sayı yerine burada
-  /// tanımlanır ki sıklık Firebase Console'dan (kod deploy etmeden)
-  /// ayarlanabilsin. Reklam motoru bu bayrağı HENÜZ tüketmiyor olabilir —
-  /// bilinçli olarak burada sadece TANIMLANIP makul bir varsayılanla dışa
-  /// açılıyor, entegrasyonu ayrı (bkz. core/ads/ dosyalarına dokunulmadı).
-  static int get minInterstitialIntervalProducts =>
-      _remoteConfig.getInt('min_interstitial_interval_products');
 
   /// Admin > Firebase Servisleri sayfasındaki "Şimdi Güncelle" butonu için —
   /// [init]'in aksine varsayılanları/ayarları tekrar yazmaz, sadece Firebase
