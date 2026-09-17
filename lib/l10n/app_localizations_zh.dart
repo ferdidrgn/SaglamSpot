@@ -452,8 +452,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reservedToggleLabel => '已预留';
 
   @override
-  String get reservedHint =>
-      '已为顾客保留——仍然可见但带有标记';
+  String get reservedHint => '已为顾客保留——仍然可见但带有标记';
 
   @override
   String get reservedBadge => '已预留';
@@ -507,8 +506,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authErrorUserNotFound => '未找到用户。';
 
   @override
-  String get authErrorAdminCheckTimeout =>
-      '权限验证超时。';
+  String get authErrorAdminCheckTimeout => '权限验证超时。';
 
   @override
   String get authErrorNotAdmin => '此账户没有管理员权限。';
@@ -520,8 +518,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authErrorUserDisabled => '此账户已被禁用。';
 
   @override
-  String get authErrorAccountNotFound =>
-      '未找到使用该邮箱的用户。';
+  String get authErrorAccountNotFound => '未找到使用该邮箱的用户。';
 
   @override
   String get authErrorWrongPassword => '密码错误。';
@@ -530,8 +527,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authErrorInvalidCredential => '邮箱或密码错误。';
 
   @override
-  String get authErrorTooManyRequests =>
-      '尝试次数过多，请稍后再试。';
+  String get authErrorTooManyRequests => '尝试次数过多，请稍后再试。';
 
   @override
   String authErrorGeneric(String code) {
@@ -1013,8 +1009,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newProductsTitle => '新品\n系列';
 
   @override
-  String get newProductsSearchHint =>
-      '搜索家具、沙发、桌子或分类...';
+  String get newProductsSearchHint => '搜索家具、沙发、桌子或分类...';
 
   @override
   String get productsBadgeLabel => '件产品';
@@ -1511,8 +1506,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsNotificationPermission => '通知权限';
 
   @override
-  String get notificationsEnablePermissionTooltip =>
-      '允许通知 / 打开设置';
+  String get notificationsEnablePermissionTooltip => '允许通知 / 打开设置';
 
   @override
   String get settingsAppVersion => '应用版本';
@@ -2101,8 +2095,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get maintenancePageTitle => '维护中';
 
   @override
-  String get maintenancePageDesc =>
-      'Sağlam Spot 因短暂维护暂时无法使用，我们很快就会恢复。';
+  String get maintenancePageDesc => 'Sağlam Spot 因短暂维护暂时无法使用，我们很快就会恢复。';
 
   @override
   String get maintenancePageRetry => '重试';
@@ -2111,8 +2104,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get forceUpdatePageTitle => '需要更新';
 
   @override
-  String get forceUpdatePageDesc =>
-      '请从应用商店更新应用以继续使用。此版本已不再受支持。';
+  String get forceUpdatePageDesc => '请从应用商店更新应用以继续使用。此版本已不再受支持。';
 
   @override
   String get forceUpdatePageButton => '立即更新';

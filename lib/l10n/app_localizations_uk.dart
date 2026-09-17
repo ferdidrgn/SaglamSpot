@@ -511,7 +511,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginButton => 'Увійти';
 
   @override
-  String get authErrorEmptyCredentials => 'Електронна пошта та пароль не можуть бути порожніми.';
+  String get authErrorEmptyCredentials =>
+      'Електронна пошта та пароль не можуть бути порожніми.';
 
   @override
   String get authErrorUserNotFound => 'Користувача не знайдено.';
@@ -521,7 +522,8 @@ class AppLocalizationsUk extends AppLocalizations {
       'Час перевірки авторизації вичерпано.';
 
   @override
-  String get authErrorNotAdmin => 'Цей обліковий запис не має прав адміністратора.';
+  String get authErrorNotAdmin =>
+      'Цей обліковий запис не має прав адміністратора.';
 
   @override
   String get authErrorInvalidEmail => 'Недійсна адреса електронної пошти.';
@@ -540,8 +542,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get authErrorInvalidCredential => 'Невірна пошта або пароль.';
 
   @override
-  String get authErrorTooManyRequests =>
-      'Забагато спроб. Спробуйте пізніше.';
+  String get authErrorTooManyRequests => 'Забагато спроб. Спробуйте пізніше.';
 
   @override
   String authErrorGeneric(String code) {

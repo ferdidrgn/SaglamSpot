@@ -514,14 +514,14 @@ class AppLocalizationsUz extends AppLocalizations {
   String get loginButton => 'Kirish';
 
   @override
-  String get authErrorEmptyCredentials => 'Elektron pochta va parol bo\'sh bo\'lishi mumkin emas.';
+  String get authErrorEmptyCredentials =>
+      'Elektron pochta va parol bo\'sh bo\'lishi mumkin emas.';
 
   @override
   String get authErrorUserNotFound => 'Foydalanuvchi topilmadi.';
 
   @override
-  String get authErrorAdminCheckTimeout =>
-      'Ruxsatni tekshirish vaqti tugadi.';
+  String get authErrorAdminCheckTimeout => 'Ruxsatni tekshirish vaqti tugadi.';
 
   @override
   String get authErrorNotAdmin => 'Bu hisobda administrator huquqlari yo\'q.';
@@ -540,7 +540,8 @@ class AppLocalizationsUz extends AppLocalizations {
   String get authErrorWrongPassword => 'Parol noto\'g\'ri.';
 
   @override
-  String get authErrorInvalidCredential => 'Elektron pochta yoki parol noto\'g\'ri.';
+  String get authErrorInvalidCredential =>
+      'Elektron pochta yoki parol noto\'g\'ri.';
 
   @override
   String get authErrorTooManyRequests =>

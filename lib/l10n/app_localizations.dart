@@ -4112,6 +4112,7 @@ abstract class AppLocalizations {
   /// **'{zones} ve çevresi'**
   String deliveryZonesAndSurroundings(String zones);
 }
+
 class _AppLocalizationsDelegate
     extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();

@@ -519,23 +519,25 @@ class AppLocalizationsEl extends AppLocalizations {
   String get loginButton => 'Σύνδεση';
 
   @override
-  String get authErrorEmptyCredentials => 'Το email και ο κωδικός δεν μπορούν να είναι κενά.';
+  String get authErrorEmptyCredentials =>
+      'Το email και ο κωδικός δεν μπορούν να είναι κενά.';
 
   @override
   String get authErrorUserNotFound => 'Ο χρήστης δεν βρέθηκε.';
 
   @override
-  String get authErrorAdminCheckTimeout =>
-      'Ο έλεγχος εξουσιοδότησης έληξε.';
+  String get authErrorAdminCheckTimeout => 'Ο έλεγχος εξουσιοδότησης έληξε.';
 
   @override
-  String get authErrorNotAdmin => 'Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.';
+  String get authErrorNotAdmin =>
+      'Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.';
 
   @override
   String get authErrorInvalidEmail => 'Μη έγκυρη διεύθυνση email.';
 
   @override
-  String get authErrorUserDisabled => 'Αυτός ο λογαριασμός έχει απενεργοποιηθεί.';
+  String get authErrorUserDisabled =>
+      'Αυτός ο λογαριασμός έχει απενεργοποιηθεί.';
 
   @override
   String get authErrorAccountNotFound =>

@@ -513,14 +513,14 @@ class AppLocalizationsKy extends AppLocalizations {
   String get loginButton => 'Кирүү';
 
   @override
-  String get authErrorEmptyCredentials => 'Электрондук почта жана сырсөз бош болушу мүмкүн эмес.';
+  String get authErrorEmptyCredentials =>
+      'Электрондук почта жана сырсөз бош болушу мүмкүн эмес.';
 
   @override
   String get authErrorUserNotFound => 'Колдонуучу табылган жок.';
 
   @override
-  String get authErrorAdminCheckTimeout =>
-      'Уруксатты текшерүү убакыты бүттү.';
+  String get authErrorAdminCheckTimeout => 'Уруксатты текшерүү убакыты бүттү.';
 
   @override
   String get authErrorNotAdmin => 'Бул аккаунттун админ укуктары жок.';
@@ -539,7 +539,8 @@ class AppLocalizationsKy extends AppLocalizations {
   String get authErrorWrongPassword => 'Сырсөз туура эмес.';
 
   @override
-  String get authErrorInvalidCredential => 'Электрондук почта же сырсөз туура эмес.';
+  String get authErrorInvalidCredential =>
+      'Электрондук почта же сырсөз туура эмес.';
 
   @override
   String get authErrorTooManyRequests =>

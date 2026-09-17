@@ -512,7 +512,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginButton => 'Войти';
 
   @override
-  String get authErrorEmptyCredentials => 'Email и пароль не могут быть пустыми.';
+  String get authErrorEmptyCredentials =>
+      'Email и пароль не могут быть пустыми.';
 
   @override
   String get authErrorUserNotFound => 'Пользователь не найден.';
@@ -522,10 +523,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Истекло время проверки авторизации.';
 
   @override
-  String get authErrorNotAdmin => 'У этой учётной записи нет прав администратора.';
+  String get authErrorNotAdmin =>
+      'У этой учётной записи нет прав администратора.';
 
   @override
-  String get authErrorInvalidEmail => 'Недействительный адрес электронной почты.';
+  String get authErrorInvalidEmail =>
+      'Недействительный адрес электронной почты.';
 
   @override
   String get authErrorUserDisabled => 'Эта учётная запись отключена.';

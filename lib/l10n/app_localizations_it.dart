@@ -517,7 +517,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get loginButton => 'Accedi';
 
   @override
-  String get authErrorEmptyCredentials => 'Email e password non possono essere vuoti.';
+  String get authErrorEmptyCredentials =>
+      'Email e password non possono essere vuoti.';
 
   @override
   String get authErrorUserNotFound => 'Utente non trovato.';
@@ -527,7 +528,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Timeout durante il controllo dell\'autorizzazione.';
 
   @override
-  String get authErrorNotAdmin => 'Questo account non dispone di privilegi di amministratore.';
+  String get authErrorNotAdmin =>
+      'Questo account non dispone di privilegi di amministratore.';
 
   @override
   String get authErrorInvalidEmail => 'Indirizzo email non valido.';
@@ -546,8 +548,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get authErrorInvalidCredential => 'Email o password errati.';
 
   @override
-  String get authErrorTooManyRequests =>
-      'Troppi tentativi. Riprova più tardi.';
+  String get authErrorTooManyRequests => 'Troppi tentativi. Riprova più tardi.';
 
   @override
   String authErrorGeneric(String code) {
@@ -1764,7 +1765,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get catalogCategoryTitleOutdoorGarden => 'Giardino e balcone';
 
   @override
-  String get catalogCategoryTitleKidsFurniture => 'Cameretta per neonati e bambini';
+  String get catalogCategoryTitleKidsFurniture =>
+      'Cameretta per neonati e bambini';
 
   @override
   String get catalogCategoryTitleOther => 'Decorazione';
