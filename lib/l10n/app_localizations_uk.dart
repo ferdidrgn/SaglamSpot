@@ -91,22 +91,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get categoryWhite => 'Побутова техніка';
 
   @override
-  String get categoryLighting => 'Aydınlatma';
+  String get categoryLighting => 'Освітлення';
 
   @override
-  String get categoryHomeTextile => 'Ev Tekstili';
+  String get categoryHomeTextile => 'Домашній текстиль';
 
   @override
-  String get categoryDecor => 'Dekorasyon & Aksesuar';
+  String get categoryDecor => 'Декор та аксесуари';
 
   @override
-  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+  String get categoryOfficeFurniture => 'Офісні меблі';
 
   @override
-  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+  String get categoryOutdoorGarden => 'Сад та балкон';
 
   @override
-  String get categoryKidsFurniture => 'Bebek & Çocuk';
+  String get categoryKidsFurniture => 'Діти та малюки';
 
   @override
   String get categoryOther => 'Інше';
@@ -304,7 +304,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String deferredLoadError(String error) {
-    return 'Yüklenemedi: $error';
+    return 'Не вдалося завантажити: $error';
   }
 
   @override
@@ -336,15 +336,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get goBack => 'Назад';
 
   @override
-  String get notFoundTitle => '404 - Sayfa Bulunamadı';
+  String get notFoundTitle => '404 - Сторінку не знайдено';
 
   @override
   String notFoundPathPrefix(String path) {
-    return 'Yol: $path';
+    return 'Шлях: $path';
   }
 
   @override
-  String get notFoundBackHome => 'Ana Sayfaya Dön';
+  String get notFoundBackHome => 'Повернутися на головну';
 
   @override
   String get galleryEmpty => 'Галерея порожня';
@@ -441,35 +441,35 @@ class AppLocalizationsUk extends AppLocalizations {
   String get newProductHint => 'Новий товар — можна додати варіанти кольору';
 
   @override
-  String get productConditionSectionTitle => 'Ürün Durumu';
+  String get productConditionSectionTitle => 'Стан товару';
 
   @override
   String get colorOptionsOptional => 'Варіанти кольору (необов\'язково)';
 
   @override
-  String get dimensionsLabel => 'Ölçüler (opsiyonel)';
+  String get dimensionsLabel => 'Розміри (необов\'язково)';
 
   @override
-  String get dimensionsHint => 'Örn: 220 x 90 x 85 cm';
+  String get dimensionsHint => 'напр. 220 x 90 x 85 см';
 
   @override
-  String get materialLabel => 'Malzeme (opsiyonel)';
+  String get materialLabel => 'Матеріал (необов\'язково)';
 
   @override
-  String get materialHint => 'Örn: Masif Meşe, Kadife Kumaş';
+  String get materialHint => 'напр. Масив дуба, оксамитова тканина';
 
   @override
-  String get reservedToggleLabel => 'Rezerve Edildi';
+  String get reservedToggleLabel => 'Заброньовано';
 
   @override
   String get reservedHint =>
-      'Bir müşteri için ayrıldı — hâlâ vitrinde görünür ama rozetli';
+      'Відкладено для покупця — все ще видно, але з позначкою';
 
   @override
-  String get reservedBadge => 'REZERVE';
+  String get reservedBadge => 'ЗАБРОНЬОВАНО';
 
   @override
-  String get priceDropBadge => 'İndirimde';
+  String get priceDropBadge => 'Зниження ціни';
 
   @override
   String get noImagesYet => 'Фото ще не додано';
@@ -511,45 +511,45 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginButton => 'Увійти';
 
   @override
-  String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
+  String get authErrorEmptyCredentials => 'Електронна пошта та пароль не можуть бути порожніми.';
 
   @override
-  String get authErrorUserNotFound => 'Kullanıcı bulunamadı.';
+  String get authErrorUserNotFound => 'Користувача не знайдено.';
 
   @override
   String get authErrorAdminCheckTimeout =>
-      'Yetki kontrolü zaman aşımına uğradı.';
+      'Час перевірки авторизації вичерпано.';
 
   @override
-  String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+  String get authErrorNotAdmin => 'Цей обліковий запис не має прав адміністратора.';
 
   @override
-  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
+  String get authErrorInvalidEmail => 'Недійсна адреса електронної пошти.';
 
   @override
-  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış.';
+  String get authErrorUserDisabled => 'Цей обліковий запис відключено.';
 
   @override
   String get authErrorAccountNotFound =>
-      'Bu e-posta ile kayıtlı kullanıcı bulunamadı.';
+      'Користувача з такою поштою не знайдено.';
 
   @override
-  String get authErrorWrongPassword => 'Şifre hatalı.';
+  String get authErrorWrongPassword => 'Невірний пароль.';
 
   @override
-  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı.';
+  String get authErrorInvalidCredential => 'Невірна пошта або пароль.';
 
   @override
   String get authErrorTooManyRequests =>
-      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.';
+      'Забагато спроб. Спробуйте пізніше.';
 
   @override
   String authErrorGeneric(String code) {
-    return 'Giriş başarısız: $code';
+    return 'Не вдалося увійти: $code';
   }
 
   @override
-  String get authErrorUnknown => 'Bilinmeyen hata';
+  String get authErrorUnknown => 'Невідома помилка';
 
   @override
   String get sponsored => 'Реклама';
@@ -1063,7 +1063,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get newProductsSearchHint =>
-      'Mobilya, koltuk, masa veya kategori ara...';
+      'Пошук меблів, дивана, столу чи категорії...';
 
   @override
   String get productsBadgeLabel => 'ТОВАРІВ';
@@ -1172,16 +1172,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get onboardingStart => 'Почати';
 
   @override
-  String get onboardingNext => 'İleri';
+  String get onboardingNext => 'Далі';
 
   @override
-  String get onboardingCategoriesChip => '13 Kategori';
+  String get onboardingCategoriesChip => '13 категорій';
 
   @override
-  String get onboardingBargainChip => 'Pazarlık Payı';
+  String get onboardingBargainChip => 'Можливість торгу';
 
   @override
-  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+  String get onboardingFastReplyChip => 'Швидка відповідь';
 
   @override
   String get onboardingPage1Eyebrow => 'ЛАСКАВО ПРОСИМО В SAĞLAM SPOT';
@@ -1489,7 +1489,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get navCart => 'Кошик';
 
   @override
-  String get navFavorites => 'Favoriler';
+  String get navFavorites => 'Обране';
 
   @override
   String get navProfile => 'Профіль';
@@ -1569,11 +1569,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsAdminLogin => 'Вхід адміністратора';
 
   @override
-  String get settingsNotificationPermission => 'Bildirim İzinleri';
+  String get settingsNotificationPermission => 'Дозволи на сповіщення';
 
   @override
   String get notificationsEnablePermissionTooltip =>
-      'Bildirim izni ver / ayarları aç';
+      'Дозволити сповіщення / відкрити налаштування';
 
   @override
   String get settingsAppVersion => 'Версія додатку';
@@ -1679,11 +1679,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsThemeDark => 'Темна';
 
   @override
-  String get settingsDynamicColorTitle => 'Telefonumun Rengini Kullan';
+  String get settingsDynamicColorTitle => 'Використовувати колір мого телефону';
 
   @override
   String get settingsDynamicColorSubtitle =>
-      'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)';
+      'Світлий/темний режим залишається незмінним — лише акцентні кольори підлаштовуються під тему шпалер вашого телефону (Android 12+)';
 
   @override
   String get notificationsTitle => 'Сповіщення';
@@ -1738,22 +1738,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get catalogCategoryTitleWhite => 'Побутова техніка';
 
   @override
-  String get catalogCategoryTitleLighting => 'Aydınlatma';
+  String get catalogCategoryTitleLighting => 'Освітлення';
 
   @override
-  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+  String get catalogCategoryTitleHomeTextile => 'Килими та домашній текстиль';
 
   @override
-  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+  String get catalogCategoryTitleDecor => 'Декор та аксесуари';
 
   @override
-  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+  String get catalogCategoryTitleOfficeFurniture => 'Офісні меблі';
 
   @override
-  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+  String get catalogCategoryTitleOutdoorGarden => 'Сад та балкон';
 
   @override
-  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
+  String get catalogCategoryTitleKidsFurniture => 'Дитяча кімната';
 
   @override
   String get catalogCategoryTitleOther => 'Декор';
@@ -2178,22 +2178,32 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get maintenancePageTitle => 'Bakımdayız';
+  String get maintenancePageTitle => 'Технічні роботи';
 
   @override
   String get maintenancePageDesc =>
-      'Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.';
+      'Sağlam Spot тимчасово недоступний через короткі технічні роботи. Незабаром повернемось.';
 
   @override
-  String get maintenancePageRetry => 'Tekrar Dene';
+  String get maintenancePageRetry => 'Спробувати ще раз';
 
   @override
-  String get forceUpdatePageTitle => 'Güncelleme Gerekli';
+  String get forceUpdatePageTitle => 'Потрібне оновлення';
 
   @override
   String get forceUpdatePageDesc =>
-      'Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.';
+      'Будь ласка, оновіть застосунок з магазину, щоб продовжити. Ця версія більше не підтримується.';
 
   @override
-  String get forceUpdatePageButton => 'Şimdi Güncelle';
+  String get forceUpdatePageButton => 'Оновити зараз';
+
+  @override
+  String productViewCountLabel(int count) {
+    return 'Переглянуто $count разів';
+  }
+
+  @override
+  String deliveryZonesAndSurroundings(String zones) {
+    return '$zones та околиці';
+  }
 }

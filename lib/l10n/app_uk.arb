@@ -666,5 +666,95 @@
   "featureRow2Title": "Локальна Доставка",
   "featureRow2Desc": "Застрахована, швидка доставка у вибрані райони.",
   "featureRow3Title": "Миттєва Відповідь у WhatsApp",
-  "featureRow3Desc": "Отримайте справжню відповідь від продавця за лічені хвилини."
+  "featureRow3Desc": "Отримайте справжню відповідь від продавця за лічені хвилини.",
+  "categoryLighting": "Освітлення",
+  "categoryHomeTextile": "Домашній текстиль",
+  "categoryDecor": "Декор та аксесуари",
+  "categoryOfficeFurniture": "Офісні меблі",
+  "categoryOutdoorGarden": "Сад та балкон",
+  "categoryKidsFurniture": "Діти та малюки",
+  "catalogCategoryTitleLighting": "Освітлення",
+  "catalogCategoryTitleHomeTextile": "Килими та домашній текстиль",
+  "catalogCategoryTitleDecor": "Декор та аксесуари",
+  "catalogCategoryTitleOfficeFurniture": "Офісні меблі",
+  "catalogCategoryTitleOutdoorGarden": "Сад та балкон",
+  "catalogCategoryTitleKidsFurniture": "Дитяча кімната",
+  "deferredLoadError": "Не вдалося завантажити: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Сторінку не знайдено",
+  "notFoundPathPrefix": "Шлях: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Повернутися на головну",
+  "productConditionSectionTitle": "Стан товару",
+  "dimensionsLabel": "Розміри (необов'язково)",
+  "dimensionsHint": "напр. 220 x 90 x 85 см",
+  "materialLabel": "Матеріал (необов'язково)",
+  "materialHint": "напр. Масив дуба, оксамитова тканина",
+  "reservedToggleLabel": "Заброньовано",
+  "reservedHint": "Відкладено для покупця — все ще видно, але з позначкою",
+  "reservedBadge": "ЗАБРОНЬОВАНО",
+  "priceDropBadge": "Зниження ціни",
+  "newProductsSearchHint": "Пошук меблів, дивана, столу чи категорії...",
+  "onboardingNext": "Далі",
+  "onboardingCategoriesChip": "13 категорій",
+  "onboardingBargainChip": "Можливість торгу",
+  "onboardingFastReplyChip": "Швидка відповідь",
+  "navFavorites": "Обране",
+  "settingsNotificationPermission": "Дозволи на сповіщення",
+  "notificationsEnablePermissionTooltip": "Дозволити сповіщення / відкрити налаштування",
+  "settingsDynamicColorTitle": "Використовувати колір мого телефону",
+  "settingsDynamicColorSubtitle": "Світлий/темний режим залишається незмінним — лише акцентні кольори підлаштовуються під тему шпалер вашого телефону (Android 12+)",
+  "maintenancePageTitle": "Технічні роботи",
+  "maintenancePageDesc": "Sağlam Spot тимчасово недоступний через короткі технічні роботи. Незабаром повернемось.",
+  "maintenancePageRetry": "Спробувати ще раз",
+  "forceUpdatePageTitle": "Потрібне оновлення",
+  "forceUpdatePageDesc": "Будь ласка, оновіть застосунок з магазину, щоб продовжити. Ця версія більше не підтримується.",
+  "forceUpdatePageButton": "Оновити зараз",
+  "authErrorEmptyCredentials": "Електронна пошта та пароль не можуть бути порожніми.",
+  "authErrorUserNotFound": "Користувача не знайдено.",
+  "authErrorAdminCheckTimeout": "Час перевірки авторизації вичерпано.",
+  "authErrorNotAdmin": "Цей обліковий запис не має прав адміністратора.",
+  "authErrorInvalidEmail": "Недійсна адреса електронної пошти.",
+  "authErrorUserDisabled": "Цей обліковий запис відключено.",
+  "authErrorAccountNotFound": "Користувача з такою поштою не знайдено.",
+  "authErrorWrongPassword": "Невірний пароль.",
+  "authErrorInvalidCredential": "Невірна пошта або пароль.",
+  "authErrorTooManyRequests": "Забагато спроб. Спробуйте пізніше.",
+  "authErrorGeneric": "Не вдалося увійти: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Невідома помилка",
+  "productViewCountLabel": "Переглянуто {count} разів",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} та околиці",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

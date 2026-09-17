@@ -666,5 +666,95 @@
   "featureRow2Title": "توصيل محلي",
   "featureRow2Desc": "توصيل سريع ومؤمّن إلى الأحياء المختارة.",
   "featureRow3Title": "رد فوري عبر واتساب",
-  "featureRow3Desc": "احصل على رد حقيقي من صاحب المتجر خلال دقائق."
+  "featureRow3Desc": "احصل على رد حقيقي من صاحب المتجر خلال دقائق.",
+  "categoryLighting": "إضاءة",
+  "categoryHomeTextile": "المنسوجات المنزلية",
+  "categoryDecor": "ديكور وإكسسوارات",
+  "categoryOfficeFurniture": "أثاث مكتبي",
+  "categoryOutdoorGarden": "الحديقة والشرفة",
+  "categoryKidsFurniture": "الأطفال والرضع",
+  "catalogCategoryTitleLighting": "إضاءة",
+  "catalogCategoryTitleHomeTextile": "السجاد والمنسوجات المنزلية",
+  "catalogCategoryTitleDecor": "ديكور وإكسسوارات",
+  "catalogCategoryTitleOfficeFurniture": "أثاث مكتبي",
+  "catalogCategoryTitleOutdoorGarden": "الحديقة والشرفة",
+  "catalogCategoryTitleKidsFurniture": "غرفة الأطفال والرضع",
+  "deferredLoadError": "فشل التحميل: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - الصفحة غير موجودة",
+  "notFoundPathPrefix": "المسار: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "العودة إلى الصفحة الرئيسية",
+  "productConditionSectionTitle": "حالة المنتج",
+  "dimensionsLabel": "الأبعاد (اختياري)",
+  "dimensionsHint": "مثال: 220 × 90 × 85 سم",
+  "materialLabel": "الخامة (اختياري)",
+  "materialHint": "مثال: بلوط صلب، قماش مخملي",
+  "reservedToggleLabel": "محجوز",
+  "reservedHint": "محجوز لعميل — لا يزال ظاهرًا لكن بعلامة مميزة",
+  "reservedBadge": "محجوز",
+  "priceDropBadge": "خفض السعر",
+  "newProductsSearchHint": "ابحث عن أثاث، أريكة، طاولة أو فئة...",
+  "onboardingNext": "التالي",
+  "onboardingCategoriesChip": "13 فئة",
+  "onboardingBargainChip": "مجال للتفاوض",
+  "onboardingFastReplyChip": "رد سريع",
+  "navFavorites": "المفضلة",
+  "settingsNotificationPermission": "أذونات الإشعارات",
+  "notificationsEnablePermissionTooltip": "السماح بالإشعارات / فتح الإعدادات",
+  "settingsDynamicColorTitle": "استخدام لون هاتفي",
+  "settingsDynamicColorSubtitle": "يبقى الوضع الفاتح/الداكن كما هو — تتكيف ألوان التمييز فقط مع سمة خلفية هاتفك (Android 12+)",
+  "maintenancePageTitle": "قيد الصيانة",
+  "maintenancePageDesc": "سَاغلام سبوت غير متاح مؤقتًا بسبب أعمال صيانة قصيرة. سنعود قريبًا.",
+  "maintenancePageRetry": "إعادة المحاولة",
+  "forceUpdatePageTitle": "التحديث مطلوب",
+  "forceUpdatePageDesc": "يرجى تحديث التطبيق من المتجر للمتابعة. هذا الإصدار لم يعد مدعومًا.",
+  "forceUpdatePageButton": "التحديث الآن",
+  "authErrorEmptyCredentials": "لا يمكن ترك البريد الإلكتروني وكلمة المرور فارغين.",
+  "authErrorUserNotFound": "المستخدم غير موجود.",
+  "authErrorAdminCheckTimeout": "انتهت مهلة التحقق من الصلاحية.",
+  "authErrorNotAdmin": "لا يملك هذا الحساب صلاحيات المسؤول.",
+  "authErrorInvalidEmail": "عنوان بريد إلكتروني غير صالح.",
+  "authErrorUserDisabled": "تم تعطيل هذا الحساب.",
+  "authErrorAccountNotFound": "لم يتم العثور على مستخدم بهذا البريد الإلكتروني.",
+  "authErrorWrongPassword": "كلمة المرور غير صحيحة.",
+  "authErrorInvalidCredential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "authErrorTooManyRequests": "محاولات كثيرة جدًا. يرجى المحاولة لاحقًا.",
+  "authErrorGeneric": "فشل تسجيل الدخول: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "خطأ غير معروف",
+  "productViewCountLabel": "شوهد {count} مرة",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} والمناطق المجاورة",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

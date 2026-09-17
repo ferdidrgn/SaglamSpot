@@ -862,5 +862,21 @@
   "maintenancePageRetry": "Try Again",
   "forceUpdatePageTitle": "Update Required",
   "forceUpdatePageDesc": "Please update the app from the store to continue. This version is no longer supported.",
-  "forceUpdatePageButton": "Update Now"
+  "forceUpdatePageButton": "Update Now",
+  "productViewCountLabel": "Viewed {count} times",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} and nearby areas",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

@@ -666,5 +666,95 @@
   "featureRow2Title": "同城配送",
   "featureRow2Desc": "面向指定区域的有保险、快速配送。",
   "featureRow3Title": "WhatsApp即时回复",
-  "featureRow3Desc": "几分钟内获得店主的真实回复。"
+  "featureRow3Desc": "几分钟内获得店主的真实回复。",
+  "categoryLighting": "照明",
+  "categoryHomeTextile": "家纺",
+  "categoryDecor": "装饰与配件",
+  "categoryOfficeFurniture": "办公家具",
+  "categoryOutdoorGarden": "花园与阳台",
+  "categoryKidsFurniture": "婴幼儿与儿童",
+  "catalogCategoryTitleLighting": "照明",
+  "catalogCategoryTitleHomeTextile": "地毯与家纺",
+  "catalogCategoryTitleDecor": "装饰与配件",
+  "catalogCategoryTitleOfficeFurniture": "办公家具",
+  "catalogCategoryTitleOutdoorGarden": "花园与阳台",
+  "catalogCategoryTitleKidsFurniture": "婴儿与儿童房",
+  "deferredLoadError": "加载失败：{error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - 页面未找到",
+  "notFoundPathPrefix": "路径：{path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "返回首页",
+  "productConditionSectionTitle": "产品状况",
+  "dimensionsLabel": "尺寸（可选）",
+  "dimensionsHint": "例：220 x 90 x 85 厘米",
+  "materialLabel": "材质（可选）",
+  "materialHint": "例：实心橡木、天鹅绒面料",
+  "reservedToggleLabel": "已预留",
+  "reservedHint": "已为顾客保留——仍然可见但带有标记",
+  "reservedBadge": "已预留",
+  "priceDropBadge": "降价",
+  "newProductsSearchHint": "搜索家具、沙发、桌子或分类...",
+  "onboardingNext": "下一步",
+  "onboardingCategoriesChip": "13个分类",
+  "onboardingBargainChip": "可议价",
+  "onboardingFastReplyChip": "快速回复",
+  "navFavorites": "收藏",
+  "settingsNotificationPermission": "通知权限",
+  "notificationsEnablePermissionTooltip": "允许通知 / 打开设置",
+  "settingsDynamicColorTitle": "使用我手机的颜色",
+  "settingsDynamicColorSubtitle": "明暗模式保持不变——仅强调色会适配您手机的壁纸主题（Android 12及以上）",
+  "maintenancePageTitle": "维护中",
+  "maintenancePageDesc": "Sağlam Spot 因短暂维护暂时无法使用，我们很快就会恢复。",
+  "maintenancePageRetry": "重试",
+  "forceUpdatePageTitle": "需要更新",
+  "forceUpdatePageDesc": "请从应用商店更新应用以继续使用。此版本已不再受支持。",
+  "forceUpdatePageButton": "立即更新",
+  "authErrorEmptyCredentials": "邮箱和密码不能为空。",
+  "authErrorUserNotFound": "未找到用户。",
+  "authErrorAdminCheckTimeout": "权限验证超时。",
+  "authErrorNotAdmin": "此账户没有管理员权限。",
+  "authErrorInvalidEmail": "邮箱地址无效。",
+  "authErrorUserDisabled": "此账户已被禁用。",
+  "authErrorAccountNotFound": "未找到使用该邮箱的用户。",
+  "authErrorWrongPassword": "密码错误。",
+  "authErrorInvalidCredential": "邮箱或密码错误。",
+  "authErrorTooManyRequests": "尝试次数过多，请稍后再试。",
+  "authErrorGeneric": "登录失败：{code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "未知错误",
+  "productViewCountLabel": "已浏览 {count} 次",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones}及周边地区",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

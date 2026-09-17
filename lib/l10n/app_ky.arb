@@ -666,5 +666,95 @@
   "featureRow2Title": "Аймактык Жеткирүү",
   "featureRow2Desc": "Тандалган райондорго камсыздандырылган, тез жеткирүү.",
   "featureRow3Title": "WhatsApp аркылуу тез жооп",
-  "featureRow3Desc": "Бир нече мүнөттө сатуучудан чыныгы жооп алыңыз."
+  "featureRow3Desc": "Бир нече мүнөттө сатуучудан чыныгы жооп алыңыз.",
+  "categoryLighting": "Жарык берүү",
+  "categoryHomeTextile": "Үй текстили",
+  "categoryDecor": "Декор жана аксессуарлар",
+  "categoryOfficeFurniture": "Кеңсе эмеректери",
+  "categoryOutdoorGarden": "Бак-дарак жана балкон",
+  "categoryKidsFurniture": "Бала жана нарасте",
+  "catalogCategoryTitleLighting": "Жарык берүү",
+  "catalogCategoryTitleHomeTextile": "Килемдер жана үй текстили",
+  "catalogCategoryTitleDecor": "Декор жана аксессуарлар",
+  "catalogCategoryTitleOfficeFurniture": "Кеңсе эмеректери",
+  "catalogCategoryTitleOutdoorGarden": "Бак-дарак жана балкон",
+  "catalogCategoryTitleKidsFurniture": "Бала бөлмөсү",
+  "deferredLoadError": "Жүктөлбөй калды: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Барак табылган жок",
+  "notFoundPathPrefix": "Жол: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Башкы бетке кайтуу",
+  "productConditionSectionTitle": "Буюмдун абалы",
+  "dimensionsLabel": "Өлчөмдөр (милдеттүү эмес)",
+  "dimensionsHint": "мис. 220 x 90 x 85 см",
+  "materialLabel": "Материал (милдеттүү эмес)",
+  "materialHint": "мис. Массив эмен, бархат кездеме",
+  "reservedToggleLabel": "Брондолгон",
+  "reservedHint": "Кардар үчүн кармалды — дагы эле көрүнөт, бирок белгиси менен",
+  "reservedBadge": "БРОНДОЛГОН",
+  "priceDropBadge": "Баа төмөндөдү",
+  "newProductsSearchHint": "Эмерек, диван, стол же категория издөө...",
+  "onboardingNext": "Кийинки",
+  "onboardingCategoriesChip": "13 категория",
+  "onboardingBargainChip": "Соода келишүү мүмкүнчүлүгү",
+  "onboardingFastReplyChip": "Тез жооп",
+  "navFavorites": "Тандалмалар",
+  "settingsNotificationPermission": "Билдирүү уруксаттары",
+  "notificationsEnablePermissionTooltip": "Билдирүүлөргө уруксат берүү / жөндөөлөрдү ачуу",
+  "settingsDynamicColorTitle": "Телефонумдун түсүн колдонуу",
+  "settingsDynamicColorSubtitle": "Ачык/караңгы режим өзгөрбөйт — түстөр гана телефонуңуздун фон темасына ылайыкташат (Android 12+)",
+  "maintenancePageTitle": "Тейлөө иштери",
+  "maintenancePageDesc": "Sağlam Spot кыска мөөнөттүү тейлөө иштерине байланыштуу убактылуу жеткиликсиз. Жакында кайра ишке киребиз.",
+  "maintenancePageRetry": "Кайра аракет кылуу",
+  "forceUpdatePageTitle": "Жаңылоо талап кылынат",
+  "forceUpdatePageDesc": "Улантуу үчүн колдонмону дүкөндөн жаңылаңыз. Бул версия мындан ары колдоого алынбайт.",
+  "forceUpdatePageButton": "Азыр жаңылоо",
+  "authErrorEmptyCredentials": "Электрондук почта жана сырсөз бош болушу мүмкүн эмес.",
+  "authErrorUserNotFound": "Колдонуучу табылган жок.",
+  "authErrorAdminCheckTimeout": "Уруксатты текшерүү убакыты бүттү.",
+  "authErrorNotAdmin": "Бул аккаунттун админ укуктары жок.",
+  "authErrorInvalidEmail": "Электрондук почта дареги жарамсыз.",
+  "authErrorUserDisabled": "Бул аккаунт өчүрүлгөн.",
+  "authErrorAccountNotFound": "Бул электрондук почта менен колдонуучу табылган жок.",
+  "authErrorWrongPassword": "Сырсөз туура эмес.",
+  "authErrorInvalidCredential": "Электрондук почта же сырсөз туура эмес.",
+  "authErrorTooManyRequests": "Өтө көп аракет. Кийинчерээк кайра аракет кылыңыз.",
+  "authErrorGeneric": "Кирүү ишке ашкан жок: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Белгисиз ката",
+  "productViewCountLabel": "{count} жолу көрүлдү",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} жана айланасы",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

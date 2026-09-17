@@ -666,5 +666,95 @@
   "featureRow2Title": "Mintaqaviy Yetkazib Berish",
   "featureRow2Desc": "Tanlangan mahallalarga sug'urtalangan, tez yetkazib berish.",
   "featureRow3Title": "WhatsApp'da Tezkor Javob",
-  "featureRow3Desc": "Bir necha daqiqada haqiqiy sotuvchidan haqiqiy javob oling."
+  "featureRow3Desc": "Bir necha daqiqada haqiqiy sotuvchidan haqiqiy javob oling.",
+  "categoryLighting": "Yoritish",
+  "categoryHomeTextile": "Uy tekstili",
+  "categoryDecor": "Dekor va aksessuarlar",
+  "categoryOfficeFurniture": "Ofis mebeli",
+  "categoryOutdoorGarden": "Bog' va balkon",
+  "categoryKidsFurniture": "Chaqaloq va bolalar",
+  "catalogCategoryTitleLighting": "Yoritish",
+  "catalogCategoryTitleHomeTextile": "Gilamlar va uy tekstili",
+  "catalogCategoryTitleDecor": "Dekor va aksessuarlar",
+  "catalogCategoryTitleOfficeFurniture": "Ofis mebeli",
+  "catalogCategoryTitleOutdoorGarden": "Bog' va balkon",
+  "catalogCategoryTitleKidsFurniture": "Bolalar xonasi",
+  "deferredLoadError": "Yuklab bo'lmadi: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Sahifa topilmadi",
+  "notFoundPathPrefix": "Yo'l: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Bosh sahifaga qaytish",
+  "productConditionSectionTitle": "Mahsulot holati",
+  "dimensionsLabel": "O'lchamlar (ixtiyoriy)",
+  "dimensionsHint": "mas. 220 x 90 x 85 sm",
+  "materialLabel": "Material (ixtiyoriy)",
+  "materialHint": "mas. Massiv eman, baxmal mato",
+  "reservedToggleLabel": "Band qilingan",
+  "reservedHint": "Mijoz uchun ushlab turilgan — hali ham ko'rinadi, lekin belgi bilan",
+  "reservedBadge": "BAND QILINGAN",
+  "priceDropBadge": "Narx tushishi",
+  "newProductsSearchHint": "Mebel, divan, stol yoki kategoriya qidirish...",
+  "onboardingNext": "Keyingi",
+  "onboardingCategoriesChip": "13 ta kategoriya",
+  "onboardingBargainChip": "Kelishish imkoniyati",
+  "onboardingFastReplyChip": "Tezkor javob",
+  "navFavorites": "Sevimlilar",
+  "settingsNotificationPermission": "Bildirishnoma ruxsatlari",
+  "notificationsEnablePermissionTooltip": "Bildirishnomalarga ruxsat berish / sozlamalarni ochish",
+  "settingsDynamicColorTitle": "Telefonim rangidan foydalanish",
+  "settingsDynamicColorSubtitle": "Yorug'/qorong'i rejim o'zgarmaydi — faqat urg'u ranglari telefoningiz fon rasmi mavzusiga moslashadi (Android 12+)",
+  "maintenancePageTitle": "Texnik ishlar",
+  "maintenancePageDesc": "Sağlam Spot qisqa muddatli texnik ishlar sababli vaqtincha ishlamayapti. Tez orada qaytamiz.",
+  "maintenancePageRetry": "Qayta urinish",
+  "forceUpdatePageTitle": "Yangilash talab qilinadi",
+  "forceUpdatePageDesc": "Davom etish uchun ilovani do'kondan yangilang. Bu versiya endi qo'llab-quvvatlanmaydi.",
+  "forceUpdatePageButton": "Hozir yangilash",
+  "authErrorEmptyCredentials": "Elektron pochta va parol bo'sh bo'lishi mumkin emas.",
+  "authErrorUserNotFound": "Foydalanuvchi topilmadi.",
+  "authErrorAdminCheckTimeout": "Ruxsatni tekshirish vaqti tugadi.",
+  "authErrorNotAdmin": "Bu hisobda administrator huquqlari yo'q.",
+  "authErrorInvalidEmail": "Elektron pochta manzili yaroqsiz.",
+  "authErrorUserDisabled": "Bu hisob faolsizlantirilgan.",
+  "authErrorAccountNotFound": "Bu elektron pochta bilan foydalanuvchi topilmadi.",
+  "authErrorWrongPassword": "Parol noto'g'ri.",
+  "authErrorInvalidCredential": "Elektron pochta yoki parol noto'g'ri.",
+  "authErrorTooManyRequests": "Juda ko'p urinish. Iltimos, keyinroq qayta urinib ko'ring.",
+  "authErrorGeneric": "Kirish amalga oshmadi: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Noma'lum xato",
+  "productViewCountLabel": "{count} marta ko'rildi",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} va atrofi",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

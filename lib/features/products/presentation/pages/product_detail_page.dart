@@ -906,7 +906,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   web: AppColors.textTertiary)),
           const SizedBox(width: 5),
           Text(
-            '$total kez görüntülendi',
+            context.l10n.productViewCountLabel(total),
             style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,

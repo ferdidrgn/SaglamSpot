@@ -91,22 +91,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get categoryWhite => 'Elettrodomestici';
 
   @override
-  String get categoryLighting => 'Aydınlatma';
+  String get categoryLighting => 'Illuminazione';
 
   @override
-  String get categoryHomeTextile => 'Ev Tekstili';
+  String get categoryHomeTextile => 'Tessili per la casa';
 
   @override
-  String get categoryDecor => 'Dekorasyon & Aksesuar';
+  String get categoryDecor => 'Decorazione e accessori';
 
   @override
-  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+  String get categoryOfficeFurniture => 'Mobili per ufficio';
 
   @override
-  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+  String get categoryOutdoorGarden => 'Giardino e balcone';
 
   @override
-  String get categoryKidsFurniture => 'Bebek & Çocuk';
+  String get categoryKidsFurniture => 'Neonati e bambini';
 
   @override
   String get categoryOther => 'Altro';
@@ -307,7 +307,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String deferredLoadError(String error) {
-    return 'Yüklenemedi: $error';
+    return 'Caricamento non riuscito: $error';
   }
 
   @override
@@ -339,15 +339,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get goBack => 'Torna indietro';
 
   @override
-  String get notFoundTitle => '404 - Sayfa Bulunamadı';
+  String get notFoundTitle => '404 - Pagina non trovata';
 
   @override
   String notFoundPathPrefix(String path) {
-    return 'Yol: $path';
+    return 'Percorso: $path';
   }
 
   @override
-  String get notFoundBackHome => 'Ana Sayfaya Dön';
+  String get notFoundBackHome => 'Torna alla Home';
 
   @override
   String get galleryEmpty => 'Galleria vuota';
@@ -446,35 +446,35 @@ class AppLocalizationsIt extends AppLocalizations {
       'Prodotto nuovo — puoi aggiungere opzioni colore';
 
   @override
-  String get productConditionSectionTitle => 'Ürün Durumu';
+  String get productConditionSectionTitle => 'Condizione del prodotto';
 
   @override
   String get colorOptionsOptional => 'Opzioni colore (opzionale)';
 
   @override
-  String get dimensionsLabel => 'Ölçüler (opsiyonel)';
+  String get dimensionsLabel => 'Dimensioni (opzionale)';
 
   @override
-  String get dimensionsHint => 'Örn: 220 x 90 x 85 cm';
+  String get dimensionsHint => 'es. 220 x 90 x 85 cm';
 
   @override
-  String get materialLabel => 'Malzeme (opsiyonel)';
+  String get materialLabel => 'Materiale (opzionale)';
 
   @override
-  String get materialHint => 'Örn: Masif Meşe, Kadife Kumaş';
+  String get materialHint => 'es. Rovere massello, Tessuto in velluto';
 
   @override
-  String get reservedToggleLabel => 'Rezerve Edildi';
+  String get reservedToggleLabel => 'Riservato';
 
   @override
   String get reservedHint =>
-      'Bir müşteri için ayrıldı — hâlâ vitrinde görünür ama rozetli';
+      'Riservato per un cliente — resta visibile ma con badge';
 
   @override
-  String get reservedBadge => 'REZERVE';
+  String get reservedBadge => 'RISERVATO';
 
   @override
-  String get priceDropBadge => 'İndirimde';
+  String get priceDropBadge => 'Ribasso di prezzo';
 
   @override
   String get noImagesYet => 'Nessuna immagine ancora aggiunta';
@@ -517,45 +517,45 @@ class AppLocalizationsIt extends AppLocalizations {
   String get loginButton => 'Accedi';
 
   @override
-  String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
+  String get authErrorEmptyCredentials => 'Email e password non possono essere vuoti.';
 
   @override
-  String get authErrorUserNotFound => 'Kullanıcı bulunamadı.';
+  String get authErrorUserNotFound => 'Utente non trovato.';
 
   @override
   String get authErrorAdminCheckTimeout =>
-      'Yetki kontrolü zaman aşımına uğradı.';
+      'Timeout durante il controllo dell\'autorizzazione.';
 
   @override
-  String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+  String get authErrorNotAdmin => 'Questo account non dispone di privilegi di amministratore.';
 
   @override
-  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
+  String get authErrorInvalidEmail => 'Indirizzo email non valido.';
 
   @override
-  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış.';
+  String get authErrorUserDisabled => 'Questo account è stato disabilitato.';
 
   @override
   String get authErrorAccountNotFound =>
-      'Bu e-posta ile kayıtlı kullanıcı bulunamadı.';
+      'Nessun utente trovato con questa email.';
 
   @override
-  String get authErrorWrongPassword => 'Şifre hatalı.';
+  String get authErrorWrongPassword => 'Password errata.';
 
   @override
-  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı.';
+  String get authErrorInvalidCredential => 'Email o password errati.';
 
   @override
   String get authErrorTooManyRequests =>
-      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.';
+      'Troppi tentativi. Riprova più tardi.';
 
   @override
   String authErrorGeneric(String code) {
-    return 'Giriş başarısız: $code';
+    return 'Accesso non riuscito: $code';
   }
 
   @override
-  String get authErrorUnknown => 'Bilinmeyen hata';
+  String get authErrorUnknown => 'Errore sconosciuto';
 
   @override
   String get sponsored => 'Sponsorizzato';
@@ -1069,7 +1069,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get newProductsSearchHint =>
-      'Mobilya, koltuk, masa veya kategori ara...';
+      'Cerca mobili, divano, tavolo o categoria...';
 
   @override
   String get productsBadgeLabel => 'PRODOTTI';
@@ -1179,16 +1179,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get onboardingStart => 'Inizia';
 
   @override
-  String get onboardingNext => 'İleri';
+  String get onboardingNext => 'Avanti';
 
   @override
-  String get onboardingCategoriesChip => '13 Kategori';
+  String get onboardingCategoriesChip => '13 categorie';
 
   @override
-  String get onboardingBargainChip => 'Pazarlık Payı';
+  String get onboardingBargainChip => 'Margine di trattativa';
 
   @override
-  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+  String get onboardingFastReplyChip => 'Risposta rapida';
 
   @override
   String get onboardingPage1Eyebrow => 'BENVENUTI DA SAĞLAM SPOT';
@@ -1499,7 +1499,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get navCart => 'Carrello';
 
   @override
-  String get navFavorites => 'Favoriler';
+  String get navFavorites => 'Preferiti';
 
   @override
   String get navProfile => 'Profilo';
@@ -1579,11 +1579,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsAdminLogin => 'Accesso Amministratore';
 
   @override
-  String get settingsNotificationPermission => 'Bildirim İzinleri';
+  String get settingsNotificationPermission => 'Autorizzazioni notifiche';
 
   @override
   String get notificationsEnablePermissionTooltip =>
-      'Bildirim izni ver / ayarları aç';
+      'Consenti notifiche / apri impostazioni';
 
   @override
   String get settingsAppVersion => 'Versione App';
@@ -1690,11 +1690,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsThemeDark => 'Scuro';
 
   @override
-  String get settingsDynamicColorTitle => 'Telefonumun Rengini Kullan';
+  String get settingsDynamicColorTitle => 'Usa il colore del mio telefono';
 
   @override
   String get settingsDynamicColorSubtitle =>
-      'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)';
+      'La modalità chiara/scura resta invariata — solo i colori di accento si adattano al tema dello sfondo del tuo telefono (Android 12+)';
 
   @override
   String get notificationsTitle => 'Notifiche';
@@ -1749,22 +1749,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get catalogCategoryTitleWhite => 'Elettrodomestici';
 
   @override
-  String get catalogCategoryTitleLighting => 'Aydınlatma';
+  String get catalogCategoryTitleLighting => 'Illuminazione';
 
   @override
-  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+  String get catalogCategoryTitleHomeTextile => 'Tappeti e tessili per la casa';
 
   @override
-  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+  String get catalogCategoryTitleDecor => 'Decorazione e accessori';
 
   @override
-  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+  String get catalogCategoryTitleOfficeFurniture => 'Mobili per ufficio';
 
   @override
-  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+  String get catalogCategoryTitleOutdoorGarden => 'Giardino e balcone';
 
   @override
-  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
+  String get catalogCategoryTitleKidsFurniture => 'Cameretta per neonati e bambini';
 
   @override
   String get catalogCategoryTitleOther => 'Decorazione';
@@ -2190,22 +2190,32 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get maintenancePageTitle => 'Bakımdayız';
+  String get maintenancePageTitle => 'In manutenzione';
 
   @override
   String get maintenancePageDesc =>
-      'Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.';
+      'Sağlam Spot non è temporaneamente disponibile a causa di brevi lavori di manutenzione. Torneremo presto.';
 
   @override
-  String get maintenancePageRetry => 'Tekrar Dene';
+  String get maintenancePageRetry => 'Riprova';
 
   @override
-  String get forceUpdatePageTitle => 'Güncelleme Gerekli';
+  String get forceUpdatePageTitle => 'Aggiornamento richiesto';
 
   @override
   String get forceUpdatePageDesc =>
-      'Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.';
+      'Aggiorna l\'app dallo store per continuare. Questa versione non è più supportata.';
 
   @override
-  String get forceUpdatePageButton => 'Şimdi Güncelle';
+  String get forceUpdatePageButton => 'Aggiorna ora';
+
+  @override
+  String productViewCountLabel(int count) {
+    return 'Visualizzato $count volte';
+  }
+
+  @override
+  String deliveryZonesAndSurroundings(String zones) {
+    return '$zones e dintorni';
+  }
 }

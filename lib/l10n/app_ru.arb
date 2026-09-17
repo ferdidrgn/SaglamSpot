@@ -666,5 +666,95 @@
   "featureRow2Title": "Местная доставка",
   "featureRow2Desc": "Застрахованная, быстрая доставка в выбранные районы.",
   "featureRow3Title": "Мгновенный ответ в WhatsApp",
-  "featureRow3Desc": "Получите настоящий ответ от продавца за считанные минуты."
+  "featureRow3Desc": "Получите настоящий ответ от продавца за считанные минуты.",
+  "categoryLighting": "Освещение",
+  "categoryHomeTextile": "Домашний текстиль",
+  "categoryDecor": "Декор и аксессуары",
+  "categoryOfficeFurniture": "Офисная мебель",
+  "categoryOutdoorGarden": "Сад и балкон",
+  "categoryKidsFurniture": "Дети и малыши",
+  "catalogCategoryTitleLighting": "Освещение",
+  "catalogCategoryTitleHomeTextile": "Ковры и домашний текстиль",
+  "catalogCategoryTitleDecor": "Декор и аксессуары",
+  "catalogCategoryTitleOfficeFurniture": "Офисная мебель",
+  "catalogCategoryTitleOutdoorGarden": "Сад и балкон",
+  "catalogCategoryTitleKidsFurniture": "Детская комната",
+  "deferredLoadError": "Не удалось загрузить: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Страница не найдена",
+  "notFoundPathPrefix": "Путь: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Вернуться на главную",
+  "productConditionSectionTitle": "Состояние товара",
+  "dimensionsLabel": "Размеры (необязательно)",
+  "dimensionsHint": "напр. 220 x 90 x 85 см",
+  "materialLabel": "Материал (необязательно)",
+  "materialHint": "напр. Массив дуба, бархатная ткань",
+  "reservedToggleLabel": "Забронировано",
+  "reservedHint": "Отложено для покупателя — по-прежнему видно, но с пометкой",
+  "reservedBadge": "ЗАБРОНИРОВАНО",
+  "priceDropBadge": "Снижение цены",
+  "newProductsSearchHint": "Поиск мебели, дивана, стола или категории...",
+  "onboardingNext": "Далее",
+  "onboardingCategoriesChip": "13 категорий",
+  "onboardingBargainChip": "Возможность торга",
+  "onboardingFastReplyChip": "Быстрый ответ",
+  "navFavorites": "Избранное",
+  "settingsNotificationPermission": "Разрешения на уведомления",
+  "notificationsEnablePermissionTooltip": "Разрешить уведомления / открыть настройки",
+  "settingsDynamicColorTitle": "Использовать цвет моего телефона",
+  "settingsDynamicColorSubtitle": "Светлый/тёмный режим остаётся прежним — только акцентные цвета подстраиваются под тему обоев вашего телефона (Android 12+)",
+  "maintenancePageTitle": "Технические работы",
+  "maintenancePageDesc": "Sağlam Spot временно недоступен из-за непродолжительных технических работ. Скоро вернёмся.",
+  "maintenancePageRetry": "Повторить попытку",
+  "forceUpdatePageTitle": "Требуется обновление",
+  "forceUpdatePageDesc": "Пожалуйста, обновите приложение из магазина, чтобы продолжить. Эта версия больше не поддерживается.",
+  "forceUpdatePageButton": "Обновить сейчас",
+  "authErrorEmptyCredentials": "Email и пароль не могут быть пустыми.",
+  "authErrorUserNotFound": "Пользователь не найден.",
+  "authErrorAdminCheckTimeout": "Истекло время проверки авторизации.",
+  "authErrorNotAdmin": "У этой учётной записи нет прав администратора.",
+  "authErrorInvalidEmail": "Недействительный адрес электронной почты.",
+  "authErrorUserDisabled": "Эта учётная запись отключена.",
+  "authErrorAccountNotFound": "Пользователь с таким email не найден.",
+  "authErrorWrongPassword": "Неверный пароль.",
+  "authErrorInvalidCredential": "Неверный email или пароль.",
+  "authErrorTooManyRequests": "Слишком много попыток. Повторите попытку позже.",
+  "authErrorGeneric": "Не удалось войти: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Неизвестная ошибка",
+  "productViewCountLabel": "Просмотрено {count} раз",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} и окрестности",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

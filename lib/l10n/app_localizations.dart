@@ -4099,8 +4099,19 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Şimdi Güncelle'**
   String get forceUpdatePageButton;
-}
 
+  /// No description provided for @productViewCountLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} kez görüntülendi'**
+  String productViewCountLabel(int count);
+
+  /// No description provided for @deliveryZonesAndSurroundings.
+  ///
+  /// In tr, this message translates to:
+  /// **'{zones} ve çevresi'**
+  String deliveryZonesAndSurroundings(String zones);
+}
 class _AppLocalizationsDelegate
     extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();

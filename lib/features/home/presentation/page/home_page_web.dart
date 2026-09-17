@@ -493,7 +493,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   String get _shortDeliveryZonesLabel {
     final zones = SaglamSpotCommunication.freeDeliveryZones;
     if (zones.length <= 2) return zones.join(', ');
-    return '${zones.take(2).join(', ')} ve çevresi';
+    return context.l10n.deliveryZonesAndSurroundings(zones.take(2).join(', '));
   }
 
   /// Sonsuz kayan güven/marka şeridi — referans "Luma & Living" tasarımının

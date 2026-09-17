@@ -581,7 +581,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   String get _shortDeliveryZonesLabel {
     final zones = SaglamSpotCommunication.freeDeliveryZones;
     if (zones.length <= 2) return zones.join(', ');
-    return '${zones.take(2).join(', ')} ve çevresi';
+    return context.l10n.deliveryZonesAndSurroundings(zones.take(2).join(', '));
   }
 
   Widget _buildTrustTicker(final BuildContext context) => Padding(

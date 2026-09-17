@@ -666,5 +666,95 @@
   "featureRow2Title": "Τοπική Παράδοση",
   "featureRow2Desc": "Ασφαλισμένη, γρήγορη παράδοση σε επιλεγμένες περιοχές.",
   "featureRow3Title": "Άμεση Απάντηση στο WhatsApp",
-  "featureRow3Desc": "Λάβετε πραγματική απάντηση από τον καταστηματάρχη σε λίγα λεπτά."
+  "featureRow3Desc": "Λάβετε πραγματική απάντηση από τον καταστηματάρχη σε λίγα λεπτά.",
+  "categoryLighting": "Φωτισμός",
+  "categoryHomeTextile": "Υφάσματα Σπιτιού",
+  "categoryDecor": "Διακόσμηση & Αξεσουάρ",
+  "categoryOfficeFurniture": "Έπιπλα Γραφείου",
+  "categoryOutdoorGarden": "Κήπος & Μπαλκόνι",
+  "categoryKidsFurniture": "Μωρό & Παιδιά",
+  "catalogCategoryTitleLighting": "Φωτισμός",
+  "catalogCategoryTitleHomeTextile": "Χαλιά & Υφάσματα Σπιτιού",
+  "catalogCategoryTitleDecor": "Διακόσμηση & Αξεσουάρ",
+  "catalogCategoryTitleOfficeFurniture": "Έπιπλα Γραφείου",
+  "catalogCategoryTitleOutdoorGarden": "Κήπος & Μπαλκόνι",
+  "catalogCategoryTitleKidsFurniture": "Δωμάτιο Μωρού & Παιδιών",
+  "deferredLoadError": "Αποτυχία φόρτωσης: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Η Σελίδα δεν Βρέθηκε",
+  "notFoundPathPrefix": "Διαδρομή: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Επιστροφή στην Αρχική",
+  "productConditionSectionTitle": "Κατάσταση Προϊόντος",
+  "dimensionsLabel": "Διαστάσεις (προαιρετικό)",
+  "dimensionsHint": "π.χ. 220 x 90 x 85 εκ.",
+  "materialLabel": "Υλικό (προαιρετικό)",
+  "materialHint": "π.χ. Μασίφ Δρυς, Βελούδινο Ύφασμα",
+  "reservedToggleLabel": "Κρατημένο",
+  "reservedHint": "Κρατημένο για πελάτη — παραμένει ορατό αλλά με ετικέτα",
+  "reservedBadge": "ΚΡΑΤΗΜΕΝΟ",
+  "priceDropBadge": "Μείωση Τιμής",
+  "newProductsSearchHint": "Αναζήτηση επίπλων, καναπέ, τραπεζιού ή κατηγορίας...",
+  "onboardingNext": "Επόμενο",
+  "onboardingCategoriesChip": "13 Κατηγορίες",
+  "onboardingBargainChip": "Περιθώριο Διαπραγμάτευσης",
+  "onboardingFastReplyChip": "Γρήγορη Απάντηση",
+  "navFavorites": "Αγαπημένα",
+  "settingsNotificationPermission": "Δικαιώματα Ειδοποιήσεων",
+  "notificationsEnablePermissionTooltip": "Επιτρέψτε ειδοποιήσεις / ανοίξτε ρυθμίσεις",
+  "settingsDynamicColorTitle": "Χρήση Χρώματος Τηλεφώνου",
+  "settingsDynamicColorSubtitle": "Η φωτεινή/σκοτεινή λειτουργία παραμένει ίδια — μόνο τα χρώματα έμφασης προσαρμόζονται στο θέμα ταπετσαρίας του τηλεφώνου σας (Android 12+)",
+  "maintenancePageTitle": "Υπό Συντήρηση",
+  "maintenancePageDesc": "Το Sağlam Spot είναι προσωρινά μη διαθέσιμο λόγω σύντομων εργασιών συντήρησης. Θα επιστρέψουμε σύντομα.",
+  "maintenancePageRetry": "Δοκιμάστε Ξανά",
+  "forceUpdatePageTitle": "Απαιτείται Ενημέρωση",
+  "forceUpdatePageDesc": "Ενημερώστε την εφαρμογή από το κατάστημα για να συνεχίσετε. Αυτή η έκδοση δεν υποστηρίζεται πλέον.",
+  "forceUpdatePageButton": "Ενημέρωση Τώρα",
+  "authErrorEmptyCredentials": "Το email και ο κωδικός δεν μπορούν να είναι κενά.",
+  "authErrorUserNotFound": "Ο χρήστης δεν βρέθηκε.",
+  "authErrorAdminCheckTimeout": "Ο έλεγχος εξουσιοδότησης έληξε.",
+  "authErrorNotAdmin": "Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.",
+  "authErrorInvalidEmail": "Μη έγκυρη διεύθυνση email.",
+  "authErrorUserDisabled": "Αυτός ο λογαριασμός έχει απενεργοποιηθεί.",
+  "authErrorAccountNotFound": "Δεν βρέθηκε χρήστης με αυτό το email.",
+  "authErrorWrongPassword": "Λανθασμένος κωδικός.",
+  "authErrorInvalidCredential": "Λανθασμένο email ή κωδικός.",
+  "authErrorTooManyRequests": "Πολλές προσπάθειες. Δοκιμάστε ξανά αργότερα.",
+  "authErrorGeneric": "Αποτυχία σύνδεσης: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Άγνωστο σφάλμα",
+  "productViewCountLabel": "Προβλήθηκε {count} φορές",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} και τις γύρω περιοχές",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

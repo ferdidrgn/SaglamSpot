@@ -666,5 +666,95 @@
   "featureRow2Title": "Consegna Locale",
   "featureRow2Desc": "Consegna assicurata e veloce nei quartieri selezionati.",
   "featureRow3Title": "Risposta Immediata su WhatsApp",
-  "featureRow3Desc": "Ricevi una risposta vera dal negoziante in pochi minuti."
+  "featureRow3Desc": "Ricevi una risposta vera dal negoziante in pochi minuti.",
+  "categoryLighting": "Illuminazione",
+  "categoryHomeTextile": "Tessili per la casa",
+  "categoryDecor": "Decorazione e accessori",
+  "categoryOfficeFurniture": "Mobili per ufficio",
+  "categoryOutdoorGarden": "Giardino e balcone",
+  "categoryKidsFurniture": "Neonati e bambini",
+  "catalogCategoryTitleLighting": "Illuminazione",
+  "catalogCategoryTitleHomeTextile": "Tappeti e tessili per la casa",
+  "catalogCategoryTitleDecor": "Decorazione e accessori",
+  "catalogCategoryTitleOfficeFurniture": "Mobili per ufficio",
+  "catalogCategoryTitleOutdoorGarden": "Giardino e balcone",
+  "catalogCategoryTitleKidsFurniture": "Cameretta per neonati e bambini",
+  "deferredLoadError": "Caricamento non riuscito: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Pagina non trovata",
+  "notFoundPathPrefix": "Percorso: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Torna alla Home",
+  "productConditionSectionTitle": "Condizione del prodotto",
+  "dimensionsLabel": "Dimensioni (opzionale)",
+  "dimensionsHint": "es. 220 x 90 x 85 cm",
+  "materialLabel": "Materiale (opzionale)",
+  "materialHint": "es. Rovere massello, Tessuto in velluto",
+  "reservedToggleLabel": "Riservato",
+  "reservedHint": "Riservato per un cliente — resta visibile ma con badge",
+  "reservedBadge": "RISERVATO",
+  "priceDropBadge": "Ribasso di prezzo",
+  "newProductsSearchHint": "Cerca mobili, divano, tavolo o categoria...",
+  "onboardingNext": "Avanti",
+  "onboardingCategoriesChip": "13 categorie",
+  "onboardingBargainChip": "Margine di trattativa",
+  "onboardingFastReplyChip": "Risposta rapida",
+  "navFavorites": "Preferiti",
+  "settingsNotificationPermission": "Autorizzazioni notifiche",
+  "notificationsEnablePermissionTooltip": "Consenti notifiche / apri impostazioni",
+  "settingsDynamicColorTitle": "Usa il colore del mio telefono",
+  "settingsDynamicColorSubtitle": "La modalità chiara/scura resta invariata — solo i colori di accento si adattano al tema dello sfondo del tuo telefono (Android 12+)",
+  "maintenancePageTitle": "In manutenzione",
+  "maintenancePageDesc": "Sağlam Spot non è temporaneamente disponibile a causa di brevi lavori di manutenzione. Torneremo presto.",
+  "maintenancePageRetry": "Riprova",
+  "forceUpdatePageTitle": "Aggiornamento richiesto",
+  "forceUpdatePageDesc": "Aggiorna l'app dallo store per continuare. Questa versione non è più supportata.",
+  "forceUpdatePageButton": "Aggiorna ora",
+  "authErrorEmptyCredentials": "Email e password non possono essere vuoti.",
+  "authErrorUserNotFound": "Utente non trovato.",
+  "authErrorAdminCheckTimeout": "Timeout durante il controllo dell'autorizzazione.",
+  "authErrorNotAdmin": "Questo account non dispone di privilegi di amministratore.",
+  "authErrorInvalidEmail": "Indirizzo email non valido.",
+  "authErrorUserDisabled": "Questo account è stato disabilitato.",
+  "authErrorAccountNotFound": "Nessun utente trovato con questa email.",
+  "authErrorWrongPassword": "Password errata.",
+  "authErrorInvalidCredential": "Email o password errati.",
+  "authErrorTooManyRequests": "Troppi tentativi. Riprova più tardi.",
+  "authErrorGeneric": "Accesso non riuscito: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Errore sconosciuto",
+  "productViewCountLabel": "Visualizzato {count} volte",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} e dintorni",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

@@ -666,5 +666,95 @@
   "featureRow2Title": "Lokale Lieferung",
   "featureRow2Desc": "Versicherte, schnelle Lieferung in ausgewählte Stadtteile.",
   "featureRow3Title": "Sofortige WhatsApp-Antwort",
-  "featureRow3Desc": "Erhalte in Minuten eine echte Antwort von einem echten Händler."
+  "featureRow3Desc": "Erhalte in Minuten eine echte Antwort von einem echten Händler.",
+  "categoryLighting": "Beleuchtung",
+  "categoryHomeTextile": "Heimtextilien",
+  "categoryDecor": "Deko & Accessoires",
+  "categoryOfficeFurniture": "Büromöbel",
+  "categoryOutdoorGarden": "Garten & Balkon",
+  "categoryKidsFurniture": "Baby & Kinder",
+  "catalogCategoryTitleLighting": "Beleuchtung",
+  "catalogCategoryTitleHomeTextile": "Teppiche & Heimtextilien",
+  "catalogCategoryTitleDecor": "Deko & Accessoires",
+  "catalogCategoryTitleOfficeFurniture": "Büromöbel",
+  "catalogCategoryTitleOutdoorGarden": "Garten & Balkon",
+  "catalogCategoryTitleKidsFurniture": "Baby- & Kinderzimmer",
+  "deferredLoadError": "Laden fehlgeschlagen: {error}",
+  "@deferredLoadError": {
+    "placeholders": {
+        "error": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundTitle": "404 - Seite nicht gefunden",
+  "notFoundPathPrefix": "Pfad: {path}",
+  "@notFoundPathPrefix": {
+    "placeholders": {
+        "path": {
+          "type": "String"
+        }
+    }
+  },
+  "notFoundBackHome": "Zurück zur Startseite",
+  "productConditionSectionTitle": "Produktzustand",
+  "dimensionsLabel": "Maße (optional)",
+  "dimensionsHint": "z. B. 220 x 90 x 85 cm",
+  "materialLabel": "Material (optional)",
+  "materialHint": "z. B. Massivholz Eiche, Samtstoff",
+  "reservedToggleLabel": "Reserviert",
+  "reservedHint": "Für einen Kunden vorgemerkt — weiterhin sichtbar, aber gekennzeichnet",
+  "reservedBadge": "RESERVIERT",
+  "priceDropBadge": "Preissenkung",
+  "newProductsSearchHint": "Möbel, Sofa, Tisch oder Kategorie suchen...",
+  "onboardingNext": "Weiter",
+  "onboardingCategoriesChip": "13 Kategorien",
+  "onboardingBargainChip": "Verhandlungsspielraum",
+  "onboardingFastReplyChip": "Schnelle Antwort",
+  "navFavorites": "Favoriten",
+  "settingsNotificationPermission": "Benachrichtigungsberechtigungen",
+  "notificationsEnablePermissionTooltip": "Benachrichtigungen erlauben / Einstellungen öffnen",
+  "settingsDynamicColorTitle": "Farbe meines Telefons verwenden",
+  "settingsDynamicColorSubtitle": "Hell-/Dunkelmodus bleibt gleich — nur die Akzentfarben passen sich dem Hintergrundbild-Thema deines Telefons an (Android 12+)",
+  "maintenancePageTitle": "Wartungsarbeiten",
+  "maintenancePageDesc": "Sağlam Spot ist aufgrund kurzer Wartungsarbeiten vorübergehend nicht verfügbar. Wir sind bald wieder für Sie da.",
+  "maintenancePageRetry": "Erneut versuchen",
+  "forceUpdatePageTitle": "Update erforderlich",
+  "forceUpdatePageDesc": "Bitte aktualisiere die App über den Store, um fortzufahren. Diese Version wird nicht mehr unterstützt.",
+  "forceUpdatePageButton": "Jetzt aktualisieren",
+  "authErrorEmptyCredentials": "E-Mail und Passwort dürfen nicht leer sein.",
+  "authErrorUserNotFound": "Benutzer nicht gefunden.",
+  "authErrorAdminCheckTimeout": "Zeitüberschreitung bei der Berechtigungsprüfung.",
+  "authErrorNotAdmin": "Dieses Konto verfügt nicht über Administratorrechte.",
+  "authErrorInvalidEmail": "Ungültige E-Mail-Adresse.",
+  "authErrorUserDisabled": "Dieses Konto wurde deaktiviert.",
+  "authErrorAccountNotFound": "Kein Benutzer mit dieser E-Mail-Adresse gefunden.",
+  "authErrorWrongPassword": "Falsches Passwort.",
+  "authErrorInvalidCredential": "Falsche E-Mail-Adresse oder falsches Passwort.",
+  "authErrorTooManyRequests": "Zu viele Versuche. Bitte versuche es später erneut.",
+  "authErrorGeneric": "Anmeldung fehlgeschlagen: {code}",
+  "@authErrorGeneric": {
+    "placeholders": {
+        "code": {
+          "type": "String"
+        }
+    }
+  },
+  "authErrorUnknown": "Unbekannter Fehler",
+  "productViewCountLabel": "{count} Mal angesehen",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} und Umgebung",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }

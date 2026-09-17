@@ -89,22 +89,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get categoryWhite => '家电';
 
   @override
-  String get categoryLighting => 'Aydınlatma';
+  String get categoryLighting => '照明';
 
   @override
-  String get categoryHomeTextile => 'Ev Tekstili';
+  String get categoryHomeTextile => '家纺';
 
   @override
-  String get categoryDecor => 'Dekorasyon & Aksesuar';
+  String get categoryDecor => '装饰与配件';
 
   @override
-  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+  String get categoryOfficeFurniture => '办公家具';
 
   @override
-  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+  String get categoryOutdoorGarden => '花园与阳台';
 
   @override
-  String get categoryKidsFurniture => 'Bebek & Çocuk';
+  String get categoryKidsFurniture => '婴幼儿与儿童';
 
   @override
   String get categoryOther => '其他';
@@ -299,7 +299,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deferredLoadError(String error) {
-    return 'Yüklenemedi: $error';
+    return '加载失败：$error';
   }
 
   @override
@@ -330,15 +330,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get goBack => '返回';
 
   @override
-  String get notFoundTitle => '404 - Sayfa Bulunamadı';
+  String get notFoundTitle => '404 - 页面未找到';
 
   @override
   String notFoundPathPrefix(String path) {
-    return 'Yol: $path';
+    return '路径：$path';
   }
 
   @override
-  String get notFoundBackHome => 'Ana Sayfaya Dön';
+  String get notFoundBackHome => '返回首页';
 
   @override
   String get galleryEmpty => '图库为空';
@@ -431,35 +431,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newProductHint => '全新产品 — 您可以添加颜色选项';
 
   @override
-  String get productConditionSectionTitle => 'Ürün Durumu';
+  String get productConditionSectionTitle => '产品状况';
 
   @override
   String get colorOptionsOptional => '颜色选项（可选）';
 
   @override
-  String get dimensionsLabel => 'Ölçüler (opsiyonel)';
+  String get dimensionsLabel => '尺寸（可选）';
 
   @override
-  String get dimensionsHint => 'Örn: 220 x 90 x 85 cm';
+  String get dimensionsHint => '例：220 x 90 x 85 厘米';
 
   @override
-  String get materialLabel => 'Malzeme (opsiyonel)';
+  String get materialLabel => '材质（可选）';
 
   @override
-  String get materialHint => 'Örn: Masif Meşe, Kadife Kumaş';
+  String get materialHint => '例：实心橡木、天鹅绒面料';
 
   @override
-  String get reservedToggleLabel => 'Rezerve Edildi';
+  String get reservedToggleLabel => '已预留';
 
   @override
   String get reservedHint =>
-      'Bir müşteri için ayrıldı — hâlâ vitrinde görünür ama rozetli';
+      '已为顾客保留——仍然可见但带有标记';
 
   @override
-  String get reservedBadge => 'REZERVE';
+  String get reservedBadge => '已预留';
 
   @override
-  String get priceDropBadge => 'İndirimde';
+  String get priceDropBadge => '降价';
 
   @override
   String get noImagesYet => '尚未添加图片';
@@ -501,45 +501,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginButton => '登录';
 
   @override
-  String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
+  String get authErrorEmptyCredentials => '邮箱和密码不能为空。';
 
   @override
-  String get authErrorUserNotFound => 'Kullanıcı bulunamadı.';
+  String get authErrorUserNotFound => '未找到用户。';
 
   @override
   String get authErrorAdminCheckTimeout =>
-      'Yetki kontrolü zaman aşımına uğradı.';
+      '权限验证超时。';
 
   @override
-  String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+  String get authErrorNotAdmin => '此账户没有管理员权限。';
 
   @override
-  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
+  String get authErrorInvalidEmail => '邮箱地址无效。';
 
   @override
-  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış.';
+  String get authErrorUserDisabled => '此账户已被禁用。';
 
   @override
   String get authErrorAccountNotFound =>
-      'Bu e-posta ile kayıtlı kullanıcı bulunamadı.';
+      '未找到使用该邮箱的用户。';
 
   @override
-  String get authErrorWrongPassword => 'Şifre hatalı.';
+  String get authErrorWrongPassword => '密码错误。';
 
   @override
-  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı.';
+  String get authErrorInvalidCredential => '邮箱或密码错误。';
 
   @override
   String get authErrorTooManyRequests =>
-      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.';
+      '尝试次数过多，请稍后再试。';
 
   @override
   String authErrorGeneric(String code) {
-    return 'Giriş başarısız: $code';
+    return '登录失败：$code';
   }
 
   @override
-  String get authErrorUnknown => 'Bilinmeyen hata';
+  String get authErrorUnknown => '未知错误';
 
   @override
   String get sponsored => '广告';
@@ -1014,7 +1014,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get newProductsSearchHint =>
-      'Mobilya, koltuk, masa veya kategori ara...';
+      '搜索家具、沙发、桌子或分类...';
 
   @override
   String get productsBadgeLabel => '件产品';
@@ -1122,16 +1122,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingStart => '开始使用';
 
   @override
-  String get onboardingNext => 'İleri';
+  String get onboardingNext => '下一步';
 
   @override
-  String get onboardingCategoriesChip => '13 Kategori';
+  String get onboardingCategoriesChip => '13个分类';
 
   @override
-  String get onboardingBargainChip => 'Pazarlık Payı';
+  String get onboardingBargainChip => '可议价';
 
   @override
-  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+  String get onboardingFastReplyChip => '快速回复';
 
   @override
   String get onboardingPage1Eyebrow => '欢迎来到 SAĞLAM SPOT';
@@ -1430,7 +1430,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navCart => '购物车';
 
   @override
-  String get navFavorites => 'Favoriler';
+  String get navFavorites => '收藏';
 
   @override
   String get navProfile => '我的';
@@ -1508,11 +1508,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAdminLogin => '管理员登录';
 
   @override
-  String get settingsNotificationPermission => 'Bildirim İzinleri';
+  String get settingsNotificationPermission => '通知权限';
 
   @override
   String get notificationsEnablePermissionTooltip =>
-      'Bildirim izni ver / ayarları aç';
+      '允许通知 / 打开设置';
 
   @override
   String get settingsAppVersion => '应用版本';
@@ -1615,11 +1615,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsThemeDark => '深色';
 
   @override
-  String get settingsDynamicColorTitle => 'Telefonumun Rengini Kullan';
+  String get settingsDynamicColorTitle => '使用我手机的颜色';
 
   @override
   String get settingsDynamicColorSubtitle =>
-      'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)';
+      '明暗模式保持不变——仅强调色会适配您手机的壁纸主题（Android 12及以上）';
 
   @override
   String get notificationsTitle => '通知';
@@ -1673,22 +1673,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get catalogCategoryTitleWhite => '家用电器';
 
   @override
-  String get catalogCategoryTitleLighting => 'Aydınlatma';
+  String get catalogCategoryTitleLighting => '照明';
 
   @override
-  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+  String get catalogCategoryTitleHomeTextile => '地毯与家纺';
 
   @override
-  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+  String get catalogCategoryTitleDecor => '装饰与配件';
 
   @override
-  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+  String get catalogCategoryTitleOfficeFurniture => '办公家具';
 
   @override
-  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+  String get catalogCategoryTitleOutdoorGarden => '花园与阳台';
 
   @override
-  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
+  String get catalogCategoryTitleKidsFurniture => '婴儿与儿童房';
 
   @override
   String get catalogCategoryTitleOther => '装饰';
@@ -2098,22 +2098,32 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get maintenancePageTitle => 'Bakımdayız';
+  String get maintenancePageTitle => '维护中';
 
   @override
   String get maintenancePageDesc =>
-      'Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.';
+      'Sağlam Spot 因短暂维护暂时无法使用，我们很快就会恢复。';
 
   @override
-  String get maintenancePageRetry => 'Tekrar Dene';
+  String get maintenancePageRetry => '重试';
 
   @override
-  String get forceUpdatePageTitle => 'Güncelleme Gerekli';
+  String get forceUpdatePageTitle => '需要更新';
 
   @override
   String get forceUpdatePageDesc =>
-      'Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.';
+      '请从应用商店更新应用以继续使用。此版本已不再受支持。';
 
   @override
-  String get forceUpdatePageButton => 'Şimdi Güncelle';
+  String get forceUpdatePageButton => '立即更新';
+
+  @override
+  String productViewCountLabel(int count) {
+    return '已浏览 $count 次';
+  }
+
+  @override
+  String deliveryZonesAndSurroundings(String zones) {
+    return '$zones及周边地区';
+  }
 }

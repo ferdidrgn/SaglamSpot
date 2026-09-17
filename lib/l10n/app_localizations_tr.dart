@@ -2194,4 +2194,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get forceUpdatePageButton => 'Şimdi Güncelle';
+
+  @override
+  String productViewCountLabel(int count) {
+    return '$count kez görüntülendi';
+  }
+
+  @override
+  String deliveryZonesAndSurroundings(String zones) {
+    return '$zones ve çevresi';
+  }
 }

@@ -2198,4 +2198,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forceUpdatePageButton => 'Update Now';
+
+  @override
+  String productViewCountLabel(int count) {
+    return 'Viewed $count times';
+  }
+
+  @override
+  String deliveryZonesAndSurroundings(String zones) {
+    return '$zones and nearby areas';
+  }
 }

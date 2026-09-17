@@ -94,22 +94,22 @@ class AppLocalizationsEl extends AppLocalizations {
   String get categoryWhite => 'Οικιακές συσκευές';
 
   @override
-  String get categoryLighting => 'Aydınlatma';
+  String get categoryLighting => 'Φωτισμός';
 
   @override
-  String get categoryHomeTextile => 'Ev Tekstili';
+  String get categoryHomeTextile => 'Υφάσματα Σπιτιού';
 
   @override
-  String get categoryDecor => 'Dekorasyon & Aksesuar';
+  String get categoryDecor => 'Διακόσμηση & Αξεσουάρ';
 
   @override
-  String get categoryOfficeFurniture => 'Ofis Mobilyası';
+  String get categoryOfficeFurniture => 'Έπιπλα Γραφείου';
 
   @override
-  String get categoryOutdoorGarden => 'Bahçe & Balkon';
+  String get categoryOutdoorGarden => 'Κήπος & Μπαλκόνι';
 
   @override
-  String get categoryKidsFurniture => 'Bebek & Çocuk';
+  String get categoryKidsFurniture => 'Μωρό & Παιδιά';
 
   @override
   String get categoryOther => 'Άλλο';
@@ -309,7 +309,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String deferredLoadError(String error) {
-    return 'Yüklenemedi: $error';
+    return 'Αποτυχία φόρτωσης: $error';
   }
 
   @override
@@ -342,15 +342,15 @@ class AppLocalizationsEl extends AppLocalizations {
   String get goBack => 'Πίσω';
 
   @override
-  String get notFoundTitle => '404 - Sayfa Bulunamadı';
+  String get notFoundTitle => '404 - Η Σελίδα δεν Βρέθηκε';
 
   @override
   String notFoundPathPrefix(String path) {
-    return 'Yol: $path';
+    return 'Διαδρομή: $path';
   }
 
   @override
-  String get notFoundBackHome => 'Ana Sayfaya Dön';
+  String get notFoundBackHome => 'Επιστροφή στην Αρχική';
 
   @override
   String get galleryEmpty => 'Η συλλογή είναι άδεια';
@@ -448,35 +448,35 @@ class AppLocalizationsEl extends AppLocalizations {
       'Καινούργιο προϊόν — μπορείτε να προσθέσετε επιλογές χρώματος';
 
   @override
-  String get productConditionSectionTitle => 'Ürün Durumu';
+  String get productConditionSectionTitle => 'Κατάσταση Προϊόντος';
 
   @override
   String get colorOptionsOptional => 'Επιλογές χρώματος (προαιρετικό)';
 
   @override
-  String get dimensionsLabel => 'Ölçüler (opsiyonel)';
+  String get dimensionsLabel => 'Διαστάσεις (προαιρετικό)';
 
   @override
-  String get dimensionsHint => 'Örn: 220 x 90 x 85 cm';
+  String get dimensionsHint => 'π.χ. 220 x 90 x 85 εκ.';
 
   @override
-  String get materialLabel => 'Malzeme (opsiyonel)';
+  String get materialLabel => 'Υλικό (προαιρετικό)';
 
   @override
-  String get materialHint => 'Örn: Masif Meşe, Kadife Kumaş';
+  String get materialHint => 'π.χ. Μασίφ Δρυς, Βελούδινο Ύφασμα';
 
   @override
-  String get reservedToggleLabel => 'Rezerve Edildi';
+  String get reservedToggleLabel => 'Κρατημένο';
 
   @override
   String get reservedHint =>
-      'Bir müşteri için ayrıldı — hâlâ vitrinde görünür ama rozetli';
+      'Κρατημένο για πελάτη — παραμένει ορατό αλλά με ετικέτα';
 
   @override
-  String get reservedBadge => 'REZERVE';
+  String get reservedBadge => 'ΚΡΑΤΗΜΕΝΟ';
 
   @override
-  String get priceDropBadge => 'İndirimde';
+  String get priceDropBadge => 'Μείωση Τιμής';
 
   @override
   String get noImagesYet => 'Δεν έχουν προστεθεί ακόμη εικόνες';
@@ -519,45 +519,45 @@ class AppLocalizationsEl extends AppLocalizations {
   String get loginButton => 'Σύνδεση';
 
   @override
-  String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
+  String get authErrorEmptyCredentials => 'Το email και ο κωδικός δεν μπορούν να είναι κενά.';
 
   @override
-  String get authErrorUserNotFound => 'Kullanıcı bulunamadı.';
+  String get authErrorUserNotFound => 'Ο χρήστης δεν βρέθηκε.';
 
   @override
   String get authErrorAdminCheckTimeout =>
-      'Yetki kontrolü zaman aşımına uğradı.';
+      'Ο έλεγχος εξουσιοδότησης έληξε.';
 
   @override
-  String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+  String get authErrorNotAdmin => 'Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.';
 
   @override
-  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
+  String get authErrorInvalidEmail => 'Μη έγκυρη διεύθυνση email.';
 
   @override
-  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış.';
+  String get authErrorUserDisabled => 'Αυτός ο λογαριασμός έχει απενεργοποιηθεί.';
 
   @override
   String get authErrorAccountNotFound =>
-      'Bu e-posta ile kayıtlı kullanıcı bulunamadı.';
+      'Δεν βρέθηκε χρήστης με αυτό το email.';
 
   @override
-  String get authErrorWrongPassword => 'Şifre hatalı.';
+  String get authErrorWrongPassword => 'Λανθασμένος κωδικός.';
 
   @override
-  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı.';
+  String get authErrorInvalidCredential => 'Λανθασμένο email ή κωδικός.';
 
   @override
   String get authErrorTooManyRequests =>
-      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.';
+      'Πολλές προσπάθειες. Δοκιμάστε ξανά αργότερα.';
 
   @override
   String authErrorGeneric(String code) {
-    return 'Giriş başarısız: $code';
+    return 'Αποτυχία σύνδεσης: $code';
   }
 
   @override
-  String get authErrorUnknown => 'Bilinmeyen hata';
+  String get authErrorUnknown => 'Άγνωστο σφάλμα';
 
   @override
   String get sponsored => 'Χορηγούμενο';
@@ -1070,7 +1070,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get newProductsSearchHint =>
-      'Mobilya, koltuk, masa veya kategori ara...';
+      'Αναζήτηση επίπλων, καναπέ, τραπεζιού ή κατηγορίας...';
 
   @override
   String get productsBadgeLabel => 'ΠΡΟΪΟΝΤΑ';
@@ -1182,16 +1182,16 @@ class AppLocalizationsEl extends AppLocalizations {
   String get onboardingStart => 'Ξεκινήστε';
 
   @override
-  String get onboardingNext => 'İleri';
+  String get onboardingNext => 'Επόμενο';
 
   @override
-  String get onboardingCategoriesChip => '13 Kategori';
+  String get onboardingCategoriesChip => '13 Κατηγορίες';
 
   @override
-  String get onboardingBargainChip => 'Pazarlık Payı';
+  String get onboardingBargainChip => 'Περιθώριο Διαπραγμάτευσης';
 
   @override
-  String get onboardingFastReplyChip => 'Hızlı Yanıt';
+  String get onboardingFastReplyChip => 'Γρήγορη Απάντηση';
 
   @override
   String get onboardingPage1Eyebrow => 'ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟ SAĞLAM SPOT';
@@ -1503,7 +1503,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get navCart => 'Καλάθι';
 
   @override
-  String get navFavorites => 'Favoriler';
+  String get navFavorites => 'Αγαπημένα';
 
   @override
   String get navProfile => 'Προφίλ';
@@ -1583,11 +1583,11 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsAdminLogin => 'Σύνδεση Διαχειριστή';
 
   @override
-  String get settingsNotificationPermission => 'Bildirim İzinleri';
+  String get settingsNotificationPermission => 'Δικαιώματα Ειδοποιήσεων';
 
   @override
   String get notificationsEnablePermissionTooltip =>
-      'Bildirim izni ver / ayarları aç';
+      'Επιτρέψτε ειδοποιήσεις / ανοίξτε ρυθμίσεις';
 
   @override
   String get settingsAppVersion => 'Έκδοση Εφαρμογής';
@@ -1694,11 +1694,11 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsThemeDark => 'Σκοτεινό';
 
   @override
-  String get settingsDynamicColorTitle => 'Telefonumun Rengini Kullan';
+  String get settingsDynamicColorTitle => 'Χρήση Χρώματος Τηλεφώνου';
 
   @override
   String get settingsDynamicColorSubtitle =>
-      'Açık/koyu mod değişmez, sadece vurgu renkleri telefonunuzun duvar kağıdı temasına uyum sağlar (Android 12+)';
+      'Η φωτεινή/σκοτεινή λειτουργία παραμένει ίδια — μόνο τα χρώματα έμφασης προσαρμόζονται στο θέμα ταπετσαρίας του τηλεφώνου σας (Android 12+)';
 
   @override
   String get notificationsTitle => 'Ειδοποιήσεις';
@@ -1753,22 +1753,22 @@ class AppLocalizationsEl extends AppLocalizations {
   String get catalogCategoryTitleWhite => 'Οικιακές Συσκευές';
 
   @override
-  String get catalogCategoryTitleLighting => 'Aydınlatma';
+  String get catalogCategoryTitleLighting => 'Φωτισμός';
 
   @override
-  String get catalogCategoryTitleHomeTextile => 'Halı & Ev Tekstili';
+  String get catalogCategoryTitleHomeTextile => 'Χαλιά & Υφάσματα Σπιτιού';
 
   @override
-  String get catalogCategoryTitleDecor => 'Dekorasyon & Aksesuar';
+  String get catalogCategoryTitleDecor => 'Διακόσμηση & Αξεσουάρ';
 
   @override
-  String get catalogCategoryTitleOfficeFurniture => 'Ofis Mobilyası';
+  String get catalogCategoryTitleOfficeFurniture => 'Έπιπλα Γραφείου';
 
   @override
-  String get catalogCategoryTitleOutdoorGarden => 'Bahçe & Balkon';
+  String get catalogCategoryTitleOutdoorGarden => 'Κήπος & Μπαλκόνι';
 
   @override
-  String get catalogCategoryTitleKidsFurniture => 'Bebek & Çocuk Odası';
+  String get catalogCategoryTitleKidsFurniture => 'Δωμάτιο Μωρού & Παιδιών';
 
   @override
   String get catalogCategoryTitleOther => 'Διακόσμηση';
@@ -2194,22 +2194,32 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
-  String get maintenancePageTitle => 'Bakımdayız';
+  String get maintenancePageTitle => 'Υπό Συντήρηση';
 
   @override
   String get maintenancePageDesc =>
-      'Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.';
+      'Το Sağlam Spot είναι προσωρινά μη διαθέσιμο λόγω σύντομων εργασιών συντήρησης. Θα επιστρέψουμε σύντομα.';
 
   @override
-  String get maintenancePageRetry => 'Tekrar Dene';
+  String get maintenancePageRetry => 'Δοκιμάστε Ξανά';
 
   @override
-  String get forceUpdatePageTitle => 'Güncelleme Gerekli';
+  String get forceUpdatePageTitle => 'Απαιτείται Ενημέρωση';
 
   @override
   String get forceUpdatePageDesc =>
-      'Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.';
+      'Ενημερώστε την εφαρμογή από το κατάστημα για να συνεχίσετε. Αυτή η έκδοση δεν υποστηρίζεται πλέον.';
 
   @override
-  String get forceUpdatePageButton => 'Şimdi Güncelle';
+  String get forceUpdatePageButton => 'Ενημέρωση Τώρα';
+
+  @override
+  String productViewCountLabel(int count) {
+    return 'Προβλήθηκε $count φορές';
+  }
+
+  @override
+  String deliveryZonesAndSurroundings(String zones) {
+    return '$zones και τις γύρω περιοχές';
+  }
 }

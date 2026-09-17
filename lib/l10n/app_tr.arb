@@ -862,5 +862,21 @@
   "maintenancePageRetry": "Tekrar Dene",
   "forceUpdatePageTitle": "Güncelleme Gerekli",
   "forceUpdatePageDesc": "Devam edebilmek için lütfen uygulamayı mağazadan güncelleyin. Bu sürüm artık desteklenmiyor.",
-  "forceUpdatePageButton": "Şimdi Güncelle"
+  "forceUpdatePageButton": "Şimdi Güncelle",
+  "productViewCountLabel": "{count} kez görüntülendi",
+  "@productViewCountLabel": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "deliveryZonesAndSurroundings": "{zones} ve çevresi",
+  "@deliveryZonesAndSurroundings": {
+    "placeholders": {
+        "zones": {
+          "type": "String"
+        }
+    }
+  }
 }
