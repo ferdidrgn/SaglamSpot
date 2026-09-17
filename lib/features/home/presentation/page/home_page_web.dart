@@ -17,9 +17,9 @@ import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/util/responsive_utils.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
+import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
-import '../../../../core/widgets/dynamic_category_chips.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/data/models/category_meta.dart';
@@ -543,19 +543,151 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ),
       );
 
+  // Önceden burada düz ikon+etiket çipleri (DynamicCategoryChips) vardı —
+  // "eski tip", görselsiz bir liste. Artık mobil uygulamanın vitrin
+  // hissiyatına uygun, her kategorinin kendi fotoğrafını taşıyan, sık/yoğun
+  // bir yatay kart şeridi. "Tümü" kartı fotoğrafsız, marka rengiyle ayrışan
+  // sabit ilk kart olarak kalıyor.
   Widget _buildCategoriesSection() {
+    final categories = ref.watch(orderedActiveCategoriesProvider);
+    final selected = ref.watch(searchFiltersProvider).category;
+    final cardWidth =
+        context.responsive(mobile: 108.0, tablet: 122.0, desktop: 136.0);
+    final cardHeight =
+        context.responsive(mobile: 132.0, tablet: 148.0, desktop: 164.0);
+
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 20),
-        child: DynamicCategoryChips(
-          selected: ref.watch(searchFiltersProvider).category,
-          onSelect: (final category) =>
-              ref.read(searchFiltersProvider.notifier).setCategory(category),
+        height: cardHeight,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+          itemCount: categories.length + 1,
+          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
+          itemBuilder: (final context, final index) {
+            if (index == 0) {
+              return _buildCompactCategoryCard(
+                width: cardWidth,
+                title: context.l10n.conditionAll,
+                imageUrl: null,
+                isSelected: selected == null,
+                onTap: () =>
+                    ref.read(searchFiltersProvider.notifier).setCategory(null),
+              );
+            }
+            final meta = categories[index - 1];
+            return _buildCompactCategoryCard(
+              width: cardWidth,
+              title: meta.customLabel ?? meta.category.label(context),
+              imageUrl: _categoryPhotos[meta.category] ??
+                  _categoryPhotos[ProductCategory.other],
+              isSelected: selected == meta.category,
+              onTap: () => ref
+                  .read(searchFiltersProvider.notifier)
+                  .setCategory(meta.category),
+            );
+          },
         ),
       ),
     );
   }
+
+  Widget _buildCompactCategoryCard({
+    required final double width,
+    required final String title,
+    required final String? imageUrl,
+    required final bool isSelected,
+    required final VoidCallback onTap,
+  }) =>
+      TactilePress(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          width: width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: imageUrl == null
+                ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.accentDark,
+                      AppColors.accentDark.withOpacity(0.78),
+                    ],
+                  )
+                : null,
+            boxShadow: [
+              BoxShadow(
+                color: isSelected
+                    ? AppColors.accentDark.withOpacity(0.28)
+                    : Colors.black.withOpacity(0.07),
+                blurRadius: isSelected ? 18 : 10,
+                offset: const Offset(0, 6),
+              ),
+            ],
+            border: Border.all(
+              color: isSelected ? AppColors.accentDark : Colors.transparent,
+              width: 2.4,
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                if (imageUrl != null)
+                  Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        Container(color: AppColors.secondary),
+                  )
+                else
+                  Center(
+                    child: Icon(Icons.grid_view_rounded,
+                        color: Colors.white.withOpacity(0.85), size: 26),
+                  ),
+                if (imageUrl != null)
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.15),
+                          Colors.black.withOpacity(0.78),
+                        ],
+                        stops: const [0.3, 0.6, 1.0],
+                      ),
+                    ),
+                  ),
+                Positioned(
+                  left: 10,
+                  right: 10,
+                  bottom: 12,
+                  child: Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: 'Fraunces',
+                      color: Colors.white,
+                      fontSize: context.responsive(mobile: 12.5, desktop: 13.5),
+                      fontWeight: FontWeight.w700,
+                      height: 1.15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   // "50+ Beautiful rooms inspiration" referansının bölünmüş panel düzeni:
   // solda sabit renkli metin bloğu + "Keşfet" CTA'sı, sağda kademeli
