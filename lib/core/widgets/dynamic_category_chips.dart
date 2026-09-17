@@ -24,8 +24,16 @@ class DynamicCategoryChips extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final categories = ref.watch(orderedActiveCategoriesProvider);
 
-    return SizedBox(
-      height: context.responsive(mobile: 56, tablet: 64, desktop: 72),
+    // Çipler artık sayfa zemininde tek başına yüzmüyor — mobil uygulamadaki
+    // segmented-control hissi için hepsini tek, yumuşak/soft bir "track"
+    // bandının içine alıyoruz. Bant kendi hafif gölgesiyle tüm şeridi tek
+    // bir UI elemanı gibi okutuyor.
+    return Container(
+      height: context.responsive(mobile: 60, tablet: 68, desktop: 76),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.55),
+        borderRadius: BorderRadius.circular(26),
+      ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: padding ??
@@ -79,14 +87,14 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return AnimatedScale(
-      scale: isSelected ? 1.04 : 1.0,
+      scale: isSelected ? 1.03 : 1.0,
       duration: const Duration(milliseconds: 220),
       curve: Curves.easeOutBack,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 220),
             curve: Curves.easeOut,
@@ -96,26 +104,22 @@ class _CategoryChip extends StatelessWidget {
               vertical: context.responsive(mobile: 10, tablet: 12, desktop: 14),
             ),
             decoration: BoxDecoration(
-              gradient: isSelected
-                  ? LinearGradient(
-                      colors: [color, color.withOpacity(0.75)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
-                  : null,
-              color: isSelected ? null : Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              // Gradyan yerine düz, tek renk seçili zemin — mobil uygulama
+              // çiplerindeki gibi daha sade/soft bir dolgu hissi.
+              color: isSelected ? color : Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(22),
               border: Border.all(
-                color: isSelected ? Colors.transparent : color.withOpacity(0.25),
-                width: 1.4,
+                color:
+                    isSelected ? Colors.transparent : color.withOpacity(0.16),
+                width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
                   color: isSelected
-                      ? color.withOpacity(0.35)
-                      : Colors.black.withOpacity(0.05),
-                  blurRadius: isSelected ? 16 : 8,
-                  offset: const Offset(0, 6),
+                      ? color.withOpacity(0.22)
+                      : Colors.black.withOpacity(0.03),
+                  blurRadius: isSelected ? 14 : 6,
+                  offset: const Offset(0, 5),
                 ),
               ],
             ),
@@ -133,7 +137,7 @@ class _CategoryChip extends StatelessWidget {
                   style: TextStyle(
                     fontSize:
                         context.responsive(mobile: 13, tablet: 13.5, desktop: 14),
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                     color: isSelected ? Colors.white : context.primaryColor,
                     letterSpacing: 0.2,
                   ),

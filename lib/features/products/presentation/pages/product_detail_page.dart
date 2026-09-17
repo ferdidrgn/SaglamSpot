@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/ads/widgets/platform_bottom_banner.dart';
+import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
@@ -205,7 +206,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                   if (similar.isNotEmpty)
                     SliverToBoxAdapter(
-                        child: _buildSimilarSection(context, similar)),
+                        child: _buildSimilarSection(
+                            context, similar, product.category)),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: context.pagePadding
@@ -660,6 +662,15 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 ),
               ],
             ),
+
+            // Gerçek görüntülenme sayısı — uydurma "2.4K mutlu müşteri" gibi
+            // bir rakam değil, doğrudan bu sayfanın kendisinin her
+            // yüklenişinde artırdığı sayaç (bkz. ProductViewTracker.trackView
+            // yukarıda). Sayfaya küçük ama GERÇEK bir "canlılık" katıyor.
+            if (product.viewCountWeb + product.viewCountMobile > 0) ...[
+              const SizedBox(height: 10),
+              _buildViewCountChip(context, product),
+            ],
             SizedBox(height: context.spacingLarge),
 
             // Güven rozetleri + eklenme tarihi — tek, belirgin blok.
@@ -874,6 +885,37 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           ),
         );
       },
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // GERÇEK GÖRÜNTÜLENME SAYACI
+  // ════════════════════════════════════════════════════════════
+
+  Widget _buildViewCountChip(final BuildContext context, final Product product) {
+    final total = product.viewCountWeb + product.viewCountMobile;
+    return FadeTransition(
+      opacity: _stagger(0.18),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.visibility_outlined,
+              size: 14,
+              color: platformPick(context,
+                  mobile: AppColors.mobileTextTertiary,
+                  web: AppColors.textTertiary)),
+          const SizedBox(width: 5),
+          Text(
+            '$total kez görüntülendi',
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: platformPick(context,
+                    mobile: AppColors.mobileTextTertiary,
+                    web: AppColors.textTertiary)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1128,19 +1170,34 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   /// — ve içindeki kartlar rastgele basit kutular değil, sitenin GERÇEK
   /// imza kartı (CustomProductCard: asimetrik köşe + kategori renkli glow +
   /// köşe etiketi) — tekrar icat etmek yerine doğrudan yeniden kullanılıyor.
-  Widget _buildSimilarSection(
-      final BuildContext context, final List<Product> similar) {
+  Widget _buildSimilarSection(final BuildContext context,
+      final List<Product> similar, final ProductCategory category) {
     final cardWidth = context.responsive(mobile: 168.0, desktop: 190.0);
     final cardHeight = context.responsive(mobile: 216.0, desktop: 232.0);
     const verticalBreathingRoom = 16.0; // Kartın "radiant glow" gölgesi için.
+
+    final accent = platformPick(context,
+        mobile: AppColors.mobileAccent, web: AppColors.accent);
 
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: context.spacingLarge),
       padding: EdgeInsets.symmetric(vertical: context.spacingLarge * 0.85),
-      color: platformPick(context,
-              mobile: AppColors.mobileCardBg, web: AppColors.secondary)
-          .withOpacity(0.55),
+      // Düz tek renk yerine hafif bir gradyan yıkama — bölüm sayfanın
+      // geri kalanına göre biraz daha "canlı" hissettiriyor, aşırıya
+      // kaçmadan.
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            platformPick(context,
+                    mobile: AppColors.mobileCardBg, web: AppColors.secondary)
+                .withOpacity(0.55),
+            accent.withOpacity(0.06),
+          ],
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1148,19 +1205,36 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
             child: Row(
               children: [
-                Icon(Icons.auto_awesome_rounded,
-                    size: 18,
-                    color: platformPick(context,
-                        mobile: AppColors.mobileAccent,
-                        web: AppColors.accent)),
+                Icon(Icons.auto_awesome_rounded, size: 18, color: accent),
                 const SizedBox(width: 8),
-                Text(context.l10n.similarProducts,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18,
-                        color: platformPick(context,
-                            mobile: AppColors.mobileTextPrimary,
-                            web: AppColors.textPrimary))),
+                Expanded(
+                  child: Text(context.l10n.similarProducts,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                          color: platformPick(context,
+                              mobile: AppColors.mobileTextPrimary,
+                              web: AppColors.textPrimary))),
+                ),
+                // "Tümünü Gör" — benzer ürün şeridini bir çıkmaz sokak
+                // olmaktan çıkarıp aynı kategorinin tam listesine açılan bir
+                // kapıya dönüştürüyor (daha içerik zengini bir his).
+                GestureDetector(
+                  onTap: () => NavigationHandler.goToSearchWithCategory(
+                      context, category.toFirestore()),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(context.l10n.showAllButton,
+                          style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              color: accent)),
+                      const SizedBox(width: 2),
+                      Icon(Icons.arrow_forward_rounded, size: 13, color: accent),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

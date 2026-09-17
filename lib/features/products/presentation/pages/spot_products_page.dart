@@ -7,27 +7,23 @@ import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
-import '../../../../core/common/extentions/product_wear_tier_ex.dart';
-import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
-import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
-import '../../../../core/widgets/design_system/product_image_switcher.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/editorial_product_grid_widgets.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
-import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
+import '../../../search/presentation/widgets/search_product_grid_card.dart';
 import '../../domain/entites/product.dart';
 
 /// "Spot / İkinci El Ürünler" — KÖKLÜ, ikinci kez baştan tasarlandı.
@@ -116,37 +112,6 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
         return Icons.child_friendly_outlined;
       case ProductCategory.other:
         return Icons.category_outlined;
-    }
-  }
-
-  String _getCategoryImageUrl(ProductCategory category) {
-    switch (category) {
-      case ProductCategory.sofa:
-        return 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.chair:
-        return 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.table:
-        return 'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.bed:
-        return 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.wardrobe:
-        return 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.white:
-        return 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.lighting:
-        return 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.homeTextile:
-        return 'https://images.unsplash.com/photo-1600166898405-da9535204843?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.decor:
-        return 'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.officeFurniture:
-        return 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.outdoorGarden:
-        return 'https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.kidsFurniture:
-        return 'https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.other:
-        return 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80';
     }
   }
 
@@ -787,120 +752,84 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   }
 
   // ============================================================
-  // 3. SAĞ DİKEY KATEGORİ RAİL — ürünlerin sağında, arama çubuğunun
-  // hemen altında başlayıp aşağı doğru sıralı.
+  // 3. SAĞ DİKEY KATEGORİ RAYI — sade, yumuşak, mobil ilhamlı liste
+  // ürünlerin sağında, arama çubuğunun hemen altında başlıyor.
   // ============================================================
-  // Önceden yalnızca 52x52'lik düz ikon kutularından oluşan, etiketleri
-  // sadece hover'da (Tooltip) görünen dar (76px) bir rayd. Artık her
-  // satırda kategori görseli + her zaman görünür etiket bulunan, mobildeki
-  // görsel kategori kartlarıyla aynı dili konuşan daha geniş/şık bir ray —
-  // sağ tarafta kalmaya devam ediyor.
+  // İki önceki deneme (52x52 düz ikon kutuları, sonra fotoğraf küçük-
+  // resimli kutular) hem soğuk hem de kalabalık duruyordu. Artık mobil
+  // uygulamadaki gibi tamamen tipografiye dayalı, görselsiz/kutusuz bir
+  // liste: seçili satır ince bir turuncu vurgu çubuğu + soft (hafif
+  // tonlanmış) bir zeminle öne çıkıyor, diğerleri sessiz gri kalıyor.
   Widget _buildVerticalCategoryRail() {
     final railWidth = context.responsive(
-        mobile: 216.0, desktop: 216.0, largeDesktop: 236.0);
+        mobile: 172.0, desktop: 172.0, largeDesktop: 190.0);
 
-    return Container(
+    return SizedBox(
       width: railWidth,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFE8E3DC), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildRailIconItem(
-            icon: Icons.grid_view_rounded,
+          _buildRailTextItem(
             label: context.l10n.conditionAll,
             isSelected: _selectedCategory == null,
             onTap: () => setState(() => _selectedCategory = null),
           ),
-          const SizedBox(height: 6),
-          ...ProductCategory.values
-              .map(
-                (cat) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: _buildRailIconItem(
-                    icon: _getCategoryIcon(cat),
-                    imageUrl: _getCategoryImageUrl(cat),
-                    label: _getCategoryTitle(context, cat),
-                    isSelected: _selectedCategory == cat,
-                    onTap: () => setState(() => _selectedCategory = cat),
-                  ),
-                ),
-              )
-              .toList(),
+          ...ProductCategory.values.map(
+            (cat) => _buildRailTextItem(
+              label: _getCategoryTitle(context, cat),
+              isSelected: _selectedCategory == cat,
+              onTap: () => setState(() => _selectedCategory = cat),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildRailIconItem({
-    required IconData icon,
+  Widget _buildRailTextItem({
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
-    final String? imageUrl,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        margin: const EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color:
-              isSelected ? const Color(0xFF1A1A1A) : const Color(0xFFF6F6F7),
-          borderRadius: BorderRadius.circular(16),
+          color: isSelected
+              ? SpotPalette.accent.withOpacity(0.09)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(11),
-              child: SizedBox(
-                width: 38,
-                height: 38,
-                child: imageUrl == null
-                    ? Container(
-                        color: isSelected
-                            ? Colors.white.withOpacity(0.14)
-                            : Colors.white,
-                        child: Icon(icon,
-                            size: 18,
-                            color: isSelected
-                                ? Colors.white
-                                : const Color(0xFF8C827A)),
-                      )
-                    : Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: const Color(0xFFE8E3DC),
-                          child: Icon(icon,
-                              size: 18, color: const Color(0xFF8C827A)),
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(width: 10),
             Expanded(
               child: Text(
                 label,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 12.5,
+                  fontSize: 13.5,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  height: 1.15,
-                  color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
+                  letterSpacing: 0.1,
+                  color: isSelected
+                      ? const Color(0xFF1A1A1A)
+                      : const Color(0xFFB0AAA2),
                 ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOut,
+              width: 3,
+              height: isSelected ? 16 : 0,
+              decoration: BoxDecoration(
+                color: SpotPalette.accent,
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ],
@@ -1006,8 +935,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             mobile: 2, tablet: 3, desktop: 3, largeDesktop: 4),
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio:
-            context.responsive(mobile: 0.64, tablet: 0.68, desktop: 0.71),
+        childAspectRatio: context.cardAspectRatio(),
       ),
       itemCount: paddedItemCountForAds(products.length),
       itemBuilder: (final context, final index) {
@@ -1015,315 +943,16 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
           return const RevealFade(offsetY: 18, child: NativeAdCard());
         }
         final realIndex = realIndexForAdGrid(index, products.length);
+        // Sitenin GERÇEK imza kartı — arama sayfasıyla birebir aynı
+        // (bkz. search_product_grid_card.dart). Önceden bu sayfanın
+        // kendi, sol turuncu şeritli özel kartı vardı; tutarlılık için
+        // kaldırıldı.
         return RevealFade(
           delayMs: (index % 8) * 45,
           offsetY: 18,
-          child: _buildSingleSpotCard(context, products[realIndex]),
+          child: SearchProductGridCard(product: products[realIndex]),
         );
       },
-    );
-  }
-
-  // ================================================================
-  // TEK KART (SIFIRDAN - EditorialProductCard KULLANILMADI)
-  // ================================================================
-  Widget _buildSingleSpotCard(BuildContext context, Product product) {
-    final isFavorite =
-        ref.watch(favoritesProvider).any((final p) => p.id == product.id);
-    return GestureDetector(
-      onTap: () => NavigationHandler.goToProduct(
-        context: context,
-        productId: product.id,
-        productSlug: product.name.toSlug(),
-      ),
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: SpotPalette.cardBackground,
-          borderRadius: BorderRadius.circular(SpotPalette.cardRadius),
-          // Border.paint() renkleri tek tip olmayan bir kenarlığa
-          // borderRadius verildiğinde exception atıyor (Flutter'ın kendi
-          // kısıtı) — bu yüzden kenarlık tek renk, turuncu şerit ayrı bir
-          // Positioned katman olarak çiziliyor (altta).
-          border: Border.all(color: SpotPalette.cardBorder, width: 1),
-          // "Havada süzülen" 3B his: katmanlı, tamamen dikey ofsetli
-          // gölgeler — üstte neredeyse hiç iz bırakmıyor, aşağı ve yanlara
-          // doğru gide gide belirginleşiyor (offset dx=0 olduğu için üst
-          // kenar gölgesiz kalıyor, blur köşelerden yanlara taşıyor).
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1A1A1A).withOpacity(0.05),
-              blurRadius: 5,
-              offset: const Offset(0, 2),
-            ),
-            BoxShadow(
-              color: const Color(0xFF1A1A1A).withOpacity(0.08),
-              blurRadius: 18,
-              offset: const Offset(0, 12),
-            ),
-            BoxShadow(
-              color: SpotPalette.accent.withOpacity(0.16),
-              blurRadius: 34,
-              offset: const Offset(0, 22),
-              spreadRadius: -6,
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            // Sol kenardaki kalın turuncu şerit, "fiyat etiketi" hissi
-            // veriyor — Sıfır kartlarının yumuşak, şeritsiz haliyle
-            // bilinçli bir zıtlık kuruyor. Üst Container'ın clipBehavior +
-            // borderRadius'u sayesinde köşeler otomatik yuvarlanıyor.
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: Container(width: 4, color: SpotPalette.accent),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // --- GÖRSEL BÖLÜMÜ (Üst %60) ---
-                Expanded(
-                  flex: 6,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: ProductImageSwitcher(
-                          images: product.imagesUrl,
-                          imageBuilder: (final url) => OptimizedCachedImage(
-                            imageUrl: url,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                            borderRadius: 0,
-                            errorBuilder: (_, __, ___) =>
-                                const _SpotCardImageFallback(),
-                          ),
-                          fallback: const _SpotCardImageFallback(),
-                        ),
-                      ),
-
-                      // Kategori etiketi (sol üst)
-                      Positioned(
-                        top: 12,
-                        left: 12,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            _getCategoryTitle(context, product.category)
-                                .toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF3D3630),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Favori butonu (sağ üst) — artık gerçekten çalışıyor:
-                      // favoritesProvider'ı değiştiriyor (bu da fiyat düşünce
-                      // bildirim alabilmek için Firestore'a senkronize
-                      // ediliyor, bkz. favorites_provider.dart). Kartın kendi
-                      // onTap'ına düşmesin diye ayrı bir GestureDetector.
-                      Positioned(
-                        top: 12,
-                        right: 12,
-                        child: GestureDetector(
-                          onTap: () => ref
-                              .read(favoritesProvider.notifier)
-                              .toggle(product),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              isFavorite
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border,
-                              size: 18,
-                              color: isFavorite
-                                  ? SpotPalette.accent
-                                  : const Color(0xFF1A1A1A),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Fiyat etiketi (görsel alt sağ)
-                      Positioned(
-                        bottom: 12,
-                        right: 12,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1A1A1A),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            "₺${product.price.toStringAsFixed(0)}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // --- İÇERİK BÖLÜMÜ (Alt %40) ---
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _getCategoryTitle(context, product.category)
-                                  .toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF9E9E9E),
-                                letterSpacing: 0.8,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              product.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.spaceGrotesk(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: SpotPalette.heading,
-                                height: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Bilgi satırları
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // 1. SATIR: Gerçek durum rozeti (esnafın kendi girdiği
-                            // bilgi — sahte yıldız puanı ve "SIFIR" etiketi
-                            // KALDIRILDI, ikinci el ürünü sıfırmış gibi
-                            // göstermek yanıltıcıydı) + stok.
-                            Row(
-                              children: [
-                                if (product.wearTier != null) ...[
-                                  Icon(product.wearTier!.icon,
-                                      size: 13, color: product.wearTier!.color),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    product.wearTier!.label,
-                                    style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: product.wearTier!.color),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                      width: 3,
-                                      height: 3,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xFFD1D5DB),
-                                          shape: BoxShape.circle)),
-                                  const SizedBox(width: 8),
-                                ],
-                                const Icon(Icons.check_circle,
-                                    size: 12, color: Color(0xFF16A34A)),
-                                const SizedBox(width: 4),
-                                const Text(
-                                  "Stokta",
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF16A34A)),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-
-                            // 3. SATIR: Teslimat + Buton
-                            Row(
-                              children: [
-                                const Icon(Icons.local_shipping_outlined,
-                                    size: 14, color: Color(0xFF6B7280)),
-                                const SizedBox(width: 6),
-                                Text(
-                                  context.l10n.freeDeliveryLabel,
-                                  style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF6B7280)),
-                                ),
-                                const Spacer(),
-                                // İncele butonu
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF1A1A1A),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        context.l10n.viewButton,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Icon(Icons.arrow_forward_rounded,
-                                          size: 12, color: Colors.white),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -1675,17 +1304,4 @@ class _ViewToggle extends ConsumerWidget {
       ],
     );
   }
-}
-
-/// Ürünün gerçek fotoğrafı yoksa ya da yüklenemezse gösterilen yedek görsel.
-class _SpotCardImageFallback extends StatelessWidget {
-  const _SpotCardImageFallback();
-
-  @override
-  Widget build(BuildContext context) => Container(
-        color: const Color(0xFFEEEEEE),
-        child: const Center(
-          child: Icon(Icons.chair_outlined, size: 48, color: Color(0xFFBDBDBD)),
-        ),
-      );
 }
