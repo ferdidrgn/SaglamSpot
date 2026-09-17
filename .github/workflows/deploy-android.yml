@@ -63,14 +63,13 @@ jobs:
 
       # PLAY_STORE_SERVICE_ACCOUNT_JSON: Play Console > Setup > API access üzerinden
       # bağlanan Google Cloud servis hesabının indirilen JSON anahtarının TAMAMI.
-      # NOT: track "internal" olarak ayarlandı — production'a otomatik yayın YAPILMIYOR.
-      # Yükleme sonrası Play Console > Internal testing ekranından incelenip elle
-      # bir üst track'e (alpha/beta/production) terfi ettirilmesi önerilir.
-      - name: Google Play Console'a yükle (internal track)
+      # NOT: track "production" — main'e her push doğrudan TÜM kullanıcılara
+      # %100 yayınlanır, manuel inceleme/onay adımı YOK.
+      - name: Google Play Console'a yükle (production track)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           packageName: com.ferdidrgn.saglamspot
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          track: internal
+          track: production
           status: completed
