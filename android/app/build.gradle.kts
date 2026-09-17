@@ -27,8 +27,7 @@ android {
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
 
-        // 🔒 Google Play çakışmasını önlemek için sürüm kodunu 15 yaptık
-        versionCode = 15
+        versionCode = flutter.versionCode
         versionName = flutter.versionName ?: "1.0.0"
         multiDexEnabled = true
 
