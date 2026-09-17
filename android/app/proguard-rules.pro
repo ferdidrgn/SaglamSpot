@@ -19,27 +19,23 @@
 -dontwarn org.openjsse.**
 -dontwarn com.google.android.play.core.**
 
-# --- Flutter Çekirdek ---
--keep class io.flutter.app.** { *; }
--keep class io.flutter.plugin.** { *; }
--keep class io.flutter.util.** { *; }
--keep class io.flutter.view.** { *; }
--keep class io.flutter.** { *; }
--keep class io.flutter.plugins.** { *; }
--keep class io.flutter.plugin.editing.** { *; }
-
-# --- Firebase Güvenliği ---
--keep class com.google.firebase.** { *; }
--keep class com.google.android.gms.** { *; }
--keepclassmembers class com.google.firebase.** { *; }
-
-# --- Play Store & Split Install Koruması ---
--keep class com.google.android.play.core.** { *; }
-
-# --- Kotlin ---
--keep class kotlin.** { *; }
--keep class kotlin.Metadata { *; }
+# --- Flutter / Firebase / Play Services / Play Core / Kotlin ---
+# Önceden burada io.flutter.**, com.google.firebase.**, com.google.android.gms.**,
+# com.google.android.play.core.** ve kotlin.** için blok "-keep class X.** { *; }"
+# kuralları vardı — bu bağımlılık ağaçları uygulamanın DEX kodunun büyük
+# kısmını oluşturuyor, bu yüzden hepsini karartmadan (obfuscation) muaf
+# tutmak Play Console'un "Kod Karartma" vitals metriğini ~%19'a düşürüyordu
+# (eşik %25). Bu SDK'ların hepsi (Flutter engine, tüm Firebase paketleri,
+# Play Services, Kotlin stdlib) yıllardır kendi AAR'larının içinde R8
+# "consumer proguard rules" taşıyor — yani gerçekten JNI/reflection'la
+# erişilen ne varsa zaten otomatik korunuyor; burada tekrar blok halinde
+# tutmaya gerek yok. Bu uygulama Firebase'e sadece Dart tarafındaki resmi
+# eklentiler (cloud_firestore vb.) üzerinden erişiyor — native tarafta elle
+# POJO/reflection eşlemesi yapılmıyor (bkz. ProductModel.fromFirestore gibi
+# Dart factory'ler); Play Core ise pubspec.yaml'da hiç kullanılmıyor
+# (in_app_update/in_app_review yok) — hepsi bu kaldırmayı güvenli kılıyor.
 -dontwarn kotlin.**
+-keep class kotlin.Metadata { *; }
 -keepclassmembers class **$WhenMappings { <fields>; }
 -keepclassmembers class kotlin.Metadata {
     public <methods>;
@@ -88,7 +84,10 @@
 }
 
 # --- Uygulama Sınıfları ---
--keep class com.ferdidrgn.saglamspot.** { *; }
+# Tüm paketi tutan blok kural kaldırıldı — manifest'te native tarafta
+# tanımlı tek sınıf MainActivity, o da yukarıdaki "extends
+# android.app.Activity" kuralıyla zaten korunuyor. Reflection'la
+# çağrılan başka bir native sınıf yok.
 
 # --- AdMob ---
 -keep class com.google.android.gms.ads.** { *; }

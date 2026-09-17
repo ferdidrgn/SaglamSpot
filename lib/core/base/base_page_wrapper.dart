@@ -238,11 +238,15 @@ class _BasePageWrapperState extends ConsumerState<BasePageWrapper>
               : EdgeInsets.zero),
       child: widget.child);
 
+  // statusBarColor/systemNavigationBarColor artık ayarlanmıyor — 'transparent'
+  // dahi olsa native tarafta kullanımdan kaldırılmış Window.setStatusBarColor/
+  // setNavigationBarColor'ı tetikliyor ve Android 15+ (zorunlu uçtan uca)
+  // cihazlarda Play Console'un "desteği sonlandırılmış API" uyarısına yol
+  // açıyor (bkz. app_initializer.dart'taki aynı düzeltme). Uçtan uca görünüm
+  // zaten native tarafta sağlanıyor; burada sadece ikon parlaklığı kalıyor.
   SystemUiOverlayStyle _getSystemUiStyle(final bool isDark) =>
       SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
         statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness:
             isDark ? Brightness.light : Brightness.dark,
       );

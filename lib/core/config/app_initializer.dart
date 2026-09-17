@@ -51,13 +51,19 @@ abstract final class AppInitializer {
 
   static void configureSystemUIPreBoot() {
     if (!kIsWeb) {
+      // statusBarColor/systemNavigationBarColor (rengi 'transparent' dahi
+      // olsa) native tarafta artık kullanımdan kaldırılmış
+      // Window.setStatusBarColor/setNavigationBarColor'ı tetikliyor — Android
+      // 15+ (uçtan uca zorunlu) cihazlarda Play Console bunu "desteği
+      // sonlandırılmış API kullanımı" olarak işaretliyor. Renkler null
+      // bırakılıyor; uçtan uca görünüm zaten MainActivity'deki
+      // WindowCompat.setDecorFitsSystemWindows(window, false) + aşağıdaki
+      // SystemUiMode.edgeToEdge ile sağlanıyor. Sadece ikon parlaklığı
+      // (deprecated olmayan WindowInsetsController yoluyla) ayarlanıyor.
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
-        systemNavigationBarDividerColor: Colors.transparent,
       ));
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
