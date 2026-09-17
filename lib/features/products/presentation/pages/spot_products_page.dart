@@ -119,6 +119,37 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     }
   }
 
+  String _getCategoryImageUrl(ProductCategory category) {
+    switch (category) {
+      case ProductCategory.sofa:
+        return 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.chair:
+        return 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.table:
+        return 'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.bed:
+        return 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.wardrobe:
+        return 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.white:
+        return 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.lighting:
+        return 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.homeTextile:
+        return 'https://images.unsplash.com/photo-1600166898405-da9535204843?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.decor:
+        return 'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.officeFurniture:
+        return 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.outdoorGarden:
+        return 'https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.kidsFurniture:
+        return 'https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=800&q=80';
+      case ProductCategory.other:
+        return 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80';
+    }
+  }
+
   @override
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
@@ -759,13 +790,21 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // 3. SAĞ DİKEY KATEGORİ RAİL — ürünlerin sağında, arama çubuğunun
   // hemen altında başlayıp aşağı doğru sıralı.
   // ============================================================
+  // Önceden yalnızca 52x52'lik düz ikon kutularından oluşan, etiketleri
+  // sadece hover'da (Tooltip) görünen dar (76px) bir rayd. Artık her
+  // satırda kategori görseli + her zaman görünür etiket bulunan, mobildeki
+  // görsel kategori kartlarıyla aynı dili konuşan daha geniş/şık bir ray —
+  // sağ tarafta kalmaya devam ediyor.
   Widget _buildVerticalCategoryRail() {
+    final railWidth = context.responsive(
+        mobile: 216.0, desktop: 216.0, largeDesktop: 236.0);
+
     return Container(
-      width: 76,
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      width: railWidth,
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(38),
+        borderRadius: BorderRadius.circular(28),
         border: Border.all(color: const Color(0xFFE8E3DC), width: 1),
         boxShadow: [
           BoxShadow(
@@ -784,13 +823,14 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
             isSelected: _selectedCategory == null,
             onTap: () => setState(() => _selectedCategory = null),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           ...ProductCategory.values
               .map(
                 (cat) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: 6),
                   child: _buildRailIconItem(
                     icon: _getCategoryIcon(cat),
+                    imageUrl: _getCategoryImageUrl(cat),
                     label: _getCategoryTitle(context, cat),
                     isSelected: _selectedCategory == cat,
                     onTap: () => setState(() => _selectedCategory = cat),
@@ -808,24 +848,62 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
+    final String? imageUrl,
   }) {
-    return Tooltip(
-      message: label,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF1A1A1A) : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Icon(
-            icon,
-            size: 22,
-            color: isSelected ? Colors.white : const Color(0xFF8C827A),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color:
+              isSelected ? const Color(0xFF1A1A1A) : const Color(0xFFF6F6F7),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(11),
+              child: SizedBox(
+                width: 38,
+                height: 38,
+                child: imageUrl == null
+                    ? Container(
+                        color: isSelected
+                            ? Colors.white.withOpacity(0.14)
+                            : Colors.white,
+                        child: Icon(icon,
+                            size: 18,
+                            color: isSelected
+                                ? Colors.white
+                                : const Color(0xFF8C827A)),
+                      )
+                    : Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: const Color(0xFFE8E3DC),
+                          child: Icon(icon,
+                              size: 18, color: const Color(0xFF8C827A)),
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  height: 1.15,
+                  color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

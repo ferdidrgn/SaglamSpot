@@ -543,7 +543,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ============================================================
   Widget _buildShopByCategorySection(
       final BuildContext context, final List<Product> allProducts) {
-    final availableCategories = ProductCategory.values.take(4).toList();
+    // Önceden yalnızca ilk 4 kategori (ProductCategory.values.take(4))
+    // gösteriliyordu — geri kalan 9 kategori hiç görünmüyordu. Artık TÜM
+    // kategoriler, mobildeki gibi sık/yoğun tek satırlık yatay bir şeritte
+    // (Wrap ızgarası yerine yatay kaydırma) gösteriliyor.
+    final availableCategories = ProductCategory.values.toList();
+    final cardWidth =
+        context.responsive(mobile: 128.0, tablet: 148.0, desktop: 164.0);
+    final cardHeight =
+        context.responsive(mobile: 170.0, tablet: 190.0, desktop: 206.0);
 
     return Padding(
       padding: context.sectionPadding.copyWith(top: 36, bottom: 20),
@@ -596,36 +604,34 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final cardWidth = context.isDesktop
-                      ? (constraints.maxWidth - (3 * 16)) / 4
-                      : (constraints.maxWidth - 12) / 2;
+              SizedBox(
+                height: cardHeight,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount: availableCategories.length,
+                  separatorBuilder: (final _, final __) =>
+                      const SizedBox(width: 14),
+                  itemBuilder: (final context, final index) {
+                    final cat = availableCategories[index];
+                    final count =
+                        allProducts.where((p) => p.category == cat).length;
+                    final imageUrl = _getCategoryImageUrl(cat);
 
-                  return Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children:
-                        List.generate(availableCategories.length, (index) {
-                      final cat = availableCategories[index];
-                      final count =
-                          allProducts.where((p) => p.category == cat).length;
-                      final imageUrl = _getCategoryImageUrl(cat);
-
-                      return _buildVisualCategoryCard(
-                        width: cardWidth,
-                        title: _getCategoryTitle(context, cat),
-                        itemCount: context.l10n.categoryProductCount(count),
-                        imageUrl: imageUrl,
-                        isSelected: _selectedCategory == cat,
-                        onTap: () {
-                          setState(() => _selectedCategory = cat);
-                          _scrollToCollection();
-                        },
-                      );
-                    }),
-                  );
-                },
+                    return _buildVisualCategoryCard(
+                      width: cardWidth,
+                      title: _getCategoryTitle(context, cat),
+                      itemCount: context.l10n.categoryProductCount(count),
+                      imageUrl: imageUrl,
+                      isSelected: _selectedCategory == cat,
+                      onTap: () {
+                        setState(() => _selectedCategory = cat);
+                        _scrollToCollection();
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -646,7 +652,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
       onTap: onTap,
       child: Container(
         width: width,
-        height: 250,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
@@ -834,13 +839,20 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // ============================================================
   // 5. KATEGORİ RAYLARI
   // ============================================================
+  // Önceden yalnızca 52x52'lik düz ikon kutularından oluşan, etiketleri
+  // sadece hover'da (Tooltip) görünen dar (76px) bir rayd. Artık her satırda
+  // kategori görseli + her zaman görünür etiket bulunan, mobildeki görsel
+  // kategori kartlarıyla aynı dili konuşan daha geniş/şık bir sol/sağ rayı.
   Widget _buildVerticalCategoryRail() {
+    final railWidth = context.responsive(
+        mobile: 216.0, desktop: 216.0, largeDesktop: 236.0);
+
     return Container(
-      width: 76,
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      width: railWidth,
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(38),
+        borderRadius: BorderRadius.circular(28),
         border: Border.all(color: const Color(0xFFEFE9E0)),
         boxShadow: [
           BoxShadow(
@@ -858,12 +870,13 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
             isSelected: _selectedCategory == null,
             onTap: () => setState(() => _selectedCategory = null),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           ...ProductCategory.values.map(
             (cat) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 6),
               child: _buildRailIconItem(
                 icon: _getCategoryIcon(cat),
+                imageUrl: _getCategoryImageUrl(cat),
                 label: _getCategoryTitle(context, cat),
                 isSelected: _selectedCategory == cat,
                 onTap: () => setState(() => _selectedCategory = cat),
@@ -880,22 +893,64 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
+    final String? imageUrl,
   }) {
-    return Tooltip(
-      message: label,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF2C241E) : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Icon(icon,
-              size: 22,
-              color: isSelected ? Colors.white : const Color(0xFF8C827A)),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFF2C241E)
+              : const Color(0xFFF7F4F0),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(11),
+              child: SizedBox(
+                width: 38,
+                height: 38,
+                child: imageUrl == null
+                    ? Container(
+                        color: isSelected
+                            ? Colors.white.withOpacity(0.14)
+                            : Colors.white,
+                        child: Icon(icon,
+                            size: 18,
+                            color: isSelected
+                                ? Colors.white
+                                : const Color(0xFF8C827A)),
+                      )
+                    : Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: const Color(0xFFEBE5DF),
+                          child: Icon(icon,
+                              size: 18, color: const Color(0xFF8C827A)),
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  height: 1.15,
+                  color:
+                      isSelected ? Colors.white : const Color(0xFF3B332B),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
