@@ -519,7 +519,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loginButton => 'Anmelden';
 
   @override
-  String get authErrorEmptyCredentials => 'E-Mail und Passwort dürfen nicht leer sein.';
+  String get authErrorEmptyCredentials =>
+      'E-Mail und Passwort dürfen nicht leer sein.';
 
   @override
   String get authErrorUserNotFound => 'Benutzer nicht gefunden.';
@@ -529,7 +530,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Zeitüberschreitung bei der Berechtigungsprüfung.';
 
   @override
-  String get authErrorNotAdmin => 'Dieses Konto verfügt nicht über Administratorrechte.';
+  String get authErrorNotAdmin =>
+      'Dieses Konto verfügt nicht über Administratorrechte.';
 
   @override
   String get authErrorInvalidEmail => 'Ungültige E-Mail-Adresse.';
@@ -545,7 +547,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authErrorWrongPassword => 'Falsches Passwort.';
 
   @override
-  String get authErrorInvalidCredential => 'Falsche E-Mail-Adresse oder falsches Passwort.';
+  String get authErrorInvalidCredential =>
+      'Falsche E-Mail-Adresse oder falsches Passwort.';
 
   @override
   String get authErrorTooManyRequests =>
@@ -1584,7 +1587,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsAdminLogin => 'Admin-Anmeldung';
 
   @override
-  String get settingsNotificationPermission => 'Benachrichtigungsberechtigungen';
+  String get settingsNotificationPermission =>
+      'Benachrichtigungsberechtigungen';
 
   @override
   String get notificationsEnablePermissionTooltip =>

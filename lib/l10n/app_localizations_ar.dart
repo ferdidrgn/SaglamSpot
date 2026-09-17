@@ -459,8 +459,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reservedToggleLabel => 'محجوز';
 
   @override
-  String get reservedHint =>
-      'محجوز لعميل — لا يزال ظاهرًا لكن بعلامة مميزة';
+  String get reservedHint => 'محجوز لعميل — لا يزال ظاهرًا لكن بعلامة مميزة';
 
   @override
   String get reservedBadge => 'محجوز';
@@ -508,14 +507,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginButton => 'تسجيل الدخول';
 
   @override
-  String get authErrorEmptyCredentials => 'لا يمكن ترك البريد الإلكتروني وكلمة المرور فارغين.';
+  String get authErrorEmptyCredentials =>
+      'لا يمكن ترك البريد الإلكتروني وكلمة المرور فارغين.';
 
   @override
   String get authErrorUserNotFound => 'المستخدم غير موجود.';
 
   @override
-  String get authErrorAdminCheckTimeout =>
-      'انتهت مهلة التحقق من الصلاحية.';
+  String get authErrorAdminCheckTimeout => 'انتهت مهلة التحقق من الصلاحية.';
 
   @override
   String get authErrorNotAdmin => 'لا يملك هذا الحساب صلاحيات المسؤول.';
@@ -534,7 +533,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authErrorWrongPassword => 'كلمة المرور غير صحيحة.';
 
   @override
-  String get authErrorInvalidCredential => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+  String get authErrorInvalidCredential =>
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
 
   @override
   String get authErrorTooManyRequests =>
@@ -1054,8 +1054,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newProductsTitle => 'مجموعة\nجديدة';
 
   @override
-  String get newProductsSearchHint =>
-      'ابحث عن أثاث، أريكة، طاولة أو فئة...';
+  String get newProductsSearchHint => 'ابحث عن أثاث، أريكة، طاولة أو فئة...';
 
   @override
   String get productsBadgeLabel => 'منتج';
