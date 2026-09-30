@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import 'design_system/adaptive_backdrop_blur.dart';
 
 class AppErrorNotifier {
   static void show(
@@ -44,8 +44,8 @@ class _ErrorOverlay extends StatelessWidget {
         color: Colors.transparent,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: AdaptiveBackdropBlur(
+            sigma: 14,
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(

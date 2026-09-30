@@ -38,9 +38,12 @@ class AppLaunchSplashOverlay extends StatefulWidget {
 
 class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
     with TickerProviderStateMixin {
-  static const Duration _entryDuration = Duration(milliseconds: 550);
-  static const Duration _holdDuration = Duration(milliseconds: 450);
-  static const Duration _exitDuration = Duration(milliseconds: 400);
+  // Toplam ~0.75 sn (eskiden 1.4 sn) — native splash zaten logoyu
+  // gösterdi; bu katman yalnızca yumuşak bir geçiş, kullanıcıyı
+  // bekletmemeli.
+  static const Duration _entryDuration = Duration(milliseconds: 350);
+  static const Duration _holdDuration = Duration(milliseconds: 150);
+  static const Duration _exitDuration = Duration(milliseconds: 250);
 
   late final AnimationController _entryController = AnimationController(
     vsync: this,
@@ -67,7 +70,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
       .animate(CurvedAnimation(parent: _entryController, curve: Curves.easeOutBack));
   late final Animation<double> _exitFade = CurvedAnimation(
     parent: _exitController,
-    curve: Curves.easeIn,
+    curve: Curves.easeOutCubic,
   );
 
   Timer? _dismissTimer;
@@ -84,6 +87,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
       if (!mounted) return;
       _exitController.forward().whenComplete(() {
         if (!mounted) return;
+        _pulseController.stop();
         setState(() => _overlayVisible = false);
       });
     });
@@ -100,21 +104,19 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
 
   @override
   Widget build(final BuildContext context) {
-    if (!_overlayVisible) return widget.child;
-
+    // Ağaç yapısı overlay kalktıktan sonra da AYNI kalır (Stack + ilk çocuk
+    // widget.child) — önceden `return widget.child;` dalı, overlay kalktığı
+    // anda tüm uygulama alt ağacını (router, sayfa state'leri, görseller)
+    // atıp sıfırdan kurduruyordu: açılıştan hemen sonra belirgin bir takılma.
     return Stack(
       children: [
         widget.child,
-        Positioned.fill(
+        if (_overlayVisible) Positioned.fill(
           child: IgnorePointer(
             // Overlay her zaman opak başlar; altındaki gerçek arayüzle
             // dokunuşların çakışmaması için dokunma olayları hep yok sayılır.
-            child: AnimatedBuilder(
-              animation: _exitController,
-              builder: (final context, final splashChild) => Opacity(
-                opacity: 1.0 - _exitFade.value,
-                child: splashChild,
-              ),
+            child: FadeTransition(
+              opacity: ReverseAnimation(_exitFade),
               child: ColoredBox(
                 color: AppColors.background,
                 child: Center(

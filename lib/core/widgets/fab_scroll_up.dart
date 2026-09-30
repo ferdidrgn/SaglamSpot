@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'design_system/adaptive_backdrop_blur.dart';
 
 class ScrollUpButton extends StatelessWidget {
   final ScrollController scrollController;
@@ -63,8 +63,8 @@ class _GlassFab extends StatelessWidget {
         onTap: onTap,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(28),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: AdaptiveBackdropBlur(
+            sigma: 12,
             child: Container(
               width: 56,
               height: 56,

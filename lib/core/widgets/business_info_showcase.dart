@@ -7,6 +7,7 @@ import '../theme/app_text_styles.dart';
 import '../util/comminucation_actions.dart';
 import 'design_system/hud_corner_frame.dart';
 import 'google_maps_embed.dart';
+import 'design_system/pause_when_offscreen.dart';
 
 /// Canlı Google Haritası + gerçek zamanlı "Açık/Kapalı" rozeti + çalışma
 /// saatleri + iletişim aksiyonları içeren, animasyonlu bir "işletme
@@ -207,7 +208,8 @@ class _BusinessInfoShowcaseState extends State<BusinessInfoShowcase> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          const Positioned.fill(child: _FloatingMotifLayer()),
+          const Positioned.fill(
+              child: PauseWhenOffscreen(child: _FloatingMotifLayer())),
           context.isMobile
               ? Column(
                   children: [mapCard, const SizedBox(height: 28), infoColumn])

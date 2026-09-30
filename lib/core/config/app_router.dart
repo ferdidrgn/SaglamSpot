@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, ChangeNotifier;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,7 +90,11 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
     initialLocation: initialLocation,
     refreshListenable: routerNotifier,
     observers: [
-      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      // Firebase başlatılamadıysa (yavaş ağda 5 sn zaman aşımı, engelleyici
+      // eklenti vb.) FirebaseAnalytics.instance fırlatıyor ve router
+      // provider'ı hata durumuna düşüp uygulamayı tamamen donduruyordu.
+      if (Firebase.apps.isNotEmpty)
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
       SeoRouteObserver(),
     ],
     redirect: (final BuildContext context, final GoRouterState state) {

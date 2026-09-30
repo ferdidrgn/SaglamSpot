@@ -1,10 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/products/presentation/providers/gallery_provider.dart';
 import '../theme/app_colors.dart';
 import 'optimized_cached_image.dart';
+import 'design_system/adaptive_backdrop_blur.dart';
 
 /// ------------------------------------------------------------
 /// TAM EKRAN GALERİ GÖRÜNTÜLEYİCİ (DIALOG)
@@ -53,8 +53,8 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
     final currentIndex =
         ref.watch(galleryProvider(widget.images.length)).currentIndex;
 
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+    return AdaptiveBackdropBlur(
+      sigma: 10,
       child: Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.zero,
@@ -117,6 +117,7 @@ class _GalleryViewerDialogState extends ConsumerState<GalleryViewerDialog> {
                                 child: OptimizedCachedImage(
                                   imageUrl: widget.images[index],
                                   fit: BoxFit.contain,
+                                  decodeScale: 3.0,
                                 ),
                               ),
                             ),

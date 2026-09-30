@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/admin_session_cache.dart';
 import '../../../../core/services/firestore_provider.dart';
@@ -29,6 +30,11 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
 
   @override
   AsyncValue<User?> build() {
+    // Firebase başlatılamadıysa (zaman aşımı/çevrimdışı) FirebaseAuth.instance
+    // fırlatır; router her redirect'te bu provider'ı okuduğu için uygulama
+    // hata döngüsüne girip donuyordu. Oturum yok say ve devam et.
+    if (Firebase.apps.isEmpty) return const AsyncValue.data(null);
+
     // Auth stream'i dinle — her değişimde state'i güncelle
     final sub = _auth.authStateChanges().listen(
       (final user) {

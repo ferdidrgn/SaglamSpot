@@ -22,15 +22,16 @@ abstract final class AppInitializer {
       // 🌐 Web platformunda URL adresindeki '#' işaretini kaldır
       if (PlatformChecker.isWeb) usePathUrlStrategy();
 
-      // Bölgesel tarih ve dil formatlarını belleğe yükle
-      await DateFormatter.initializeLocale();
+      // Bölgesel tarih formatları + Admin > Firebase Servisleri ekranından
+      // değiştirilen Çökme Raporu/Analitik tercihi — ikisi bağımsız, paralel
+      // yüklenir. Tercih, SDK'lara Firebase başlatılır başlatılmaz
+      // uygulanabilsin diye Firebase'den ÖNCE okunur.
+      await Future.wait([
+        DateFormatter.initializeLocale(),
+        FirebaseFeaturePrefs.load(),
+      ]);
       debugPrint(
           '🔐 Güvenli depolama alt yapısı ve yerelleştirme modülleri aktif.');
-
-      // Admin > Firebase Servisleri ekranından değiştirilen Çökme Raporu/
-      // Analitik tercihini Firebase'e bağlanmadan ÖNCE oku — SDK'lara bu
-      // tercihi Firebase başlatılır başlatılmaz uygulayabilelim diye.
-      await FirebaseFeaturePrefs.load();
 
       // Çekirdek bulut motorlarını (Firebase) ve yerel AppCheck bütünlüğünü başlat
       await _bootstrapFirebaseAndCoreEngines();
@@ -83,12 +84,17 @@ abstract final class AppInitializer {
         // Admin ekranından kayıtlı Çökme Raporu/Analitik tercihini SDK'lara
         // bildir — kullanıcı bir önceki oturumda kapattıysa bu oturumda da
         // kapalı kalsın.
-        await FirebaseAnalytics.instance
-            .setAnalyticsCollectionEnabled(FirebaseFeaturePrefs.analyticsEnabled);
+        // Bu iki tercih çağrısı ilk kareyi beklemek zorunda değil —
+        // runApp'i bekletmeden arka planda uygulanır.
+        unawaited(FirebaseAnalytics.instance
+            .setAnalyticsCollectionEnabled(FirebaseFeaturePrefs.analyticsEnabled)
+            .catchError((final Object _) {}));
 
         if (!kIsWeb) {
-          await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
-              FirebaseFeaturePrefs.crashlyticsEnabled);
+          unawaited(FirebaseCrashlytics.instance
+              .setCrashlyticsCollectionEnabled(
+                  FirebaseFeaturePrefs.crashlyticsEnabled)
+              .catchError((final Object _) {}));
           _setupCrashlyticsPipeline();
         }
       }

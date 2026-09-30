@@ -61,25 +61,24 @@ void main() async {
   // 2. İşletim sistemi arayüz düzen kurallarını (Edge-to-Edge) yarış durumuna düşmeden hemen işlet
   AppInitializer.configureSystemUIPreBoot();
 
-  // 3. Ev içi tanıtım (onboarding) daha önce gösterildi mi — hem router'ın
-  // ilk konum kararını, hem de AppInitializer'ın bildirim izni isteğini
-  // ertelemesi gerekip gerekmediğini senkron verebilmesi için AppInitializer.
-  // init()'ten ÖNCE yüklenir (bkz. AppInitializer._safeInitializeNotifications).
-  await OnboardingCache.load();
+  // 3. runApp öncesi ilk karenin kararına gereken yerel tercihler —
+  // birbirinden bağımsız oldukları için SIRAYLA değil PARALEL yüklenir
+  // (eskiden 5 ayrı await ardışık çalışıyordu):
+  //  - OnboardingCache: router'ın ilk konumu + AppInitializer'ın bildirim
+  //    izni isteğini ertelemesi (bkz. _safeInitializeNotifications)
+  //  - AdminSessionCache: router'ın ilk yönlendirme kararı
+  //  - ThemeModeCache / DynamicColorCache: ilk karede yanlış tema flash'ı
+  //    olmasın diye
+  await Future.wait([
+    OnboardingCache.load(),
+    AdminSessionCache.load(),
+    ThemeModeCache.load(),
+    DynamicColorCache.load(),
+  ]);
 
-  // 4. Arka plan servis ağını arayüz çizimini engellemeyecek şekilde asenkron olarak ayağa kaldır
+  // 4. Firebase ve çekirdek servisler (ikincil servisler kendi içinde
+  // arka planda başlar)
   await AppInitializer.init(binding);
-
-  // 5. Bu cihazda daha önce yönetici girişi yapılmış mı — router'ın ilk
-  // yönlendirme kararını senkron verebilmesi için runApp'ten önce yüklenir
-  await AdminSessionCache.load();
-
-  // 6. Kayıtlı görünüm (açık/koyu/sistem) tercihi — ilk karede yanlış
-  // temanın bir an görünüp değişmesini (flash) önlemek için önceden yüklenir
-  await ThemeModeCache.load();
-
-  // 7. "Telefonumun temasını kullan" (Android Material You) tercihi
-  await DynamicColorCache.load();
 
   runApp(
       const ProviderScope(observers: [], child: MyApp())

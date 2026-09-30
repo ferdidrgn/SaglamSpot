@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_design_tokens.dart';
+import '../../../core/widgets/design_system/adaptive_backdrop_blur.dart';
 import '../../../features/products/presentation/providers/favorites_provider.dart';
 
 /// Native mobil uygulamanın kalıcı alt navigasyon çubuğu — Ana Sayfa /
@@ -56,9 +55,8 @@ class MobileBottomNav extends ConsumerWidget {
       minimum: const EdgeInsets.fromLTRB(16, 0, 16, 10),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(context.glass.radiusXl),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-              sigmaX: context.glass.blurLg, sigmaY: context.glass.blurLg),
+        child: AdaptiveBackdropBlur(
+          sigma: context.glass.blurLg,
           child: Container(
             height: 64,
             decoration: BoxDecoration(

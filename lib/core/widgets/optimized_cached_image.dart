@@ -11,6 +11,10 @@ class OptimizedCachedImage extends StatelessWidget {
   final bool isCircular;
   final Widget Function(BuildContext, String, dynamic)? errorBuilder;
 
+  /// Decode boyutu çarpanı — yakınlaştırılabilen (InteractiveViewer)
+  /// tam ekran galeride >1 verilir ki zoom'da görsel bulanıklaşmasın.
+  final double decodeScale;
+
   const OptimizedCachedImage({
     super.key,
     required this.imageUrl,
@@ -20,6 +24,7 @@ class OptimizedCachedImage extends StatelessWidget {
     this.borderRadius = 8.0,
     this.isCircular = false,
     this.errorBuilder,
+    this.decodeScale = 1.0,
   });
 
   /// ✅ Provider Üretici (Precache işlemleri için)
@@ -41,6 +46,32 @@ class OptimizedCachedImage extends StatelessWidget {
     final double effectiveRadius =
         isCircular ? (height ?? width ?? 50) / 2 : borderRadius;
 
+    // Genişlik/yükseklik verilmediğinde (ör. ürün kartında Stack'i
+    // dolduran görsel) önceden memCache boyutu hesaplanamıyordu ve
+    // telefon fotoğrafları TAM çözünürlükte (12 MP ≈ 48 MB RAM/görsel)
+    // decode ediliyordu — düşük segment Android'lerde kaydırma takılması
+    // ve bellek baskısının bir numaralı nedeni. Artık widget kendi
+    // alanını ölçüp o boyutta decode ettiriyor.
+    if (width == null || height == null) {
+      return LayoutBuilder(
+        builder: (final context, final constraints) => _buildImage(
+          context,
+          effectiveRadius,
+          _decodeWidth(
+            context,
+            width ?? constraints.maxWidth,
+            height ?? constraints.maxHeight,
+            decodeScale,
+          ),
+        ),
+      );
+    }
+    return _buildImage(
+        context, effectiveRadius, _decodeWidth(context, width, height, decodeScale));
+  }
+
+  Widget _buildImage(final BuildContext context, final double effectiveRadius,
+      final int? decodeWidth) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(effectiveRadius),
       child: CachedNetworkImage(
@@ -52,10 +83,10 @@ class OptimizedCachedImage extends StatelessWidget {
         fadeInDuration: const Duration(milliseconds: 300),
         fadeInCurve: Curves.easeOut,
 
-        // Bellek Optimizasyonu (Çok Önemli!)
-        // Resmi ekranda göründüğü boyutta cache'ler, devasa resimleri küçültür.
-        memCacheHeight: _calculateCacheSize(context, height),
-        memCacheWidth: _calculateCacheSize(context, width),
+        // Bellek Optimizasyonu: yalnızca GENİŞLİK veriliyor — ikisi birden
+        // verilince ResizeImage en-boy oranını bozuyordu. BoxFit.cover için
+        // kutunun uzun kenarı baz alınır (bkz. _decodeWidth).
+        memCacheWidth: decodeWidth,
 
         // Yükleniyor (Shimmer)
         placeholder: (final context, final url) => ShimmerLoading(
@@ -92,12 +123,27 @@ class OptimizedCachedImage extends StatelessWidget {
     );
   }
 
+  /// Decode genişliği: kutunun uzun kenarı × piksel yoğunluğu (cover'da
+  /// dikey bir kutuya yatay fotoğraf da bulanıklaşmadan oturabilsin diye),
+  /// DPR 3 ile ve 2048 px ile sınırlı.
+  static int? _decodeWidth(
+      final BuildContext context, final double? width, final double? height,
+      [final double scale = 1.0]) {
+    final w = (width != null && width.isFinite) ? width : null;
+    final h = (height != null && height.isFinite) ? height : null;
+    if (w == null && h == null) return null;
+    final side = w == null ? h! : (h == null ? w : (w > h ? w : h));
+    if (side <= 0) return null;
+    final dpr = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 3.0);
+    return (side * dpr * scale).round().clamp(1, 2048);
+  }
+
   /// Cache boyutunu hesaplayan yardımcı metot
   static int? _calculateCacheSize(
       final BuildContext context, final double? size) {
     if (size == null || size == double.infinity) return null;
     // Cihazın piksel yoğunluğunu al (Retina ekranlar için x2, x3 gibi)
-    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     // Biraz tolerans ekleyerek (cache kalitesi düşmesin diye) int'e çevir
     return (size * devicePixelRatio).round();
   }

@@ -47,6 +47,9 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
+  /// Geniş ekranlarda içeriğin ortalandığı azami genişlik.
+  static const double _contentMaxWidth = 1440;
+
   final ScrollController _scrollController = ScrollController();
 
   // Hero arka planında sırayla gösterilen fotoğraflar.
@@ -76,8 +79,23 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             Center(child: Text(context.l10n.productsLoadError('$err'))),
         data: (final _) => Stack(
           children: [
-            ResponsiveUtils.maxWidthContainer(
-              child: CustomScrollView(
+            // Eskiden tüm kaydırma alanı tek bir max-width kutusundaydı:
+            // renkli bantlar da daralıyor, geniş ekranda iki yanda ölü
+            // şerit kalıyordu. Artık bant ZEMİNLERİ tam genişlik, yalnızca
+            // İÇERİK [_contentMaxWidth]'te ortalanıyor.
+            Builder(builder: (final context) {
+              final double side =
+                  ((MediaQuery.sizeOf(context).width - _contentMaxWidth) / 2)
+                      .clamp(0.0, double.infinity);
+              Widget band(final Color color, final List<Widget> slivers) =>
+                  DecoratedSliver(
+                    decoration: BoxDecoration(color: color),
+                    sliver: SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: side),
+                      sliver: SliverMainAxisGroup(slivers: slivers),
+                    ),
+                  );
+              return CustomScrollView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
@@ -86,104 +104,96 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   // section'lar arasında belirgin ama yumuşak (aynı sıcak
                   // aile içinde) zemin geçişleri için sayfa artık tek
                   // düz krem yerine ayrı renkli bantlara bölündü.
-                  DecoratedSliver(
-                    decoration: BoxDecoration(color: AppColors.background),
-                    sliver: SliverMainAxisGroup(
-                      slivers: [
-                        _buildHeroBanner(availableProducts),
-                        _buildMottoStrip(),
-                        _buildFeatureTicker(),
-                        _buildCatalogGateway(),
-                        _buildTrustBar(),
-                        _buildCategoriesSection(),
-                        _buildProductsHeader(),
-                        _buildDynamicFeaturedGrid(
-                          availableProducts
-                              .where((final p) =>
-                                  selectedCategory == null ||
-                                  p.category == selectedCategory)
-                              .toList(),
-                          selectedCategory,
-                        ),
-                        if (availableProducts.isNotEmpty)
-                          const SliverToBoxAdapter(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              child: AdsenseBanner(
-                                  type: AdUnitType.display, height: 250),
-                            ),
+                  band(
+                    AppColors.background,
+                    [
+                      _buildHeroBanner(availableProducts),
+                      _buildMottoStrip(),
+                      _buildFeatureTicker(),
+                      _buildCatalogGateway(),
+                      _buildTrustBar(),
+                      _buildCategoriesSection(),
+                      _buildProductsHeader(),
+                      _buildDynamicFeaturedGrid(
+                        availableProducts
+                            .where((final p) =>
+                                selectedCategory == null ||
+                                p.category == selectedCategory)
+                            .toList(),
+                        selectedCategory,
+                      ),
+                      if (availableProducts.isNotEmpty)
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: AdsenseBanner(
+                                type: AdUnitType.display, height: 250),
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
                   // --- BANT 2: kırık-beyaz zemin (surface) ---
-                  DecoratedSliver(
-                    decoration: BoxDecoration(color: AppColors.surface),
-                    sliver: SliverMainAxisGroup(
-                      slivers: [
-                        _buildRoomsInspirationBanner(),
-                        // Sayfanın tam ortasına — canlı Google Haritalar +
-                        // Açık/Kapalı durumu, gerçek çalışma saatleri ve
-                        // iletişim aksiyonlarıyla, ziyaretçinin "gerçek bir
-                        // işletme" olduğumuzu ilk bakışta gördüğü nokta.
-                        const SliverToBoxAdapter(child: BusinessInfoShowcase()),
-                        const FurnitureTipsSection(),
-                      ],
-                    ),
+                  band(
+                    AppColors.surface,
+                    [
+                      _buildRoomsInspirationBanner(),
+                      // Sayfanın tam ortasına — canlı Google Haritalar +
+                      // Açık/Kapalı durumu, gerçek çalışma saatleri ve
+                      // iletişim aksiyonlarıyla, ziyaretçinin "gerçek bir
+                      // işletme" olduğumuzu ilk bakışta gördüğü nokta.
+                      const SliverToBoxAdapter(child: BusinessInfoShowcase()),
+                      const FurnitureTipsSection(),
+                    ],
                   ),
                   // --- BANT 3: krem zemin ---
-                  DecoratedSliver(
-                    decoration: BoxDecoration(color: AppColors.background),
-                    sliver: SliverMainAxisGroup(
-                      slivers: [
-                        const SocialShowcaseSection(),
-                        // --- Önceki tasarımların bölümleri: kaldırılmadı,
-                        // yeni vitrin düzeninin altına eklendi. "Popüler
-                        // Kategoriler" artık ayrı bir bölüm değil — verisi
-                        // yukarıdaki "Yaşam Alanına Göre" panelinde
-                        // kullanılıyor. ---
-                        const SliverToBoxAdapter(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: AdsenseBanner(
-                                type: AdUnitType.inArticle, height: 300),
-                          ),
+                  band(
+                    AppColors.background,
+                    [
+                      const SocialShowcaseSection(),
+                      // --- Önceki tasarımların bölümleri: kaldırılmadı,
+                      // yeni vitrin düzeninin altına eklendi. "Popüler
+                      // Kategoriler" artık ayrı bir bölüm değil — verisi
+                      // yukarıdaki "Yaşam Alanına Göre" panelinde
+                      // kullanılıyor. ---
+                      const SliverToBoxAdapter(
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: AdsenseBanner(
+                              type: AdUnitType.inArticle, height: 300),
                         ),
-                        const HowItWorksSection(),
-                      ],
-                    ),
+                      ),
+                      const HowItWorksSection(),
+                    ],
                   ),
                   // --- BANT 4: kırık-beyaz zemin (surface) ---
-                  DecoratedSliver(
-                    decoration: BoxDecoration(color: AppColors.surface),
-                    sliver: SliverMainAxisGroup(
-                      slivers: [
-                        _buildArtisanInfo(),
-                        const WhyUsSection(),
-                        // Reklam bilerek koyu istatistik şeridinden ÖNCE,
-                        // hâlâ açık zeminin içinde duruyor — Stats + Footer
-                        // arasına girerse iki koyu blok arasında açık bir
-                        // yama gibi görünüp geçişi sertleştiriyordu. Böylece
-                        // sayfanın en altı tek, kesintisiz bir koyu bant
-                        // olarak akıyor.
-                        const SliverToBoxAdapter(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: AdsenseBanner(
-                                type: AdUnitType.multiplex, height: 250),
-                          ),
+                  band(
+                    AppColors.surface,
+                    [
+                      _buildArtisanInfo(),
+                      const WhyUsSection(),
+                      // Reklam bilerek koyu istatistik şeridinden ÖNCE,
+                      // hâlâ açık zeminin içinde duruyor — Stats + Footer
+                      // arasına girerse iki koyu blok arasında açık bir
+                      // yama gibi görünüp geçişi sertleştiriyordu. Böylece
+                      // sayfanın en altı tek, kesintisiz bir koyu bant
+                      // olarak akıyor.
+                      const SliverToBoxAdapter(
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: AdsenseBanner(
+                              type: AdUnitType.multiplex, height: 250),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   _buildStatsSection(),
                   _buildFooter(),
                 ],
-              ),
-            ),
+              );
+            }),
             ScrollUpButton(scrollController: _scrollController),
           ],
         ),

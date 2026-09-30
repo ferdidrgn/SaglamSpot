@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../theme/app_design_tokens.dart';
+import 'adaptive_backdrop_blur.dart';
 
 /// 2026 tasarım dilinin temel yapı taşı: katmanlı, buzlu-cam bir yüzey.
 /// Arkasındaki içeriği [BackdropFilter] ile bulanıklaştırır, üzerine ince
@@ -61,15 +61,19 @@ class GlassSurface extends StatelessWidget {
 
     Widget surface = ClipRRect(
       borderRadius: radiusGeometry,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+      child: AdaptiveBackdropBlur(
+        sigma: blur,
         child: Container(
           width: width,
           height: height,
           padding: padding,
           alignment: alignment,
           decoration: BoxDecoration(
-            color: strong ? tokens.glassTintStrong : tokens.glassTint,
+            // Blur kapalıyken (Android) arka plan okunurluğu için daima
+            // güçlü tint.
+            color: strong || !AppPerformance.allowBackdropBlur
+                ? tokens.glassTintStrong
+                : tokens.glassTint,
             borderRadius: radiusGeometry,
             border: Border.all(
               color: borderColor ?? tokens.glassBorder,
