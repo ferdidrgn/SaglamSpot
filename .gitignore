@@ -136,4 +136,6 @@ android/app/google-services.json
 # -----------------------
 # CLAUDE CODE (Agent worktree'leri vb. — harness'e özel, commit edilmez)
 # -----------------------
-.claude/
+.claude/*
+# Proje skill'leri (tasarım/animasyon/performans kuralları) repoda tutulur
+!.claude/skills/
