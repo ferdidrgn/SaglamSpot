@@ -16,6 +16,9 @@ başlatırken buradaki kuralları prompt'a özetle.
    uyarlaması).
 4. `.claude/skills/mobile-design/` — dokunma, platform, mobil performans.
 5. `.claude/skills/flutter-motion/SKILL.md` — animasyon kuralları.
+6. `.claude/skills/flutter-interactive-ui/SKILL.md` — etkileşimli UI,
+   kullanıcı işlemleri (jestler, geri bildirim, Geri al, eylem durumları,
+   admin formları) ve yeni paket/eklenti politikası.
 
 ## Tasarım sistemi — "Atölye"
 
@@ -40,7 +43,10 @@ başlatırken buradaki kuralları prompt'a özetle.
 - Ağ görselleri `OptimizedCachedImage` ile (ekran boyutunda decode).
 - Android'de `BackdropFilter` yok → `AdaptiveBackdropBlur`/`GlassSurface`.
 - Sürekli animasyon ekrandan çıkınca durur → `PauseWhenOffscreen`.
-- Yeni paket eklemeden önce `pubspec.yaml`'daki mevcut paketlere bak.
+- Yeni paket eklemeden önce `pubspec.yaml`'daki mevcut paketlere bak
+  (karar listesi: `flutter-interactive-ui` §8).
+- Her eylemin görünür cevabı var; geri alınabilir işlemde "Geri al",
+  kalıcı işlemde onay; loading sırasında çift tetikleme yok.
 
 ## Mimari notlar
 

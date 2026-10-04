@@ -5,8 +5,8 @@ description: Project guardrails for any UI or performance change in SaglamSpot (
 
 # SaglamSpot UI + performans kuralları
 
-Bu skill diğer üç skill'in (`frontend-design`, `mobile-design`,
-`flutter-motion`) projeye uygulanmış halidir. Çelişki olursa **bu dosya
+Bu skill diğer skill'lerin (`frontend-design`, `mobile-design`,
+`flutter-motion`, `flutter-interactive-ui`) projeye uygulanmış halidir. Çelişki olursa **bu dosya
 kazanır**.
 
 ## 1. Dokunulmaz ekranlar

@@ -56,6 +56,14 @@ gövde Inter (tema varsayılanı). `fontFamily: 'Fraunces'` literal YAZMA.
 | `AtelierStateView` | Boş/hata durumu: ikon + ne oldu + ne yapılır + eylem. Çıplak "Hata" metni yok. |
 | `CategoryAccentRail(orientation: Axis.vertical)` | Kategori seçimi: Keşfet, Arama, Admin panelinde AYNI dikey ray. |
 
+## Etkileşim ve işlemler
+
+Kullanıcının yaptığı her şey (dokun, uzun bas, kaydır, yenile, filtrele,
+favorile, paylaş, admin formları) ve yeni paket kararları için
+`.claude/skills/flutter-interactive-ui/SKILL.md`: jest → widget eşlemesi,
+geri bildirim merdiveni (haptik + Geri al), eylem durumları, eklenti
+politikası.
+
 ## Arka plan dokuları — `background_pattern_provider.dart`
 
 `BackgroundPattern.plain | wood | tape | linen`, Ayarlar > Görünüm'den
