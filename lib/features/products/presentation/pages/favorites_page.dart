@@ -7,6 +7,8 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/whatsapp_quick_fab.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
@@ -31,21 +33,13 @@ class FavoritesPage extends ConsumerWidget {
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       floatingActionButton:
           !kIsWeb && favorites.isNotEmpty ? const WhatsAppQuickFab() : null,
-      body: SafeArea(
+      body: AtelierBackground(
+        child: SafeArea(
         child: Column(
           children: [
-            Padding(
-              // Bu sayfa alt tab bar'ın bir kökü — geri gidilecek bir "önceki
-              // sayfa" kavramı yok, bu yüzden geri oku UI/UX hatasıydı
-              // (kaldırıldı, diğer tab kökleriyle - Ana Sayfa/Keşfet/Profil -
-              // tutarlı).
-              padding: const EdgeInsets.fromLTRB(20, 16, 16, 4),
-              child: Text(context.l10n.favoritesTitle,
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.mobileTextPrimary)),
-            ),
+            // Bu sayfa alt tab bar'ın bir kökü — geri oku yok (diğer tab
+            // kökleriyle tutarlı).
+            AtelierScreenHeader(title: context.l10n.favoritesTitle),
             Expanded(
               child: favorites.isEmpty
                   ? _buildEmptyState(context)
@@ -103,41 +97,18 @@ class FavoritesPage extends ConsumerWidget {
           ],
         ),
       ),
+      ),
     );
 
     return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
-  Widget _buildEmptyState(final BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 96,
-                height: 96,
-                decoration: BoxDecoration(
-                    color: AppColors.mobileCardBg, shape: BoxShape.circle),
-                child: Icon(Icons.favorite_border_rounded,
-                    size: 40, color: AppColors.mobileMutedDark),
-              ),
-              const SizedBox(height: 20),
-              Text(context.l10n.favoritesEmptyTitle,
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.mobileTextPrimary)),
-              const SizedBox(height: 8),
-              Text(context.l10n.favoritesEmptyDesc,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 13.5,
-                      color: AppColors.mobileTextSecondary,
-                      height: 1.5)),
-            ],
-          ),
-        ),
+  Widget _buildEmptyState(final BuildContext context) => AtelierStateView(
+        icon: Icons.favorite_border_rounded,
+        title: context.l10n.favoritesEmptyTitle,
+        message: context.l10n.favoritesEmptyDesc,
+        actionLabel: context.l10n.navDiscover,
+        onAction: () => NavigationHandler.goToDiscover(context),
       );
 }
 

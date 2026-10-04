@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Υφή φόντου",
+  "bgPatternPlain": "Απλό",
+  "bgPatternWood": "Ξύλο",
+  "bgPatternTape": "Μεζούρα",
+  "bgPatternLinen": "Λινό",
+  "searchEmptyTitle": "Δεν υπάρχουν ακόμη αποτελέσματα",
+  "searchEmptyMessage": "Δοκίμασε άλλη αναζήτηση ή κατηγορία.",
+  "searchClearFilters": "Καθαρισμός φίλτρων",
+  "loadErrorTitle": "Δεν ήταν δυνατή η φόρτωση προϊόντων",
+  "loadErrorMessage": "Έλεγξε τη σύνδεση και δοκίμασε ξανά.",
+  "adminPanelSubtitle": "Διαχειρίσου προϊόντα, στατιστικά και υπηρεσίες."
 }

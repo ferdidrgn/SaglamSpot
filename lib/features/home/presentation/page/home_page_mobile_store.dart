@@ -13,11 +13,12 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
-import '../../../../core/widgets/design_system/glass_surface.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
 import '../../../../core/widgets/design_system/infinite_ticker.dart';
 import '../../../../core/widgets/design_system/reveal_fade.dart';
-import '../../../../core/widgets/design_system/section_heading.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -49,7 +50,8 @@ class HomeStorePage extends ConsumerWidget {
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: const MobileBottomNav(),
       floatingActionButton: kIsWeb ? null : const WhatsAppQuickFab(),
-      body: Stack(
+      body: AtelierBackground(
+        child: Stack(
         children: [
           SafeArea(
             child: CustomScrollView(
@@ -112,77 +114,46 @@ class HomeStorePage extends ConsumerWidget {
           ),
         ],
       ),
+      ),
     );
 
     return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
 
   Widget _buildHeader(final BuildContext context, final WidgetRef ref) =>
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                context.l10n.storeHeroTitle,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                  color: AppColors.mobileTextPrimary,
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            _NotificationBellButton(
-              unreadCount: ref.watch(unreadNotificationCountProvider),
-              onTap: () => NavigationHandler.goToNotifications(context),
-            ),
-            const SizedBox(width: 10),
-            TactilePress(
-              onTap: () => NavigationHandler.goToSettings(context),
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.mobilePrimary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 22),
-              ),
-            ),
-          ],
-        ),
+      AtelierScreenHeader(
+        title: context.l10n.storeHeroTitle,
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.xs),
+        actions: [
+          AtelierIconButton(
+            icon: Icons.notifications_none_rounded,
+            tooltip: context.l10n.notificationsTitle,
+            badgeCount: ref.watch(unreadNotificationCountProvider),
+            onTap: () => NavigationHandler.goToNotifications(context),
+          ),
+          AtelierIconButton(
+            icon: Icons.person_rounded,
+            tooltip: context.l10n.navProfile,
+            filled: true,
+            onTap: () => NavigationHandler.goToSettings(context),
+          ),
+        ],
       );
 
   Widget _buildSearchBar(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl, AppSpacing.md, AppSpacing.xl, 0),
         child: TactilePress(
           onTap: () => NavigationHandler.goToSearch(context),
           pressScale: 0.98,
-          child: GlassSurface(
-            height: 50,
-            borderRadius: 16,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Icon(Icons.search_rounded,
-                    color: AppColors.mobileTextTertiary, size: 20),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    context.l10n.searchHint,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: AppColors.mobileTextTertiary, fontSize: 13.5),
-                  ),
-                ),
-                Icon(Icons.tune_rounded,
-                    color: AppColors.mobileTextTertiary, size: 18),
-              ],
+          child: AtelierSearchField(
+            hint: context.l10n.searchHint,
+            onTap: () => NavigationHandler.goToSearch(context),
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: AppSpacing.md),
+              child: Icon(Icons.tune_rounded,
+                  color: AppColors.mobileTextTertiary, size: 19),
             ),
           ),
         ),
@@ -255,13 +226,12 @@ class HomeStorePage extends ConsumerWidget {
 
   Widget _buildSectionTitle(final BuildContext context, final String title,
       {final VoidCallback? onSeeAll}) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 22, 20, 10),
-      child: SectionHeading(
-        title: title,
-        color: AppColors.mobilePrimary,
-        onSeeAll: onSeeAll,
-      ),
+    return AtelierSectionHeader(
+      title: title,
+      actionLabel: onSeeAll != null ? context.l10n.seeAll : null,
+      onAction: onSeeAll,
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl, AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
     );
   }
 }
@@ -583,13 +553,19 @@ class _CategoryRow extends ConsumerWidget {
                 context, meta.category.name),
             child: Column(
               children: [
-                GlassSurface(
-                  width: 56,
-                  height: 56,
-                  borderRadius: 18,
+                // Kategori renginde tonlanmış, imza asimetrik köşeli kutu —
+                // her kategori kendi rengini taşır (Keşfet rayıyla aynı dil).
+                Container(
+                  width: 58,
+                  height: 58,
                   alignment: Alignment.center,
-                  child:
-                      Icon(meta.icon, color: AppColors.mobilePrimary, size: 24),
+                  decoration: BoxDecoration(
+                    color: meta.color.withValues(alpha: 0.14),
+                    borderRadius: AppRadius.asymSm,
+                    border: Border.all(
+                        color: meta.color.withValues(alpha: 0.28)),
+                  ),
+                  child: Icon(meta.icon, color: meta.color, size: 25),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -755,57 +731,6 @@ class _ProductListRow extends ConsumerWidget {
       ),
     );
   }
-}
-
-/// Ana sayfa başlığındaki bildirim (bell) ikonu — okunmamış sayısını
-/// gösteren kırmızı rozetle. NotificationsPage'e yönlendirir.
-class _NotificationBellButton extends StatelessWidget {
-  final int unreadCount;
-  final VoidCallback onTap;
-
-  const _NotificationBellButton(
-      {required this.unreadCount, required this.onTap});
-
-  @override
-  Widget build(final BuildContext context) => TactilePress(
-        onTap: onTap,
-        child: GlassSurface(
-          width: 44,
-          height: 44,
-          borderRadius: 22,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Center(
-                child: Icon(Icons.notifications_none_rounded,
-                    color: AppColors.mobileTextPrimary, size: 22),
-              ),
-              if (unreadCount > 0)
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(3),
-                    constraints:
-                        const BoxConstraints(minWidth: 15, minHeight: 15),
-                    decoration: BoxDecoration(
-                      color: AppColors.error,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      unreadCount > 9 ? '9+' : '$unreadCount',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      );
 }
 
 /// Mobil ana sayfadaki kompakt "işletme bilgisi" kartı — web'deki büyük

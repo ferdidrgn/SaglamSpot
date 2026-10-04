@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "نسيج الخلفية",
+  "bgPatternPlain": "سادة",
+  "bgPatternWood": "خشب",
+  "bgPatternTape": "شريط قياس",
+  "bgPatternLinen": "كتان",
+  "searchEmptyTitle": "لا توجد نتائج بعد",
+  "searchEmptyMessage": "جرّب تغيير البحث أو الفئة.",
+  "searchClearFilters": "مسح عوامل التصفية",
+  "loadErrorTitle": "تعذّر تحميل المنتجات",
+  "loadErrorMessage": "تحقق من الاتصال وحاول مرة أخرى.",
+  "adminPanelSubtitle": "إدارة المنتجات والإحصاءات والخدمات."
 }

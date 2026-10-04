@@ -8,8 +8,9 @@ allowed-tools: Read, Glob, Grep, Bash
 
 > **SaglamSpot notu (Flutter):** Bu proje Flutter (Android + iOS + web).
 > Framework sorusu SORULMAZ — cevap Flutter. Önce
-> `.claude/skills/saglamspot-ui/SKILL.md` (dokunulmaz ekranlar, token'lar,
-> performans kuralları), animasyon için `flutter-motion`, görsel yön için
+> `.claude/skills/saglamspot-ui/SKILL.md` (dokunulmaz ekranlar, performans
+> kuralları) ve `.claude/skills/saglamspot-design/SKILL.md` (Atölye tasarım
+> sistemi, token'lar, `Atelier*` bileşenleri), animasyon için `flutter-motion`, görsel yön için
 > `frontend-design` oku. Bu dosyadaki React Native örneklerini atla;
 > `mobile-performance.md` §3 "Flutter Performance" ve platform dosyalarındaki
 > Material 3 / HIG kuralları geçerli. Hedef cihaz: düşük/orta segment

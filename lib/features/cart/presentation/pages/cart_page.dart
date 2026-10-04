@@ -6,6 +6,8 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/products/domain/entites/product.dart';
@@ -161,7 +163,8 @@ class _CartPageState extends ConsumerState<CartPage> {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
-      body: SafeArea(
+      body: AtelierBackground(
+        child: SafeArea(
         child: Column(
           children: [
             _buildHeader(context, items),
@@ -225,93 +228,36 @@ class _CartPageState extends ConsumerState<CartPage> {
           ],
         ),
       ),
+      ),
     );
 
     return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
   Widget _buildHeader(final BuildContext context, final List<CartItem> items) =>
-      Padding(
-        padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: Icon(Icons.arrow_back_rounded,
-                  color: AppColors.mobileTextPrimary),
-            ),
-            Expanded(
-              child: Text(
-                context.l10n.cartTitle,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.mobileTextPrimary,
-                ),
-              ),
-            ),
-            if (items.isNotEmpty)
-              IconButton(
-                onPressed: () => _confirmClearCart(items),
-                icon: Icon(Icons.delete_outline_rounded,
-                    color: AppColors.mobileTextSecondary),
-              ),
-          ],
+      AtelierScreenHeader(
+        title: context.l10n.cartTitle,
+        leading: AtelierIconButton(
+          icon: Icons.arrow_back_rounded,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () => NavigationHandler.smartGoBack(context),
         ),
+        actions: [
+          if (items.isNotEmpty)
+            AtelierIconButton(
+              icon: Icons.delete_outline_rounded,
+              tooltip: context.l10n.clearAllAction,
+              onTap: () => _confirmClearCart(items),
+            ),
+        ],
       );
 
-  Widget _buildEmptyState(final BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 96,
-                height: 96,
-                decoration: BoxDecoration(
-                  color: AppColors.mobileCardBg,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.shopping_bag_outlined,
-                    size: 40, color: AppColors.mobileMutedDark),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                context.l10n.cartEmptyTitle,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.mobileTextPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                context.l10n.cartEmptyDesc,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13.5,
-                  color: AppColors.mobileTextSecondary,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => NavigationHandler.goToHome(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.sageDark,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  shape: const StadiumBorder(),
-                  elevation: 0,
-                ),
-                child: Text(context.l10n.storeHeroCta,
-                    style: const TextStyle(fontWeight: FontWeight.w700)),
-              ),
-            ],
-          ),
-        ),
+  Widget _buildEmptyState(final BuildContext context) => AtelierStateView(
+        icon: Icons.shopping_bag_outlined,
+        title: context.l10n.cartEmptyTitle,
+        message: context.l10n.cartEmptyDesc,
+        actionLabel: context.l10n.storeHeroCta,
+        onAction: () => NavigationHandler.goToHome(context),
       );
 
   Widget _buildFooter(

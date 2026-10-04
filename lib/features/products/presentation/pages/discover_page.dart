@@ -8,6 +8,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/responsive_product_grid.dart';
 import '../../../../core/widgets/cart_icon_button.dart';
 import '../../../../core/widgets/category_accent_rail.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/whatsapp_quick_fab.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
@@ -69,7 +70,10 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage> {
           const SizedBox(width: 4),
         ],
       ),
-      body: Row(
+      // Yerleşim aynen korunur; yalnızca zemin, kullanıcının Ayarlar'dan
+      // seçtiği dokuyu (ahşap/mezura/keten/düz) taşır.
+      body: AtelierBackground(
+        child: Row(
         children: [
           // Referans tasarımdaki "yan dönük" kategori rayı — yatay çip
           // şeridi yerine, sol kenara sabitlenmiş, döndürülmüş metinli
@@ -106,6 +110,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage> {
             ),
           ),
         ],
+      ),
       ),
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       floatingActionButton: !kIsWeb ? const WhatsAppQuickFab() : null,

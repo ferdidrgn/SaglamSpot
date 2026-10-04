@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Текстура фону",
+  "bgPatternPlain": "Простий",
+  "bgPatternWood": "Дерево",
+  "bgPatternTape": "Рулетка",
+  "bgPatternLinen": "Льон",
+  "searchEmptyTitle": "Поки немає результатів",
+  "searchEmptyMessage": "Спробуйте змінити запит або категорію.",
+  "searchClearFilters": "Скинути фільтри",
+  "loadErrorTitle": "Не вдалося завантажити товари",
+  "loadErrorMessage": "Перевірте з'єднання та спробуйте знову.",
+  "adminPanelSubtitle": "Керуйте товарами, статистикою та сервісами."
 }

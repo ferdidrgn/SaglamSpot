@@ -7,6 +7,8 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../domain/entites/product.dart';
@@ -92,12 +94,17 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
     final mutationState = ref.watch(productMutationProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+    return AtelierBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(context.l10n.addNewProduct,
-            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-        backgroundColor: AppColors.mobileBackground,
+            style: AppTextStyles.serif(
+                fontWeight: FontWeight.w700,
+                fontSize: 21,
+                color: AppColors.mobileTextPrimary)),
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppColors.mobileTextPrimary,
         elevation: 0,
       ),
@@ -217,7 +224,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   // ---------------- ACTIONS ----------------
@@ -254,7 +261,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
       isSold: false,
       isSpotProduct: _isSecondHand,
-      dimensions: _dimensions.text.trim().isEmpty ? null : _dimensions.text.trim(),
+      dimensions:
+          _dimensions.text.trim().isEmpty ? null : _dimensions.text.trim(),
       material: _material.text.trim().isEmpty ? null : _material.text.trim(),
       imagesUrl: const [],
       availableColors: _isSecondHand ? const [] : _selectedColors,

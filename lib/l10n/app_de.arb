@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Hintergrundtextur",
+  "bgPatternPlain": "Schlicht",
+  "bgPatternWood": "Holz",
+  "bgPatternTape": "Maßband",
+  "bgPatternLinen": "Leinen",
+  "searchEmptyTitle": "Noch keine Ergebnisse",
+  "searchEmptyMessage": "Ändere deine Suche oder Kategorie.",
+  "searchClearFilters": "Filter zurücksetzen",
+  "loadErrorTitle": "Produkte konnten nicht geladen werden",
+  "loadErrorMessage": "Prüfe deine Verbindung und versuche es erneut.",
+  "adminPanelSubtitle": "Produkte, Statistiken und Dienste hier verwalten."
 }

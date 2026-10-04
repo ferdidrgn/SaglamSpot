@@ -2118,4 +2118,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones及周边地区';
   }
+
+  @override
+  String get settingsBackgroundTexture => '背景纹理';
+
+  @override
+  String get bgPatternPlain => '纯色';
+
+  @override
+  String get bgPatternWood => '木纹';
+
+  @override
+  String get bgPatternTape => '卷尺';
+
+  @override
+  String get bgPatternLinen => '亚麻';
+
+  @override
+  String get searchEmptyTitle => '暂无结果';
+
+  @override
+  String get searchEmptyMessage => '请尝试更改搜索或分类。';
+
+  @override
+  String get searchClearFilters => '清除筛选';
+
+  @override
+  String get loadErrorTitle => '无法加载商品';
+
+  @override
+  String get loadErrorMessage => '请检查网络后重试。';
+
+  @override
+  String get adminPanelSubtitle => '在此管理商品、统计和服务。';
 }

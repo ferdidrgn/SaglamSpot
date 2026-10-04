@@ -4111,6 +4111,72 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{zones} ve çevresi'**
   String deliveryZonesAndSurroundings(String zones);
+
+  /// No description provided for @settingsBackgroundTexture.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka plan dokusu'**
+  String get settingsBackgroundTexture;
+
+  /// No description provided for @bgPatternPlain.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düz'**
+  String get bgPatternPlain;
+
+  /// No description provided for @bgPatternWood.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ahşap'**
+  String get bgPatternWood;
+
+  /// No description provided for @bgPatternTape.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mezura'**
+  String get bgPatternTape;
+
+  /// No description provided for @bgPatternLinen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Keten'**
+  String get bgPatternLinen;
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz sonuç yok'**
+  String get searchEmptyTitle;
+
+  /// No description provided for @searchEmptyMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramanı ya da kategoriyi değiştirerek tekrar dene.'**
+  String get searchEmptyMessage;
+
+  /// No description provided for @searchClearFilters.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtreleri temizle'**
+  String get searchClearFilters;
+
+  /// No description provided for @loadErrorTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünler yüklenemedi'**
+  String get loadErrorTitle;
+
+  /// No description provided for @loadErrorMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantını kontrol edip tekrar dene.'**
+  String get loadErrorMessage;
+
+  /// No description provided for @adminPanelSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünleri, istatistikleri ve servisleri buradan yönet.'**
+  String get adminPanelSubtitle;
 }
 
 class _AppLocalizationsDelegate

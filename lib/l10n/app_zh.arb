@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "背景纹理",
+  "bgPatternPlain": "纯色",
+  "bgPatternWood": "木纹",
+  "bgPatternTape": "卷尺",
+  "bgPatternLinen": "亚麻",
+  "searchEmptyTitle": "暂无结果",
+  "searchEmptyMessage": "请尝试更改搜索或分类。",
+  "searchClearFilters": "清除筛选",
+  "loadErrorTitle": "无法加载商品",
+  "loadErrorMessage": "请检查网络后重试。",
+  "adminPanelSubtitle": "在此管理商品、统计和服务。"
 }

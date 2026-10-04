@@ -2207,4 +2207,38 @@ class AppLocalizationsUk extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones та околиці';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Текстура фону';
+
+  @override
+  String get bgPatternPlain => 'Простий';
+
+  @override
+  String get bgPatternWood => 'Дерево';
+
+  @override
+  String get bgPatternTape => 'Рулетка';
+
+  @override
+  String get bgPatternLinen => 'Льон';
+
+  @override
+  String get searchEmptyTitle => 'Поки немає результатів';
+
+  @override
+  String get searchEmptyMessage => 'Спробуйте змінити запит або категорію.';
+
+  @override
+  String get searchClearFilters => 'Скинути фільтри';
+
+  @override
+  String get loadErrorTitle => 'Не вдалося завантажити товари';
+
+  @override
+  String get loadErrorMessage => 'Перевірте з\'єднання та спробуйте знову.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Керуйте товарами, статистикою та сервісами.';
 }

@@ -878,5 +878,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Arka plan dokusu",
+  "bgPatternPlain": "Düz",
+  "bgPatternWood": "Ahşap",
+  "bgPatternTape": "Mezura",
+  "bgPatternLinen": "Keten",
+  "searchEmptyTitle": "Henüz sonuç yok",
+  "searchEmptyMessage": "Aramanı ya da kategoriyi değiştirerek tekrar dene.",
+  "searchClearFilters": "Filtreleri temizle",
+  "loadErrorTitle": "Ürünler yüklenemedi",
+  "loadErrorMessage": "Bağlantını kontrol edip tekrar dene.",
+  "adminPanelSubtitle": "Ürünleri, istatistikleri ve servisleri buradan yönet."
 }

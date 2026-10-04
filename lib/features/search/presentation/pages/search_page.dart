@@ -13,6 +13,9 @@ import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/section_heading.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
@@ -22,6 +25,7 @@ import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/category_meta_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
@@ -84,23 +88,47 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     // Kalıcı yan panel yalnızca gerçek masaüstü genişliğinde: dar
     // tablet/laptop pencerelerinde sonuç alanını sıkıştırmasın.
     final showSidebar = context.isDesktop;
+    // Native mobilde Keşfet ekranıyla AYNI düzen: solda döndürülmüş
+    // metinli dikey kategori rayı, sağda sonuçlar. Web'de (dar pencere)
+    // yatay şerit kalır.
+    final bool mobileRail = !kIsWeb && !showSidebar;
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
-      body: Stack(
+      body: AtelierBackground(
+        child: Stack(
         children: [
           SafeArea(
             child: Column(
               children: [
                 if (kIsWeb) _buildSearchHero(context),
-                _buildTopBar(context, searchQuery),
-                if (!showSidebar) _buildCategoryStrip(currentFilters),
-                Divider(height: 1, color: AppColors.border),
+                if (mobileRail)
+                  _buildMobileTopBar(context)
+                else
+                  _buildTopBar(context, searchQuery),
+                if (!showSidebar && !mobileRail)
+                  _buildCategoryStrip(currentFilters),
+                if (!mobileRail) Divider(height: 1, color: AppColors.border),
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      if (mobileRail)
+                        CategoryAccentRail(
+                          orientation: Axis.vertical,
+                          selected: currentFilters.category,
+                          onSelect: (final c) => ref
+                              .read(searchFiltersProvider.notifier)
+                              .setCategory(c),
+                          allColor: AppColors.mobilePrimary,
+                          selectedTextColor: AppColors.mobileTextPrimary,
+                          unselectedTextColor: AppColors.mobileTextTertiary,
+                          width: 56,
+                          border: Border(
+                              right: BorderSide(color: AppColors.mobileBorder)),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
                       if (showSidebar) _buildSidebar(context, currentFilters),
                       if (showSidebar)
                         VerticalDivider(width: 1, color: AppColors.border),
@@ -189,6 +217,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             ),
           ),
         ],
+      ),
       ),
       floatingActionButton: !showSidebar ? _buildFloatingFilter(context) : null,
     );
@@ -355,6 +384,64 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ],
         ],
       ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // MOBİL ÜST ÇUBUK — Atölye arama alanı + sıralama + durum çipleri.
+  // ─────────────────────────────────────────────────────────────
+  Widget _buildMobileTopBar(final BuildContext context) {
+    final condition =
+        ref.watch(searchFiltersProvider).condition ?? ProductCondition.all;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.screen, AppSpacing.md, AppSpacing.screen, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: AtelierSearchField(
+                  hint: context.l10n.searchHint,
+                  controller: _searchController,
+                  onChanged: (final val) =>
+                      ref.read(searchQueryProvider.notifier).update(val),
+                  onClear: () =>
+                      ref.read(searchQueryProvider.notifier).update(''),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              _buildSortDropdown(),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 56,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(AppSpacing.screen,
+                AppSpacing.sm, AppSpacing.screen, AppSpacing.sm),
+            children: [
+              for (final c in ProductCondition.values) ...[
+                AtelierChoiceChip(
+                  label: c.label(context),
+                  selected: condition == c,
+                  activeColor: switch (c) {
+                    ProductCondition.newProduct => AppColors.success,
+                    ProductCondition.used => AppColors.mobileAccentDark,
+                    ProductCondition.all => AppColors.mobilePrimary,
+                  },
+                  onTap: () => ref
+                      .read(searchFiltersProvider.notifier)
+                      .setCondition(c),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -657,7 +744,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  Widget _buildEmptyState() => SliverFillRemaining(
+  Widget _buildEmptyState() => !kIsWeb
+      ? SliverFillRemaining(
+          hasScrollBody: false,
+          child: AtelierStateView(
+            icon: Icons.chair_alt_rounded,
+            title: context.l10n.searchEmptyTitle,
+            message: context.l10n.searchEmptyMessage,
+            actionLabel: context.l10n.searchClearFilters,
+            onAction: _resetAll,
+          ),
+        )
+      : SliverFillRemaining(
         hasScrollBody: false,
         child: Padding(
           padding: context.pagePadding,
@@ -741,7 +839,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         ),
       );
 
-  Widget _buildErrorState(final String error) => Center(
+  Widget _buildErrorState(final String error) => !kIsWeb
+      ? AtelierStateView(
+          icon: Icons.wifi_off_rounded,
+          title: context.l10n.loadErrorTitle,
+          message: context.l10n.loadErrorMessage,
+          actionLabel: context.l10n.retry,
+          onAction: () => ref.invalidate(productsProvider),
+        )
+      : Center(
         child: Padding(
           padding: context.pagePadding,
           child: Column(

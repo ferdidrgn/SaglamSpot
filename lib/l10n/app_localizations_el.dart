@@ -2224,4 +2224,38 @@ class AppLocalizationsEl extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones και τις γύρω περιοχές';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Υφή φόντου';
+
+  @override
+  String get bgPatternPlain => 'Απλό';
+
+  @override
+  String get bgPatternWood => 'Ξύλο';
+
+  @override
+  String get bgPatternTape => 'Μεζούρα';
+
+  @override
+  String get bgPatternLinen => 'Λινό';
+
+  @override
+  String get searchEmptyTitle => 'Δεν υπάρχουν ακόμη αποτελέσματα';
+
+  @override
+  String get searchEmptyMessage => 'Δοκίμασε άλλη αναζήτηση ή κατηγορία.';
+
+  @override
+  String get searchClearFilters => 'Καθαρισμός φίλτρων';
+
+  @override
+  String get loadErrorTitle => 'Δεν ήταν δυνατή η φόρτωση προϊόντων';
+
+  @override
+  String get loadErrorMessage => 'Έλεγξε τη σύνδεση και δοκίμασε ξανά.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Διαχειρίσου προϊόντα, στατιστικά και υπηρεσίες.';
 }

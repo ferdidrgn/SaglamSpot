@@ -16,7 +16,13 @@ kazanır**.
   (`CategoryAccentRail(orientation: Axis.vertical)`), üstte Sıfır/İkinci El
   segmenti, sağda `ResponsiveProductGrid`. Kullanıcı bu ekranı özellikle
   seviyor: yerleşimi, rayı, segmenti, kart görünümünü DEĞİŞTİRME.
-  Performans düzeltmeleri görünümü birebir koruyorsa serbest.
+  Performans düzeltmeleri görünümü birebir koruyorsa serbest. Zemin
+  (`AtelierBackground`, kullanıcının seçtiği doku) eklenebilir — "Düz"
+  seçilince eski görünümün aynısıdır.
+- **Kart tasarımları**: `CustomProductCard`, ana sayfadaki
+  `_ProductListRow`, favori satırı/kartı, sepet kartı, admin ürün ızgarası
+  kartı. Kullanıcı "kart tasarımı hariç her şeyi yenile" dedi — kartlara
+  dokunma, çevrelerini (zemin, başlık, filtre, boş durum) yenile.
 - **Ürün kartı (`core/widgets/custom_product_card.dart`)** — asimetrik
   köşeler (sol üst/sağ alt 8, sağ üst/sol alt 34), sağ üstte köşeye oturan
   SIFIR/İKİNCİ EL etiketi, alt scrim üstünde ad + kategori + fiyat hapı.
@@ -25,6 +31,11 @@ kazanır**.
   alındı; bir değişiklik bunlardan birini kaldırıyorsa dur ve sor.
 
 ## 2. Token'lar (yeni sistem kurma)
+
+Ayrıntılı tasarım sistemi: `.claude/skills/saglamspot-design/SKILL.md`
+(`AppSpacing`/`AppRadius`/`AppMotion`/`AppShadows` + `Atelier*`
+bileşenleri).
+
 
 - Renk: `AppColors.*` (getter, tema/dinamik renge duyarlı), mobil yüzeyler
   için `AppColors.mobile*`; kategori/koşul renkleri `catalog_theme.dart`.

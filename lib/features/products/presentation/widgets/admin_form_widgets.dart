@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 
 /// Ürün ekle/düzenle formlarında kullanılan ortak "kart bölüm" kabuğu.
 class AdminFormSection extends StatelessWidget {
@@ -9,25 +12,20 @@ class AdminFormSection extends StatelessWidget {
   final Widget child;
 
   const AdminFormSection(
-      {super.key, required this.title, required this.icon, required this.child});
+      {super.key,
+      required this.title,
+      required this.icon,
+      required this.child});
 
   @override
   Widget build(final BuildContext context) => Container(
-        margin: const EdgeInsets.only(bottom: 18),
-        padding: const EdgeInsets.all(18),
+        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg + 2),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-                color: AppColors.primary.withOpacity(0.07),
-                blurRadius: 28,
-                offset: const Offset(0, 14)),
-            BoxShadow(
-                color: AppColors.textPrimary.withOpacity(0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2)),
-          ],
+          borderRadius: AppRadius.all(AppRadius.lg),
+          border: Border.all(color: AppColors.border),
+          boxShadow: AppShadows.level1(AppColors.primary),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,21 +33,27 @@ class AdminFormSection extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  width: 30,
+                  height: 30,
                   decoration: BoxDecoration(
-                    gradient: AppColors.accentGradient,
-                    borderRadius: BorderRadius.circular(9),
+                    color: AppColors.accent.withValues(alpha: 0.14),
+                    borderRadius: AppRadius.all(AppRadius.sm),
                   ),
-                  child: Icon(icon, size: 14, color: Colors.white),
+                  child: Icon(icon, size: 16, color: AppColors.accentDark),
                 ),
-                const SizedBox(width: 10),
-                Text(title,
-                    style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary)),
+                const SizedBox(width: AppSpacing.sm + 2),
+                Expanded(
+                  child: Text(title,
+                      style: AppTextStyles.serif(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary)),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.xs + 2),
+            const TapeMeasureRule(width: 40),
+            const SizedBox(height: AppSpacing.lg),
             child,
           ],
         ),
@@ -81,21 +85,29 @@ class AdminFormField extends StatelessWidget {
         child: TextField(
           controller: controller,
           maxLines: lines,
-          keyboardType:
-              numeric ? const TextInputType.numberWithOptions(decimal: true) : null,
+          keyboardType: numeric
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : null,
           style: TextStyle(color: AppColors.textPrimary, fontSize: 14.5),
           decoration: InputDecoration(
             labelText: label,
             hintText: hintText,
-            labelStyle: TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
-            hintStyle: TextStyle(color: AppColors.textTertiary.withOpacity(0.6), fontSize: 13),
+            labelStyle:
+                TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
+            hintStyle: TextStyle(
+                color: AppColors.textTertiary.withOpacity(0.6), fontSize: 13),
             prefixIcon: Icon(icon, color: AppColors.onSecondary, size: 20),
             filled: true,
             fillColor: AppColors.secondary,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                borderRadius: AppRadius.all(AppRadius.md),
+                borderSide: BorderSide.none),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: AppRadius.all(AppRadius.md),
+              borderSide: BorderSide(color: AppColors.border),
+            ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: AppRadius.all(AppRadius.md),
               borderSide: BorderSide(color: AppColors.accent, width: 1.5),
             ),
           ),
@@ -157,7 +169,10 @@ class AdminSubmitButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const AdminSubmitButton(
-      {super.key, required this.label, required this.isLoading, required this.onTap});
+      {super.key,
+      required this.label,
+      required this.isLoading,
+      required this.onTap});
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -203,7 +218,8 @@ class PhotoThumbnail extends StatelessWidget {
   final ImageProvider image;
   final VoidCallback onDelete;
 
-  const PhotoThumbnail({super.key, required this.image, required this.onDelete});
+  const PhotoThumbnail(
+      {super.key, required this.image, required this.onDelete});
 
   @override
   Widget build(final BuildContext context) => Stack(
@@ -236,7 +252,8 @@ class PhotoThumbnail extends StatelessWidget {
                 child: SizedBox(
                   width: 24,
                   height: 24,
-                  child: Icon(Icons.close_rounded, size: 14, color: AppColors.error),
+                  child: Icon(Icons.close_rounded,
+                      size: 14, color: AppColors.error),
                 ),
               ),
             ),
@@ -269,7 +286,8 @@ class StudioPhotoTile extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    if (!isLoading && imageUrl == null && !hasError) return const SizedBox.shrink();
+    if (!isLoading && imageUrl == null && !hasError)
+      return const SizedBox.shrink();
 
     return Stack(
       children: [
@@ -277,13 +295,18 @@ class StudioPhotoTile extends StatelessWidget {
           width: 96,
           height: 96,
           decoration: BoxDecoration(
-            color: hasError ? AppColors.error.withOpacity(0.08) : AppColors.secondary,
+            color: hasError
+                ? AppColors.error.withOpacity(0.08)
+                : AppColors.secondary,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-                color: hasError ? AppColors.error.withOpacity(0.5) : AppColors.accent.withOpacity(0.6),
+                color: hasError
+                    ? AppColors.error.withOpacity(0.5)
+                    : AppColors.accent.withOpacity(0.6),
                 width: 1.4),
             image: (!isLoading && !hasError && imageUrl != null)
-                ? DecorationImage(image: NetworkImage(imageUrl!), fit: BoxFit.cover)
+                ? DecorationImage(
+                    image: NetworkImage(imageUrl!), fit: BoxFit.cover)
                 : null,
           ),
           child: isLoading
@@ -291,7 +314,8 @@ class StudioPhotoTile extends StatelessWidget {
                   child: SizedBox(
                     width: 22,
                     height: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2.4, color: AppColors.accent),
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2.4, color: AppColors.accent),
                   ),
                 )
               : hasError
@@ -301,7 +325,8 @@ class StudioPhotoTile extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.refresh_rounded, color: AppColors.error, size: 22),
+                          Icon(Icons.refresh_rounded,
+                              color: AppColors.error, size: 22),
                           const SizedBox(height: 4),
                           Text(context.l10n.retry,
                               style: TextStyle(
@@ -326,11 +351,14 @@ class StudioPhotoTile extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.auto_awesome_rounded, size: 10, color: Colors.white),
+                  const Icon(Icons.auto_awesome_rounded,
+                      size: 10, color: Colors.white),
                   const SizedBox(width: 3),
                   Text(context.l10n.studioPhotoLabel,
                       style: const TextStyle(
-                          fontSize: 8.5, fontWeight: FontWeight.w800, color: Colors.white)),
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white)),
                 ],
               ),
             ),
@@ -349,7 +377,8 @@ class StudioPhotoTile extends StatelessWidget {
                 child: SizedBox(
                   width: 24,
                   height: 24,
-                  child: Icon(Icons.close_rounded, size: 14, color: AppColors.error),
+                  child: Icon(Icons.close_rounded,
+                      size: 14, color: AppColors.error),
                 ),
               ),
             ),
@@ -387,12 +416,16 @@ class AddPhotoTile extends StatelessWidget {
                   gradient: AppColors.accentGradient,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.add_rounded, color: Colors.white, size: 18),
+                child: const Icon(Icons.add_rounded,
+                    color: Colors.white, size: 18),
               ),
               const SizedBox(height: 6),
               Text(context.l10n.addImage,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 9.5, color: AppColors.accentDark, fontWeight: FontWeight.w700)),
+                  style: TextStyle(
+                      fontSize: 9.5,
+                      color: AppColors.accentDark,
+                      fontWeight: FontWeight.w700)),
             ],
           ),
         ),

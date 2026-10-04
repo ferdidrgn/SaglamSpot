@@ -2210,4 +2210,38 @@ class AppLocalizationsRu extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones и окрестности';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Текстура фона';
+
+  @override
+  String get bgPatternPlain => 'Простой';
+
+  @override
+  String get bgPatternWood => 'Дерево';
+
+  @override
+  String get bgPatternTape => 'Рулетка';
+
+  @override
+  String get bgPatternLinen => 'Лён';
+
+  @override
+  String get searchEmptyTitle => 'Пока нет результатов';
+
+  @override
+  String get searchEmptyMessage => 'Попробуйте изменить запрос или категорию.';
+
+  @override
+  String get searchClearFilters => 'Сбросить фильтры';
+
+  @override
+  String get loadErrorTitle => 'Не удалось загрузить товары';
+
+  @override
+  String get loadErrorMessage => 'Проверьте подключение и попробуйте снова.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Управляйте товарами, статистикой и сервисами.';
 }

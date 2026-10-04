@@ -8,6 +8,8 @@ import '../../../../core/services/firebase_feature_prefs.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/remote_config_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../products/presentation/widgets/admin_form_widgets.dart';
 
 /// Admin > Firebase Servisleri — esnafın Firebase Console'a hiç girmeden
@@ -29,8 +31,7 @@ class AdminFirebaseServicesPage extends StatefulWidget {
       _AdminFirebaseServicesPageState();
 }
 
-class _AdminFirebaseServicesPageState
-    extends State<AdminFirebaseServicesPage> {
+class _AdminFirebaseServicesPageState extends State<AdminFirebaseServicesPage> {
   bool _crashlyticsEnabled = FirebaseFeaturePrefs.crashlyticsEnabled;
   bool _analyticsEnabled = FirebaseFeaturePrefs.analyticsEnabled;
   bool _refreshingConfig = false;
@@ -63,16 +64,18 @@ class _AdminFirebaseServicesPageState
   }
 
   @override
-  Widget build(final BuildContext context) => Scaffold(
-        backgroundColor: AppColors.mobileBackground,
+  Widget build(final BuildContext context) => AtelierBackground(
+          child: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
-          backgroundColor: AppColors.mobileBackground,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
           elevation: 0,
           title: Text(context.l10n.firebaseServicesTitle,
-              style: TextStyle(
+              style: AppTextStyles.serif(
                   color: AppColors.mobileTextPrimary,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 18)),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 21)),
         ),
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -240,8 +243,8 @@ class _AdminFirebaseServicesPageState
                   if (!kIsWeb) ...[
                     const SizedBox(height: 6),
                     FutureBuilder<NotificationSettings>(
-                      future: FirebaseMessaging.instance
-                          .getNotificationSettings(),
+                      future:
+                          FirebaseMessaging.instance.getNotificationSettings(),
                       builder: (final context, final snapshot) => _InfoLine(
                         icon: Icons.mark_email_read_outlined,
                         text: !snapshot.hasData
@@ -265,7 +268,7 @@ class _AdminFirebaseServicesPageState
             ),
           ],
         ),
-      );
+      ));
 
   String _formatTime(final DateTime time) {
     final now = DateTime.now();

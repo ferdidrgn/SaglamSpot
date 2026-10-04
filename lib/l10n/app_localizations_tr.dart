@@ -2204,4 +2204,39 @@ class AppLocalizationsTr extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones ve çevresi';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Arka plan dokusu';
+
+  @override
+  String get bgPatternPlain => 'Düz';
+
+  @override
+  String get bgPatternWood => 'Ahşap';
+
+  @override
+  String get bgPatternTape => 'Mezura';
+
+  @override
+  String get bgPatternLinen => 'Keten';
+
+  @override
+  String get searchEmptyTitle => 'Henüz sonuç yok';
+
+  @override
+  String get searchEmptyMessage =>
+      'Aramanı ya da kategoriyi değiştirerek tekrar dene.';
+
+  @override
+  String get searchClearFilters => 'Filtreleri temizle';
+
+  @override
+  String get loadErrorTitle => 'Ürünler yüklenemedi';
+
+  @override
+  String get loadErrorMessage => 'Bağlantını kontrol edip tekrar dene.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Ürünleri, istatistikleri ve servisleri buradan yönet.';
 }

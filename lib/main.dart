@@ -16,6 +16,7 @@ import 'core/services/onboarding_cache.dart';
 import 'core/services/theme_mode_cache.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/background_pattern_provider.dart';
 import 'core/theme/dynamic_color_provider.dart';
 import 'core/theme/theme_mode_provider.dart';
 import 'features/splash/presentation/widgets/app_launch_splash_overlay.dart';
@@ -74,6 +75,7 @@ void main() async {
     AdminSessionCache.load(),
     ThemeModeCache.load(),
     DynamicColorCache.load(),
+    BackgroundPatternCache.load(),
   ]);
 
   // 4. Firebase ve çekirdek servisler (ikincil servisler kendi içinde

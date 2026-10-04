@@ -6,6 +6,8 @@ license: Complete terms in LICENSE.txt
 
 # Frontend Design — Flutter uyarlaması
 
+> **SaglamSpot projesi:** Önce `.claude/skills/saglamspot-design/SKILL.md` (Atölye konsepti, token'lar, hazır `Atelier*` bileşenleri) ve `.claude/skills/saglamspot-ui/SKILL.md` (dokunulmazlar) okunur; aşağıdaki genel kurallar onların Flutter karşılıklarıyla uygulanır.
+
 Kaynak: `npx claude-code-templates@latest --skill creative-design/frontend-design`.
 Orijinal CSS/HTML dilinde yazılmıştı; aşağıdaki her kural Flutter karşılığıyla
 yeniden yazıldı. Projeye özel koruma kuralları için önce

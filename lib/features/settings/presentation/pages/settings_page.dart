@@ -8,6 +8,11 @@ import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../core/theme/background_pattern_provider.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/theme/dynamic_color_provider.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/util/comminucation_actions.dart';
@@ -41,144 +46,148 @@ class SettingsPage extends ConsumerWidget {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
-      body: SafeArea(
-        // Bu sayfa doğrudan (bir web "shell" sarmalayıcısı olmadan)
-        // render ediliyor — masaüstünde bir genişlik sınırı olmadan liste
-        // tam ekran genişliğine yayılıp satırları çirkin biçimde
-        // geriyordu. Mobilde (width < 640) Center/ConstrainedBox'ın hiçbir
-        // görsel etkisi yok, mevcut padding AYNEN korunuyor.
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-              children: [
-                Text(
-                  context.l10n.settingsTitle,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.mobileTextPrimary,
+      body: AtelierBackground(
+        child: SafeArea(
+          // Bu sayfa doğrudan (bir web "shell" sarmalayıcısı olmadan)
+          // render ediliyor — masaüstünde bir genişlik sınırı olmadan liste
+          // tam ekran genişliğine yayılıp satırları çirkin biçimde
+          // geriyordu. Mobilde (width < 640) Center/ConstrainedBox'ın hiçbir
+          // görsel etkisi yok, mevcut padding AYNEN korunuyor.
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.screen, 0, AppSpacing.screen, AppSpacing.xxxl),
+                children: [
+                  AtelierScreenHeader(
+                    title: context.l10n.settingsTitle,
+                    padding: const EdgeInsets.only(
+                        top: AppSpacing.md, bottom: AppSpacing.xl),
                   ),
-                ),
-                const SizedBox(height: 20),
-                _buildProfileHeader(context),
-                const SizedBox(height: 28),
-                _SectionLabel(context.l10n.settingsAccountSection),
-                const SizedBox(height: 10),
-                _SettingsCard(
-                  children: [
-                    _SettingsTile(
-                      icon: Icons.favorite_rounded,
-                      accent: AppColors.error,
-                      label: context.l10n.favoritesTitle,
-                      onTap: () => NavigationHandler.goToFavorites(context),
-                    ),
-                    _SettingsTile(
-                      icon: Icons.notifications_rounded,
-                      accent: AppColors.mobileAccent,
-                      label: context.l10n.notificationsTitle,
-                      badgeCount: unreadCount,
-                      onTap: () => NavigationHandler.goToNotifications(context),
-                    ),
-                    _SettingsTile(
-                      icon: Icons.notifications_active_rounded,
-                      accent: AppColors.info,
-                      label: context.l10n.settingsNotificationPermission,
-                      onTap: NotificationService.openSystemNotificationSettings,
-                    ),
-                    const _LanguageTile(),
-                    if (isAdminLoggedIn)
+                  _buildProfileHeader(context),
+                  const SizedBox(height: 28),
+                  _SectionLabel(context.l10n.settingsAccountSection),
+                  const SizedBox(height: 10),
+                  _SettingsCard(
+                    children: [
                       _SettingsTile(
-                        icon: Icons.admin_panel_settings_rounded,
-                        accent: AppColors.mobilePrimary,
-                        label: context.l10n.settingsAdminLogin,
-                        onTap: () => NavigationHandler.goToAdmin(context),
+                        icon: Icons.favorite_rounded,
+                        accent: AppColors.error,
+                        label: context.l10n.favoritesTitle,
+                        onTap: () => NavigationHandler.goToFavorites(context),
                       ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                _SectionLabel(context.l10n.settingsAppearanceSection),
-                const SizedBox(height: 10),
-                const _ThemeModeCard(),
-                if (!kIsWeb &&
-                    defaultTargetPlatform == TargetPlatform.android) ...[
+                      _SettingsTile(
+                        icon: Icons.notifications_rounded,
+                        accent: AppColors.mobileAccent,
+                        label: context.l10n.notificationsTitle,
+                        badgeCount: unreadCount,
+                        onTap: () =>
+                            NavigationHandler.goToNotifications(context),
+                      ),
+                      _SettingsTile(
+                        icon: Icons.notifications_active_rounded,
+                        accent: AppColors.info,
+                        label: context.l10n.settingsNotificationPermission,
+                        onTap:
+                            NotificationService.openSystemNotificationSettings,
+                      ),
+                      const _LanguageTile(),
+                      if (isAdminLoggedIn)
+                        _SettingsTile(
+                          icon: Icons.admin_panel_settings_rounded,
+                          accent: AppColors.mobilePrimary,
+                          label: context.l10n.settingsAdminLogin,
+                          onTap: () => NavigationHandler.goToAdmin(context),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _SectionLabel(context.l10n.settingsAppearanceSection),
+                  const SizedBox(height: 10),
+                  const _ThemeModeCard(),
                   const SizedBox(height: 12),
-                  const _DynamicColorCard(),
+                  const _BackgroundPatternCard(),
+                  if (!kIsWeb &&
+                      defaultTargetPlatform == TargetPlatform.android) ...[
+                    const SizedBox(height: 12),
+                    const _DynamicColorCard(),
+                  ],
+                  const SizedBox(height: 24),
+                  _SectionLabel(context.l10n.settingsGeneralSection),
+                  const SizedBox(height: 10),
+                  _SettingsCard(
+                    children: [
+                      _SettingsTile(
+                        icon: Icons.storefront_rounded,
+                        accent: AppColors.mobilePrimary,
+                        label: context.l10n.aboutUs,
+                        onTap: () => NavigationHandler.goToAbout(context),
+                      ),
+                      _SettingsTile(
+                        icon: Icons.quiz_rounded,
+                        accent: AppColors.mobileAccentDark,
+                        label: context.l10n.sss,
+                        onTap: () => NavigationHandler.goToSSS(context),
+                      ),
+                      _SettingsTile(
+                        icon: Icons.call_rounded,
+                        accent: AppColors.info,
+                        label: context.l10n.settingsCallUs,
+                        onTap: SaglamSpotCommunication.makeCall,
+                      ),
+                      _SettingsTile(
+                        icon: Icons.chat_bubble_rounded,
+                        accent: AppColors.success,
+                        label: context.l10n.whatsappCta,
+                        onTap: () => SaglamSpotCommunication.launchWhatsApp(
+                            message: context.l10n.defaultWhatsappGreeting),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _SectionLabel(context.l10n.settingsAppSection),
+                  const SizedBox(height: 10),
+                  _SettingsCard(
+                    children: [
+                      _SettingsTile(
+                        icon: Icons.star_rounded,
+                        accent: AppColors.mobileAccentDark,
+                        label: context.l10n.settingsRateApp,
+                        onTap: FurnitureShareService.openStoreListingForReview,
+                      ),
+                      _SettingsTile(
+                        icon: Icons.ios_share_rounded,
+                        accent: AppColors.info,
+                        label: context.l10n.settingsShareApp,
+                        onTap: FurnitureShareService.shareApp,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _SectionLabel(context.l10n.settingsLegalSection),
+                  const SizedBox(height: 10),
+                  _SettingsCard(
+                    children: [
+                      _SettingsTile(
+                        icon: Icons.privacy_tip_rounded,
+                        accent: AppColors.mobilePrimary,
+                        label: context.l10n.settingsPrivacyPolicy,
+                        onTap: () =>
+                            NavigationHandler.goToPrivacyPolicy(context),
+                      ),
+                      _SettingsTile(
+                        icon: Icons.description_rounded,
+                        accent: AppColors.mobilePrimary,
+                        label: context.l10n.settingsTerms,
+                        onTap: () => NavigationHandler.goToTerms(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  const _AppVersionFooter(),
                 ],
-                const SizedBox(height: 24),
-                _SectionLabel(context.l10n.settingsGeneralSection),
-                const SizedBox(height: 10),
-                _SettingsCard(
-                  children: [
-                    _SettingsTile(
-                      icon: Icons.storefront_rounded,
-                      accent: AppColors.mobilePrimary,
-                      label: context.l10n.aboutUs,
-                      onTap: () => NavigationHandler.goToAbout(context),
-                    ),
-                    _SettingsTile(
-                      icon: Icons.quiz_rounded,
-                      accent: AppColors.mobileAccentDark,
-                      label: context.l10n.sss,
-                      onTap: () => NavigationHandler.goToSSS(context),
-                    ),
-                    _SettingsTile(
-                      icon: Icons.call_rounded,
-                      accent: AppColors.info,
-                      label: context.l10n.settingsCallUs,
-                      onTap: SaglamSpotCommunication.makeCall,
-                    ),
-                    _SettingsTile(
-                      icon: Icons.chat_bubble_rounded,
-                      accent: AppColors.success,
-                      label: context.l10n.whatsappCta,
-                      onTap: () => SaglamSpotCommunication.launchWhatsApp(
-                          message: context.l10n.defaultWhatsappGreeting),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                _SectionLabel(context.l10n.settingsAppSection),
-                const SizedBox(height: 10),
-                _SettingsCard(
-                  children: [
-                    _SettingsTile(
-                      icon: Icons.star_rounded,
-                      accent: AppColors.mobileAccentDark,
-                      label: context.l10n.settingsRateApp,
-                      onTap: FurnitureShareService.openStoreListingForReview,
-                    ),
-                    _SettingsTile(
-                      icon: Icons.ios_share_rounded,
-                      accent: AppColors.info,
-                      label: context.l10n.settingsShareApp,
-                      onTap: FurnitureShareService.shareApp,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                _SectionLabel(context.l10n.settingsLegalSection),
-                const SizedBox(height: 10),
-                _SettingsCard(
-                  children: [
-                    _SettingsTile(
-                      icon: Icons.privacy_tip_rounded,
-                      accent: AppColors.mobilePrimary,
-                      label: context.l10n.settingsPrivacyPolicy,
-                      onTap: () => NavigationHandler.goToPrivacyPolicy(context),
-                    ),
-                    _SettingsTile(
-                      icon: Icons.description_rounded,
-                      accent: AppColors.mobilePrimary,
-                      label: context.l10n.settingsTerms,
-                      onTap: () => NavigationHandler.goToTerms(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                const _AppVersionFooter(),
-              ],
+              ),
             ),
           ),
         ),
@@ -189,10 +198,12 @@ class SettingsPage extends ConsumerWidget {
   }
 
   Widget _buildProfileHeader(final BuildContext context) => Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
           gradient: AppColors.mobilePrimaryGradient,
-          borderRadius: BorderRadius.circular(20),
+          // Ekranın tek imza öğesi: ürün kartıyla aynı asimetrik köşe dili.
+          borderRadius: AppRadius.asymLg,
+          boxShadow: AppShadows.level3(AppColors.primary),
         ),
         child: Row(
           children: [
@@ -239,13 +250,15 @@ class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
 
   @override
-  Widget build(final BuildContext context) => Text(
-        text.toUpperCase(),
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 1,
-          color: AppColors.mobileTextTertiary,
+  Widget build(final BuildContext context) => Padding(
+        padding: const EdgeInsets.only(left: AppSpacing.xs),
+        child: Text(
+          text,
+          style: AppTextStyles.serif(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.mobileTextPrimary,
+          ),
         ),
       );
 }
@@ -262,8 +275,9 @@ class _SettingsCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.mobileSurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.all(AppRadius.lg),
         border: Border.all(color: AppColors.mobileBorder),
+        boxShadow: AppShadows.level1(AppColors.primary),
       ),
       // clipBehavior yukarıda: ListTile'ların kendi (köşesiz/dikdörtgen)
       // dokunma/hover mürekkep efekti, kartın yuvarlak dış köşesinden
@@ -302,14 +316,15 @@ class _SettingsTile extends StatelessWidget {
     final Color resolvedAccent = accent ?? AppColors.mobilePrimary;
     return ListTile(
       onTap: onTap,
+      minVerticalPadding: AppSpacing.md,
       leading: Container(
-        width: 34,
-        height: 34,
+        width: 38,
+        height: 38,
         decoration: BoxDecoration(
-          color: resolvedAccent.withOpacity(0.14),
-          shape: BoxShape.circle,
+          color: resolvedAccent.withValues(alpha: 0.12),
+          borderRadius: AppRadius.all(AppRadius.sm),
         ),
-        child: Icon(icon, size: 17, color: accent),
+        child: Icon(icon, size: 19, color: resolvedAccent),
       ),
       title: Text(label,
           style: TextStyle(
@@ -449,6 +464,141 @@ class _DynamicColorCard extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Arka plan dokusu seçici — her seçenek, gerçek desenin küçük bir
+/// önizlemesini (AtelierPatternPainter) gösterir.
+class _BackgroundPatternCard extends ConsumerWidget {
+  const _BackgroundPatternCard();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final current = ref.watch(backgroundPatternProvider);
+    final labels = {
+      BackgroundPattern.plain: context.l10n.bgPatternPlain,
+      BackgroundPattern.wood: context.l10n.bgPatternWood,
+      BackgroundPattern.tape: context.l10n.bgPatternTape,
+      BackgroundPattern.linen: context.l10n.bgPatternLinen,
+    };
+
+    return AtelierPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xs, AppSpacing.xs, 0, AppSpacing.md),
+            child: Text(
+              context.l10n.settingsBackgroundTexture,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.mobileTextPrimary,
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              for (final pattern in BackgroundPattern.values)
+                Expanded(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                    child: _PatternSwatch(
+                      pattern: pattern,
+                      label: labels[pattern]!,
+                      selected: pattern == current,
+                      onTap: () => ref
+                          .read(backgroundPatternProvider.notifier)
+                          .set(pattern),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PatternSwatch extends StatelessWidget {
+  const _PatternSwatch({
+    required this.pattern,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final BackgroundPattern pattern;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(final BuildContext context) => Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Column(
+            children: [
+              AnimatedContainer(
+                duration: AppMotion.fast,
+                curve: AppMotion.standard,
+                height: 64,
+                decoration: BoxDecoration(
+                  borderRadius: AppRadius.all(AppRadius.md),
+                  border: Border.all(
+                    color: selected ? AppColors.accent : AppColors.mobileBorder,
+                    width: selected ? 2 : 1,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: AppRadius.all(AppRadius.md - 1),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CustomPaint(
+                        painter: AtelierPatternPainter(
+                          pattern: pattern,
+                          base: AppColors.background,
+                          ink: AppColors.primary,
+                          glow: AppColors.accent,
+                        ),
+                      ),
+                      if (selected)
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppSpacing.xs),
+                            child: Icon(Icons.check_circle_rounded,
+                                size: 18, color: AppColors.accent),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs + 2),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: selected
+                      ? AppColors.mobileTextPrimary
+                      : AppColors.mobileTextSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class _LanguageTile extends StatelessWidget {

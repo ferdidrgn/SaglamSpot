@@ -5,6 +5,8 @@ description: Animation rules for SaglamSpot's Flutter UI — decide whether some
 
 # Flutter Motion
 
+> **SaglamSpot projesi:** Süre/eğri değerleri için `AppMotion` (`lib/core/theme/app_tokens.dart`) kullanılır — aşağıdaki tablolar o token'ların gerekçesidir.
+
 Kaynak felsefe: Emil Kowalski'nin animasyon skill'leri (`skills-lock.json`),
 CSS/Motion yerine Flutter API'leriyle yeniden yazıldı.
 

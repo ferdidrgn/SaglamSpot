@@ -2217,4 +2217,38 @@ class AppLocalizationsUz extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones va atrofi';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Fon teksturasi';
+
+  @override
+  String get bgPatternPlain => 'Oddiy';
+
+  @override
+  String get bgPatternWood => 'Yogʻoch';
+
+  @override
+  String get bgPatternTape => 'Ruletka';
+
+  @override
+  String get bgPatternLinen => 'Zigʻir';
+
+  @override
+  String get searchEmptyTitle => 'Hozircha natija yoʻq';
+
+  @override
+  String get searchEmptyMessage => 'Qidiruv yoki toifani oʻzgartirib koʻring.';
+
+  @override
+  String get searchClearFilters => 'Filtrlarni tozalash';
+
+  @override
+  String get loadErrorTitle => 'Mahsulotlar yuklanmadi';
+
+  @override
+  String get loadErrorMessage => 'Ulanishni tekshirib, qayta urinib koʻring.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Mahsulotlar, statistika va xizmatlarni boshqaring.';
 }

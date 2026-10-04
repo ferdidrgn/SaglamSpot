@@ -37,7 +37,7 @@ class AdminProductGrid extends StatelessWidget {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         // Önceden masaüstünde de sabit 2 sütun kalıyordu (context.gridColumns(2)
         // → isMobile:2, isTablet:3, desktop parametresi=2), yani geniş

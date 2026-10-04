@@ -2229,4 +2229,39 @@ class AppLocalizationsDe extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones und Umgebung';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Hintergrundtextur';
+
+  @override
+  String get bgPatternPlain => 'Schlicht';
+
+  @override
+  String get bgPatternWood => 'Holz';
+
+  @override
+  String get bgPatternTape => 'Maßband';
+
+  @override
+  String get bgPatternLinen => 'Leinen';
+
+  @override
+  String get searchEmptyTitle => 'Noch keine Ergebnisse';
+
+  @override
+  String get searchEmptyMessage => 'Ändere deine Suche oder Kategorie.';
+
+  @override
+  String get searchClearFilters => 'Filter zurücksetzen';
+
+  @override
+  String get loadErrorTitle => 'Produkte konnten nicht geladen werden';
+
+  @override
+  String get loadErrorMessage =>
+      'Prüfe deine Verbindung und versuche es erneut.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Produkte, Statistiken und Dienste hier verwalten.';
 }

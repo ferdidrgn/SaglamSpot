@@ -7,6 +7,8 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/custom_image_selector.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
@@ -120,12 +122,17 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
     final mutationState = ref.watch(productMutationProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+    return AtelierBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(context.l10n.editProductTitle,
-            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-        backgroundColor: AppColors.mobileBackground,
+            style: AppTextStyles.serif(
+                fontWeight: FontWeight.w700,
+                fontSize: 21,
+                color: AppColors.mobileTextPrimary)),
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppColors.mobileTextPrimary,
         elevation: 0,
       ),
@@ -261,7 +268,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildImagePreview() {

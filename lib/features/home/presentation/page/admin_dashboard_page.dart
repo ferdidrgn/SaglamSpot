@@ -5,7 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/dynamic_category_chips.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../core/widgets/category_accent_rail.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
@@ -57,33 +60,69 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
 
     final Widget scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
-      appBar: _buildAppBar(context),
-      body: productsAsync.when(
-        loading: () => Center(
-            child: CircularProgressIndicator(color: AppColors.mobileAccent)),
-        error: (final e, final _) =>
-            Center(child: Text(context.l10n.productsLoadError(e.toString()))),
-        data: (final _) => Column(
-          children: [
-            _buildStatsRow(inStock.length, sold.length),
-            _buildTabBar(inStock.length, sold.length),
-            DynamicCategoryChips(
-              selected: _selectedCategory,
-              onSelect: (final c) => setState(() => _selectedCategory = c),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-            ),
-            const SizedBox(height: 4),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  AdminProductGrid(products: filtered(inStock)),
-                  AdminProductGrid(products: filtered(sold)),
-                ],
+      body: AtelierBackground(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: productsAsync.when(
+                  loading: () => Center(
+                      child: CircularProgressIndicator(
+                          color: AppColors.mobileAccent)),
+                  error: (final e, final _) => AtelierStateView(
+                    icon: Icons.cloud_off_rounded,
+                    title: context.l10n.loadErrorTitle,
+                    message: context.l10n.productsLoadError(e.toString()),
+                    actionLabel: context.l10n.retry,
+                    onAction: () => ref.invalidate(productsProvider),
+                  ),
+                  data: (final _) => Column(
+                    children: [
+                      _buildStatsRow(inStock.length, sold.length),
+                      _buildToolsRow(context),
+                      _buildTabBar(inStock.length, sold.length),
+                      // Keşfet/Arama ile aynı dil: solda dikey kategori
+                      // rayı, sağda ürünler.
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CategoryAccentRail(
+                              orientation: Axis.vertical,
+                              selected: _selectedCategory,
+                              onSelect: (final c) =>
+                                  setState(() => _selectedCategory = c),
+                              allColor: AppColors.mobilePrimary,
+                              selectedTextColor: AppColors.mobileTextPrimary,
+                              unselectedTextColor: AppColors.mobileTextTertiary,
+                              width: 52,
+                              border: Border(
+                                  right: BorderSide(
+                                      color: AppColors.mobileBorder)),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: AppSpacing.md),
+                            ),
+                            Expanded(
+                              child: TabBarView(
+                                controller: _tabController,
+                                physics: const BouncingScrollPhysics(),
+                                children: [
+                                  AdminProductGrid(products: filtered(inStock)),
+                                  AdminProductGrid(products: filtered(sold)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: _buildAddButton(context),
@@ -92,50 +131,56 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
   }
 
-  PreferredSizeWidget _buildAppBar(final BuildContext context) => AppBar(
-        backgroundColor: AppColors.mobileBackground,
-        elevation: 0,
-        centerTitle: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.go('/'),
-        ),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Text(
-            context.l10n.adminPanelTitle,
-            style: TextStyle(
-              color: AppColors.mobileTextPrimary,
-              fontWeight: FontWeight.w900,
-              fontSize: 24,
-              letterSpacing: -0.5,
-            ),
-          ),
+  Widget _buildHeader(final BuildContext context) => AtelierScreenHeader(
+        title: context.l10n.adminPanelTitle,
+        subtitle: context.l10n.adminPanelSubtitle,
+        leading: AtelierIconButton(
+          icon: Icons.arrow_back_rounded,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () => context.go('/'),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.bar_chart_rounded,
-                color: AppColors.mobileTextSecondary),
-            tooltip: context.l10n.productStatsTooltip,
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (final _) => const AdminProductStatsPage())),
-          ),
-          IconButton(
-            icon: Icon(Icons.cloud_outlined,
-                color: AppColors.mobileTextSecondary),
-            tooltip: context.l10n.firebaseServicesTooltip,
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (final _) => const AdminFirebaseServicesPage())),
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
-            onPressed: () => _confirmLogout(context),
+          AtelierIconButton(
+            icon: Icons.logout_rounded,
+            tooltip: context.l10n.logout,
+            onTap: () => _confirmLogout(context),
           ),
         ],
+      );
+
+  /// İstatistikler + Firebase servisleri: eskiden AppBar'da sıkışmış iki
+  /// ikondu; artık okunabilir, büyük dokunma alanlı iki araç kartı.
+  Widget _buildToolsRow(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screen, 0, AppSpacing.screen, AppSpacing.md),
+        child: Row(
+          children: [
+            Expanded(
+              child: _AdminToolTile(
+                icon: Icons.bar_chart_rounded,
+                label: context.l10n.productStatsTooltip,
+                color: AppColors.info,
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (final _) => const AdminProductStatsPage())),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm + 2),
+            Expanded(
+              child: _AdminToolTile(
+                icon: Icons.cloud_outlined,
+                label: context.l10n.firebaseServicesTooltip,
+                color: AppColors.mobileAccentDark,
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (final _) =>
+                            const AdminFirebaseServicesPage())),
+              ),
+            ),
+          ],
+        ),
       );
 
   Future<void> _confirmLogout(final BuildContext context) async {
@@ -172,7 +217,8 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
   }
 
   Widget _buildStatsRow(final int stock, final int sold) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screen, AppSpacing.sm, AppSpacing.screen, AppSpacing.md),
         child: Row(
           children: [
             Expanded(
@@ -181,14 +227,14 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                     value: '$stock',
                     icon: Icons.inventory_2_rounded,
                     color: AppColors.success)),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
                 child: AdminStatCard(
                     label: context.l10n.sold,
                     value: '$sold',
                     icon: Icons.check_circle_rounded,
                     color: AppColors.mobileAccentDark)),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
                 child: AdminStatCard(
                     label: context.l10n.totalCount,
@@ -200,37 +246,39 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
       );
 
   Widget _buildTabBar(final int stock, final int sold) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screen, 0, AppSpacing.screen, AppSpacing.sm),
         child: Container(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(AppSpacing.xs),
           decoration: BoxDecoration(
             color: AppColors.mobileSurface,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10)),
-            ],
+            borderRadius: AppRadius.all(AppRadius.lg),
+            border: Border.all(color: AppColors.mobileBorder),
           ),
-          child: TabBar(
-            controller: _tabController,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicator: BoxDecoration(
-              gradient: AppColors.mobileAccentGradient,
-              borderRadius: BorderRadius.circular(16),
+          child: AnimatedBuilder(
+            animation: _tabController,
+            builder: (final context, final _) => TabBar(
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                color: _tabController.index == 0
+                    ? AppColors.success
+                    : AppColors.mobileAccentDark,
+                borderRadius: AppRadius.all(AppRadius.md),
+              ),
+              labelColor: Colors.white,
+              unselectedLabelColor: AppColors.mobileTextSecondary,
+              labelStyle:
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+              unselectedLabelStyle:
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              dividerColor: Colors.transparent,
+              splashBorderRadius: AppRadius.all(AppRadius.md),
+              tabs: [
+                _buildTab(context.l10n.stock, stock),
+                _buildTab(context.l10n.sold, sold)
+              ],
             ),
-            labelColor: Colors.white,
-            unselectedLabelColor: AppColors.mobileTextSecondary,
-            labelStyle: const TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 0.5),
-            unselectedLabelStyle:
-                const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            dividerColor: Colors.transparent,
-            tabs: [
-              _buildTab(context.l10n.stock, stock),
-              _buildTab(context.l10n.sold, sold)
-            ],
           ),
         ),
       );
@@ -245,8 +293,8 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: Colors.black.withValues(alpha: 0.1),
+                borderRadius: AppRadius.all(AppRadius.xs),
               ),
               child: Text(count.toString(),
                   style: const TextStyle(
@@ -260,10 +308,73 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
       FloatingActionButton.extended(
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (final _) => const AddProductPage())),
-        backgroundColor: AppColors.mobileAccent,
+        backgroundColor: AppColors.mobilePrimary,
+        shape: const RoundedRectangleBorder(borderRadius: AppRadius.asymSm),
         icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: Text(context.l10n.addProductFab,
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold)),
+      );
+}
+
+class _AdminToolTile extends StatelessWidget {
+  const _AdminToolTile({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(final BuildContext context) => Material(
+        color: AppColors.mobileSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppRadius.all(AppRadius.md),
+          side: BorderSide(color: AppColors.mobileBorder),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.all(AppRadius.md),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 52),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.12),
+                      borderRadius: AppRadius.all(AppRadius.sm),
+                    ),
+                    child: Icon(icon, size: 18, color: color),
+                  ),
+                  const SizedBox(width: AppSpacing.sm + 2),
+                  Expanded(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.mobileTextPrimary,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.chevron_right_rounded,
+                      size: 18, color: AppColors.mobileTextTertiary),
+                ],
+              ),
+            ),
+          ),
+        ),
       );
 }

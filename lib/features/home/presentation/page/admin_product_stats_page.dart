@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -32,24 +34,26 @@ class AdminProductStatsPage extends ConsumerWidget {
     final soldSorted = [...sold]
       ..sort((final a, final b) => _totalViews(b).compareTo(_totalViews(a)));
 
-    return Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+    return AtelierBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: AppColors.mobileBackground,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(context.l10n.productStatsTitle,
-            style: TextStyle(
+            style: AppTextStyles.serif(
                 color: AppColors.mobileTextPrimary,
-                fontWeight: FontWeight.w800,
-                fontSize: 18)),
+                fontWeight: FontWeight.w700,
+                fontSize: 21)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           _TotalsCard(webTotal: webTotal, mobileTotal: mobileTotal),
           const SizedBox(height: 20),
-          _SectionLabel(
-              context.l10n.productStatsAvailableSection(availableSorted.length)),
+          _SectionLabel(context.l10n
+              .productStatsAvailableSection(availableSorted.length)),
           const SizedBox(height: 8),
           if (availableSorted.isEmpty)
             _EmptyNote(text: context.l10n.productStatsEmpty)
@@ -57,16 +61,18 @@ class AdminProductStatsPage extends ConsumerWidget {
             for (int i = 0; i < availableSorted.length; i++)
               _ProductViewRow(rank: i + 1, product: availableSorted[i]),
           const SizedBox(height: 24),
-          _SectionLabel(context.l10n.productStatsSoldSection(soldSorted.length)),
+          _SectionLabel(
+              context.l10n.productStatsSoldSection(soldSorted.length)),
           const SizedBox(height: 8),
           if (soldSorted.isEmpty)
             _EmptyNote(text: context.l10n.productStatsEmpty)
           else
             for (int i = 0; i < soldSorted.length; i++)
-              _ProductViewRow(rank: i + 1, product: soldSorted[i], dimmed: true),
+              _ProductViewRow(
+                  rank: i + 1, product: soldSorted[i], dimmed: true),
         ],
       ),
-    );
+    ));
   }
 
   int _totalViews(final Product p) => p.viewCountWeb + p.viewCountMobile;
@@ -150,7 +156,8 @@ class _TotalsMiniStat extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w800)),
                 Text(label,
-                    style: const TextStyle(color: Colors.white70, fontSize: 10.5)),
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 10.5)),
               ],
             ),
           ],
@@ -182,7 +189,8 @@ class _EmptyNote extends StatelessWidget {
   Widget build(final BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(text,
-            style: TextStyle(fontSize: 12.5, color: AppColors.mobileTextTertiary)),
+            style:
+                TextStyle(fontSize: 12.5, color: AppColors.mobileTextTertiary)),
       );
 }
 
@@ -225,7 +233,8 @@ class _ProductViewRow extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: OptimizedCachedImage(
-              imageUrl: product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
+              imageUrl:
+                  product.imagesUrl.isNotEmpty ? product.imagesUrl.first : '',
               width: 46,
               height: 46,
               fit: BoxFit.cover,
@@ -246,9 +255,10 @@ class _ProductViewRow extends StatelessWidget {
                         color: AppColors.mobileTextPrimary)),
                 const SizedBox(height: 3),
                 Text(
-                  context.l10n
-                      .productStatsRowBreakdown(product.viewCountWeb, product.viewCountMobile),
-                  style: TextStyle(fontSize: 11, color: AppColors.mobileTextTertiary),
+                  context.l10n.productStatsRowBreakdown(
+                      product.viewCountWeb, product.viewCountMobile),
+                  style: TextStyle(
+                      fontSize: 11, color: AppColors.mobileTextTertiary),
                 ),
               ],
             ),

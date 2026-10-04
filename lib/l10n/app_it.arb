@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Texture di sfondo",
+  "bgPatternPlain": "Semplice",
+  "bgPatternWood": "Legno",
+  "bgPatternTape": "Metro",
+  "bgPatternLinen": "Lino",
+  "searchEmptyTitle": "Ancora nessun risultato",
+  "searchEmptyMessage": "Prova a cambiare ricerca o categoria.",
+  "searchClearFilters": "Cancella filtri",
+  "loadErrorTitle": "Impossibile caricare i prodotti",
+  "loadErrorMessage": "Controlla la connessione e riprova.",
+  "adminPanelSubtitle": "Gestisci prodotti, statistiche e servizi."
 }

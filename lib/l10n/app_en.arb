@@ -878,5 +878,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Background texture",
+  "bgPatternPlain": "Plain",
+  "bgPatternWood": "Wood",
+  "bgPatternTape": "Tape measure",
+  "bgPatternLinen": "Linen",
+  "searchEmptyTitle": "No results yet",
+  "searchEmptyMessage": "Try changing your search or category.",
+  "searchClearFilters": "Clear filters",
+  "loadErrorTitle": "Couldn't load products",
+  "loadErrorMessage": "Check your connection and try again.",
+  "adminPanelSubtitle": "Manage products, stats and services here."
 }

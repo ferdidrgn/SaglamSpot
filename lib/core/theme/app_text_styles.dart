@@ -32,6 +32,25 @@ class AppTextStyles {
         color: color,
       );
 
+  /// Elle yazılan serif başlıklar için: çıplak `fontFamily: 'Fraunces'`
+  /// literal'i yerine bunu kullan — google_fonts aileyi ağırlığa göre
+  /// (`Fraunces_600` gibi) kaydettiği için literal sessizce varsayılan
+  /// fonta düşebiliyor.
+  static TextStyle serif({
+    required final double fontSize,
+    final FontWeight fontWeight = FontWeight.w600,
+    final Color? color,
+    final double? height,
+    final double? letterSpacing,
+  }) =>
+      GoogleFonts.fraunces(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        height: height,
+        letterSpacing: letterSpacing,
+      );
+
   static TextStyle _heading({
     required final double fontSize,
     required final FontWeight fontWeight,

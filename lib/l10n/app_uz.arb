@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Fon teksturasi",
+  "bgPatternPlain": "Oddiy",
+  "bgPatternWood": "Yogʻoch",
+  "bgPatternTape": "Ruletka",
+  "bgPatternLinen": "Zigʻir",
+  "searchEmptyTitle": "Hozircha natija yoʻq",
+  "searchEmptyMessage": "Qidiruv yoki toifani oʻzgartirib koʻring.",
+  "searchClearFilters": "Filtrlarni tozalash",
+  "loadErrorTitle": "Mahsulotlar yuklanmadi",
+  "loadErrorMessage": "Ulanishni tekshirib, qayta urinib koʻring.",
+  "adminPanelSubtitle": "Mahsulotlar, statistika va xizmatlarni boshqaring."
 }

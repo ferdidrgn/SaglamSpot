@@ -2215,4 +2215,38 @@ class AppLocalizationsKy extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones жана айланасы';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'Фон текстурасы';
+
+  @override
+  String get bgPatternPlain => 'Жөнөкөй';
+
+  @override
+  String get bgPatternWood => 'Жыгач';
+
+  @override
+  String get bgPatternTape => 'Рулетка';
+
+  @override
+  String get bgPatternLinen => 'Зыгыр';
+
+  @override
+  String get searchEmptyTitle => 'Азырынча натыйжа жок';
+
+  @override
+  String get searchEmptyMessage => 'Издөөнү же категорияны өзгөртүп көрүңүз.';
+
+  @override
+  String get searchClearFilters => 'Чыпкаларды тазалоо';
+
+  @override
+  String get loadErrorTitle => 'Товарлар жүктөлгөн жок';
+
+  @override
+  String get loadErrorMessage => 'Байланышты текшерип, кайра аракет кылыңыз.';
+
+  @override
+  String get adminPanelSubtitle =>
+      'Товарларды, статистиканы жана кызматтарды башкарыңыз.';
 }

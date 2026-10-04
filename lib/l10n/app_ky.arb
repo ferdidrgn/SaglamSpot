@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Фон текстурасы",
+  "bgPatternPlain": "Жөнөкөй",
+  "bgPatternWood": "Жыгач",
+  "bgPatternTape": "Рулетка",
+  "bgPatternLinen": "Зыгыр",
+  "searchEmptyTitle": "Азырынча натыйжа жок",
+  "searchEmptyMessage": "Издөөнү же категорияны өзгөртүп көрүңүз.",
+  "searchClearFilters": "Чыпкаларды тазалоо",
+  "loadErrorTitle": "Товарлар жүктөлгөн жок",
+  "loadErrorMessage": "Байланышты текшерип, кайра аракет кылыңыз.",
+  "adminPanelSubtitle": "Товарларды, статистиканы жана кызматтарды башкарыңыз."
 }

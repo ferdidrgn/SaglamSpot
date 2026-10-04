@@ -756,5 +756,16 @@
           "type": "String"
         }
     }
-  }
+  },
+  "settingsBackgroundTexture": "Текстура фона",
+  "bgPatternPlain": "Простой",
+  "bgPatternWood": "Дерево",
+  "bgPatternTape": "Рулетка",
+  "bgPatternLinen": "Лён",
+  "searchEmptyTitle": "Пока нет результатов",
+  "searchEmptyMessage": "Попробуйте изменить запрос или категорию.",
+  "searchClearFilters": "Сбросить фильтры",
+  "loadErrorTitle": "Не удалось загрузить товары",
+  "loadErrorMessage": "Проверьте подключение и попробуйте снова.",
+  "adminPanelSubtitle": "Управляйте товарами, статистикой и сервисами."
 }

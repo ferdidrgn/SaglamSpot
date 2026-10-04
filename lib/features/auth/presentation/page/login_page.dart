@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 
@@ -46,7 +47,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     final Widget scaffold = Scaffold(
       backgroundColor: AppColors.background,
-      body: GestureDetector(
+      body: AtelierBackground(
+        child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(
           child: Center(
@@ -153,7 +155,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ),
           ),
         ),
-      ),
+      )),
     );
 
     return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);

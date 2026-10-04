@@ -2187,4 +2187,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String deliveryZonesAndSurroundings(String zones) {
     return '$zones والمناطق المجاورة';
   }
+
+  @override
+  String get settingsBackgroundTexture => 'نسيج الخلفية';
+
+  @override
+  String get bgPatternPlain => 'سادة';
+
+  @override
+  String get bgPatternWood => 'خشب';
+
+  @override
+  String get bgPatternTape => 'شريط قياس';
+
+  @override
+  String get bgPatternLinen => 'كتان';
+
+  @override
+  String get searchEmptyTitle => 'لا توجد نتائج بعد';
+
+  @override
+  String get searchEmptyMessage => 'جرّب تغيير البحث أو الفئة.';
+
+  @override
+  String get searchClearFilters => 'مسح عوامل التصفية';
+
+  @override
+  String get loadErrorTitle => 'تعذّر تحميل المنتجات';
+
+  @override
+  String get loadErrorMessage => 'تحقق من الاتصال وحاول مرة أخرى.';
+
+  @override
+  String get adminPanelSubtitle => 'إدارة المنتجات والإحصاءات والخدمات.';
 }

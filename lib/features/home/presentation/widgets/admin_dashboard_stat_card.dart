@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_tokens.dart';
 
 /// Yönetici panelinin üstündeki özet kartı (Stok / Satıldı / Toplam).
-/// `AdminDashboardPage`'den taşındı (eskiden `_StatCard`), tek kullanım
-/// yeri orası.
+/// Sayı serif ve büyük (panelin "okunan" bilgisi), etiket küçük; solda
+/// durumun rengini taşıyan ince bir dikey çizgi — renkli gradyan kutu ve
+/// renkli gölge yerine.
 class AdminStatCard extends StatelessWidget {
   final String label;
   final String value;
@@ -18,43 +21,70 @@ class AdminStatCard extends StatelessWidget {
       required this.color});
 
   @override
-  Widget build(final BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-        decoration: BoxDecoration(
-          color: AppColors.mobileSurface,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-                color: color.withOpacity(0.16),
-                blurRadius: 18,
-                offset: const Offset(0, 8)),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [color.withOpacity(0.85), color],
+  Widget build(final BuildContext context) => Semantics(
+        label: '$label: $value',
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md, AppSpacing.md, AppSpacing.sm, AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.mobileSurface,
+            borderRadius: AppRadius.all(AppRadius.md),
+            border: Border.all(color: AppColors.mobileBorder),
+            boxShadow: AppShadows.level1(AppColors.primary),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 3,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: AppRadius.all(AppRadius.pill),
                 ),
-                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 17, color: Colors.white),
-            ),
-            const SizedBox(height: 8),
-            Text(value,
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.mobileTextPrimary)),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 10.5, color: AppColors.mobileTextTertiary)),
-          ],
+              const SizedBox(width: AppSpacing.sm + 2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        value,
+                        style: AppTextStyles.serif(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.mobileTextPrimary,
+                          height: 1.05,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Row(
+                      children: [
+                        Icon(icon, size: 12, color: color),
+                        const SizedBox(width: AppSpacing.xs),
+                        Flexible(
+                          child: Text(
+                            label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.mobileTextSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
 }

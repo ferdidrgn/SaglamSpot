@@ -6,6 +6,8 @@ import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/notification_inbox_cache.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -23,7 +25,8 @@ class NotificationsPage extends ConsumerWidget {
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
-      body: SafeArea(
+      body: AtelierBackground(
+        child: SafeArea(
         child: Column(
           children: [
             _buildHeader(context, ref, inboxAsync.value ?? const []),
@@ -31,7 +34,13 @@ class NotificationsPage extends ConsumerWidget {
               child: inboxAsync.when(
                 loading: () => Center(
                     child: CircularProgressIndicator(color: AppColors.mobilePrimary)),
-                error: (final e, final _) => Center(child: Text('$e')),
+                error: (final e, final _) => AtelierStateView(
+                  icon: Icons.cloud_off_rounded,
+                  title: context.l10n.loadErrorTitle,
+                  message: context.l10n.loadErrorMessage,
+                  actionLabel: context.l10n.retry,
+                  onAction: () => ref.invalidate(notificationInboxProvider),
+                ),
                 data: (final items) => items.isEmpty
                     ? _buildEmptyState(context)
                     : ListView.separated(
@@ -49,6 +58,7 @@ class NotificationsPage extends ConsumerWidget {
           ],
         ),
       ),
+      ),
     );
 
     // Diğer ikincil sayfalarla (Sepet, Favoriler, Ayarlar, Arama) tutarlı
@@ -59,72 +69,42 @@ class NotificationsPage extends ConsumerWidget {
 
   Widget _buildHeader(
           final BuildContext context, final WidgetRef ref, final List<AppNotification> items) =>
-      Padding(
-        padding: const EdgeInsets.fromLTRB(4, 8, 16, 4),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: Icon(Icons.arrow_back_rounded, color: AppColors.mobileTextPrimary),
-            ),
-            Expanded(
-              child: Text(
-                context.l10n.notificationsTitle,
-                style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary),
-              ),
-            ),
-            IconButton(
-              tooltip: context.l10n.notificationsEnablePermissionTooltip,
-              onPressed: NotificationService.openSystemNotificationSettings,
-              icon: Icon(Icons.notifications_active_outlined,
-                  color: AppColors.mobileTextSecondary),
-            ),
-            if (items.isNotEmpty)
-              PopupMenuButton<_MenuAction>(
-                icon: Icon(Icons.more_vert_rounded, color: AppColors.mobileTextSecondary),
-                onSelected: (final action) {
-                  final notifier = ref.read(notificationInboxProvider.notifier);
-                  if (action == _MenuAction.markAllRead) notifier.markAllRead();
-                  if (action == _MenuAction.clearAll) notifier.clear();
-                },
-                itemBuilder: (final context) => [
-                  PopupMenuItem(
-                      value: _MenuAction.markAllRead,
-                      child: Text(context.l10n.markAllReadAction)),
-                  PopupMenuItem(
-                      value: _MenuAction.clearAll, child: Text(context.l10n.clearAllAction)),
-                ],
-              ),
-          ],
+      AtelierScreenHeader(
+        title: context.l10n.notificationsTitle,
+        leading: AtelierIconButton(
+          icon: Icons.arrow_back_rounded,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () => NavigationHandler.smartGoBack(context),
         ),
+        actions: [
+          AtelierIconButton(
+            icon: Icons.notifications_active_outlined,
+            tooltip: context.l10n.notificationsEnablePermissionTooltip,
+            onTap: NotificationService.openSystemNotificationSettings,
+          ),
+          if (items.isNotEmpty)
+            PopupMenuButton<_MenuAction>(
+              icon: Icon(Icons.more_vert_rounded, color: AppColors.mobileTextSecondary),
+              onSelected: (final action) {
+                final notifier = ref.read(notificationInboxProvider.notifier);
+                if (action == _MenuAction.markAllRead) notifier.markAllRead();
+                if (action == _MenuAction.clearAll) notifier.clear();
+              },
+              itemBuilder: (final context) => [
+                PopupMenuItem(
+                    value: _MenuAction.markAllRead,
+                    child: Text(context.l10n.markAllReadAction)),
+                PopupMenuItem(
+                    value: _MenuAction.clearAll, child: Text(context.l10n.clearAllAction)),
+              ],
+            ),
+        ],
       );
 
-  Widget _buildEmptyState(final BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(color: AppColors.mobileCardBg, shape: BoxShape.circle),
-                child: Icon(Icons.notifications_none_rounded,
-                    size: 38, color: AppColors.mobileMutedDark),
-              ),
-              const SizedBox(height: 18),
-              Text(context.l10n.notificationsEmptyTitle,
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.mobileTextPrimary)),
-              const SizedBox(height: 6),
-              Text(context.l10n.notificationsEmptyDesc,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 13, color: AppColors.mobileTextSecondary, height: 1.5)),
-            ],
-          ),
-        ),
+  Widget _buildEmptyState(final BuildContext context) => AtelierStateView(
+        icon: Icons.notifications_none_rounded,
+        title: context.l10n.notificationsEmptyTitle,
+        message: context.l10n.notificationsEmptyDesc,
       );
 }
 
