@@ -9,19 +9,14 @@ import '../../../../core/theme/app_colors.dart';
 /// "vitrin" fotoğraf, sağında geniş+uzun bir çift ve en sağda dar-uzun bir
 /// aksan sütunu (harici paket yok).
 class SocialShowcaseSection extends StatelessWidget {
-  const SocialShowcaseSection({super.key});
+  /// Dükkândaki gerçek ürün fotoğrafları. Dörtten azsa bölüm gizlenir;
+  /// stok görselle doldurulmaz.
+  final List<String> photos;
 
-  static const List<String> _photos = [
-    'https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?q=80&w=700', // 0 raf
-    'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?q=80&w=700', // 1 koltuk
-    'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=700', // 2 çalışma masası
-    'https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=700', // 3 sehpa/vazo
-    'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=900', // 4 yemek odası (vitrin, uzun)
-    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=900', // 5 yatak odası (geniş)
-    'https://images.unsplash.com/photo-1531835551805-16d864c8d311?q=80&w=700', // 6 çerçeve/dekor
-    'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=700', // 7 mutfak rafı
-    'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=700', // 8 tuğla duvar/ahşap masa (aksan)
-  ];
+  const SocialShowcaseSection({super.key, required this.photos});
+
+  List<String> get _frames =>
+      [for (var i = 0; i < 9; i++) photos[i % photos.length]];
 
   // (col, row, colSpan, rowSpan, photoIndex) — 6 sütun x 6 satırlık bir
   // hücre planı, boşluk kalmadan 9 karo ile dolduruluyor. Referans
@@ -42,6 +37,10 @@ class SocialShowcaseSection extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    if (photos.length < 4) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+    final frames = _frames;
     return SliverPadding(
       padding: context.pagePadding.copyWith(
           top: context.spacingLarge * 0.6, bottom: context.spacingLarge),
@@ -63,9 +62,10 @@ class SocialShowcaseSection extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
             const SizedBox(height: 28),
-            context.isMobile
-                ? _buildMobileMasonry(context)
-                : _buildBentoGrid(context),
+            if (context.isMobile)
+              _buildMobileMasonry(context, frames)
+            else
+              _buildBentoGrid(context, frames),
           ],
         ),
       ),
@@ -74,7 +74,7 @@ class SocialShowcaseSection extends StatelessWidget {
 
   // Masaüstü/tablet: 6 sütunluk gerçek bento — büyük/küçük/geniş/uzun
   // karışık, boşluksuz, referans görseldeki asimetrik ritimle.
-  Widget _buildBentoGrid(final BuildContext context) {
+  Widget _buildBentoGrid(final BuildContext context, final List<String> frames) {
     const spacing = 12.0;
     final rowUnit =
         context.responsive(mobile: 60.0, tablet: 66.0, desktop: 76.0);
@@ -94,7 +94,7 @@ class SocialShowcaseSection extends StatelessWidget {
                   top: tile[1] * (rowUnit + spacing),
                   width: tile[2] * colWidth + (tile[2] - 1) * spacing,
                   height: tile[3] * rowUnit + (tile[3] - 1) * spacing,
-                  child: _PhotoTile(url: _photos[tile[4]]),
+                  child: _PhotoTile(url: frames[tile[4]]),
                 ),
             ],
           ),
@@ -105,17 +105,19 @@ class SocialShowcaseSection extends StatelessWidget {
 
   // Mobil: dar ekranda karmaşık bento yerine, tüm 9 fotoğrafı kullanan
   // eşit olmayan iki sütunlu bir masonry — dolu ama sade.
-  Widget _buildMobileMasonry(final BuildContext context) {
+  Widget _buildMobileMasonry(
+      final BuildContext context, final List<String> frames) {
     const leftHeights = [190.0, 130.0, 170.0, 150.0, 200.0];
     const leftPhotos = [0, 2, 4, 6, 8];
     const rightHeights = [140.0, 220.0, 150.0, 180.0];
     const rightPhotos = [1, 3, 5, 7];
 
-    Widget column(final List<int> photos, final List<double> heights) => Column(
+    Widget column(final List<int> indexes, final List<double> heights) =>
+        Column(
           children: [
-            for (int i = 0; i < photos.length; i++) ...[
+            for (int i = 0; i < indexes.length; i++) ...[
               if (i > 0) const SizedBox(height: 10),
-              _PhotoTile(url: _photos[photos[i]], height: heights[i]),
+              _PhotoTile(url: frames[indexes[i]], height: heights[i]),
             ],
           ],
         );

@@ -2301,4 +2301,15 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get photoRemoved => 'Η φωτογραφία αφαιρέθηκε';
+
+  @override
+  String get adminShowcaseGapTitle => 'Συμπλήρωσε τη βιτρίνα';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return 'Σε $count προϊόντα λείπει φωτογραφία ή περιγραφή';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'Επεξεργασία';
 }

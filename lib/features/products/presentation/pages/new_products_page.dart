@@ -115,37 +115,6 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     }
   }
 
-  String _getCategoryImageUrl(ProductCategory category) {
-    switch (category) {
-      case ProductCategory.sofa:
-        return 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.chair:
-        return 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.table:
-        return 'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.bed:
-        return 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.wardrobe:
-        return 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.white:
-        return 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.lighting:
-        return 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.homeTextile:
-        return 'https://images.unsplash.com/photo-1600166898405-da9535204843?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.decor:
-        return 'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.officeFurniture:
-        return 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.outdoorGarden:
-        return 'https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.kidsFurniture:
-        return 'https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=800&q=80';
-      case ProductCategory.other:
-        return 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80';
-    }
-  }
-
   @override
   Widget build(final BuildContext context) {
     final productsAsync = ref.watch(productsProvider);
@@ -172,7 +141,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverToBoxAdapter(
-                      child: _buildHeroSection(context, products.length)),
+                      child: _buildHeroSection(context, products)),
                   SliverToBoxAdapter(child: _buildBrandTicker(context)),
                   SliverToBoxAdapter(
                       child: _buildShopByCategorySection(context, products)),
@@ -246,7 +215,17 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
   // 1. HERO
   // ============================================================
   Widget _buildHeroSection(
-      final BuildContext context, final int totalProducts) {
+      final BuildContext context, final List<Product> products) {
+    final totalProducts = products.length;
+    String? heroUrl;
+    for (final product in products) {
+      if (product.imagesUrl.isEmpty) continue;
+      final url = product.imagesUrl.first;
+      if (url.isNotEmpty) {
+        heroUrl = url;
+        break;
+      }
+    }
     final isDesktop = context.isDesktop;
     final leftContent = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,12 +324,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           child: Row(
             children: [
               _buildStatItem(
-                  "$totalProducts+", context.l10n.newStatActiveProductLabel),
-              const SizedBox(width: 24),
-              _buildStatItem(
-                  "2.4k+", context.l10n.statHappyCustomer.toUpperCase()),
-              const SizedBox(width: 24),
-              _buildStatItem("%100", context.l10n.newStatControlledStockLabel),
+                  '$totalProducts', context.l10n.newStatActiveProductLabel),
             ],
           ),
         ),
@@ -365,8 +339,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            Image.network(
-              'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
+            if (heroUrl == null)
+              Container(
+                height: context.responsive(
+                    mobile: 260.0, tablet: 340.0, desktop: 400.0),
+                color: AppColors.surface,
+                child: Center(
+                    child: Icon(Icons.chair_outlined,
+                        size: 80, color: AppColors.accentDark)),
+              )
+            else
+              Image.network(
+              heroUrl,
               height: context.responsive(
                   mobile: 260.0, tablet: 340.0, desktop: 400.0),
               width: double.infinity,
@@ -610,9 +594,18 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       const SizedBox(width: 14),
                   itemBuilder: (final context, final index) {
                     final cat = availableCategories[index];
-                    final count =
-                        allProducts.where((p) => p.category == cat).length;
-                    final imageUrl = _getCategoryImageUrl(cat);
+                    final inCategory =
+                        allProducts.where((p) => p.category == cat);
+                    final count = inCategory.length;
+                    String? imageUrl;
+                    for (final product in inCategory) {
+                      if (product.imagesUrl.isEmpty) continue;
+                      final url = product.imagesUrl.first;
+                      if (url.isNotEmpty) {
+                        imageUrl = url;
+                        break;
+                      }
+                    }
 
                     return _buildVisualCategoryCard(
                       width: cardWidth,
@@ -639,7 +632,7 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     required final double width,
     required final String title,
     required final String itemCount,
-    required final String imageUrl,
+    required final String? imageUrl,
     required final bool isSelected,
     required final VoidCallback onTap,
   }) {
@@ -668,12 +661,15 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
-                    Container(color: const Color(0xFFEBE5DF)),
-              ),
+              if (imageUrl == null)
+                const ColoredBox(color: Color(0xFFEBE5DF))
+              else
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                      const ColoredBox(color: Color(0xFFEBE5DF)),
+                ),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(

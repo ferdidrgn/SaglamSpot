@@ -54,12 +54,36 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
   final ScrollController _scrollController = ScrollController();
 
-  // Hero arka planında sırayla gösterilen fotoğraflar.
-  static const List<String> _heroImages = [
-    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600",
-    "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1600",
-    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600",
-  ];
+  /// Vitrindeki gerçek fotoğraflar. Stok (Unsplash) görseller incelemede
+  /// siteyi şablon gibi gösterdiği için hero, kategori ve paylaşım duvarı
+  /// önce bunları kullanır.
+  List<String> _showcasePhotos(final List<Product> products) {
+    final urls = <String>[];
+    for (final product in products) {
+      if (product.imagesUrl.isEmpty) continue;
+      final url = product.imagesUrl.first;
+      if (url.isEmpty || urls.contains(url)) continue;
+      urls.add(url);
+      if (urls.length == 12) break;
+    }
+    return urls;
+  }
+
+  List<String> _heroImagesFor(final List<Product> products) {
+    final live = _showcasePhotos(products);
+    if (live.isEmpty) return const [];
+    return live.take(5).toList();
+  }
+
+  String? _productPhotoFor(
+      final ProductCategory category, final List<Product> products) {
+    for (final product in products) {
+      if (product.category != category || product.imagesUrl.isEmpty) continue;
+      final url = product.imagesUrl.first;
+      if (url.isNotEmpty) return url;
+    }
+    return null;
+  }
 
   @override
   void dispose() {
@@ -124,7 +148,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                             .toList(),
                         selectedCategory,
                       ),
-                      if (availableProducts.isNotEmpty)
+                      if (availableProducts.length >= 4)
                         const SliverToBoxAdapter(
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -152,20 +176,24 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                   band(
                     AppColors.background,
                     [
-                      const SocialShowcaseSection(),
+                      SocialShowcaseSection(
+                          photos: _showcasePhotos(availableProducts)),
                       // --- Önceki tasarımların bölümleri: kaldırılmadı,
                       // yeni vitrin düzeninin altına eklendi. "Popüler
                       // Kategoriler" artık ayrı bir bölüm değil — verisi
                       // yukarıdaki "Yaşam Alanına Göre" panelinde
-                      // kullanılıyor. ---
-                      const SliverToBoxAdapter(
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: AdsenseBanner(
-                              type: AdUnitType.inArticle, height: 300),
+                      // kullanılıyor. Reklam yalnızca vitrin doluyken:
+                      // boş veya stok görselli sayfada birim göstermek
+                      // AdSense'in "içeriksiz ekranda reklam" ihlali.
+                      if (availableProducts.length >= 8)
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: AdsenseBanner(
+                                type: AdUnitType.inArticle, height: 300),
+                          ),
                         ),
-                      ),
                       const HowItWorksSection(),
                     ],
                   ),
@@ -181,14 +209,15 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                       // yama gibi görünüp geçişi sertleştiriyordu. Böylece
                       // sayfanın en altı tek, kesintisiz bir koyu bant
                       // olarak akıyor.
-                      const SliverToBoxAdapter(
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: AdsenseBanner(
-                              type: AdUnitType.multiplex, height: 250),
+                      if (availableProducts.length >= 8)
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: AdsenseBanner(
+                                type: AdUnitType.multiplex, height: 250),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   _buildStatsSection(),
@@ -210,6 +239,30 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final columns =
         context.screenWidth >= 1600 ? 5 : context.gridColumns(4);
     final visibleProducts = availableProducts.take(columns * 3).toList();
+
+    if (visibleProducts.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: context.pagePadding.copyWith(bottom: context.spacing),
+          child: Column(
+            children: [
+              Text(context.l10n.emptyCategoryProducts,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: context.bodySize,
+                      height: 1.4)),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: SaglamSpotCommunication.launchWhatsApp,
+                icon: const Icon(Icons.chat_rounded, size: 18),
+                label: Text(context.l10n.whatsappCta),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return SliverPadding(
       padding: context.pagePadding.copyWith(
@@ -340,7 +393,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               tablet: 420.0,
               desktop: 460.0,
               largeDesktop: 500.0),
-          child: HeroBanner(images: _heroImages, featuredPool: featuredPool),
+          child: HeroBanner(
+              images: _heroImagesFor(availableProducts),
+              featuredPool: featuredPool),
         ),
       ),
     );
@@ -596,8 +651,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             return _buildCompactCategoryCard(
               width: cardWidth,
               title: meta.customLabel ?? meta.category.label(context),
-              imageUrl: _categoryPhotos[meta.category] ??
-                  _categoryPhotos[ProductCategory.other],
+              imageUrl: _productPhotoFor(meta.category,
+                  ref.watch(availableProductsProvider)),
               isSelected: selected == meta.category,
               onTap: () => ref
                   .read(searchFiltersProvider.notifier)
@@ -712,42 +767,17 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // bir bölüm olarak DEĞİL, bu daha şık bölünmüş-panel tasarımının sağ
   // tarafına aktif kategori sayısı kadar kart olarak yerleştiriyoruz. Ayrı
   // "Popüler Kategoriler" bölümü artık gösterilmiyor.
-  static const Map<ProductCategory, String> _categoryPhotos = {
-    ProductCategory.sofa:
-        'https://images.unsplash.com/photo-1550254478-ead40cc54513?q=80&w=800',
-    ProductCategory.chair:
-        'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800',
-    ProductCategory.table:
-        'https://images.unsplash.com/photo-1617806118233-18e1de247200?q=80&w=800',
-    ProductCategory.bed:
-        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800',
-    ProductCategory.wardrobe:
-        'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800',
-    ProductCategory.white:
-        'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=800',
-    ProductCategory.lighting:
-        'https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?q=80&w=800',
-    ProductCategory.homeTextile:
-        'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=800',
-    ProductCategory.decor:
-        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800',
-    ProductCategory.officeFurniture:
-        'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=800',
-    ProductCategory.outdoorGarden:
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800',
-    ProductCategory.kidsFurniture:
-        'https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=800',
-    ProductCategory.other:
-        'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800',
-  };
+  // Oda kartları stok fotoğraf değil, o kategorideki gerçek ürün
+  // görselini taşır (yoksa düz zemin).
 
   Widget _buildRoomsInspirationBanner() {
     final categories = ref.watch(orderedActiveCategoriesProvider);
 
     Widget room(final CategoryMeta meta) => RoomCard(
           title: meta.customLabel ?? meta.category.label(context),
-          img: _categoryPhotos[meta.category] ??
-              _categoryPhotos[ProductCategory.other]!,
+          img: _productPhotoFor(
+                  meta.category, ref.watch(availableProductsProvider)) ??
+              '',
           sub: context.l10n.byRoomSub,
           onTap: () => NavigationHandler.goToSearchWithCategory(
               context, meta.category.toFirestore()),
@@ -801,9 +831,14 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     // yerine yatay kaydırmalı bir şerit — aktif kaç kategori varsa o kadar
     // kart gösterir. Yükseklik tarayıcı penceresine (hp) değil sabit
     // piksele bağlı — kısa pencerelerde taşmayı önler.
+    final panelHeight = context.responsive(
+        mobile: 240.0,
+        tablet: 340.0,
+        desktop: 400.0,
+        largeDesktop: 440.0,
+    );
     final collage = SizedBox(
-      height: context.responsive(
-          mobile: 240.0, tablet: 340.0, desktop: 400.0, largeDesktop: 440.0),
+      height: panelHeight,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -824,11 +859,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 ],
               )
             : SizedBox(
-                height: context.responsive(
-                    mobile: 280.0,
-                    tablet: 300.0,
-                    desktop: 320.0,
-                    largeDesktop: 340.0),
+                height: panelHeight,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -844,7 +875,54 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
   // --- Önceki tasarımdan geri getirilen bölümler ---
 
-  Widget _buildArtisanInfo() => SliverToBoxAdapter(
+  Widget _artisanCopy(final BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(context.l10n.whoWeAre,
+              style: TextStyle(
+                  color: AppColors.accentDark,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2)),
+          const SizedBox(height: 15),
+          Text(context.l10n.artisanTitle,
+              style: TextStyle(
+                  fontFamily: 'Fraunces',
+                  fontSize: context.h2Size,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2)),
+          const SizedBox(height: 15),
+          Text(context.l10n.artisanDesc,
+              style: TextStyle(
+                  color: context.primaryColor.withOpacity(0.6),
+                  fontSize: context.bodySize)),
+          const SizedBox(height: 25),
+          ElevatedButton(
+            onPressed: () => NavigationHandler.goToAbout(context),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accentDark),
+            child: Text(context.l10n.visitUsButton),
+          )
+        ],
+      );
+
+  Widget _shopPhotoFrame(final String? url, {final double? aspect}) {
+    if (url == null) {
+      return const SizedBox.shrink();
+    }
+    final image = ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Image.network(url, fit: BoxFit.cover),
+    );
+    if (aspect == null) {
+      return image;
+    }
+    return AspectRatio(aspectRatio: aspect, child: image);
+  }
+
+  Widget _buildArtisanInfo() {
+    final photos = _showcasePhotos(ref.watch(availableProductsProvider));
+    final photo = photos.isEmpty ? null : photos.first;
+    return SliverToBoxAdapter(
         child: Container(
           margin: context.sectionPadding,
           padding: EdgeInsets.all(context.responsive(mobile: 16, desktop: 28)),
@@ -853,56 +931,30 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             borderRadius: BorderRadius.circular(context.borderRadius(2)),
             border: Border.all(color: context.primaryColor.withOpacity(0.05)),
           ),
-          child: Flex(
-            direction: context.isMobile ? Axis.vertical : Axis.horizontal,
-            children: [
-              Expanded(
-                flex: context.isMobile ? 0 : 1,
-                child: Column(
+          child: context.isMobile
+              ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(context.l10n.whoWeAre,
-                        style: TextStyle(
-                            color: AppColors.accentDark,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2)),
-                    const SizedBox(height: 15),
-                    Text(context.l10n.artisanTitle,
-                        style: TextStyle(
-                            fontFamily: 'Fraunces',
-                            fontSize: context.h2Size,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2)),
-                    const SizedBox(height: 15),
-                    Text(context.l10n.artisanDesc,
-                        style: TextStyle(
-                            color: context.primaryColor.withOpacity(0.6),
-                            fontSize: context.bodySize)),
-                    const SizedBox(height: 25),
-                    ElevatedButton(
-                      onPressed: () => NavigationHandler.goToAbout(context),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accentDark),
-                      child: Text(context.l10n.visitUsButton),
-                    )
+                    _artisanCopy(context),
+                    if (photo != null) ...[
+                      const SizedBox(height: 30),
+                      _shopPhotoFrame(photo, aspect: 16 / 10),
+                    ],
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: _artisanCopy(context)),
+                    if (photo != null) ...[
+                      const SizedBox(width: 40),
+                      Expanded(child: _shopPhotoFrame(photo)),
+                    ],
                   ],
                 ),
-              ),
-              if (!context.isMobile) const SizedBox(width: 40),
-              if (context.isMobile) const SizedBox(height: 30),
-              Expanded(
-                flex: context.isMobile ? 0 : 1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                      "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800",
-                      fit: BoxFit.cover),
-                ),
-              ),
-            ],
-          ),
         ),
       );
+  }
 
   // Önceki sürümde burada uydurma pazarlama rakamları vardı ("2.5K+ mutlu
   // müşteri", "15K+ teslimat", "%100 güven" gibi hiçbir gerçek veriye
@@ -1120,6 +1172,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                               NavigationHandler.goToSpotProducts(context),
                           context.l10n.aboutUs: () =>
                               NavigationHandler.goToAbout(context),
+                          context.l10n.settingsPrivacyPolicy: () =>
+                              NavigationHandler.goToPrivacyPolicy(context),
+                          context.l10n.settingsTerms: () =>
+                              NavigationHandler.goToTerms(context),
                         }),
                         _footerColumn(context.l10n.contact, {
                           SaglamSpotCommunication.displayPhone:
@@ -1186,7 +1242,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     onTap: entry.value,
                     child: Text(entry.key,
                         style: TextStyle(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withOpacity(0.78),
                             fontSize: 13)),
                   ),
                 )),

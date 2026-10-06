@@ -2193,4 +2193,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get photoRemoved => '已移除照片';
+
+  @override
+  String get adminShowcaseGapTitle => '补全橱窗';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return '$count 件商品缺少照片或说明';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => '编辑';
 }

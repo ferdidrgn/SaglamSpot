@@ -140,7 +140,7 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverToBoxAdapter(
-                      child: _buildMasthead(context, products.length)),
+                      child: _buildMasthead(context, products)),
 
                   SliverToBoxAdapter(child: _buildTrustTicker(context)),
 
@@ -233,7 +233,18 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
   // ============================================================
   // 1. HERO (Aynen korundu)
   // ============================================================
-  Widget _buildMasthead(final BuildContext context, final int totalProducts) {
+  Widget _buildMasthead(
+      final BuildContext context, final List<Product> products) {
+    final totalProducts = products.length;
+    String? heroUrl;
+    for (final product in products) {
+      if (product.imagesUrl.isEmpty) continue;
+      final url = product.imagesUrl.first;
+      if (url.isNotEmpty) {
+        heroUrl = url;
+        break;
+      }
+    }
     final textColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -297,13 +308,14 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
       ],
     );
 
-    final showcase = RevealFade(
+    final showcase = heroUrl == null
+        ? const SizedBox.shrink()
+        : RevealFade(
       delayMs: 100,
       offsetY: 20,
       child: _buildShowcaseImage(
         context: context,
-        imageUrl:
-            'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=900&q=80',
+        imageUrl: heroUrl,
         // NOT: "siz teklif verin, biz değerlendirelim" gibi satıcı davet
         // eden bir metin BİLİNÇLİ olarak kullanılmıyor — bu sayfa alım
         // odaklı bir vitrin, eşya satmak isteyenler için bir başvuru kanalı

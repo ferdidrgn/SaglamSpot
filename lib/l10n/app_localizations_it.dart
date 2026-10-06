@@ -2297,4 +2297,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get photoRemoved => 'Foto rimossa';
+
+  @override
+  String get adminShowcaseGapTitle => 'Completa la vetrina';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return 'A $count prodotti manca una foto o la descrizione';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'Modifica';
 }

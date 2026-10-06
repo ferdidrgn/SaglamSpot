@@ -781,5 +781,8 @@
   "keepEditing": "Оңдоону улантуу",
   "fieldNameRequired": "Товардын аты керек",
   "fieldPriceRequired": "Туура баа жазыңыз",
-  "photoRemoved": "Сүрөт алынды"
+  "photoRemoved": "Сүрөт алынды",
+  "adminShowcaseGapTitle": "Витринаны толукта",
+  "adminShowcaseGapBody": "{count} товарда сүрөт же сүрөттөмө жок",
+  "adminShowcaseGapOpen": "Түзөт"
 }

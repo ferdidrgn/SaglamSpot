@@ -4261,6 +4261,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Fotoğraf kaldırıldı'**
   String get photoRemoved;
+
+  /// No description provided for @adminShowcaseGapTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vitrini tamamla'**
+  String get adminShowcaseGapTitle;
+
+  /// No description provided for @adminShowcaseGapBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} üründe fotoğraf veya açıklama eksik'**
+  String adminShowcaseGapBody(int count);
+
+  /// No description provided for @adminShowcaseGapOpen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenle'**
+  String get adminShowcaseGapOpen;
 }
 
 class _AppLocalizationsDelegate

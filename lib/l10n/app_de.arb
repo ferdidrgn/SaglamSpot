@@ -781,5 +781,8 @@
   "keepEditing": "Weiter bearbeiten",
   "fieldNameRequired": "Produktname erforderlich",
   "fieldPriceRequired": "Gültigen Preis eingeben",
-  "photoRemoved": "Foto entfernt"
+  "photoRemoved": "Foto entfernt",
+  "adminShowcaseGapTitle": "Vitrine vervollständigen",
+  "adminShowcaseGapBody": "Bei {count} Produkten fehlen Foto oder Beschreibung",
+  "adminShowcaseGapOpen": "Bearbeiten"
 }

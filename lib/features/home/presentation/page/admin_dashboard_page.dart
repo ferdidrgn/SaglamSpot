@@ -13,6 +13,7 @@ import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
+import '../../../products/presentation/pages/edit_product_page.dart';
 import '../widgets/admin_dashboard_product_grid.dart';
 import '../widgets/admin_dashboard_stat_card.dart';
 import 'admin_firebase_services_page.dart';
@@ -81,6 +82,7 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                   data: (final _) => Column(
                     children: [
                       _buildStatsRow(inStock.length, sold.length),
+                      _buildShowcaseGap(context, inStock),
                       _buildToolsRow(context),
                       _buildTabBar(inStock.length, sold.length),
                       // Keşfet/Arama ile aynı dil: solda dikey kategori
@@ -214,6 +216,80 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
       await ref.read(authProvider.notifier).signOut();
       if (context.mounted) context.go('/');
     }
+  }
+
+  /// Fotoğrafı, açıklaması veya fiyatı eksik stok. Reklam incelemesi
+  /// boş ürün sayfalarını "hazır değil" sayar; esnaf bunları telefondan
+  /// tek dokunuşla düzenleme ekranına alır.
+  List<Product> _showcaseGaps(final List<Product> products) => products
+      .where((final p) =>
+          p.imagesUrl.isEmpty || p.desc.trim().length < 24 || p.price <= 0)
+      .toList();
+
+  Widget _buildShowcaseGap(
+      final BuildContext context, final List<Product> stock) {
+    final gaps = _showcaseGaps(stock);
+    if (gaps.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.screen, 0, AppSpacing.screen, AppSpacing.md),
+      child: AtelierPanel(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.photo_library_outlined,
+                    color: AppColors.mobileAccentDark, size: 20),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(context.l10n.adminShowcaseGapTitle,
+                      style: TextStyle(
+                          color: AppColors.mobileTextPrimary,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15)),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(context.l10n.adminShowcaseGapBody(gaps.length),
+                style: TextStyle(
+                    color: AppColors.mobileTextSecondary, height: 1.35)),
+            const SizedBox(height: AppSpacing.sm),
+            for (final product in gaps.take(4))
+              InkWell(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (final _) => EditProductPage(
+                        productId: product.id, product: product),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(product.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: AppColors.mobileTextPrimary,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                      Text(context.l10n.adminShowcaseGapOpen,
+                          style: TextStyle(
+                              color: AppColors.mobileAccentDark,
+                              fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildStatsRow(final int stock, final int sold) => Padding(

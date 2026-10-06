@@ -781,5 +781,8 @@
   "keepEditing": "متابعة التحرير",
   "fieldNameRequired": "اسم المنتج مطلوب",
   "fieldPriceRequired": "أدخل سعراً صالحاً",
-  "photoRemoved": "أُزيلت الصورة"
+  "photoRemoved": "أُزيلت الصورة",
+  "adminShowcaseGapTitle": "أكمل الواجهة",
+  "adminShowcaseGapBody": "{count} منتجات بلا صورة أو وصف",
+  "adminShowcaseGapOpen": "تعديل"
 }

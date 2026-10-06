@@ -2294,4 +2294,15 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get photoRemoved => 'Rasm olib tashlandi';
+
+  @override
+  String get adminShowcaseGapTitle => 'Vitrinani to\'ldiring';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return '$count mahsulotda rasm yoki tavsif yo\'q';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'Tahrirlash';
 }

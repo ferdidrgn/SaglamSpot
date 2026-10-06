@@ -781,5 +781,8 @@
   "keepEditing": "继续编辑",
   "fieldNameRequired": "需要商品名称",
   "fieldPriceRequired": "请输入有效价格",
-  "photoRemoved": "已移除照片"
+  "photoRemoved": "已移除照片",
+  "adminShowcaseGapTitle": "补全橱窗",
+  "adminShowcaseGapBody": "{count} 件商品缺少照片或说明",
+  "adminShowcaseGapOpen": "编辑"
 }

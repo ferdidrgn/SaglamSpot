@@ -781,5 +781,8 @@
   "keepEditing": "Συνέχεια επεξεργασίας",
   "fieldNameRequired": "Απαιτείται όνομα προϊόντος",
   "fieldPriceRequired": "Εισάγετε έγκυρη τιμή",
-  "photoRemoved": "Η φωτογραφία αφαιρέθηκε"
+  "photoRemoved": "Η φωτογραφία αφαιρέθηκε",
+  "adminShowcaseGapTitle": "Συμπλήρωσε τη βιτρίνα",
+  "adminShowcaseGapBody": "Σε {count} προϊόντα λείπει φωτογραφία ή περιγραφή",
+  "adminShowcaseGapOpen": "Επεξεργασία"
 }

@@ -781,5 +781,8 @@
   "keepEditing": "Continua a modificare",
   "fieldNameRequired": "Il nome del prodotto è obbligatorio",
   "fieldPriceRequired": "Inserisci un prezzo valido",
-  "photoRemoved": "Foto rimossa"
+  "photoRemoved": "Foto rimossa",
+  "adminShowcaseGapTitle": "Completa la vetrina",
+  "adminShowcaseGapBody": "A {count} prodotti manca una foto o la descrizione",
+  "adminShowcaseGapOpen": "Modifica"
 }

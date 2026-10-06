@@ -781,5 +781,8 @@
   "keepEditing": "Продолжить правку",
   "fieldNameRequired": "Нужно название товара",
   "fieldPriceRequired": "Введите корректную цену",
-  "photoRemoved": "Фото удалено"
+  "photoRemoved": "Фото удалено",
+  "adminShowcaseGapTitle": "Дополните витрину",
+  "adminShowcaseGapBody": "У {count} товаров нет фото или описания",
+  "adminShowcaseGapOpen": "Изменить"
 }

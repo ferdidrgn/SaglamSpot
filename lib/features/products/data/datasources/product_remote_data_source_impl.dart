@@ -198,9 +198,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   ) async {
     if (newImages == null || newImages.isEmpty) return product.imagesUrl;
 
-    await _deleteImages([...product.imagesUrl, ...product.studioImagesUrl]);
+    // Yeni kareler eskisinin yerine geçmez. Telefonda ikinci bir fotoğraf
+    // eklemek tüm galeriyi silmesin diye mevcut adresler durur, yeniler
+    // ayrı dosya adıyla eklenir.
     final uploaded = await _uploadImages(newImages, product.id);
     return [
+      ...product.imagesUrl,
       ...uploaded,
       ...product.studioImagesUrl.where((final u) => u.isNotEmpty),
     ];
@@ -213,7 +216,8 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final List<String> urls = [];
 
     for (int i = 0; i < images.length; i++) {
-      final ref = _storage.ref('product_images/$productId/$i.jpg');
+      final stamp = DateTime.now().microsecondsSinceEpoch;
+      final ref = _storage.ref('product_images/$productId/${stamp}_$i.jpg');
 
       final image = images[i];
 
@@ -228,15 +232,6 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     }
 
     return urls;
-  }
-
-  Future<void> _deleteImages(final List<String> imageUrls) async {
-    for (final url in imageUrls) {
-      if (url.isEmpty) continue;
-      try {
-        await _storage.refFromURL(url).delete();
-      } catch (_) {}
-    }
   }
 
   // ---------------------------------------------------------------------------

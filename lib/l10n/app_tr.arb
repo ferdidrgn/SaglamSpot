@@ -903,5 +903,15 @@
   "keepEditing": "Düzenlemeye devam",
   "fieldNameRequired": "Ürün adı gerekli",
   "fieldPriceRequired": "Geçerli bir fiyat girin",
-  "photoRemoved": "Fotoğraf kaldırıldı"
+  "photoRemoved": "Fotoğraf kaldırıldı",
+  "adminShowcaseGapTitle": "Vitrini tamamla",
+  "adminShowcaseGapBody": "{count} üründe fotoğraf veya açıklama eksik",
+  "@adminShowcaseGapBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminShowcaseGapOpen": "Düzenle"
 }

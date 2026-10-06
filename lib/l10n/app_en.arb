@@ -903,5 +903,8 @@
   "keepEditing": "Keep editing",
   "fieldNameRequired": "Product name is required",
   "fieldPriceRequired": "Enter a valid price",
-  "photoRemoved": "Photo removed"
+  "photoRemoved": "Photo removed",
+  "adminShowcaseGapTitle": "Complete the showcase",
+  "adminShowcaseGapBody": "{count} products are missing a photo or description",
+  "adminShowcaseGapOpen": "Edit"
 }

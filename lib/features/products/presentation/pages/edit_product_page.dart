@@ -358,45 +358,45 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   }
 
   Widget _buildImagePreview() {
-    final bool usingNew = _newSelectedImages.isNotEmpty;
-    final bool showStudioTile = usingNew &&
+    final existing = _currentProduct!.imagesUrl;
+    final fresh = _newSelectedImages;
+    final bool showStudioTile = fresh.isNotEmpty &&
         (_isGeneratingStudio || _studioImageUrl != null || _studioFailed);
-    final int existingCount = usingNew ? 0 : _currentProduct!.imagesUrl.length;
-    final int baseCount = usingNew ? _newSelectedImages.length : existingCount;
-    final int itemCount = baseCount + (showStudioTile ? 1 : 0) + 1;
+    final int itemCount =
+        existing.length + fresh.length + (showStudioTile ? 1 : 0) + 1;
 
     return SizedBox(
-      height: 100,
+      height: 128,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,
         separatorBuilder: (final _, final __) => const SizedBox(width: 10),
         itemBuilder: (final _, final i) {
-          if (i < baseCount) {
-            if (usingNew) {
-              final dynamic raw = _newSelectedImages[i];
-              final ImageProvider imageProvider =
-                  raw is Uint8List ? MemoryImage(raw) : FileImage(raw as File);
-              return PhotoThumbnail(
-                image: imageProvider,
-                onDelete: () => setState(() {
-                  _newSelectedImages.removeAt(i);
-                  if (i == 0) {
-                    _studioImageUrl = null;
-                    _studioFuture = null;
-                    _studioFailed = false;
-                  }
-                }),
-              );
-            }
+          if (i < existing.length) {
             return PhotoThumbnail(
-              image: NetworkImage(_currentProduct!.imagesUrl[i]),
+              image: NetworkImage(existing[i]),
               onDelete: () => setState(() => _currentProduct = _currentProduct!
-                  .copyWith(
-                      imagesUrl: [..._currentProduct!.imagesUrl]..removeAt(i))),
+                  .copyWith(imagesUrl: [...existing]..removeAt(i))),
             );
           }
-          if (showStudioTile && i == baseCount) {
+          final freshIndex = i - existing.length;
+          if (freshIndex < fresh.length) {
+            final dynamic raw = fresh[freshIndex];
+            final ImageProvider imageProvider =
+                raw is Uint8List ? MemoryImage(raw) : FileImage(raw as File);
+            return PhotoThumbnail(
+              image: imageProvider,
+              onDelete: () => setState(() {
+                _newSelectedImages.removeAt(freshIndex);
+                if (_newSelectedImages.isEmpty) {
+                  _studioImageUrl = null;
+                  _studioFuture = null;
+                  _studioFailed = false;
+                }
+              }),
+            );
+          }
+          if (showStudioTile && i == existing.length + fresh.length) {
             return StudioPhotoTile(
               isLoading: _isGeneratingStudio,
               imageUrl: _studioImageUrl,
@@ -418,11 +418,14 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     final images = await _imageSelector.pickImages();
     if (images.isEmpty) return;
     setState(() {
-      _newSelectedImages = images;
-      _studioImageUrl = null;
-      _studioFailed = false;
+      final bool firstBatch = _newSelectedImages.isEmpty;
+      _newSelectedImages = [..._newSelectedImages, ...images];
+      if (firstBatch) {
+        _studioImageUrl = null;
+        _studioFailed = false;
+      }
     });
-    _generateStudioPreview();
+    if (_studioImageUrl == null) _generateStudioPreview();
   }
 
   Future<Uint8List> _bytesOf(final dynamic image) async =>

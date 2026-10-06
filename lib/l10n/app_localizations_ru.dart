@@ -2287,4 +2287,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get photoRemoved => 'Фото удалено';
+
+  @override
+  String get adminShowcaseGapTitle => 'Дополните витрину';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return 'У $count товаров нет фото или описания';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'Изменить';
 }

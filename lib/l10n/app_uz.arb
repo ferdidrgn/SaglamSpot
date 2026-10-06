@@ -781,5 +781,8 @@
   "keepEditing": "Tahrirlashda davom",
   "fieldNameRequired": "Mahsulot nomi kerak",
   "fieldPriceRequired": "To'g'ri narx kiriting",
-  "photoRemoved": "Rasm olib tashlandi"
+  "photoRemoved": "Rasm olib tashlandi",
+  "adminShowcaseGapTitle": "Vitrinani to'ldiring",
+  "adminShowcaseGapBody": "{count} mahsulotda rasm yoki tavsif yo'q",
+  "adminShowcaseGapOpen": "Tahrirlash"
 }

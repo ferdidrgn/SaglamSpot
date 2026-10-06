@@ -301,7 +301,9 @@ class _RoomCardState extends State<RoomCard> {
                   scale: _isHovered ? 1.1 : 1.0,
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeOutCubic,
-                  child: Image.network(widget.img, fit: BoxFit.cover),
+                  child: widget.img.isEmpty
+                      ? ColoredBox(color: AppColors.secondary)
+                      : Image.network(widget.img, fit: BoxFit.cover),
                 ),
                 Container(
                   padding: const EdgeInsets.all(20),

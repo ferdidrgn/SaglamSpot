@@ -2284,4 +2284,15 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get photoRemoved => 'Фото видалено';
+
+  @override
+  String get adminShowcaseGapTitle => 'Доповніть вітрину';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return 'У $count товарів немає фото чи опису';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'Змінити';
 }

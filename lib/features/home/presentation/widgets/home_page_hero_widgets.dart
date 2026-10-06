@@ -38,8 +38,11 @@ class _HeroBannerState extends State<HeroBanner> {
   @override
   void initState() {
     super.initState();
+    if (widget.images.isEmpty) return;
     _timer = Timer.periodic(const Duration(seconds: 6), (final _) {
-      if (mounted) _goTo((_page + 1) % widget.images.length);
+      if (mounted && widget.images.isNotEmpty) {
+        _goTo((_page + 1) % widget.images.length);
+      }
     });
   }
 
@@ -138,7 +141,15 @@ class _HeroBannerState extends State<HeroBanner> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(context.responsive(mobile: 18, desktop: 32)),
+          // Ok: kenardan 12 + 38px daire + 8px nefes. İçerik aynı hizada
+          // kalırsa dar ekranda üçüncü eylem ("Keşfet") okun altına girip
+          // hero'nun yuvarlak köşesinde kesiliyor.
+          padding: EdgeInsets.symmetric(
+            horizontal: widget.images.length > 1
+                ? 12 + 38 + 8
+                : context.responsive(mobile: 18.0, desktop: 32.0),
+            vertical: context.responsive(mobile: 18.0, desktop: 32.0),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

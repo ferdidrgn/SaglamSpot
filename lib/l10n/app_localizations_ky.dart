@@ -2292,4 +2292,15 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get photoRemoved => 'Сүрөт алынды';
+
+  @override
+  String get adminShowcaseGapTitle => 'Витринаны толукта';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return '$count товарда сүрөт же сүрөттөмө жок';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'Түзөт';
 }

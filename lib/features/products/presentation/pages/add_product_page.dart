@@ -327,7 +327,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       _nameError = nameMissing ? context.l10n.fieldNameRequired : null;
       _priceError = priceMissing ? context.l10n.fieldPriceRequired : null;
     });
-    if (nameMissing || priceMissing || _images.isEmpty) {
+    if (nameMissing || priceMissing || _images.isEmpty || _selectedCategory == null) {
       if (nameMissing) {
         _reveal(_nameKey);
         _nameFocus.requestFocus();

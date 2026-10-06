@@ -2263,4 +2263,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get photoRemoved => 'أُزيلت الصورة';
+
+  @override
+  String get adminShowcaseGapTitle => 'أكمل الواجهة';
+
+  @override
+  String adminShowcaseGapBody(int count) {
+    return '$count منتجات بلا صورة أو وصف';
+  }
+
+  @override
+  String get adminShowcaseGapOpen => 'تعديل';
 }

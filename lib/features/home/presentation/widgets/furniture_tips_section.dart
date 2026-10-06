@@ -14,11 +14,10 @@ class FurnitureTipsSection extends StatelessWidget {
   Widget build(final BuildContext context) {
     final cardWidth =
         context.responsive(mobile: 260.0, tablet: 300.0, desktop: 340.0);
-    // Kart yüksekliği kart genişliğine göre hesaplanıyor: görsel (4:3) +
-    // metin bloğu. Eskiden mobilde sabit 340px'e sıkıştırılmıştı ve bu,
-    // geniş "mobil" aralığında (0-768px) alttan taşıyordu — artık kart
-    // genişliği ne olursa olsun içerik tam sığıyor.
-    final cardHeight = cardWidth * 0.75 + 150;
+    // Görsel 4:3. Metin bloğu başlık (2 satır) + açıklama (3 satır) +
+    // boşluklar; yazı ölçeği büyüyünce kart da büyür, sabit 150px
+    // dar ekranda alttan taşıyordu.
+    final cardHeight = cardWidth * 0.75 + _tipTextBlockHeight(context);
 
     final tips = _tips(context);
 
@@ -62,6 +61,16 @@ class FurnitureTipsSection extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Kategori + 2 satır başlık + 3 satır açıklama + iç boşluk.
+/// Yazı ölçeği (erişilebilirlik) büyüdükçe artar ki kart alttan taşmasın.
+double _tipTextBlockHeight(final BuildContext context) {
+  final scaler = MediaQuery.textScalerOf(context);
+  final category = scaler.scale(16);
+  final title = scaler.scale(16) * 1.25 * 2;
+  final description = scaler.scale(13) * 1.45 * 3;
+  return 16 + category + 8 + title + 6 + description + 20 + 12;
 }
 
 class _TipCard extends StatefulWidget {
@@ -121,41 +130,50 @@ class _TipCardState extends State<_TipCard> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(tip.icon, size: 14, color: AppColors.accent),
-                      const SizedBox(width: 6),
-                      Text(tip.category.toUpperCase(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(tip.icon, size: 14, color: AppColors.accent),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(tip.category.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 10,
+                                  letterSpacing: 1)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(tip.title,
+                        style: TextStyle(
+                            fontFamily: 'Fraunces',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            height: 1.25,
+                            color: AppColors.textPrimary),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 6),
+                    Expanded(
+                      child: Text(tip.description,
                           style: TextStyle(
-                              color: AppColors.accent,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 10,
-                              letterSpacing: 1)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(tip.title,
-                      style: TextStyle(
-                          fontFamily: 'Fraunces',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: AppColors.textPrimary),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 6),
-                  Text(tip.description,
-                      style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 13,
-                          height: 1.4),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis),
-                ],
+                              color: AppColors.textSecondary,
+                              fontSize: 13,
+                              height: 1.45),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
