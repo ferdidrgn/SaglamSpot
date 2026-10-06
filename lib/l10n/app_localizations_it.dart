@@ -2253,4 +2253,48 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => 'Gestisci prodotti, statistiche e servizi.';
+
+  @override
+  String get undo => 'Annulla';
+
+  @override
+  String get removedFromFavorites => 'Rimosso dai preferiti';
+
+  @override
+  String get removeFromFavorites => 'Rimuovi dai preferiti';
+
+  @override
+  String get removeFromCart => 'Rimuovi dal carrello';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp non si è aperto';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp non si è aperto su questo dispositivo. Chiamare il negozio?';
+
+  @override
+  String get callInstead => 'Chiama';
+
+  @override
+  String get unsavedChangesTitle => 'Modifiche non salvate';
+
+  @override
+  String get unsavedChangesBody =>
+      'Se esci, quello che hai scritto andrà perso.';
+
+  @override
+  String get discardChanges => 'Esci';
+
+  @override
+  String get keepEditing => 'Continua a modificare';
+
+  @override
+  String get fieldNameRequired => 'Il nome del prodotto è obbligatorio';
+
+  @override
+  String get fieldPriceRequired => 'Inserisci un prezzo valido';
+
+  @override
+  String get photoRemoved => 'Foto rimossa';
 }

@@ -767,5 +767,19 @@
   "searchClearFilters": "Сбросить фильтры",
   "loadErrorTitle": "Не удалось загрузить товары",
   "loadErrorMessage": "Проверьте подключение и попробуйте снова.",
-  "adminPanelSubtitle": "Управляйте товарами, статистикой и сервисами."
+  "adminPanelSubtitle": "Управляйте товарами, статистикой и сервисами.",
+  "undo": "Отменить",
+  "removedFromFavorites": "Удалено из избранного",
+  "removeFromFavorites": "Убрать из избранного",
+  "removeFromCart": "Убрать из корзины",
+  "whatsAppUnavailableTitle": "WhatsApp не открылся",
+  "whatsAppUnavailableBody": "WhatsApp не открылся на этом устройстве. Позвонить в магазин?",
+  "callInstead": "Позвонить",
+  "unsavedChangesTitle": "Изменения не сохранены",
+  "unsavedChangesBody": "Если выйти, введённое пропадёт.",
+  "discardChanges": "Выйти",
+  "keepEditing": "Продолжить правку",
+  "fieldNameRequired": "Нужно название товара",
+  "fieldPriceRequired": "Введите корректную цену",
+  "photoRemoved": "Фото удалено"
 }

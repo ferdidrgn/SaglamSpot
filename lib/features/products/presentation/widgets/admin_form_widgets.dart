@@ -68,6 +68,10 @@ class AdminFormField extends StatelessWidget {
   final bool numeric;
   final int lines;
   final String? hintText;
+  final String? errorText;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   const AdminFormField({
     super.key,
@@ -77,6 +81,10 @@ class AdminFormField extends StatelessWidget {
     this.numeric = false,
     this.lines = 1,
     this.hintText,
+    this.errorText,
+    this.focusNode,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   @override
@@ -84,7 +92,10 @@ class AdminFormField extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 14),
         child: TextField(
           controller: controller,
+          focusNode: focusNode,
           maxLines: lines,
+          textInputAction: textInputAction,
+          onSubmitted: onSubmitted,
           keyboardType: numeric
               ? const TextInputType.numberWithOptions(decimal: true)
               : null,
@@ -92,6 +103,7 @@ class AdminFormField extends StatelessWidget {
           decoration: InputDecoration(
             labelText: label,
             hintText: hintText,
+            errorText: errorText,
             labelStyle:
                 TextStyle(color: AppColors.textTertiary, fontSize: 13.5),
             hintStyle: TextStyle(

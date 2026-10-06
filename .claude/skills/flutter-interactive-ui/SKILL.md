@@ -8,7 +8,9 @@ description: Interactive UI, user operations and plugin (package) rules for Sagl
 > **SaglamSpot projesi:** Görsel dil için `saglamspot-design`, koruma
 > kuralları için `saglamspot-ui`, süre/eğri için `flutter-motion`
 > (`AppMotion`). Bu skill "kullanıcı ne YAPAR ve arayüz nasıl CEVAP
-> VERİR" sorusunu kapsar.
+> VERİR" sorusunu kapsar. Yeni hareket eklerken her bölüme ayrı
+> fade-up koyma; basma cevabı `TactilePress` + `AppMotion.fast` yeter.
+> Doluluk uğruna dokunma hedefini 48dp altına indirme.
 
 Temel kural: **her eylemin görünür bir cevabı, hatanın bir çıkış yolu ve
 geri alınabilir işlemin bir "Geri al"ı vardır.** Cevapsız dokunuş,
@@ -55,10 +57,18 @@ desen → geri bildirim → hata durumu.
   alınabilir → diyalog yok, `SnackBar(action: SnackBarAction(label: Geri al))`.
   Ürün silme geri alınamaz → onay diyaloğu.
 
+Uygulama karşılıkları:
+
+- Geri al bildirimi: `lib/core/widgets/action_feedback.dart`
+  (`showUndoSnackBar`, `removeFavoriteWithUndo`, `removeCartItemWithUndo`,
+  `confirmDiscardChanges`).
+- WhatsApp açılmazsa arama önerisi: `SaglamSpotCommunication.launchWhatsApp`.
+- Arama: `SearchPage._onSearchChanged` 300 ms.
+- Admin ekle/düzenle: alan terk edince hata, gönderimde ilk hatalı alana
+  kaydırma, fotoğraf sırası (`ReorderableListView`), kayıtsız çıkış
+  (`PopScope`).
+
 ```dart
-// NOT: `removedFromFavorites` ve `undo` anahtarları henüz ARB'lerde YOK —
-// bu deseni ilk kullanan değişiklik 11 dilin hepsine ekler (mevcut benzer
-// anahtar: `cartItemRemoved`).
 void _removeWithUndo(final BuildContext context, final WidgetRef ref, final Product p) {
   HapticFeedback.mediumImpact();
   ref.read(favoritesProvider.notifier).toggle(p);

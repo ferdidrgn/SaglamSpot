@@ -1,5 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../shared/navigation/providers/navigation_keys.dart';
+import '../common/extentions/app_context_ui_extension.dart';
+import '../theme/app_colors.dart';
 
 /// 🏬 Sağlam Spot İletişim, Konum ve Ulaşım Servisi
 final class SaglamSpotCommunication {
@@ -26,13 +29,35 @@ final class SaglamSpotCommunication {
 
   // --- 📞 İLETİŞİM AKSİYONLARI ---
 
-  /// WhatsApp hattını başlatır
+  /// WhatsApp hattını başlatır. Uygulama açılmazsa telefonla aramayı önerir.
   static Future<void> launchWhatsApp(
       {String message =
           "Merhaba, mobilyalar hakkında bilgi almak istiyorum."}) async {
     final Uri url = Uri.parse(
         "https://wa.me/$_phoneNumber?text=${Uri.encodeComponent(message)}");
-    await _launch(url);
+    final opened = await _launch(url);
+    if (opened) return;
+    final ctx = NavigationKeys.rootNavigatorKey.currentContext;
+    if (ctx == null || !ctx.mounted) return;
+    final call = await showDialog<bool>(
+      context: ctx,
+      builder: (final dialogContext) => AlertDialog(
+        title: Text(dialogContext.l10n.whatsAppUnavailableTitle),
+        content: Text(dialogContext.l10n.whatsAppUnavailableBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(dialogContext.l10n.callInstead,
+                style: TextStyle(color: AppColors.accentDark)),
+          ),
+        ],
+      ),
+    );
+    if (call == true) await makeCall();
   }
 
   /// Doğrudan telefon araması başlatır
@@ -153,13 +178,15 @@ final class SaglamSpotCommunication {
   }
 
   // --- 🛠 YARDIMCI METOT ---
-  static Future<void> _launch(Uri url) async {
+  static Future<bool> _launch(Uri url) async {
     try {
-      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-        debugPrint("URL başlatılamadı: $url");
-      }
+      final opened =
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (!opened) debugPrint("URL başlatılamadı: $url");
+      return opened;
     } catch (e) {
       debugPrint("Hata: $e");
+      return false;
     }
   }
 }

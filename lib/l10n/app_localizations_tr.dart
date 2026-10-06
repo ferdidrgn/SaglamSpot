@@ -2239,4 +2239,47 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Ürünleri, istatistikleri ve servisleri buradan yönet.';
+
+  @override
+  String get undo => 'Geri al';
+
+  @override
+  String get removedFromFavorites => 'Favorilerden kaldırıldı';
+
+  @override
+  String get removeFromFavorites => 'Favoriden kaldır';
+
+  @override
+  String get removeFromCart => 'Sepetten kaldır';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp açılamadı';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp bu cihazda açılmadı. Telefonla aramak ister misiniz?';
+
+  @override
+  String get callInstead => 'Ara';
+
+  @override
+  String get unsavedChangesTitle => 'Değişiklikler kaydedilmedi';
+
+  @override
+  String get unsavedChangesBody => 'Çıkarsanız yazdıklarınız silinir.';
+
+  @override
+  String get discardChanges => 'Çık';
+
+  @override
+  String get keepEditing => 'Düzenlemeye devam';
+
+  @override
+  String get fieldNameRequired => 'Ürün adı gerekli';
+
+  @override
+  String get fieldPriceRequired => 'Geçerli bir fiyat girin';
+
+  @override
+  String get photoRemoved => 'Fotoğraf kaldırıldı';
 }

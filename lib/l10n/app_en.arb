@@ -889,5 +889,19 @@
   "searchClearFilters": "Clear filters",
   "loadErrorTitle": "Couldn't load products",
   "loadErrorMessage": "Check your connection and try again.",
-  "adminPanelSubtitle": "Manage products, stats and services here."
+  "adminPanelSubtitle": "Manage products, stats and services here.",
+  "undo": "Undo",
+  "removedFromFavorites": "Removed from favorites",
+  "removeFromFavorites": "Remove from favorites",
+  "removeFromCart": "Remove from cart",
+  "whatsAppUnavailableTitle": "WhatsApp didn't open",
+  "whatsAppUnavailableBody": "WhatsApp didn't open on this device. Call the shop instead?",
+  "callInstead": "Call",
+  "unsavedChangesTitle": "Unsaved changes",
+  "unsavedChangesBody": "If you leave, what you typed will be lost.",
+  "discardChanges": "Leave",
+  "keepEditing": "Keep editing",
+  "fieldNameRequired": "Product name is required",
+  "fieldPriceRequired": "Enter a valid price",
+  "photoRemoved": "Photo removed"
 }

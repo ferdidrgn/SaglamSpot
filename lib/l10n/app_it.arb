@@ -767,5 +767,19 @@
   "searchClearFilters": "Cancella filtri",
   "loadErrorTitle": "Impossibile caricare i prodotti",
   "loadErrorMessage": "Controlla la connessione e riprova.",
-  "adminPanelSubtitle": "Gestisci prodotti, statistiche e servizi."
+  "adminPanelSubtitle": "Gestisci prodotti, statistiche e servizi.",
+  "undo": "Annulla",
+  "removedFromFavorites": "Rimosso dai preferiti",
+  "removeFromFavorites": "Rimuovi dai preferiti",
+  "removeFromCart": "Rimuovi dal carrello",
+  "whatsAppUnavailableTitle": "WhatsApp non si è aperto",
+  "whatsAppUnavailableBody": "WhatsApp non si è aperto su questo dispositivo. Chiamare il negozio?",
+  "callInstead": "Chiama",
+  "unsavedChangesTitle": "Modifiche non salvate",
+  "unsavedChangesBody": "Se esci, quello che hai scritto andrà perso.",
+  "discardChanges": "Esci",
+  "keepEditing": "Continua a modificare",
+  "fieldNameRequired": "Il nome del prodotto è obbligatorio",
+  "fieldPriceRequired": "Inserisci un prezzo valido",
+  "photoRemoved": "Foto rimossa"
 }

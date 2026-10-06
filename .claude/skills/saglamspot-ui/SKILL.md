@@ -47,11 +47,19 @@ bileşenleri).
 
 ## 3. Web yerleşimi
 
-- Zemin bantları tam genişlik, içerik `ContentWidth` (maks 1280) ile
-  ortalanır — tüm `CustomScrollView`'u tek bir max-width kutusuna sarma.
+- Zemin bantları tam genişlik. Okuma blokları dar kalır (~80 karakter).
+  Ürün vitrini geniş ekranda **1640**'a kadar yayılır — tüm
+  `CustomScrollView`'u tek bir max-width kutusuna sarma; 1920'de iki
+  yanda ölü krem şerit kalmasın.
+- 1600px ve üstünde öne çıkan ızgara 5 sütun, altında 4. Kart bileşenine
+  dokunmadan daha fazla parça göster (yaklaşık 3 sıra, devamı "Tümünü Gör").
+- Bölümler arası 48px'lik çift boşluk yığma. Hero, istatistik ve oda
+  paneli sabit yüksekliği viewport'un yarısını yutmasın.
 - 360 / 768 / 1280 / 1920 px'de yatay taşma olmamalı.
 - Ana sayfada bölüm sayısını artırma; yeni bölüm eklemek yerine mevcut
   birini güçlendir (bkz. `frontend-design` → "cesaretini tek yerde harca").
+- Bilet köşesi yalnız ürün kartında. Çevre paneller aynı kesik köşeyi
+  tekrarlamaz; ekranda tek atölye motifi yeter.
 
 ## 4. Performans (düşük segment Android öncelikli)
 

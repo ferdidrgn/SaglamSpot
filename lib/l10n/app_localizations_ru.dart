@@ -2244,4 +2244,47 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Управляйте товарами, статистикой и сервисами.';
+
+  @override
+  String get undo => 'Отменить';
+
+  @override
+  String get removedFromFavorites => 'Удалено из избранного';
+
+  @override
+  String get removeFromFavorites => 'Убрать из избранного';
+
+  @override
+  String get removeFromCart => 'Убрать из корзины';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp не открылся';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp не открылся на этом устройстве. Позвонить в магазин?';
+
+  @override
+  String get callInstead => 'Позвонить';
+
+  @override
+  String get unsavedChangesTitle => 'Изменения не сохранены';
+
+  @override
+  String get unsavedChangesBody => 'Если выйти, введённое пропадёт.';
+
+  @override
+  String get discardChanges => 'Выйти';
+
+  @override
+  String get keepEditing => 'Продолжить правку';
+
+  @override
+  String get fieldNameRequired => 'Нужно название товара';
+
+  @override
+  String get fieldPriceRequired => 'Введите корректную цену';
+
+  @override
+  String get photoRemoved => 'Фото удалено';
 }

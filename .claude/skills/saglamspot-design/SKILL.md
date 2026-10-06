@@ -60,9 +60,10 @@ gövde Inter (tema varsayılanı). `fontFamily: 'Fraunces'` literal YAZMA.
 
 Kullanıcının yaptığı her şey (dokun, uzun bas, kaydır, yenile, filtrele,
 favorile, paylaş, admin formları) ve yeni paket kararları için
-`.claude/skills/flutter-interactive-ui/SKILL.md`: jest → widget eşlemesi,
-geri bildirim merdiveni (haptik + Geri al), eylem durumları, eklenti
-politikası.
+`.claude/skills/flutter-interactive-ui/SKILL.md`: işlem haritası, jest →
+widget, haptik + Geri al, eylem durumları, 300 ms arama, admin form
+koruması, WhatsApp yedeği, eklenti soruları. Kod karşılığı
+`lib/core/widgets/action_feedback.dart`.
 
 ## Arka plan dokuları — `background_pattern_provider.dart`
 
@@ -79,6 +80,15 @@ efekt yok.
 
 - **Cesaret tek yerde:** ekran başına bir imza öğesi (Ayarlar'da asimetrik
   profil paneli, Ana sayfada story hero, Keşfet'te dikey ray).
+- **Bilet köşesi duvar kâğıdı değil.** `asymSm` / `asymLg` ürün kartının
+  imzasıdır; aynı kesik köşe her panele, her çipe, her butona konmaz.
+  Ekranın diğer motifi atölyeden gelir ve tektir: mezura çentiği, keten
+  doku veya tehlike şeridi. Üçü birden aynı ekranda yok.
+- **Doluluk:** vitrinin işi parçayı göstermek. Lüks katalogdaki geniş
+  boşluk burada boş dükkân gibi okunur. Ürün ızgarası geniş ekranda
+  1640'a kadar yayılır, 1600px üstünde 5 sütun; bölümler arası dikey
+  boşluk `spacingLarge` (48) yerine `spacing` civarı. Yeni bölüm ekleme,
+  mevcut vitrini doldur. Okuma metni hâlâ ~80 karakterde kalır.
 - **Derinlik:** gölge yerine çoğu yerde ince kenarlık + zemin farkı;
   `level3+` yalnız yüzen/öne çıkan öğede.
 - **Cam/blur:** ana dil değil; yalnız overlay/yüzen kontrol. Android'de

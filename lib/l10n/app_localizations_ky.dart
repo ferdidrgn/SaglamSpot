@@ -2249,4 +2249,47 @@ class AppLocalizationsKy extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Товарларды, статистиканы жана кызматтарды башкарыңыз.';
+
+  @override
+  String get undo => 'Кайтаруу';
+
+  @override
+  String get removedFromFavorites => 'Тандалмалардан алынды';
+
+  @override
+  String get removeFromFavorites => 'Тандалмадан алуу';
+
+  @override
+  String get removeFromCart => 'Себеттен алуу';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp ачылган жок';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp бул түзмөктө ачылган жок. Телефон чалалыбы?';
+
+  @override
+  String get callInstead => 'Чал';
+
+  @override
+  String get unsavedChangesTitle => 'Сакталбаган өзгөрүүлөр';
+
+  @override
+  String get unsavedChangesBody => 'Чыксаңыз, жазгандарыңыз өчөт.';
+
+  @override
+  String get discardChanges => 'Чыгуу';
+
+  @override
+  String get keepEditing => 'Оңдоону улантуу';
+
+  @override
+  String get fieldNameRequired => 'Товардын аты керек';
+
+  @override
+  String get fieldPriceRequired => 'Туура баа жазыңыз';
+
+  @override
+  String get photoRemoved => 'Сүрөт алынды';
 }

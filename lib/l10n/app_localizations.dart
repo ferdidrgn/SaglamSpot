@@ -4177,6 +4177,90 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ürünleri, istatistikleri ve servisleri buradan yönet.'**
   String get adminPanelSubtitle;
+
+  /// No description provided for @undo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri al'**
+  String get undo;
+
+  /// No description provided for @removedFromFavorites.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favorilerden kaldırıldı'**
+  String get removedFromFavorites;
+
+  /// No description provided for @removeFromFavorites.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favoriden kaldır'**
+  String get removeFromFavorites;
+
+  /// No description provided for @removeFromCart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepetten kaldır'**
+  String get removeFromCart;
+
+  /// No description provided for @whatsAppUnavailableTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp açılamadı'**
+  String get whatsAppUnavailableTitle;
+
+  /// No description provided for @whatsAppUnavailableBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp bu cihazda açılmadı. Telefonla aramak ister misiniz?'**
+  String get whatsAppUnavailableBody;
+
+  /// No description provided for @callInstead.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ara'**
+  String get callInstead;
+
+  /// No description provided for @unsavedChangesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değişiklikler kaydedilmedi'**
+  String get unsavedChangesTitle;
+
+  /// No description provided for @unsavedChangesBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çıkarsanız yazdıklarınız silinir.'**
+  String get unsavedChangesBody;
+
+  /// No description provided for @discardChanges.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çık'**
+  String get discardChanges;
+
+  /// No description provided for @keepEditing.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenlemeye devam'**
+  String get keepEditing;
+
+  /// No description provided for @fieldNameRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün adı gerekli'**
+  String get fieldNameRequired;
+
+  /// No description provided for @fieldPriceRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli bir fiyat girin'**
+  String get fieldPriceRequired;
+
+  /// No description provided for @photoRemoved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğraf kaldırıldı'**
+  String get photoRemoved;
 }
 
 class _AppLocalizationsDelegate

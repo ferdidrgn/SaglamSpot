@@ -767,5 +767,19 @@
   "searchClearFilters": "مسح عوامل التصفية",
   "loadErrorTitle": "تعذّر تحميل المنتجات",
   "loadErrorMessage": "تحقق من الاتصال وحاول مرة أخرى.",
-  "adminPanelSubtitle": "إدارة المنتجات والإحصاءات والخدمات."
+  "adminPanelSubtitle": "إدارة المنتجات والإحصاءات والخدمات.",
+  "undo": "تراجع",
+  "removedFromFavorites": "أُزيل من المفضلة",
+  "removeFromFavorites": "إزالة من المفضلة",
+  "removeFromCart": "إزالة من السلة",
+  "whatsAppUnavailableTitle": "تعذر فتح واتساب",
+  "whatsAppUnavailableBody": "لم يُفتح واتساب على هذا الجهاز. هل تريد الاتصال هاتفياً؟",
+  "callInstead": "اتصل",
+  "unsavedChangesTitle": "تغييرات غير محفوظة",
+  "unsavedChangesBody": "إذا غادرت فستُفقد ما كتبته.",
+  "discardChanges": "مغادرة",
+  "keepEditing": "متابعة التحرير",
+  "fieldNameRequired": "اسم المنتج مطلوب",
+  "fieldPriceRequired": "أدخل سعراً صالحاً",
+  "photoRemoved": "أُزيلت الصورة"
 }

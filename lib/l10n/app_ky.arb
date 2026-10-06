@@ -767,5 +767,19 @@
   "searchClearFilters": "Чыпкаларды тазалоо",
   "loadErrorTitle": "Товарлар жүктөлгөн жок",
   "loadErrorMessage": "Байланышты текшерип, кайра аракет кылыңыз.",
-  "adminPanelSubtitle": "Товарларды, статистиканы жана кызматтарды башкарыңыз."
+  "adminPanelSubtitle": "Товарларды, статистиканы жана кызматтарды башкарыңыз.",
+  "undo": "Кайтаруу",
+  "removedFromFavorites": "Тандалмалардан алынды",
+  "removeFromFavorites": "Тандалмадан алуу",
+  "removeFromCart": "Себеттен алуу",
+  "whatsAppUnavailableTitle": "WhatsApp ачылган жок",
+  "whatsAppUnavailableBody": "WhatsApp бул түзмөктө ачылган жок. Телефон чалалыбы?",
+  "callInstead": "Чал",
+  "unsavedChangesTitle": "Сакталбаган өзгөрүүлөр",
+  "unsavedChangesBody": "Чыксаңыз, жазгандарыңыз өчөт.",
+  "discardChanges": "Чыгуу",
+  "keepEditing": "Оңдоону улантуу",
+  "fieldNameRequired": "Товардын аты керек",
+  "fieldPriceRequired": "Туура баа жазыңыз",
+  "photoRemoved": "Сүрөт алынды"
 }

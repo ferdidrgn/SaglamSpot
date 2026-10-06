@@ -8,10 +8,18 @@ license: Complete terms in LICENSE.txt
 
 > **SaglamSpot projesi:** Önce `.claude/skills/saglamspot-design/SKILL.md` (Atölye konsepti, token'lar, hazır `Atelier*` bileşenleri) ve `.claude/skills/saglamspot-ui/SKILL.md` (dokunulmazlar) okunur; aşağıdaki genel kurallar onların Flutter karşılıklarıyla uygulanır.
 
-Kaynak: `npx claude-code-templates@latest --skill creative-design/frontend-design`.
-Orijinal CSS/HTML dilinde yazılmıştı; aşağıdaki her kural Flutter karşılığıyla
-yeniden yazıldı. Projeye özel koruma kuralları için önce
-`.claude/skills/saglamspot-ui/SKILL.md` dosyasını oku.
+Kaynak: `npx claude-code-templates@latest --skill creative-design/frontend-design`
+(`davila7/claude-code-templates` → `creative-design/frontend-design`,
+Ekim 2026 metniyle karşılaştırıldı). Orijinal CSS/HTML dilinde yazılmıştı;
+aşağıdaki her kural Flutter karşılığıyla yeniden yazıldı. Projeye özel
+koruma kuralları için önce `.claude/skills/saglamspot-ui/SKILL.md` dosyasını oku.
+
+Upstream'in "boşluk = lüks" varsayılanı bu vitrine uymaz. Jakobsen /
+NORÉA gibi atölye siteleri parçaya nefes verir; Sağlam Spot'un işi
+raftaki parçayı çabuk göstermektir. Flutter'da bunu şöyle uygula:
+bant zemini tam genişlik, ürün ızgarası 1640'a kadar, okuma metni
+`maxWidth: 680`. Hareket: tek orkestre an (`flutter-motion`); her
+bölüme fade-up ekleme. Bilet köşesini her karta kopyalama.
 
 Bir tasarım stüdyosunun tasarım lideri gibi çalış: her müşteriye kimsenin
 başkasıyla karıştırmayacağı bir görsel kimlik veren, şablon hissi veren

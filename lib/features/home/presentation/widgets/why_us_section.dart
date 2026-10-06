@@ -41,13 +41,13 @@ class WhyUsSection extends StatelessWidget {
 
     return SliverPadding(
       padding:
-          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 60, vertical: 26),
+          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 40, vertical: 12),
       sliver: SliverToBoxAdapter(
         child: Container(
-          padding: EdgeInsets.all(isMobile ? 20 : 40),
+          padding: EdgeInsets.all(isMobile ? 16 : 24),
           decoration: BoxDecoration(
             color: AppColors.secondary.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

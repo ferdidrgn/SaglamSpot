@@ -7,6 +7,13 @@ allowed-tools: Read, Glob, Grep, Bash
 # Mobile Design System
 
 > **SaglamSpot notu (Flutter):** Bu proje Flutter (Android + iOS + web).
+> Kaynak: `npx claude-code-templates@latest --skill creative-design/mobile-design`,
+> Flutter'a çevrildi. Platform sorusu sorulmaz. Dokunma hedefi ≥ 48dp,
+> liste `ListView.builder` / `SliverList`, sonsuz animasyon ekrandan
+> çıkınca durur. Vitrin ekranlarında lüks boşluk yok: hikâye kahramanı
+> ~270dp, öne çıkan liste en az 12 parça, satır arası ~10dp. Bilet köşesi
+> ürün kartında kalır; kabukta tek motif.
+>
 > Framework sorusu SORULMAZ — cevap Flutter. Önce
 > `.claude/skills/saglamspot-ui/SKILL.md` (dokunulmaz ekranlar, performans
 > kuralları) ve `.claude/skills/saglamspot-design/SKILL.md` (Atölye tasarım

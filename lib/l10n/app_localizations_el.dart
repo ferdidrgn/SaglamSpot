@@ -2258,4 +2258,47 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Διαχειρίσου προϊόντα, στατιστικά και υπηρεσίες.';
+
+  @override
+  String get undo => 'Αναίρεση';
+
+  @override
+  String get removedFromFavorites => 'Αφαιρέθηκε από τα αγαπημένα';
+
+  @override
+  String get removeFromFavorites => 'Αφαίρεση από τα αγαπημένα';
+
+  @override
+  String get removeFromCart => 'Αφαίρεση από το καλάθι';
+
+  @override
+  String get whatsAppUnavailableTitle => 'Το WhatsApp δεν άνοιξε';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'Το WhatsApp δεν άνοιξε σε αυτή τη συσκευή. Να καλέσετε το κατάστημα;';
+
+  @override
+  String get callInstead => 'Κλήση';
+
+  @override
+  String get unsavedChangesTitle => 'Μη αποθηκευμένες αλλαγές';
+
+  @override
+  String get unsavedChangesBody => 'Αν φύγετε, όσα γράψατε θα χαθούν.';
+
+  @override
+  String get discardChanges => 'Έξοδος';
+
+  @override
+  String get keepEditing => 'Συνέχεια επεξεργασίας';
+
+  @override
+  String get fieldNameRequired => 'Απαιτείται όνομα προϊόντος';
+
+  @override
+  String get fieldPriceRequired => 'Εισάγετε έγκυρη τιμή';
+
+  @override
+  String get photoRemoved => 'Η φωτογραφία αφαιρέθηκε';
 }

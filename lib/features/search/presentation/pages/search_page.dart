@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,6 +49,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   final _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _showSearchFocus = false;
+  Timer? _queryDebounce;
 
   @override
   void initState() {
@@ -68,12 +70,29 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   @override
   void dispose() {
+    _queryDebounce?.cancel();
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
+  /// Sonuç listesi her tuşta değil, yazma durduktan 300 ms sonra güncellenir.
+  void _onSearchChanged(final String value) {
+    _queryDebounce?.cancel();
+    _queryDebounce = Timer(const Duration(milliseconds: 300), () {
+      if (!mounted) return;
+      ref.read(searchQueryProvider.notifier).update(value);
+    });
+  }
+
+  void _clearSearch() {
+    _queryDebounce?.cancel();
+    _searchController.clear();
+    ref.read(searchQueryProvider.notifier).update('');
+  }
+
   void _resetAll() {
+    _queryDebounce?.cancel();
     _searchController.clear();
     ref.read(searchQueryProvider.notifier).update('');
     ref.read(searchFiltersProvider.notifier).setCategory(ProductCategory.other);
@@ -340,8 +359,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               borderWidth: _showSearchFocus ? 1.4 : null,
               child: TextField(
                 controller: _searchController,
-                onChanged: (final val) =>
-                    ref.read(searchQueryProvider.notifier).update(val),
+                onChanged: _onSearchChanged,
                 onTap: () => setState(() => _showSearchFocus = true),
                 onTapOutside: (final _) =>
                     setState(() => _showSearchFocus = false),
@@ -362,10 +380,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       ? IconButton(
                           icon: Icon(Icons.close_rounded,
                               color: AppColors.textSecondary, size: 18),
-                          onPressed: () {
-                            _searchController.clear();
-                            ref.read(searchQueryProvider.notifier).update('');
-                          },
+                          onPressed: _clearSearch,
                         )
                       : null,
                   border: InputBorder.none,
@@ -405,10 +420,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 child: AtelierSearchField(
                   hint: context.l10n.searchHint,
                   controller: _searchController,
-                  onChanged: (final val) =>
-                      ref.read(searchQueryProvider.notifier).update(val),
-                  onClear: () =>
-                      ref.read(searchQueryProvider.notifier).update(''),
+                  onChanged: _onSearchChanged,
+                  onClear: _clearSearch,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),

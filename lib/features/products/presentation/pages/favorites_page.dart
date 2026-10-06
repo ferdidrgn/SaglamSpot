@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/ads/widgets/ad_grid_helper.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
@@ -9,6 +8,7 @@ import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
+import '../../../../core/widgets/action_feedback.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/whatsapp_quick_fab.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
@@ -125,10 +125,8 @@ class _FavoriteSwipeRow extends ConsumerWidget {
     return Dismissible(
       key: ValueKey(product.id),
       direction: DismissDirection.endToStart,
-      onDismissed: (final _) {
-        HapticFeedback.mediumImpact();
-        ref.read(favoritesProvider.notifier).remove(product.id);
-      },
+      onDismissed: (final _) =>
+          removeFavoriteWithUndo(context, ref, product),
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -191,6 +189,13 @@ class _FavoriteSwipeRow extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
+              IconButton(
+                tooltip: context.l10n.removeFromFavorites,
+                onPressed: () =>
+                    removeFavoriteWithUndo(context, ref, product),
+                icon: Icon(Icons.favorite_rounded,
+                    color: AppColors.mobilePrimary),
               ),
               Material(
                 color: AppColors.mobileAccent.withOpacity(0.12),
@@ -280,9 +285,8 @@ class _FavoriteCard extends ConsumerWidget {
                         shape: const CircleBorder(),
                         child: InkWell(
                           customBorder: const CircleBorder(),
-                          onTap: () => ref
-                              .read(favoritesProvider.notifier)
-                              .remove(product.id),
+                          onTap: () =>
+                              removeFavoriteWithUndo(context, ref, product),
                           child: const Padding(
                             padding: EdgeInsets.all(6),
                             child: Icon(Icons.favorite_rounded,

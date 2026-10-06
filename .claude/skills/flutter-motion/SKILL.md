@@ -97,7 +97,7 @@ animasyonlardır.
 | `Curves.easeIn` UI'da | `easeOutCubic` |
 | scale 0 girişi | 0.95 + opacity 0 |
 | Gerekçesiz >300ms | 150–250ms |
-| Her bölümde fade-up | tek orkestre an |
+| Her bölümde fade-up | tek orkestre an (web'de ticker + sayaç; ızgarada en fazla 6 adımlı stagger) |
 | Görünmezken çalışan `repeat()` | VisibilityDetector ile duraklat |
 | `AnimatedBuilder` → `Opacity` | `FadeTransition` |
 | reduced-motion yok | `disableAnimationsOf` dalı |

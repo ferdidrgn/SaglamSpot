@@ -24,7 +24,7 @@ class FurnitureTipsSection extends StatelessWidget {
 
     return SliverPadding(
       padding: context.pagePadding
-          .copyWith(top: context.spacingLarge, bottom: context.spacingLarge),
+          .copyWith(top: context.spacing, bottom: context.spacing),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
@@ -42,7 +42,7 @@ class FurnitureTipsSection extends StatelessWidget {
                     fontSize: context.h2Size,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
             SizedBox(
               height: cardHeight,
               child: ListView.separated(

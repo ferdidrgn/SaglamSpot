@@ -767,5 +767,19 @@
   "searchClearFilters": "Καθαρισμός φίλτρων",
   "loadErrorTitle": "Δεν ήταν δυνατή η φόρτωση προϊόντων",
   "loadErrorMessage": "Έλεγξε τη σύνδεση και δοκίμασε ξανά.",
-  "adminPanelSubtitle": "Διαχειρίσου προϊόντα, στατιστικά και υπηρεσίες."
+  "adminPanelSubtitle": "Διαχειρίσου προϊόντα, στατιστικά και υπηρεσίες.",
+  "undo": "Αναίρεση",
+  "removedFromFavorites": "Αφαιρέθηκε από τα αγαπημένα",
+  "removeFromFavorites": "Αφαίρεση από τα αγαπημένα",
+  "removeFromCart": "Αφαίρεση από το καλάθι",
+  "whatsAppUnavailableTitle": "Το WhatsApp δεν άνοιξε",
+  "whatsAppUnavailableBody": "Το WhatsApp δεν άνοιξε σε αυτή τη συσκευή. Να καλέσετε το κατάστημα;",
+  "callInstead": "Κλήση",
+  "unsavedChangesTitle": "Μη αποθηκευμένες αλλαγές",
+  "unsavedChangesBody": "Αν φύγετε, όσα γράψατε θα χαθούν.",
+  "discardChanges": "Έξοδος",
+  "keepEditing": "Συνέχεια επεξεργασίας",
+  "fieldNameRequired": "Απαιτείται όνομα προϊόντος",
+  "fieldPriceRequired": "Εισάγετε έγκυρη τιμή",
+  "photoRemoved": "Η φωτογραφία αφαιρέθηκε"
 }

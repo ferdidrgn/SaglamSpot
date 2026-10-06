@@ -767,5 +767,19 @@
   "searchClearFilters": "Filtrlarni tozalash",
   "loadErrorTitle": "Mahsulotlar yuklanmadi",
   "loadErrorMessage": "Ulanishni tekshirib, qayta urinib koʻring.",
-  "adminPanelSubtitle": "Mahsulotlar, statistika va xizmatlarni boshqaring."
+  "adminPanelSubtitle": "Mahsulotlar, statistika va xizmatlarni boshqaring.",
+  "undo": "Bekor qilish",
+  "removedFromFavorites": "Sevimlilardan olindi",
+  "removeFromFavorites": "Sevimlilardan olib tashlash",
+  "removeFromCart": "Savatdan olib tashlash",
+  "whatsAppUnavailableTitle": "WhatsApp ochilmadi",
+  "whatsAppUnavailableBody": "WhatsApp bu qurilmada ochilmadi. Telefon qilasizmi?",
+  "callInstead": "Qo'ng'iroq",
+  "unsavedChangesTitle": "Saqlanmagan o'zgarishlar",
+  "unsavedChangesBody": "Chiqsaniz, yozganlaringiz o'chadi.",
+  "discardChanges": "Chiqish",
+  "keepEditing": "Tahrirlashda davom",
+  "fieldNameRequired": "Mahsulot nomi kerak",
+  "fieldPriceRequired": "To'g'ri narx kiriting",
+  "photoRemoved": "Rasm olib tashlandi"
 }

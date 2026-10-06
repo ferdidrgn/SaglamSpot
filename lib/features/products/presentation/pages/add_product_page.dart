@@ -7,6 +7,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/action_feedback.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -46,10 +47,25 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   bool _isGeneratingStudio = false;
   String? _studioImageUrl;
   bool _studioFailed = false;
+  bool _leaveAllowed = false;
+  String? _nameError;
+  String? _priceError;
+  final _scrollController = ScrollController();
+  final _nameKey = GlobalKey();
+  final _priceKey = GlobalKey();
+  final _nameFocus = FocusNode();
+  final _priceFocus = FocusNode();
+  final _descFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    _nameFocus.addListener(() {
+      if (!_nameFocus.hasFocus) _refreshNameError();
+    });
+    _priceFocus.addListener(() {
+      if (!_priceFocus.hasFocus) _refreshPriceError();
+    });
     Future.microtask(() {
       final auth = ref.read(authProvider).value;
       if (auth?.uid == null) NavigationHandler.goToLogin(context);
@@ -63,7 +79,53 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     _price.dispose();
     _dimensions.dispose();
     _material.dispose();
+    _scrollController.dispose();
+    _nameFocus.dispose();
+    _priceFocus.dispose();
+    _descFocus.dispose();
     super.dispose();
+  }
+
+  bool get _dirty =>
+      _name.text.trim().isNotEmpty ||
+      _price.text.trim().isNotEmpty ||
+      _desc.text.trim().isNotEmpty ||
+      _dimensions.text.trim().isNotEmpty ||
+      _material.text.trim().isNotEmpty ||
+      _images.isNotEmpty ||
+      _selectedCategory != null ||
+      _isSecondHand;
+
+  void _refreshNameError() {
+    if (!mounted) return;
+    final missing = _name.text.trim().isEmpty;
+    setState(() => _nameError = missing ? context.l10n.fieldNameRequired : null);
+  }
+
+  void _refreshPriceError() {
+    if (!mounted) return;
+    final price = double.tryParse(_price.text.trim().replaceAll(',', '.'));
+    setState(() => _priceError =
+        price == null || price <= 0 ? context.l10n.fieldPriceRequired : null);
+  }
+
+  void _reveal(final GlobalKey key) {
+    final target = key.currentContext;
+    if (target == null) return;
+    Scrollable.ensureVisible(target,
+        alignment: 0.2, duration: const Duration(milliseconds: 220));
+  }
+
+  Future<void> _onLeaveAttempt() async {
+    if (!_dirty || _leaveAllowed) {
+      if (mounted) Navigator.of(context).pop();
+      return;
+    }
+    final leave = await confirmDiscardChanges(context);
+    if (!leave || !mounted) return;
+    setState(() => _leaveAllowed = true);
+    await Future<void>.delayed(Duration.zero);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -71,6 +133,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     ref.listen<AsyncValue<void>>(productMutationProvider,
         (final previous, final next) {
       if (next is AsyncData) {
+        _leaveAllowed = true;
         final bool studioQuotaHit =
             StudioImageService.quotaExceededNotifier.value;
         StudioImageService.quotaExceededNotifier.value = false;
@@ -94,7 +157,13 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
     final mutationState = ref.watch(productMutationProvider);
 
-    return AtelierBackground(
+    return PopScope(
+      canPop: !_dirty || _leaveAllowed,
+      onPopInvokedWithResult: (final didPop, final _) {
+        if (didPop) return;
+        _onLeaveAttempt();
+      },
+      child: AtelierBackground(
         child: Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -110,6 +179,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(16),
           child: Center(
             child: ConstrainedBox(
@@ -131,17 +201,35 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                     icon: Icons.info_rounded,
                     child: Column(
                       children: [
-                        AdminFormField(
-                            controller: _name,
-                            label: context.l10n.productNameLabel,
-                            icon: Icons.shopping_bag_rounded),
-                        AdminFormField(
-                            controller: _price,
-                            label: context.l10n.price,
-                            icon: Icons.attach_money_rounded,
-                            numeric: true),
+                        KeyedSubtree(
+                          key: _nameKey,
+                          child: AdminFormField(
+                              controller: _name,
+                              focusNode: _nameFocus,
+                              errorText: _nameError,
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (final _) =>
+                                  _priceFocus.requestFocus(),
+                              label: context.l10n.productNameLabel,
+                              icon: Icons.shopping_bag_rounded),
+                        ),
+                        KeyedSubtree(
+                          key: _priceKey,
+                          child: AdminFormField(
+                              controller: _price,
+                              focusNode: _priceFocus,
+                              errorText: _priceError,
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (final _) =>
+                                  _descFocus.requestFocus(),
+                              label: context.l10n.price,
+                              icon: Icons.attach_money_rounded,
+                              numeric: true),
+                        ),
                         AdminFormField(
                             controller: _desc,
+                            focusNode: _descFocus,
+                            textInputAction: TextInputAction.newline,
                             label: context.l10n.descriptionLabel,
                             icon: Icons.description_rounded,
                             lines: 3),
@@ -224,16 +312,31 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           ),
         ),
       ),
-    ));
+    )));
   }
 
   // ---------------- ACTIONS ----------------
 
   Future<void> _submit() async {
-    if (_name.text.trim().isEmpty ||
-        _price.text.trim().isEmpty ||
-        _images.isEmpty) {
-      _snack(context.l10n.fillRequiredFields, error: true);
+    if (ref.read(productMutationProvider).isLoading) return;
+    final nameMissing = _name.text.trim().isEmpty;
+    final price =
+        double.tryParse(_price.text.trim().replaceAll(',', '.'));
+    final priceMissing = price == null || price <= 0;
+    setState(() {
+      _nameError = nameMissing ? context.l10n.fieldNameRequired : null;
+      _priceError = priceMissing ? context.l10n.fieldPriceRequired : null;
+    });
+    if (nameMissing || priceMissing || _images.isEmpty) {
+      if (nameMissing) {
+        _reveal(_nameKey);
+        _nameFocus.requestFocus();
+      } else if (priceMissing) {
+        _reveal(_priceKey);
+        _priceFocus.requestFocus();
+      } else {
+        _snack(context.l10n.fillRequiredFields, error: true);
+      }
       return;
     }
 
@@ -300,48 +403,83 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
 
   // ---------------- UI HELPERS ----------------
 
+  void _removeImageAt(final int index) {
+    final removed = _images[index];
+    setState(() {
+      _images.removeAt(index);
+      if (index == 0) {
+        _studioImageUrl = null;
+        _studioFuture = null;
+        _studioFailed = false;
+      }
+    });
+    showUndoSnackBar(
+      context: context,
+      message: context.l10n.photoRemoved,
+      onUndo: () {
+        if (!mounted) return;
+        setState(() {
+          final insertAt = index.clamp(0, _images.length);
+          _images.insert(insertAt, removed);
+        });
+      },
+    );
+  }
+
   Widget _imageSection() {
     final showStudioTile =
         _isGeneratingStudio || _studioImageUrl != null || _studioFailed;
-    final itemCount = _images.length + (showStudioTile ? 1 : 0) + 1;
 
     return SizedBox(
-      height: 100,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: itemCount,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 10),
-        itemBuilder: (final _, final i) {
-          if (i < _images.length) {
-            return PhotoThumbnail(
-              image: FileImage(File(_images[i].path)),
-              onDelete: () => setState(() {
-                _images.removeAt(i);
-                // İlk fotoğraf silindiyse, ona dayanan stüdyo önizlemesi
-                // artık geçersiz — temizle (yeniden üretmiyoruz, admin
-                // isterse kalan fotoğraflarla devam eder).
-                if (i == 0) {
+      height: 108,
+      child: Row(
+        children: [
+          Expanded(
+            child: ReorderableListView(
+              scrollDirection: Axis.horizontal,
+              buildDefaultDragHandles: true,
+              onReorder: (final oldIndex, final newIndex) {
+                setState(() {
+                  var target = newIndex;
+                  if (target > oldIndex) target -= 1;
+                  final item = _images.removeAt(oldIndex);
+                  _images.insert(target, item);
+                  if (oldIndex == 0 || target == 0) {
+                    _studioImageUrl = null;
+                    _studioFuture = null;
+                    _studioFailed = false;
+                  }
+                });
+              },
+              children: [
+                for (var i = 0; i < _images.length; i++)
+                  Padding(
+                    key: ValueKey(_images[i].path),
+                    padding: const EdgeInsets.only(right: 10),
+                    child: PhotoThumbnail(
+                      image: FileImage(File(_images[i].path)),
+                      onDelete: () => _removeImageAt(i),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (showStudioTile)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: StudioPhotoTile(
+                isLoading: _isGeneratingStudio,
+                imageUrl: _studioImageUrl,
+                hasError: _studioFailed,
+                onDiscard: () => setState(() {
                   _studioImageUrl = null;
-                  _studioFuture = null;
                   _studioFailed = false;
-                }
-              }),
-            );
-          }
-          if (showStudioTile && i == _images.length) {
-            return StudioPhotoTile(
-              isLoading: _isGeneratingStudio,
-              imageUrl: _studioImageUrl,
-              hasError: _studioFailed,
-              onDiscard: () => setState(() {
-                _studioImageUrl = null;
-                _studioFailed = false;
-              }),
-              onRetry: _generateStudioPreview,
-            );
-          }
-          return AddPhotoTile(onTap: _pickImages);
-        },
+                }),
+                onRetry: _generateStudioPreview,
+              ),
+            ),
+          AddPhotoTile(onTap: _pickImages),
+        ],
       ),
     );
   }

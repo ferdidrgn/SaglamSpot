@@ -767,5 +767,19 @@
   "searchClearFilters": "清除筛选",
   "loadErrorTitle": "无法加载商品",
   "loadErrorMessage": "请检查网络后重试。",
-  "adminPanelSubtitle": "在此管理商品、统计和服务。"
+  "adminPanelSubtitle": "在此管理商品、统计和服务。",
+  "undo": "撤销",
+  "removedFromFavorites": "已从收藏中移除",
+  "removeFromFavorites": "从收藏中移除",
+  "removeFromCart": "从购物车移除",
+  "whatsAppUnavailableTitle": "无法打开 WhatsApp",
+  "whatsAppUnavailableBody": "这台设备上没有打开 WhatsApp。要改为打电话吗？",
+  "callInstead": "拨打",
+  "unsavedChangesTitle": "更改尚未保存",
+  "unsavedChangesBody": "离开后，已填写的内容会丢失。",
+  "discardChanges": "离开",
+  "keepEditing": "继续编辑",
+  "fieldNameRequired": "需要商品名称",
+  "fieldPriceRequired": "请输入有效价格",
+  "photoRemoved": "已移除照片"
 }

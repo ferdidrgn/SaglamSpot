@@ -44,7 +44,7 @@ class HomeStorePage extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final available = ref.watch(availableProductsProvider);
-    final featured = available.take(8).toList();
+    final featured = available.take(12).toList();
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
@@ -82,7 +82,7 @@ class HomeStorePage extends ConsumerWidget {
                     sliver: SliverList.separated(
                       itemCount: paddedItemCountForAds(featured.length),
                       separatorBuilder: (final _, final __) =>
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 10),
                       // Kartlar sayfa açılır açılmaz hepsi birden değil,
                       // kuşak kuşak (cascade) belirir — daha "canlı", mobil
                       // uygulama hissi için. Reklamlar ürün kartıyla AYNI
@@ -302,14 +302,14 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
         ref.watch(cartProvider).any((final i) => i.product.id == spotlight.id);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
       child: HudCornerFrame(
         armLength: 18,
         inset: 10,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(28),
           child: SizedBox(
-            height: 340,
+            height: 272,
             child: Stack(
               children: [
                 PageView.builder(
@@ -320,7 +320,7 @@ class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
                   itemBuilder: (final context, final index) =>
                       OptimizedCachedImage(
                     imageUrl: _HomeStoryHero._images[index],
-                    height: 340,
+                    height: 272,
                     width: double.infinity,
                     borderRadius: 0,
                   ),

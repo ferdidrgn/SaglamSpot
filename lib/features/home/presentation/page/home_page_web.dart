@@ -47,8 +47,10 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
-  /// Geniş ekranlarda içeriğin ortalandığı azami genişlik.
-  static const double _contentMaxWidth = 1440;
+  /// Geniş ekranlarda içeriğin ortalandığı azami genişlik. Bant
+  /// zeminleri yine tam genişlik; 1920'de iki yanda ölü şerit
+  /// kalmasın diye ürün vitrini 1640'a kadar yayılır.
+  static const double _contentMaxWidth = 1640;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -201,20 +203,24 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  // Referans tasarımdaki gibi: en fazla 2 sıra (8 kart) gösterilir, devamı
-  // için altta ortalanmış bir "Tümünü Gör" hapı bulunur — sonsuz kaydırma
-  // yerine bilinçli, sakin bir vitrin.
+  // Vitrin dolu görünsün: geniş ekranda 5 sütun, en fazla 3 sıra.
+  // Devamı "Tümünü Gör" ile aramaya gider.
   Widget _buildDynamicFeaturedGrid(final List<Product> availableProducts,
       final ProductCategory? selectedCategory) {
-    final visibleProducts = availableProducts.take(8).toList();
+    final columns =
+        context.screenWidth >= 1600 ? 5 : context.gridColumns(4);
+    final visibleProducts = availableProducts.take(columns * 3).toList();
 
     return SliverPadding(
-      padding: context.pagePadding,
+      padding: context.pagePadding.copyWith(
+        top: context.spacing,
+        bottom: context.spacing,
+      ),
       sliver: SliverMainAxisGroup(
         slivers: [
           SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: context.gridColumns(4),
+              crossAxisCount: columns,
               mainAxisSpacing: context.gridSpacing,
               crossAxisSpacing: context.gridSpacing,
               childAspectRatio: context.cardAspectRatio(),
@@ -229,7 +235,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                 if (realIndex >= visibleProducts.length) {
                   return const SizedBox.shrink();
                 }
-                return CustomProductCard(product: visibleProducts[realIndex]);
+                return RevealFade(
+                  delayMs: 40 * (realIndex % 6),
+                  child: CustomProductCard(
+                      product: visibleProducts[realIndex]),
+                );
               },
               childCount: paddedItemCountForAds(visibleProducts.length),
             ),
@@ -268,7 +278,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   Widget _buildMottoStrip() => SliverToBoxAdapter(
         child: Padding(
           padding: context.pagePadding.copyWith(
-              top: context.spacingLarge, bottom: context.spacingLarge),
+              top: context.spacing, bottom: context.spacing),
           child: Center(
             child: Column(
               children: [
@@ -281,21 +291,16 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         size: context.iconMedium, color: AppColors.accentDark),
                     Text.rich(
                       TextSpan(
-                        style: TextStyle(
-                          fontFamily: 'Fraunces',
-                          fontSize: context.responsive(mobile: 20, desktop: 26),
+                        style: AppTextStyles.serif(
+                          fontSize:
+                              context.responsive(mobile: 20, desktop: 26),
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary,
                           height: 1.2,
                         ),
                         children: [
                           TextSpan(text: context.l10n.mottoTitlePart1),
-                          TextSpan(
-                            text: context.l10n.mottoTitlePart2,
-                            style: TextStyle(
-                                color: AppColors.accentDark,
-                                fontStyle: FontStyle.italic),
-                          ),
+                          TextSpan(text: context.l10n.mottoTitlePart2),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -331,10 +336,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
           // kırılım noktasında içeriğin rahatça sığdığı bir yüksekliğe
           // bağlandı — kısa/geniş pencerelerde metnin taşmasını önler.
           height: context.responsive(
-              mobile: 460.0,
-              tablet: 500.0,
-              desktop: 560.0,
-              largeDesktop: 620.0),
+              mobile: 380.0,
+              tablet: 420.0,
+              desktop: 460.0,
+              largeDesktop: 500.0),
           child: HeroBanner(images: _heroImages, featuredPool: featuredPool),
         ),
       ),
@@ -535,7 +540,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.symmetric(
-            vertical: context.responsive(mobile: 20, desktop: 28)),
+            vertical: context.responsive(mobile: 10, desktop: 14)),
         child: InfiniteTicker(
             items: items, height: context.responsive(mobile: 64, desktop: 78)),
       ),
@@ -545,7 +550,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   Widget _buildProductsHeader() => SliverToBoxAdapter(
         child: Padding(
           padding: context.pagePadding.copyWith(
-              top: context.spacingLarge, bottom: context.spacingLarge * 0.6),
+              top: context.spacing, bottom: context.spacing * 0.6),
           child: SectionHeading(
             eyebrow: context.l10n.showcaseEyebrow,
             title: context.l10n.newCollection,
@@ -562,13 +567,13 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final categories = ref.watch(orderedActiveCategoriesProvider);
     final selected = ref.watch(searchFiltersProvider).category;
     final cardWidth =
-        context.responsive(mobile: 108.0, tablet: 122.0, desktop: 136.0);
+        context.responsive(mobile: 104.0, tablet: 118.0, desktop: 128.0);
     final cardHeight =
-        context.responsive(mobile: 132.0, tablet: 148.0, desktop: 164.0);
+        context.responsive(mobile: 120.0, tablet: 132.0, desktop: 144.0);
 
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 20),
+        margin: const EdgeInsets.symmetric(vertical: 8),
         height: cardHeight,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
@@ -820,10 +825,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               )
             : SizedBox(
                 height: context.responsive(
-                    mobile: 340.0,
-                    tablet: 340.0,
-                    desktop: 400.0,
-                    largeDesktop: 440.0),
+                    mobile: 280.0,
+                    tablet: 300.0,
+                    desktop: 320.0,
+                    largeDesktop: 340.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -842,7 +847,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   Widget _buildArtisanInfo() => SliverToBoxAdapter(
         child: Container(
           margin: context.sectionPadding,
-          padding: EdgeInsets.all(context.responsive(mobile: 20, desktop: 60)),
+          padding: EdgeInsets.all(context.responsive(mobile: 16, desktop: 28)),
           decoration: BoxDecoration(
             color: context.colors.surface,
             borderRadius: BorderRadius.circular(context.borderRadius(2)),
@@ -946,7 +951,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: context.hp(5)),
+        padding: EdgeInsets.symmetric(
+            vertical: context.responsive(mobile: 28.0, desktop: 36.0)),
         // Krem sayfa zemininden koyu şeride sert bir kesim yerine yumuşak
         // bir geçişle iniliyor — üst %18'lik dilim krem tondan koyu tona
         // erir, geri kalanı düz koyu renkte kalır (footer'la kesintisiz
@@ -1034,8 +1040,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             children: [
               const HazardStripeBar(),
               Container(
-                padding: EdgeInsets.fromLTRB(context.pagePadding.left, 56,
-                    context.pagePadding.right, 32),
+                padding: EdgeInsets.fromLTRB(context.pagePadding.left, 28,
+                    context.pagePadding.right, 24),
                 child: Column(
                   children: [
                     Wrap(

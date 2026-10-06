@@ -2220,4 +2220,47 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => 'إدارة المنتجات والإحصاءات والخدمات.';
+
+  @override
+  String get undo => 'تراجع';
+
+  @override
+  String get removedFromFavorites => 'أُزيل من المفضلة';
+
+  @override
+  String get removeFromFavorites => 'إزالة من المفضلة';
+
+  @override
+  String get removeFromCart => 'إزالة من السلة';
+
+  @override
+  String get whatsAppUnavailableTitle => 'تعذر فتح واتساب';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'لم يُفتح واتساب على هذا الجهاز. هل تريد الاتصال هاتفياً؟';
+
+  @override
+  String get callInstead => 'اتصل';
+
+  @override
+  String get unsavedChangesTitle => 'تغييرات غير محفوظة';
+
+  @override
+  String get unsavedChangesBody => 'إذا غادرت فستُفقد ما كتبته.';
+
+  @override
+  String get discardChanges => 'مغادرة';
+
+  @override
+  String get keepEditing => 'متابعة التحرير';
+
+  @override
+  String get fieldNameRequired => 'اسم المنتج مطلوب';
+
+  @override
+  String get fieldPriceRequired => 'أدخل سعراً صالحاً';
+
+  @override
+  String get photoRemoved => 'أُزيلت الصورة';
 }

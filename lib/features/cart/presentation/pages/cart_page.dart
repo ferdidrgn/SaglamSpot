@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../../../core/widgets/action_feedback.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
@@ -189,12 +189,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                               : Dismissible(
                                   key: ValueKey(item.product.id),
                                   direction: DismissDirection.endToStart,
-                                  onDismissed: (final _) {
-                                    HapticFeedback.mediumImpact();
-                                    ref
-                                        .read(cartProvider.notifier)
-                                        .remove(item.product.id);
-                                  },
+                                  onDismissed: (final _) =>
+                                      removeCartItemWithUndo(
+                                          context, ref, item),
                                   background: Container(
                                     alignment: Alignment.centerRight,
                                     padding: const EdgeInsets.symmetric(
@@ -433,7 +430,13 @@ class _CartItemCard extends ConsumerWidget {
                   const SizedBox(height: 8),
                   _QtyStepper(
                     quantity: item.quantity,
-                    onDecrement: () => notifier.decrement(product.id),
+                    onDecrement: () {
+                      if (item.quantity <= 1) {
+                        removeCartItemWithUndo(context, ref, item);
+                      } else {
+                        notifier.decrement(product.id);
+                      }
+                    },
                     onIncrement: () => notifier.increment(product.id),
                   ),
                 ],
@@ -441,7 +444,8 @@ class _CartItemCard extends ConsumerWidget {
             ),
           ),
           IconButton(
-            onPressed: () => notifier.remove(product.id),
+            tooltip: context.l10n.removeFromCart,
+            onPressed: () => removeCartItemWithUndo(context, ref, item),
             icon: Icon(Icons.close_rounded,
                 size: 18, color: AppColors.mobileMutedDark),
             visualDensity: VisualDensity.compact,

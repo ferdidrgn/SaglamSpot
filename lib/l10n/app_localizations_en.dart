@@ -2241,4 +2241,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => 'Manage products, stats and services here.';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get removedFromFavorites => 'Removed from favorites';
+
+  @override
+  String get removeFromFavorites => 'Remove from favorites';
+
+  @override
+  String get removeFromCart => 'Remove from cart';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp didn\'t open';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp didn\'t open on this device. Call the shop instead?';
+
+  @override
+  String get callInstead => 'Call';
+
+  @override
+  String get unsavedChangesTitle => 'Unsaved changes';
+
+  @override
+  String get unsavedChangesBody => 'If you leave, what you typed will be lost.';
+
+  @override
+  String get discardChanges => 'Leave';
+
+  @override
+  String get keepEditing => 'Keep editing';
+
+  @override
+  String get fieldNameRequired => 'Product name is required';
+
+  @override
+  String get fieldPriceRequired => 'Enter a valid price';
+
+  @override
+  String get photoRemoved => 'Photo removed';
 }

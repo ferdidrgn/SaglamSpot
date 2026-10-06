@@ -138,7 +138,7 @@ class _HeroBannerState extends State<HeroBanner> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(context.responsive(mobile: 22, desktop: 56)),
+          padding: EdgeInsets.all(context.responsive(mobile: 18, desktop: 32)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,11 +172,10 @@ class _HeroBannerState extends State<HeroBanner> {
                   duration: const Duration(milliseconds: 450),
                   child: Text(slide.title,
                       key: ValueKey('title-$_page'),
-                      style: TextStyle(
-                          fontFamily: 'Fraunces',
+                      style: AppTextStyles.serif(
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
-                          fontSize: context.heroSize * 0.72,
+                          fontSize: context.heroSize * 0.62,
                           height: 1.12)),
                 ),
               ),

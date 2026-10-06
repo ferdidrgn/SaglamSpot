@@ -7,6 +7,7 @@ import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/action_feedback.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/custom_image_selector.dart';
@@ -55,11 +56,33 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   List<String> _selectedColors = [];
   ProductWearTier? _selectedWearTier;
   Product? _currentProduct;
+  bool _leaveAllowed = false;
+  String? _nameError;
+  String? _priceError;
+  final _scrollController = ScrollController();
+  final _nameKey = GlobalKey();
+  final _priceKey = GlobalKey();
+  final _nameFocus = FocusNode();
+  final _priceFocus = FocusNode();
+  final _descFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
 
+    _nameFocus.addListener(() {
+      if (!mounted || _nameFocus.hasFocus) return;
+      setState(() => _nameError = _nameController.text.trim().isEmpty
+          ? context.l10n.fieldNameRequired
+          : null);
+    });
+    _priceFocus.addListener(() {
+      if (!mounted || _priceFocus.hasFocus) return;
+      final price =
+          double.tryParse(_priceController.text.trim().replaceAll(',', '.'));
+      setState(() => _priceError =
+          price == null || price <= 0 ? context.l10n.fieldPriceRequired : null);
+    });
     Future.microtask(() {
       final auth = ref.read(authProvider).value;
       if (auth?.uid == null) NavigationHandler.goToLogin(context);
@@ -108,7 +131,45 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
     _descController.dispose();
     _dimensionsController.dispose();
     _materialController.dispose();
+    _scrollController.dispose();
+    _nameFocus.dispose();
+    _priceFocus.dispose();
+    _descFocus.dispose();
     super.dispose();
+  }
+
+  bool get _dirty {
+    final product = _currentProduct;
+    if (product == null) return false;
+    return _nameController.text != product.name ||
+        _priceController.text != product.price.toString() ||
+        _descController.text != product.desc ||
+        _dimensionsController.text != (product.dimensions ?? '') ||
+        _materialController.text != (product.material ?? '') ||
+        _isSold != product.isSold ||
+        _isSpotProduct != product.isSpotProduct ||
+        _isReserved != product.isReserved ||
+        _selectedCategory != product.category ||
+        _newSelectedImages.isNotEmpty;
+  }
+
+  void _reveal(final GlobalKey key) {
+    final target = key.currentContext;
+    if (target == null) return;
+    Scrollable.ensureVisible(target,
+        alignment: 0.2, duration: const Duration(milliseconds: 220));
+  }
+
+  Future<void> _onLeaveAttempt() async {
+    if (!_dirty || _leaveAllowed) {
+      if (mounted) Navigator.of(context).pop();
+      return;
+    }
+    final leave = await confirmDiscardChanges(context);
+    if (!leave || !mounted) return;
+    setState(() => _leaveAllowed = true);
+    await Future<void>.delayed(Duration.zero);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -122,7 +183,13 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
 
     final mutationState = ref.watch(productMutationProvider);
 
-    return AtelierBackground(
+    return PopScope(
+      canPop: !_dirty || _leaveAllowed,
+      onPopInvokedWithResult: (final didPop, final _) {
+        if (didPop) return;
+        _onLeaveAttempt();
+      },
+      child: AtelierBackground(
         child: Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -140,6 +207,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.all(16),
               child: Center(
                 child: ConstrainedBox(
@@ -157,17 +225,35 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
                         icon: Icons.info_rounded,
                         child: Column(
                           children: [
-                            AdminFormField(
-                                controller: _nameController,
-                                label: context.l10n.productNameLabel,
-                                icon: Icons.shopping_bag_rounded),
-                            AdminFormField(
-                                controller: _priceController,
-                                label: context.l10n.price,
-                                icon: Icons.attach_money_rounded,
-                                numeric: true),
+                            KeyedSubtree(
+                              key: _nameKey,
+                              child: AdminFormField(
+                                  controller: _nameController,
+                                  focusNode: _nameFocus,
+                                  errorText: _nameError,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (final _) =>
+                                      _priceFocus.requestFocus(),
+                                  label: context.l10n.productNameLabel,
+                                  icon: Icons.shopping_bag_rounded),
+                            ),
+                            KeyedSubtree(
+                              key: _priceKey,
+                              child: AdminFormField(
+                                  controller: _priceController,
+                                  focusNode: _priceFocus,
+                                  errorText: _priceError,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (final _) =>
+                                      _descFocus.requestFocus(),
+                                  label: context.l10n.price,
+                                  icon: Icons.attach_money_rounded,
+                                  numeric: true),
+                            ),
                             AdminFormField(
                                 controller: _descController,
+                                focusNode: _descFocus,
+                                textInputAction: TextInputAction.newline,
                                 label: context.l10n.descriptionLabel,
                                 icon: Icons.description_rounded,
                                 lines: 3),
@@ -268,7 +354,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           ),
         ],
       ),
-    ));
+    )));
   }
 
   Widget _buildImagePreview() {
@@ -400,6 +486,25 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   }
 
   Future<void> _handleUpdate() async {
+    if (ref.read(productMutationProvider).isLoading) return;
+    final nameMissing = _nameController.text.trim().isEmpty;
+    final price = double.tryParse(
+        _priceController.text.trim().replaceAll(',', '.'));
+    final priceMissing = price == null || price <= 0;
+    setState(() {
+      _nameError = nameMissing ? context.l10n.fieldNameRequired : null;
+      _priceError = priceMissing ? context.l10n.fieldPriceRequired : null;
+    });
+    if (nameMissing || priceMissing) {
+      if (nameMissing) {
+        _reveal(_nameKey);
+        _nameFocus.requestFocus();
+      } else {
+        _reveal(_priceKey);
+        _priceFocus.requestFocus();
+      }
+      return;
+    }
     final bool pickedNewImages = _newSelectedImages.isNotEmpty;
 
     // Yeni fotoğraflar seçildiyse ve stüdyo önizlemesi hâlâ üretiliyorsa,
@@ -463,6 +568,9 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       );
       await Future.delayed(const Duration(milliseconds: 1600));
     }
+    if (!mounted) return;
+    setState(() => _leaveAllowed = true);
+    await Future<void>.delayed(Duration.zero);
     if (mounted) Navigator.pop(context);
   }
 }

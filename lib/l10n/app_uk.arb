@@ -767,5 +767,19 @@
   "searchClearFilters": "Скинути фільтри",
   "loadErrorTitle": "Не вдалося завантажити товари",
   "loadErrorMessage": "Перевірте з'єднання та спробуйте знову.",
-  "adminPanelSubtitle": "Керуйте товарами, статистикою та сервісами."
+  "adminPanelSubtitle": "Керуйте товарами, статистикою та сервісами.",
+  "undo": "Скасувати",
+  "removedFromFavorites": "Видалено з обраного",
+  "removeFromFavorites": "Прибрати з обраного",
+  "removeFromCart": "Прибрати з кошика",
+  "whatsAppUnavailableTitle": "WhatsApp не відкрився",
+  "whatsAppUnavailableBody": "WhatsApp не відкрився на цьому пристрої. Зателефонувати в крамницю?",
+  "callInstead": "Подзвонити",
+  "unsavedChangesTitle": "Зміни не збережено",
+  "unsavedChangesBody": "Якщо вийти, введене зникне.",
+  "discardChanges": "Вийти",
+  "keepEditing": "Продовжити редагування",
+  "fieldNameRequired": "Потрібна назва товару",
+  "fieldPriceRequired": "Введіть коректну ціну",
+  "photoRemoved": "Фото видалено"
 }

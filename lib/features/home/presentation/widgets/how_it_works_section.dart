@@ -37,7 +37,7 @@ class HowItWorksSection extends StatelessWidget {
 
     return SliverPadding(
       padding:
-          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 60, vertical: 26),
+          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 40, vertical: 12),
       sliver: SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

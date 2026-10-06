@@ -2241,4 +2241,47 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Керуйте товарами, статистикою та сервісами.';
+
+  @override
+  String get undo => 'Скасувати';
+
+  @override
+  String get removedFromFavorites => 'Видалено з обраного';
+
+  @override
+  String get removeFromFavorites => 'Прибрати з обраного';
+
+  @override
+  String get removeFromCart => 'Прибрати з кошика';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp не відкрився';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp не відкрився на цьому пристрої. Зателефонувати в крамницю?';
+
+  @override
+  String get callInstead => 'Подзвонити';
+
+  @override
+  String get unsavedChangesTitle => 'Зміни не збережено';
+
+  @override
+  String get unsavedChangesBody => 'Якщо вийти, введене зникне.';
+
+  @override
+  String get discardChanges => 'Вийти';
+
+  @override
+  String get keepEditing => 'Продовжити редагування';
+
+  @override
+  String get fieldNameRequired => 'Потрібна назва товару';
+
+  @override
+  String get fieldPriceRequired => 'Введіть коректну ціну';
+
+  @override
+  String get photoRemoved => 'Фото видалено';
 }

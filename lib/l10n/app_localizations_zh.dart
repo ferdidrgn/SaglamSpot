@@ -2151,4 +2151,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => '在此管理商品、统计和服务。';
+
+  @override
+  String get undo => '撤销';
+
+  @override
+  String get removedFromFavorites => '已从收藏中移除';
+
+  @override
+  String get removeFromFavorites => '从收藏中移除';
+
+  @override
+  String get removeFromCart => '从购物车移除';
+
+  @override
+  String get whatsAppUnavailableTitle => '无法打开 WhatsApp';
+
+  @override
+  String get whatsAppUnavailableBody => '这台设备上没有打开 WhatsApp。要改为打电话吗？';
+
+  @override
+  String get callInstead => '拨打';
+
+  @override
+  String get unsavedChangesTitle => '更改尚未保存';
+
+  @override
+  String get unsavedChangesBody => '离开后，已填写的内容会丢失。';
+
+  @override
+  String get discardChanges => '离开';
+
+  @override
+  String get keepEditing => '继续编辑';
+
+  @override
+  String get fieldNameRequired => '需要商品名称';
+
+  @override
+  String get fieldPriceRequired => '请输入有效价格';
+
+  @override
+  String get photoRemoved => '已移除照片';
 }

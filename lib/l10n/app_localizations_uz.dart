@@ -2251,4 +2251,47 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Mahsulotlar, statistika va xizmatlarni boshqaring.';
+
+  @override
+  String get undo => 'Bekor qilish';
+
+  @override
+  String get removedFromFavorites => 'Sevimlilardan olindi';
+
+  @override
+  String get removeFromFavorites => 'Sevimlilardan olib tashlash';
+
+  @override
+  String get removeFromCart => 'Savatdan olib tashlash';
+
+  @override
+  String get whatsAppUnavailableTitle => 'WhatsApp ochilmadi';
+
+  @override
+  String get whatsAppUnavailableBody =>
+      'WhatsApp bu qurilmada ochilmadi. Telefon qilasizmi?';
+
+  @override
+  String get callInstead => 'Qo\'ng\'iroq';
+
+  @override
+  String get unsavedChangesTitle => 'Saqlanmagan o\'zgarishlar';
+
+  @override
+  String get unsavedChangesBody => 'Chiqsaniz, yozganlaringiz o\'chadi.';
+
+  @override
+  String get discardChanges => 'Chiqish';
+
+  @override
+  String get keepEditing => 'Tahrirlashda davom';
+
+  @override
+  String get fieldNameRequired => 'Mahsulot nomi kerak';
+
+  @override
+  String get fieldPriceRequired => 'To\'g\'ri narx kiriting';
+
+  @override
+  String get photoRemoved => 'Rasm olib tashlandi';
 }

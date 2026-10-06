@@ -767,5 +767,19 @@
   "searchClearFilters": "Filter zurücksetzen",
   "loadErrorTitle": "Produkte konnten nicht geladen werden",
   "loadErrorMessage": "Prüfe deine Verbindung und versuche es erneut.",
-  "adminPanelSubtitle": "Produkte, Statistiken und Dienste hier verwalten."
+  "adminPanelSubtitle": "Produkte, Statistiken und Dienste hier verwalten.",
+  "undo": "Rückgängig",
+  "removedFromFavorites": "Aus Favoriten entfernt",
+  "removeFromFavorites": "Aus Favoriten entfernen",
+  "removeFromCart": "Aus dem Warenkorb nehmen",
+  "whatsAppUnavailableTitle": "WhatsApp öffnete sich nicht",
+  "whatsAppUnavailableBody": "WhatsApp ließ sich auf diesem Gerät nicht öffnen. Stattdessen anrufen?",
+  "callInstead": "Anrufen",
+  "unsavedChangesTitle": "Ungespeicherte Änderungen",
+  "unsavedChangesBody": "Wenn Sie gehen, geht das Eingetippte verloren.",
+  "discardChanges": "Verlassen",
+  "keepEditing": "Weiter bearbeiten",
+  "fieldNameRequired": "Produktname erforderlich",
+  "fieldPriceRequired": "Gültigen Preis eingeben",
+  "photoRemoved": "Foto entfernt"
 }

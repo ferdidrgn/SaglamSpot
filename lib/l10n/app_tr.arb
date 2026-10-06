@@ -889,5 +889,19 @@
   "searchClearFilters": "Filtreleri temizle",
   "loadErrorTitle": "Ürünler yüklenemedi",
   "loadErrorMessage": "Bağlantını kontrol edip tekrar dene.",
-  "adminPanelSubtitle": "Ürünleri, istatistikleri ve servisleri buradan yönet."
+  "adminPanelSubtitle": "Ürünleri, istatistikleri ve servisleri buradan yönet.",
+  "undo": "Geri al",
+  "removedFromFavorites": "Favorilerden kaldırıldı",
+  "removeFromFavorites": "Favoriden kaldır",
+  "removeFromCart": "Sepetten kaldır",
+  "whatsAppUnavailableTitle": "WhatsApp açılamadı",
+  "whatsAppUnavailableBody": "WhatsApp bu cihazda açılmadı. Telefonla aramak ister misiniz?",
+  "callInstead": "Ara",
+  "unsavedChangesTitle": "Değişiklikler kaydedilmedi",
+  "unsavedChangesBody": "Çıkarsanız yazdıklarınız silinir.",
+  "discardChanges": "Çık",
+  "keepEditing": "Düzenlemeye devam",
+  "fieldNameRequired": "Ürün adı gerekli",
+  "fieldPriceRequired": "Geçerli bir fiyat girin",
+  "photoRemoved": "Fotoğraf kaldırıldı"
 }
