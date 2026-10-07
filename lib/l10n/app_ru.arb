@@ -784,5 +784,8 @@
   "photoRemoved": "Фото удалено",
   "adminShowcaseGapTitle": "Дополните витрину",
   "adminShowcaseGapBody": "У {count} товаров нет фото или описания",
-  "adminShowcaseGapOpen": "Изменить"
+  "adminShowcaseGapOpen": "Изменить",
+  "adminColumnProduct": "Товар",
+  "adminViewGrid": "Сетка",
+  "adminViewTable": "Таблица"
 }

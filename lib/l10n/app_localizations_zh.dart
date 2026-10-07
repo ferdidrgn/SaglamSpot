@@ -2204,4 +2204,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => '编辑';
+
+  @override
+  String get adminColumnProduct => '产品';
+
+  @override
+  String get adminViewGrid => '网格';
+
+  @override
+  String get adminViewTable => '表格';
 }

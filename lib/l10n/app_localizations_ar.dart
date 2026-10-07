@@ -2274,4 +2274,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'تعديل';
+
+  @override
+  String get adminColumnProduct => 'المنتج';
+
+  @override
+  String get adminViewGrid => 'شبكة';
+
+  @override
+  String get adminViewTable => 'جدول';
 }

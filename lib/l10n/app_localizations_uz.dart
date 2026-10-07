@@ -2305,4 +2305,13 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Tahrirlash';
+
+  @override
+  String get adminColumnProduct => 'Mahsulot';
+
+  @override
+  String get adminViewGrid => 'Panjara';
+
+  @override
+  String get adminViewTable => 'Jadval';
 }

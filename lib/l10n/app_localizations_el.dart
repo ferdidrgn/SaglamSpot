@@ -2312,4 +2312,13 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Επεξεργασία';
+
+  @override
+  String get adminColumnProduct => 'Προϊόν';
+
+  @override
+  String get adminViewGrid => 'Πλέγμα';
+
+  @override
+  String get adminViewTable => 'Πίνακας';
 }

@@ -784,5 +784,8 @@
   "photoRemoved": "أُزيلت الصورة",
   "adminShowcaseGapTitle": "أكمل الواجهة",
   "adminShowcaseGapBody": "{count} منتجات بلا صورة أو وصف",
-  "adminShowcaseGapOpen": "تعديل"
+  "adminShowcaseGapOpen": "تعديل",
+  "adminColumnProduct": "المنتج",
+  "adminViewGrid": "شبكة",
+  "adminViewTable": "جدول"
 }

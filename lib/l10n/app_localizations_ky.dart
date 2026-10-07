@@ -2303,4 +2303,13 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Түзөт';
+
+  @override
+  String get adminColumnProduct => 'Товар';
+
+  @override
+  String get adminViewGrid => 'Тор';
+
+  @override
+  String get adminViewTable => 'Таблица';
 }

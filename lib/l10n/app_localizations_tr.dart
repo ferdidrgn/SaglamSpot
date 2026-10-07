@@ -2293,4 +2293,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Düzenle';
+
+  @override
+  String get adminColumnProduct => 'Ürün';
+
+  @override
+  String get adminViewGrid => 'Izgara';
+
+  @override
+  String get adminViewTable => 'Tablo';
 }

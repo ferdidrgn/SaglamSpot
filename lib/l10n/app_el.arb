@@ -784,5 +784,8 @@
   "photoRemoved": "Η φωτογραφία αφαιρέθηκε",
   "adminShowcaseGapTitle": "Συμπλήρωσε τη βιτρίνα",
   "adminShowcaseGapBody": "Σε {count} προϊόντα λείπει φωτογραφία ή περιγραφή",
-  "adminShowcaseGapOpen": "Επεξεργασία"
+  "adminShowcaseGapOpen": "Επεξεργασία",
+  "adminColumnProduct": "Προϊόν",
+  "adminViewGrid": "Πλέγμα",
+  "adminViewTable": "Πίνακας"
 }

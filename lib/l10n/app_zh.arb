@@ -784,5 +784,8 @@
   "photoRemoved": "已移除照片",
   "adminShowcaseGapTitle": "补全橱窗",
   "adminShowcaseGapBody": "{count} 件商品缺少照片或说明",
-  "adminShowcaseGapOpen": "编辑"
+  "adminShowcaseGapOpen": "编辑",
+  "adminColumnProduct": "产品",
+  "adminViewGrid": "网格",
+  "adminViewTable": "表格"
 }

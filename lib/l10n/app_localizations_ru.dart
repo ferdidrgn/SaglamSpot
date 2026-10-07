@@ -2298,4 +2298,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Изменить';
+
+  @override
+  String get adminColumnProduct => 'Товар';
+
+  @override
+  String get adminViewGrid => 'Сетка';
+
+  @override
+  String get adminViewTable => 'Таблица';
 }

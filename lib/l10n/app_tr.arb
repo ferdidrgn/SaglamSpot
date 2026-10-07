@@ -913,5 +913,8 @@
       }
     }
   },
-  "adminShowcaseGapOpen": "Düzenle"
+  "adminShowcaseGapOpen": "Düzenle",
+  "adminColumnProduct": "Ürün",
+  "adminViewGrid": "Izgara",
+  "adminViewTable": "Tablo"
 }

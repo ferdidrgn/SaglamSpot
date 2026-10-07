@@ -2295,4 +2295,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Edit';
+
+  @override
+  String get adminColumnProduct => 'Product';
+
+  @override
+  String get adminViewGrid => 'Grid';
+
+  @override
+  String get adminViewTable => 'Table';
 }

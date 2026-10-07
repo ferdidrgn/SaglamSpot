@@ -784,5 +784,8 @@
   "photoRemoved": "Фото видалено",
   "adminShowcaseGapTitle": "Доповніть вітрину",
   "adminShowcaseGapBody": "У {count} товарів немає фото чи опису",
-  "adminShowcaseGapOpen": "Змінити"
+  "adminShowcaseGapOpen": "Змінити",
+  "adminColumnProduct": "Товар",
+  "adminViewGrid": "Сітка",
+  "adminViewTable": "Таблиця"
 }

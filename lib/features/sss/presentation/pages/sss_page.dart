@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/business_info_showcase.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -212,7 +216,8 @@ class _SSSPageState extends State<SSSPage> {
 
     return Scaffold(
       backgroundColor: AppColors.mobileBackground,
-      body: SafeArea(
+      body: AtelierBackground(
+        child: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
@@ -237,41 +242,29 @@ class _SSSPageState extends State<SSSPage> {
           ],
         ),
       ),
+      ),
     );
   }
 
-  Widget _buildMobileHeader(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 20, 4),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () => NavigationHandler.smartGoBack(context),
-              icon: Icon(Icons.arrow_back_rounded,
-                  color: AppColors.mobileTextPrimary),
-            ),
-            Expanded(
-              child: Text(
-                context.l10n.sssHeroTitle,
-                style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.mobileTextPrimary,
-                ),
-              ),
-            ),
-          ],
+  Widget _buildMobileHeader(final BuildContext context) => AtelierScreenHeader(
+        title: context.l10n.sssHeroTitle,
+        leading: AtelierIconButton(
+          icon: Icons.arrow_back_rounded,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () => NavigationHandler.smartGoBack(context),
         ),
       );
 
   Widget _buildMobileCategoryChips(final BuildContext context) {
     final allFaqs = _faqs(context);
     return SizedBox(
-      height: 44,
+      height: 56,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screen),
         itemCount: _FaqCategory.values.length,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 8),
+        separatorBuilder: (final _, final __) =>
+            const SizedBox(width: AppSpacing.sm),
         itemBuilder: (final context, final index) {
           final category = _FaqCategory.values[index];
           final isSelected = _selectedCategory == category;
@@ -279,31 +272,19 @@ class _SSSPageState extends State<SSSPage> {
               ? allFaqs.length
               : allFaqs.where((final f) => f.category == category).length;
 
-          return GestureDetector(
-            onTap: () => setState(() {
-              _selectedCategory = category;
-              _expandedIndex = null;
-            }),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.mobilePrimary : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.mobilePrimary
-                      : AppColors.mobileBorder,
-                ),
-              ),
-              child: Text(
-                '${_categoryLabel(context, category)} ($count)',
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
-                  color:
-                      isSelected ? Colors.white : AppColors.mobileTextSecondary,
-                ),
-              ),
+          return Align(
+            alignment: Alignment.center,
+            child: AtelierChoiceChip(
+              label: '${_categoryLabel(context, category)} ($count)',
+              selected: isSelected,
+              activeColor: AppColors.mobilePrimary,
+              onTap: () {
+                HapticFeedback.selectionClick();
+                setState(() {
+                  _selectedCategory = category;
+                  _expandedIndex = null;
+                });
+              },
             ),
           );
         },

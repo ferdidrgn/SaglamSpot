@@ -4,8 +4,11 @@ import 'package:saglamspot/core/common/enum/enums.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/business_info_showcase.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
@@ -49,10 +52,12 @@ class _AboutPageState extends State<AboutPage> {
   Widget _buildMobileScaffold(final BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mobileBackground,
-      body: SafeArea(
+      body: AtelierBackground(
+        child: SafeArea(
         child: ListView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.screen, AppSpacing.sm, AppSpacing.screen, AppSpacing.xxl),
           children: [
             _buildMobileHeader(context),
             const SizedBox(height: 12),
@@ -99,29 +104,18 @@ class _AboutPageState extends State<AboutPage> {
           ],
         ),
       ),
+      ),
     );
   }
 
-  Widget _buildMobileHeader(final BuildContext context) => Row(
-        children: [
-          IconButton(
-            onPressed: () => NavigationHandler.smartGoBack(context),
-            icon: Icon(Icons.arrow_back_rounded,
-                color: AppColors.mobileTextPrimary),
-          ),
-          Expanded(
-            child: Text(
-              context.l10n.aboutHeroTitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppColors.mobileTextPrimary,
-              ),
-            ),
-          ),
-        ],
+  Widget _buildMobileHeader(final BuildContext context) => AtelierScreenHeader(
+        title: context.l10n.aboutHeroTitle,
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpacing.sm),
+        leading: AtelierIconButton(
+          icon: Icons.arrow_back_rounded,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () => NavigationHandler.smartGoBack(context),
+        ),
       );
 
   Widget _buildMobileHero(final BuildContext context) => Container(

@@ -784,5 +784,8 @@
   "photoRemoved": "Foto entfernt",
   "adminShowcaseGapTitle": "Vitrine vervollständigen",
   "adminShowcaseGapBody": "Bei {count} Produkten fehlen Foto oder Beschreibung",
-  "adminShowcaseGapOpen": "Bearbeiten"
+  "adminShowcaseGapOpen": "Bearbeiten",
+  "adminColumnProduct": "Produkt",
+  "adminViewGrid": "Raster",
+  "adminViewTable": "Tabelle"
 }

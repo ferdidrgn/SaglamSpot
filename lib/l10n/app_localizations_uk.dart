@@ -2295,4 +2295,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Змінити';
+
+  @override
+  String get adminColumnProduct => 'Товар';
+
+  @override
+  String get adminViewGrid => 'Сітка';
+
+  @override
+  String get adminViewTable => 'Таблиця';
 }

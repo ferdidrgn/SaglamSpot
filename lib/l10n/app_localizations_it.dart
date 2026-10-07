@@ -2308,4 +2308,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adminShowcaseGapOpen => 'Modifica';
+
+  @override
+  String get adminColumnProduct => 'Prodotto';
+
+  @override
+  String get adminViewGrid => 'Griglia';
+
+  @override
+  String get adminViewTable => 'Tabella';
 }

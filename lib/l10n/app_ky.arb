@@ -784,5 +784,8 @@
   "photoRemoved": "Сүрөт алынды",
   "adminShowcaseGapTitle": "Витринаны толукта",
   "adminShowcaseGapBody": "{count} товарда сүрөт же сүрөттөмө жок",
-  "adminShowcaseGapOpen": "Түзөт"
+  "adminShowcaseGapOpen": "Түзөт",
+  "adminColumnProduct": "Товар",
+  "adminViewGrid": "Тор",
+  "adminViewTable": "Таблица"
 }

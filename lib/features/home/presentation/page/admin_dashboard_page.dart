@@ -16,6 +16,7 @@ import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
 import '../../../products/presentation/pages/edit_product_page.dart';
 import '../widgets/admin_dashboard_product_grid.dart';
+import '../widgets/admin_dashboard_product_table.dart';
 import '../widgets/admin_dashboard_stat_card.dart';
 import 'admin_firebase_services_page.dart';
 import 'admin_product_stats_page.dart';
@@ -46,6 +47,16 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
   ProductCategory? _selectedCategory;
   _ListFilter _listFilter = _ListFilter.all;
   _AdminSort _sort = _AdminSort.newest;
+  bool _showTable = false;
+  bool _viewReady = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_viewReady) return;
+    _viewReady = true;
+    _showTable = context.isDesktop;
+  }
 
   @override
   void dispose() {
@@ -146,10 +157,16 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                                       controller: _tabController,
                                       physics: const BouncingScrollPhysics(),
                                       children: [
-                                        AdminProductGrid(
-                                            products: filtered(inStock)),
-                                        AdminProductGrid(
-                                            products: filtered(sold)),
+                                        _showTable
+                                            ? AdminProductTable(
+                                                products: filtered(inStock))
+                                            : AdminProductGrid(
+                                                products: filtered(inStock)),
+                                        _showTable
+                                            ? AdminProductTable(
+                                                products: filtered(sold))
+                                            : AdminProductGrid(
+                                                products: filtered(sold)),
                                       ],
                                     ),
                                   ),
@@ -313,6 +330,21 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                     const SizedBox(width: AppSpacing.sm),
                   ],
                 ],
+              ),
+            ),
+            IconButton(
+              tooltip: _showTable
+                  ? context.l10n.adminViewGrid
+                  : context.l10n.adminViewTable,
+              onPressed: () {
+                HapticFeedback.selectionClick();
+                setState(() => _showTable = !_showTable);
+              },
+              icon: Icon(
+                _showTable
+                    ? Icons.grid_view_rounded
+                    : Icons.table_rows_rounded,
+                color: AppColors.mobileTextPrimary,
               ),
             ),
             PopupMenuButton<_AdminSort>(

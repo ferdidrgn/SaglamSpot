@@ -4279,6 +4279,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Düzenle'**
   String get adminShowcaseGapOpen;
+
+  /// No description provided for @adminColumnProduct.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün'**
+  String get adminColumnProduct;
+
+  /// No description provided for @adminViewGrid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Izgara'**
+  String get adminViewGrid;
+
+  /// No description provided for @adminViewTable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tablo'**
+  String get adminViewTable;
 }
 
 class _AppLocalizationsDelegate

@@ -784,5 +784,8 @@
   "photoRemoved": "Rasm olib tashlandi",
   "adminShowcaseGapTitle": "Vitrinani to'ldiring",
   "adminShowcaseGapBody": "{count} mahsulotda rasm yoki tavsif yo'q",
-  "adminShowcaseGapOpen": "Tahrirlash"
+  "adminShowcaseGapOpen": "Tahrirlash",
+  "adminColumnProduct": "Mahsulot",
+  "adminViewGrid": "Panjara",
+  "adminViewTable": "Jadval"
 }
