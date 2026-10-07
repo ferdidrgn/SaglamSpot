@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saglamspot/core/common/extentions/product_category_ex.dart';
@@ -14,6 +15,7 @@ import '../../../../core/widgets/view_mode_toggle.dart';
 import '../../../../core/ads/widgets/adsense_banner.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
@@ -25,9 +27,7 @@ import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/domain/entites/product.dart';
-import '../../../products/presentation/providers/category_meta_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
-import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../providers/search_providers.dart';
 import '../widgets/filter_sheet.dart';
 import '../widgets/search_page_sidebar.dart';
@@ -107,10 +107,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     // Kalıcı yan panel yalnızca gerçek masaüstü genişliğinde: dar
     // tablet/laptop pencerelerinde sonuç alanını sıkıştırmasın.
     final showSidebar = context.isDesktop;
-    // Native mobilde Keşfet ekranıyla AYNI düzen: solda döndürülmüş
-    // metinli dikey kategori rayı, sağda sonuçlar. Web'de (dar pencere)
-    // yatay şerit kalır.
-    final bool mobileRail = !kIsWeb && !showSidebar;
+    // Keşfet'teki döndürülmüş kategori rayı artık web ve Android'de
+    // aynı yerde: sol kenar. Masaüstünde fiyat/durum paneli rayın sağında
+    // durur; kategori listesi rayda olduğu için panelde tekrarlanmaz.
+    final bool verticalRail = true;
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.background,
@@ -122,24 +122,25 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             child: Column(
               children: [
                 if (kIsWeb) _buildSearchHero(context),
-                if (mobileRail)
+                if (!showSidebar)
                   _buildMobileTopBar(context)
                 else
                   _buildTopBar(context, searchQuery),
-                if (!showSidebar && !mobileRail)
-                  _buildCategoryStrip(currentFilters),
-                if (!mobileRail) Divider(height: 1, color: AppColors.border),
+                if (showSidebar) Divider(height: 1, color: AppColors.border),
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      if (mobileRail)
+                      if (verticalRail)
                         CategoryAccentRail(
                           orientation: Axis.vertical,
                           selected: currentFilters.category,
-                          onSelect: (final c) => ref
-                              .read(searchFiltersProvider.notifier)
-                              .setCategory(c),
+                          onSelect: (final c) {
+                            HapticFeedback.selectionClick();
+                            ref
+                                .read(searchFiltersProvider.notifier)
+                                .setCategory(c);
+                          },
                           allColor: AppColors.mobilePrimary,
                           selectedTextColor: AppColors.mobileTextPrimary,
                           unselectedTextColor: AppColors.mobileTextTertiary,
@@ -259,76 +260,29 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
         0,
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: SizedBox(
-          height:
-              context.responsive(mobile: 120.0, tablet: 150.0, desktop: 180.0),
-          width: double.infinity,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600',
-                fit: BoxFit.cover,
-                errorBuilder: (final c, final e, final s) =>
-                    Container(color: AppColors.secondary),
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      AppColors.backgroundDark.withOpacity(0.72),
-                      AppColors.backgroundDark.withOpacity(0.18),
-                    ],
-                    stops: const [0.0, 0.9],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal:
-                        context.responsive(mobile: 20.0, desktop: 36.0)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.searchHeroTitle,
-                      style: TextStyle(
-                        fontFamily: 'Fraunces',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        fontSize: context.responsive(
-                            mobile: 20.0, tablet: 26.0, desktop: 30.0),
-                        height: 1.15,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: context.responsive(
-                              mobile: 220.0, desktop: 380.0)),
-                      child: Text(
-                        context.l10n.searchHeroSubtitle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.85),
-                          fontSize:
-                              context.responsive(mobile: 12.0, desktop: 14.0),
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.searchHeroTitle,
+            style: AppTextStyles.serif(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+              fontSize: context.responsive(
+                  mobile: 26.0, tablet: 32.0, desktop: 36.0),
+              height: 1.1,
+            ),
           ),
-        ),
+          const SizedBox(height: 6),
+          Text(
+            context.l10n.searchHeroSubtitle,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: context.responsive(mobile: 13.0, desktop: 15.0),
+              height: 1.4,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -445,9 +399,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     ProductCondition.used => AppColors.mobileAccentDark,
                     ProductCondition.all => AppColors.mobilePrimary,
                   },
-                  onTap: () => ref
-                      .read(searchFiltersProvider.notifier)
-                      .setCondition(c),
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    ref.read(searchFiltersProvider.notifier).setCondition(c);
+                  },
                 ),
                 const SizedBox(width: AppSpacing.sm),
               ],
@@ -458,38 +413,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  // Keşfet sayfasındaki "yan dönük" kategori rayıyla AYNI görsel dili
-  // (kategori renginde vurgu çubuğu + seçili/soluk kalınlık farkı) kullanır,
-  // ama Search sayfası dikey alanı sonuç ızgarasına ayırdığı için dikey ray
-  // yerine üstte tek satır, yatay kaydırılabilir bir şerit olarak gösterilir.
-  Widget _buildCategoryStrip(final dynamic filters) => Container(
-        color: AppColors.surface,
-        padding: EdgeInsets.symmetric(
-            vertical:
-                context.responsive(mobile: 8.0, tablet: 8.0, desktop: 8.0)),
-        child: CategoryAccentRail(
-          orientation: Axis.horizontal,
-          selected: filters.category as ProductCategory?,
-          onSelect: (final category) =>
-              ref.read(searchFiltersProvider.notifier).setCategory(category),
-          allColor: AppColors.primary,
-          selectedTextColor: AppColors.textPrimary,
-          unselectedTextColor: AppColors.textTertiary,
-          height: 42,
-          padding: EdgeInsets.symmetric(
-              horizontal: context.responsive(
-                  mobile: 12.0, tablet: 20.0, desktop: 32.0)),
-        ),
-      );
-
-  // ─────────────────────────────────────────────────────────────
-  // KALICI YAN PANEL — yalnızca masaüstü. Kategori/Durum/Fiyat aynı anda
-  // görünür, kaydırma sırasında sabit kalır; bottom-sheet açmaya gerek yok.
-  // ─────────────────────────────────────────────────────────────
+  // Masaüstü yan panel: kategori rayda. Burada durum ve fiyat kalır.
   Widget _buildSidebar(final BuildContext context, final dynamic filters) {
-    final categories = ref.watch(orderedActiveCategoriesProvider);
-    final available = ref.watch(availableProductsProvider);
-
     return SizedBox(
       width: 236,
       child: SingleChildScrollView(
@@ -497,33 +422,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _sidebarTitle(context.l10n.category),
-            const SizedBox(height: 12),
-            SidebarCategoryRow(
-              label: context.l10n.conditionAll,
-              icon: Icons.grid_view_rounded,
-              color: AppColors.textSecondary,
-              count: available.length,
-              selected: filters.category == null,
-              onTap: () =>
-                  ref.read(searchFiltersProvider.notifier).setCategory(null),
-            ),
-            for (final meta in categories)
-              SidebarCategoryRow(
-                label: meta.customLabel ?? meta.category.label(context),
-                icon: meta.icon,
-                color: meta.color,
-                count: available
-                    .where((final p) => p.category == meta.category)
-                    .length,
-                selected: filters.category == meta.category,
-                onTap: () => ref
-                    .read(searchFiltersProvider.notifier)
-                    .setCategory(meta.category),
-              ),
-            const SizedBox(height: 20),
-            Divider(color: AppColors.border, height: 1),
-            const SizedBox(height: 20),
             _sidebarTitle(context.l10n.condition),
             const SizedBox(height: 12),
             SidebarConditionSelector(filters: filters),

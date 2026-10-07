@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/features/products/domain/entites/product.dart';
 import '../../../../core/ads/widgets/platform_bottom_banner.dart';
@@ -285,7 +286,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   : platformPick(context,
                       mobile: AppColors.mobileTextPrimary,
                       web: AppColors.textPrimary),
-              onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
+              onTap: () {
+                HapticFeedback.lightImpact();
+                ref.read(favoritesProvider.notifier).toggle(product);
+              },
             ),
           ),
         ],

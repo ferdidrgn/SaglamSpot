@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/common/enum/enums.dart';
@@ -32,11 +33,19 @@ class AdminDashboardPage extends ConsumerStatefulWidget {
   ConsumerState<AdminDashboardPage> createState() => _AdminDashboardPageState();
 }
 
+/// Admin panelinde stok veya satılan listesini daraltan filtre.
+/// Kategori rayı ve sekme seçimiyle birlikte uygulanır.
+enum _ListFilter { all, newProduct, used, incomplete, reserved }
+
+enum _AdminSort { newest, priceAsc, priceDesc }
+
 class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController =
       TabController(length: 2, vsync: this);
   ProductCategory? _selectedCategory;
+  _ListFilter _listFilter = _ListFilter.all;
+  _AdminSort _sort = _AdminSort.newest;
 
   @override
   void dispose() {
@@ -54,10 +63,30 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     final inStock = ref.watch(availableProductsProvider);
     final sold = ref.watch(soldProductsProvider);
 
-    List<Product> filtered(final List<Product> list) =>
-        _selectedCategory == null
-            ? list
-            : list.where((final p) => p.category == _selectedCategory).toList();
+    List<Product> filtered(final List<Product> list) {
+      final Iterable<Product> byCategory = _selectedCategory == null
+          ? list
+          : list.where((final p) => p.category == _selectedCategory);
+      final Iterable<Product> narrowed = switch (_listFilter) {
+        _ListFilter.all => byCategory,
+        _ListFilter.newProduct =>
+          byCategory.where((final p) => !p.isSpotProduct),
+        _ListFilter.used => byCategory.where((final p) => p.isSpotProduct),
+        _ListFilter.incomplete => byCategory.where(_isShowcaseIncomplete),
+        _ListFilter.reserved =>
+          byCategory.where((final p) => p.isReserved && !p.isSold),
+      };
+      final items = narrowed.toList();
+      switch (_sort) {
+        case _AdminSort.newest:
+          items.sort((final a, final b) => b.createdAt.compareTo(a.createdAt));
+        case _AdminSort.priceAsc:
+          items.sort((final a, final b) => a.price.compareTo(b.price));
+        case _AdminSort.priceDesc:
+          items.sort((final a, final b) => b.price.compareTo(a.price));
+      }
+      return items;
+    }
 
     final Widget scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
@@ -94,8 +123,10 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                             CategoryAccentRail(
                               orientation: Axis.vertical,
                               selected: _selectedCategory,
-                              onSelect: (final c) =>
-                                  setState(() => _selectedCategory = c),
+                              onSelect: (final c) {
+                                HapticFeedback.selectionClick();
+                                setState(() => _selectedCategory = c);
+                              },
                               allColor: AppColors.mobilePrimary,
                               selectedTextColor: AppColors.mobileTextPrimary,
                               unselectedTextColor: AppColors.mobileTextTertiary,
@@ -107,12 +138,21 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                                   vertical: AppSpacing.md),
                             ),
                             Expanded(
-                              child: TabBarView(
-                                controller: _tabController,
-                                physics: const BouncingScrollPhysics(),
+                              child: Column(
                                 children: [
-                                  AdminProductGrid(products: filtered(inStock)),
-                                  AdminProductGrid(products: filtered(sold)),
+                                  _buildListFilters(context),
+                                  Expanded(
+                                    child: TabBarView(
+                                      controller: _tabController,
+                                      physics: const BouncingScrollPhysics(),
+                                      children: [
+                                        AdminProductGrid(
+                                            products: filtered(inStock)),
+                                        AdminProductGrid(
+                                            products: filtered(sold)),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -221,10 +261,91 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
   /// Fotoğrafı, açıklaması veya fiyatı eksik stok. Reklam incelemesi
   /// boş ürün sayfalarını "hazır değil" sayar; esnaf bunları telefondan
   /// tek dokunuşla düzenleme ekranına alır.
-  List<Product> _showcaseGaps(final List<Product> products) => products
-      .where((final p) =>
-          p.imagesUrl.isEmpty || p.desc.trim().length < 24 || p.price <= 0)
-      .toList();
+  bool _isShowcaseIncomplete(final Product product) =>
+      product.imagesUrl.isEmpty ||
+      product.desc.trim().length < 24 ||
+      product.price <= 0;
+
+  List<Product> _showcaseGaps(final List<Product> products) =>
+      products.where(_isShowcaseIncomplete).toList();
+
+  void _selectListFilter(final _ListFilter filter) {
+    HapticFeedback.selectionClick();
+    if (_listFilter == filter) {
+      return;
+    }
+    setState(() => _listFilter = filter);
+  }
+
+  /// Sekme çubuğunun altında, kategori rayının sağındaki stok/satılan
+  /// sütununda. Yalnızca o anki sekmenin ızgarasını daraltır.
+  Widget _buildListFilters(final BuildContext context) => SizedBox(
+        height: 56,
+        child: Row(
+          children: [
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md, AppSpacing.sm, AppSpacing.sm, AppSpacing.sm),
+                children: [
+                  for (final filter in _ListFilter.values) ...[
+                    AtelierChoiceChip(
+                      label: switch (filter) {
+                        _ListFilter.all => context.l10n.conditionAll,
+                        _ListFilter.newProduct => context.l10n.conditionNew,
+                        _ListFilter.used => context.l10n.conditionUsed,
+                        _ListFilter.incomplete =>
+                          context.l10n.adminShowcaseGapTitle,
+                        _ListFilter.reserved =>
+                          context.l10n.reservedToggleLabel,
+                      },
+                      selected: _listFilter == filter,
+                      activeColor: switch (filter) {
+                        _ListFilter.all => AppColors.mobilePrimary,
+                        _ListFilter.newProduct => AppColors.success,
+                        _ListFilter.used => AppColors.mobileAccentDark,
+                        _ListFilter.incomplete => AppColors.warning,
+                        _ListFilter.reserved => AppColors.info,
+                      },
+                      onTap: () => _selectListFilter(filter),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                  ],
+                ],
+              ),
+            ),
+            PopupMenuButton<_AdminSort>(
+              initialValue: _sort,
+              tooltip: context.l10n.sortNewest,
+              onSelected: (final sort) {
+                HapticFeedback.selectionClick();
+                setState(() => _sort = sort);
+              },
+              itemBuilder: (final context) => [
+                PopupMenuItem(
+                  value: _AdminSort.newest,
+                  child: Text(context.l10n.sortNewest),
+                ),
+                PopupMenuItem(
+                  value: _AdminSort.priceAsc,
+                  child: Text(context.l10n.sortPriceAsc),
+                ),
+                PopupMenuItem(
+                  value: _AdminSort.priceDesc,
+                  child: Text(context.l10n.sortPriceDesc),
+                ),
+              ],
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Icon(Icons.swap_vert_rounded,
+                    color: AppColors.mobileTextPrimary),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _buildShowcaseGap(
       final BuildContext context, final List<Product> stock) {
