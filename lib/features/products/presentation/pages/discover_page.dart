@@ -47,7 +47,12 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage> {
         : source.where((final p) => p.category == _selectedCategory).toList();
 
     final scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değil: gövde (AtelierBackground) yalnızca üst alanı kaplıyor
+      // (extendBody=false, yerleşim korunuyor) — alt navigasyonun
+      // kenarlarındaki boşluk aksi halde native pencere zeminine (siyah)
+      // düşüyordu. Aynı zemin tonunu vererek "navbar simsiyah" görünümünü
+      // yerleşimi bozmadan düzeltiyor.
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

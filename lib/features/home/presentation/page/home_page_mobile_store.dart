@@ -10,6 +10,7 @@ import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
+import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
 import '../../../../core/widgets/whatsapp_quick_fab.dart';
@@ -41,43 +42,80 @@ class HomeStorePage extends ConsumerWidget {
         : (available.isNotEmpty ? available.first : null);
 
     final scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değilken: alt navigasyonun kenarlarındaki/çevresindeki
+      // boşluk artık marka zemin tonunu alıyor — önceden Colors.transparent
+      // o boşlukta native pencere zeminini (siyah) gösteriyordu, koyu
+      // temada "navbar simsiyah" görünümünün asıl sebebi buydu.
+      backgroundColor: AppColors.background,
       bottomNavigationBar: const MobileBottomNav(),
       floatingActionButton: kIsWeb ? null : const WhatsAppQuickFab(),
       body: AtelierBackground(
         child: SafeArea(
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
+            // Bölümler, web ana sayfasıyla (home_page_web.dart) aynı
+            // RevealFade kademelendirmesiyle açılır — kart tasarımları ve
+            // yerleşim aynı kalır, yalnızca ilk giriş an'ı sahneleniyor.
             slivers: [
-              const SliverToBoxAdapter(child: HomeWelcomeHeader()),
+              const SliverToBoxAdapter(
+                child: RevealFade(child: HomeWelcomeHeader()),
+              ),
               if (rail.isNotEmpty)
                 SliverToBoxAdapter(
-                    child: HomeFeaturedProductRail(products: rail)),
+                  child: RevealFade(
+                    delayMs: 40,
+                    child: HomeFeaturedProductRail(products: rail),
+                  ),
+                ),
               SliverToBoxAdapter(
-                child: HomeCollectionPromoBanner(spotlight: promoSpotlight),
-              ),
-              SliverToBoxAdapter(
-                child: AtelierSectionHeader(
-                  title: context.l10n.sectionCategories,
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.xl,
-                      AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
+                child: RevealFade(
+                  delayMs: 90,
+                  child: HomeCollectionPromoBanner(spotlight: promoSpotlight),
                 ),
               ),
-              const SliverToBoxAdapter(child: HomeCategoryChips()),
+              SliverToBoxAdapter(
+                child: RevealFade(
+                  delayMs: 130,
+                  child: AtelierSectionHeader(
+                    title: context.l10n.sectionCategories,
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.xl,
+                        AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child:
+                    RevealFade(delayMs: 160, child: const HomeCategoryChips()),
+              ),
               if (recommended.isNotEmpty)
                 SliverToBoxAdapter(
-                  child: HomeRecommendedStrip(products: recommended),
+                  child: RevealFade(
+                    delayMs: 200,
+                    child: HomeRecommendedStrip(products: recommended),
+                  ),
                 ),
-              const SliverToBoxAdapter(child: HomeTopCollectionPromos()),
-              const SliverToBoxAdapter(child: HomeCategoryPromoPair()),
               SliverToBoxAdapter(
-                child: AtelierSectionHeader(
-                  title: context.l10n.visitUsHeading,
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.xl,
-                      AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
+                child: RevealFade(
+                    delayMs: 240, child: const HomeTopCollectionPromos()),
+              ),
+              SliverToBoxAdapter(
+                child: RevealFade(
+                    delayMs: 280, child: const HomeCategoryPromoPair()),
+              ),
+              SliverToBoxAdapter(
+                child: RevealFade(
+                  delayMs: 320,
+                  child: AtelierSectionHeader(
+                    title: context.l10n.visitUsHeading,
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.xl,
+                        AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
+                  ),
                 ),
               ),
-              const SliverToBoxAdapter(child: _MobileBusinessCard()),
+              SliverToBoxAdapter(
+                child:
+                    RevealFade(delayMs: 360, child: const _MobileBusinessCard()),
+              ),
               const SliverToBoxAdapter(child: SizedBox(height: 28)),
             ],
           ),

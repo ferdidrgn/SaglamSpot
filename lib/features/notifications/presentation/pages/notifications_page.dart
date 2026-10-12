@@ -23,7 +23,9 @@ class NotificationsPage extends ConsumerWidget {
     final inboxAsync = ref.watch(notificationInboxProvider);
 
     final scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değil: alt navigasyonun kenarlarındaki boşluk native pencere
+      // zemini (siyah) yerine marka zemin tonunu alır.
+      backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: SafeArea(

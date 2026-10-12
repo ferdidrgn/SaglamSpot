@@ -20,6 +20,13 @@ başlatırken buradaki kuralları prompt'a özetle.
    kullanıcı işlemleri (jestler, geri bildirim, Geri al, eylem durumları,
    admin formları) ve yeni paket/eklenti politikası.
 
+Ek referans skill'ler (claude-code-templates'ten çekildi — genel/web
+odaklı, bu projede her zaman yukarıdakilerin Flutter uyarlamasından SONRA,
+yalnızca ortak prensip/kontrol listesi olarak kullanılır; çelişkide
+`saglamspot-ui` kazanır): `.claude/skills/senior-frontend/`,
+`.claude/skills/senior-architect/`, `.claude/skills/code-reviewer/`,
+`.claude/skills/ui-ux-pro-max/`.
+
 ## Tasarım sistemi — "Atölye"
 
 - Token'lar: `lib/core/theme/app_tokens.dart` → `AppSpacing`, `AppRadius`

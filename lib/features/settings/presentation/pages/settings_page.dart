@@ -45,9 +45,10 @@ class SettingsPage extends ConsumerWidget {
     final int unreadCount = ref.watch(unreadNotificationCountProvider);
 
     final scaffold = Scaffold(
-      // Desen AtelierBackground'da çizilir — opak Scaffold zemini seçim
-      // farkını yutar / görünmez kılar.
-      backgroundColor: Colors.transparent,
+      // Desen AtelierBackground'da çizilir; Scaffold zemini şeffaf DEĞİL
+      // (marka zemin tonu) — alt navigasyonun kenarlarındaki boşluk aksi
+      // halde native pencere zeminine (siyah) düşüyordu.
+      backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: SafeArea(

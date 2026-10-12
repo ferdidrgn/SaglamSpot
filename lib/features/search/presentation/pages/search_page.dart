@@ -94,7 +94,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final bool mobileRail = !kIsWeb && !showSidebar;
 
     final scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değil: alt navigasyonun kenarlarındaki boşluk native pencere
+      // zemini (siyah) yerine marka zemin tonunu alır.
+      backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: Stack(

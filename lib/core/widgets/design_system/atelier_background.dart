@@ -35,9 +35,11 @@ class AtelierBackground extends ConsumerWidget {
             painter: AtelierPatternPainter(
               pattern: effective,
               base: AppColors.background,
-              // Dinamik Material You primary'si zemine çok yakın olunca
-              // desen kayboluyordu — sabit marka mürekkebi kullan.
-              ink: AppColors.black,
+              // textPrimary her zaman zeminle (background/surface) kontrast
+              // için tasarlanmış (onSurface) — AppColors.black kullanılırsa
+              // koyu temada zemine neredeyse eşit olup desen görünmez
+              // oluyordu (iki koyu kahve tonu üst üste).
+              ink: AppColors.textPrimary,
               glow: AppColors.accent,
             ),
           ),

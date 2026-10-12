@@ -29,7 +29,10 @@ class FavoritesPage extends ConsumerWidget {
     final favorites = ref.watch(favoritesProvider);
 
     final scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değil: alt navigasyonun kenarlarındaki boşluk native pencere
+      // zemini (siyah) yerine marka zemin tonunu alır (bkz. home_page_
+      // mobile_store.dart'taki aynı düzeltme).
+      backgroundColor: AppColors.background,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       floatingActionButton:
           !kIsWeb && favorites.isNotEmpty ? const WhatsAppQuickFab() : null,

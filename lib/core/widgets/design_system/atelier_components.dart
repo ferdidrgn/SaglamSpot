@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../theme/app_tokens.dart';
+import 'reveal_fade.dart';
 
 /// "Atölye" tasarım sisteminin mobil yapı taşları. Hepsi token'larla
 /// ([AppSpacing], [AppRadius], [AppMotion], [AppShadows]) ve marka renk
@@ -32,52 +33,59 @@ class AtelierScreenHeader extends StatelessWidget {
   @override
   Widget build(final BuildContext context) => Padding(
         padding: padding,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (leading != null) ...[
-              leading!,
-              const SizedBox(width: AppSpacing.md),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.serif(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                      height: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs + 2),
-                  const TapeMeasureRule(width: 56),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: AppSpacing.sm),
+        // Sayfa her açıldığında tek, kısa bir giriş an'ı (fade + hafif
+        // yukarı kayma) — RevealFade tekrar rebuild'lerde (ör. rozet
+        // sayısı değişince) yeniden oynamaz, yalnızca ilk montajda.
+        child: RevealFade(
+          durationMs: 360,
+          offsetY: 10,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (leading != null) ...[
+                leading!,
+                const SizedBox(width: AppSpacing.md),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Text(
-                      subtitle!,
-                      maxLines: 2,
+                      title,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 13,
-                        height: 1.4,
-                        color: AppColors.textSecondary,
+                      style: AppTextStyles.serif(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        height: 1.1,
                       ),
                     ),
+                    const SizedBox(height: AppSpacing.xs + 2),
+                    const TapeMeasureRule(width: 56),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        subtitle!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13,
+                          height: 1.4,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            for (final a in actions) ...[
-              const SizedBox(width: AppSpacing.sm),
-              a,
+              for (final a in actions) ...[
+                const SizedBox(width: AppSpacing.sm),
+                a,
+              ],
             ],
-          ],
+          ),
         ),
       );
 }
@@ -473,52 +481,68 @@ class AtelierStateView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 84,
-                height: 84,
-                decoration: BoxDecoration(
-                  color: AppColors.secondary,
-                  borderRadius: AppRadius.asymSm,
+              // Boş/hata durumları nadir görülür — flutter-motion skill'inin
+              // "keyif bütçesi" kategorisi: kısa, üç adımlı bir kademeli
+              // giriş (rozet → metin → eylem).
+              RevealFade(
+                durationMs: 420,
+                offsetY: 16,
+                child: Container(
+                  width: 84,
+                  height: 84,
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: AppRadius.asymSm,
+                  ),
+                  child: Icon(icon, size: 38, color: AppColors.accentDark),
                 ),
-                child: Icon(icon, size: 38, color: AppColors.accentDark),
               ),
               const SizedBox(height: AppSpacing.xl),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.serif(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+              RevealFade(
+                delayMs: 80,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.serif(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ),
               if (message != null) ...[
                 const SizedBox(height: AppSpacing.sm),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 300),
-                  child: Text(
-                    message!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 13.5,
-                        height: 1.5,
-                        color: AppColors.textSecondary),
+                RevealFade(
+                  delayMs: 80,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 300),
+                    child: Text(
+                      message!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13.5,
+                          height: 1.5,
+                          color: AppColors.textSecondary),
+                    ),
                   ),
                 ),
               ],
               if (onAction != null && actionLabel != null) ...[
                 const SizedBox(height: AppSpacing.xl),
-                FilledButton(
-                  onPressed: onAction,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    minimumSize: const Size(160, 48),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.all(AppRadius.pill)),
+                RevealFade(
+                  delayMs: 140,
+                  child: FilledButton(
+                    onPressed: onAction,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.white,
+                      minimumSize: const Size(160, 48),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: AppRadius.all(AppRadius.pill)),
+                    ),
+                    child: Text(actionLabel!,
+                        style: const TextStyle(fontWeight: FontWeight.w700)),
                   ),
-                  child: Text(actionLabel!,
-                      style: const TextStyle(fontWeight: FontWeight.w700)),
                 ),
               ],
             ],
