@@ -511,6 +511,30 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginButton => 'Увійти';
 
   @override
+  String get forgotPassword => 'Забули пароль';
+
+  @override
+  String get resetPasswordTitle => 'Скидання пароля';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Введіть email адміністратора. Надішлемо посилання скидання через Firebase.';
+
+  @override
+  String get resetPasswordSend => 'Надіслати посилання';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Посилання для скидання надіслано на email. Перевірте вхідні та спам.';
+
+  @override
+  String get authErrorEmptyEmail => 'Email не може бути порожнім.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Служба входу зараз недоступна. Перевірте з’єднання й спробуйте знову.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'Електронна пошта та пароль не можуть бути порожніми.';
 
@@ -1518,7 +1542,47 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sectionNewArrivals => 'Новинки';
 
   @override
+  String get sectionRecommended => 'Рекомендовано';
+
+  @override
+  String get sectionTopCollection => 'Топ-колекція';
+
+  @override
+  String get promoHangoutTitle => 'Облаштуйтесь &\nживіть комфортно';
+
+  @override
+  String get promoNewLivingTitle => 'Позачасові\nі міцні речі';
+
+  @override
+  String get promoSpotLivingTitle => 'Б/в за\nчесною ціною';
+
+  @override
+  String get categoryPromoSubtitleA => 'Для щоденного життя';
+
+  @override
+  String get categoryPromoSubtitleB => 'Стильно і практично';
+
+  @override
   String get seeAll => 'Переглянути все';
+
+  @override
+  String get homeWelcomeGreeting => 'З поверненням';
+
+  @override
+  String get homeWelcomeTagline => 'Створюйте простори, що дарують радість.';
+
+  @override
+  String get specialOfferLabel => 'ОСОБЛИВИЙ ВИБІР';
+
+  @override
+  String get specialOfferTitle => 'Відчуйте комфорт';
+
+  @override
+  String get specialOfferBody =>
+      'Вдалі знахідки серед б/в та нової меблів за чесною ціною.';
+
+  @override
+  String get shopNow => 'Дивитись';
 
   @override
   String get cartTitle => 'Мій кошик';

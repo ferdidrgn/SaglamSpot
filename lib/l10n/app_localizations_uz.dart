@@ -514,6 +514,30 @@ class AppLocalizationsUz extends AppLocalizations {
   String get loginButton => 'Kirish';
 
   @override
+  String get forgotPassword => 'Parolni unutdim';
+
+  @override
+  String get resetPasswordTitle => 'Parolni tiklash';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Admin emailini yozing. Firebase orqali tiklash havolasini yuboramiz.';
+
+  @override
+  String get resetPasswordSend => 'Havolani yuborish';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Tiklash havolasi emailingizga yuborildi. Kiruvchi va spamni tekshiring.';
+
+  @override
+  String get authErrorEmptyEmail => 'Email bo‘sh bo‘lishi mumkin emas.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Autentifikatsiya hozir ishlamayapti. Ulanishni tekshirib qayta urinib ko‘ring.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'Elektron pochta va parol bo\'sh bo\'lishi mumkin emas.';
 
@@ -1526,7 +1550,47 @@ class AppLocalizationsUz extends AppLocalizations {
   String get sectionNewArrivals => 'Yangi mahsulotlar';
 
   @override
+  String get sectionRecommended => 'Tavsiya etiladi';
+
+  @override
+  String get sectionTopCollection => 'Top kolleksiya';
+
+  @override
+  String get promoHangoutTitle => 'Joylashtiring &\nqulay yashang';
+
+  @override
+  String get promoNewLivingTitle => 'Zamonsiz\nva mustahkam';
+
+  @override
+  String get promoSpotLivingTitle => 'Ishlatilgan\nhalos narx';
+
+  @override
+  String get categoryPromoSubtitleA => 'Kundalik hayot uchun';
+
+  @override
+  String get categoryPromoSubtitleB => 'Zamonaviy va amaliy';
+
+  @override
   String get seeAll => 'Barchasini ko\'rish';
+
+  @override
+  String get homeWelcomeGreeting => 'Qaytib kelganingiz bilan';
+
+  @override
+  String get homeWelcomeTagline => 'Quvonch olib keladigan makonlar yarating.';
+
+  @override
+  String get specialOfferLabel => 'MAXSUS TANLOV';
+
+  @override
+  String get specialOfferTitle => 'Qulaylikni his eting';
+
+  @override
+  String get specialOfferBody =>
+      'Spot va yangi mebelda qulay narxdagi imkoniyatlar.';
+
+  @override
+  String get shopNow => 'Ko‘rish';
 
   @override
   String get cartTitle => 'Mening savatim';

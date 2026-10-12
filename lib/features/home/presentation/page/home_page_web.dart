@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
-import 'package:saglamspot/core/theme/catalog_theme.dart';
 import 'package:saglamspot/core/widgets/business_info_showcase.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
@@ -21,6 +20,7 @@ import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/count_up_on_visible.dart';
 import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
@@ -31,6 +31,7 @@ import '../widgets/furniture_tips_section.dart';
 import '../widgets/home_page_footer_widgets.dart';
 import '../widgets/home_page_hero_widgets.dart';
 import '../widgets/home_page_showcase_cards.dart';
+import '../widgets/home_store_showcase_sections.dart';
 import '../widgets/how_it_works_section.dart';
 import '../widgets/social_showcase_section.dart';
 import '../widgets/why_us_section.dart';
@@ -70,6 +71,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final productsAsync = ref.watch(productsProvider);
     final availableProducts = ref.watch(availableProductsProvider);
     final selectedCategory = ref.watch(searchFiltersProvider).category;
+    final Product? promoSpotlight = () {
+      for (final p in availableProducts) {
+        if (!p.isSpotProduct) return p;
+      }
+      return availableProducts.isNotEmpty ? availableProducts.first : null;
+    }();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -109,10 +116,32 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     [
                       _buildHeroBanner(availableProducts),
                       _buildMottoStrip(),
+                      // Referans vitrin tanıtımları — gerçek ürünlerle;
+                      // eski “iki kapı” yerine aynı işi yapan büyük
+                      // Sıfır/Spot koleksiyon kartları.
+                      if (availableProducts.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: HomeFeaturedProductRail(
+                            products: availableProducts.take(10).toList(),
+                          ),
+                        ),
+                      SliverToBoxAdapter(
+                        child: HomeCollectionPromoBanner(
+                          spotlight: promoSpotlight,
+                        ),
+                      ),
                       _buildFeatureTicker(),
-                      _buildCatalogGateway(),
+                      const SliverToBoxAdapter(
+                          child: HomeTopCollectionPromos()),
                       _buildTrustBar(),
                       _buildCategoriesSection(),
+                      if (availableProducts.length > 2)
+                        SliverToBoxAdapter(
+                          child: HomeRecommendedStrip(
+                            products: availableProducts.skip(2).take(8).toList(),
+                          ),
+                        ),
+                      const SliverToBoxAdapter(child: HomeCategoryPromoPair()),
                       _buildProductsHeader(),
                       _buildDynamicFeaturedGrid(
                         availableProducts
@@ -261,57 +290,128 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  // Bir esnaf uygulamasıyız — vitrin, çevrimiçi mağaza değil. Ziyaretçinin
-  // hero'yu gördüğü ilk anda işin özünü anlaması için, dönen slaytlara
-  // bağlı olmayan sabit bir motto şeridi: dükkâna gelmeden önce vitrini
-  // gez, beğendiğinde dükkâna gel.
+  /// Karşılama + özel seçki bandı — motto şeridinin güçlendirilmiş hali
+  /// (bölüm sayısı aynı; içerik profesyonel vitrin diline çekildi).
   Widget _buildMottoStrip() => SliverToBoxAdapter(
         child: Padding(
           padding: context.pagePadding.copyWith(
               top: context.spacingLarge, bottom: context.spacingLarge),
-          child: Center(
-            child: Column(
-              children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 10,
-                  children: [
-                    Icon(Icons.visibility_rounded,
-                        size: context.iconMedium, color: AppColors.accentDark),
-                    Text.rich(
-                      TextSpan(
-                        style: TextStyle(
-                          fontFamily: 'Fraunces',
-                          fontSize: context.responsive(mobile: 20, desktop: 26),
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                          height: 1.2,
-                        ),
-                        children: [
-                          TextSpan(text: context.l10n.mottoTitlePart1),
-                          TextSpan(
-                            text: context.l10n.mottoTitlePart2,
-                            style: TextStyle(
-                                color: AppColors.accentDark,
-                                fontStyle: FontStyle.italic),
+          child: Column(
+            children: [
+              Text(
+                context.l10n.homeWelcomeGreeting,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.serif(
+                  fontSize: context.responsive(mobile: 22, desktop: 28),
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.accentDark,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                context.l10n.homeWelcomeTagline,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: context.captionSize),
+              ),
+              const SizedBox(height: 18),
+              TactilePress(
+                onTap: () => NavigationHandler.goToDiscover(context),
+                pressScale: 0.99,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 960),
+                    height: context.responsive(
+                        mobile: 148.0, tablet: 168.0, desktop: 186.0),
+                    color: AppColors.accent.withValues(alpha: 0.16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: OptimizedCachedImage(
+                            imageUrl:
+                                'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=900',
+                            fit: BoxFit.cover,
+                            height: double.infinity,
+                            width: double.infinity,
+                            borderRadius: 0,
                           ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: context.responsive(
+                                    mobile: 16, desktop: 28),
+                                vertical: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  context.l10n.specialOfferLabel,
+                                  style: AppTextStyles.microLabel(
+                                    color: AppColors.accentDark,
+                                    fontSize: 10,
+                                    letterSpacing: 1.4,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  context.l10n.specialOfferTitle,
+                                  style: AppTextStyles.serif(
+                                    fontSize: context.responsive(
+                                        mobile: 18, desktop: 24),
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  context.l10n.specialOfferBody,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: context.captionSize,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text.rich(
+                TextSpan(
+                  style: TextStyle(
+                    fontFamily: AppTextStyles.headingFontFamily,
+                    fontSize: context.responsive(mobile: 16, desktop: 18),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.25,
+                  ),
+                  children: [
+                    TextSpan(text: context.l10n.mottoTitlePart1),
+                    TextSpan(
+                      text: context.l10n.mottoTitlePart2,
+                      style: TextStyle(
+                          color: AppColors.accentDark,
+                          fontStyle: FontStyle.italic),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  context.l10n.mottoSubtitle,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: context.captionSize),
-                ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       );
@@ -337,66 +437,6 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               largeDesktop: 620.0),
           child: HeroBanner(images: _heroImages, featuredPool: featuredPool),
         ),
-      ),
-    );
-  }
-
-  // İki katalog, iki ayrı "kapı" — kullanıcı tıklamadan önce Sıfır
-  // Koleksiyon'un sakin/butik ve Spot Fırsatlar'ın canlı/atölye kimliğini
-  // burada görsel olarak öğreniyor (bkz. core/theme/catalog_theme.dart).
-  Widget _buildCatalogGateway() {
-    final newCount = ref.watch(newDealsProductsProvider).length;
-    final spotCount = ref.watch(spotDealsProductsProvider).length;
-
-    final newCard = GatewayCard(
-      eyebrow: context.l10n.gatewayNewEyebrow,
-      eyebrowColor: NewCollectionPalette.badgeGreen,
-      title: context.l10n.gatewayNewTitle,
-      subtitle: context.l10n.gatewayNewSubtitle,
-      count: newCount,
-      background: NewCollectionPalette.background,
-      cardBorder: NewCollectionPalette.cardBorder,
-      heading: NewCollectionPalette.heading,
-      body: NewCollectionPalette.body,
-      accent: NewCollectionPalette.accent,
-      headingFontFamily: NewCollectionPalette.headingFont,
-      icon: Icons.chair_rounded,
-      buttonLabel: context.l10n.gatewayNewButton,
-      onTap: () => NavigationHandler.goToNewProducts(context),
-    );
-
-    final spotCard = GatewayCard(
-      eyebrow: context.l10n.gatewaySpotEyebrow,
-      eyebrowColor: SpotPalette.accent,
-      title: context.l10n.gatewaySpotTitle,
-      subtitle: context.l10n.gatewaySpotSubtitle,
-      count: spotCount,
-      background: SpotPalette.background,
-      cardBorder: SpotPalette.cardBorder,
-      heading: SpotPalette.heading,
-      body: SpotPalette.body,
-      accent: SpotPalette.accent,
-      headingFontFamily: null,
-      icon: Icons.local_offer_rounded,
-      buttonLabel: context.l10n.gatewaySpotButton,
-      onTap: () => NavigationHandler.goToSpotProducts(context),
-    );
-
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: context.pagePadding.copyWith(bottom: context.spacingLarge),
-        child: context.isMobile
-            ? Column(children: [newCard, const SizedBox(height: 16), spotCard])
-            : IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(child: newCard),
-                    const SizedBox(width: 20),
-                    Expanded(child: spotCard),
-                  ],
-                ),
-              ),
       ),
     );
   }

@@ -513,6 +513,30 @@ class AppLocalizationsKy extends AppLocalizations {
   String get loginButton => 'Кирүү';
 
   @override
+  String get forgotPassword => 'Сырсөздү унуттум';
+
+  @override
+  String get resetPasswordTitle => 'Сырсөздү калыбына келтирүү';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Админ emailди жазыңыз. Firebase аркылуу калыбына келтирүү шилтемесин жөнөтөбүз.';
+
+  @override
+  String get resetPasswordSend => 'Шилтеме жөнөтүү';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Калыбына келтирүү шилтемеси emailге жөнөтүлдү. Кирүүчү жана спамды текшериңиз.';
+
+  @override
+  String get authErrorEmptyEmail => 'Email бош болбошу керек.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Аутентификация азыр жеткиликсиз. Байланышты текшерип кайра аракет кылыңыз.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'Электрондук почта жана сырсөз бош болушу мүмкүн эмес.';
 
@@ -1524,7 +1548,48 @@ class AppLocalizationsKy extends AppLocalizations {
   String get sectionNewArrivals => 'Жаңы келгендер';
 
   @override
+  String get sectionRecommended => 'Сунушталат';
+
+  @override
+  String get sectionTopCollection => 'Мыкты коллекция';
+
+  @override
+  String get promoHangoutTitle => 'Жайгашып,\nжайлуу жаша';
+
+  @override
+  String get promoNewLivingTitle => 'Мезгилсиз\nжана бекем';
+
+  @override
+  String get promoSpotLivingTitle => 'Колдонулган\nадилет баа';
+
+  @override
+  String get categoryPromoSubtitleA => 'Күнүмдүк жашоо үчүн';
+
+  @override
+  String get categoryPromoSubtitleB => 'Стильдүү жана практикалык';
+
+  @override
   String get seeAll => 'Баарын көрүү';
+
+  @override
+  String get homeWelcomeGreeting => 'Кайра кош келиңиз';
+
+  @override
+  String get homeWelcomeTagline =>
+      'Кубаныч алып келген мейкиндиктерди түзүңүз.';
+
+  @override
+  String get specialOfferLabel => 'ӨЗГӨЧӨ ТАНДОО';
+
+  @override
+  String get specialOfferTitle => 'Ыңгайлуулукту сезиңиз';
+
+  @override
+  String get specialOfferBody =>
+      'Колдонулган жана жаңы эмеректе жеткиликтүү мүмкүнчүлүктөр.';
+
+  @override
+  String get shopNow => 'Кароо';
 
   @override
   String get cartTitle => 'Себетим';

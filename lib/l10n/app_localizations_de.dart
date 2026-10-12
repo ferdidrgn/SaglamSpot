@@ -519,6 +519,30 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loginButton => 'Anmelden';
 
   @override
+  String get forgotPassword => 'Passwort vergessen';
+
+  @override
+  String get resetPasswordTitle => 'Passwort zurücksetzen';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Geben Sie Ihre Admin-E-Mail ein. Wir senden einen Firebase-Reset-Link.';
+
+  @override
+  String get resetPasswordSend => 'Reset-Link senden';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Ein Reset-Link wurde an Ihre E-Mail gesendet. Prüfen Sie Posteingang und Spam.';
+
+  @override
+  String get authErrorEmptyEmail => 'E-Mail darf nicht leer sein.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Authentifizierung ist derzeit nicht verfügbar. Verbindung prüfen und erneut versuchen.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'E-Mail und Passwort dürfen nicht leer sein.';
 
@@ -1535,7 +1559,47 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sectionNewArrivals => 'Neuheiten';
 
   @override
+  String get sectionRecommended => 'Empfohlen';
+
+  @override
+  String get sectionTopCollection => 'Top-Kollektion';
+
+  @override
+  String get promoHangoutTitle => 'Ankommen &\nwohnlich einrichten';
+
+  @override
+  String get promoNewLivingTitle => 'Zeitlose &\nsolide Stücke';
+
+  @override
+  String get promoSpotLivingTitle => 'Gebraucht &\nfair bepreist';
+
+  @override
+  String get categoryPromoSubtitleA => 'Für den Alltag';
+
+  @override
+  String get categoryPromoSubtitleB => 'Stilvoll & praktisch';
+
+  @override
   String get seeAll => 'Alle anzeigen';
+
+  @override
+  String get homeWelcomeGreeting => 'Hallo, willkommen zurück';
+
+  @override
+  String get homeWelcomeTagline => 'Schaffen Sie Räume, die Freude bringen.';
+
+  @override
+  String get specialOfferLabel => 'BESONDERE AUSWAHL';
+
+  @override
+  String get specialOfferTitle => 'Komfort erleben';
+
+  @override
+  String get specialOfferBody =>
+      'Starke Fundstücke bei Spot- und Neuware — fair bepreist.';
+
+  @override
+  String get shopNow => 'Jetzt ansehen';
 
   @override
   String get cartTitle => 'Mein Warenkorb';

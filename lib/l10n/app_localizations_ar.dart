@@ -507,6 +507,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginButton => 'تسجيل الدخول';
 
   @override
+  String get forgotPassword => 'نسيت كلمة المرور';
+
+  @override
+  String get resetPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'أدخل بريد المسؤول. سنرسل رابط إعادة التعيين عبر Firebase.';
+
+  @override
+  String get resetPasswordSend => 'إرسال رابط إعادة التعيين';
+
+  @override
+  String get resetPasswordSuccess =>
+      'تم إرسال رابط إعادة التعيين إلى بريدك. تحقق من الوارد (والبريد العشوائي).';
+
+  @override
+  String get authErrorEmptyEmail => 'لا يمكن ترك البريد فارغًا.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'خدمة المصادقة غير متاحة الآن. تحقق من الاتصال وحاول مجددًا.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'لا يمكن ترك البريد الإلكتروني وكلمة المرور فارغين.';
 
@@ -1505,7 +1529,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sectionNewArrivals => 'وصل حديثًا';
 
   @override
+  String get sectionRecommended => 'موصى به';
+
+  @override
+  String get sectionTopCollection => 'أبرز المجموعات';
+
+  @override
+  String get promoHangoutTitle => 'استقر وعش\nبراحة';
+
+  @override
+  String get promoNewLivingTitle => 'قطع خالدة\nومتينة';
+
+  @override
+  String get promoSpotLivingTitle => 'مستعمل بأسعار\nعادلة';
+
+  @override
+  String get categoryPromoSubtitleA => 'للحياة اليومية';
+
+  @override
+  String get categoryPromoSubtitleB => 'أنيق وعملي';
+
+  @override
   String get seeAll => 'عرض الكل';
+
+  @override
+  String get homeWelcomeGreeting => 'مرحباً بعودتك';
+
+  @override
+  String get homeWelcomeTagline => 'اصنع مساحات تملأها الفرحة.';
+
+  @override
+  String get specialOfferLabel => 'اختيار خاص';
+
+  @override
+  String get specialOfferTitle => 'اختبر الراحة';
+
+  @override
+  String get specialOfferBody =>
+      'قطع مميزة من الأثاث المستعمل والجديد بأسعار مناسبة.';
+
+  @override
+  String get shopNow => 'تسوق الآن';
 
   @override
   String get cartTitle => 'سلتي';

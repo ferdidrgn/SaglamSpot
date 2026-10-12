@@ -31,7 +31,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="saglamspot">
+        android:label="Sağlam Spot">
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

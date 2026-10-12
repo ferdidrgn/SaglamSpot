@@ -512,6 +512,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginButton => 'Войти';
 
   @override
+  String get forgotPassword => 'Забыли пароль';
+
+  @override
+  String get resetPasswordTitle => 'Сброс пароля';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Введите email администратора. Мы отправим ссылку сброса через Firebase.';
+
+  @override
+  String get resetPasswordSend => 'Отправить ссылку';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Ссылка для сброса отправлена на email. Проверьте входящие и спам.';
+
+  @override
+  String get authErrorEmptyEmail => 'Email не может быть пустым.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Служба входа сейчас недоступна. Проверьте соединение и попробуйте снова.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'Email и пароль не могут быть пустыми.';
 
@@ -1521,7 +1545,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sectionNewArrivals => 'Новинки';
 
   @override
+  String get sectionRecommended => 'Рекомендуем';
+
+  @override
+  String get sectionTopCollection => 'Топ-коллекция';
+
+  @override
+  String get promoHangoutTitle => 'Обустройтесь &\nживите с комфортом';
+
+  @override
+  String get promoNewLivingTitle => 'Вневременные\nи прочные вещи';
+
+  @override
+  String get promoSpotLivingTitle => 'Б/у по\nчестной цене';
+
+  @override
+  String get categoryPromoSubtitleA => 'Для повседневной жизни';
+
+  @override
+  String get categoryPromoSubtitleB => 'Стильно и практично';
+
+  @override
   String get seeAll => 'Смотреть все';
+
+  @override
+  String get homeWelcomeGreeting => 'С возвращением';
+
+  @override
+  String get homeWelcomeTagline => 'Создавайте пространства, которые радуют.';
+
+  @override
+  String get specialOfferLabel => 'ОСОБЫЙ ВЫБОР';
+
+  @override
+  String get specialOfferTitle => 'Ощутите комфорт';
+
+  @override
+  String get specialOfferBody =>
+      'Удачные находки среди б/у и новой мебели по честной цене.';
+
+  @override
+  String get shopNow => 'Смотреть';
 
   @override
   String get cartTitle => 'Моя корзина';

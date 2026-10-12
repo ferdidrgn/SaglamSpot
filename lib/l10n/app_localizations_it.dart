@@ -517,6 +517,30 @@ class AppLocalizationsIt extends AppLocalizations {
   String get loginButton => 'Accedi';
 
   @override
+  String get forgotPassword => 'Password dimenticata';
+
+  @override
+  String get resetPasswordTitle => 'Reimposta password';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Inserisci l’email admin. Invieremo un link Firebase di reset.';
+
+  @override
+  String get resetPasswordSend => 'Invia link di reset';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Link di reset inviato alla tua email. Controlla posta e spam.';
+
+  @override
+  String get authErrorEmptyEmail => 'L’email non può essere vuota.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Autenticazione non disponibile al momento. Controlla la connessione e riprova.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'Email e password non possono essere vuoti.';
 
@@ -1528,7 +1552,47 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sectionNewArrivals => 'Nuovi Arrivi';
 
   @override
+  String get sectionRecommended => 'Consigliati';
+
+  @override
+  String get sectionTopCollection => 'Collezione top';
+
+  @override
+  String get promoHangoutTitle => 'Sistemati &\nvivi comodo';
+
+  @override
+  String get promoNewLivingTitle => 'Pezzi senza tempo\ne solidi';
+
+  @override
+  String get promoSpotLivingTitle => 'Usato a\nprezzi onesti';
+
+  @override
+  String get categoryPromoSubtitleA => 'Per la vita quotidiana';
+
+  @override
+  String get categoryPromoSubtitleB => 'Elegante e pratico';
+
+  @override
   String get seeAll => 'Vedi Tutto';
+
+  @override
+  String get homeWelcomeGreeting => 'Ciao, bentornato';
+
+  @override
+  String get homeWelcomeTagline => 'Crea spazi che portano gioia.';
+
+  @override
+  String get specialOfferLabel => 'SCELTA SPECIALE';
+
+  @override
+  String get specialOfferTitle => 'Vivi il comfort';
+
+  @override
+  String get specialOfferBody =>
+      'Ottimi pezzi di mobili usati e nuovi, al prezzo giusto.';
+
+  @override
+  String get shopNow => 'Scopri';
 
   @override
   String get cartTitle => 'Il Mio Carrello';

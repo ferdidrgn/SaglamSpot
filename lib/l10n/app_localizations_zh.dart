@@ -500,6 +500,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginButton => '登录';
 
   @override
+  String get forgotPassword => '忘记密码';
+
+  @override
+  String get resetPasswordTitle => '重置密码';
+
+  @override
+  String get resetPasswordSubtitle => '输入管理员邮箱。我们将通过 Firebase 发送重置链接。';
+
+  @override
+  String get resetPasswordSend => '发送重置链接';
+
+  @override
+  String get resetPasswordSuccess => '重置链接已发送到您的邮箱。请检查收件箱（和垃圾邮件）。';
+
+  @override
+  String get authErrorEmptyEmail => '邮箱不能为空。';
+
+  @override
+  String get authErrorFirebaseUnavailable => '身份验证服务暂时不可用。请检查网络后重试。';
+
+  @override
   String get authErrorEmptyCredentials => '邮箱和密码不能为空。';
 
   @override
@@ -1452,7 +1473,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sectionNewArrivals => '新品上架';
 
   @override
+  String get sectionRecommended => '为你推荐';
+
+  @override
+  String get sectionTopCollection => '精选系列';
+
+  @override
+  String get promoHangoutTitle => '安顿下来\n舒适生活';
+
+  @override
+  String get promoNewLivingTitle => '经典耐用\n的精选单品';
+
+  @override
+  String get promoSpotLivingTitle => '二手好物\n实惠价格';
+
+  @override
+  String get categoryPromoSubtitleA => '日常起居';
+
+  @override
+  String get categoryPromoSubtitleB => '时尚实用';
+
+  @override
   String get seeAll => '查看全部';
+
+  @override
+  String get homeWelcomeGreeting => '欢迎回来';
+
+  @override
+  String get homeWelcomeTagline => '打造带来喜悦的空间。';
+
+  @override
+  String get specialOfferLabel => '精选推荐';
+
+  @override
+  String get specialOfferTitle => '感受舒适';
+
+  @override
+  String get specialOfferBody => '二手与全新家具中的高性价比之选。';
+
+  @override
+  String get shopNow => '立即查看';
 
   @override
   String get cartTitle => '我的购物车';

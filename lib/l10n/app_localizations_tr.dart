@@ -509,6 +509,30 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loginButton => 'Giriş Yap';
 
   @override
+  String get forgotPassword => 'Şifremi unuttum';
+
+  @override
+  String get resetPasswordTitle => 'Şifreyi Sıfırla';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Yönetici e-posta adresinizi yazın. Firebase üzerinden sıfırlama bağlantısı göndereceğiz.';
+
+  @override
+  String get resetPasswordSend => 'Sıfırlama Bağlantısı Gönder';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Sıfırlama bağlantısı e-posta adresinize gönderildi. Gelen kutunuzu (ve spam klasörünü) kontrol edin.';
+
+  @override
+  String get authErrorEmptyEmail => 'E-posta adresi boş bırakılamaz.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Kimlik doğrulama servisi şu an kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.';
+
+  @override
   String get authErrorEmptyCredentials => 'E-posta ve şifre boş bırakılamaz.';
 
   @override
@@ -1514,7 +1538,47 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sectionNewArrivals => 'Yeni Gelenler';
 
   @override
+  String get sectionRecommended => 'Önerilen';
+
+  @override
+  String get sectionTopCollection => 'Öne Çıkan Koleksiyon';
+
+  @override
+  String get promoHangoutTitle => 'Rahatça yaşa,\nevinde konfor kur';
+
+  @override
+  String get promoNewLivingTitle => 'Zamansız ve\nsağlam parçalar';
+
+  @override
+  String get promoSpotLivingTitle => 'İkinci el,\ncebe uygun fırsatlar';
+
+  @override
+  String get categoryPromoSubtitleA => 'Günlük yaşam için';
+
+  @override
+  String get categoryPromoSubtitleB => 'Şık ve işlevsel';
+
+  @override
   String get seeAll => 'Tümünü Gör';
+
+  @override
+  String get homeWelcomeGreeting => 'Merhaba, Tekrar Hoş Geldin';
+
+  @override
+  String get homeWelcomeTagline => 'Sevinç getiren yaşam alanları yaratın.';
+
+  @override
+  String get specialOfferLabel => 'ÖZEL SEÇKİ';
+
+  @override
+  String get specialOfferTitle => 'Konforu Hissedin';
+
+  @override
+  String get specialOfferBody =>
+      'Spot ve sıfır mobilyada cebinize uygun fırsatlar.';
+
+  @override
+  String get shopNow => 'İncele';
 
   @override
   String get cartTitle => 'Sepetim';

@@ -22,9 +22,11 @@ final authProvider =
 /// authErrorMessage() fonksiyonudur.
 class AuthNotifier extends Notifier<AsyncValue<User?>> {
   static const String errEmptyCredentials = 'empty-credentials';
+  static const String errEmptyEmail = 'empty-email';
   static const String errUserNotFound = 'post-login-user-null';
   static const String errAdminCheckTimeout = 'admin-check-timeout';
   static const String errNotAdmin = 'not-admin';
+  static const String errFirebaseUnavailable = 'firebase-unavailable';
 
   FirebaseAuth get _auth => FirebaseAuth.instance;
 
@@ -115,5 +117,63 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
     } catch (_) {}
     await AdminSessionCache.setAdminLoggedIn(false);
     state = const AsyncValue.data(null);
+  }
+
+  /// Firebase Auth şifre sıfırlama e-postası gönderir.
+  ///
+  /// Giriş [state]'ine dokunmaz (loading/error karışmasın diye); başarıda
+  /// `null`, aksi halde login_page'in çevirdiği stabil bir hata kodu döner.
+  /// Yalnızca Firestore `admins` koleksiyonunda kayıtlı e-postalar için
+  /// mail tetiklenir — panel dışı hesaplara reset linki gitmez.
+  Future<String?> sendPasswordResetEmail(final String email) async {
+    // Firebase Auth e-postaları genelde küçük harf; admins doc id ile de
+    // aynı normalizasyonu kullanıyoruz ki yazım farkı yüzünden reset
+    // sessizce başarısız olmasın.
+    final trimmedEmail = email.trim().toLowerCase();
+    if (trimmedEmail.isEmpty) {
+      return errEmptyEmail;
+    }
+    if (Firebase.apps.isEmpty) {
+      return errFirebaseUnavailable;
+    }
+
+    try {
+      final db = ref.read(firestoreProvider);
+      final DocumentSnapshot<Map<String, dynamic>> adminDoc;
+      try {
+        adminDoc = await db
+            .collection('admins')
+            .doc(trimmedEmail)
+            .get()
+            .timeout(const Duration(seconds: 10));
+      } on TimeoutException {
+        return errAdminCheckTimeout;
+      }
+
+      // Eski kayıtlarda doc id karışık harfli olabilir — yoksa orijinal
+      // trim'lenmiş haliyle bir kez daha dene.
+      if (!adminDoc.exists) {
+        final raw = email.trim();
+        if (raw != trimmedEmail) {
+          final fallback = await db
+              .collection('admins')
+              .doc(raw)
+              .get()
+              .timeout(const Duration(seconds: 10));
+          if (!fallback.exists) {
+            return errNotAdmin;
+          }
+        } else {
+          return errNotAdmin;
+        }
+      }
+
+      await _auth.sendPasswordResetEmail(email: trimmedEmail);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    } on Object catch (e) {
+      return e.toString();
+    }
   }
 }

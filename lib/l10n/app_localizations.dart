@@ -1064,6 +1064,48 @@ abstract class AppLocalizations {
   /// **'Giriş Yap'**
   String get loginButton;
 
+  /// No description provided for @forgotPassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifremi unuttum'**
+  String get forgotPassword;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreyi Sıfırla'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici e-posta adresinizi yazın. Firebase üzerinden sıfırlama bağlantısı göndereceğiz.'**
+  String get resetPasswordSubtitle;
+
+  /// No description provided for @resetPasswordSend.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfırlama Bağlantısı Gönder'**
+  String get resetPasswordSend;
+
+  /// No description provided for @resetPasswordSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfırlama bağlantısı e-posta adresinize gönderildi. Gelen kutunuzu (ve spam klasörünü) kontrol edin.'**
+  String get resetPasswordSuccess;
+
+  /// No description provided for @authErrorEmptyEmail.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta adresi boş bırakılamaz.'**
+  String get authErrorEmptyEmail;
+
+  /// No description provided for @authErrorFirebaseUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kimlik doğrulama servisi şu an kullanılamıyor. Bağlantınızı kontrol edip tekrar deneyin.'**
+  String get authErrorFirebaseUnavailable;
+
   /// No description provided for @authErrorEmptyCredentials.
   ///
   /// In tr, this message translates to:
@@ -2888,11 +2930,89 @@ abstract class AppLocalizations {
   /// **'Yeni Gelenler'**
   String get sectionNewArrivals;
 
+  /// No description provided for @sectionRecommended.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önerilen'**
+  String get sectionRecommended;
+
+  /// No description provided for @sectionTopCollection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Öne Çıkan Koleksiyon'**
+  String get sectionTopCollection;
+
+  /// No description provided for @promoHangoutTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatça yaşa,\nevinde konfor kur'**
+  String get promoHangoutTitle;
+
+  /// No description provided for @promoNewLivingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zamansız ve\nsağlam parçalar'**
+  String get promoNewLivingTitle;
+
+  /// No description provided for @promoSpotLivingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci el,\ncebe uygun fırsatlar'**
+  String get promoSpotLivingTitle;
+
+  /// No description provided for @categoryPromoSubtitleA.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük yaşam için'**
+  String get categoryPromoSubtitleA;
+
+  /// No description provided for @categoryPromoSubtitleB.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şık ve işlevsel'**
+  String get categoryPromoSubtitleB;
+
   /// No description provided for @seeAll.
   ///
   /// In tr, this message translates to:
   /// **'Tümünü Gör'**
   String get seeAll;
+
+  /// No description provided for @homeWelcomeGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Merhaba, Tekrar Hoş Geldin'**
+  String get homeWelcomeGreeting;
+
+  /// No description provided for @homeWelcomeTagline.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sevinç getiren yaşam alanları yaratın.'**
+  String get homeWelcomeTagline;
+
+  /// No description provided for @specialOfferLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'ÖZEL SEÇKİ'**
+  String get specialOfferLabel;
+
+  /// No description provided for @specialOfferTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konforu Hissedin'**
+  String get specialOfferTitle;
+
+  /// No description provided for @specialOfferBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot ve sıfır mobilyada cebinize uygun fırsatlar.'**
+  String get specialOfferBody;
+
+  /// No description provided for @shopNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'İncele'**
+  String get shopNow;
 
   /// No description provided for @cartTitle.
   ///

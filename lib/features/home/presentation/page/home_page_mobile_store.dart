@@ -3,740 +3,92 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/ads/widgets/ad_grid_helper.dart';
-import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
-import '../../../../core/common/extentions/product_category_ex.dart';
-import '../../../../core/common/extentions/reg_exp_extentions.dart';
-import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/theme/catalog_theme.dart';
-import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/theme/app_tokens.dart';
+import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/design_system/hud_corner_frame.dart';
-import '../../../../core/widgets/design_system/infinite_ticker.dart';
-import '../../../../core/widgets/design_system/reveal_fade.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
 import '../../../../core/widgets/google_maps_embed.dart';
-import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../core/widgets/whatsapp_quick_fab.dart';
-import '../../../../features/cart/presentation/providers/cart_provider.dart';
-import '../../../../features/products/data/models/category_meta.dart';
 import '../../../../features/products/domain/entites/product.dart';
-import '../../../../features/products/presentation/providers/category_meta_provider.dart';
-import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../../features/products/presentation/providers/product_filters_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
-import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../widgets/home_store_promo_sections.dart';
+import '../widgets/home_store_showcase_sections.dart';
 
-/// Müşteri odaklı, sıfırdan tasarlanmış mobil ana sayfa — "Furnishify"
-/// referansından ilham alan teal/sage renk paleti, arama çubuğu,
-/// kategori çipleri ve gerçek Firestore ürünlerinden beslenen bir
-/// "Öne Çıkanlar" ızgarası. Eski yönetici panelinin yerini alır; panel
-/// artık /admin altında ayrı olarak erişilebilir (bkz. SettingsPage).
+/// Mobil ana sayfa — profesyonel vitrin tanıtımları (yatay ürün rayı,
+/// koleksiyon bandı, önerilen, sıfır/spot büyük kartlar, kategori çifti)
+/// gerçek Firestore ürünleriyle; Keşfet ve ürün kartı dokunulmaz.
 class HomeStorePage extends ConsumerWidget {
   const HomeStorePage({super.key});
 
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final available = ref.watch(availableProductsProvider);
-    final featured = available.take(8).toList();
+    final newDeals = ref.watch(newDealsProductsProvider);
+    // Ray: vitrin ürünleri; önerilen: kaydırılmış dilim (aynı bloğu
+    // iki kez peş peşe basmamak için).
+    final List<Product> rail = available.take(8).toList();
+    final List<Product> recommended = available.length > 4
+        ? available.skip(2).take(8).toList()
+        : available.take(6).toList();
+    final Product? promoSpotlight = newDeals.isNotEmpty
+        ? newDeals.first
+        : (available.isNotEmpty ? available.first : null);
 
     final scaffold = Scaffold(
       backgroundColor: AppColors.mobileBackground,
       bottomNavigationBar: const MobileBottomNav(),
       floatingActionButton: kIsWeb ? null : const WhatsAppQuickFab(),
       body: AtelierBackground(
-        child: Stack(
-        children: [
-          SafeArea(
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(child: _buildHeader(context, ref)),
-                SliverToBoxAdapter(child: _buildSearchBar(context)),
-                const SliverToBoxAdapter(child: _HomeStoryHero()),
-                SliverToBoxAdapter(child: _buildMottoStrip(context)),
-                const SliverToBoxAdapter(child: _MobileCatalogGateway()),
-                SliverToBoxAdapter(child: _buildFeatureTicker(context)),
+        child: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              const SliverToBoxAdapter(child: HomeWelcomeHeader()),
+              if (rail.isNotEmpty)
                 SliverToBoxAdapter(
-                    child: _buildSectionTitle(
-                        context, context.l10n.sectionCategories)),
-                SliverToBoxAdapter(child: _CategoryRow()),
-                SliverToBoxAdapter(
-                  child: _buildSectionTitle(
-                    context,
-                    context.l10n.sectionBestSellers,
-                    onSeeAll: () => NavigationHandler.goToSearch(context),
-                  ),
+                    child: HomeFeaturedProductRail(products: rail)),
+              SliverToBoxAdapter(
+                child: HomeCollectionPromoBanner(spotlight: promoSpotlight),
+              ),
+              SliverToBoxAdapter(
+                child: AtelierSectionHeader(
+                  title: context.l10n.sectionCategories,
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.xl,
+                      AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
                 ),
-                if (featured.isEmpty)
-                  const SliverToBoxAdapter(child: SizedBox.shrink())
-                else
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-                    sliver: SliverList.separated(
-                      itemCount: paddedItemCountForAds(featured.length),
-                      separatorBuilder: (final _, final __) =>
-                          const SizedBox(height: 16),
-                      // Kartlar sayfa açılır açılmaz hepsi birden değil,
-                      // kuşak kuşak (cascade) belirir — daha "canlı", mobil
-                      // uygulama hissi için. Reklamlar ürün kartıyla AYNI
-                      // çerçevede araya serpiştirilir (bkz.
-                      // ad_grid_helper.dart) — liste kısaysa her 5 üründe bir.
-                      itemBuilder: (final context, final index) {
-                        if (isAdSlot(index, featured.length)) {
-                          return const SizedBox(
-                              height: 140, child: NativeAdCard());
-                        }
-                        final realIndex =
-                            realIndexForAdGrid(index, featured.length);
-                        if (realIndex >= featured.length)
-                          return const SizedBox.shrink();
-                        return RevealFade(
-                          delayMs: 60 * (realIndex % 8),
-                          child: _ProductListRow(product: featured[realIndex]),
-                        );
-                      },
-                    ),
-                  ),
+              ),
+              const SliverToBoxAdapter(child: HomeCategoryChips()),
+              if (recommended.isNotEmpty)
                 SliverToBoxAdapter(
-                    child: _buildSectionTitle(
-                        context, context.l10n.visitUsHeading)),
-                const SliverToBoxAdapter(child: _MobileBusinessCard()),
-                const SliverToBoxAdapter(child: SizedBox(height: 24)),
-              ],
-            ),
+                  child: HomeRecommendedStrip(products: recommended),
+                ),
+              const SliverToBoxAdapter(child: HomeTopCollectionPromos()),
+              const SliverToBoxAdapter(child: HomeCategoryPromoPair()),
+              SliverToBoxAdapter(
+                child: AtelierSectionHeader(
+                  title: context.l10n.visitUsHeading,
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.xl,
+                      AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
+                ),
+              ),
+              const SliverToBoxAdapter(child: _MobileBusinessCard()),
+              const SliverToBoxAdapter(child: SizedBox(height: 28)),
+            ],
           ),
-        ],
-      ),
+        ),
       ),
     );
 
     return kIsWeb ? scaffold : HomeExitGuard(child: scaffold);
   }
-
-  Widget _buildHeader(final BuildContext context, final WidgetRef ref) =>
-      AtelierScreenHeader(
-        title: context.l10n.storeHeroTitle,
-        padding: const EdgeInsets.fromLTRB(
-            AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.xs),
-        actions: [
-          AtelierIconButton(
-            icon: Icons.notifications_none_rounded,
-            tooltip: context.l10n.notificationsTitle,
-            badgeCount: ref.watch(unreadNotificationCountProvider),
-            onTap: () => NavigationHandler.goToNotifications(context),
-          ),
-          AtelierIconButton(
-            icon: Icons.person_rounded,
-            tooltip: context.l10n.navProfile,
-            filled: true,
-            onTap: () => NavigationHandler.goToSettings(context),
-          ),
-        ],
-      );
-
-  Widget _buildSearchBar(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(
-            AppSpacing.xl, AppSpacing.md, AppSpacing.xl, 0),
-        child: TactilePress(
-          onTap: () => NavigationHandler.goToSearch(context),
-          pressScale: 0.98,
-          child: AtelierSearchField(
-            hint: context.l10n.searchHint,
-            onTap: () => NavigationHandler.goToSearch(context),
-            trailing: Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.md),
-              child: Icon(Icons.tune_rounded,
-                  color: AppColors.mobileTextTertiary, size: 19),
-            ),
-          ),
-        ),
-      );
-
-  /// Bir esnaf uygulamasıyız — vitrin, çevrimiçi mağaza değil. Hero
-  /// kaydırıcının hemen altında, kaymayan/sabit bir motto: dükkâna
-  /// gelmeden önce vitrini gez, beğendiğinde dükkâna gel.
-  Widget _buildMottoStrip(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-        child: Column(
-          children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 8,
-              children: [
-                Icon(Icons.visibility_rounded,
-                    size: 20, color: AppColors.mobilePrimary),
-                Text.rich(
-                  TextSpan(
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                      color: AppColors.mobileTextPrimary,
-                    ),
-                    children: [
-                      TextSpan(text: context.l10n.mottoTitlePart1),
-                      TextSpan(
-                        text: context.l10n.mottoTitlePart2,
-                        style: TextStyle(color: AppColors.mobilePrimary),
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              context.l10n.mottoSubtitle,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: AppColors.mobileTextTertiary, fontSize: 11.5),
-            ),
-          ],
-        ),
-      );
-
-  /// Sonsuz kayan güven/özellik şeridi — referans tasarımların kayan marka
-  /// şeridi motifinin gerçek güven metinleriyle mobil karşılığı.
-  Widget _buildFeatureTicker(final BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-        child: InfiniteTicker(
-          height: 62,
-          items: [
-            TickerItem(
-                Icons.verified_rounded, context.l10n.productTrustBadgeVerified),
-            TickerItem(Icons.handshake_rounded,
-                context.l10n.productTrustBadgeNegotiate),
-            TickerItem(Icons.local_shipping_rounded,
-                context.l10n.productTrustBadgeDelivery),
-            TickerItem(Icons.storefront_rounded, context.l10n.sellerTrustLine),
-            TickerItem(Icons.workspace_premium_rounded, context.l10n.usp1Title),
-            TickerItem(
-                Icons.auto_awesome_rounded, context.l10n.qualityFurniture),
-          ],
-        ),
-      );
-
-  Widget _buildSectionTitle(final BuildContext context, final String title,
-      {final VoidCallback? onSeeAll}) {
-    return AtelierSectionHeader(
-      title: title,
-      actionLabel: onSeeAll != null ? context.l10n.seeAll : null,
-      onAction: onSeeAll,
-      padding: const EdgeInsets.fromLTRB(
-          AppSpacing.xl, AppSpacing.section, AppSpacing.xl, AppSpacing.sm),
-    );
-  }
 }
 
-/// "Story" tarzı hero — kullanıcının paylaştığı referansın en soldaki
-/// Instagram-story esintili ekranının ana sayfaya gömülü karşılığı: üstte
-/// ince sahne-ilerleme çubuğu, marka rozeti, altta gerçek bir ürünü öne
-/// çıkaran yüzen kart (isim + fiyat + gerçek sepete ekle) ve sahne
-/// değiştirmek için dairesel önizlemeler. Fotoğraflar ve döngü mantığı web
-/// hero banner'ıyla aynı (3 fotoğraf, 6 saniye).
-class _HomeStoryHero extends ConsumerStatefulWidget {
-  const _HomeStoryHero();
-
-  static const List<String> _images = [
-    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200',
-    'https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1200',
-    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200',
-  ];
-
-  @override
-  ConsumerState<_HomeStoryHero> createState() => _HomeStoryHeroState();
-}
-
-class _HomeStoryHeroState extends ConsumerState<_HomeStoryHero> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 6), (final _) {
-      if (!mounted) return;
-      final next = (_currentPage + 1) % _HomeStoryHero._images.length;
-      _pageController.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOutCubic,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _goToScene(final int index) {
-    _timer?.cancel();
-    _pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 400), curve: Curves.easeOut);
-    _timer = Timer.periodic(const Duration(seconds: 6), (final _) {
-      if (!mounted) return;
-      final next = (_currentPage + 1) % _HomeStoryHero._images.length;
-      _pageController.animateToPage(next,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeInOutCubic);
-    });
-  }
-
-  @override
-  Widget build(final BuildContext context) {
-    final available = ref.watch(availableProductsProvider);
-    final spotlight = available.isNotEmpty ? available.first : null;
-    final inCart = spotlight != null &&
-        ref.watch(cartProvider).any((final i) => i.product.id == spotlight.id);
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
-      child: HudCornerFrame(
-        armLength: 18,
-        inset: 10,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: SizedBox(
-            height: 340,
-            child: Stack(
-              children: [
-                PageView.builder(
-                  controller: _pageController,
-                  itemCount: _HomeStoryHero._images.length,
-                  onPageChanged: (final index) =>
-                      setState(() => _currentPage = index),
-                  itemBuilder: (final context, final index) =>
-                      OptimizedCachedImage(
-                    imageUrl: _HomeStoryHero._images[index],
-                    height: 340,
-                    width: double.infinity,
-                    borderRadius: 0,
-                  ),
-                ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            AppColors.mobilePrimaryDark.withOpacity(0.9),
-                            AppColors.mobilePrimaryDark.withOpacity(0.35),
-                            AppColors.mobilePrimaryDark.withOpacity(0.28),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // Hikaye ilerleme çubuğu — referanstaki üst şerit.
-                Positioned(
-                  left: 16,
-                  right: 16,
-                  top: 14,
-                  child: IgnorePointer(
-                    child: Row(
-                      children: [
-                        for (int i = 0; i < _HomeStoryHero._images.length; i++)
-                          Expanded(
-                            child: Container(
-                              height: 3,
-                              margin: EdgeInsets.only(
-                                  right: i == _HomeStoryHero._images.length - 1
-                                      ? 0
-                                      : 5),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(
-                                    i <= _currentPage ? 0.95 : 0.35),
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Marka rozeti — referanstaki "Home vibes" satırının yerine,
-                // uydurma bir "6 saat önce" damgası olmadan gerçek marka
-                // vurgumuz.
-                Positioned(
-                  left: 16,
-                  top: 26,
-                  child: IgnorePointer(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 22,
-                          height: 22,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(Icons.storefront_rounded,
-                              size: 12, color: AppColors.mobilePrimaryDark),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          context.l10n.storeHeroEyebrow,
-                          style: AppTextStyles.microLabel(
-                            color: Colors.white,
-                            fontSize: 10.5,
-                            letterSpacing: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Yüzen ürün kartı — referanstaki "Accent armchair $189.00"
-                // kartının karşılığı, ama uydurma bir ürün değil: gerçek
-                // vitrindeki ilk ürün, gerçek sepete ekleme düğmesiyle.
-                if (spotlight != null)
-                  Positioned(
-                    left: 16,
-                    right: 16,
-                    bottom: 44,
-                    child: TactilePress(
-                      onTap: () => NavigationHandler.goToProduct(
-                        context: context,
-                        productId: spotlight.id,
-                        productSlug: spotlight.name.toSlug(),
-                      ),
-                      pressScale: 0.98,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.96),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: OptimizedCachedImage(
-                                imageUrl: spotlight.imagesUrl.isNotEmpty
-                                    ? spotlight.imagesUrl.first
-                                    : '',
-                                width: 44,
-                                height: 44,
-                                fit: BoxFit.cover,
-                                borderRadius: 0,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(spotlight.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 13,
-                                          color: AppColors.mobileTextPrimary)),
-                                  const SizedBox(height: 2),
-                                  Text('${spotlight.price.toStringAsFixed(0)}₺',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 13,
-                                          color: AppColors.mobilePrimaryDark)),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () => ref
-                                  .read(cartProvider.notifier)
-                                  .toggle(spotlight),
-                              child: Container(
-                                width: 34,
-                                height: 34,
-                                decoration: BoxDecoration(
-                                  color: AppColors.mobilePrimaryDark,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  inCart
-                                      ? Icons.shopping_bag_rounded
-                                      : Icons.add_rounded,
-                                  color: Colors.white,
-                                  size: 17,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                // Sahne değiştirme — dairesel önizlemeler (referanstaki
-                // altdaki story-avatar sırasının karşılığı).
-                Positioned(
-                  left: 16,
-                  right: 16,
-                  bottom: 12,
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < _HomeStoryHero._images.length; i++)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: GestureDetector(
-                            onTap: () => _goToScene(i),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(
-                                      i == _currentPage ? 0.95 : 0.4),
-                                  width: i == _currentPage ? 2 : 1,
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: OptimizedCachedImage(
-                                  imageUrl: _HomeStoryHero._images[i],
-                                  fit: BoxFit.cover,
-                                  borderRadius: 0,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryRow extends ConsumerWidget {
-  @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final categories = ref.watch(orderedActiveCategoriesProvider);
-
-    return SizedBox(
-      height: 84,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: categories.length,
-        separatorBuilder: (final _, final __) => const SizedBox(width: 14),
-        itemBuilder: (final context, final index) {
-          final CategoryMeta meta = categories[index];
-          return TactilePress(
-            onTap: () => NavigationHandler.goToSearchWithCategory(
-                context, meta.category.name),
-            child: Column(
-              children: [
-                // Kategori renginde tonlanmış, imza asimetrik köşeli kutu —
-                // her kategori kendi rengini taşır (Keşfet rayıyla aynı dil).
-                Container(
-                  width: 58,
-                  height: 58,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: meta.color.withValues(alpha: 0.14),
-                    borderRadius: AppRadius.asymSm,
-                    border: Border.all(
-                        color: meta.color.withValues(alpha: 0.28)),
-                  ),
-                  child: Icon(meta.icon, color: meta.color, size: 25),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  meta.customLabel ?? meta.category.label(context),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.mobileTextSecondary),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// Referans "Discover" ekranındaki satır kartı — solda metin (isim, durum,
-/// fiyat), sağda pastel tonlu, yuvarlak köşeli bir çerçeve içindeki görsel,
-/// sağ üstte gerçek favori kalbi. Referans tasarımda bu alanda yıldız puanı
-/// + yorum sayısı var, ama [Product] modelinde rating alanı YOK — uydurmak
-/// yerine, kullanıcının doğrudan istediği gerçek bir ayrım gösteriliyor:
-/// ürün SIFIR mı yoksa İKİNCİ EL mi (bkz. isSpotProduct).
-class _ProductListRow extends ConsumerWidget {
-  final Product product;
-
-  const _ProductListRow({required this.product});
-
-  @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final isFavorite =
-        ref.watch(favoritesProvider).any((final p) => p.id == product.id);
-    final meta = defaultCategoryMeta[product.category] ??
-        defaultCategoryMeta[ProductCategory.other]!;
-    final isNew = !product.isSpotProduct;
-    final conditionColor =
-        isNew ? NewCollectionPalette.accent : SpotPalette.accent;
-    final conditionLabel =
-        isNew ? context.l10n.conditionNew : context.l10n.conditionUsed;
-
-    return TactilePress(
-      onTap: () => NavigationHandler.goToProduct(
-        context: context,
-        productId: product.id,
-        productSlug: product.name.toSlug(),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4, right: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25,
-                            color: AppColors.mobileTextPrimary),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 9, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: conditionColor.withOpacity(0.14),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          conditionLabel,
-                          style: TextStyle(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w800,
-                              color: conditionColor),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${product.price.toStringAsFixed(0)}₺',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.mobileTextPrimary),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Referans görseldeki gibi görsel, kategori rengiyle hafif
-              // tonlanmış yuvarlak köşeli bir çerçeve içinde — çıplak
-              // dikdörtgen bir fotoğraf yerine.
-              Container(
-                width: 132,
-                height: 112,
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: meta.color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: OptimizedCachedImage(
-                    imageUrl: product.imagesUrl.isNotEmpty
-                        ? product.imagesUrl.first
-                        : '',
-                    fit: BoxFit.cover,
-                    borderRadius: 0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: -4,
-            right: -4,
-            child: GestureDetector(
-              onTap: () => ref.read(favoritesProvider.notifier).toggle(product),
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: AppColors.mobileSurface,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2)),
-                  ],
-                ),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 320),
-                  switchInCurve: Curves.elasticOut,
-                  switchOutCurve: Curves.easeOut,
-                  transitionBuilder: (final child, final animation) =>
-                      ScaleTransition(scale: animation, child: child),
-                  child: Icon(
-                    isFavorite
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
-                    key: ValueKey(isFavorite),
-                    size: 16,
-                    color: isFavorite
-                        ? AppColors.error
-                        : AppColors.mobileTextTertiary,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Mobil ana sayfadaki kompakt "işletme bilgisi" kartı — web'deki büyük
-/// harita bölümünün tek-sütunlu karşılığı. Gerçek bir harita önizlemesi +
-/// gerçek zamana göre canlı "Açık/Kapalı" rozeti (dakikada bir kendini
-/// günceller) + WhatsApp/yol tarifi aksiyonları.
 class _MobileBusinessCard extends StatefulWidget {
   const _MobileBusinessCard();
 
@@ -751,7 +103,9 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(const Duration(minutes: 1), (final _) {
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -766,13 +120,13 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
     final isOpen = SaglamSpotCommunication.isOpenNow;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, 0),
       child: HudCornerFrame(
         armLength: 18,
         inset: 10,
         color: AppColors.mobilePrimary,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Column(
             children: [
               SizedBox(
@@ -793,14 +147,9 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.95),
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.16),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2)),
-                          ],
+                          color: Colors.white.withValues(alpha: 0.95),
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                          boxShadow: AppShadows.level1(Colors.black),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -874,7 +223,8 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.mobilePrimary,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.sm),
                               ),
                               child: const Center(
                                 child: Text('WhatsApp',
@@ -893,7 +243,8 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.sm),
                                 border:
                                     Border.all(color: AppColors.mobilePrimary),
                               ),
@@ -918,135 +269,4 @@ class _MobileBusinessCardState extends State<_MobileBusinessCard> {
       ),
     );
   }
-}
-
-/// Mobil ana sayfadaki "iki kapı" — web'deki dual-gateway kartlarının
-/// tek-sütunlu karşılığı. Sıfır Koleksiyon ve Spot Fırsatlar'ın kendi
-/// renk kimliğini (bkz. catalog_theme.dart) taşır, canlı ürün sayısı
-/// gösterir ve ilgili sekmeye götürür.
-class _MobileCatalogGateway extends ConsumerWidget {
-  const _MobileCatalogGateway();
-
-  @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final newCount = ref.watch(newDealsProductsProvider).length;
-    final spotCount = ref.watch(spotDealsProductsProvider).length;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: _MobileGatewayTile(
-              eyebrow: context.l10n.gatewayNewEyebrowShort,
-              eyebrowColor: NewCollectionPalette.badgeGreen,
-              title: context.l10n.gatewayNewTitleShort,
-              count: newCount,
-              background: NewCollectionPalette.background,
-              border: NewCollectionPalette.cardBorder,
-              heading: NewCollectionPalette.heading,
-              accent: NewCollectionPalette.accent,
-              headingFontFamily: NewCollectionPalette.headingFont,
-              icon: Icons.chair_rounded,
-              onTap: () =>
-                  NavigationHandler.goToDiscover(context, isSpot: false),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _MobileGatewayTile(
-              eyebrow: context.l10n.gatewaySpotEyebrowShort,
-              eyebrowColor: SpotPalette.accent,
-              title: context.l10n.gatewaySpotTitleShort,
-              count: spotCount,
-              background: SpotPalette.background,
-              border: SpotPalette.cardBorder,
-              heading: SpotPalette.heading,
-              accent: SpotPalette.accent,
-              headingFontFamily: null,
-              icon: Icons.local_offer_rounded,
-              onTap: () =>
-                  NavigationHandler.goToDiscover(context, isSpot: true),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MobileGatewayTile extends StatelessWidget {
-  const _MobileGatewayTile({
-    required this.eyebrow,
-    required this.eyebrowColor,
-    required this.title,
-    required this.count,
-    required this.background,
-    required this.border,
-    required this.heading,
-    required this.accent,
-    required this.headingFontFamily,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String eyebrow;
-  final Color eyebrowColor;
-  final String title;
-  final int count;
-  final Color background;
-  final Color border;
-  final Color heading;
-  final Color accent;
-  final String? headingFontFamily;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(final BuildContext context) => TactilePress(
-        onTap: onTap,
-        child: Container(
-          clipBehavior: Clip.antiAlias,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: border),
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                right: -12,
-                bottom: -12,
-                child: Icon(icon, size: 64, color: accent.withOpacity(0.08)),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(eyebrow,
-                      style: AppTextStyles.microLabel(
-                          color: eyebrowColor,
-                          letterSpacing: 1.6,
-                          fontSize: 9.5)),
-                  const SizedBox(height: 6),
-                  Text(title,
-                      style: TextStyle(
-                          fontFamily: headingFontFamily,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: heading)),
-                  const SizedBox(height: 10),
-                  Text(context.l10n.gatewayProductCount(count),
-                      style: TextStyle(
-                          color: accent,
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.w700)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
 }

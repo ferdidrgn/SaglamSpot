@@ -519,6 +519,30 @@ class AppLocalizationsEl extends AppLocalizations {
   String get loginButton => 'Σύνδεση';
 
   @override
+  String get forgotPassword => 'Ξέχασα τον κωδικό';
+
+  @override
+  String get resetPasswordTitle => 'Επαναφορά κωδικού';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Εισαγάγετε το email διαχειριστή. Θα στείλουμε σύνδεσμο Firebase.';
+
+  @override
+  String get resetPasswordSend => 'Αποστολή συνδέσμου';
+
+  @override
+  String get resetPasswordSuccess =>
+      'Ο σύνδεσμος επαναφοράς στάλθηκε στο email σας. Ελέγξτε εισερχόμενα και spam.';
+
+  @override
+  String get authErrorEmptyEmail => 'Το email δεν μπορεί να είναι κενό.';
+
+  @override
+  String get authErrorFirebaseUnavailable =>
+      'Η ταυτοποίηση δεν είναι διαθέσιμη τώρα. Ελέγξτε τη σύνδεση και δοκιμάστε ξανά.';
+
+  @override
   String get authErrorEmptyCredentials =>
       'Το email και ο κωδικός δεν μπορούν να είναι κενά.';
 
@@ -1533,7 +1557,47 @@ class AppLocalizationsEl extends AppLocalizations {
   String get sectionNewArrivals => 'Νέες Αφίξεις';
 
   @override
+  String get sectionRecommended => 'Προτεινόμενα';
+
+  @override
+  String get sectionTopCollection => 'Κορυφαία συλλογή';
+
+  @override
+  String get promoHangoutTitle => 'Τακτοποιηθείτε &\nζήστε άνετα';
+
+  @override
+  String get promoNewLivingTitle => 'Διαχρονικά\nκαι στιβαρά';
+
+  @override
+  String get promoSpotLivingTitle => 'Μεταχειρισμένα\nσε δίκαιη τιμή';
+
+  @override
+  String get categoryPromoSubtitleA => 'Για καθημερινή ζωή';
+
+  @override
+  String get categoryPromoSubtitleB => 'Κομψό και πρακτικό';
+
+  @override
   String get seeAll => 'Δείτε Όλα';
+
+  @override
+  String get homeWelcomeGreeting => 'Καλώς ήρθες ξανά';
+
+  @override
+  String get homeWelcomeTagline => 'Δημιούργησε χώρους που φέρνουν χαρά.';
+
+  @override
+  String get specialOfferLabel => 'ΕΙΔΙΚΗ ΕΠΙΛΟΓΗ';
+
+  @override
+  String get specialOfferTitle => 'Νιώσε άνεση';
+
+  @override
+  String get specialOfferBody =>
+      'Ωραία ευρήματα σε μεταχειρισμένα και καινούργια έπιπλα.';
+
+  @override
+  String get shopNow => 'Δες τώρα';
 
   @override
   String get cartTitle => 'Το Καλάθι μου';
