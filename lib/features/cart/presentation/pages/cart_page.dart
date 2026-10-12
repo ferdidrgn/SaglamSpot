@@ -161,7 +161,7 @@ class _CartPageState extends ConsumerState<CartPage> {
     }
 
     final scaffold = Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: SafeArea(

@@ -29,7 +29,7 @@ class FavoritesPage extends ConsumerWidget {
     final favorites = ref.watch(favoritesProvider);
 
     final scaffold = Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       floatingActionButton:
           !kIsWeb && favorites.isNotEmpty ? const WhatsAppQuickFab() : null,

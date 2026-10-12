@@ -41,7 +41,7 @@ class HomeStorePage extends ConsumerWidget {
         : (available.isNotEmpty ? available.first : null);
 
     final scaffold = Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: const MobileBottomNav(),
       floatingActionButton: kIsWeb ? null : const WhatsAppQuickFab(),
       body: AtelierBackground(

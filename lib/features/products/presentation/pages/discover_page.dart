@@ -47,9 +47,9 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage> {
         : source.where((final p) => p.category == _selectedCategory).toList();
 
     final scaffold = Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: AppColors.mobileBackground,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(

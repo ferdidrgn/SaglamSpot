@@ -4,6 +4,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/design_system/tactile_press.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 
 /// Ana sayfanın ("HomePage", web) "iki kapı" / özellik / oda vitrin
 /// kartları — eskiden home_page_web.dart'ın sonunda duruyordu, okunabilirlik
@@ -12,6 +13,8 @@ import '../../../../core/widgets/design_system/tactile_press.dart';
 /// Ana sayfadaki "iki kapı" kartı — Sıfır Koleksiyon ve Spot Fırsatlar'ın
 /// kendi renk/tipografi kimliğini (bkz. catalog_theme.dart) taşıyan,
 /// tıklanınca ilgili sekmeye götüren büyük bir vitrin kartı.
+/// [imageUrl] verilirse sağda yumuşak ürün fotoğrafı + eski motif/ikon
+/// katmanı birlikte kullanılır (harman).
 class GatewayCard extends StatelessWidget {
   const GatewayCard({
     required this.eyebrow,
@@ -28,6 +31,7 @@ class GatewayCard extends StatelessWidget {
     required this.icon,
     required this.buttonLabel,
     required this.onTap,
+    this.imageUrl,
   });
 
   final String eyebrow;
@@ -44,6 +48,7 @@ class GatewayCard extends StatelessWidget {
   final IconData icon;
   final String buttonLabel;
   final VoidCallback onTap;
+  final String? imageUrl;
 
   @override
   Widget build(final BuildContext context) => TactilePress(
@@ -61,17 +66,17 @@ class GatewayCard extends StatelessWidget {
             // yanlara doğru gide gide belirginleşiyor.
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 18,
                 offset: const Offset(0, 12),
               ),
               BoxShadow(
-                color: accent.withOpacity(0.16),
+                color: accent.withValues(alpha: 0.16),
                 blurRadius: 36,
                 offset: const Offset(0, 22),
                 spreadRadius: -6,
@@ -81,6 +86,42 @@ class GatewayCard extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
+              // Gerçek ürün görseli — sağda yumuşak maske; ikon/motif
+              // üstünde kalır.
+              if (imageUrl != null && imageUrl!.isNotEmpty)
+                Positioned(
+                  right: -8,
+                  top: 8,
+                  bottom: 8,
+                  width: context.responsive(mobile: 120, desktop: 168),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        OptimizedCachedImage(
+                          imageUrl: imageUrl!,
+                          fit: BoxFit.cover,
+                          borderRadius: 0,
+                        ),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                background,
+                                background.withValues(alpha: 0.15),
+                                Colors.transparent,
+                              ],
+                              stops: const [0.0, 0.35, 0.7],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               // Köşeden taşan renkli "glow" — düz arka plana canlılık
               // katan yumuşak bir radyal gradyan; LayoutBuilder KULLANMAZ
               // (masaüstünde bu kartlar IntrinsicHeight içinde eşit
@@ -91,7 +132,10 @@ class GatewayCard extends StatelessWidget {
                     gradient: RadialGradient(
                       center: const Alignment(1.15, 1.25),
                       radius: 1.05,
-                      colors: [accent.withOpacity(0.22), Colors.transparent],
+                      colors: [
+                        accent.withValues(alpha: 0.22),
+                        Colors.transparent
+                      ],
                     ),
                   ),
                 ),
@@ -112,7 +156,8 @@ class GatewayCard extends StatelessWidget {
                 bottom: -22,
                 child: Transform.rotate(
                   angle: -0.12,
-                  child: Icon(icon, size: 132, color: accent.withOpacity(0.10)),
+                  child: Icon(icon,
+                      size: 132, color: accent.withValues(alpha: 0.10)),
                 ),
               ),
               Positioned(
@@ -121,14 +166,14 @@ class GatewayCard extends StatelessWidget {
                 child: Transform.rotate(
                   angle: 0.22,
                   child: Icon(Icons.auto_awesome_rounded,
-                      size: 30, color: accent.withOpacity(0.30)),
+                      size: 30, color: accent.withValues(alpha: 0.30)),
                 ),
               ),
               Positioned(
                 top: 14,
                 right: 18,
                 child: Icon(Icons.circle,
-                    size: 8, color: accent.withOpacity(0.24)),
+                    size: 8, color: accent.withValues(alpha: 0.24)),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,17 +185,30 @@ class GatewayCard extends StatelessWidget {
                           letterSpacing: 2.4,
                           fontSize: 11)),
                   const SizedBox(height: 12),
-                  Text(title,
-                      style: TextStyle(
-                          fontFamily: headingFontFamily,
-                          fontSize: context.responsive(mobile: 22, desktop: 26),
-                          fontWeight: FontWeight.w700,
-                          color: heading,
-                          height: 1.15)),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: context.responsive(
+                          mobile: 220, tablet: 260, desktop: 320),
+                    ),
+                    child: Text(title,
+                        style: TextStyle(
+                            fontFamily: headingFontFamily,
+                            fontSize:
+                                context.responsive(mobile: 22, desktop: 26),
+                            fontWeight: FontWeight.w700,
+                            color: heading,
+                            height: 1.15)),
+                  ),
                   const SizedBox(height: 8),
-                  Text(subtitle,
-                      style:
-                          TextStyle(color: body, fontSize: 13, height: 1.45)),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: context.responsive(
+                          mobile: 240, tablet: 280, desktop: 340),
+                    ),
+                    child: Text(subtitle,
+                        style: TextStyle(
+                            color: body, fontSize: 13, height: 1.45)),
+                  ),
                   const SizedBox(height: 22),
                   Wrap(
                     spacing: 12,
@@ -161,7 +219,7 @@ class GatewayCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: accent.withOpacity(0.12),
+                          color: accent.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Text(context.l10n.gatewayProductCount(count),

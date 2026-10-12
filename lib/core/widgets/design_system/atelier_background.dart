@@ -11,9 +11,9 @@ import '../../theme/background_pattern_provider.dart';
 /// + üstte sıcak bir ışık lekesi. Desen [RepaintBoundary] içinde ve
 /// statik — kaydırma sırasında YENİDEN BOYANMAZ, maliyeti tek seferlik.
 ///
-/// Kullanım: `Scaffold(backgroundColor: Colors.transparent, ...)` yerine
-/// Scaffold'u bununla sarmak değil, Scaffold'un `body`'sini sarmak:
-/// `body: AtelierBackground(child: ...)`.
+/// Kullanım: Scaffold `backgroundColor: Colors.transparent` +
+/// `body: AtelierBackground(child: ...)`. Opak Scaffold zemini deseni
+/// örter / seçim farkını görünmez kılar.
 class AtelierBackground extends ConsumerWidget {
   const AtelierBackground({super.key, required this.child, this.pattern});
 
@@ -28,17 +28,17 @@ class AtelierBackground extends ConsumerWidget {
     final BackgroundPattern effective =
         pattern ?? ref.watch(backgroundPatternProvider);
     return Stack(
-      fit: StackFit.passthrough,
+      fit: StackFit.expand,
       children: [
-        Positioned.fill(
-          child: RepaintBoundary(
-            child: CustomPaint(
-              painter: AtelierPatternPainter(
-                pattern: effective,
-                base: AppColors.background,
-                ink: AppColors.primary,
-                glow: AppColors.accent,
-              ),
+        RepaintBoundary(
+          child: CustomPaint(
+            painter: AtelierPatternPainter(
+              pattern: effective,
+              base: AppColors.background,
+              // Dinamik Material You primary'si zemine çok yakın olunca
+              // desen kayboluyordu — sabit marka mürekkebi kullan.
+              ink: AppColors.black,
+              glow: AppColors.accent,
             ),
           ),
         ),
@@ -68,7 +68,7 @@ class AtelierPatternPainter extends CustomPainter {
     // Üst köşeden sızan sıcak ışık — dükkân vitrinine düşen güneş gibi.
     final glowPaint = Paint()
       ..shader = RadialGradient(
-        colors: [glow.withValues(alpha: 0.10), glow.withValues(alpha: 0)],
+        colors: [glow.withValues(alpha: 0.12), glow.withValues(alpha: 0)],
       ).createShader(Rect.fromCircle(
           center: Offset(size.width * 0.9, -size.width * 0.1),
           radius: size.width * 0.9));
@@ -79,26 +79,29 @@ class AtelierPatternPainter extends CustomPainter {
         return;
       case BackgroundPattern.wood:
         _paintWood(canvas, size);
+        return;
       case BackgroundPattern.tape:
         _paintTape(canvas, size);
+        return;
       case BackgroundPattern.linen:
         _paintLinen(canvas, size);
+        return;
     }
   }
 
   void _paintWood(final Canvas canvas, final Size size) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = ink.withValues(alpha: 0.045);
-    const double gap = 22;
+      ..strokeWidth = 1.15
+      ..color = ink.withValues(alpha: 0.11);
+    const double gap = 18;
     final rnd = math.Random(7);
-    for (double y = 10; y < size.height; y += gap) {
+    for (double y = 8; y < size.height; y += gap) {
       final path = Path()..moveTo(0, y);
-      final amp = 2.5 + rnd.nextDouble() * 4;
+      final amp = 2.8 + rnd.nextDouble() * 4.5;
       final freq = 0.004 + rnd.nextDouble() * 0.006;
       final phase = rnd.nextDouble() * math.pi * 2;
-      for (double x = 0; x <= size.width; x += 12) {
+      for (double x = 0; x <= size.width; x += 10) {
         path.lineTo(x, y + math.sin(x * freq * math.pi + phase) * amp);
       }
       canvas.drawPath(path, paint);
@@ -106,8 +109,8 @@ class AtelierPatternPainter extends CustomPainter {
     // Birkaç seyrek "budak" halkası.
     final knot = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = ink.withValues(alpha: 0.04);
+      ..strokeWidth = 1.1
+      ..color = ink.withValues(alpha: 0.09);
     for (int i = 0; i < 3; i++) {
       final c = Offset(size.width * (0.15 + rnd.nextDouble() * 0.7),
           size.height * (0.2 + rnd.nextDouble() * 0.7));
@@ -123,8 +126,8 @@ class AtelierPatternPainter extends CustomPainter {
   void _paintTape(final Canvas canvas, final Size size) {
     final grid = Paint()
       ..strokeWidth = 1
-      ..color = ink.withValues(alpha: 0.035);
-    const double cell = 48;
+      ..color = ink.withValues(alpha: 0.08);
+    const double cell = 40;
     for (double x = cell; x < size.width; x += cell) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), grid);
     }
@@ -133,19 +136,19 @@ class AtelierPatternPainter extends CustomPainter {
     }
     // Sol kenarda mezura çentikleri: her 8 px kısa, her 40 px uzun.
     final tick = Paint()
-      ..strokeWidth = 1
-      ..color = ink.withValues(alpha: 0.09);
+      ..strokeWidth = 1.2
+      ..color = ink.withValues(alpha: 0.16);
     for (double y = 0; y < size.height; y += 8) {
       final major = (y % 40) == 0;
-      canvas.drawLine(Offset(0, y), Offset(major ? 10 : 5, y), tick);
+      canvas.drawLine(Offset(0, y), Offset(major ? 12 : 6, y), tick);
     }
   }
 
   void _paintLinen(final Canvas canvas, final Size size) {
     final paint = Paint()
       ..strokeWidth = 1
-      ..color = ink.withValues(alpha: 0.03);
-    const double step = 9;
+      ..color = ink.withValues(alpha: 0.09);
+    const double step = 8;
     final diag = size.width + size.height;
     for (double d = -size.height; d < diag; d += step) {
       canvas.drawLine(

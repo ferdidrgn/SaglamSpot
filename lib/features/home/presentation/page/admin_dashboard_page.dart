@@ -59,7 +59,7 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
             : list.where((final p) => p.category == _selectedCategory).toList();
 
     final Widget scaffold = Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+      backgroundColor: Colors.transparent,
       body: AtelierBackground(
         child: SafeArea(
           bottom: false,

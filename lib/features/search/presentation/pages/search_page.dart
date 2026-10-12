@@ -94,7 +94,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final bool mobileRail = !kIsWeb && !showSidebar;
 
     final scaffold = Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: Stack(
@@ -353,7 +353,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 decoration: InputDecoration(
                   hintText: context.l10n.searchHint,
                   hintStyle: TextStyle(
-                      color: AppColors.textSecondary.withOpacity(0.5),
+                      color: AppColors.textSecondary.withValues(alpha: 0.5),
                       fontWeight: FontWeight.w400,
                       fontSize: 13.5),
                   prefixIcon: Icon(Icons.search_rounded,
@@ -368,7 +368,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           },
                         )
                       : null,
+                  filled: false,
+                  fillColor: Colors.transparent,
                   border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
                   isDense: true,
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
@@ -555,8 +559,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   Widget _buildSortDropdown() {
     final current = ref.watch(sortOptionProvider);
+    final isMobile = context.isMobile;
     return PopupMenuButton<SortOption>(
       initialValue: current,
+      tooltip: context.l10n.sortPanelTitle,
       onSelected: (final option) =>
           ref.read(sortOptionProvider.notifier).set(option),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -564,20 +570,24 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           .map((final o) =>
               PopupMenuItem(value: o, child: Text(o.label(context))))
           .toList(),
-      child: Container(
-        height: context.responsive(mobile: 46.0, desktop: 50.0),
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: AnimatedContainer(
+        duration: AppMotion.fast,
+        height: isMobile ? 48.0 : 50.0,
+        width: isMobile ? 48.0 : null,
+        padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : 14),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
+          color: AppColors.secondary.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(color: AppColors.border.withValues(alpha: 0.85)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.swap_vert_rounded,
-                size: 18, color: AppColors.textSecondary),
-            if (!context.isMobile) ...[
+                size: 20, color: AppColors.textSecondary),
+            if (!isMobile) ...[
               const SizedBox(width: 6),
               Text(current.label(context),
                   style: TextStyle(

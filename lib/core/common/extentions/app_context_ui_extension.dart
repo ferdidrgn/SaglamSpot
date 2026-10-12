@@ -104,11 +104,12 @@ extension ResponsiveExtension on BuildContext {
 
   EdgeInsets get paddingVertical => ResponsiveUtils.paddingVertical(this);
 
-  // Padding (Web spacing)
+  // Padding (Web spacing) — yatay değerler bilinçli sıkı: bant zaten
+  // max-width ile ortalanıyor; ekstra 48–64 yanlarda ölü şerit bırakıyordu.
   EdgeInsets get pagePadding => EdgeInsets.symmetric(
         horizontal: responsive(
-            mobile: 16.0, tablet: 32.0, desktop: 48.0, largeDesktop: 64.0),
-        vertical: responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0),
+            mobile: 16.0, tablet: 24.0, desktop: 28.0, largeDesktop: 32.0),
+        vertical: responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0),
       );
 
   EdgeInsets get sectionPadding => EdgeInsets.symmetric(

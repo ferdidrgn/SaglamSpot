@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
@@ -44,7 +45,9 @@ class SettingsPage extends ConsumerWidget {
     final int unreadCount = ref.watch(unreadNotificationCountProvider);
 
     final scaffold = Scaffold(
-      backgroundColor: AppColors.mobileBackground,
+      // Desen AtelierBackground'da çizilir — opak Scaffold zemini seçim
+      // farkını yutar / görünmez kılar.
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: SafeArea(
@@ -396,39 +399,59 @@ class _ThemeModeCard extends ConsumerWidget {
         children: [
           for (final option in options)
             Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    ref.read(themeModeProvider.notifier).set(option.$1),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(
-                    gradient: current == option.$1
-                        ? AppColors.mobilePrimaryGradient
-                        : null,
-                    borderRadius: BorderRadius.circular(12),
+              child: Builder(builder: (final context) {
+                final selected = current == option.$1;
+                // Mobilya vitrin UI: krem zeminde koyu espresso dolgu
+                // (primaryGradient) çamur gibi duruyor. Seçili durum =
+                // karamel accent soft tint + kenarlık (Mezura swatch ile
+                // aynı dil). Marka hex değişmez → web bozulmaz.
+                return Semantics(
+                  selected: selected,
+                  button: true,
+                  child: GestureDetector(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      ref.read(themeModeProvider.notifier).set(option.$1);
+                    },
+                    child: AnimatedContainer(
+                      duration: AppMotion.fast,
+                      curve: AppMotion.standard,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? AppColors.mobileAccent.withValues(alpha: 0.16)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: selected
+                              ? AppColors.mobileAccent
+                              : Colors.transparent,
+                          width: selected ? 1.5 : 1,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(option.$2,
+                              size: 20,
+                              color: selected
+                                  ? AppColors.mobileAccentDark
+                                  : AppColors.mobileTextSecondary),
+                          const SizedBox(height: 4),
+                          Text(option.$3,
+                              style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: selected
+                                      ? AppColors.mobileAccentDark
+                                      : AppColors.mobileTextSecondary)),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(option.$2,
-                          size: 20,
-                          color: current == option.$1
-                              ? Colors.white
-                              : AppColors.mobileTextSecondary),
-                      const SizedBox(height: 4),
-                      Text(option.$3,
-                          style: TextStyle(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w700,
-                              color: current == option.$1
-                                  ? Colors.white
-                                  : AppColors.mobileTextSecondary)),
-                    ],
-                  ),
-                ),
-              ),
+                );
+              }),
             ),
         ],
       ),
@@ -509,9 +532,12 @@ class _BackgroundPatternCard extends ConsumerWidget {
                       pattern: pattern,
                       label: labels[pattern]!,
                       selected: pattern == current,
-                      onTap: () => ref
-                          .read(backgroundPatternProvider.notifier)
-                          .set(pattern),
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        ref
+                            .read(backgroundPatternProvider.notifier)
+                            .set(pattern);
+                      },
                     ),
                   ),
                 ),
@@ -565,7 +591,7 @@ class _PatternSwatch extends StatelessWidget {
                         painter: AtelierPatternPainter(
                           pattern: pattern,
                           base: AppColors.background,
-                          ink: AppColors.primary,
+                          ink: AppColors.black,
                           glow: AppColors.accent,
                         ),
                       ),

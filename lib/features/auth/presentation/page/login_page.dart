@@ -46,7 +46,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         authState.hasError ? _authErrorMessage(context, authState.error) : null;
 
     final Widget scaffold = Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       body: AtelierBackground(
         child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

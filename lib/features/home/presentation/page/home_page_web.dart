@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
+import 'package:saglamspot/core/theme/catalog_theme.dart';
 import 'package:saglamspot/core/widgets/business_info_showcase.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
@@ -49,7 +50,15 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   /// Geniş ekranlarda içeriğin ortalandığı azami genişlik.
-  static const double _contentMaxWidth = 1440;
+  /// (Eski 1440 + 48–64 pagePadding yanlarda ölü şerit bırakıyordu.)
+  static const double _contentMaxWidth = 1920;
+
+  /// Bant zaten içeriği ortalıyor; ekstra yatay padding'i sıkı tut.
+  EdgeInsets get _homePad => EdgeInsets.symmetric(
+        horizontal: context.responsive(
+            mobile: 16.0, tablet: 24.0, desktop: 28.0, largeDesktop: 32.0),
+        vertical: context.responsive(mobile: 16.0, tablet: 20.0, desktop: 24.0),
+      );
 
   final ScrollController _scrollController = ScrollController();
 
@@ -116,9 +125,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     [
                       _buildHeroBanner(availableProducts),
                       _buildMottoStrip(),
-                      // Referans vitrin tanıtımları — gerçek ürünlerle;
-                      // eski “iki kapı” yerine aynı işi yapan büyük
-                      // Sıfır/Spot koleksiyon kartları.
+                      // Referans vitrin tanıtımları + eski “iki kapı”
+                      // GatewayCard (ürün görseli harmanlı).
                       if (availableProducts.isNotEmpty)
                         SliverToBoxAdapter(
                           child: HomeFeaturedProductRail(
@@ -131,8 +139,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                         ),
                       ),
                       _buildFeatureTicker(),
-                      const SliverToBoxAdapter(
-                          child: HomeTopCollectionPromos()),
+                      _buildCatalogGateway(),
                       _buildTrustBar(),
                       _buildCategoriesSection(),
                       if (availableProducts.length > 2)
@@ -238,7 +245,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final visibleProducts = availableProducts.take(8).toList();
 
     return SliverPadding(
-      padding: context.pagePadding,
+      padding: _homePad,
       sliver: SliverMainAxisGroup(
         slivers: [
           SliverGrid(
@@ -294,7 +301,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   /// (bölüm sayısı aynı; içerik profesyonel vitrin diline çekildi).
   Widget _buildMottoStrip() => SliverToBoxAdapter(
         child: Padding(
-          padding: context.pagePadding.copyWith(
+          padding: _homePad.copyWith(
               top: context.spacingLarge, bottom: context.spacingLarge),
           child: Column(
             children: [
@@ -416,6 +423,81 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         ),
       );
 
+  // Eski “iki kapı” kartı + güncel ürün görselleri (harman).
+  Widget _buildCatalogGateway() {
+    final newProducts = ref.watch(newDealsProductsProvider);
+    final spotProducts = ref.watch(spotDealsProductsProvider);
+
+    String? imageOf(final List<Product> list) {
+      if (list.isEmpty) return null;
+      final p = list.first;
+      if (p.studioImagesUrl.isNotEmpty && p.studioImagesUrl.first.isNotEmpty) {
+        return p.studioImagesUrl.first;
+      }
+      return p.imagesUrl.isNotEmpty ? p.imagesUrl.first : null;
+    }
+
+    final newCard = RevealFade(
+      delayMs: 40,
+      child: GatewayCard(
+        eyebrow: context.l10n.gatewayNewEyebrow,
+        eyebrowColor: NewCollectionPalette.badgeGreen,
+        title: context.l10n.gatewayNewTitle,
+        subtitle: context.l10n.gatewayNewSubtitle,
+        count: newProducts.length,
+        background: NewCollectionPalette.background,
+        cardBorder: NewCollectionPalette.cardBorder,
+        heading: NewCollectionPalette.heading,
+        body: NewCollectionPalette.body,
+        accent: NewCollectionPalette.accent,
+        headingFontFamily: NewCollectionPalette.headingFont,
+        icon: Icons.chair_rounded,
+        buttonLabel: context.l10n.gatewayNewButton,
+        imageUrl: imageOf(newProducts),
+        onTap: () => NavigationHandler.goToNewProducts(context),
+      ),
+    );
+
+    final spotCard = RevealFade(
+      delayMs: 100,
+      child: GatewayCard(
+        eyebrow: context.l10n.gatewaySpotEyebrow,
+        eyebrowColor: SpotPalette.accent,
+        title: context.l10n.gatewaySpotTitle,
+        subtitle: context.l10n.gatewaySpotSubtitle,
+        count: spotProducts.length,
+        background: SpotPalette.background,
+        cardBorder: SpotPalette.cardBorder,
+        heading: SpotPalette.heading,
+        body: SpotPalette.body,
+        accent: SpotPalette.accent,
+        headingFontFamily: null,
+        icon: Icons.local_offer_rounded,
+        buttonLabel: context.l10n.gatewaySpotButton,
+        imageUrl: imageOf(spotProducts),
+        onTap: () => NavigationHandler.goToSpotProducts(context),
+      ),
+    );
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: _homePad.copyWith(bottom: context.spacingLarge),
+        child: context.isMobile
+            ? Column(children: [newCard, const SizedBox(height: 16), spotCard])
+            : IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: newCard),
+                    const SizedBox(width: 20),
+                    Expanded(child: spotCard),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
+
   // Tek parça, geniş banner hero: arka planda kaydırılabilir (ok + nokta
   // göstergeli) fotoğraflar, solda başlık + tek bir "keşfet" CTA'sı, sağ
   // altta gerçek bir ürünü tanıtan yüzen kart. Satın alma değil, ürün
@@ -425,7 +507,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: context.pagePadding,
+        padding: _homePad,
         child: SizedBox(
           // Tarayıcı penceresinin yüksekliğine (hp) değil, sabit ve her
           // kırılım noktasında içeriğin rahatça sığdığı bir yüksekliğe
@@ -460,7 +542,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: context.pagePadding,
+        padding: _homePad,
         child: GlassSurface(
           borderRadius: 20,
           chromaticEdge: true,
@@ -584,7 +666,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
   Widget _buildProductsHeader() => SliverToBoxAdapter(
         child: Padding(
-          padding: context.pagePadding.copyWith(
+          padding: _homePad.copyWith(
               top: context.spacingLarge, bottom: context.spacingLarge * 0.6),
           child: SectionHeading(
             eyebrow: context.l10n.showcaseEyebrow,
@@ -613,7 +695,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+          padding: EdgeInsets.symmetric(horizontal: _homePad.left),
           itemCount: categories.length + 1,
           separatorBuilder: (final _, final __) => const SizedBox(width: 12),
           itemBuilder: (final context, final index) {
@@ -849,7 +931,7 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
 
     return SliverToBoxAdapter(
       child: Padding(
-        padding: context.pagePadding,
+        padding: _homePad,
         child: context.isMobile
             ? Column(
                 children: [
@@ -1074,8 +1156,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             children: [
               const HazardStripeBar(),
               Container(
-                padding: EdgeInsets.fromLTRB(context.pagePadding.left, 56,
-                    context.pagePadding.right, 32),
+                padding: EdgeInsets.fromLTRB(_homePad.left, 56,
+                    _homePad.right, 32),
                 child: Column(
                   children: [
                     Wrap(

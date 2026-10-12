@@ -238,33 +238,34 @@ class _AtelierSearchFieldState extends State<AtelierSearchField> {
     final editable = widget.controller != null;
     final hasText = editable && widget.controller!.text.isNotEmpty;
 
+    // Tek yüzey — Theme'deki filled InputDecoration'ın içerde ikinci
+    // kutu çizmesini engelle (filled: false). Aksi halde "hap içinde hap"
+    // görünümü oluşuyordu.
     final field = AnimatedContainer(
       duration: AppMotion.normal,
       curve: AppMotion.standard,
-      height: 50,
-      padding: const EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.xs),
+      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: focused
+            ? AppColors.surface
+            : AppColors.secondary.withValues(alpha: 0.55),
         borderRadius: AppRadius.all(AppRadius.lg),
         border: Border.all(
-          color: focused ? AppColors.accent : AppColors.border,
-          width: focused ? 1.6 : 1,
+          color: focused
+              ? AppColors.accent
+              : AppColors.border.withValues(alpha: 0.85),
+          width: focused ? 1.5 : 1,
         ),
-        boxShadow: focused
-            ? AppShadows.level2(AppColors.accent)
-            : AppShadows.level1(AppColors.primary),
       ),
       child: Row(
         children: [
-          AnimatedSlide(
-            duration: AppMotion.normal,
-            curve: AppMotion.standard,
-            offset: focused ? const Offset(-0.08, 0) : Offset.zero,
-            child: Icon(Icons.search_rounded,
-                size: 21,
-                color: focused ? AppColors.accentDark : AppColors.textTertiary),
+          Icon(
+            Icons.search_rounded,
+            size: 22,
+            color: focused ? AppColors.accentDark : AppColors.textTertiary,
           ),
-          const SizedBox(width: AppSpacing.sm + 2),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: editable
                 ? TextField(
@@ -280,16 +281,28 @@ class _AtelierSearchFieldState extends State<AtelierSearchField> {
                     decoration: InputDecoration(
                       hintText: widget.hint,
                       hintStyle: TextStyle(
-                          fontSize: 14, color: AppColors.textTertiary),
-                      border: InputBorder.none,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.textTertiary),
+                      filled: false,
+                      fillColor: Colors.transparent,
                       isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
                     ),
                   )
-                : Text(widget.hint,
+                : Text(
+                    widget.hint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:
-                        TextStyle(fontSize: 14, color: AppColors.textTertiary)),
+                    style: TextStyle(
+                        fontSize: 14, color: AppColors.textTertiary),
+                  ),
           ),
           AnimatedSwitcher(
             duration: AppMotion.fast,
@@ -298,20 +311,26 @@ class _AtelierSearchFieldState extends State<AtelierSearchField> {
                     key: const ValueKey('clear'),
                     tooltip:
                         MaterialLocalizations.of(context).deleteButtonTooltip,
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
                     icon: Icon(Icons.close_rounded,
-                        size: 19, color: AppColors.textSecondary),
+                        size: 18, color: AppColors.textSecondary),
                     onPressed: () {
                       widget.controller!.clear();
                       widget.onClear?.call();
                     },
                   )
-                : (widget.trailing ?? const SizedBox(width: AppSpacing.md)),
+                : (widget.trailing ?? const SizedBox.shrink()),
           ),
         ],
       ),
     );
 
-    if (editable) return field;
+    if (editable) {
+      return field;
+    }
     return Semantics(
       button: true,
       label: widget.hint,
