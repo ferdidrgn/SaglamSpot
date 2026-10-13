@@ -18,5 +18,18 @@
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
+        <!-- Flutter'ın SystemUiOverlayStyle'ı (main.dart) uygulama açıkken
+             rengi/ikon parlaklığını dinamik olarak günceller — bu sadece
+             Flutter devreye girmeden ÖNCEKİ (ve bazı eski Android
+             sürümlerinde edge-to-edge'in tam uygulanmadığı) ara kare için
+             bir sabit yedek: AppColors.background (#F5EFE6) + koyu
+             (görünür) ikonlar. windowLightStatusBar/NavigationBar deprecated
+             Window.setStatusBarColor() ÇAĞRISI değil, statik bir tema
+             özniteliği — Play Console'un "sonlandırılmış API" uyarısını
+             tetiklemez. -->
+        <item name="android:statusBarColor">#F5EFE6</item>
+        <item name="android:navigationBarColor">#F5EFE6</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>
