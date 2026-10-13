@@ -86,6 +86,22 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
 
   @override
   Widget build(final BuildContext context) {
+    // Native splash (flutter_native_splash) işletim sisteminin kendi açık/
+    // koyu ayarına göre renk seçer (Flutter henüz çalışmadığı için
+    // uygulamanın KENDİ tema tercihini okuyamaz). Bu katman onun hemen
+    // ardından geliyor — AppColors.background/textPrimary (uygulamanın
+    // SEÇİLİ teması, varsayılan "açık") yerine AYNI işletim sistemi
+    // parlaklığını kullanmalı; aksi halde cihaz koyu modda ama uygulama
+    // teması hâlâ varsayılan "açık" iken native splash koyu, bu katman
+    // açık renkte açılıp rahatsız edici bir renk sıçraması/"bozukluk"
+    // hissi yaratıyordu.
+    final bool isOsDark =
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final Color bg = isOsDark ? AppColors.darkBackground : AppColors.lightBackground;
+    final Color ink = isOsDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final Color inkSecondary =
+        isOsDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+
     return Stack(
       children: [
         widget.child,
@@ -95,12 +111,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
               child: FadeTransition(
                 opacity: ReverseAnimation(_exitFade),
                 child: DecoratedBox(
-                  // Native splash (flutter_native_splash) zaten AÇIK/KOYU
-                  // temaya göre ayrı renk gösteriyor — bu katman onun hemen
-                  // ardından geliyor, o yüzden AYNI şekilde geçerli temanın
-                  // zeminini (AppColors.background) kullanır; sabit bir
-                  // "her zaman koyu" renk burada tutarsız/garip dururdu.
-                  decoration: BoxDecoration(color: AppColors.background),
+                  decoration: BoxDecoration(color: bg),
                   child: Center(
                     child: FadeTransition(
                       opacity: _logoFade,
@@ -125,7 +136,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
                               style: AppTextStyles.serif(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary,
+                                color: ink,
                                 letterSpacing: 0.6,
                               ),
                             ),
@@ -136,11 +147,12 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
                               style: TextStyle(
                                 fontSize: 13,
                                 height: 1.35,
-                                color: AppColors.textSecondary,
+                                color: inkSecondary,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xxxl),
-                            _LaunchPulseDots(controller: _pulseController),
+                            _LaunchPulseDots(
+                                controller: _pulseController, color: ink),
                           ],
                         ),
                       ),
@@ -156,9 +168,10 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
 }
 
 class _LaunchPulseDots extends StatelessWidget {
-  const _LaunchPulseDots({required this.controller});
+  const _LaunchPulseDots({required this.controller, required this.color});
 
   final AnimationController controller;
+  final Color color;
 
   static const int _dotCount = 3;
   static const double _dotSize = 7;
@@ -186,7 +199,7 @@ class _LaunchPulseDots extends StatelessWidget {
                     width: _dotSize,
                     height: _dotSize,
                     decoration: BoxDecoration(
-                      color: AppColors.textPrimary,
+                      color: color,
                       shape: BoxShape.circle,
                     ),
                   ),

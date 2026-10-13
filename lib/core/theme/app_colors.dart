@@ -182,6 +182,19 @@ class AppColors {
   static const Color darkTextSecondary = Color(0xFFDCCBB4);
   static const Color darkBorder = Color(0xFF5C4630);
 
+  // Açık mod sabit referans değerleri — darkBackground/darkTextPrimary'nin
+  // açık temadaki eşleniği, brightness getter'larındaki AYNI hex'ler
+  // (yeni renk değil). Native açılış ekranı (flutter_native_splash) işletim
+  // sisteminin kendi açık/koyu ayarına göre renk seçer — bunu izleyen
+  // Flutter katmanının (AppLaunchSplashOverlay) UYGULAMANIN kendi tema
+  // tercihi yerine AYNI işletim sistemi parlaklığına bakması gerekir; aksi
+  // halde uygulama varsayılanı "açık" iken cihaz koyu modundaysa native
+  // splash koyu, hemen ardından gelen Flutter katmanı açık renkte açılıp
+  // rahatsız edici bir renk sıçraması/"bozukluk" hissi yaratıyordu.
+  static const Color lightBackground = Color(0xFFF5EFE6);
+  static const Color lightTextPrimary = Color(0xFF3E2F23);
+  static const Color lightTextSecondary = Color(0xFF6B5744);
+
   // Beyaz logo/ikon/metin taşıyan "marka plakası" yüzeyler (Ayarlar profil
   // kartı, açılış ekranı) için — primary/accent gibi parlaklığa göre TERS
   // dönen getter'lar burada kullanılırsa koyu temada açık altın zemin +
