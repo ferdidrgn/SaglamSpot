@@ -46,7 +46,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         authState.hasError ? _authErrorMessage(context, authState.error) : null;
 
     final Widget scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değil: sistem durum/gezinme çubuklarının altındaki alan
+      // aksi halde native pencere zeminine (siyah) düşüyordu.
+      backgroundColor: AppColors.background,
       body: AtelierBackground(
         child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

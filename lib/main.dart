@@ -82,9 +82,7 @@ void main() async {
   // arka planda başlar)
   await AppInitializer.init(binding);
 
-  runApp(
-      const ProviderScope(observers: [], child: MyApp())
-  );
+  runApp(const ProviderScope(observers: [], child: MyApp()));
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -160,37 +158,58 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
               dark: darkDynamic,
             );
 
-            return MediaQuery(
-              // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
-              data: MediaQuery.of(context).copyWith(
-                textScaler: const TextScaler.linear(1.0),
+            // app_initializer.dart'taki configureSystemUIPreBoot() yalnızca
+            // İLK karede, sabit (hep açık tema varsayımıyla) bir ikon
+            // parlaklığı ayarlıyor — tema değişince (veya BasePageWrapper/
+            // gerçek AppBar kullanmayan sayfalarda hiç) güncellenmiyordu;
+            // koyu temada durum/gezinme çubuğu simgeleri bu yüzden
+            // (arkaplanla aynı koyu renkte) görünmez kalıyordu. Burada her
+            // tema değişiminde GÜNCEL parlaklığa göre yeniden uygulanıyor —
+            // sayfa kendi AnnotatedRegion'ını (BasePageWrapper, Keşfet'in
+            // AppBar'ı) tanımlıyorsa o hâlâ önceliklidir, bu yalnızca
+            // tanımlamayanlar için güvenli bir varsayılan.
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                statusBarIconBrightness: effectiveBrightness == Brightness.dark
+                    ? Brightness.light
+                    : Brightness.dark,
+                statusBarBrightness: effectiveBrightness,
+                systemNavigationBarIconBrightness:
+                    effectiveBrightness == Brightness.dark
+                        ? Brightness.light
+                        : Brightness.dark,
               ),
-              // Ctrl+K / Cmd+K artık HER sayfada çalışıyor. NOT: Önceki
-              // sürüm Shortcuts+Actions+Focus(autofocus:true) kullanıyordu —
-              // autofocus:true tüm uygulamayı saran bir Focus düğümünde
-              // henüz layout tamamlanmadan odak sıralaması hesaplamaya
-              // çalışıyordu ("RenderBox was not laid out" hatası) ve bu da
-              // art arda hata/rebuild döngüsüne girip sayfayı kilitliyordu.
-              // CallbackShortcuts hiçbir Focus düğümüne ihtiyaç duymadığı
-              // için bu sorunu tamamen ortadan kaldırıyor.
-              child: _buildAppContent(
-                child: CallbackShortcuts(
-                  bindings: <ShortcutActivator, VoidCallback>{
-                    LogicalKeySet(
-                            LogicalKeyboardKey.control, LogicalKeyboardKey.keyK):
-                        () => _router.go('/search'),
-                    LogicalKeySet(
-                            LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
-                        () => _router.go('/search'),
-                  },
-                  child: KeyedSubtree(
-                    // Parlaklık VEYA dinamik renk tercihi/şeması değiştiğinde
-                    // alt ağacı sıfırdan kurdurmak için ikisini de anahtara
-                    // katıyoruz.
-                    key: ValueKey(
-                        '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
-                    child: RemoteConfigGate(
-                        child: child ?? const SizedBox.shrink()),
+              child: MediaQuery(
+                // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: const TextScaler.linear(1.0),
+                ),
+                // Ctrl+K / Cmd+K artık HER sayfada çalışıyor. NOT: Önceki
+                // sürüm Shortcuts+Actions+Focus(autofocus:true) kullanıyordu —
+                // autofocus:true tüm uygulamayı saran bir Focus düğümünde
+                // henüz layout tamamlanmadan odak sıralaması hesaplamaya
+                // çalışıyordu ("RenderBox was not laid out" hatası) ve bu da
+                // art arda hata/rebuild döngüsüne girip sayfayı kilitliyordu.
+                // CallbackShortcuts hiçbir Focus düğümüne ihtiyaç duymadığı
+                // için bu sorunu tamamen ortadan kaldırıyor.
+                child: _buildAppContent(
+                  child: CallbackShortcuts(
+                    bindings: <ShortcutActivator, VoidCallback>{
+                      LogicalKeySet(LogicalKeyboardKey.control,
+                          LogicalKeyboardKey.keyK): () => _router.go('/search'),
+                      LogicalKeySet(
+                              LogicalKeyboardKey.meta, LogicalKeyboardKey.keyK):
+                          () => _router.go('/search'),
+                    },
+                    child: KeyedSubtree(
+                      // Parlaklık VEYA dinamik renk tercihi/şeması değiştiğinde
+                      // alt ağacı sıfırdan kurdurmak için ikisini de anahtara
+                      // katıyoruz.
+                      key: ValueKey(
+                          '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
+                      child: RemoteConfigGate(
+                          child: child ?? const SizedBox.shrink()),
+                    ),
                   ),
                 ),
               ),

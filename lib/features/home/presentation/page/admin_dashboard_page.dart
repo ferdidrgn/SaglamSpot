@@ -59,7 +59,9 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
             : list.where((final p) => p.category == _selectedCategory).toList();
 
     final Widget scaffold = Scaffold(
-      backgroundColor: Colors.transparent,
+      // Şeffaf değil: sistem durum/gezinme çubuklarının altındaki alan
+      // aksi halde native pencere zeminine (siyah) düşüyordu.
+      backgroundColor: AppColors.background,
       body: AtelierBackground(
         child: SafeArea(
           bottom: false,
