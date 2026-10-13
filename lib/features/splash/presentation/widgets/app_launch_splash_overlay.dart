@@ -94,8 +94,13 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
             child: IgnorePointer(
               child: FadeTransition(
                 opacity: ReverseAnimation(_exitFade),
-                child: ColoredBox(
-                  color: AppColors.accent,
+                child: DecoratedBox(
+                  // AppColors.accent koyu temada AÇIK altın tonuna döner —
+                  // üzerindeki beyaz logo/metinle tersine çalışıp neredeyse
+                  // görünmez oluyordu. Marka açılış ekranı için TEMADAN
+                  // BAĞIMSIZ, her zaman yüksek kontrastlı espresso zemin.
+                  decoration:
+                      const BoxDecoration(gradient: AppColors.brandPlateGradient),
                   child: Center(
                     child: FadeTransition(
                       opacity: _logoFade,

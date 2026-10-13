@@ -182,6 +182,17 @@ class AppColors {
   static const Color darkTextSecondary = Color(0xFFDCCBB4);
   static const Color darkBorder = Color(0xFF5C4630);
 
+  // Beyaz logo/ikon/metin taşıyan "marka plakası" yüzeyler (Ayarlar profil
+  // kartı, açılış ekranı) için — primary/accent gibi parlaklığa göre TERS
+  // dönen getter'lar burada kullanılırsa koyu temada açık altın zemin +
+  // beyaz yazı neredeyse görünmez olur. Bunun yerine her iki temada da
+  // AYNI, sabit koyu espresso tonu: her zaman yüksek kontrast.
+  static const Gradient brandPlateGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [darkCard, black],
+  );
+
   // ================================================================
   // "mobile*" İSİMLERİ
   // ================================================================
