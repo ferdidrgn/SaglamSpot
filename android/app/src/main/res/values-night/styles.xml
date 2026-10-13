@@ -18,10 +18,9 @@
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
-        <!-- bkz. values/styles.xml'deki aynı yorum — AppColors.darkBackground
-             (#1C140E) + açık (görünür) ikonlar. -->
-        <item name="android:statusBarColor">#1C140E</item>
-        <item name="android:navigationBarColor">#1C140E</item>
+        <!-- bkz. values/styles.xml'deki aynı yorum — çubuk rengi
+             MainActivity.kt'de Color.TRANSPARENT, burada yalnızca ikon
+             rengi (açık/görünür). -->
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
     </style>
