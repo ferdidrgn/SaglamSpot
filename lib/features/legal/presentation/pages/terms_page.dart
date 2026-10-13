@@ -23,6 +23,7 @@ class TermsPage extends StatelessWidget {
   }
 
   List<Widget> _turkishSections() => [
+        const _LastUpdated(text: 'Son güncelleme: 13 Ekim 2026'),
         const _Section(
           title: '1. Hizmetin Niteliği',
           body:
@@ -91,21 +92,35 @@ class TermsPage extends StatelessWidget {
               'kullanılamaz.',
         ),
         const _Section(
-          title: '7. Sorumluluğun Sınırlandırılması',
+          title: '7. Üçüncü Taraf Hizmetler ve Reklamlar',
+          body:
+              'Uygulama ve web sitesi; barındırma ve veritabanı için Google '
+              'Firebase (Hosting, Cloud Functions, Firestore), konum '
+              'gösterimi için Google Haritalar ve ücretsiz kalabilmemizi '
+              'sağlayan reklamlar için Google AdSense/AdMob gibi üçüncü '
+              'taraf hizmetlere bağımlıdır. Bu hizmetlerin geçici '
+              'kesintiye uğraması, yavaşlaması veya politika değişikliği '
+              'yapması bizim kontrolümüz dışındadır; bu tür kesintilerden '
+              'doğabilecek zararlardan sorumlu tutulamayız. Reklamların '
+              'işlediği veriler hakkında ayrıntılı bilgi Gizlilik '
+              'Politikamızda yer alır.',
+        ),
+        const _Section(
+          title: '8. Sorumluluğun Sınırlandırılması',
           body:
               'Uygulama "olduğu gibi" sunulur; bağlantı/erişim sorunları veya '
               'içerikteki olası güncel olmayan bilgilerden doğabilecek '
               'dolaylı zararlardan sorumlu tutulamayız.',
         ),
         const _Section(
-          title: '8. Uygulanacak Hukuk',
+          title: '9. Uygulanacak Hukuk',
           body:
               'Bu koşullar Türkiye Cumhuriyeti yasalarına tabidir; '
               'uyuşmazlıklarda İstanbul mahkemeleri ve icra daireleri '
               'yetkilidir.',
         ),
         _Section(
-          title: '9. İletişim',
+          title: '10. İletişim',
           body:
               'Sorularınız için ${SaglamSpotCommunication.email} adresinden veya '
               '${SaglamSpotCommunication.displayPhone} numarasından bize ulaşabilirsiniz.',
@@ -113,6 +128,7 @@ class TermsPage extends StatelessWidget {
       ];
 
   List<Widget> _englishSections() => [
+        const _LastUpdated(text: 'Last updated: October 13, 2026'),
         const _Section(
           title: '1. Nature of the Service',
           body:
@@ -182,21 +198,34 @@ class TermsPage extends StatelessWidget {
               'commercially without permission.',
         ),
         const _Section(
-          title: '7. Limitation of Liability',
+          title: '7. Third-Party Services and Advertising',
+          body:
+              'The app and website depend on third-party services: Google '
+              'Firebase (Hosting, Cloud Functions, Firestore) for hosting '
+              'and the database, Google Maps for location display, and '
+              'Google AdSense/AdMob for the ads that help keep the app '
+              'free. Any temporary outage, slowdown, or policy change by '
+              'these providers is outside our control, and we are not '
+              'liable for damages arising from such disruptions. Details '
+              'on the data these ads process are covered in our Privacy '
+              'Policy.',
+        ),
+        const _Section(
+          title: '8. Limitation of Liability',
           body:
               'The app is provided "as is"; we are not liable for indirect '
               'damages arising from connectivity/access issues or possibly '
               'outdated information in the content.',
         ),
         const _Section(
-          title: '8. Governing Law',
+          title: '9. Governing Law',
           body:
               'These terms are governed by the laws of the Republic of '
               'Türkiye; courts and enforcement offices of Istanbul have '
               'jurisdiction over any disputes.',
         ),
         _Section(
-          title: '9. Contact',
+          title: '10. Contact',
           body:
               'For questions, you can reach us at ${SaglamSpotCommunication.email} '
               'or ${SaglamSpotCommunication.displayPhone}.',
@@ -234,6 +263,25 @@ class _Section extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      );
+}
+
+class _LastUpdated extends StatelessWidget {
+  final String text;
+
+  const _LastUpdated({required this.text});
+
+  @override
+  Widget build(final BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.mobileTextTertiary,
+          ),
         ),
       );
 }
