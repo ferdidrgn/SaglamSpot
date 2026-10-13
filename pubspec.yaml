@@ -117,11 +117,16 @@ flutter_native_splash:
   # olarak render edilir ve ikonun yalnızca iç 2/3'lük "safe zone"u görünür
   # kalır (kenarlar sistem tarafından maskelenir) — bu yüzden marka adı
   # yazılı tam logo yerine KARE, şeffaf zeminli "mark" (ikon) kullanılıyor;
-  # aksi halde kelime/harfler dairesel maskeyle kırpılırdı.
+  # aksi halde kelime/harfler dairesel maskeyle kırpılırdı. Marka adı/tagline
+  # bu yüzden maskenin DIŞINDaki "branding" katmanında (ekranın altı, sabit
+  # 800x320 boyut — paketin kendi kuralı) ayrıca gösteriliyor; böylece
+  # Android 12+'ta da yalnızca çıplak ikon değil, tam kurumsal künye görünür.
   android_12:
     image: "assets/images/saglam_spot_logo_mark.png"
     color: "#F5EFE6"
     icon_background_color: "#F5EFE6"
+    branding: "assets/images/saglam_spot_wordmark_800x320.png"
     image_dark: "assets/images/saglam_spot_logo_mark.png"
     color_dark: "#1C140E"
     icon_background_color_dark: "#1C140E"
+    branding_dark: "assets/images/saglam_spot_wordmark_800x320_dark.png"
