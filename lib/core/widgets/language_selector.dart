@@ -35,7 +35,8 @@ class LanguageSelector extends ConsumerWidget {
         leading: Icon(Icons.translate_rounded, color: context.colors.primary),
         title: Text(
           context.l10n.languageSelectorTitle,
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: TextStyle(
+              fontWeight: FontWeight.w600, color: AppColors.textPrimary),
         ),
         subtitle: Text(
           languages.firstWhere((final e) => e.locale == currentLocale).label,
@@ -47,7 +48,11 @@ class LanguageSelector extends ConsumerWidget {
           return ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 32),
             leading: Text(lang.flag, style: const TextStyle(fontSize: 20)),
-            title: Text(lang.label),
+            title: Text(lang.label,
+                style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight:
+                        isSelected ? FontWeight.w700 : FontWeight.w500)),
             trailing: isSelected
                 ? Icon(Icons.check_circle_rounded, color: context.colors.primary, size: 20)
                 : null,

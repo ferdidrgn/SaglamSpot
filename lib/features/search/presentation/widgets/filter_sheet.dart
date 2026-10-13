@@ -224,7 +224,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
                   letterSpacing: -0.5,
                 ),
               ),
-              Text(context.l10n.easyFind),
+              Text(context.l10n.easyFind,
+                  style: TextStyle(
+                      fontSize: 12.5, color: AppColors.textSecondary)),
             ],
           ),
           const Spacer(),
@@ -254,8 +256,10 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
           ),
           const SizedBox(width: 10),
           Text(title,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary)),
         ],
       );
 
@@ -343,10 +347,15 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
         controller: controller,
         keyboardType: TextInputType.number,
         onChanged: onChanged,
+        style: TextStyle(color: AppColors.textPrimary),
         decoration: InputDecoration(
             labelText: label,
-            prefixIcon: const Icon(Icons.payments_rounded, size: 18),
+            labelStyle: TextStyle(color: AppColors.textSecondary),
+            floatingLabelStyle: TextStyle(color: AppColors.textSecondary),
+            prefixIcon: Icon(Icons.payments_rounded,
+                size: 18, color: AppColors.textSecondary),
             suffixText: '₺',
+            suffixStyle: TextStyle(color: AppColors.textSecondary),
             border: InputBorder.none,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
@@ -383,6 +392,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
         children: [
           Expanded(
               child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      side: BorderSide(color: AppColors.border)),
                   onPressed: () {
                     widget.onResetFilters();
                     _closeSheet();
@@ -391,6 +403,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet>
           const SizedBox(width: 12),
           Expanded(
               child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accent,
+                      foregroundColor: Colors.white),
                   onPressed: () {
                     widget.onApplyFilters();
                     _closeSheet();

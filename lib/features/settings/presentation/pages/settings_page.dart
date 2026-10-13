@@ -204,10 +204,22 @@ class SettingsPage extends ConsumerWidget {
   Widget _buildProfileHeader(final BuildContext context) => Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          gradient: AppColors.mobilePrimaryGradient,
+          // mobilePrimaryGradient'teki primary/primaryLight koyu temada
+          // AÇIK altın tonlarına döner (metin/ikon rengiyle tersine
+          // çalışır) — koyu temada beyaz yazı neredeyse görünmez, açık
+          // temada da donuk bir kahve bulamacı oluyordu. Bu kart her
+          // zaman beyaz yazı/ikon taşıyor, o yüzden zemin TEMADAN
+          // BAĞIMSIZ sabit espresso tonlarıyla (darkCard → black)
+          // kurulu — bir "marka plakası" gibi her iki temada da aynı,
+          // her zaman yüksek kontrastlı.
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.darkCard, AppColors.black],
+          ),
           // Ekranın tek imza öğesi: ürün kartıyla aynı asimetrik köşe dili.
           borderRadius: AppRadius.asymLg,
-          boxShadow: AppShadows.level3(AppColors.primary),
+          boxShadow: AppShadows.level3(AppColors.black),
         ),
         child: Row(
           children: [
