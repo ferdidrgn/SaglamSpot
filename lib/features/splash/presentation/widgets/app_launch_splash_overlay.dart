@@ -95,12 +95,12 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
               child: FadeTransition(
                 opacity: ReverseAnimation(_exitFade),
                 child: DecoratedBox(
-                  // AppColors.accent koyu temada AÇIK altın tonuna döner —
-                  // üzerindeki beyaz logo/metinle tersine çalışıp neredeyse
-                  // görünmez oluyordu. Marka açılış ekranı için TEMADAN
-                  // BAĞIMSIZ, her zaman yüksek kontrastlı espresso zemin.
-                  decoration:
-                      const BoxDecoration(gradient: AppColors.brandPlateGradient),
+                  // Native splash (flutter_native_splash) zaten AÇIK/KOYU
+                  // temaya göre ayrı renk gösteriyor — bu katman onun hemen
+                  // ardından geliyor, o yüzden AYNI şekilde geçerli temanın
+                  // zeminini (AppColors.background) kullanır; sabit bir
+                  // "her zaman koyu" renk burada tutarsız/garip dururdu.
+                  decoration: BoxDecoration(color: AppColors.background),
                   child: Center(
                     child: FadeTransition(
                       opacity: _logoFade,
@@ -109,13 +109,15 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            // Doğal bronz/altın gradyanıyla (beyaza
+                            // boyamadan) — hem açık hem koyu zeminde iyi
+                            // kontrast veriyor, native splash'teki ikonla
+                            // da birebir aynı görünüyor.
                             Image.asset(
                               'assets/images/saglam_spot_logo_mark.png',
                               width: 108,
                               height: 108,
                               fit: BoxFit.contain,
-                              color: Colors.white,
-                              colorBlendMode: BlendMode.srcIn,
                             ),
                             const SizedBox(height: AppSpacing.xl),
                             Text(
@@ -123,7 +125,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
                               style: AppTextStyles.serif(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 letterSpacing: 0.6,
                               ),
                             ),
@@ -134,7 +136,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
                               style: TextStyle(
                                 fontSize: 13,
                                 height: 1.35,
-                                color: Colors.white.withValues(alpha: 0.88),
+                                color: AppColors.textSecondary,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xxxl),
@@ -183,8 +185,8 @@ class _LaunchPulseDots extends StatelessWidget {
                   child: Container(
                     width: _dotSize,
                     height: _dotSize,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: AppColors.textPrimary,
                       shape: BoxShape.circle,
                     ),
                   ),
