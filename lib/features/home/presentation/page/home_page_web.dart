@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saglamspot/core/theme/app_colors.dart';
 import 'package:saglamspot/core/theme/app_text_styles.dart';
+import 'package:saglamspot/core/theme/app_tokens.dart';
 import 'package:saglamspot/core/theme/catalog_theme.dart';
 import 'package:saglamspot/core/widgets/business_info_showcase.dart';
 import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
@@ -685,28 +686,34 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // hissiyatına uygun, her kategorinin kendi fotoğrafını taşıyan, sık/yoğun
   // bir yatay kart şeridi. "Tümü" kartı fotoğrafsız, marka rengiyle ayrışan
   // sabit ilk kart olarak kalıyor.
+  // Dairesel kategori rayı: vitrinin ilk "göz atma" hamlesi — ustanın
+  // elindeki fotoğraf albümünü andıran yuvarlak uğraklar, alt tarafta
+  // kategori adı. Rect kart + alt scrim yerine bu imza (minar'ın
+  // circular kategori rayına benzer bir dağarcık, ama Atölye paletiyle —
+  // indirim/fiyat rozeti yok, yalnızca gezinme).
   Widget _buildCategoriesSection() {
     final categories = ref.watch(orderedActiveCategoriesProvider);
     final selected = ref.watch(searchFiltersProvider).category;
-    final cardWidth =
-        context.responsive(mobile: 108.0, tablet: 122.0, desktop: 136.0);
-    final cardHeight =
-        context.responsive(mobile: 132.0, tablet: 148.0, desktop: 164.0);
+    final double circleSize =
+        context.responsive(mobile: 68.0, tablet: 78.0, desktop: 88.0);
+    final double itemWidth = circleSize + 28;
+    final double sectionHeight = circleSize + 48;
 
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 20),
-        height: cardHeight,
+        margin: const EdgeInsets.symmetric(vertical: 24),
+        height: sectionHeight,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: _homePad.left),
           itemCount: categories.length + 1,
-          separatorBuilder: (final _, final __) => const SizedBox(width: 12),
+          separatorBuilder: (final _, final __) => const SizedBox(width: 14),
           itemBuilder: (final context, final index) {
             if (index == 0) {
-              return _buildCompactCategoryCard(
-                width: cardWidth,
+              return _buildCircularCategoryItem(
+                diameter: circleSize,
+                width: itemWidth,
                 title: context.l10n.conditionAll,
                 imageUrl: null,
                 isSelected: selected == null,
@@ -715,8 +722,9 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
               );
             }
             final meta = categories[index - 1];
-            return _buildCompactCategoryCard(
-              width: cardWidth,
+            return _buildCircularCategoryItem(
+              diameter: circleSize,
+              width: itemWidth,
               title: meta.customLabel ?? meta.category.label(context),
               imageUrl: _categoryPhotos[meta.category] ??
                   _categoryPhotos[ProductCategory.other],
@@ -731,100 +739,93 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  Widget _buildCompactCategoryCard({
+  Widget _buildCircularCategoryItem({
+    required final double diameter,
     required final double width,
     required final String title,
     required final String? imageUrl,
     required final bool isSelected,
     required final VoidCallback onTap,
-  }) =>
-      TactilePress(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-          width: width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: imageUrl == null
-                ? LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.accentDark,
-                      AppColors.accentDark.withOpacity(0.78),
-                    ],
-                  )
-                : null,
-            boxShadow: [
-              BoxShadow(
-                color: isSelected
-                    ? AppColors.accentDark.withOpacity(0.28)
-                    : Colors.black.withOpacity(0.07),
-                blurRadius: isSelected ? 18 : 10,
-                offset: const Offset(0, 6),
+  }) {
+    final double innerSize = diameter - 10;
+    return TactilePress(
+      onTap: onTap,
+      pressScale: 0.94,
+      enableTilt: false,
+      child: SizedBox(
+        width: width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedContainer(
+              duration: AppMotion.normal,
+              curve: Curves.easeOut,
+              width: diameter,
+              height: diameter,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: isSelected
+                    ? LinearGradient(
+                        colors: [AppColors.accentDark, AppColors.accent],
+                      )
+                    : null,
+                color: isSelected ? null : AppColors.secondary,
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppColors.accentDark.withOpacity(0.3),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ]
+                    : null,
               ),
-            ],
-            border: Border.all(
-              color: isSelected ? AppColors.accentDark : Colors.transparent,
-              width: 2.4,
-            ),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                if (imageUrl != null)
-                  Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                        Container(color: AppColors.secondary),
-                  )
-                else
-                  Center(
-                    child: Icon(Icons.grid_view_rounded,
-                        color: Colors.white.withOpacity(0.85), size: 26),
-                  ),
-                if (imageUrl != null)
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.15),
-                          Colors.black.withOpacity(0.78),
-                        ],
-                        stops: const [0.3, 0.6, 1.0],
-                      ),
-                    ),
-                  ),
-                Positioned(
-                  left: 10,
-                  right: 10,
-                  bottom: 12,
-                  child: Text(
-                    title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontFamily: 'Fraunces',
-                      color: Colors.white,
-                      fontSize: context.responsive(mobile: 12.5, desktop: 13.5),
-                      fontWeight: FontWeight.w700,
-                      height: 1.15,
-                    ),
-                  ),
+              child: Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.background,
                 ),
-              ],
+                child: imageUrl != null
+                    ? OptimizedCachedImage(
+                        imageUrl: imageUrl,
+                        width: innerSize,
+                        height: innerSize,
+                        isCircular: true,
+                        errorBuilder: (_, __, ___) =>
+                            Container(color: AppColors.secondary),
+                      )
+                    : ClipOval(
+                        child: Container(
+                          width: innerSize,
+                          height: innerSize,
+                          color: AppColors.accentDark,
+                          child: Icon(Icons.grid_view_rounded,
+                              color: Colors.white.withOpacity(0.9),
+                              size: innerSize * 0.36),
+                        ),
+                      ),
+              ),
             ),
-          ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                fontSize: context.responsive(mobile: 11.5, desktop: 12.5),
+                color: isSelected ? AppColors.accentDark : AppColors.textPrimary,
+                height: 1.2,
+              ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   // "50+ Beautiful rooms inspiration" referansının bölünmüş panel düzeni:
   // solda sabit renkli metin bloğu + "Keşfet" CTA'sı, sağda kademeli
