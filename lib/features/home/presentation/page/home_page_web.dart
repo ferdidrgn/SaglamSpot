@@ -24,13 +24,13 @@ import '../../../../core/widgets/custom_product_card.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../../../../shared/widgets/site_footer.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/providers/category_meta_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../search/presentation/providers/search_providers.dart';
 import '../widgets/furniture_tips_section.dart';
-import '../widgets/home_page_footer_widgets.dart';
 import '../widgets/home_page_hero_widgets.dart';
 import '../widgets/home_page_showcase_cards.dart';
 import '../widgets/home_store_showcase_sections.dart';
@@ -1181,196 +1181,8 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // Instagram, Facebook, Telefon), menü linkleri, gerçek iletişim
   // bilgileri ve CANLI çalışma-saati/konum kartı (e-posta bülten
   // formunun yerini aldı — gerçek zamana göre "Açık/Kapalı" hesaplar).
-  Widget _buildFooter() => SliverToBoxAdapter(
-        child: Container(
-          color: AppColors.backgroundDark,
-          child: Column(
-            children: [
-              const HazardStripeBar(),
-              Container(
-                padding: EdgeInsets.fromLTRB(_homePad.left, 56,
-                    _homePad.right, 32),
-                child: Column(
-                  children: [
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      spacing: 40,
-                      runSpacing: 42,
-                      children: [
-                        SizedBox(
-                          width: context.responsive(
-                              mobile: double.infinity, desktop: 260),
-                          child: Column(
-                            crossAxisAlignment: context.isMobile
-                                ? CrossAxisAlignment.center
-                                : CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.storefront_rounded,
-                                      color: AppColors.accentLight, size: 20),
-                                  const SizedBox(width: 8),
-                                  Text(context.l10n.brand,
-                                      style: const TextStyle(
-                                          fontFamily: 'Fraunces',
-                                          color: Colors.white,
-                                          fontSize: 22,
-                                          letterSpacing: 3,
-                                          fontWeight: FontWeight.w600)),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                context.l10n.footerDesc,
-                                textAlign: context.isMobile
-                                    ? TextAlign.center
-                                    : TextAlign.start,
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(0.4),
-                                    fontSize: 13,
-                                    height: 1.6),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  FooterSocialIcon(
-                                      icon: Icons.chat_bubble_outline_rounded,
-                                      onTap: SaglamSpotCommunication
-                                          .launchWhatsApp),
-                                  const SizedBox(width: 10),
-                                  FooterSocialIcon(
-                                      icon: Icons.camera_alt_outlined,
-                                      onTap: SaglamSpotCommunication
-                                          .openInstagram),
-                                  const SizedBox(width: 10),
-                                  FooterSocialIcon(
-                                      icon: Icons.facebook,
-                                      onTap:
-                                          SaglamSpotCommunication.openFacebook),
-                                  const SizedBox(width: 10),
-                                  FooterSocialIcon(
-                                      icon: Icons.call_outlined,
-                                      onTap: SaglamSpotCommunication.makeCall),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        _footerColumn(context.l10n.explore, {
-                          context.l10n.home: () =>
-                              NavigationHandler.goToHome(context),
-                          context.l10n.collections: () =>
-                              NavigationHandler.goToSearch(context),
-                          context.l10n.spotProducts: () =>
-                              NavigationHandler.goToSpotProducts(context),
-                          context.l10n.aboutUs: () =>
-                              NavigationHandler.goToAbout(context),
-                        }),
-                        _footerColumn(context.l10n.contact, {
-                          SaglamSpotCommunication.displayPhone:
-                              SaglamSpotCommunication.makeCall,
-                          context.l10n.whatsappCta:
-                              SaglamSpotCommunication.launchWhatsApp,
-                          context.l10n.storeAddress:
-                              SaglamSpotCommunication.openStoreLocation,
-                          context.l10n.sss: () =>
-                              NavigationHandler.goToSSS(context),
-                        }),
-                        SizedBox(
-                          width: context.responsive(
-                              mobile: double.infinity, desktop: 260),
-                          child: const FooterLocationCard(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 48),
-                    Container(height: 1, color: Colors.white.withOpacity(0.08)),
-                    const SizedBox(height: 20),
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      runSpacing: 10,
-                      children: [
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 18,
-                          runSpacing: 6,
-                          children: [
-                            Text(context.l10n.allRightsReserved,
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(0.15),
-                                    fontSize: 10)),
-                            // Google AdSense ve benzeri incelemeler bu iki
-                            // bağlantının her sayfadan erişilebilir olmasını
-                            // bekler — rotalar (/privacy, /terms) zaten
-                            // vardı, yalnızca hiçbir yerden bağlı değillerdi.
-                            _footerLegalLink(
-                              context.l10n.settingsPrivacyPolicy,
-                              () => NavigationHandler.goToPrivacyPolicy(
-                                  context),
-                            ),
-                            _footerLegalLink(
-                              context.l10n.settingsTerms,
-                              () => NavigationHandler.goToTerms(context),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          context.l10n.footerWarehouseTagline,
-                          style: AppTextStyles.microLabel(
-                              fontSize: 9.5,
-                              letterSpacing: 1.6,
-                              color: Colors.white.withOpacity(0.15)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _footerLegalLink(final String label, final VoidCallback onTap) =>
-      InkWell(
-        onTap: onTap,
-        child: Text(label,
-            style: TextStyle(
-                color: Colors.white.withOpacity(0.25),
-                fontSize: 10,
-                decoration: TextDecoration.underline,
-                decorationColor: Colors.white.withOpacity(0.2))),
-      );
-
-  Widget _footerColumn(
-          final String title, final Map<String, VoidCallback> items) =>
-      SizedBox(
-        width: context.responsive(mobile: context.wp(40), desktop: 150),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title.toUpperCase(),
-                style: AppTextStyles.microLabel(
-                    fontSize: 11.5,
-                    letterSpacing: 1.6,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white)),
-            const SizedBox(height: 25),
-            ...items.entries.map((final entry) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: entry.value,
-                    child: Text(entry.key,
-                        style: TextStyle(
-                            color: Colors.white.withOpacity(0.3),
-                            fontSize: 13)),
-                  ),
-                )),
-          ],
-        ),
-      );
+  // Artık /new ve /spot sayfalarıyla paylaşılan tek footer — bkz.
+  // shared/widgets/site_footer.dart.
+  Widget _buildFooter() =>
+      const SliverToBoxAdapter(child: SiteFooter());
 }

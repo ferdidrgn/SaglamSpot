@@ -10,6 +10,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/product_view_mode_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
+import '../../../../shared/widgets/site_footer.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/catalog_theme.dart';
 import '../../../../core/util/comminucation_actions.dart';
@@ -218,6 +219,12 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
                     ),
 
                   const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                  // Önceden bu sayfanın hiç footer'ı yoktu — ana sayfadaki
+                  // iletişim/adres/Gizlilik-Kullanım Şartları bağlantıları
+                  // buradan erişilemiyordu. Native mobilde kendi Scaffold'u
+                  // olduğu için yalnızca web'de.
+                  if (kIsWeb)
+                    const SliverToBoxAdapter(child: SiteFooter()),
                 ],
               ),
               // Web'de sağ altta sabit WhatsApp balonu var (NavigationScreen) —
