@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saglamspot/core/util/comminucation_actions.dart';
 import 'package:saglamspot/core/util/platform_checker.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/language_selector.dart';
+import '../../../core/widgets/web_whatsapp_bubble.dart';
 import '../../../features/auth/presentation/provider/auth_provider_notifier.dart';
 
 class SearchIntent extends Intent {
@@ -177,6 +179,44 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
     );
   }
 
+  // NOT: Bilinçli olarak ikon-only (metin etiketsiz) — 11 dilin bazılarında
+  // ("Auf WhatsApp schreiben", "Написать в WhatsApp") bir metin etiketi, nav
+  // öğeleriyle (Ana Sayfa…SSS) ve dil seçiciyle aynı satırda 1024-1440px
+  // aralığında taşmaya (son nav öğesinin kırpılmasına) yol açıyordu. Tam
+  // metinli çağrı zaten sağ altta sabit duran WebWhatsAppBubble'da var.
+  Widget _buildWhatsAppHeaderButton() {
+    final String label = context.l10n.whatsappCta;
+    final double size = context.responsive(mobile: 36, tablet: 38, desktop: 40);
+    return Tooltip(
+      message: label,
+      child: InkWell(
+        onTap: () => SaglamSpotCommunication.launchWhatsApp(),
+        borderRadius: BorderRadius.circular(size / 2),
+        child: Container(
+          width: size,
+          height: size,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.22),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.chat_rounded,
+            size: context.responsive(mobile: 17, tablet: 18, desktop: 19),
+            color: AppColors.background,
+          ),
+        ),
+      ),
+    );
+  }
+
   // 1. DÜZELTME: Dönüş tipi PreferredSizeWidget yerine 'Widget' (AppBar) yapıldı
   Widget _buildMobileAppBar() {
     return AppBar(
@@ -264,6 +304,15 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           const LanguageSelector(),
           const SizedBox(width: 12),
           _buildSearchButton(false),
+          // 1024-1439px'de (nav öğeleri + dil seçici + arama zaten dar
+          // alanda sıkışık) bu ekstra ikon son nav öğesinin (SSS) kırpılmasına
+          // yol açıyordu — yalnızca gerçekten boş alan olan largeDesktop'ta
+          // (≥1440) göster. Dar genişliklerde çağrı zaten sağ altta sabit
+          // duran WebWhatsAppBubble'da var.
+          if (MediaQuery.sizeOf(context).width >= 1440) ...[
+            const SizedBox(width: 10),
+            _buildWhatsAppHeaderButton(),
+          ],
           SizedBox(width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
         ],
       ),
@@ -331,7 +380,21 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
               isLoggedIn: isLoggedIn,
             )
                 : null,
-            body: widget.navigationShell,
+            // Web'de (Ana Sayfa/Yeni/Spot/Hakkımızda/SSS — bu kabuğun 5 dalı)
+            // sağ altta sabit duran WhatsApp balonu. Native mobilde her ekran
+            // zaten kendi WhatsAppQuickFab'ını taşıyor, bu yüzden yalnızca web.
+            body: kIsWeb
+                ? Stack(
+                    children: [
+                      widget.navigationShell,
+                      const Positioned(
+                        right: 20,
+                        bottom: 20,
+                        child: WebWhatsAppBubble(),
+                      ),
+                    ],
+                  )
+                : widget.navigationShell,
           ),
         ),
       ),

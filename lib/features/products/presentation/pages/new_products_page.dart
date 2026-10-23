@@ -232,7 +232,12 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
                       child: SizedBox(height: context.spacingLarge * 2)),
                 ],
               ),
-              ScrollUpButton(scrollController: _scrollController),
+              // Web'de sağ altta sabit WhatsApp balonu var (NavigationScreen) —
+              // yukarı çık butonu onun üstüne binmesin diye ek boşluk.
+              ScrollUpButton(
+                scrollController: _scrollController,
+                extraBottomOffset: kIsWeb ? 72 : 0,
+              ),
             ],
           );
         },

@@ -9,11 +9,16 @@ class ScrollUpButton extends StatelessWidget {
   /// Eğer boş bırakılırsa buton kendi offset kontrolünü yapar.
   final ValueNotifier<bool>? visibleNotifier;
 
+  /// Sağ-alt köşede aynı hizada duran başka bir yüzen buton varsa (ör. web'de
+  /// sabit WhatsApp balonu) onun üstüne binmemesi için eklenen dikey boşluk.
+  final double extraBottomOffset;
+
   const ScrollUpButton({
     super.key,
     required this.scrollController,
     this.visibleNotifier,
     this.showOffset = 300,
+    this.extraBottomOffset = 0,
   });
 
   @override
@@ -42,7 +47,7 @@ class ScrollUpButton extends StatelessWidget {
         curve: Curves.easeOutBack,
         // Giriş çıkışlar daha canlı ve sanatsal
         right: 20,
-        bottom: isVisible ? 20 : -100,
+        bottom: isVisible ? 20 + extraBottomOffset : -100,
         child: _GlassFab(
           onTap: () => scrollController.animateTo(
             0,
