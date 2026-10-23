@@ -1265,12 +1265,33 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                     const SizedBox(height: 20),
                     Wrap(
                       alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       runSpacing: 10,
                       children: [
-                        Text(context.l10n.allRightsReserved,
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.15),
-                                fontSize: 10)),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 18,
+                          runSpacing: 6,
+                          children: [
+                            Text(context.l10n.allRightsReserved,
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(0.15),
+                                    fontSize: 10)),
+                            // Google AdSense ve benzeri incelemeler bu iki
+                            // bağlantının her sayfadan erişilebilir olmasını
+                            // bekler — rotalar (/privacy, /terms) zaten
+                            // vardı, yalnızca hiçbir yerden bağlı değillerdi.
+                            _footerLegalLink(
+                              context.l10n.settingsPrivacyPolicy,
+                              () => NavigationHandler.goToPrivacyPolicy(
+                                  context),
+                            ),
+                            _footerLegalLink(
+                              context.l10n.settingsTerms,
+                              () => NavigationHandler.goToTerms(context),
+                            ),
+                          ],
+                        ),
                         Text(
                           context.l10n.footerWarehouseTagline,
                           style: AppTextStyles.microLabel(
@@ -1286,6 +1307,17 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
             ],
           ),
         ),
+      );
+
+  Widget _footerLegalLink(final String label, final VoidCallback onTap) =>
+      InkWell(
+        onTap: onTap,
+        child: Text(label,
+            style: TextStyle(
+                color: Colors.white.withOpacity(0.25),
+                fontSize: 10,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.white.withOpacity(0.2))),
       );
 
   Widget _footerColumn(
