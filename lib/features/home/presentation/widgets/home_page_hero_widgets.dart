@@ -122,17 +122,24 @@ class _HeroBannerState extends State<HeroBanner> {
                     : const KineticBeamSkeleton(borderRadius: 0),
           ),
         ),
+        // Önceden düz sol->sağ, tek renkli bir perde vardı (yalnızca
+        // okunabilirlik için) — vitrinin "cesaretini harcadığı" tek yer
+        // burası olduğundan (bkz. saglamspot-design §7), çapraz ve iki
+        // tonlu (koyu gövde + sıcak aksan) bir perdeye çevrildi: aynı
+        // okunabilirliği sağlarken fotoğrafa daha canlı, "vitrin" hissi
+        // veren bir derinlik katıyor.
         IgnorePointer(
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 colors: [
-                  AppColors.primaryVariant.withOpacity(0.78),
+                  AppColors.primaryVariant.withOpacity(0.92),
+                  AppColors.accentDark.withOpacity(0.38),
                   Colors.transparent,
                 ],
-                stops: const [0.0, 0.68],
+                stops: const [0.0, 0.42, 0.82],
               ),
             ),
           ),
@@ -148,16 +155,27 @@ class _HeroBannerState extends State<HeroBanner> {
                 child: Container(
                   key: ValueKey('eyebrow-$_page'),
                   padding: EdgeInsets.symmetric(
-                      horizontal: context.responsive(mobile: 10, desktop: 14),
-                      vertical: context.responsive(mobile: 5, desktop: 7)),
+                      horizontal: context.responsive(mobile: 12, desktop: 16),
+                      vertical: context.responsive(mobile: 6, desktop: 8)),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: AppColors.accentLight.withOpacity(0.7)),
+                    // Önceden sadece ince bir çerçeveydi — dolu, sıcak bir
+                    // rozete çevrildi: vitrinin ilk saniyede gözün takıldığı
+                    // noktası artık bu, metinle değil bir renk vurgusuyla.
+                    gradient: LinearGradient(
+                      colors: [AppColors.accent, AppColors.accentDark],
+                    ),
                     borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.accentDark.withOpacity(0.45),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: Text(slide.eyebrow,
                       style: AppTextStyles.microLabel(
-                          color: AppColors.accentLight,
+                          color: Colors.white,
                           letterSpacing: context.isMobile ? 2 : 3,
                           fontSize:
                               context.responsive(mobile: 9, desktop: 12))),
@@ -176,8 +194,8 @@ class _HeroBannerState extends State<HeroBanner> {
                           fontFamily: 'Fraunces',
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
-                          fontSize: context.heroSize * 0.72,
-                          height: 1.12)),
+                          fontSize: context.heroSize * 0.8,
+                          height: 1.1)),
                 ),
               ),
               const SizedBox(height: 10),
@@ -264,12 +282,21 @@ class _HeroBannerState extends State<HeroBanner> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: active ? 18 : 7,
+                    width: active ? 20 : 7,
                     height: 7,
                     decoration: BoxDecoration(
-                      color:
-                          active ? Colors.white : Colors.white.withOpacity(0.5),
+                      color: active
+                          ? AppColors.accentLight
+                          : Colors.white.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10),
+                      boxShadow: active
+                          ? [
+                              BoxShadow(
+                                color: AppColors.accentLight.withOpacity(0.6),
+                                blurRadius: 8,
+                              ),
+                            ]
+                          : null,
                     ),
                   ),
                 );
@@ -391,8 +418,9 @@ class _HeroArrowButton extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => Material(
-        color: Colors.white.withOpacity(0.22),
-        shape: const CircleBorder(),
+        color: AppColors.accentDark.withOpacity(0.38),
+        shape: CircleBorder(
+            side: BorderSide(color: Colors.white.withOpacity(0.3))),
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onTap,
