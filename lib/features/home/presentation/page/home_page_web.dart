@@ -81,6 +81,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     final productsAsync = ref.watch(productsProvider);
     final availableProducts = ref.watch(availableProductsProvider);
     final selectedCategory = ref.watch(searchFiltersProvider).category;
+    final filteredFeaturedProducts = availableProducts
+        .where((final p) =>
+            selectedCategory == null || p.category == selectedCategory)
+        .toList();
     final Product? promoSpotlight = () {
       for (final p in availableProducts) {
         if (!p.isSpotProduct) return p;
@@ -150,15 +154,10 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
                           ),
                         ),
                       const SliverToBoxAdapter(child: HomeCategoryPromoPair()),
-                      _buildProductsHeader(),
+                      _buildProductsHeader(
+                          filteredFeaturedProducts.length, selectedCategory),
                       _buildDynamicFeaturedGrid(
-                        availableProducts
-                            .where((final p) =>
-                                selectedCategory == null ||
-                                p.category == selectedCategory)
-                            .toList(),
-                        selectedCategory,
-                      ),
+                          filteredFeaturedProducts, selectedCategory),
                       if (availableProducts.isNotEmpty)
                         const SliverToBoxAdapter(
                           child: Padding(
@@ -670,13 +669,40 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  Widget _buildProductsHeader() => SliverToBoxAdapter(
+  // Önceden yalnız eyebrow+başlıktı, "Tümünü Gör" tek başına ızgaranın
+  // altındaydı ve ürün sayısı hiç görünmüyordu — referans vitrindeki gibi
+  // üstte aynı satırda bir sayı + hızlı "Tümünü Gör" bağlantısı eklendi
+  // (alttaki buton aynen duruyor, bu sadece üstteki ilk izlenimi güçlendiriyor).
+  Widget _buildProductsHeader(
+          final int productCount, final ProductCategory? selectedCategory) =>
+      SliverToBoxAdapter(
         child: Padding(
           padding: _homePad.copyWith(
               top: context.spacingLarge, bottom: context.spacingLarge * 0.6),
-          child: SectionHeading(
-            eyebrow: context.l10n.showcaseEyebrow,
-            title: context.l10n.newCollection,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SectionHeading(
+                eyebrow: context.l10n.showcaseEyebrow,
+                title: context.l10n.newCollection,
+                seeAllLabel: context.l10n.viewAllButton,
+                onSeeAll: productCount > 8
+                    ? () => NavigationHandler.goToSearchWithCategory(
+                        context, selectedCategory?.toFirestore())
+                    : null,
+              ),
+              if (productCount > 0) ...[
+                const SizedBox(height: 6),
+                Text(
+                  context.l10n.categoryProductCount(productCount),
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: context.captionSize,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       );
