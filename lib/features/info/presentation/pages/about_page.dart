@@ -6,6 +6,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/util/comminucation_actions.dart';
 import '../../../../core/widgets/business_info_showcase.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
@@ -320,6 +321,11 @@ class _AboutPageState extends State<AboutPage> {
       );
 
   // Hero Section
+  // Önceden düz bir primary->primaryDark gradyan + soluk bir ikon
+  // filigranıydı — ana sayfa/Yeni/Spot'un hepsinde gerçek bir mağaza
+  // fotoğrafı olan güçlü bir hero varken, "Hakkımızda" (güven inşa etmesi
+  // gereken sayfa) soyut bir renk bloğunda kalıyordu. Artık aynı dilde:
+  // gerçek fotoğraf + çapraz koyu perde.
   Widget _buildHeroSection(final BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -328,25 +334,35 @@ class _AboutPageState extends State<AboutPage> {
           desktop: const EdgeInsets.all(24),
         ),
         height: context.responsive(mobile: 300, desktop: 400),
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(
             context.responsive(mobile: 24.0, desktop: 32.0),
           ),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.primary, AppColors.primaryDark],
-          ),
         ),
         child: Stack(
+          fit: StackFit.expand,
           children: [
-            Positioned(
-              right: -50,
-              bottom: -50,
-              child: Icon(
-                Icons.storefront_outlined,
-                size: context.responsive(mobile: 200, desktop: 300),
-                color: Colors.white.withOpacity(0.1),
+            const OptimizedCachedImage(
+              imageUrl:
+                  'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1600',
+              fit: BoxFit.cover,
+              borderRadius: 0,
+            ),
+            IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.92),
+                      AppColors.accentDark.withOpacity(0.5),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.45, 0.85],
+                  ),
+                ),
               ),
             ),
             Padding(
