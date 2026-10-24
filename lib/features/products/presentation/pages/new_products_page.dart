@@ -883,51 +883,60 @@ class _NewProductsPageState extends ConsumerState<NewProductsPage> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOut,
-        margin: const EdgeInsets.only(bottom: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF2C241E).withOpacity(0.07)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeOut,
-              width: 3,
-              height: isSelected ? 16 : 0,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2C241E),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              width: isSelected ? 10 : 0,
-            ),
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  letterSpacing: 0.1,
-                  color: isSelected
-                      ? const Color(0xFF2C241E)
-                      : const Color(0xFFAFA79C),
+    // Önceden yalnız GestureDetector'dı — web'de fare üzerine gelince
+    // hiçbir geri bildirim yoktu. Material+InkWell'in hazır hover/ripple
+    // davranışı bu liste öğesi için tam oturuyor, ekstra state gerekmiyor.
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        hoverColor: const Color(0xFF2C241E).withOpacity(0.045),
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color(0xFF2C241E).withOpacity(0.07)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOut,
+                width: 3,
+                height: isSelected ? 16 : 0,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2C241E),
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-            ),
-          ],
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                width: isSelected ? 10 : 0,
+              ),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight:
+                        isSelected ? FontWeight.w700 : FontWeight.w500,
+                    letterSpacing: 0.1,
+                    color: isSelected
+                        ? const Color(0xFF2C241E)
+                        : const Color(0xFFAFA79C),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -804,47 +804,56 @@ class _SpotProductsPageState extends ConsumerState<SpotProductsPage> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOut,
-        margin: const EdgeInsets.only(bottom: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? SpotPalette.accent.withOpacity(0.09)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  letterSpacing: 0.1,
-                  color: isSelected
-                      ? const Color(0xFF1A1A1A)
-                      : const Color(0xFFB0AAA2),
+    // Önceden yalnız GestureDetector'dı — web'de fare üzerine gelince
+    // hiçbir geri bildirim yoktu. Material+InkWell'in hazır hover/ripple
+    // davranışı bu liste öğesi için tam oturuyor, ekstra state gerekmiyor.
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        hoverColor: SpotPalette.accent.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? SpotPalette.accent.withOpacity(0.09)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight:
+                        isSelected ? FontWeight.w700 : FontWeight.w500,
+                    letterSpacing: 0.1,
+                    color: isSelected
+                        ? const Color(0xFF1A1A1A)
+                        : const Color(0xFFB0AAA2),
+                  ),
                 ),
               ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeOut,
-              width: 3,
-              height: isSelected ? 16 : 0,
-              decoration: BoxDecoration(
-                color: SpotPalette.accent,
-                borderRadius: BorderRadius.circular(2),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOut,
+                width: 3,
+                height: isSelected ? 16 : 0,
+                decoration: BoxDecoration(
+                  color: SpotPalette.accent,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
