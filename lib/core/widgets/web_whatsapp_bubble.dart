@@ -49,6 +49,7 @@ class WebWhatsAppBubble extends StatelessWidget {
           child: TactilePress(
             pressScale: 0.92,
             enableTilt: false,
+            hoverScale: 1.08,
             onTap: () => SaglamSpotCommunication.launchWhatsApp(),
             child: Container(
               width: 56,

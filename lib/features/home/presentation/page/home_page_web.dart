@@ -5,7 +5,6 @@ import 'package:saglamspot/core/theme/app_text_styles.dart';
 import 'package:saglamspot/core/theme/app_tokens.dart';
 import 'package:saglamspot/core/theme/catalog_theme.dart';
 import 'package:saglamspot/core/widgets/business_info_showcase.dart';
-import 'package:saglamspot/core/widgets/design_system/glass_surface.dart';
 import 'package:saglamspot/core/widgets/design_system/infinite_ticker.dart';
 import 'package:saglamspot/core/widgets/design_system/section_heading.dart';
 import 'package:saglamspot/core/widgets/shimmer_components.dart';
@@ -528,101 +527,158 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
     );
   }
 
-  // Önceden 4'ü de aynı düz altın ikon rengindeydi ve hiçbirinde giriş
-  // animasyonu yoktu. Her vurguya markanın kendi anlamlı paletinden
-  // (accent/success/warning/info) ayrı bir renk + kademeli (staggered)
-  // bir beliriş animasyonu verildi — sayfanın geri kalanındaki RevealFade
-  // diliyle tutarlı.
+  // Önceden tek sıra, aynı boyutlu 4 öğeydi (düz bir "liste" hissi).
+  // 2026 web tasarımında asimetrik kutu/bento ızgaraları artık öne çıkan
+  // bir vitrin düzeni (karma boyutlu kutularla tek bakışta birden çok
+  // vurguyu göstermek) — az sayıda gerçek içerikle bile sayfanın daha
+  // "dolu" hissetmesini sağlıyor. Aynı 4 güven vurgusu artık tek boyutlu
+  // bir kutu yerine; bir büyük + ikisi orta + biri uzun kutudan oluşan bir
+  // bento ızgarasında, her biri kendi rengiyle hafif renklendirilmiş bir
+  // zeminde duruyor.
   Widget _buildTrustBar() {
     final items = [
-      _trustItem(Icons.volunteer_activism_rounded, context.l10n.featureArtisan,
-          AppColors.accent, 0),
-      _trustItem(Icons.verified_user_rounded, context.l10n.featureDelivery,
-          AppColors.success, 70),
-      _trustItem(Icons.sentiment_very_satisfied_rounded,
-          context.l10n.featureService, AppColors.warning, 140),
-      _trustItem(Icons.local_shipping_rounded, context.l10n.featureShipping,
-          AppColors.info, 210),
+      _BentoTrustItem(Icons.volunteer_activism_rounded,
+          context.l10n.featureArtisan, AppColors.accent),
+      _BentoTrustItem(Icons.verified_user_rounded,
+          context.l10n.featureDelivery, AppColors.success),
+      _BentoTrustItem(Icons.sentiment_very_satisfied_rounded,
+          context.l10n.featureService, AppColors.warning),
+      _BentoTrustItem(
+          Icons.local_shipping_rounded, context.l10n.featureShipping,
+          AppColors.info),
     ];
 
     return SliverToBoxAdapter(
       child: Padding(
         padding: _homePad,
-        child: GlassSurface(
-          borderRadius: 20,
-          chromaticEdge: true,
-          padding: EdgeInsets.symmetric(
-              vertical: context.responsive(mobile: 20, desktop: 26),
-              horizontal: context.responsive(mobile: 16, desktop: 32)),
-          child: context.isMobile
-              ? Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 28,
-                  runSpacing: 18,
-                  children: items,
-                )
-              : IntrinsicHeight(
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < items.length; i++) ...[
-                        if (i > 0)
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: VerticalDivider(
-                                color: AppColors.border, thickness: 1),
-                          ),
-                        Expanded(child: items[i]),
+        child: context.isMobile
+            ? Column(
+                children: [
+                  SizedBox(
+                      height: 190,
+                      child: _bentoTile(items[0], large: true, delayMs: 0)),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 150,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                            child: _bentoTile(items[1],
+                                large: false, delayMs: 70)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                            child: _bentoTile(items[2],
+                                large: false, delayMs: 140)),
                       ],
-                    ],
+                    ),
                   ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                      height: 120,
+                      child:
+                          _bentoTile(items[3], large: false, delayMs: 210)),
+                ],
+              )
+            : SizedBox(
+                height: 300,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                        flex: 5,
+                        child: _bentoTile(items[0], large: true, delayMs: 0)),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        children: [
+                          Expanded(
+                              child: _bentoTile(items[1],
+                                  large: false, delayMs: 70)),
+                          const SizedBox(height: 16),
+                          Expanded(
+                              child: _bentoTile(items[2],
+                                  large: false, delayMs: 140)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        flex: 3,
+                        child: _bentoTile(items[3],
+                            large: false, delayMs: 210)),
+                  ],
                 ),
-        ),
+              ),
       ),
     );
   }
 
-  Widget _trustItem(final IconData icon, final String text,
-          final Color accentColor, final int delayMs) =>
-      RevealFade(
-        delayMs: delayMs,
-        child: Row(
+  Widget _bentoTile(final _BentoTrustItem item,
+      {required final bool large, required final int delayMs}) {
+    // NOT: Küçük kutular Column (flex) içinde sabit, dar bir yükseklik
+    // alıyor — büyük kutuyla aynı iç boşluk/ikon/2 satır metin orada
+    // RenderFlex taşmasına yol açtı. Küçük kutular için dolgu, ikon ve
+    // metin satırı bilinçli olarak daha kompakt.
+    final double iconBox =
+        large ? context.iconMedium + 20 : context.iconMedium - 2;
+    return RevealFade(
+      delayMs: delayMs,
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: EdgeInsets.all(large ? 24 : 14),
+        decoration: BoxDecoration(
+          color: item.color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(context.borderRadius()),
+          border: Border.all(color: item.color.withOpacity(0.18)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: context.iconMedium + 14,
-              height: context.iconMedium + 14,
+              width: iconBox,
+              height: iconBox,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    accentColor,
-                    Color.lerp(accentColor, Colors.black, 0.24)!
+                    item.color,
+                    Color.lerp(item.color, Colors.black, 0.24)!
                   ],
                 ),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(large ? 14 : 11),
                 boxShadow: [
                   BoxShadow(
-                      color: accentColor.withOpacity(0.35),
+                      color: item.color.withOpacity(0.35),
                       blurRadius: 14,
                       offset: const Offset(0, 6)),
                 ],
               ),
-              child: Icon(icon,
-                  color: Colors.white, size: context.iconMedium * 0.62),
+              child: Icon(item.icon,
+                  color: Colors.white,
+                  size: iconBox * (large ? 0.52 : 0.58)),
             ),
-            const SizedBox(width: 12),
-            Flexible(
-              child: Text(text,
-                  style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w700,
-                      fontSize: context.bodySize)),
-            ),
+            SizedBox(height: large ? 16 : 8),
+            Text(item.label,
+                maxLines: large ? 2 : 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: large
+                        ? context.h3Size * 0.56
+                        : context.bodySize * 0.92)),
           ],
         ),
-      );
+      ),
+    );
+  }
 
   /// 6 semtin tamamını değil, ilk ikisini + "ve çevresi" gösterir — akan
   /// şeritteki tek bir çipin devasa büyümesini önler. Tam liste hâlâ
@@ -778,6 +834,11 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
       onTap: onTap,
       pressScale: 0.94,
       enableTilt: false,
+      // Web'de fare üzerine gelince hafif büyüme — tilt bu küçük dairesel
+      // avatara uymuyordu (bkz. enableTilt: false), ama hover'da hiçbir
+      // geri bildirim de olmaması web'i mobildeki dokunsal hisse göre
+      // "cansız" bırakıyordu.
+      hoverScale: 1.07,
       child: SizedBox(
         width: width,
         child: Column(
@@ -1185,4 +1246,12 @@ class _HomePageState extends ConsumerState<HomePage> with ResponsiveUtils {
   // shared/widgets/site_footer.dart.
   Widget _buildFooter() =>
       const SliverToBoxAdapter(child: SiteFooter());
+}
+
+class _BentoTrustItem {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _BentoTrustItem(this.icon, this.label, this.color);
 }

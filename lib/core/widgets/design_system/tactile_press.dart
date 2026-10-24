@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import '../../theme/app_tokens.dart';
 
 /// Her dokunulabilir yüzeye "gerçek" bir his katan mikro-etkileşim sarmalayıcı.
 ///
@@ -22,6 +23,7 @@ class TactilePress extends StatefulWidget {
     this.onTap,
     this.pressScale = 0.96,
     this.enableTilt = true,
+    this.hoverScale,
     this.borderRadius,
   });
 
@@ -33,6 +35,13 @@ class TactilePress extends StatefulWidget {
 
   /// Web'de fare hover'ında tilt/parallax efekti.
   final bool enableTilt;
+
+  /// Tilt'in (3B eğim) uymadığı küçük/kompakt öğeler için (ikon buton,
+  /// dairesel kategori avatarı) daha sade bir hover geri bildirimi: web'de
+  /// fare üzerine gelince bu ölçeğe (ör. 1.05) hafifçe büyür. `null` =
+  /// hover'da ek bir ölçek yok (eski davranış, varsayılan). `enableTilt`
+  /// ile birlikte kullanılabilir ama genelde biri ya da diğeri tercih edilir.
+  final double? hoverScale;
 
   /// Tilt sırasında gölge/köşe hesaplarken kullanılan köşe yarıçapı ipucu
   /// (yalnızca görsel tutarlılık için, zorunlu değil).
@@ -52,6 +61,7 @@ class _TactilePressState extends State<TactilePress>
   );
 
   Offset _tilt = Offset.zero; // -1..1 aralığında normalize edilmiş imleç konumu
+  bool _hovering = false;
 
   @override
   void dispose() {
@@ -70,7 +80,11 @@ class _TactilePressState extends State<TactilePress>
   }
 
   void _onHover(final PointerHoverEvent event) {
-    if (!widget.enableTilt || !kIsWeb) return;
+    if (!kIsWeb) return;
+    if (widget.hoverScale != null && !_hovering) {
+      setState(() => _hovering = true);
+    }
+    if (!widget.enableTilt) return;
     final renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox == null || !renderBox.hasSize) return;
     final size = renderBox.size;
@@ -81,7 +95,12 @@ class _TactilePressState extends State<TactilePress>
   }
 
   void _resetTilt() {
-    if (_tilt != Offset.zero) setState(() => _tilt = Offset.zero);
+    if (_tilt != Offset.zero || _hovering) {
+      setState(() {
+        _tilt = Offset.zero;
+        _hovering = false;
+      });
+    }
   }
 
   @override
@@ -104,6 +123,15 @@ class _TactilePressState extends State<TactilePress>
       },
       child: widget.child,
     );
+
+    if (widget.hoverScale != null) {
+      content = AnimatedScale(
+        scale: _hovering ? widget.hoverScale! : 1.0,
+        duration: AppMotion.fast,
+        curve: AppMotion.standard,
+        child: content,
+      );
+    }
 
     content = MouseRegion(
       onHover: _onHover,
