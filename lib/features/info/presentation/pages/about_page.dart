@@ -424,11 +424,13 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
+  // Önceden gerçek içerik yerine soyut bir ikon (Icons.store) tonlu bir
+  // zeminde duruyordu — hero'yla aynı gerekçe: hikaye anlatan bir bölümde
+  // gerçek bir fotoğraf, ikon placeholder'dan çok daha ikna edici.
   Widget _buildOurStory(final BuildContext context) {
     final imageWidget = Container(
       height: context.responsive(mobile: 300, desktop: 500),
       decoration: BoxDecoration(
-        color: AppColors.surface,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -438,17 +440,13 @@ class _AboutPageState extends State<AboutPage> {
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          color: AppColors.accent.withOpacity(0.1),
-          child: Center(
-            child: Icon(
-              Icons.store,
-              size: 120,
-              color: AppColors.accent,
-            ),
-          ),
+      child: const ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(24)),
+        child: OptimizedCachedImage(
+          imageUrl:
+              'https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1200',
+          fit: BoxFit.cover,
+          borderRadius: 0,
         ),
       ),
     );
