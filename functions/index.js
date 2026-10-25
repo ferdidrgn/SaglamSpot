@@ -490,6 +490,28 @@ exports.sitemap = onRequest({cors: true, memory: "256MiB"}, async (req, res) => 
  * başlangıç (cold start) gecikmesini önlemek için deploy ederken
  * `minInstances: 1` ayarlamak ciddi şekilde önerilir (küçük, sürekli bir
  * aylık ücrete yol açar) — bkz. deploy notları.
+ *
+ * ÖNEMLİ — CDN önbelleği UA'ya göre AYRIŞMIYOR: firebase.json'daki genel
+ * `"**"` başlık kuralı her şeye `Cache-Control: public, max-age=3600`
+ * veriyor ve bu fonksiyonun kendi Cache-Control değerlerini EZİYOR; CDN
+ * (Fastly) de User-Agent'a göre Vary ETMİYOR. Yani bir path'e ilk hangi
+ * UA ile istek gelirse (bot ya da insan fark etmez), o cevap SAATLERCE
+ * HERKESE önbellekten dönerdi — canlıda tam olarak bu yaşandı (ilk
+ * isteği muhtemelen gerçek bir ziyaretçi/bot attı, botlara da insan
+ * kabuğu önbellekten dönmeye başladı). Çözüm: firebase.json'da
+ * `/{new,spot}` ve `/product/**` için AYRI, önbelleksiz
+ * (`no-cache, no-store, must-revalidate`) başlık kuralı eklendi — bu iki
+ * yol artık HİÇ CDN önbelleklenmiyor, her istek bu fonksiyona düşüyor.
+ *
+ * ÖNEMLİ — kök "/" rewrite'i KASITLI OLARAK YOK: Firebase Hosting, public
+ * dizininde gerçek bir `index.html` varken "/" yolunu asla rewrite'a
+ * bırakmıyor — her zaman o literal dosyayı servis ediyor (bu Hosting'in
+ * belgelenmiş, aşılamayan bir davranışı). `prerenderHome()` bu yüzden
+ * yalnızca fonksiyonun kendi Cloud Run URL'inden doğrudan çağrılırsa
+ * çalışır, saglamspotcu.web.app üzerinden ASLA tetiklenmez. Ana sayfa bu
+ * yüzden şimdilik yalnızca mevcut statik meta/OG/JSON-LD etiketleriyle
+ * (web/index.html) indeksleniyor — /new, /spot, /product sayfalarındaki
+ * gerçek `<a href>` linkleri üzerinden keşfedilebilir durumda.
  */
 const fs = require("fs");
 const path = require("path");
@@ -733,7 +755,14 @@ function getPrerenderSpaShell() {
 exports.prerender = onRequest(
     {cors: true, memory: "256MiB", timeoutSeconds: 15},
     async (req, res) => {
-      const userAgent = req.get("user-agent") || "";
+      // Firebase Hosting, rewrite ile bu fonksiyona proxy'lerken `user-agent`
+      // başlığını KENDİ iç kimliğiyle ("Google-Firebase/x.x") DEĞİŞTİRİYOR —
+      // gerçek ziyaretçinin/botun orijinal User-Agent'ı `x-original-user-agent`
+      // başlığında saklı kalıyor (Cloud Logging ile doğrulandı). Fonksiyonun
+      // kendi Cloud Run URL'i doğrudan çağrılırsa bu başlık hiç yok, o yüzden
+      // `user-agent`'a geri düşülüyor.
+      const userAgent =
+        req.get("x-original-user-agent") || req.get("user-agent") || "";
       const isBot = PRERENDER_BOT_UA_REGEX.test(userAgent);
 
       if (!isBot) {

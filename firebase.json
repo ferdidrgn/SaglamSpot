@@ -84,16 +84,30 @@
             "value": "no-store"
           }
         ]
+      },
+      {
+        "source": "/{new,spot}",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/product/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
       }
     ],
     "rewrites": [
       {
         "source": "/sitemap-products.xml",
         "function": "sitemap"
-      },
-      {
-        "source": "/",
-        "function": "prerender"
       },
       {
         "source": "/new",
@@ -140,7 +154,7 @@
       "codebase": "default",
       "runtime": "nodejs22",
       "predeploy": [
-        "node scripts/copy-spa-shell.js"
+        "node functions/scripts/copy-spa-shell.js"
       ],
       "ignore": [
         "node_modules",
