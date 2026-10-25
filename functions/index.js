@@ -465,3 +465,322 @@ exports.sitemap = onRequest({cors: true, memory: "256MiB"}, async (req, res) => 
   res.set("Cache-Control", "public, max-age=3600");
   res.status(200).send(xml);
 });
+
+/**
+ * DİNAMİK RENDER (PRERENDER) — Flutter web CanvasKit motoruyla render
+ * ediyor: tüm sayfa bir <canvas> üzerine ÇİZİLİYOR, gerçek metin DOM
+ * düğümü olarak hiç var olmuyor. Bu yüzden Googlebot vb. botlar sayfayı
+ * JavaScript'i çalıştırarak "render" etseler bile dişe dokunur bir metin
+ * bulamıyor — klasik Puppeteer/Rendertron tarzı "headless tarayıcıyla
+ * snapshot al" yöntemi de BURADA İŞE YARAMAZ (orada da yalnızca piksel
+ * olur, DOM metni olmaz).
+ *
+ * Bunun yerine Google'ın resmi olarak önerdiği "dynamic rendering" deseni
+ * uygulanıyor: AYNI URL, bot User-Agent'ına göre İKİ FARKLI gövde alır.
+ *   - Normal ziyaretçi  → her zamanki Flutter SPA kabuğu (index.html).
+ *   - Bilinen bot/crawler → Firestore'dan DOĞRUDAN, gerçek <h1>/<p>/<a>
+ *     metinleriyle kurulmuş, JS'siz, anında okunabilir bir HTML.
+ * İçerik ÖZDEŞ kaynaktan (aynı Firestore ürünleri) geldiği için bu
+ * "cloaking" değil — Google'ın "dynamic rendering" rehberiyle uyumlu.
+ *
+ * ÖNEMLİ — insan trafiği performansı: Bu fonksiyon insan ziyaretçiler
+ * için de (bot dalı değil) devreye girer, çünkü Firebase Hosting'in
+ * statik rewrite kuralları User-Agent'a göre DALLANAMIYOR (yalnızca yol
+ * eşleştirir) — bu yüzden ayrım fonksiyonun İÇİNDE yapılıyor. Soğuk
+ * başlangıç (cold start) gecikmesini önlemek için deploy ederken
+ * `minInstances: 1` ayarlamak ciddi şekilde önerilir (küçük, sürekli bir
+ * aylık ücrete yol açar) — bkz. deploy notları.
+ */
+const fs = require("fs");
+const path = require("path");
+
+const PRERENDER_BOT_UA_REGEX = new RegExp(
+    ["googlebot", "google-inspectiontool", "bingbot", "yandex", "baiduspider",
+      "duckduckbot", "slurp", "facebookexternalhit", "facebookcatalog",
+      "twitterbot", "linkedinbot", "whatsapp", "telegrambot", "discordbot",
+      "slackbot", "redditbot", "pinterest", "applebot", "semrushbot",
+      "ahrefsbot", "mj12bot", "dotbot", "petalbot", "bytespider", "sogou",
+      "exabot", "ia_archiver", "embedly", "quora link preview",
+      "w3c_validator", "prerender", "lighthouse", "headlesschrome"].join("|"),
+    "i",
+);
+
+const PRERENDER_BUSINESS = {
+  name: "Sağlam Spot",
+  phone: "+905392019961",
+  address: "İçerenköy Mahallesi, Buket Sokak No:6, Ataşehir/İstanbul",
+  image: "https://saglamspotcu.web.app/icons/Icon-512.png",
+};
+
+// lib/l10n/app_tr.arb'daki category* anahtarlarıyla AYNI metinler.
+const PRERENDER_CATEGORY_LABELS = {
+  sofa: "Oturma Grupları", chair: "Sandalye", table: "Masa",
+  bed: "Yatak Odası", wardrobe: "Dolap", white: "Beyaz Eşya",
+  lighting: "Aydınlatma", homeTextile: "Ev Tekstili",
+  decor: "Dekorasyon & Aksesuar", officeFurniture: "Ofis Mobilyası",
+  outdoorGarden: "Bahçe & Balkon", kidsFurniture: "Bebek & Çocuk",
+  other: "Diğer",
+};
+
+function prerenderEscapeHtml(value) {
+  return String(value === undefined || value === null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+}
+
+// sitemap() fonksiyonundaki signProductId/toSlug ile AYNI — kasıtlı
+// olarak yeniden tanımlanmadı, doğrudan yukarıdakiler çağrılıyor ki iki
+// farklı imzalama mantığı birbirinden sapmasın.
+function prerenderProductUrl(data, fallbackId) {
+  const id = data._id || fallbackId;
+  const slug = toSlug(data.name);
+  const signature = signProductId(id);
+  return `${SITEMAP_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${signature}`;
+}
+
+function prerenderPageShell({title, description, canonical, bodyHtml, jsonLd}) {
+  const jsonLdBlocks = (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
+      .filter(Boolean)
+      .map((obj) => `<script type="application/ld+json">${JSON.stringify(obj)}</script>`)
+      .join("\n");
+
+  return `<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${prerenderEscapeHtml(title)}</title>
+<meta name="description" content="${prerenderEscapeHtml(description)}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${prerenderEscapeHtml(canonical)}">
+<meta property="og:site_name" content="${prerenderEscapeHtml(PRERENDER_BUSINESS.name)}">
+<meta property="og:title" content="${prerenderEscapeHtml(title)}">
+<meta property="og:description" content="${prerenderEscapeHtml(description)}">
+<meta property="og:url" content="${prerenderEscapeHtml(canonical)}">
+<meta property="og:type" content="website">
+${jsonLdBlocks}
+</head>
+<body>
+${bodyHtml}
+</body>
+</html>`;
+}
+
+async function prerenderHome() {
+  const db = getFirestore();
+  const snap = await db.collection("Product")
+      .where("isSold", "==", false)
+      .limit(12)
+      .get();
+
+  const items = snap.docs.map((d) => d.data());
+  const listHtml = items.map((p) =>
+    `<li><a href="${prerenderProductUrl(p, p._id)}">${prerenderEscapeHtml(p.name)} — ₺${Math.round(p.price)}</a></li>`,
+  ).join("\n");
+
+  const body = `<h1>${prerenderEscapeHtml(PRERENDER_BUSINESS.name)} – Spot &amp; Sıfır Mobilya</h1>
+<p>İçerenköy, Ataşehir'de 20 yılı aşkın tecrübeyle spot (ikinci el) ve sıfır mobilya satışı.
+Adres: ${prerenderEscapeHtml(PRERENDER_BUSINESS.address)}. Telefon: ${PRERENDER_BUSINESS.phone}.</p>
+<nav>
+  <a href="/new">Sıfır Ürünler</a> |
+  <a href="/spot">Spot Ürünler</a> |
+  <a href="/about">Hakkımızda</a> |
+  <a href="/sss">Sıkça Sorulan Sorular</a>
+</nav>
+<h2>Öne Çıkan Ürünler</h2>
+<ul>${listHtml}</ul>`;
+
+  return prerenderPageShell({
+    title: "Sağlam Spot – Spot & Sıfır Yaşam Alanları Mobilya",
+    description: "Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot, 20 yıllık esnaf güvencesiyle hizmetinizde.",
+    canonical: `${SITEMAP_DOMAIN}/`,
+    bodyHtml: body,
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "FurnitureStore",
+      "name": PRERENDER_BUSINESS.name,
+      "image": PRERENDER_BUSINESS.image,
+      "url": SITEMAP_DOMAIN,
+      "telephone": PRERENDER_BUSINESS.phone,
+    },
+  });
+}
+
+async function prerenderListing(isSpotProduct) {
+  const db = getFirestore();
+  const snap = await db.collection("Product")
+      .where("isSold", "==", false)
+      .where("isSpotProduct", "==", isSpotProduct)
+      .limit(60)
+      .get();
+
+  const items = snap.docs.map((d) => d.data());
+  const cards = items.map((p) => {
+    const image = Array.isArray(p.imagesUrl) && p.imagesUrl.length > 0 ? p.imagesUrl[0] : null;
+    const label = PRERENDER_CATEGORY_LABELS[p.category] || p.category || "";
+    return `<li>
+  <a href="${prerenderProductUrl(p, p._id)}">
+    ${image ? `<img src="${prerenderEscapeHtml(image)}" alt="${prerenderEscapeHtml(p.name)}" width="220" loading="lazy">` : ""}
+    <h3>${prerenderEscapeHtml(p.name)}</h3>
+    <p>${prerenderEscapeHtml(label)} — ₺${Math.round(p.price)}</p>
+  </a>
+</li>`;
+  }).join("\n");
+
+  const title = isSpotProduct ?
+    "Spot (İkinci El) Ürünler – Sağlam Spot" :
+    "Sıfır Ürünler – Sağlam Spot";
+  const otherHref = isSpotProduct ? "/new" : "/spot";
+  const otherLabel = isSpotProduct ? "Sıfır Ürünler" : "Spot Ürünler";
+
+  const body = `<h1>${prerenderEscapeHtml(title)}</h1>
+<nav><a href="/">Ana Sayfa</a> | <a href="${otherHref}">${prerenderEscapeHtml(otherLabel)}</a></nav>
+<ul>${cards}</ul>`;
+
+  return prerenderPageShell({
+    title,
+    description: `${items.length} ${isSpotProduct ? "spot/ikinci el" : "sıfır"} mobilya ürünü — Sağlam Spot, İçerenköy/Ataşehir.`,
+    canonical: `${SITEMAP_DOMAIN}${isSpotProduct ? "/spot" : "/new"}`,
+    bodyHtml: body,
+  });
+}
+
+async function prerenderProduct(productId) {
+  const db = getFirestore();
+  let data = null;
+
+  const bySignature = await db.collection("Product")
+      .where("_id", "==", productId).limit(1).get();
+  if (!bySignature.empty) {
+    data = bySignature.docs[0].data();
+  } else {
+    // Eski/uç kayıtlar için yedek yol: doküman kimliği doğrudan productId olabilir.
+    const direct = await db.collection("Product").doc(productId).get();
+    if (direct.exists) data = direct.data();
+  }
+  if (!data) return null;
+
+  const images = (Array.isArray(data.imagesUrl) ? data.imagesUrl : []).filter(Boolean);
+  const label = PRERENDER_CATEGORY_LABELS[data.category] || data.category || "";
+  const description = data.desc && data.desc.length > 0 ?
+    data.desc :
+    `${data.name} — ₺${Math.round(data.price)}. Sağlam Spot'ta satışta.`;
+  const canonical = prerenderProductUrl(data, productId);
+  const otherHref = data.isSpotProduct ? "/spot" : "/new";
+  const otherLabel = data.isSpotProduct ? "Spot Ürünler" : "Sıfır Ürünler";
+
+  const body = `<h1>${prerenderEscapeHtml(data.name)}</h1>
+<p>${prerenderEscapeHtml(label)}${data.isSpotProduct ? " · Spot (İkinci El)" : " · Sıfır Ürün"}${data.isSold ? " · SATILDI" : ""}</p>
+${images.map((u) => `<img src="${prerenderEscapeHtml(u)}" alt="${prerenderEscapeHtml(data.name)}" width="480" loading="lazy">`).join("\n")}
+<p><strong>₺${Math.round(data.price)}</strong></p>
+${data.desc ? `<p>${prerenderEscapeHtml(data.desc)}</p>` : ""}
+${data.dimensions ? `<p>Ölçü: ${prerenderEscapeHtml(data.dimensions)}</p>` : ""}
+${data.material ? `<p>Malzeme: ${prerenderEscapeHtml(data.material)}</p>` : ""}
+<p>WhatsApp'tan sorun: ${PRERENDER_BUSINESS.phone}</p>
+<nav><a href="/">Ana Sayfa</a> | <a href="${otherHref}">${prerenderEscapeHtml(otherLabel)}</a></nav>`;
+
+  return prerenderPageShell({
+    title: `${data.name} – ${PRERENDER_BUSINESS.name}`,
+    description,
+    canonical,
+    bodyHtml: body,
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": data.name,
+      "image": images,
+      "description": description,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "TRY",
+        "price": data.price,
+        "availability": data.isSold ?
+          "https://schema.org/SoldOut" : "https://schema.org/InStock",
+        "url": canonical,
+      },
+    },
+  });
+}
+
+// İnsan ziyaretçiler için gönderilen kabuk — gerçek `flutter build web`
+// çıktısındaki index.html'in BİREBİR KOPYASI olmalı (bkz.
+// functions/scripts/copy-spa-shell.js ve deploy notları: her deploy
+// öncesi bu kopyalama ADIMI çalıştırılmalı, aksi halde burada eski bir
+// sürüm kalıp güncel Flutter derlemesiyle uyuşmayabilir).
+let _prerenderSpaShellCache = null;
+function getPrerenderSpaShell() {
+  if (_prerenderSpaShellCache) return _prerenderSpaShellCache;
+  try {
+    _prerenderSpaShellCache = fs.readFileSync(
+        path.join(__dirname, "public", "index.html"), "utf8");
+  } catch (err) {
+    console.error(
+        "prerender: public/index.html okunamadı (deploy öncesi kopyalama " +
+        "adımı atlanmış olabilir) — minimal bir yedek kabuk kullanılıyor.",
+        err,
+    );
+    _prerenderSpaShellCache =
+      "<!DOCTYPE html><html><head><meta charset=\"utf-8\">" +
+      "<meta http-equiv=\"refresh\" content=\"0;url=/\"></head>" +
+      "<body>Yükleniyor…</body></html>";
+  }
+  return _prerenderSpaShellCache;
+}
+
+exports.prerender = onRequest(
+    {cors: true, memory: "256MiB", timeoutSeconds: 15},
+    async (req, res) => {
+      const userAgent = req.get("user-agent") || "";
+      const isBot = PRERENDER_BOT_UA_REGEX.test(userAgent);
+
+      if (!isBot) {
+        res.set("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.set("Content-Type", "text/html; charset=utf-8");
+        res.status(200).send(getPrerenderSpaShell());
+        return;
+      }
+
+      try {
+        const reqPath = req.path || "/";
+        let html;
+
+        if (reqPath === "/" || reqPath === "") {
+          html = await prerenderHome();
+        } else if (reqPath === "/new") {
+          html = await prerenderListing(false);
+        } else if (reqPath === "/spot") {
+          html = await prerenderListing(true);
+        } else if (reqPath.startsWith("/product/")) {
+          const rawParam = decodeURIComponent(reqPath.slice("/product/".length));
+          const parts = rawParam.split("-");
+          const productId = parts[parts.length - 1];
+          html = await prerenderProduct(productId);
+          if (!html) {
+            res.status(404).set("Content-Type", "text/html; charset=utf-8")
+                .send("<!DOCTYPE html><html><head><meta charset=\"utf-8\">" +
+                  "<title>Ürün bulunamadı</title></head>" +
+                  "<body><h1>Ürün bulunamadı</h1></body></html>");
+            return;
+          }
+        } else {
+          // Kapsam dışı bir yol — botlara da zararsızca SPA kabuğu dönülür.
+          res.set("Cache-Control", "no-cache, no-store, must-revalidate");
+          res.set("Content-Type", "text/html; charset=utf-8");
+          res.status(200).send(getPrerenderSpaShell());
+          return;
+        }
+
+        res.set("Cache-Control", "public, max-age=1800, s-maxage=1800");
+        res.set("Content-Type", "text/html; charset=utf-8");
+        res.status(200).send(html);
+      } catch (err) {
+        console.error("prerender: beklenmeyen hata, SPA kabuğuna geri dönülüyor.", err);
+        res.set("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.set("Content-Type", "text/html; charset=utf-8");
+        res.status(200).send(getPrerenderSpaShell());
+      }
+    },
+);

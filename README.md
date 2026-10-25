@@ -403,6 +403,16 @@ flutter build web --release
 firebase deploy --only hosting
 firebase deploy --only functions
 ```
+> `functions` deploy'u `prerender` fonksiyonunun botlara gösterdiği
+> ürün/liste HTML'ini üretir; insan ziyaretçilere döndürdüğü SPA
+> kabuğunu (`functions/public/index.html`) ise deploy ÖNCESİ otomatik
+> olarak az önceki `flutter build web` çıktısından kopyalar (bkz.
+> `functions/scripts/copy-spa-shell.js`, `firebase.json`'daki
+> `functions.predeploy`). Web'de görünür bir değişiklik yaptıysanız
+> (ama CI sadece hosting'i otomatik deploy ediyor) bu kabuğun güncel
+> kalması için `firebase deploy --only functions`'ı da ARA SIRA
+> yeniden çalıştırın, yoksa botlar eski bir SPA kabuğu görmeye devam
+> eder.
 
 </td></tr>
 </table>
