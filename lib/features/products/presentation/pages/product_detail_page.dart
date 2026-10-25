@@ -20,6 +20,7 @@ import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
+import '../../../../shared/widgets/site_footer.dart';
 import '../../data/models/category_meta.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/gallery_provider.dart';
@@ -217,6 +218,20 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                   ),
                   SliverToBoxAdapter(
                       child: SizedBox(height: context.isMobile ? 110 : 60)),
+                  // Bu sayfa (StatefulShellRoute dışında, bağımsız bir
+                  // GoRoute) global üst navigasyonu/footer'ı hiç almıyordu —
+                  // oysa paylaşılan ürün linkleriyle veya aramadan gelen
+                  // ziyaretçiler için SİTENİN EN ÇOK ziyaret edilen sayfası
+                  // muhtemelen burası. Diğer sayfalarla aynı footer
+                  // (iletişim, Gizlilik/Kullanım Şartları) artık burada da.
+                  if (kIsWeb)
+                    const SliverToBoxAdapter(child: SiteFooter()),
+                  // Mobil genişlikte sticky alt çubuk (ara/sepet/WhatsApp)
+                  // footer'ın son satırlarının (telif, Gizlilik/Şartlar)
+                  // üzerini kapatıyordu — aynı 110'luk boşluğu footer'ın
+                  // altına da ekliyoruz.
+                  if (kIsWeb && context.isMobile)
+                    const SliverToBoxAdapter(child: SizedBox(height: 110)),
                 ],
               ),
               if (context.isMobile) _buildStickyBar(context, product),
