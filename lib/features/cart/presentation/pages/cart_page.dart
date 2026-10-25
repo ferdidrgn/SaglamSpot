@@ -6,6 +6,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/util/comminucation_actions.dart';
@@ -160,6 +161,76 @@ class _CartPageState extends ConsumerState<CartPage> {
       });
     }
 
+    final Widget cartColumn = Column(
+      children: [
+        _buildHeader(context, items),
+        Expanded(
+          child: items.isEmpty
+              ? _buildEmptyState(context)
+              : ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  children: [
+                    for (final item in items) ...[
+                      // Mobilde native app'lerde alışılmış "kaydırıp
+                      // kaldır" jesti checkbox'ın ÜSTÜNE eklenir —
+                      // seçim/adet kontrolü kalır, sağa kaydırmak da
+                      // ürünü sepetten çıkarır.
+                      kIsWeb
+                          ? _CartItemCard(
+                              item: item,
+                              isSelected: _isSelected(item.product.id),
+                              onToggleSelected: () =>
+                                  _toggle(item.product.id),
+                            )
+                          : Dismissible(
+                              key: ValueKey(item.product.id),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (final _) {
+                                HapticFeedback.mediumImpact();
+                                ref
+                                    .read(cartProvider.notifier)
+                                    .remove(item.product.id);
+                              },
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20),
+                                decoration: BoxDecoration(
+                                  color: AppColors.error,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Icon(Icons.delete_rounded,
+                                    color: Colors.white),
+                              ),
+                              child: _CartItemCard(
+                                item: item,
+                                isSelected: _isSelected(item.product.id),
+                                onToggleSelected: () =>
+                                    _toggle(item.product.id),
+                              ),
+                            ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (recentlyViewed.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      _RecentlyViewedSection(products: recentlyViewed),
+                    ],
+                  ],
+                ),
+        ),
+        if (items.isNotEmpty)
+          _buildFooter(context, selectedItems, selectedCount, selectedTotal),
+      ],
+    );
+
+    // Masaüstü web genişliğinde bu sayfa, mobil listenin doğrudan
+    // büyütülmüş hali olarak uçtan uca geriliyordu (CLAUDE.md: "mobili
+    // büyütüp web diye sunma"). Diğer web sayfalarıyla aynı ortalanmış
+    // içerik bandı deseni burada da — ayarlar sayfasındaki form
+    // genişliğiyle (640) tutarlı, biraz daha geniş (680) çünkü satırlar
+    // görsel + adet seçici de taşıyor.
+    final bool centeredWeb = kIsWeb && !context.isMobile;
+
     final scaffold = Scaffold(
       // Şeffaf değil: alt navigasyonun kenarlarındaki boşluk native pencere
       // zemini (siyah) yerine marka zemin tonunu alır.
@@ -167,69 +238,15 @@ class _CartPageState extends ConsumerState<CartPage> {
       bottomNavigationBar: !kIsWeb ? const MobileBottomNav() : null,
       body: AtelierBackground(
         child: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context, items),
-            Expanded(
-              child: items.isEmpty
-                  ? _buildEmptyState(context)
-                  : ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                      children: [
-                        for (final item in items) ...[
-                          // Mobilde native app'lerde alışılmış "kaydırıp
-                          // kaldır" jesti checkbox'ın ÜSTÜNE eklenir —
-                          // seçim/adet kontrolü kalır, sağa kaydırmak da
-                          // ürünü sepetten çıkarır.
-                          kIsWeb
-                              ? _CartItemCard(
-                                  item: item,
-                                  isSelected: _isSelected(item.product.id),
-                                  onToggleSelected: () =>
-                                      _toggle(item.product.id),
-                                )
-                              : Dismissible(
-                                  key: ValueKey(item.product.id),
-                                  direction: DismissDirection.endToStart,
-                                  onDismissed: (final _) {
-                                    HapticFeedback.mediumImpact();
-                                    ref
-                                        .read(cartProvider.notifier)
-                                        .remove(item.product.id);
-                                  },
-                                  background: Container(
-                                    alignment: Alignment.centerRight,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.error,
-                                      borderRadius: BorderRadius.circular(18),
-                                    ),
-                                    child: const Icon(Icons.delete_rounded,
-                                        color: Colors.white),
-                                  ),
-                                  child: _CartItemCard(
-                                    item: item,
-                                    isSelected: _isSelected(item.product.id),
-                                    onToggleSelected: () =>
-                                        _toggle(item.product.id),
-                                  ),
-                                ),
-                          const SizedBox(height: 12),
-                        ],
-                        if (recentlyViewed.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          _RecentlyViewedSection(products: recentlyViewed),
-                        ],
-                      ],
-                    ),
-            ),
-            if (items.isNotEmpty)
-              _buildFooter(
-                  context, selectedItems, selectedCount, selectedTotal),
-          ],
+          child: centeredWeb
+              ? Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 680),
+                    child: cartColumn,
+                  ),
+                )
+              : cartColumn,
         ),
-      ),
       ),
     );
 
@@ -328,7 +345,7 @@ class _CartPageState extends ConsumerState<CartPage> {
   }
 }
 
-class _CartItemCard extends ConsumerWidget {
+class _CartItemCard extends ConsumerStatefulWidget {
   final CartItem item;
   final bool isSelected;
   final VoidCallback onToggleSelected;
@@ -340,24 +357,39 @@ class _CartItemCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final product = item.product;
+  ConsumerState<_CartItemCard> createState() => _CartItemCardState();
+}
+
+class _CartItemCardState extends ConsumerState<_CartItemCard> {
+  bool _hovering = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    final product = widget.item.product;
+    final item = widget.item;
+    final isSelected = widget.isSelected;
+    final onToggleSelected = widget.onToggleSelected;
     final notifier = ref.read(cartProvider.notifier);
 
-    return Container(
+    final Widget card = AnimatedContainer(
+      duration: AppMotion.fast,
+      curve: AppMotion.standard,
       padding: const EdgeInsets.all(10),
+      transform: Matrix4.translationValues(0, _hovering ? -2 : 0, 0),
       decoration: BoxDecoration(
         color: AppColors.mobileSurface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: isSelected
               ? AppColors.sageDark.withOpacity(0.4)
-              : AppColors.mobileBorder,
+              : (_hovering
+                  ? AppColors.sageDark.withOpacity(0.25)
+                  : AppColors.mobileBorder),
         ),
         boxShadow: [
           BoxShadow(
-              color: AppColors.mobileTextPrimary.withOpacity(0.05),
-              blurRadius: 14,
+              color: AppColors.mobileTextPrimary.withOpacity(_hovering ? 0.1 : 0.05),
+              blurRadius: _hovering ? 20 : 14,
               offset: const Offset(0, 6)),
         ],
       ),
@@ -450,6 +482,13 @@ class _CartItemCard extends ConsumerWidget {
           ),
         ],
       ),
+    );
+
+    if (!kIsWeb) return card;
+    return MouseRegion(
+      onEnter: (final _) => setState(() => _hovering = true),
+      onExit: (final _) => setState(() => _hovering = false),
+      child: card,
     );
   }
 }
