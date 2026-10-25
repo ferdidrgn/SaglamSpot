@@ -788,5 +788,22 @@
   "searchClearFilters": "مسح عوامل التصفية",
   "loadErrorTitle": "تعذّر تحميل المنتجات",
   "loadErrorMessage": "تحقق من الاتصال وحاول مرة أخرى.",
-  "adminPanelSubtitle": "إدارة المنتجات والإحصاءات والخدمات."
+  "adminPanelSubtitle": "إدارة المنتجات والإحصاءات والخدمات.",
+  "productFinderEntryLabel": "لا تعرف ما تبحث عنه؟ دعنا نساعدك",
+  "productFinderTitle": "ماذا تبحث عنه؟",
+  "productFinderBudgetLabel": "الميزانية",
+  "productFinderBudgetAny": "لا يهم",
+  "productFinderBudgetEconomic": "0 – 1500 ₺",
+  "productFinderBudgetMid": "1500 – 4000 ₺",
+  "productFinderBudgetPremium": "4000 ₺ وما فوق",
+  "productFinderBack": "رجوع",
+  "productFinderNext": "متابعة",
+  "productFinderWhatsappMessage": "مرحبًا، أبحث عن منتج {condition} في فئة {category}. ميزانيتي: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

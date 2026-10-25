@@ -18,6 +18,7 @@ import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/design_system/glass_surface.dart';
 import '../../../../core/widgets/design_system/section_heading.dart';
+import '../../../../shared/widgets/product_finder_wizard.dart';
 import '../../../../core/widgets/fab_scroll_up.dart';
 import '../../../../core/widgets/shimmer_components.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
@@ -844,6 +845,17 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
                   ),
+                ),
+                const SizedBox(height: 10),
+                // Arama/filtre sonuçsuz kaldığında, ürün adını bilmeyen
+                // ziyaretçiye hâlâ esnafa ulaşacak bir yol sunan kısa
+                // sihirbaz — yalnızca bu başarısız-arama anında, dar bir
+                // kapsamda (bkz. product_finder_wizard.dart).
+                TextButton.icon(
+                  onPressed: () => showProductFinderWizard(context),
+                  icon: const Icon(Icons.auto_awesome_rounded, size: 18),
+                  label: Text(context.l10n.productFinderEntryLabel),
+                  style: TextButton.styleFrom(foregroundColor: AppColors.primary),
                 ),
               ],
             ),

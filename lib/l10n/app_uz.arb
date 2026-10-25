@@ -788,5 +788,22 @@
   "searchClearFilters": "Filtrlarni tozalash",
   "loadErrorTitle": "Mahsulotlar yuklanmadi",
   "loadErrorMessage": "Ulanishni tekshirib, qayta urinib koʻring.",
-  "adminPanelSubtitle": "Mahsulotlar, statistika va xizmatlarni boshqaring."
+  "adminPanelSubtitle": "Mahsulotlar, statistika va xizmatlarni boshqaring.",
+  "productFinderEntryLabel": "Nima qidirayotganingizni bilmayapsizmi? Sizga yordam beramiz",
+  "productFinderTitle": "Nima Qidiryapsiz?",
+  "productFinderBudgetLabel": "Byudjet",
+  "productFinderBudgetAny": "Farqi yoʻq",
+  "productFinderBudgetEconomic": "0 – 1.500 ₺",
+  "productFinderBudgetMid": "1.500 – 4.000 ₺",
+  "productFinderBudgetPremium": "4.000 ₺ va undan yuqori",
+  "productFinderBack": "Orqaga",
+  "productFinderNext": "Davom etish",
+  "productFinderWhatsappMessage": "Salom, {category} toifasida {condition} mahsulot qidiryapman. Byudjetim: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

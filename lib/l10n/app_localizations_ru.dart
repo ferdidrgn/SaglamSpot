@@ -2308,4 +2308,37 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Управляйте товарами, статистикой и сервисами.';
+
+  @override
+  String get productFinderEntryLabel => 'Не знаете, что ищете? Мы поможем';
+
+  @override
+  String get productFinderTitle => 'Что вы ищете?';
+
+  @override
+  String get productFinderBudgetLabel => 'Бюджет';
+
+  @override
+  String get productFinderBudgetAny => 'Неважно';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1500 – 4000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4000 ₺ и выше';
+
+  @override
+  String get productFinderBack => 'Назад';
+
+  @override
+  String get productFinderNext => 'Далее';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Здравствуйте, ищу $condition товар в категории $category. Мой бюджет: $budget.';
+  }
 }

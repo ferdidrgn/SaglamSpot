@@ -2322,4 +2322,38 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Διαχειρίσου προϊόντα, στατιστικά και υπηρεσίες.';
+
+  @override
+  String get productFinderEntryLabel =>
+      'Δεν ξέρετε τι ψάχνετε; Θα σας βοηθήσουμε';
+
+  @override
+  String get productFinderTitle => 'Τι Ψάχνετε;';
+
+  @override
+  String get productFinderBudgetLabel => 'Προϋπολογισμός';
+
+  @override
+  String get productFinderBudgetAny => 'Δεν έχει σημασία';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1.500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1.500 – 4.000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4.000 ₺ και άνω';
+
+  @override
+  String get productFinderBack => 'Πίσω';
+
+  @override
+  String get productFinderNext => 'Συνέχεια';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Γεια σας, ψάχνω ένα $condition προϊόν στην κατηγορία $category. Ο προϋπολογισμός μου: $budget.';
+  }
 }

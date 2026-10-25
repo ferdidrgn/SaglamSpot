@@ -910,5 +910,22 @@
   "searchClearFilters": "Clear filters",
   "loadErrorTitle": "Couldn't load products",
   "loadErrorMessage": "Check your connection and try again.",
-  "adminPanelSubtitle": "Manage products, stats and services here."
+  "adminPanelSubtitle": "Manage products, stats and services here.",
+  "productFinderEntryLabel": "Not sure what you're looking for? Let us help",
+  "productFinderTitle": "What Are You Looking For?",
+  "productFinderBudgetLabel": "Budget",
+  "productFinderBudgetAny": "Any",
+  "productFinderBudgetEconomic": "0 – 1,500 ₺",
+  "productFinderBudgetMid": "1,500 – 4,000 ₺",
+  "productFinderBudgetPremium": "4,000 ₺ and above",
+  "productFinderBack": "Back",
+  "productFinderNext": "Continue",
+  "productFinderWhatsappMessage": "Hi, I'm looking for a {condition} item in the {category} category. My budget: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

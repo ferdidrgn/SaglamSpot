@@ -788,5 +788,22 @@
   "searchClearFilters": "Чыпкаларды тазалоо",
   "loadErrorTitle": "Товарлар жүктөлгөн жок",
   "loadErrorMessage": "Байланышты текшерип, кайра аракет кылыңыз.",
-  "adminPanelSubtitle": "Товарларды, статистиканы жана кызматтарды башкарыңыз."
+  "adminPanelSubtitle": "Товарларды, статистиканы жана кызматтарды башкарыңыз.",
+  "productFinderEntryLabel": "Эмне издеп жатканыңызды билбейсизби? Жардам берели",
+  "productFinderTitle": "Эмне Издеп Жатасыз?",
+  "productFinderBudgetLabel": "Бюджет",
+  "productFinderBudgetAny": "Айырмасы жок",
+  "productFinderBudgetEconomic": "0 – 1500 ₺",
+  "productFinderBudgetMid": "1500 – 4000 ₺",
+  "productFinderBudgetPremium": "4000 ₺ жана андан жогору",
+  "productFinderBack": "Артка",
+  "productFinderNext": "Улантуу",
+  "productFinderWhatsappMessage": "Салам, {category} категориясынан {condition} зат издеп жатам. Менин бюджетим: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

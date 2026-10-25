@@ -788,5 +788,22 @@
   "searchClearFilters": "Скинути фільтри",
   "loadErrorTitle": "Не вдалося завантажити товари",
   "loadErrorMessage": "Перевірте з'єднання та спробуйте знову.",
-  "adminPanelSubtitle": "Керуйте товарами, статистикою та сервісами."
+  "adminPanelSubtitle": "Керуйте товарами, статистикою та сервісами.",
+  "productFinderEntryLabel": "Не знаєте, що шукаєте? Ми допоможемо",
+  "productFinderTitle": "Що ви шукаєте?",
+  "productFinderBudgetLabel": "Бюджет",
+  "productFinderBudgetAny": "Неважливо",
+  "productFinderBudgetEconomic": "0 – 1500 ₺",
+  "productFinderBudgetMid": "1500 – 4000 ₺",
+  "productFinderBudgetPremium": "4000 ₺ і більше",
+  "productFinderBack": "Назад",
+  "productFinderNext": "Далі",
+  "productFinderWhatsappMessage": "Вітаю, шукаю {condition} товар у категорії {category}. Мій бюджет: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

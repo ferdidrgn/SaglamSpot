@@ -4297,6 +4297,67 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ürünleri, istatistikleri ve servisleri buradan yönet.'**
   String get adminPanelSubtitle;
+
+  /// No description provided for @productFinderEntryLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ne arayacağını bilmiyor musun? Sana yardımcı olalım'**
+  String get productFinderEntryLabel;
+
+  /// No description provided for @productFinderTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ne Arıyorsun?'**
+  String get productFinderTitle;
+
+  /// No description provided for @productFinderBudgetLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bütçe'**
+  String get productFinderBudgetLabel;
+
+  /// No description provided for @productFinderBudgetAny.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farketmez'**
+  String get productFinderBudgetAny;
+
+  /// No description provided for @productFinderBudgetEconomic.
+  ///
+  /// In tr, this message translates to:
+  /// **'0 – 1.500 ₺'**
+  String get productFinderBudgetEconomic;
+
+  /// No description provided for @productFinderBudgetMid.
+  ///
+  /// In tr, this message translates to:
+  /// **'1.500 – 4.000 ₺'**
+  String get productFinderBudgetMid;
+
+  /// No description provided for @productFinderBudgetPremium.
+  ///
+  /// In tr, this message translates to:
+  /// **'4.000 ₺ ve üzeri'**
+  String get productFinderBudgetPremium;
+
+  /// No description provided for @productFinderBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri'**
+  String get productFinderBack;
+
+  /// No description provided for @productFinderNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam Et'**
+  String get productFinderNext;
+
+  /// No description provided for @productFinderWhatsappMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Merhaba, {category} kategorisinde {condition} bir ürün arıyorum. Bütçem: {budget}.'**
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget);
 }
 
 class _AppLocalizationsDelegate

@@ -910,5 +910,22 @@
   "searchClearFilters": "Filtreleri temizle",
   "loadErrorTitle": "Ürünler yüklenemedi",
   "loadErrorMessage": "Bağlantını kontrol edip tekrar dene.",
-  "adminPanelSubtitle": "Ürünleri, istatistikleri ve servisleri buradan yönet."
+  "adminPanelSubtitle": "Ürünleri, istatistikleri ve servisleri buradan yönet.",
+  "productFinderEntryLabel": "Ne arayacağını bilmiyor musun? Sana yardımcı olalım",
+  "productFinderTitle": "Ne Arıyorsun?",
+  "productFinderBudgetLabel": "Bütçe",
+  "productFinderBudgetAny": "Farketmez",
+  "productFinderBudgetEconomic": "0 – 1.500 ₺",
+  "productFinderBudgetMid": "1.500 – 4.000 ₺",
+  "productFinderBudgetPremium": "4.000 ₺ ve üzeri",
+  "productFinderBack": "Geri",
+  "productFinderNext": "Devam Et",
+  "productFinderWhatsappMessage": "Merhaba, {category} kategorisinde {condition} bir ürün arıyorum. Bütçem: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

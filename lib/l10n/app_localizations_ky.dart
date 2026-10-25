@@ -2314,4 +2314,38 @@ class AppLocalizationsKy extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Товарларды, статистиканы жана кызматтарды башкарыңыз.';
+
+  @override
+  String get productFinderEntryLabel =>
+      'Эмне издеп жатканыңызды билбейсизби? Жардам берели';
+
+  @override
+  String get productFinderTitle => 'Эмне Издеп Жатасыз?';
+
+  @override
+  String get productFinderBudgetLabel => 'Бюджет';
+
+  @override
+  String get productFinderBudgetAny => 'Айырмасы жок';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1500 – 4000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4000 ₺ жана андан жогору';
+
+  @override
+  String get productFinderBack => 'Артка';
+
+  @override
+  String get productFinderNext => 'Улантуу';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Салам, $category категориясынан $condition зат издеп жатам. Менин бюджетим: $budget.';
+  }
 }

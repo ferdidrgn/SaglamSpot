@@ -788,5 +788,22 @@
   "searchClearFilters": "Cancella filtri",
   "loadErrorTitle": "Impossibile caricare i prodotti",
   "loadErrorMessage": "Controlla la connessione e riprova.",
-  "adminPanelSubtitle": "Gestisci prodotti, statistiche e servizi."
+  "adminPanelSubtitle": "Gestisci prodotti, statistiche e servizi.",
+  "productFinderEntryLabel": "Non sai cosa cerchi? Ti aiutiamo noi",
+  "productFinderTitle": "Cosa Stai Cercando?",
+  "productFinderBudgetLabel": "Budget",
+  "productFinderBudgetAny": "Indifferente",
+  "productFinderBudgetEconomic": "0 – 1.500 ₺",
+  "productFinderBudgetMid": "1.500 – 4.000 ₺",
+  "productFinderBudgetPremium": "4.000 ₺ e oltre",
+  "productFinderBack": "Indietro",
+  "productFinderNext": "Continua",
+  "productFinderWhatsappMessage": "Ciao, sto cercando un prodotto {condition} nella categoria {category}. Il mio budget: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

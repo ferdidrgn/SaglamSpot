@@ -2211,4 +2211,37 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => '在此管理商品、统计和服务。';
+
+  @override
+  String get productFinderEntryLabel => '不确定要找什么？我们来帮您';
+
+  @override
+  String get productFinderTitle => '您在找什么？';
+
+  @override
+  String get productFinderBudgetLabel => '预算';
+
+  @override
+  String get productFinderBudgetAny => '不限';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1,500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1,500 – 4,000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4,000 ₺ 以上';
+
+  @override
+  String get productFinderBack => '返回';
+
+  @override
+  String get productFinderNext => '继续';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return '您好，我想找$category类别中的$condition产品。我的预算：$budget。';
+  }
 }

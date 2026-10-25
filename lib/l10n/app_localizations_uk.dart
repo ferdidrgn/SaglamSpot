@@ -2305,4 +2305,37 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Керуйте товарами, статистикою та сервісами.';
+
+  @override
+  String get productFinderEntryLabel => 'Не знаєте, що шукаєте? Ми допоможемо';
+
+  @override
+  String get productFinderTitle => 'Що ви шукаєте?';
+
+  @override
+  String get productFinderBudgetLabel => 'Бюджет';
+
+  @override
+  String get productFinderBudgetAny => 'Неважливо';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1500 – 4000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4000 ₺ і більше';
+
+  @override
+  String get productFinderBack => 'Назад';
+
+  @override
+  String get productFinderNext => 'Далі';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Вітаю, шукаю $condition товар у категорії $category. Мій бюджет: $budget.';
+  }
 }

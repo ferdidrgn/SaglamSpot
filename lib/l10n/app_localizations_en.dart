@@ -2305,4 +2305,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => 'Manage products, stats and services here.';
+
+  @override
+  String get productFinderEntryLabel =>
+      'Not sure what you\'re looking for? Let us help';
+
+  @override
+  String get productFinderTitle => 'What Are You Looking For?';
+
+  @override
+  String get productFinderBudgetLabel => 'Budget';
+
+  @override
+  String get productFinderBudgetAny => 'Any';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1,500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1,500 – 4,000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4,000 ₺ and above';
+
+  @override
+  String get productFinderBack => 'Back';
+
+  @override
+  String get productFinderNext => 'Continue';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Hi, I\'m looking for a $condition item in the $category category. My budget: $budget.';
+  }
 }

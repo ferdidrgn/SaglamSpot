@@ -2317,4 +2317,37 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adminPanelSubtitle => 'Gestisci prodotti, statistiche e servizi.';
+
+  @override
+  String get productFinderEntryLabel => 'Non sai cosa cerchi? Ti aiutiamo noi';
+
+  @override
+  String get productFinderTitle => 'Cosa Stai Cercando?';
+
+  @override
+  String get productFinderBudgetLabel => 'Budget';
+
+  @override
+  String get productFinderBudgetAny => 'Indifferente';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1.500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1.500 – 4.000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4.000 ₺ e oltre';
+
+  @override
+  String get productFinderBack => 'Indietro';
+
+  @override
+  String get productFinderNext => 'Continua';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Ciao, sto cercando un prodotto $condition nella categoria $category. Il mio budget: $budget.';
+  }
 }

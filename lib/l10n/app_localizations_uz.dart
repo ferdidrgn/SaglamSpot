@@ -2315,4 +2315,38 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Mahsulotlar, statistika va xizmatlarni boshqaring.';
+
+  @override
+  String get productFinderEntryLabel =>
+      'Nima qidirayotganingizni bilmayapsizmi? Sizga yordam beramiz';
+
+  @override
+  String get productFinderTitle => 'Nima Qidiryapsiz?';
+
+  @override
+  String get productFinderBudgetLabel => 'Byudjet';
+
+  @override
+  String get productFinderBudgetAny => 'Farqi yoʻq';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1.500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1.500 – 4.000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4.000 ₺ va undan yuqori';
+
+  @override
+  String get productFinderBack => 'Orqaga';
+
+  @override
+  String get productFinderNext => 'Davom etish';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Salom, $category toifasida $condition mahsulot qidiryapman. Byudjetim: $budget.';
+  }
 }

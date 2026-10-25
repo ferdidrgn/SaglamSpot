@@ -788,5 +788,22 @@
   "searchClearFilters": "清除筛选",
   "loadErrorTitle": "无法加载商品",
   "loadErrorMessage": "请检查网络后重试。",
-  "adminPanelSubtitle": "在此管理商品、统计和服务。"
+  "adminPanelSubtitle": "在此管理商品、统计和服务。",
+  "productFinderEntryLabel": "不确定要找什么？我们来帮您",
+  "productFinderTitle": "您在找什么？",
+  "productFinderBudgetLabel": "预算",
+  "productFinderBudgetAny": "不限",
+  "productFinderBudgetEconomic": "0 – 1,500 ₺",
+  "productFinderBudgetMid": "1,500 – 4,000 ₺",
+  "productFinderBudgetPremium": "4,000 ₺ 以上",
+  "productFinderBack": "返回",
+  "productFinderNext": "继续",
+  "productFinderWhatsappMessage": "您好，我想找{category}类别中的{condition}产品。我的预算：{budget}。",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

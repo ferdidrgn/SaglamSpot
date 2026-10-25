@@ -788,5 +788,22 @@
   "searchClearFilters": "Сбросить фильтры",
   "loadErrorTitle": "Не удалось загрузить товары",
   "loadErrorMessage": "Проверьте подключение и попробуйте снова.",
-  "adminPanelSubtitle": "Управляйте товарами, статистикой и сервисами."
+  "adminPanelSubtitle": "Управляйте товарами, статистикой и сервисами.",
+  "productFinderEntryLabel": "Не знаете, что ищете? Мы поможем",
+  "productFinderTitle": "Что вы ищете?",
+  "productFinderBudgetLabel": "Бюджет",
+  "productFinderBudgetAny": "Неважно",
+  "productFinderBudgetEconomic": "0 – 1500 ₺",
+  "productFinderBudgetMid": "1500 – 4000 ₺",
+  "productFinderBudgetPremium": "4000 ₺ и выше",
+  "productFinderBack": "Назад",
+  "productFinderNext": "Далее",
+  "productFinderWhatsappMessage": "Здравствуйте, ищу {condition} товар в категории {category}. Мой бюджет: {budget}.",
+  "@productFinderWhatsappMessage": {
+    "placeholders": {
+      "category": {"type": "String"},
+      "condition": {"type": "String"},
+      "budget": {"type": "String"}
+    }
+  }
 }

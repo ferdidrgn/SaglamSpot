@@ -2303,4 +2303,38 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get adminPanelSubtitle =>
       'Ürünleri, istatistikleri ve servisleri buradan yönet.';
+
+  @override
+  String get productFinderEntryLabel =>
+      'Ne arayacağını bilmiyor musun? Sana yardımcı olalım';
+
+  @override
+  String get productFinderTitle => 'Ne Arıyorsun?';
+
+  @override
+  String get productFinderBudgetLabel => 'Bütçe';
+
+  @override
+  String get productFinderBudgetAny => 'Farketmez';
+
+  @override
+  String get productFinderBudgetEconomic => '0 – 1.500 ₺';
+
+  @override
+  String get productFinderBudgetMid => '1.500 – 4.000 ₺';
+
+  @override
+  String get productFinderBudgetPremium => '4.000 ₺ ve üzeri';
+
+  @override
+  String get productFinderBack => 'Geri';
+
+  @override
+  String get productFinderNext => 'Devam Et';
+
+  @override
+  String productFinderWhatsappMessage(
+      String category, String condition, String budget) {
+    return 'Merhaba, $category kategorisinde $condition bir ürün arıyorum. Bütçem: $budget.';
+  }
 }
