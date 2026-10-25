@@ -9,6 +9,7 @@ import 'package:saglamspot/core/util/platform_checker.dart';
 import 'package:saglamspot/shared/navigation/widgets/nav_handler.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/cart_icon_button.dart';
 import '../../../core/widgets/language_selector.dart';
 import '../../../core/widgets/web_whatsapp_bubble.dart';
 import '../../../features/auth/presentation/provider/auth_provider_notifier.dart';
@@ -245,6 +246,12 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
       ),
       actions: [
         const LanguageSelector(),
+        // Web'de sepet sayfasına (/cart) header dışında hiçbir erişim yolu
+        // yoktu — bottom nav yalnızca native mobilde var, ürün detayındaki
+        // "Sepete Ekle" sonrası da yönlendirme yoktu. Native mobilde zaten
+        // discover_page.dart ve ürün detayından erişilebiliyor, burada
+        // yalnızca web için eklendi.
+        if (kIsWeb) CartIconButton(color: AppColors.textPrimary),
         _buildSearchButton(true),
         const SizedBox(width: 8),
       ],
@@ -303,6 +310,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
           SizedBox(width: context.responsive(mobile: 16, tablet: 20, desktop: 24)),
           const LanguageSelector(),
           const SizedBox(width: 12),
+          CartIconButton(color: AppColors.textPrimary),
           _buildSearchButton(false),
           // 1024-1439px'de (nav öğeleri + dil seçici + arama zaten dar
           // alanda sıkışık) bu ekstra ikon son nav öğesinin (SSS) kırpılmasına
