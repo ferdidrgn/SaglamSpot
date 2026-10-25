@@ -2337,4 +2337,11 @@ class AppLocalizationsTr extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Merhaba, $category kategorisinde $condition bir ürün arıyorum. Bütçem: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Yeni Ürün Bildirimleri';
+
+  @override
+  String get categoryWatchDescription =>
+      'Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim.';
 }

@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "Ειδοποιήσεις Νέων Προϊόντων",
+  "categoryWatchDescription": "Θα σας ενημερώσουμε όταν προστεθεί νέο προϊόν στις κατηγορίες που παρακολουθείτε."
 }

@@ -2317,4 +2317,11 @@ class AppLocalizationsAr extends AppLocalizations {
       String category, String condition, String budget) {
     return 'مرحبًا، أبحث عن منتج $condition في فئة $category. ميزانيتي: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'إشعارات المنتجات الجديدة';
+
+  @override
+  String get categoryWatchDescription =>
+      'سنخبرك عند إضافة منتج جديد في الفئات التي تتابعها.';
 }

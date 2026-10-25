@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "Сповіщення про нові товари",
+  "categoryWatchDescription": "Повідомимо, коли у відстежуваних категоріях з'явиться новий товар."
 }

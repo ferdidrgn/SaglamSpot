@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "Жаңы товар билдирүүлөрү",
+  "categoryWatchDescription": "Сиз көзөмөлдөп жаткан категорияларда жаңы товар кошулганда билдиребиз."
 }

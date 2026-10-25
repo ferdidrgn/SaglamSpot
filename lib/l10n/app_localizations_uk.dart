@@ -2338,4 +2338,11 @@ class AppLocalizationsUk extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Вітаю, шукаю $condition товар у категорії $category. Мій бюджет: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Сповіщення про нові товари';
+
+  @override
+  String get categoryWatchDescription =>
+      'Повідомимо, коли у відстежуваних категоріях з\'явиться новий товар.';
 }

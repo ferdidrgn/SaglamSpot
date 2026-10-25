@@ -2348,4 +2348,11 @@ class AppLocalizationsKy extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Салам, $category категориясынан $condition зат издеп жатам. Менин бюджетим: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Жаңы товар билдирүүлөрү';
+
+  @override
+  String get categoryWatchDescription =>
+      'Сиз көзөмөлдөп жаткан категорияларда жаңы товар кошулганда билдиребиз.';
 }

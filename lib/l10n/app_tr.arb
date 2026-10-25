@@ -927,5 +927,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "Yeni Ürün Bildirimleri",
+  "categoryWatchDescription": "Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim."
 }

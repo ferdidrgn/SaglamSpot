@@ -2349,4 +2349,11 @@ class AppLocalizationsUz extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Salom, $category toifasida $condition mahsulot qidiryapman. Byudjetim: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Yangi Mahsulot Bildirishnomalari';
+
+  @override
+  String get categoryWatchDescription =>
+      'Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz.';
 }

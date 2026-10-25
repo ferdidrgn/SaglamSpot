@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "Yangi Mahsulot Bildirishnomalari",
+  "categoryWatchDescription": "Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz."
 }

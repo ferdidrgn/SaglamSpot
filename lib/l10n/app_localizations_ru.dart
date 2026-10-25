@@ -2341,4 +2341,11 @@ class AppLocalizationsRu extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Здравствуйте, ищу $condition товар в категории $category. Мой бюджет: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Уведомления о новых товарах';
+
+  @override
+  String get categoryWatchDescription =>
+      'Мы сообщим вам, когда в отслеживаемых категориях появится новый товар.';
 }

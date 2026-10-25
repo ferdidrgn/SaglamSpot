@@ -221,35 +221,93 @@ exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event
  */
 exports.onProductCreated = onDocumentCreated("Product/{productId}", async (event) => {
   const data = event.data && event.data.data();
-  if (!data || data.isSold || !data.isSpotProduct) return;
+  if (!data || data.isSold) return;
 
   const productId = event.params.productId;
-  const title = "Yeni Sıfır/Spot Ürün! ✨";
-  const body = data.name ?
-    `${data.name} mağazaya eklendi, hemen göz atın.` :
-    "Mağazaya yeni bir sıfır/spot ürün eklendi, hemen göz atın.";
-
   const db = getFirestore();
 
-  await Promise.all([
-    getMessaging().send({
-      topic: "all_users",
-      notification: {title, body},
-      data: {type: "new_spot_product", productId},
-    }).catch((err) => {
-      console.error("onProductCreated: FCM gönderimi başarısız.", err);
-    }),
-    db.collection("notification_broadcasts").add({
-      title,
-      body,
-      type: "new_spot_product",
-      productId,
-      createdAt: FieldValue.serverTimestamp(),
-    }).catch((err) => {
-      console.error("onProductCreated: Firestore yazımı başarısız.", err);
-    }),
-  ]);
+  const tasks = [];
+
+  if (data.isSpotProduct) {
+    const title = "Yeni Sıfır/Spot Ürün! ✨";
+    const body = data.name ?
+      `${data.name} mağazaya eklendi, hemen göz atın.` :
+      "Mağazaya yeni bir sıfır/spot ürün eklendi, hemen göz atın.";
+
+    tasks.push(
+        getMessaging().send({
+          topic: "all_users",
+          notification: {title, body},
+          data: {type: "new_spot_product", productId},
+        }).catch((err) => {
+          console.error("onProductCreated: FCM gönderimi başarısız.", err);
+        }),
+        db.collection("notification_broadcasts").add({
+          title,
+          body,
+          type: "new_spot_product",
+          productId,
+          createdAt: FieldValue.serverTimestamp(),
+        }).catch((err) => {
+          console.error("onProductCreated: Firestore yazımı başarısız.", err);
+        }),
+    );
+  }
+
+  // YENİ ÜRÜN BİLDİRİMİ (kategori takibi) — yukarıdaki "spot" yayınından
+  // BAĞIMSIZ: sıfır/spot farketmeksizin, bu ürünün kategorisini takip
+  // eden cihazlara kişiye özel bir bildirim gönderir (bkz. Flutter
+  // tarafı: lib/core/services/category_watch_sync.dart,
+  // `category_watch_subscriptions/{fcmToken}` → `categories` dizisi).
+  // notifyPriceDrop'taki "sadece ilgilenene gönder" mantığıyla AYNI desen.
+  tasks.push(notifyCategoryWatchers(db, data, productId));
+
+  await Promise.all(tasks);
 });
+
+async function notifyCategoryWatchers(db, productData, productId) {
+  const category = productData.category;
+  if (!category) return;
+
+  const snap = await db.collection("category_watch_subscriptions")
+      .where("categories", "array-contains", category)
+      .get();
+  if (snap.empty) return;
+
+  const categoryLabel = PRERENDER_CATEGORY_LABELS[category] || category;
+  const title = "Takip Ettiğin Kategoride Yeni Ürün! 🆕";
+  const body = productData.name ?
+    `${categoryLabel}: ${productData.name} mağazaya eklendi.` :
+    `${categoryLabel} kategorisine yeni bir ürün eklendi.`;
+
+  const tokens = snap.docs.map((d) => d.id);
+  const chunks = [];
+  for (let i = 0; i < tokens.length; i += 500) chunks.push(tokens.slice(i, i + 500));
+
+  const staleTokens = [];
+  for (const chunk of chunks) {
+    try {
+      const response = await getMessaging().sendEachForMulticast({
+        tokens: chunk,
+        notification: {title, body},
+        data: {type: "category_watch", productId, category},
+      });
+      response.responses.forEach((r, i) => {
+        if (!r.success && r.error &&
+            r.error.code === "messaging/registration-token-not-registered") {
+          staleTokens.push(chunk[i]);
+        }
+      });
+    } catch (err) {
+      console.error("notifyCategoryWatchers: FCM gönderimi başarısız.", err);
+    }
+  }
+
+  // Artık geçersiz (uygulama silinmiş/token değişmiş) kayıtları temizle —
+  // notifyPriceDrop'taki AYNI temizlik deseni.
+  await Promise.all(staleTokens.map((t) =>
+    db.collection("category_watch_subscriptions").doc(t).delete().catch(() => {})));
+}
 
 /**
  * GÜNLÜK ÜRÜN ÖZETİ BİLDİRİMİ — her ürün eklendiğinde ayrı ayrı bildirim

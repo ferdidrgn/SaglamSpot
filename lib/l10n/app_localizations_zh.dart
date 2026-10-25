@@ -2244,4 +2244,10 @@ class AppLocalizationsZh extends AppLocalizations {
       String category, String condition, String budget) {
     return '您好，我想找$category类别中的$condition产品。我的预算：$budget。';
   }
+
+  @override
+  String get categoryWatchSectionTitle => '新品通知';
+
+  @override
+  String get categoryWatchDescription => '当您关注的分类中添加新商品时，我们会通知您。';
 }

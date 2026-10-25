@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "إشعارات المنتجات الجديدة",
+  "categoryWatchDescription": "سنخبرك عند إضافة منتج جديد في الفئات التي تتابعها."
 }

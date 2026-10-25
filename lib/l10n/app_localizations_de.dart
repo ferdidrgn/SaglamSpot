@@ -2362,4 +2362,11 @@ class AppLocalizationsDe extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Hallo, ich suche ein $condition Produkt in der Kategorie $category. Mein Budget: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Neue-Angebote-Benachrichtigungen';
+
+  @override
+  String get categoryWatchDescription =>
+      'Wir benachrichtigen dich, wenn ein neues Produkt in deinen verfolgten Kategorien hinzugefügt wird.';
 }

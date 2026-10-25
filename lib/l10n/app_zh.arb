@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "新品通知",
+  "categoryWatchDescription": "当您关注的分类中添加新商品时，我们会通知您。"
 }

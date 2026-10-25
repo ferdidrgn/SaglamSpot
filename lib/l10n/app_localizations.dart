@@ -4358,6 +4358,18 @@ abstract class AppLocalizations {
   /// **'Merhaba, {category} kategorisinde {condition} bir ürün arıyorum. Bütçem: {budget}.'**
   String productFinderWhatsappMessage(
       String category, String condition, String budget);
+
+  /// No description provided for @categoryWatchSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Ürün Bildirimleri'**
+  String get categoryWatchSectionTitle;
+
+  /// No description provided for @categoryWatchDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim.'**
+  String get categoryWatchDescription;
 }
 
 class _AppLocalizationsDelegate

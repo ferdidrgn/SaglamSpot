@@ -805,5 +805,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "Neue-Angebote-Benachrichtigungen",
+  "categoryWatchDescription": "Wir benachrichtigen dich, wenn ein neues Produkt in deinen verfolgten Kategorien hinzugefügt wird."
 }

@@ -2356,4 +2356,11 @@ class AppLocalizationsEl extends AppLocalizations {
       String category, String condition, String budget) {
     return 'Γεια σας, ψάχνω ένα $condition προϊόν στην κατηγορία $category. Ο προϋπολογισμός μου: $budget.';
   }
+
+  @override
+  String get categoryWatchSectionTitle => 'Ειδοποιήσεις Νέων Προϊόντων';
+
+  @override
+  String get categoryWatchDescription =>
+      'Θα σας ενημερώσουμε όταν προστεθεί νέο προϊόν στις κατηγορίες που παρακολουθείτε.';
 }

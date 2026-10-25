@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/common/extentions/product_category_ex.dart';
+import '../../../../core/providers/category_watch_provider.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/notification_service.dart';
@@ -22,6 +24,7 @@ import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
+import '../../../products/data/models/category_meta.dart';
 import '../../../products/presentation/widgets/admin_form_widgets.dart';
 
 /// Profil / Ayarlar sayfası. Uygulamada müşteri hesap sistemi yok —
@@ -116,6 +119,16 @@ class SettingsPage extends ConsumerWidget {
                       defaultTargetPlatform == TargetPlatform.android) ...[
                     const SizedBox(height: 12),
                     const _DynamicColorCard(),
+                  ],
+                  // Push bildirimleri şu an SADECE Android/iOS'ta çalışıyor
+                  // (web için Service Worker + VAPID anahtarı henüz kurulmadı,
+                  // bkz. docs/PUSH_NOTIFICATIONS.md) — bu kontrol bilerek
+                  // yalnızca native mobilde gösterilir, web'de hiç çağrılmaz.
+                  if (!kIsWeb) ...[
+                    const SizedBox(height: 24),
+                    _SectionLabel(context.l10n.categoryWatchSectionTitle),
+                    const SizedBox(height: 10),
+                    const _CategoryWatchCard(),
                   ],
                   const SizedBox(height: 24),
                   _SectionLabel(context.l10n.settingsGeneralSection),
@@ -632,6 +645,57 @@ class _PatternSwatch extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Takip edilen kategorileri seçmek için çip ızgarası — ürün bulma
+/// sihirbazının (product_finder_wizard.dart) kategori adımıyla aynı
+/// bileşeni (AtelierChoiceChip) ve aynı `defaultCategoryMeta` kaynağını
+/// kullanır, tutarlı bir görsel dil için.
+class _CategoryWatchCard extends ConsumerWidget {
+  const _CategoryWatchCard();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final watched = ref.watch(categoryWatchProvider);
+    final notifier = ref.read(categoryWatchProvider.notifier);
+
+    return AtelierPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xs, AppSpacing.xs, AppSpacing.xs, AppSpacing.md),
+            child: Text(
+              context.l10n.categoryWatchDescription,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.mobileTextSecondary,
+                height: 1.4,
+              ),
+            ),
+          ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: defaultCategoryMeta.values
+                .map((final meta) => AtelierChoiceChip(
+                      label: meta.category.label(context),
+                      icon: meta.icon,
+                      selected: watched.contains(meta.category),
+                      activeColor: meta.color,
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        notifier.toggle(meta.category);
+                      },
+                    ))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _LanguageTile extends StatelessWidget {

@@ -927,5 +927,7 @@
       "condition": {"type": "String"},
       "budget": {"type": "String"}
     }
-  }
+  },
+  "categoryWatchSectionTitle": "New Listing Alerts",
+  "categoryWatchDescription": "We'll let you know when a new item is added in the categories you're following."
 }

@@ -158,3 +158,32 @@ match /notification_subscriptions/{token} {
 - Web'de (tarayıcı) push bildirimleri için ayrıca bir Service Worker
   (`firebase-messaging-sw.js`) ve VAPID anahtarı gerekir — bu turda
   kapsam dışı bırakıldı (sadece Android/iOS native push aktif).
+
+### 3. Yeni ürün bildirimi / kategori takibi (`onProductCreated` içinde `notifyCategoryWatchers`)
+Ayarlar sayfasındaki (yalnızca native mobilde görünen, web'de push
+altyapısı olmadığı için gizli) "Yeni Ürün Bildirimleri" bölümünden
+kullanıcı istediği kategorileri işaretler. Bir SONRAKİ ürün o
+kategoride eklendiğinde (sıfır/spot farketmeksizin), SADECE o
+kategoriyi takip eden cihazlara kişiye özel bir bildirim gönderilir
+("Takip Ettiğin Kategoride Yeni Ürün! 🆕") — `notifyPriceDrop`'taki
+"sadece ilgilenene gönder" deseniyle aynı, günlük özetten ayrı,
+spam riski taşımaz.
+
+Flutter tarafı, cihazın takip ettiği kategorileri
+`category_watch_subscriptions/{fcmToken}` Firestore dokümanına
+`categories` (enum adı dizisi, ör. `["sofa","chair"]`) olarak yazar
+(bkz. `lib/core/services/category_watch_sync.dart`,
+`CategoryWatchNotifier` her kategori işaretleme/kaldırmada tetikler).
+
+### ⚠️ Bu özellik için de bir Firestore güvenlik kuralı eklemeniz GEREKİYOR
+
+`notification_subscriptions` için yukarıda eklediğiniz kuralın AYNISI,
+yeni koleksiyon için:
+
+```
+match /category_watch_subscriptions/{token} {
+  allow read: if false; // sadece Cloud Functions (Admin SDK) okur, kurallardan muaf
+  allow write: if request.resource.data.keys().hasOnly(['categories', 'updatedAt'])
+               && request.resource.data.categories is list;
+}
+```
