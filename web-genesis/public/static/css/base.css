@@ -85,6 +85,21 @@ button:focus-visible {
   color: var(--color-accent);
 }
 
+.cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
 #content {
   max-width: 960px;
   margin: 0 auto;
@@ -236,6 +251,104 @@ button:focus-visible {
   background: var(--color-primary-dark);
 }
 
+/* --- cart (sepet) --- */
+.cart-list {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.cart-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.cart-row-name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.cart-row-price {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 0.875rem;
+}
+
+.cart-row-qty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+}
+
+.cart-row-qty button {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.cart-row-subtotal {
+  margin: 0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cart-row-remove {
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--color-error);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: var(--space-xl) 0;
+  padding: var(--space-lg);
+  border-top: 2px solid var(--color-border);
+  font-size: 1.125rem;
+}
+
+.cart-send-btn {
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
+
+.cart-send-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.cart-note {
+  text-align: center;
+  font-size: 0.8125rem;
+  margin-top: var(--space-sm);
+}
+
+@media (max-width: 560px) {
+  .cart-row {
+    grid-template-columns: 1fr auto;
+    row-gap: var(--space-sm);
+  }
+}
+
 /* --- product grid / card --- */
 .product-grid {
   display: grid;
@@ -244,21 +357,62 @@ button:focus-visible {
 }
 
 .product-card {
-  display: block;
-  color: inherit;
+  display: flex;
+  flex-direction: column;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: transform var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
 }
 
-.product-card:hover,
-.product-card:focus-visible {
+.card-link {
+  display: block;
+  color: inherit;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.card-link:hover,
+.card-link:focus-visible {
   text-decoration: none;
   color: inherit;
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px -10px color-mix(in srgb, var(--color-primary-dark) 20%, transparent);
+}
+
+.cart-add-btn {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-lg);
+  transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+
+.cart-add-btn:hover,
+.cart-add-btn:focus-visible {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.cart-add-btn.is-in-cart {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: var(--color-surface);
+}
+
+.cart-add-btn-card {
+  margin: 0 var(--space-lg) var(--space-lg);
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
 }
 
 .card-image {

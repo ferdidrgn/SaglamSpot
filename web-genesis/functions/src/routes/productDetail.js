@@ -1,5 +1,6 @@
 const {renderLayout, escapeHtml} = require("../render/layout");
 const {getProductById, incrementWebViewCount} = require("../productRepo");
+const {productShareUrl} = require("../linkSigning");
 const business = require("../businessInfo");
 
 /**
@@ -70,7 +71,11 @@ module.exports = async function productDetailRoute(req, res) {
     ? "<p class=\"status status-error\">Bu ürünle şu anda bir müşteri ilgileniyor (rezerve).</p>"
     : "";
 
-  const whatsappMessage = `Merhaba, "${product.name}" ürünü hakkında bilgi almak istiyorum.`;
+  // lib/core/services/deeplink/deeplink_service.dart'taki
+  // contactAboutProduct() ile AYNI mesaj biçimi — esnafın WhatsApp'ta
+  // gördüğü metin, kaynağı web ya da mobil fark etmeksizin tutarlı olsun.
+  const shareUrl = productShareUrl(product.id, product.name);
+  const whatsappMessage = `Merhaba, "${product.name}" (₺${Math.round(product.price)}) ürünü ile ilgileniyorum.\n${shareUrl}`;
   const whatsappHref = business.whatsappUrl(whatsappMessage);
 
   const bodyHtml = `
@@ -83,7 +88,13 @@ module.exports = async function productDetailRoute(req, res) {
     ${reservedNote}
     ${product.desc ? `<p class="detail-desc">${escapeHtml(product.desc)}</p>` : ""}
     ${specHtml}
-    <a class="whatsapp-link" href="${escapeHtml(whatsappHref)}" rel="noopener">WhatsApp'tan sorun</a>
+    <div class="detail-actions">
+      <a class="whatsapp-link" href="${escapeHtml(whatsappHref)}" rel="noopener">WhatsApp'tan sorun</a>
+      <button type="button" class="cart-add-btn" data-cart-add
+        data-id="${escapeHtml(product.id)}"
+        data-name="${escapeHtml(product.name)}"
+        data-price="${product.price}">Sepete Ekle</button>
+    </div>
   </div>
 </section>`;
 

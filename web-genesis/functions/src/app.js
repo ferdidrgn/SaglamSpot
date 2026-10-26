@@ -3,6 +3,7 @@ const homeRoute = require("./routes/home");
 const {newProductsRoute, spotProductsRoute} = require("./routes/listing");
 const productDetailRoute = require("./routes/productDetail");
 const searchRoute = require("./routes/search");
+const cartRoute = require("./routes/cart");
 const {renderLayout} = require("./render/layout");
 
 const app = express();
@@ -12,6 +13,7 @@ app.get("/", homeRoute);
 app.get("/sifir", newProductsRoute);
 app.get("/spot", spotProductsRoute);
 app.get("/arama", searchRoute);
+app.get("/sepet", cartRoute);
 app.get("/product/:slugWithId", productDetailRoute);
 
 app.use((req, res) => {

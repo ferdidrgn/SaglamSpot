@@ -10,6 +10,15 @@ const {createHmac} = require("node:crypto");
 
 const HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
 
+/**
+ * lib/core/services/deeplink/deeplink_service.dart'taki `_domain` ile
+ * AYNI — WhatsApp mesajlarına eklenen linkler BİLEREK bu (şu an canlı
+ * olan Flutter) adrese işaret ediyor, web-genesis'in henüz yayında
+ * olmayan kendi adresine değil. web-genesis canlıya alınıp bu domain'i
+ * devraldığında burası da güncellenmeli.
+ */
+const SHARE_DOMAIN = "https://saglamspotcu.web.app";
+
 function signProductId(id) {
   return createHmac("sha256", HMAC_SECRET).update(id, "utf8").digest("hex");
 }
@@ -33,4 +42,23 @@ function productPath(id, name) {
   return `/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${sig}`;
 }
 
-module.exports = {signProductId, toSlug, productPath};
+/** Aynı ürün, WhatsApp mesajlarında kullanılan MUTLAK (SHARE_DOMAIN'li) link. */
+function productShareUrl(id, name) {
+  const slug = toSlug(name);
+  const sig = signProductId(id);
+  return `${SHARE_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${sig}`;
+}
+
+// lib/core/services/deeplink/deeplink_service.dart'taki encodeCartItemsParam
+// ile AYNI format: "id1:adet1,id2:adet2".
+function encodeCartItemsParam(items) {
+  return items.map((i) => `${i.id}:${i.quantity}`).join(",");
+}
+
+function cartShareUrl(items) {
+  const itemsParam = encodeCartItemsParam(items);
+  const sig = signProductId(itemsParam);
+  return `${SHARE_DOMAIN}/cart?items=${encodeURIComponent(itemsParam)}&sig=${sig}`;
+}
+
+module.exports = {signProductId, toSlug, productPath, productShareUrl, encodeCartItemsParam, cartShareUrl, SHARE_DOMAIN};

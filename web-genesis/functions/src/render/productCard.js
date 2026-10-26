@@ -15,17 +15,23 @@ function renderProductCard(product) {
     : "<div class=\"card-image-placeholder\" aria-hidden=\"true\">Görsel yok</div>";
 
   return `
-<a class="product-card" href="${escapeHtml(product.path)}">
-  <div class="card-image">
-    ${imageHtml}
-    <div class="card-badges">${conditionBadge}${reservedBadge}</div>
-  </div>
-  <div class="card-body">
-    <p class="card-category">${escapeHtml(product.categoryLabel)}</p>
-    <h3 class="card-name">${escapeHtml(product.name)}</h3>
-    <p class="card-price">${previousPriceHtml}<span class="price-current">${escapeHtml(product.priceLabel)}</span></p>
-  </div>
-</a>`;
+<div class="product-card">
+  <a class="card-link" href="${escapeHtml(product.path)}">
+    <div class="card-image">
+      ${imageHtml}
+      <div class="card-badges">${conditionBadge}${reservedBadge}</div>
+    </div>
+    <div class="card-body">
+      <p class="card-category">${escapeHtml(product.categoryLabel)}</p>
+      <h3 class="card-name">${escapeHtml(product.name)}</h3>
+      <p class="card-price">${previousPriceHtml}<span class="price-current">${escapeHtml(product.priceLabel)}</span></p>
+    </div>
+  </a>
+  <button type="button" class="cart-add-btn cart-add-btn-card" data-cart-add
+    data-id="${escapeHtml(product.id)}"
+    data-name="${escapeHtml(product.name)}"
+    data-price="${product.price}">Sepete Ekle</button>
+</div>`;
 }
 
 function renderProductGrid(products, emptyMessage = "Şu anda bu kategoride ürün bulunmuyor.") {
