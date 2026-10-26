@@ -1,0 +1,89 @@
+/*
+ * "Atölye" tasarım sistemi — lib/core/theme/app_colors.dart ve
+ * lib/core/theme/app_tokens.dart'taki değerlerin CSS karşılığı. Yeni bir
+ * hex/ölçü İCAT ETME — oradaki dosyalar değişirse önce buraya taşı.
+ */
+:root {
+  /* --- spacing (AppSpacing) --- */
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-xxl: 24px;
+  --space-xxxl: 32px;
+  --space-huge: 40px;
+  --space-screen: 16px;
+  --space-section: 28px;
+
+  /* --- radius (AppRadius) --- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* --- motion (AppMotion) --- */
+  --motion-fast: 150ms;
+  --motion-normal: 220ms;
+  --motion-slow: 320ms;
+  --ease-standard: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-move: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  /* --- fonts --- */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* --- colors: light (AppColors, _dark == false) --- */
+  --color-bg: #F5EFE6;
+  --color-surface: #FFFDF9;
+  --color-secondary: #EDE3D3;
+  --color-secondary-variant: #E0D3BC;
+  --color-muted: #CFC0A8;
+  --color-muted-dark: #B5A488;
+  --color-text-primary: #3E2F23;
+  --color-text-secondary: #6B5744;
+  --color-text-tertiary: #8F7D6B;
+  --color-border: #E0D3BC;
+  --color-divider: #EDE3D3;
+  --color-primary: #3E2F23;
+  --color-primary-dark: #241A13;
+  --color-primary-light: #6B5744;
+  --color-accent: #A9714B;
+  --color-accent-dark: #8B5A3A;
+  --color-accent-light: #C79868;
+  --color-success: #7C8B6F;
+  --color-warning: #C98A4B;
+  --color-error: #B4543A;
+  --color-info: #6E7D8F;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --- colors: dark (AppColors, _dark == true) --- */
+    --color-bg: #1C140E;
+    --color-surface: #3D2E22;
+    --color-secondary: #4A3826;
+    --color-secondary-variant: #5C4630;
+    --color-muted: #8A7560;
+    --color-muted-dark: #A8927A;
+    --color-text-primary: #F7F0E6;
+    --color-text-secondary: #DCCBB4;
+    --color-text-tertiary: #B4A088;
+    --color-border: #5C4630;
+    --color-divider: #4A3826;
+    --color-primary: #E0B074;
+    --color-primary-dark: #C79868;
+    --color-primary-light: #F0D4A8;
+    --color-accent: #E8B573;
+    --color-accent-dark: #D09850;
+    --color-accent-light: #F2D4A0;
+    --color-success: #A8C296;
+    --color-warning: #E8B984;
+    --color-error: #E08A70;
+    --color-info: #9DB2C7;
+  }
+}

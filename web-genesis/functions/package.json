@@ -1,0 +1,18 @@
+{
+  "name": "web-genesis-functions",
+  "description": "Sağlam Spot — web-genesis SSR fonksiyonu. Ayrı bir Functions codebase'dir (bkz. firebase.json), mevcut functions/ (remove.bg/sitemap/prerender) ile kodu ve deploy yaşam döngüsü bakımından tamamen bağımsızdır.",
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "scripts": {
+    "deploy": "firebase deploy --only functions:genesis",
+    "logs": "firebase functions:log --only genesisApp"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
+  },
+  "private": true
+}
