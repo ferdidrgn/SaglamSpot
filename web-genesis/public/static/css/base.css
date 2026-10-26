@@ -184,6 +184,58 @@ button:focus-visible {
   margin-bottom: var(--space-lg);
 }
 
+/* --- search form --- */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-section);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.search-form input,
+.search-form select {
+  font: inherit;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.search-form input[type="search"] {
+  flex: 2 1 200px;
+}
+
+.search-form select {
+  flex: 1 1 140px;
+}
+
+.search-form input[type="number"] {
+  flex: 1 1 90px;
+  width: 0;
+}
+
+.search-form button {
+  flex: 0 0 auto;
+  font: inherit;
+  font-weight: 600;
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  cursor: pointer;
+}
+
+.search-form button:hover,
+.search-form button:focus-visible {
+  background: var(--color-primary-dark);
+}
+
 /* --- product grid / card --- */
 .product-grid {
   display: grid;
