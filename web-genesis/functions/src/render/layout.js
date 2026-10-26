@@ -11,21 +11,19 @@ const business = require("../businessInfo");
  * sürece agresif önbellekleme güvenli, değiştiğinde URL de değişip anında
  * yeni içerik çeker. Build adımı olmadan (hand-rolled) basit bir çözüm.
  */
-function hashAsset(relativePath) {
-  try {
-    const fullPath = path.join(__dirname, "../../../public", relativePath);
-    const content = fs.readFileSync(fullPath);
-    return crypto.createHash("sha256").update(content).digest("hex").slice(0, 10);
-  } catch (_) {
-    return "0";
+const _assetHashCache = {};
+function versionedAsset(relativePath) {
+  if (!_assetHashCache[relativePath]) {
+    try {
+      const fullPath = path.join(__dirname, "../../../public", relativePath);
+      const content = fs.readFileSync(fullPath);
+      _assetHashCache[relativePath] = crypto.createHash("sha256").update(content).digest("hex").slice(0, 10);
+    } catch (_) {
+      _assetHashCache[relativePath] = "0";
+    }
   }
+  return `/${relativePath}?v=${_assetHashCache[relativePath]}`;
 }
-
-const ASSET_VERSIONS = {
-  "tokens.css": hashAsset("static/css/tokens.css"),
-  "base.css": hashAsset("static/css/base.css"),
-  "main.js": hashAsset("static/js/main.js"),
-};
 
 const SITE_NAME = "Sağlam Spot";
 const NAV_ITEMS = [
@@ -58,6 +56,8 @@ function renderLayout({
   bodyHtml,
   jsonLd = null,
   robots = "index, follow",
+  extraScripts = [],
+  inlineData = null,
 }) {
   const fullTitle = title ? `${title} – ${SITE_NAME}` : `${SITE_NAME} – Spot & Sıfır Mobilya`;
   const safeDescription = escapeHtml(description || "Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot, 20 yıllık esnaf güvencesiyle hizmetinizde.");
@@ -81,8 +81,8 @@ function renderLayout({
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/tokens.css?v=${ASSET_VERSIONS["tokens.css"]}">
-<link rel="stylesheet" href="/static/css/base.css?v=${ASSET_VERSIONS["base.css"]}">
+<link rel="stylesheet" href="${versionedAsset("static/css/tokens.css")}">
+<link rel="stylesheet" href="${versionedAsset("static/css/base.css")}">
 ${jsonLdHtml}
 </head>
 <body>
@@ -100,7 +100,9 @@ ${bodyHtml}
   <p><a href="${business.whatsappUrl()}" rel="noopener">WhatsApp: ${escapeHtml(business.displayPhone)}</a></p>
   <p>&copy; ${new Date().getFullYear()} ${SITE_NAME}</p>
 </footer>
-<script src="/static/js/main.js?v=${ASSET_VERSIONS["main.js"]}" defer></script>
+<script src="${versionedAsset("static/js/main.js")}" defer></script>
+${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}
+${extraScripts.map((s) => `<script src="${versionedAsset(s)}" type="module"></script>`).join("\n")}
 </body>
 </html>`;
 }

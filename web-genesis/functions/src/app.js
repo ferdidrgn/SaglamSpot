@@ -4,6 +4,7 @@ const {newProductsRoute, spotProductsRoute} = require("./routes/listing");
 const productDetailRoute = require("./routes/productDetail");
 const searchRoute = require("./routes/search");
 const cartRoute = require("./routes/cart");
+const {loginRoute, dashboardRoute} = require("./routes/admin");
 const {renderLayout} = require("./render/layout");
 
 const app = express();
@@ -14,6 +15,8 @@ app.get("/sifir", newProductsRoute);
 app.get("/spot", spotProductsRoute);
 app.get("/arama", searchRoute);
 app.get("/sepet", cartRoute);
+app.get("/admin/login", loginRoute);
+app.get("/admin", dashboardRoute);
 app.get("/product/:slugWithId", productDetailRoute);
 
 app.use((req, res) => {

@@ -251,6 +251,217 @@ button:focus-visible {
   background: var(--color-primary-dark);
 }
 
+/* --- admin panel --- */
+.admin-narrow {
+  max-width: 480px;
+}
+
+.admin-toolbar {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.admin-toolbar button,
+.admin-form button[type="submit"] {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.admin-secondary-btn {
+  background: var(--color-secondary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-danger-btn {
+  background: none;
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-md);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.admin-form {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.admin-form label {
+  display: grid;
+  gap: var(--space-xs);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form input[type="email"],
+.admin-form input[type="password"],
+.admin-form input[type="file"],
+.admin-form select,
+.admin-form textarea {
+  font: inherit;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.admin-radio-group {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.admin-radio-group legend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-xs);
+}
+
+.admin-radio-group label,
+.admin-checkbox-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: 400;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-primary-dark) 55%, transparent);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-xxl) var(--space-lg);
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.admin-modal-content {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xxl);
+  max-width: 560px;
+  width: 100%;
+}
+
+.admin-modal-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+}
+
+.admin-table {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: var(--space-lg);
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.admin-row-thumb {
+  width: 80px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-secondary);
+}
+
+.admin-row-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-row-name {
+  margin: 0;
+  font-weight: 700;
+}
+
+.admin-row-meta {
+  margin: var(--space-xxs) 0 0;
+  color: var(--color-text-tertiary);
+  font-size: 0.8125rem;
+}
+
+.admin-row-flags {
+  margin: var(--space-xs) 0 0;
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.badge-sold {
+  background: var(--color-error);
+  color: var(--color-surface);
+}
+
+.admin-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  justify-content: flex-end;
+}
+
+.admin-row-actions button {
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+@media (max-width: 640px) {
+  .admin-row {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .admin-row-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
 /* --- cart (sepet) --- */
 .cart-list {
   display: grid;
