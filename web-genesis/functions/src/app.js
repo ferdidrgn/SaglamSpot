@@ -1,11 +1,16 @@
 const express = require("express");
 const homeRoute = require("./routes/home");
+const {newProductsRoute, spotProductsRoute} = require("./routes/listing");
+const productDetailRoute = require("./routes/productDetail");
 const {renderLayout} = require("./render/layout");
 
 const app = express();
 app.disable("x-powered-by");
 
 app.get("/", homeRoute);
+app.get("/sifir", newProductsRoute);
+app.get("/spot", spotProductsRoute);
+app.get("/product/:slugWithId", productDetailRoute);
 
 app.use((req, res) => {
   res.status(404).send(renderLayout({

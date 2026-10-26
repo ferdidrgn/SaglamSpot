@@ -1,44 +1,62 @@
-const {getDb} = require("../firebaseAdmin");
 const {renderLayout, escapeHtml} = require("../render/layout");
+const {renderProductGrid} = require("../render/productCard");
+const {listActiveProducts} = require("../productRepo");
 const business = require("../businessInfo");
 
-/**
- * Faz 0 iskelet ana sayfası: Firestore bağlantısını kanıtlamak için
- * satılmamış ürün sayısını (aggregation query, doküman içeriği çekmeden)
- * okuyup gösterir. Gerçek vitrin listelemesi Faz 1'de burayı değiştirir.
- */
 module.exports = async function homeRoute(req, res) {
-  let productCount = null;
+  let products = [];
   let firestoreError = null;
 
   try {
-    const snapshot = await getDb()
-        .collection("Product")
-        .where("isSold", "==", false)
-        .count()
-        .get();
-    productCount = snapshot.data().count;
+    products = (await listActiveProducts({limit: 200})).slice(0, 12);
   } catch (err) {
     firestoreError = err.message;
   }
 
-  const statusHtml = firestoreError
-    ? `<p class="status status-error">Firestore bağlantı hatası: ${escapeHtml(firestoreError)}</p>`
-    : `<p class="status status-ok">Firestore bağlantısı çalışıyor — şu anda satışta <strong>${productCount}</strong> ürün var.</p>`;
+  const gridHtml = firestoreError
+    ? `<p class="status status-error">Ürünler yüklenemedi: ${escapeHtml(firestoreError)}</p>`
+    : renderProductGrid(products, "Şu anda vitrinde ürün yok.");
 
   const bodyHtml = `
 <section class="hero">
-  <p class="eyebrow">web-genesis — Faz 0 iskelet</p>
-  <h1>Sağlam Spot'un yeni web vitrini inşa ediliyor</h1>
-  <p class="lede">Bu sayfa henüz vitrin değil; sunucu tarafı render (SSR) + Firestore bağlantısının çalıştığını doğruluyor.</p>
-  ${statusHtml}
+  <p class="eyebrow">İçerenköy'de 20+ yıllık esnaf güvencesi</p>
+  <h1>Sıfır ve spot mobilyada en uygun fiyatlar</h1>
+  <p class="lede">Beğendiğiniz ürünü WhatsApp'tan sorun, mağazada görüp pazarlık edin. Online ödeme yok — vitrin + WhatsApp + yol tarifi.</p>
   <p><a class="whatsapp-link" href="${business.whatsappUrl()}" rel="noopener">WhatsApp'tan yazın: ${escapeHtml(business.displayPhone)}</a></p>
+</section>
+
+<section class="section">
+  <h2>Yeni Eklenenler</h2>
+  ${gridHtml}
 </section>`;
 
-  res.set("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.set("Cache-Control", "public, max-age=60");
   res.status(200).send(renderLayout({
     title: "Ana Sayfa",
     path: "/",
     bodyHtml,
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "FurnitureStore",
+      "name": "Sağlam Spot",
+      "telephone": `+${business.phoneNumberIntl}`,
+      "email": business.email,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": business.address.line,
+        "addressLocality": business.address.district,
+        "addressRegion": business.address.city,
+        "addressCountry": business.address.country,
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": business.geo.latitude,
+        "longitude": business.geo.longitude,
+      },
+      "openingHoursSpecification": business.openingHoursSpecification.map((spec) => ({
+        "@type": "OpeningHoursSpecification",
+        ...spec,
+      })),
+    },
   }));
 };
