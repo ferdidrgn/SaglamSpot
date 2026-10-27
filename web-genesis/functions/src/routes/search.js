@@ -2,12 +2,7 @@ const {renderLayout, escapeHtml} = require("../render/layout");
 const {renderProductGrid} = require("../render/productCard");
 const {listActiveProducts} = require("../productRepo");
 const {CATEGORY_LABELS} = require("../categories");
-
-const CONDITION_OPTIONS = [
-  ["all", "Tümü"],
-  ["new", "Sıfır"],
-  ["used", "İkinci El"],
-];
+const {t} = require("../i18n");
 
 function normalizeText(value) {
   return (value || "").toLocaleLowerCase("tr-TR").trim();
@@ -20,6 +15,7 @@ function normalizeText(value) {
  * filtreleme bellekte yapılır (envanter boyutu için yeterince hızlı).
  */
 module.exports = async function searchRoute(req, res) {
+  const locale = req.locale;
   const q = (req.query.q || "").toString();
   const category = (req.query.category || "").toString();
   const condition = (req.query.condition || "all").toString();
@@ -46,37 +42,42 @@ module.exports = async function searchRoute(req, res) {
     firestoreError = err.message;
   }
 
-  const categoryOptionsHtml = [["", "Tüm Kategoriler"], ...Object.entries(CATEGORY_LABELS)]
+  const categoryOptionsHtml = [["", t(locale, "conditionAll")], ...Object.keys(CATEGORY_LABELS).map((key) => [key, t(locale, "category" + key.charAt(0).toUpperCase() + key.slice(1))])]
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === category ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
-  const conditionOptionsHtml = CONDITION_OPTIONS
+  const conditionOptionsHtml = [["all", t(locale, "conditionAll")], ["new", t(locale, "conditionNew")], ["used", t(locale, "conditionUsed")]]
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === condition ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
   const resultsHtml = firestoreError
-    ? `<p class="status status-error">Arama yapılamadı: ${escapeHtml(firestoreError)}</p>`
-    : renderProductGrid(products, "Bu kriterlere uyan ürün bulunamadı.");
+    ? `<p class="status status-error">${escapeHtml(firestoreError)}</p>`
+    : renderProductGrid(products, locale, products.length ? null : t(locale, "searchEmptyMessage"));
 
   const hasQuery = q || category || condition !== "all" || minPrice != null || maxPrice != null;
 
   const bodyHtml = `
 <section class="section-header">
-  <p class="eyebrow">Ürün Ara</p>
-  <h1>Ne arıyorsunuz?</h1>
+  <p class="eyebrow">${escapeHtml(t(locale, "category"))}</p>
+  <h1>${escapeHtml(t(locale, "searchHint"))}</h1>
 </section>
 <form class="search-form" method="get" action="/arama">
-  <input type="search" name="q" placeholder="Ürün adı..." value="${escapeHtml(q)}" aria-label="Ürün adı ara">
-  <select name="category" aria-label="Kategori">${categoryOptionsHtml}</select>
-  <select name="condition" aria-label="Durum">${conditionOptionsHtml}</select>
-  <input type="number" name="minPrice" placeholder="Min ₺" min="0" value="${minPrice != null ? escapeHtml(String(minPrice)) : ""}" aria-label="Minimum fiyat">
-  <input type="number" name="maxPrice" placeholder="Max ₺" min="0" value="${maxPrice != null ? escapeHtml(String(maxPrice)) : ""}" aria-label="Maksimum fiyat">
-  <button type="submit">Ara</button>
+  <input type="search" name="q" placeholder="${escapeHtml(t(locale, "productNameLabel"))}" value="${escapeHtml(q)}" aria-label="${escapeHtml(t(locale, "productNameLabel"))}">
+  <select name="category" aria-label="${escapeHtml(t(locale, "category"))}">${categoryOptionsHtml}</select>
+  <select name="condition" aria-label="${escapeHtml(t(locale, "condition"))}">${conditionOptionsHtml}</select>
+  <input type="number" name="minPrice" placeholder="Min ₺" min="0" value="${minPrice != null ? escapeHtml(String(minPrice)) : ""}" aria-label="${escapeHtml(t(locale, "priceRange"))}">
+  <input type="number" name="maxPrice" placeholder="Max ₺" min="0" value="${maxPrice != null ? escapeHtml(String(maxPrice)) : ""}" aria-label="${escapeHtml(t(locale, "priceRange"))}">
+  <button type="submit">${escapeHtml(t(locale, "apply"))}</button>
 </form>
 <section class="section">
-  ${hasQuery ? resultsHtml : "<p class=\"empty-state\">Aramak için yukarıdaki alanları kullanın.</p>"}
+  ${hasQuery ? resultsHtml : `<p class="empty-state">${escapeHtml(t(locale, "searchEmptyTitle"))}</p>`}
 </section>`;
 
   res.set("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.status(200).send(renderLayout({title: "Ara", path: "/arama", bodyHtml}));
+  res.status(200).send(renderLayout({
+    title: t(locale, "searchHint"),
+    path: "/arama",
+    bodyHtml,
+    locale,
+  }));
 };

@@ -5,10 +5,12 @@ const productDetailRoute = require("./routes/productDetail");
 const searchRoute = require("./routes/search");
 const cartRoute = require("./routes/cart");
 const {loginRoute, dashboardRoute} = require("./routes/admin");
+const {localeMiddleware} = require("./localeMiddleware");
 const {renderLayout} = require("./render/layout");
 
 const app = express();
 app.disable("x-powered-by");
+app.use(localeMiddleware);
 
 app.get("/", homeRoute);
 app.get("/sifir", newProductsRoute);
@@ -23,6 +25,7 @@ app.use((req, res) => {
   res.status(404).send(renderLayout({
     title: "Sayfa bulunamadı",
     path: req.path,
+    locale: req.locale,
     bodyHtml: "<section class=\"not-found\"><h1>Sayfa bulunamadı</h1><p>Aradığınız sayfa mevcut değil.</p></section>",
   }));
 });

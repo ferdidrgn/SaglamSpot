@@ -2,8 +2,10 @@ const {renderLayout, escapeHtml} = require("../render/layout");
 const {renderProductGrid} = require("../render/productCard");
 const {listActiveProducts} = require("../productRepo");
 const business = require("../businessInfo");
+const {t} = require("../i18n");
 
 module.exports = async function homeRoute(req, res) {
+  const locale = req.locale;
   let products = [];
   let firestoreError = null;
 
@@ -14,31 +16,33 @@ module.exports = async function homeRoute(req, res) {
   }
 
   const gridHtml = firestoreError
-    ? `<p class="status status-error">Ürünler yüklenemedi: ${escapeHtml(firestoreError)}</p>`
-    : renderProductGrid(products, "Şu anda vitrinde ürün yok.");
+    ? `<p class="status status-error">${escapeHtml(firestoreError)}</p>`
+    : renderProductGrid(products, locale);
 
   const bodyHtml = `
 <section class="hero">
-  <p class="eyebrow">İçerenköy'de 20+ yıllık esnaf güvencesi</p>
-  <h1>Sıfır ve spot mobilyada en uygun fiyatlar</h1>
-  <p class="lede">Beğendiğiniz ürünü WhatsApp'tan sorun, mağazada görüp pazarlık edin. Online ödeme yok — vitrin + WhatsApp + yol tarifi.</p>
-  <p><a class="whatsapp-link" href="${business.whatsappUrl()}" rel="noopener">WhatsApp'tan yazın: ${escapeHtml(business.displayPhone)}</a></p>
+  <p class="eyebrow">${escapeHtml(t(locale, "newSeason"))}</p>
+  <h1>${escapeHtml(t(locale, "heroTitle")).replace(/\n/g, "<br>")}</h1>
+  <p class="lede">${escapeHtml(t(locale, "easyFind"))}</p>
+  <p><a class="whatsapp-link" href="${business.whatsappUrl()}" rel="noopener">${escapeHtml(t(locale, "whatsappCta"))}: <bdi>${escapeHtml(business.displayPhone)}</bdi></a></p>
 </section>
 
 <section class="section">
-  <h2>Yeni Eklenenler</h2>
+  <h2>${escapeHtml(t(locale, "newCollectionSub"))}</h2>
   ${gridHtml}
 </section>`;
 
   res.set("Cache-Control", "public, max-age=60");
   res.status(200).send(renderLayout({
-    title: "Ana Sayfa",
+    title: null,
+    description: t(locale, "seoHomeDesc"),
     path: "/",
     bodyHtml,
+    locale,
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "FurnitureStore",
-      "name": "Sağlam Spot",
+      "name": business.brandName,
       "telephone": `+${business.phoneNumberIntl}`,
       "email": business.email,
       "address": {

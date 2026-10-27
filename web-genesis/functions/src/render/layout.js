@@ -2,6 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const business = require("../businessInfo");
+const {t, isRtl, SUPPORTED_LOCALES, DEFAULT_LOCALE, NATIVE_NAMES} = require("../i18n");
 
 /**
  * Statik dosyalar `/static/**` için agresif tarayıcı önbelleklemesi var
@@ -25,17 +26,6 @@ function versionedAsset(relativePath) {
   return `/${relativePath}?v=${_assetHashCache[relativePath]}`;
 }
 
-const SITE_NAME = "Sağlam Spot";
-const NAV_ITEMS = [
-  {href: "/", label: "Ana Sayfa"},
-  {href: "/sifir", label: "Sıfır Ürünler"},
-  {href: "/spot", label: "Spot Ürünler"},
-  {href: "/arama", label: "Ara"},
-  {href: "/hakkimizda", label: "Hakkımızda"},
-  {href: "/sss", label: "SSS"},
-  {href: "/sepet", label: "Sepet"},
-];
-
 function escapeHtml(value) {
   return String(value)
       .replace(/&/g, "&amp;")
@@ -43,6 +33,22 @@ function escapeHtml(value) {
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
+}
+
+// Arama sekmesi bilerek metin yerine evrensel bir ikon kullanıyor — ARB'de
+// tek kelimelik bağımsız bir "Ara" anahtarı yok ve 11 dilin hepsi için
+// güvenilir bir kaynak olmadan kendimiz çeviri UYDURMUYORUZ (brief'in
+// açık isteği). İkon bu sorunu dile bağımlı olmadan çözüyor.
+function navItems(locale, path) {
+  return [
+    {href: "/", label: t(locale, "home")},
+    {href: "/sifir", label: t(locale, "newCollection")},
+    {href: "/spot", label: t(locale, "spotProducts")},
+    {href: "/arama", label: "🔍", ariaLabel: t(locale, "filter")},
+    {href: "/hakkimizda", label: t(locale, "aboutUs")},
+    {href: "/sss", label: t(locale, "sss")},
+    {href: "/sepet", label: t(locale, "cartTitle"), cart: true},
+  ];
 }
 
 /**
@@ -58,20 +64,27 @@ function renderLayout({
   robots = "index, follow",
   extraScripts = [],
   inlineData = null,
+  locale = DEFAULT_LOCALE,
 }) {
-  const fullTitle = title ? `${title} – ${SITE_NAME}` : `${SITE_NAME} – Spot & Sıfır Mobilya`;
-  const safeDescription = escapeHtml(description || "Spot ve sıfır mobilyalarda en uygun fiyatlar. Sağlam Spot, 20 yıllık esnaf güvencesiyle hizmetinizde.");
+  const siteName = business.brandName;
+  const fullTitle = title ? `${title} – ${siteName}` : t(locale, "seoHomeTitle");
+  const safeDescription = escapeHtml(description || t(locale, "seoHomeDesc"));
 
-  const navHtml = NAV_ITEMS.map((item) => {
+  const navHtml = navItems(locale, path).map((item) => {
     const active = item.href === path ? " aria-current=\"page\"" : "";
-    const badge = item.href === "/sepet" ? " <span id=\"cart-badge\" class=\"cart-badge\" hidden>0</span>" : "";
-    return `<a class="nav-link" href="${escapeHtml(item.href)}"${active}>${escapeHtml(item.label)}${badge}</a>`;
+    const aria = item.ariaLabel ? ` aria-label="${escapeHtml(item.ariaLabel)}"` : "";
+    const badge = item.cart ? " <span id=\"cart-badge\" class=\"cart-badge\" hidden>0</span>" : "";
+    return `<a class="nav-link" href="${escapeHtml(item.href)}"${active}${aria}>${item.label}${badge}</a>`;
   }).join("\n");
 
+  const langOptionsHtml = SUPPORTED_LOCALES.map((loc) =>
+    `<option value="${loc}" ${loc === locale ? "selected" : ""}>${escapeHtml(NATIVE_NAMES[loc])}</option>`).join("");
+
   const jsonLdHtml = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : "";
+  const dir = isRtl(locale) ? "rtl" : "ltr";
 
   return `<!DOCTYPE html>
-<html lang="tr">
+<html lang="${locale}" dir="${dir}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,18 +100,21 @@ ${jsonLdHtml}
 </head>
 <body>
 <header class="site-header">
-  <a class="brand" href="/">${SITE_NAME}</a>
-  <nav class="site-nav" aria-label="Ana gezinme">
-    ${navHtml}
-  </nav>
+  <a class="brand" href="/">${escapeHtml(siteName)}</a>
+  <div class="site-nav-group">
+    <nav class="site-nav" aria-label="${escapeHtml(t(locale, "home"))}">
+      ${navHtml}
+    </nav>
+    <select id="lang-switcher" data-lang-switcher aria-label="Language">${langOptionsHtml}</select>
+  </div>
 </header>
 <main id="content">
 ${bodyHtml}
 </main>
 <footer class="site-footer">
   <p>${escapeHtml(business.address.line)}, ${escapeHtml(business.address.district)}/${escapeHtml(business.address.city)}</p>
-  <p><a href="${business.whatsappUrl()}" rel="noopener">WhatsApp: ${escapeHtml(business.displayPhone)}</a></p>
-  <p>&copy; ${new Date().getFullYear()} ${SITE_NAME}</p>
+  <p><a href="${business.whatsappUrl()}" rel="noopener">WhatsApp: <bdi>${escapeHtml(business.displayPhone)}</bdi></a></p>
+  <p>${escapeHtml(t(locale, "allRightsReserved"))}</p>
 </footer>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
 ${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}

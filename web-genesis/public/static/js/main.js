@@ -3,6 +3,9 @@
 // sepet durumu bilmez. Burada üretilen ürün/sepet linkleri ve HMAC imzası
 // lib/core/services/deeplink/deeplink_service.dart ile AYNI algoritma —
 // DEĞİŞTİRME (bkz. web-genesis/functions/src/linkSigning.js'teki not).
+// Çevrilen metinler (locale'e bağlı) sayfanın kendisinden window.__DATA__
+// üzerinden geliyor (bkz. /sepet route'u) — burada ikinci bir i18n motoru
+// kurulmuyor.
 (function () {
   "use strict";
 
@@ -10,6 +13,7 @@
   const HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
   const SHARE_DOMAIN = "https://saglamspotcu.web.app";
   const PHONE = "905392019961";
+  const CART_STRINGS = (window.__DATA__ && window.__DATA__.cartStrings) || {};
 
   function readCart() {
     try {
@@ -115,13 +119,17 @@
     return `${SHARE_DOMAIN}/cart?items=${encodeURIComponent(itemsParam)}&sig=${sig}`;
   }
 
+  // Buton metni locale'e göre sunucuda zaten doğru basıldı (t(locale,
+  // 'addToCartCta')) — istemci sadece "sepette mi" görsel durumunu
+  // (yeşil arkaplan) değiştiriyor, metni DEĞİŞTİRMİYOR. Böylece "kaldır"
+  // kelimesi için ayrı bir çeviri kaynağına ihtiyaç kalmıyor.
   function wireAddButtons() {
     document.querySelectorAll("[data-cart-add]").forEach((btn) => {
       const id = btn.dataset.id;
       const sync = () => {
         const inCart = findIndex(readCart(), id) !== -1;
         btn.classList.toggle("is-in-cart", inCart);
-        btn.textContent = inCart ? "Sepette ✓ (Kaldır)" : "Sepete Ekle";
+        btn.setAttribute("aria-pressed", String(inCart));
       };
       sync();
       btn.addEventListener("click", () => {
@@ -140,7 +148,7 @@
       const items = readCart();
 
       if (!items.length) {
-        root.innerHTML = "<p class=\"empty-state\">Sepetiniz boş. Beğendiğiniz ürünlerde \"Sepete Ekle\"ye basın.</p>";
+        root.innerHTML = `<p class="empty-state">${escapeHtml(CART_STRINGS.empty || "")}</p>`;
         return;
       }
 
@@ -151,12 +159,12 @@
             <p class="cart-row-price">${formatPrice(item.price)}</p>
           </div>
           <div class="cart-row-qty">
-            <button type="button" data-qty-dec aria-label="Azalt">−</button>
+            <button type="button" data-qty-dec aria-label="−">−</button>
             <span>${item.quantity}</span>
-            <button type="button" data-qty-inc aria-label="Artır">+</button>
+            <button type="button" data-qty-inc aria-label="+">+</button>
           </div>
           <p class="cart-row-subtotal">${formatPrice(item.price * item.quantity)}</p>
-          <button type="button" class="cart-row-remove" data-remove aria-label="Kaldır">Kaldır</button>
+          <button type="button" class="cart-row-remove" data-remove>${escapeHtml(CART_STRINGS.remove || "")}</button>
         </div>`).join("");
 
       const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -164,11 +172,11 @@
       root.innerHTML = `
         <div class="cart-list">${rowsHtml}</div>
         <div class="cart-total">
-          <span>Toplam</span>
+          <span>${escapeHtml(CART_STRINGS.total || "")}</span>
           <strong>${formatPrice(total)}</strong>
         </div>
-        <button type="button" class="whatsapp-link cart-send-btn" data-send-whatsapp>Sepeti WhatsApp'tan Gönder</button>
-        <p class="cart-note">Online ödeme yok — mesajı gönderdikten sonra mağazadan dönüş bekleyin.</p>`;
+        <button type="button" class="whatsapp-link cart-send-btn" data-send-whatsapp>${escapeHtml(CART_STRINGS.sendButton || "")}</button>
+        <p class="cart-note">${escapeHtml(CART_STRINGS.note || "")}</p>`;
 
       root.querySelectorAll("[data-row]").forEach((row) => {
         const id = row.dataset.row;
@@ -197,11 +205,12 @@
       if (sendBtn) {
         sendBtn.addEventListener("click", async () => {
           sendBtn.disabled = true;
-          sendBtn.textContent = "Hazırlanıyor...";
+          sendBtn.textContent = (CART_STRINGS.sending || "…");
           try {
             // lib/features/cart/presentation/pages/cart_page.dart
-            // _sendCartToWhatsApp ile AYNI mesaj biçimi.
-            let message = "Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n";
+            // _sendCartToWhatsApp ile AYNI mesaj biçimi (çeviriler
+            // cartWhatsappGreeting/cartWhatsappAllProductsLine'dan).
+            let message = CART_STRINGS.greeting || "";
             for (const item of items) {
               const link = await productShareUrl(item.id, item.name);
               message += `• ${item.name}`;
@@ -209,20 +218,31 @@
               message += ` — ${Math.round(item.price * item.quantity)}₺\n`;
               message += `  ${link}\n\n`;
             }
-            message += `Toplam: ${Math.round(total)}₺\n\n`;
+            message += `${CART_STRINGS.total || "Toplam"}: ${Math.round(total)}₺\n\n`;
             const cartUrl = await cartShareUrl(items);
-            message += `Tüm ürünler: ${cartUrl}`;
+            const allProductsLine = (CART_STRINGS.allProductsLine || "{url}").split("{url}").join(cartUrl);
+            message += allProductsLine;
 
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`, "_blank", "noopener");
           } finally {
             sendBtn.disabled = false;
-            sendBtn.textContent = "Sepeti WhatsApp'tan Gönder";
+            sendBtn.textContent = CART_STRINGS.sendButton || "";
           }
         });
       }
     }
 
     render();
+  }
+
+  function wireLanguageSwitcher() {
+    const select = document.getElementById("lang-switcher");
+    if (!select) return;
+    select.addEventListener("change", () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set("lang", select.value);
+      window.location.href = url.pathname + url.search;
+    });
   }
 
   function escapeHtml(value) {
@@ -238,5 +258,6 @@
     updateBadge();
     wireAddButtons();
     renderCartApp();
+    wireLanguageSwitcher();
   });
 })();

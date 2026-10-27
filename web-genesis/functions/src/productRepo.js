@@ -1,6 +1,6 @@
 const {FieldValue} = require("firebase-admin/firestore");
 const {getDb} = require("./firebaseAdmin");
-const {categoryLabel, wearTierLabel} = require("./categories");
+const {wearTierLabel} = require("./categories");
 const {productPath} = require("./linkSigning");
 
 function productCollection() {
@@ -45,7 +45,6 @@ function toViewModel(doc) {
     name: data.name || "",
     desc: data.desc || "",
     category: data.category || "other",
-    categoryLabel: categoryLabel(data.category),
     price,
     priceLabel: formatPrice(price),
     previousPrice,

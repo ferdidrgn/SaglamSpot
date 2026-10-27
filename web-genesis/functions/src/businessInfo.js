@@ -4,6 +4,7 @@
  * dosya; bu sadece web-genesis'in kendi kopyası.
  */
 module.exports = {
+  brandName: "Sağlam Spot",
   phoneNumberIntl: "905392019961",
   displayPhone: "+90 539 201 99 61",
   email: "info@saglamspot.com",
