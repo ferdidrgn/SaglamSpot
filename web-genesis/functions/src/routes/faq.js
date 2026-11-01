@@ -45,6 +45,7 @@ module.exports = function faqRoute(req, res) {
 
   res.set("Cache-Control", "public, max-age=300");
   res.status(200).send(renderLayout({
+    req,
     title: t(locale, "sss"),
     path: "/sss",
     bodyHtml,

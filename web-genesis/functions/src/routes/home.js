@@ -34,6 +34,7 @@ module.exports = async function homeRoute(req, res) {
 
   res.set("Cache-Control", "public, max-age=60");
   res.status(200).send(renderLayout({
+    req,
     title: null,
     description: t(locale, "seoHomeDesc"),
     path: "/",

@@ -81,6 +81,7 @@ module.exports = function aboutRoute(req, res) {
 
   res.set("Cache-Control", "public, max-age=300");
   res.status(200).send(renderLayout({
+    req,
     title: t(locale, "seoAboutTitle").split(" | ")[0],
     description: t(locale, "seoAboutDesc"),
     path: "/hakkimizda",

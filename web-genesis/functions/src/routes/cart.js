@@ -27,6 +27,7 @@ module.exports = function cartRoute(req, res) {
 
   res.set("Cache-Control", "no-store");
   res.status(200).send(renderLayout({
+    req,
     title: t(locale, "cartTitle"),
     path: "/sepet",
     bodyHtml,

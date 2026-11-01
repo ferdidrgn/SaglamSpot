@@ -3,6 +3,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const business = require("../businessInfo");
 const {t, isRtl, SUPPORTED_LOCALES, DEFAULT_LOCALE, NATIVE_NAMES} = require("../i18n");
+const {getBaseUrl} = require("../requestUrl");
 
 /**
  * Statik dosyalar `/static/**` için agresif tarayıcı önbelleklemesi var
@@ -65,10 +66,16 @@ function renderLayout({
   extraScripts = [],
   inlineData = null,
   locale = DEFAULT_LOCALE,
+  req = null,
+  image = null,
 }) {
   const siteName = business.brandName;
   const fullTitle = title ? `${title} – ${siteName}` : t(locale, "seoHomeTitle");
-  const safeDescription = escapeHtml(description || t(locale, "seoHomeDesc"));
+  const descriptionText = description || t(locale, "seoHomeDesc");
+  const safeDescription = escapeHtml(descriptionText);
+  const baseUrl = req ? getBaseUrl(req) : null;
+  const canonicalUrl = baseUrl ? `${baseUrl}${path}` : null;
+  const ogImage = image || (baseUrl ? `${baseUrl}/icons/Icon-512.png` : null);
 
   const navHtml = navItems(locale, path).map((item) => {
     const active = item.href === path ? " aria-current=\"page\"" : "";
@@ -91,6 +98,19 @@ function renderLayout({
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${safeDescription}">
 <meta name="robots" content="${escapeHtml(robots)}">
+${canonicalUrl ? `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">` : ""}
+<link rel="icon" type="image/png" href="${versionedAsset("icons/Icon-192.png")}">
+<link rel="apple-touch-icon" href="${versionedAsset("icons/Icon-192.png")}">
+<meta property="og:site_name" content="${escapeHtml(siteName)}">
+<meta property="og:title" content="${escapeHtml(fullTitle)}">
+<meta property="og:description" content="${safeDescription}">
+<meta property="og:type" content="website">
+${canonicalUrl ? `<meta property="og:url" content="${escapeHtml(canonicalUrl)}">` : ""}
+${ogImage ? `<meta property="og:image" content="${escapeHtml(ogImage)}">` : ""}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(fullTitle)}">
+<meta name="twitter:description" content="${safeDescription}">
+${ogImage ? `<meta name="twitter:image" content="${escapeHtml(ogImage)}">` : ""}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">

@@ -22,6 +22,7 @@ module.exports = async function productDetailRoute(req, res) {
 
   if (lastDash === -1) {
     res.status(404).send(renderLayout({
+    req,
       title: "Geçersiz bağlantı",
       path: req.path,
       locale,
@@ -37,6 +38,7 @@ module.exports = async function productDetailRoute(req, res) {
     product = await getProductById(productId);
   } catch (err) {
     res.status(500).send(renderLayout({
+    req,
       title: "Hata",
       path: req.path,
       locale,
@@ -47,6 +49,7 @@ module.exports = async function productDetailRoute(req, res) {
 
   if (!product) {
     res.status(404).send(renderLayout({
+    req,
       title: "Ürün bulunamadı",
       path: req.path,
       locale,
@@ -112,9 +115,11 @@ module.exports = async function productDetailRoute(req, res) {
   res.set("Cache-Control", "no-cache, no-store, must-revalidate");
   const titleSuffix = t(locale, "seoProductDetailSuffix").split(" | ")[0];
   res.status(200).send(renderLayout({
+    req,
     title: `${product.name} ${titleSuffix}`,
     description: product.desc || undefined,
     path: req.path,
+    image: product.image || undefined,
     bodyHtml,
     locale,
     jsonLd: {

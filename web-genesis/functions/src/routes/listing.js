@@ -37,6 +37,7 @@ function makeListingRoute({isSpotProduct, path, titleKey, eyebrowKey, ledeKey, s
 
     res.set("Cache-Control", "no-cache, no-store, must-revalidate");
     res.status(200).send(renderLayout({
+    req,
       title: t(locale, seoTitleKey).split(" | ")[0],
       description: t(locale, seoDescKey),
       path,
