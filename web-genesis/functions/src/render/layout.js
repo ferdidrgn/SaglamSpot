@@ -119,13 +119,17 @@ ${ogImage ? `<meta name="twitter:image" content="${escapeHtml(ogImage)}">` : ""}
 ${jsonLdHtml}
 </head>
 <body>
+<!-- "İçeriğe geç" için ARB'de kaynak yok, brief'in "yeniden çevirme" kuralına
+     uyarak Türkçe kalıyor (bkz. productDetail.js'teki aynı karar) — sadece
+     klavye/ekran okuyucu kullanıcılarına görünen bir yardımcı bağlantı. -->
+<a class="skip-link" href="#content">İçeriğe geç</a>
 <header class="site-header">
   <a class="brand" href="/">${escapeHtml(siteName)}</a>
   <div class="site-nav-group">
     <nav class="site-nav" aria-label="${escapeHtml(t(locale, "home"))}">
       ${navHtml}
     </nav>
-    <select id="lang-switcher" data-lang-switcher aria-label="Language">${langOptionsHtml}</select>
+    <select id="lang-switcher" data-lang-switcher aria-label="${escapeHtml(t(locale, "languageTooltip"))}">${langOptionsHtml}</select>
   </div>
 </header>
 <main id="content">

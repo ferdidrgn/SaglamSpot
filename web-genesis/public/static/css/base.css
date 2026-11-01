@@ -46,6 +46,24 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+.skip-link {
+  position: absolute;
+  left: var(--space-md);
+  top: -100px;
+  z-index: 100;
+  background: var(--color-accent);
+  color: #fff;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus-visible {
+  top: var(--space-md);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 .site-header {
   display: flex;
   align-items: center;
