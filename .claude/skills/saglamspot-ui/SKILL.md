@@ -84,5 +84,14 @@ bileşenleri).
 - `flutter analyze` — yeni error/warning yok.
 - Web görsel kontrol: `flutter build web` + Playwright/Chromium
   (`/opt/pw-browsers`), 1440 ve 390 genişlikte ekran görüntüsü.
+  **ZORUNLU:** `flutter build web` RELEASE modda derler, yani gerçek
+  AdSense reklam ID'leri (`ca-pub-5779807348211992`) kullanılır — bir
+  otomasyon tarayıcısının bu reklamları yüklemesi AdSense'in "geçersiz
+  trafik" ihlali olarak işaretlediği türden bot trafiğidir (gerçekten
+  yaşandı: hesap 29 güne askıya alındı). `web/index.html`'deki
+  `pushAdsenseAd()` artık `navigator.webdriver` kontrolüyle otomasyon
+  tarayıcılarında reklamı engelliyor, ama ikinci katman olarak Playwright
+  ile sayfa açmadan önce reklam alan adlarını ağ seviyesinde de
+  engelle: `page.route('**/*{googlesyndication,doubleclick,googleadservices}*/**', route => route.abort())`.
 - Mobil performans: `flutter run --profile` + DevTools "raster" çubuğu;
   jank varsa önce görsel decode ve blur'a bak.

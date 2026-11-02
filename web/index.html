@@ -153,6 +153,21 @@
          etiketlerini gerçek reklamla doldurmak için adsbygoogle kuyruğuna push eder. -->
     <script>
         function pushAdsenseAd() {
+            // Playwright/Selenium/Puppeteer gibi WebDriver kontrolündeki
+            // tarayıcılar `navigator.webdriver = true` ayarlar (spec'in bir
+            // parçası). "Web görsel kontrol" adımı (bkz. CLAUDE.md,
+            // saglamspot-ui/SKILL.md) `flutter build web` ile RELEASE modda
+            // (gerçek reklam ID'leriyle) derleyip Chromium/Playwright'la
+            // ekran görüntüsü alıyor — bu da otomatik/bot trafiğinin gerçek
+            // reklamlara gitmesine, yani AdSense'in "geçersiz trafik"
+            // ihlali olarak işaretlediği türden bir duruma yol açabiliyor.
+            // Bu koruma, otomasyon tarayıcılarında reklam isteğini daha
+            // baştan engelliyor (ikinci katman: görsel kontrol talimatı da
+            // reklam alan adlarını ağ seviyesinde engellemeli, bkz. notlar).
+            if (navigator.webdriver) {
+                console.warn('AdSense: otomasyon tarayıcısı tespit edildi, reklam yüklenmedi.');
+                return;
+            }
             try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {

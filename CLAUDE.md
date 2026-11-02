@@ -78,3 +78,7 @@ yalnızca ortak prensip/kontrol listesi olarak kullanılır; çelişkide
 - `flutter test` — `test/widget_test.dart`'taki "güvensiz cihaz" testi
   önceden kırık.
 - Web görsel kontrol: `flutter build web` + Playwright (`/opt/pw-browsers`).
+  **Bu RELEASE build = gerçek AdSense reklamları.** Playwright'ta reklam
+  alan adlarını (googlesyndication/doubleclick/googleadservices) ağ
+  seviyesinde engellemeden sayfa açma — detay ve geçmiş olay için
+  `.claude/skills/saglamspot-ui/SKILL.md` §5.
