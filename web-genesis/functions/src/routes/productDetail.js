@@ -1,7 +1,8 @@
 const {renderLayout, escapeHtml} = require("../render/layout");
-const {getProductById, incrementWebViewCount} = require("../productRepo");
+const {getProductById, incrementWebViewCount, listActiveProducts} = require("../productRepo");
 const {productShareUrl} = require("../linkSigning");
 const {localizedCategoryLabel} = require("../categories");
+const {renderProductGrid} = require("../render/productCard");
 const {t} = require("../i18n");
 const business = require("../businessInfo");
 
@@ -9,6 +10,8 @@ const ARROW_LEFT = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\
 const ARROW_RIGHT = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><path d=\"M9 5l7 7-7 7\"/></svg>";
 const EXPAND_ICON = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5\"/></svg>";
 const CLOSE_ICON = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg>";
+const FAV_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 21s-7.5-4.6-10-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 10 6c-2.5 4.4-10 9-10 9z\"/></svg>";
+const SHARE_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"18\" cy=\"5\" r=\"2.5\"/><circle cx=\"6\" cy=\"12\" r=\"2.5\"/><circle cx=\"18\" cy=\"19\" r=\"2.5\"/><path d=\"M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6\"/></svg>";
 
 /**
  * İmza (sig) doğrulaması burada BİLEREK ziyareti engellemek için
@@ -140,6 +143,44 @@ module.exports = async function productDetailRoute(req, res) {
         data-name="${escapeHtml(product.name)}"
         data-price="${product.price}">${escapeHtml(t(locale, "addToCartCta"))}</button>`;
 
+  const favButtonHtml = `
+      <button type="button" class="cart-add-btn detail-icon-btn" data-favorite-toggle
+        aria-label="Favorilere ekle"
+        data-id="${escapeHtml(product.id)}"
+        data-name="${escapeHtml(product.name)}"
+        data-price="${product.price}"
+        data-image="${escapeHtml(product.image || "")}"
+        data-path="${escapeHtml(req.path)}">${FAV_ICON}</button>`;
+
+  // Web Share API varsa (çoğu mobil tarayıcı) native paylaşım sayfası
+  // açılır; yoksa main.js linki panoya kopyalayıp küçük bir toast gösterir.
+  const shareButtonHtml = `
+      <button type="button" class="cart-add-btn detail-icon-btn" data-share-product
+        data-share-url="${escapeHtml(shareUrl)}"
+        data-share-title="${escapeHtml(product.name)}"
+        aria-label="Paylaş">${SHARE_ICON}</button>`;
+
+  // Benzer ürünler — aynı kategoriden, kendisi hariç, en fazla 4 tane.
+  // home.js'teki gibi listActiveProducts zaten isSold==false döndürüyor.
+  let similarHtml = "";
+  if (!product.isSold) {
+    try {
+      const sameCategory = (await listActiveProducts({limit: 200}))
+          .filter((p) => p.category === product.category && p.id !== product.id)
+          .slice(0, 4);
+      if (sameCategory.length) {
+        similarHtml = `
+<section class="section">
+  <h2>Benzer Ürünler</h2>
+  ${renderProductGrid(sameCategory, locale)}
+</section>`;
+      }
+    } catch (_) {
+      // Vitrin çekilemedi — ana ürün zaten gösterildi, bu bölüm bilerek
+      // sessizce atlanır (sayfanın tamamını bozmaz).
+    }
+  }
+
   const bodyHtml = `
 <section class="product-detail${product.isSold ? " product-detail-sold" : ""}">
   ${galleryHtml}
@@ -152,10 +193,11 @@ module.exports = async function productDetailRoute(req, res) {
     ${product.desc ? `<p class="detail-desc">${escapeHtml(product.desc)}</p>` : ""}
     ${specHtml}
     <div class="detail-actions">
-      <a class="whatsapp-link" href="${escapeHtml(whatsappHref)}" rel="noopener">${escapeHtml(product.isSold ? "Benzerini Sor" : t(locale, "whatsappCta"))}</a>${cartButtonHtml}
+      <a class="whatsapp-link" href="${escapeHtml(whatsappHref)}" rel="noopener">${escapeHtml(product.isSold ? "Benzerini Sor" : t(locale, "whatsappCta"))}</a>${cartButtonHtml}${favButtonHtml}${shareButtonHtml}
     </div>
   </div>
-</section>`;
+</section>
+${similarHtml}`;
 
   res.set("Cache-Control", "no-cache, no-store, must-revalidate");
   const titleSuffix = t(locale, "seoProductDetailSuffix").split(" | ")[0];

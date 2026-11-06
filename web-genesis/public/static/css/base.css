@@ -250,7 +250,9 @@ button:focus-visible {
    gizlenmez, içerik baştan tam görünür). */
 .reveal-ready .hero,
 .reveal-ready .section,
-.reveal-ready .product-card,
+.reveal-ready .product-grid,
+.reveal-ready .bento-grid,
+.reveal-ready .gateway-grid,
 .reveal-ready .value-card,
 .reveal-ready .faq-item,
 .reveal-ready .about-panel,
@@ -2099,6 +2101,20 @@ button:focus-visible {
   color: #fff;
 }
 
+.pcard-fav-btn {
+  top: calc(var(--space-md) + 40px);
+}
+
+.pcard-fav-btn.is-favorited {
+  background: var(--color-error);
+  color: #fff;
+}
+
+.pcard-new-flag {
+  color: var(--color-success);
+  font-weight: 800;
+}
+
 .pcard:has(.pcard-link:hover),
 .pcard:has(.pcard-link:focus-visible) {
   box-shadow: 0 22px 34px -14px color-mix(in srgb, var(--color-primary-dark) 32%, transparent), 0 10px 26px -10px color-mix(in srgb, var(--color-accent) 30%, transparent);
@@ -2301,6 +2317,22 @@ button:focus-visible {
   flex-wrap: wrap;
   gap: var(--space-md);
   align-items: center;
+}
+
+.detail-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex: none;
+}
+
+.detail-icon-btn[data-favorite-toggle].is-favorited {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: #fff;
 }
 
 .card-image {

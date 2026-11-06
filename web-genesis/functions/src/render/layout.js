@@ -55,6 +55,7 @@ function navItems(locale, path) {
     {href: "/arama", label: "🔍", ariaLabel: t(locale, "filter")},
     {href: "/hakkimizda", label: t(locale, "aboutUs")},
     {href: "/sss", label: t(locale, "sss")},
+    {href: "/favoriler", label: t(locale, "navFavorites"), fav: true},
     {href: "/sepet", label: t(locale, "cartTitle"), cart: true},
   ];
 }
@@ -87,7 +88,9 @@ function renderLayout({
   const navHtml = navItems(locale, path).map((item) => {
     const active = item.href === path ? " aria-current=\"page\"" : "";
     const aria = item.ariaLabel ? ` aria-label="${escapeHtml(item.ariaLabel)}"` : "";
-    const badge = item.cart ? " <span id=\"cart-badge\" class=\"cart-badge\" hidden>0</span>" : "";
+    const badge = item.cart
+      ? " <span id=\"cart-badge\" class=\"cart-badge\" hidden>0</span>"
+      : (item.fav ? " <span id=\"fav-badge\" class=\"cart-badge\" hidden>0</span>" : "");
     return `<a class="nav-link" href="${escapeHtml(item.href)}"${active}${aria}>${item.label}${badge}</a>`;
   }).join("\n");
 

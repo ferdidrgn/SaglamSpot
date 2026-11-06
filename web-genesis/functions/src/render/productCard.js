@@ -16,6 +16,9 @@ const {localizedCategoryLabel, categoryColor} = require("../categories");
  * yok — görsel dili bozmadan işlevi korur).
  */
 const CART_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"9\" cy=\"20\" r=\"1.4\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"18\" cy=\"20\" r=\"1.4\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M2.5 3h2l2.2 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L20.5 7H6\"/></svg>";
+const FAV_ICON = "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 21s-7.5-4.6-10-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 10 6c-2.5 4.4-10 9-10 9z\"/></svg>";
+// home_page_web.dart'taki newArrivalsProducts ile AYNI eşik (son 10 gün).
+const NEW_ARRIVAL_MS = 10 * 24 * 60 * 60 * 1000;
 
 function renderProductCard(product, locale = DEFAULT_LOCALE) {
   const isSpot = product.isSpotProduct;
@@ -35,12 +38,28 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
     ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" width="320" height="320">`
     : "<div class=\"pcard-placeholder\" aria-hidden=\"true\"></div>";
 
+  const isNewArrival = !product.isSold && product.createdAtSort &&
+    (Date.now() - product.createdAtSort) <= NEW_ARRIVAL_MS;
+  // ARB'de bağımsız bir "Yeni" anahtarı yok (brief: yeniden çeviri yok) —
+  // mevcut kategori etiketinin yanına bilerek Türkçe literal ekleniyor,
+  // "Rezerve" emsaliyle aynı gerekçe.
+  const categoryLabelHtml = `${escapeHtml(localizedCategoryLabel(locale, product.category))}${isNewArrival ? " · <span class=\"pcard-new-flag\">YENİ</span>" : ""}`;
+
   const cartBtnHtml = product.isSold ? "" : `
   <button type="button" class="pcard-cart-btn" data-cart-add
     aria-label="${escapeHtml(t(locale, "addToCartCta"))}"
     data-id="${escapeHtml(product.id)}"
     data-name="${escapeHtml(product.name)}"
     data-price="${product.price}">${CART_ICON}</button>`;
+
+  const favBtnHtml = `
+  <button type="button" class="pcard-cart-btn pcard-fav-btn" data-favorite-toggle
+    aria-label="Favorilere ekle"
+    data-id="${escapeHtml(product.id)}"
+    data-name="${escapeHtml(product.name)}"
+    data-price="${product.price}"
+    data-image="${escapeHtml(product.image || "")}"
+    data-path="${escapeHtml(product.path)}">${FAV_ICON}</button>`;
 
   return `
 <div class="pcard${product.isSold ? " pcard-sold" : ""}">
@@ -53,12 +72,12 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
       <div class="pcard-info">
         <div class="pcard-info-text">
           <p class="pcard-name">${escapeHtml(product.name)}</p>
-          <p class="pcard-cat" style="--cat-color:${catColor}">${escapeHtml(localizedCategoryLabel(locale, product.category))}</p>
+          <p class="pcard-cat" style="--cat-color:${catColor}">${categoryLabelHtml}</p>
         </div>
         <span class="pcard-price">${previousPriceHtml}<span dir="ltr">${escapeHtml(product.priceLabel)}</span></span>
       </div>
     </div>
-  </a>${cartBtnHtml}
+  </a>${cartBtnHtml}${favBtnHtml}
 </div>`;
 }
 

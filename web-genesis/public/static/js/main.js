@@ -14,6 +14,8 @@
   const SHARE_DOMAIN = "https://saglamspotcu.web.app";
   const PHONE = "905392019961";
   const CART_STRINGS = (window.__DATA__ && window.__DATA__.cartStrings) || {};
+  const FAV_STORAGE_KEY = "saglamspot_favoriler_v1";
+  const FAV_STRINGS = (window.__DATA__ && window.__DATA__.favStrings) || {};
 
   function readCart() {
     try {
@@ -256,7 +258,7 @@
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const targets = document.querySelectorAll(
-        ".hero, .section, .product-card, .value-card, .faq-item, .about-panel, .category-rail",
+        ".hero, .section, .product-grid, .bento-grid, .gateway-grid, .value-card, .faq-item, .about-panel, .category-rail",
     );
     if (!targets.length) return;
 
@@ -353,6 +355,162 @@
     targets.forEach((el) => observer.observe(el));
   }
 
+  // Favoriler — sepetten bağımsız, sadece kalp ikonuyla işaretlenen ürünler
+  // (bkz. lib/features/products/presentation/providers/favorites_provider.dart
+  // ile aynı kavram). Miktar yok, sadece var/yok; ürünün gösterimi için
+  // gereken her şeyi (isim/fiyat/görsel/yol) favorilenme anında saklıyoruz
+  // ki /favoriler sayfası Firestore'a tekrar gitmeden render edebilsin.
+  function readFavorites() {
+    try {
+      const raw = localStorage.getItem(FAV_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function writeFavorites(items) {
+    try {
+      localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(items));
+    } catch (_) {
+      // yok say
+    }
+  }
+
+  function isFavorited(id) {
+    return readFavorites().some((f) => f.id === id);
+  }
+
+  function toggleFavorite(data) {
+    const items = readFavorites();
+    const idx = items.findIndex((f) => f.id === data.id);
+    if (idx === -1) items.push(data);
+    else items.splice(idx, 1);
+    writeFavorites(items);
+    return items;
+  }
+
+  function updateFavBadge() {
+    const badge = document.getElementById("fav-badge");
+    if (!badge) return;
+    const count = readFavorites().length;
+    badge.textContent = String(count);
+    badge.hidden = count === 0;
+  }
+
+  function wireFavoriteButtons() {
+    document.querySelectorAll("[data-favorite-toggle]").forEach((btn) => {
+      const data = {
+        id: btn.dataset.id,
+        name: btn.dataset.name,
+        price: Number(btn.dataset.price),
+        image: btn.dataset.image || "",
+        path: btn.dataset.path || "",
+      };
+      const sync = () => {
+        const fav = isFavorited(data.id);
+        btn.classList.toggle("is-favorited", fav);
+        btn.setAttribute("aria-pressed", String(fav));
+      };
+      sync();
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFavorite(data);
+        sync();
+        updateFavBadge();
+        renderFavoritesApp();
+      });
+    });
+  }
+
+  function renderFavoritesApp() {
+    const root = document.querySelector("[data-fav-app]");
+    if (!root) return;
+    const items = readFavorites();
+
+    if (!items.length) {
+      root.innerHTML = `
+        <div class="empty-state">
+          <p>${escapeHtml(FAV_STRINGS.emptyTitle || "")}</p>
+          <p>${escapeHtml(FAV_STRINGS.emptyDesc || "")}</p>
+          <a class="whatsapp-link" href="/arama">${escapeHtml(FAV_STRINGS.exploreLabel || "")}</a>
+        </div>`;
+      return;
+    }
+
+    root.innerHTML = `<div class="product-grid">${items.map((item) => `
+      <div class="pcard">
+        <a class="pcard-link" href="${escapeHtml(item.path)}">
+          <div class="pcard-media">
+            ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy">` : "<div class=\"pcard-placeholder\"></div>"}
+            <div class="pcard-scrim" aria-hidden="true"></div>
+            <div class="pcard-info">
+              <div class="pcard-info-text">
+                <p class="pcard-name">${escapeHtml(item.name)}</p>
+              </div>
+              <span class="pcard-price"><span dir="ltr">${formatPrice(item.price)}</span></span>
+            </div>
+          </div>
+        </a>
+        <button type="button" class="pcard-cart-btn pcard-fav-btn is-favorited" data-favorite-toggle
+          data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name)}" data-price="${item.price}"
+          data-image="${escapeHtml(item.image)}" data-path="${escapeHtml(item.path)}"
+          aria-label="Favoriden kaldır">${FAV_ICON}</button>
+      </div>`).join("")}</div>`;
+
+    wireFavoriteButtons();
+  }
+
+  const FAV_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 21s-7.5-4.6-10-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 10 6c-2.5 4.4-10 9-10 9z\"/></svg>";
+
+  // Ürün detayındaki paylaş butonu — Web Share API varsa (çoğu mobil
+  // tarayıcı) native paylaşım sayfası açılır; yoksa link panoya kopyalanır
+  // ve kısa ömürlü bir toast gösterilir (window.alert() yerine, admin
+  // panelindeki aynı "modern bildirim" fikri).
+  function toast(message) {
+    let stack = document.querySelector(".toast-stack");
+    if (!stack) {
+      stack = document.createElement("div");
+      stack.className = "toast-stack";
+      document.body.appendChild(stack);
+    }
+    const el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = message;
+    stack.appendChild(el);
+    window.setTimeout(() => {
+      el.classList.add("is-leaving");
+      el.addEventListener("animationend", () => el.remove(), {once: true});
+    }, 2600);
+  }
+
+  function wireShareButtons() {
+    document.querySelectorAll("[data-share-product]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const url = btn.dataset.shareUrl;
+        const title = btn.dataset.shareTitle || "";
+        if (navigator.share) {
+          try {
+            await navigator.share({title, url});
+            return;
+          } catch (_) {
+            // Kullanıcı paylaşım sayfasını iptal etti — sessizce yok say,
+            // panoya kopyalamaya DÜŞME (iptal = "kopyala" anlamına gelmez).
+            return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(url);
+          toast("Bağlantı kopyalandı.");
+        } catch (_) {
+          toast(url);
+        }
+      });
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -376,10 +534,14 @@
     updateBadge();
     wireAddButtons();
     renderCartApp();
+    updateFavBadge();
+    wireFavoriteButtons();
+    renderFavoritesApp();
     wireLanguageSwitcher();
     wireHeaderScroll();
     wireRevealAnimations();
     wireHeroCarousel();
     wireStatCounters();
+    wireShareButtons();
   });
 })();
