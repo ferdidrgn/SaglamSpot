@@ -57,6 +57,20 @@ function renderHero(locale, products) {
 </section>`;
 }
 
+function renderTicker(locale) {
+  const items = [
+    [ICONS.verified, t(locale, "productTrustBadgeVerified")],
+    [ICONS.handshake, t(locale, "productTrustBadgeNegotiate")],
+    [ICONS.truck, t(locale, "productTrustBadgeDelivery")],
+    [ICONS.storefront, t(locale, "sellerTrustLine")],
+    [ICONS.award, t(locale, "usp1Title")],
+    [ICONS.sparkle, t(locale, "qualityFurniture")],
+  ];
+  const itemsHtml = items.map(([icon, label]) => `<span class="ticker-item">${icon}${escapeHtml(label)}</span>`).join("");
+  // İki kopya art arda — %-50 translateX ile kesintisiz döngü illüzyonu.
+  return `<div class="ticker" aria-hidden="true"><div class="ticker-track">${itemsHtml}${itemsHtml}</div></div>`;
+}
+
 function renderCategoryRail(locale) {
   const allChip = `<a class="category-chip" href="/arama">
     <span class="category-chip-avatar is-all">${ICONS.grid}</span>
@@ -154,13 +168,17 @@ function renderRoomsPanel(locale) {
 
 function renderStatsBand(locale, productCount, categoryCount, soldCount) {
   const stats = [
-    {icon: ICONS.inventory, value: productCount, label: t(locale, "statProducts")},
-    {icon: ICONS.grid, value: categoryCount, label: t(locale, "sectionCategories")},
-    {icon: ICONS.award, value: `20${t(locale, "statYearsSuffix")}`, label: t(locale, "statExperience")},
-    {icon: ICONS.truck, value: soldCount, label: t(locale, "statDelivery")},
+    {icon: ICONS.inventory, value: productCount, suffix: "", label: t(locale, "statProducts")},
+    {icon: ICONS.grid, value: categoryCount, suffix: "", label: t(locale, "sectionCategories")},
+    {icon: ICONS.award, value: 20, suffix: t(locale, "statYearsSuffix"), label: t(locale, "statExperience")},
+    {icon: ICONS.truck, value: soldCount, suffix: "", label: t(locale, "statDelivery")},
   ];
   return `<section class="stats-band"><div class="stats-grid">${stats.map((s) => `
-    <div class="stat-card">${s.icon}<strong>${escapeHtml(String(s.value))}</strong><span>${escapeHtml(s.label)}</span></div>`).join("")}</div></section>`;
+    <div class="stat-card">
+      <span class="stat-card-icon">${s.icon}</span>
+      <strong data-count-to="${s.value}" data-count-suffix="${escapeHtml(s.suffix)}">0</strong>
+      <span>${escapeHtml(s.label)}</span>
+    </div>`).join("")}</div></section>`;
 }
 
 module.exports = async function homeRoute(req, res) {
@@ -190,6 +208,10 @@ module.exports = async function homeRoute(req, res) {
   const bodyHtml = firestoreError ? `
 <section class="section"><p class="status status-error">${escapeHtml(firestoreError)}</p></section>` : `
 ${renderHero(locale, products)}
+
+<section class="section">
+  ${renderTicker(locale)}
+</section>
 
 <section class="section">
   ${renderCategoryRail(locale)}

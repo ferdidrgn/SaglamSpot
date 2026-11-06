@@ -19,6 +19,10 @@ const ICONS = {
   tag: "<svg width=\"110\" height=\"110\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20 12.5L12.5 20 3 10.5V3h7.5L20 12.5z\"/><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" fill=\"#fff\"/></svg>",
   newReleases: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l2 3 3.4-1 .3 3.5 3.3.9-1.8 3 1.8 3-3.3.9-.3 3.5-3.4-1-2 3-2-3-3.4 1-.3-3.5-3.3-.9 1.8-3-1.8-3 3.3-.9.3-3.5 3.4 1z\"/></svg>",
   history: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 12a9 9 0 1 0 3-6.7\"/><path d=\"M3 4v4h4\"/><path d=\"M12 7v5l3 2\"/></svg>",
+  verified: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12 2l2.4 1.2 2.6-.6 1.2 2.4 2.4 1.2-.6 2.6L21 11l-1.2 2.4.6 2.6-2.4 1.2-1.2 2.4-2.6-.6L12 20l-2.4-1.2-2.6.6-1.2-2.4-2.4-1.2.6-2.6L3 11l1.2-2.4-.6-2.6 2.4-1.2 1.2-2.4 2.6.6z\"/><path d=\"M9 12l2 2 4-4\"/></svg>",
+  storefront: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 9l1-5h16l1 5\"/><path d=\"M4 9v10h16V9\"/><path d=\"M9 19v-5h6v5\"/><path d=\"M3 9a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0\"/></svg>",
+  map: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M9 4l-6 2v14l6-2 6 2 6-2V4l-6 2-6-2z\"/><path d=\"M9 4v14M15 6v14\"/></svg>",
+  sparkle: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l1.8 5.6L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.4z\"/></svg>",
 };
 
 module.exports = {ICONS};

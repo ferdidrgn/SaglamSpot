@@ -312,6 +312,47 @@
     restart();
   }
 
+  // İstatistik şeridi — home_page_web.dart'taki CountUpOnVisible ile aynı
+  // fikir: sayı, kart görünüme girince 0'dan hedefe doğru sayar.
+  function wireStatCounters() {
+    const targets = document.querySelectorAll("[data-count-to]");
+    if (!targets.length) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function animate(el) {
+      const to = Number(el.dataset.countTo) || 0;
+      const suffix = el.dataset.countSuffix || "";
+      if (reduceMotion || !("IntersectionObserver" in window)) {
+        el.textContent = to + suffix;
+        return;
+      }
+      const duration = 1200;
+      const start = performance.now();
+      function step(now) {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * to) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      targets.forEach(animate);
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animate(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.4});
+    targets.forEach((el) => observer.observe(el));
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -339,5 +380,6 @@
     wireHeaderScroll();
     wireRevealAnimations();
     wireHeroCarousel();
+    wireStatCounters();
   });
 })();

@@ -172,6 +172,28 @@ button:focus-visible {
   min-height: 50vh;
 }
 
+/* Geniş ekranlarda (dizüstü/masaüstü monitör) 960px sabit genişlik yanlarda
+   kocaman boş şerit bırakıyordu — konteyner genişliği ekran genişliğine
+   göre kademeli olarak büyür, metin bloklarının kendi max-width'leri
+   (ör. .gateway-sub, .rooms-text p) okunurluğu zaten ayrı koruyor. */
+@media (min-width: 1100px) {
+  #content {
+    max-width: 1180px;
+  }
+}
+
+@media (min-width: 1440px) {
+  #content {
+    max-width: 1360px;
+  }
+}
+
+@media (min-width: 1800px) {
+  #content {
+    max-width: 1560px;
+  }
+}
+
 .hero {
   position: relative;
   overflow: hidden;
@@ -241,6 +263,27 @@ button:focus-visible {
 .reveal-ready .is-visible {
   opacity: 1;
   transform: none;
+}
+
+/* Izgara öğeleri (ürün/bento/gateway/değer kartları) tek seferde değil,
+   hafif gecikmeli (staggered) beliriyor — daha "canlı/tasarlanmış" bir
+   giriş hissi. nth-child(n+9) için gecikme sabitlenir (çok uzun beklemesin). */
+.reveal-ready .product-grid.is-visible > *,
+.reveal-ready .bento-grid.is-visible > *,
+.reveal-ready .gateway-grid.is-visible > *,
+.reveal-ready .value-grid.is-visible > * {
+  animation: stagger-in var(--motion-slow) var(--ease-standard) backwards;
+}
+
+.product-grid > *:nth-child(1), .bento-grid > *:nth-child(1), .gateway-grid > *:nth-child(1), .value-grid > *:nth-child(1) { animation-delay: 0ms; }
+.product-grid > *:nth-child(2), .bento-grid > *:nth-child(2), .gateway-grid > *:nth-child(2), .value-grid > *:nth-child(2) { animation-delay: 70ms; }
+.product-grid > *:nth-child(3), .bento-grid > *:nth-child(3), .value-grid > *:nth-child(3) { animation-delay: 140ms; }
+.product-grid > *:nth-child(4), .bento-grid > *:nth-child(4), .value-grid > *:nth-child(4) { animation-delay: 210ms; }
+.product-grid > *:nth-child(n+5) { animation-delay: 280ms; }
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 
 .eyebrow {
@@ -687,6 +730,53 @@ button:focus-visible {
 }
 
 /* ===================================================================
+   SONSUZ GÜVEN ŞERİDİ — home_page_web.dart'taki _buildFeatureTicker
+   (InfiniteTicker) ile aynı: kesintisiz kayan güven/marka rozetleri.
+   =================================================================== */
+.ticker {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  gap: var(--space-xxxl);
+  padding: var(--space-md) 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ticker-track {
+    animation: ticker-scroll 26s linear infinite;
+  }
+
+  .ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.ticker-item svg {
+  flex: none;
+  color: var(--color-accent);
+}
+
+/* ===================================================================
    DAİRESEL KATEGORİ RAYI — home_page_web.dart'taki
    _buildCircularCategoryItem ile aynı: fotoğraflı daireler + alt etiket.
    =================================================================== */
@@ -770,6 +860,14 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  transition: transform var(--motion-normal) var(--ease-standard), box-shadow var(--motion-normal) var(--ease-standard);
+}
+
+.gateway-card:hover,
+.gateway-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 40px -20px color-mix(in srgb, var(--glow-color, var(--color-accent)) 45%, transparent);
+  text-decoration: none;
 }
 
 .gateway-card-new {
@@ -883,6 +981,12 @@ button:focus-visible {
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--tile-color) 8%, var(--color-surface));
   border: 1px solid color-mix(in srgb, var(--tile-color) 18%, var(--color-border));
+  transition: transform var(--motion-normal) var(--ease-standard), background var(--motion-normal) var(--ease-standard);
+}
+
+.bento-tile:hover {
+  transform: translateY(-3px);
+  background: color-mix(in srgb, var(--tile-color) 14%, var(--color-surface));
 }
 
 .bento-tile-icon {
@@ -1063,45 +1167,100 @@ button:focus-visible {
    İSTATİSTİK ŞERİDİ — home_page_web.dart'taki _buildStatsSection.
    =================================================================== */
 .stats-band {
-  margin: var(--space-section) calc(var(--space-screen) * -1) 0;
-  padding: var(--space-huge) var(--space-screen);
-  background: linear-gradient(to bottom, var(--color-bg), var(--color-primary-dark) 18%);
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: var(--space-huge) var(--space-xxl);
+  background: linear-gradient(135deg, var(--color-accent-dark) 0%, var(--color-primary-dark) 62%, var(--color-primary-dark) 100%);
+  box-shadow: 0 24px 48px -24px color-mix(in srgb, var(--color-primary-dark) 55%, transparent);
+}
+
+.stats-band::before,
+.stats-band::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.stats-band::before {
+  width: 320px;
+  height: 320px;
+  top: -140px;
+  left: -60px;
+  background: color-mix(in srgb, var(--color-accent-light) 45%, transparent);
+}
+
+.stats-band::after {
+  width: 280px;
+  height: 280px;
+  bottom: -120px;
+  right: -40px;
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
 }
 
 .stats-grid {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-lg);
-  max-width: 1040px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .stat-card {
   flex: 1 1 180px;
-  max-width: 220px;
+  max-width: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  padding: var(--space-xl);
+  padding: var(--space-xl) var(--space-lg);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: color-mix(in srgb, #fff 8%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in srgb, #fff 14%, transparent);
+  transition: transform var(--motion-normal) var(--ease-standard), background var(--motion-normal) var(--ease-standard);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  background: color-mix(in srgb, #fff 13%, transparent);
+}
+
+.stat-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-bottom: var(--space-sm);
+  background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
+  color: var(--color-primary-dark);
+  box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.35);
 }
 
 .stat-card strong {
   display: block;
-  margin-top: var(--space-sm);
   color: #fff;
-  font-size: 1.75rem;
-  font-weight: 900;
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .stat-card span {
   display: block;
   margin-top: 4px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -1679,8 +1838,13 @@ button:focus-visible {
    köşeler asimetrik (sağ üst keskin, sol alt belirgin yuvarlak). */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* auto-fit (auto-fill DEĞİL): az ürün varken boş hücreler çöker, kartlar
+     mevcut genişliği aralarında paylaşıp doldurur — geniş ekranda sağda
+     büyük boş beyaz alan kalmaz. max-width ise envanter azken (1-2 ürün)
+     kartların komik derecede devasa büyümesini önler. */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-lg);
+  max-width: 1200px;
 }
 
 .pcard {
