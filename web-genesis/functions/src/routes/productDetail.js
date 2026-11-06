@@ -5,6 +5,11 @@ const {localizedCategoryLabel} = require("../categories");
 const {t} = require("../i18n");
 const business = require("../businessInfo");
 
+const ARROW_LEFT = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><path d=\"M15 5l-7 7 7 7\"/></svg>";
+const ARROW_RIGHT = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><path d=\"M9 5l7 7-7 7\"/></svg>";
+const EXPAND_ICON = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5\"/></svg>";
+const CLOSE_ICON = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg>";
+
 /**
  * İmza (sig) doğrulaması burada BİLEREK ziyareti engellemek için
  * kullanılmıyor — lib/core/config/app_router.dart'taki aynı rota,
@@ -60,9 +65,39 @@ module.exports = async function productDetailRoute(req, res) {
 
   await incrementWebViewCount(product.id);
 
-  const galleryHtml = product.images.length
-    ? `<div class="detail-gallery">${product.images.map((url, i) => `<img src="${escapeHtml(url)}" alt="${escapeHtml(product.name)} - ${i + 1}" loading="${i === 0 ? "eager" : "lazy"}">`).join("\n")}</div>`
-    : "<div class=\"detail-gallery\"><div class=\"card-image-placeholder\"></div></div>";
+  // Birden fazla görsel varsa tam ekran, kaydırılabilir/oklu bir galeri
+  // (lightbox) — bkz. public/static/js/product-gallery.js. Tek görsel/hiç
+  // görsel yoksa basitçe statik kalır, JS'e hiç ihtiyaç duymaz.
+  const images = product.images;
+  const hasMultiple = images.length > 1;
+  const imagesJsonAttr = escapeHtml(JSON.stringify(images));
+
+  const arrowsHtml = hasMultiple ? `
+      <button type="button" class="pgallery-arrow pgallery-prev" data-gallery-prev aria-label="Önceki görsel">${ARROW_LEFT}</button>
+      <button type="button" class="pgallery-arrow pgallery-next" data-gallery-next aria-label="Sonraki görsel">${ARROW_RIGHT}</button>` : "";
+
+  const thumbsHtml = hasMultiple ? `
+    <div class="pgallery-thumbs">${images.map((url, i) => `
+      <button type="button" class="pgallery-thumb${i === 0 ? " is-active" : ""}" data-gallery-thumb data-index="${i}">
+        <img src="${escapeHtml(url)}" alt="${escapeHtml(product.name)} - ${i + 1}" loading="lazy">
+      </button>`).join("")}</div>` : "";
+
+  const galleryHtml = images.length ? `
+<div class="pgallery" data-gallery data-images="${imagesJsonAttr}">
+  <div class="pgallery-main">
+    <img class="pgallery-main-img" data-gallery-main src="${escapeHtml(images[0])}" alt="${escapeHtml(product.name)}" loading="eager">
+    ${arrowsHtml}
+    <button type="button" class="pgallery-expand" data-gallery-expand aria-label="Tam ekran görüntüle">${EXPAND_ICON}</button>
+    ${hasMultiple ? `<span class="pgallery-counter" data-gallery-counter>1 / ${images.length}</span>` : ""}
+  </div>
+  ${thumbsHtml}
+</div>
+<div class="pgallery-lightbox" data-gallery-lightbox hidden>
+  <button type="button" class="pgallery-lightbox-close" data-gallery-close aria-label="Kapat">${CLOSE_ICON}</button>
+  <img class="pgallery-lightbox-img" data-gallery-lightbox-img src="" alt="${escapeHtml(product.name)}">
+  ${arrowsHtml}
+  ${hasMultiple ? `<span class="pgallery-counter pgallery-lightbox-counter" data-gallery-counter>1 / ${images.length}</span>` : ""}
+</div>` : "<div class=\"pgallery\"><div class=\"pgallery-main\"><div class=\"card-image-placeholder\"></div></div></div>";
 
   const previousPriceHtml = product.previousPriceLabel
     ? `<span class="price-previous" dir="ltr">${escapeHtml(product.previousPriceLabel)}</span>`
@@ -132,6 +167,7 @@ module.exports = async function productDetailRoute(req, res) {
     image: product.image || undefined,
     bodyHtml,
     locale,
+    extraScripts: images.length >= 1 ? ["static/js/product-gallery.js"] : [],
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Product",

@@ -961,104 +961,71 @@ button:focus-visible {
 /* ===================================================================
    BENTO GÜVEN IZGARASI — home_page_web.dart'taki _buildTrustBar ile aynı.
    =================================================================== */
+/* Önceki sürüm: açık/koyu temaya göre değişen %8 opak renk tonu + explicit
+   grid-row/column "bento" yerleşimi — bazı ekranlarda/tarayıcılarda
+   arka plan görünmez kalıp sadece ikon+yazı havada kalmış gibi kırık
+   görünüyordu (kullanıcı: "büyük çok çirkin"). Artık basit, kırılmaya
+   dayanıklı bir sarma (wrap) ızgara + HER ZAMAN dolu/kesin görünür renk. */
 .bento-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--space-lg);
-  height: 300px;
 }
 
 .bento-tile {
   --tile-color: var(--color-accent);
-  grid-row: span 2;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   padding: var(--space-xl);
+  min-height: 150px;
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--tile-color) 8%, var(--color-surface));
-  border: 1px solid color-mix(in srgb, var(--tile-color) 18%, var(--color-border));
-  transition: transform var(--motion-normal) var(--ease-standard), background var(--motion-normal) var(--ease-standard);
+  background: linear-gradient(135deg, var(--tile-color), color-mix(in srgb, var(--tile-color) 68%, black));
+  box-shadow: 0 14px 28px -16px color-mix(in srgb, var(--tile-color) 60%, transparent);
+  transition: transform var(--motion-normal) var(--ease-standard), box-shadow var(--motion-normal) var(--ease-standard);
+}
+
+.bento-tile::after {
+  /* Sağ alt köşede soluk, dekoratif bir daire — düz renk zemine biraz
+     doku katar, tamamen dekoratif (içerikten bağımsız). */
+  content: "";
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .bento-tile:hover {
-  transform: translateY(-3px);
-  background: color-mix(in srgb, var(--tile-color) 14%, var(--color-surface));
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 22px 40px -18px color-mix(in srgb, var(--tile-color) 70%, transparent);
 }
 
 .bento-tile-icon {
-  width: 46px;
-  height: 46px;
+  position: relative;
+  z-index: 1;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--tile-color), color-mix(in srgb, var(--tile-color) 70%, black));
+  background: rgba(255, 255, 255, 0.22);
   color: #fff;
-  box-shadow: 0 8px 16px -6px color-mix(in srgb, var(--tile-color) 55%, transparent);
+  backdrop-filter: blur(4px);
 }
 
 .bento-tile-label {
+  position: relative;
+  z-index: 1;
   font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.bento-tile-1 {
-  grid-column: 1;
-}
-
-.bento-tile-2,
-.bento-tile-3 {
-  grid-row: span 1;
-}
-
-.bento-tile-2 {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.bento-tile-3 {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.bento-tile-4 {
-  grid-column: 3;
-}
-
-@media (max-width: 760px) {
-  .bento-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
-    height: auto;
-  }
-
-  .bento-tile-1 {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    height: 160px;
-  }
-
-  .bento-tile-2 {
-    grid-column: 1;
-    grid-row: 2;
-    height: 130px;
-  }
-
-  .bento-tile-3 {
-    grid-column: 2;
-    grid-row: 2;
-    height: 130px;
-  }
-
-  .bento-tile-4 {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    height: 110px;
-  }
+  font-size: 1.0625rem;
+  color: #fff;
 }
 
 /* ===================================================================
@@ -2489,22 +2456,220 @@ button:focus-visible {
   align-items: start;
 }
 
-.detail-gallery {
-  display: grid;
-  gap: var(--space-sm);
+/* ===================================================================
+   ÜRÜN GALERİSİ — ana görsel + ok/nokta gezinme + küçük resim şeridi +
+   tam ekran lightbox (bkz. public/static/js/product-gallery.js).
+   =================================================================== */
+.pgallery {
   position: sticky;
   top: var(--space-lg);
 }
 
-.detail-gallery img {
-  width: 100%;
-  border-radius: var(--radius-md);
-  object-fit: cover;
-  aspect-ratio: 4 / 3;
+.pgallery-main {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-secondary);
+  box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--color-primary-dark) 30%, transparent);
 }
 
-.product-detail-sold .detail-gallery img {
+.pgallery-main-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  cursor: zoom-in;
+}
+
+.product-detail-sold .pgallery-main-img,
+.product-detail-sold .pgallery-thumb img {
   filter: grayscale(0.6) brightness(0.92);
+}
+
+.pgallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--color-primary-dark) 45%, transparent);
+  color: #fff;
+  backdrop-filter: blur(4px);
+  transition: background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+
+.pgallery-arrow:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.pgallery-prev {
+  left: var(--space-md);
+}
+
+.pgallery-next {
+  right: var(--space-md);
+}
+
+.pgallery-expand {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: color-mix(in srgb, #fff 24%, transparent);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  transition: background var(--motion-fast) var(--ease-standard);
+}
+
+.pgallery-expand:hover {
+  background: color-mix(in srgb, #fff 38%, transparent);
+}
+
+.pgallery-counter {
+  position: absolute;
+  left: var(--space-md);
+  bottom: var(--space-md);
+  z-index: 2;
+  padding: var(--space-xxs) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-primary-dark) 55%, transparent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pgallery-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.pgallery-thumb {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: var(--color-secondary);
+  opacity: 0.65;
+  transition: opacity var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+
+.pgallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pgallery-thumb:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.pgallery-thumb.is-active {
+  opacity: 1;
+  border-color: var(--color-accent);
+}
+
+/* --- tam ekran lightbox --- */
+.pgallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 7, 5, 0.94);
+  opacity: 0;
+  transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.pgallery-lightbox.is-open {
+  opacity: 1;
+}
+
+.pgallery-lightbox-img {
+  max-width: min(92vw, 1100px);
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+.pgallery-lightbox-close {
+  position: absolute;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+
+.pgallery-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: rotate(90deg);
+}
+
+.pgallery-lightbox .pgallery-arrow {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pgallery-lightbox .pgallery-arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.pgallery-lightbox .pgallery-counter {
+  position: static;
+  margin-top: var(--space-lg);
+}
+
+.pgallery-lightbox-counter {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 600px) {
+  .pgallery-main-img {
+    aspect-ratio: 1 / 1;
+  }
+
+  .pgallery-thumb {
+    width: 52px;
+    height: 52px;
+  }
 }
 
 .detail-info h1 {
@@ -2546,7 +2711,7 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .detail-gallery {
+  .pgallery {
     position: static;
   }
 }
