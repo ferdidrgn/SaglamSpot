@@ -21,6 +21,9 @@ module.exports = async function searchRoute(req, res) {
   const condition = (req.query.condition || "all").toString();
   const minPrice = req.query.minPrice ? Number(req.query.minPrice) : null;
   const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : null;
+  // lib/features/search/presentation/providers/search_providers.dart'taki
+  // SortOption ile aynı 4 seçenek (web'de hiç yoktu).
+  const sort = (req.query.sort || "featured").toString();
 
   let products = [];
   let firestoreError = null;
@@ -45,6 +48,12 @@ module.exports = async function searchRoute(req, res) {
       if (maxPrice != null && !Number.isNaN(maxPrice) && p.price > maxPrice) return false;
       return true;
     });
+
+    if (sort === "priceAsc") products.sort((a, b) => a.price - b.price);
+    else if (sort === "priceDesc") products.sort((a, b) => b.price - a.price);
+    else if (sort === "newest") products.sort((a, b) => b.createdAtSort - a.createdAtSort);
+    // "featured": listActiveProducts/listSoldProducts zaten en yeni->eski
+    // sırayla geliyor, ek bir sıralama gerekmiyor.
   } catch (err) {
     firestoreError = err.message;
   }
@@ -57,7 +66,14 @@ module.exports = async function searchRoute(req, res) {
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === condition ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
+  const sortOptionsHtml = [["featured", t(locale, "sortFeatured")], ["priceAsc", t(locale, "sortPriceAsc")], ["priceDesc", t(locale, "sortPriceDesc")], ["newest", t(locale, "sortSpotProductsDefault")]]
+      .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === sort ? " selected" : ""}>${escapeHtml(label)}</option>`)
+      .join("");
+
   const emptyMessage = isSoldFilter ? "Henüz satılmış ürün yok." : t(locale, "searchEmptyMessage");
+  const countLabel = !firestoreError && products.length
+    ? `<p class="search-result-count">${escapeHtml(t(locale, "categoryProductCount", {count: products.length}))}</p>`
+    : "";
   const resultsHtml = firestoreError
     ? `<p class="status status-error">${escapeHtml(firestoreError)}</p>`
     : renderProductGrid(products, locale, products.length ? null : emptyMessage);
@@ -77,9 +93,11 @@ module.exports = async function searchRoute(req, res) {
   <select name="condition" aria-label="${escapeHtml(t(locale, "condition"))}">${conditionOptionsHtml}</select>
   <input type="number" name="minPrice" placeholder="Min ₺" min="0" value="${minPrice != null ? escapeHtml(String(minPrice)) : ""}" aria-label="${escapeHtml(t(locale, "priceRange"))}">
   <input type="number" name="maxPrice" placeholder="Max ₺" min="0" value="${maxPrice != null ? escapeHtml(String(maxPrice)) : ""}" aria-label="${escapeHtml(t(locale, "priceRange"))}">
+  <select name="sort" aria-label="Sırala">${sortOptionsHtml}</select>
   <button type="submit">${escapeHtml(t(locale, "apply"))}</button>
 </form>
 <section class="section">
+  ${countLabel}
   ${resultsHtml}
 </section>`;
 

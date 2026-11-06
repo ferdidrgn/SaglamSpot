@@ -1447,6 +1447,13 @@ button:focus-visible {
   flex: 1 1 140px;
 }
 
+.search-result-count {
+  margin: 0 0 var(--space-lg);
+  color: var(--color-text-tertiary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
 .search-form input[type="number"] {
   flex: 1 1 90px;
   width: 0;
@@ -2073,6 +2080,18 @@ button:focus-visible {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-lg);
   max-width: 1200px;
+}
+
+/* ÖNEMLİ: yukarıdaki 1fr tek başına yetmiyor — tek ürün varken (veya
+   filtre sonucu tek satır kalınca) o TEK hücre tüm 1200px'i kaplıyor ve
+   kart da onunla birlikte devasa/çirkin büyüyordu (kullanıcı: "çok kötü
+   görünüyor"). Kartın kendisine ayrı bir üst sınır + kendi hücresinde
+   ortalanma vererek hücre ne kadar genişlerse genişlesin kart hep aynı,
+   makul boyutta kalır. */
+.pcard {
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .pcard {
