@@ -63,6 +63,9 @@ function toViewModel(doc) {
     wearTierLabel: wearTierLabel(data.wearTier),
     createdAtSort: parseTrDateTime(data._createdAt),
     path: productPath(id, data.name || ""),
+    // lib/core/common/entities/product.dart'taki gibi web+mobil toplamı —
+    // ürün detayındaki "N kez görüntülendi" göstergesi için.
+    viewCount: (Number(data.viewCountWeb) || 0) + (Number(data.viewCountMobile) || 0),
   };
 }
 

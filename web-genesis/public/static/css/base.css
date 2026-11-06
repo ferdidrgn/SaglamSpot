@@ -3563,20 +3563,325 @@ body.view-is-list .product-list {
   align-items: center;
 }
 
-.detail-icon-btn {
+/* ===================================================================
+   /product/... — saglamspotcu.web.app'teki (bu projenin KENDİ Flutter
+   web derlemesi) GERÇEK ürün detay sayfası: üstte geri/paylaş/favori
+   araç çubuğu, güven rozetleri, "Açıklama" kartı, 2x2 bilgi ızgarası,
+   satıcı kartı, "Nasıl Satın Alırım?" adım paneli, alt eylem satırı.
+   =================================================================== */
+.pdetail-media {
+  position: sticky;
+  top: var(--space-lg);
+}
+
+.pdetail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.pdetail-toolbar-right {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.pgallery-tag {
+  top: var(--space-md);
+  z-index: 2;
+}
+
+.pdetail-views {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 var(--space-md);
+  color: var(--color-text-tertiary);
+  font-size: 0.8125rem;
+}
+
+.pdetail-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.pdetail-trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.pdetail-trust-pill svg {
+  flex: 0 0 auto;
+  color: var(--color-accent);
+}
+
+.pdetail-card {
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.pdetail-card h2 {
+  margin: 0 0 var(--space-sm);
+  font-size: 1.0625rem;
+}
+
+.pdetail-card .detail-desc {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.pdetail-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.pdetail-info-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+}
+
+.pdetail-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg));
+  color: var(--color-accent-dark);
+}
+
+/* ICONS.* sabitleri farklı viewBox/width-height'lerle geliyor (bazıları
+   110x110 kadar büyük) — bu küçük rozet/daire kapsayıcıların içinde
+   hepsi AYNI küçük boyuta zorlanıyor, CSS her zaman SVG'nin kendi
+   width/height özniteliğini ezer. */
+.pdetail-info-icon svg,
+.pdetail-howto-num svg,
+.pdetail-seller-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pdetail-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.pdetail-info-text span {
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+}
+
+.pdetail-info-text strong {
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdetail-seller-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: inherit;
+}
+
+.pdetail-seller-card:hover,
+.pdetail-seller-card:focus-visible {
+  text-decoration: none;
+  color: inherit;
+  border-color: var(--color-accent-light);
+}
+
+.pdetail-seller-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
-  padding: 0;
-  flex: none;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-bg);
 }
 
-.detail-icon-btn[data-favorite-toggle].is-favorited {
-  background: var(--color-error);
-  border-color: var(--color-error);
+.pdetail-seller-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pdetail-seller-text strong {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9375rem;
+}
+
+.pdetail-seller-text strong svg {
+  width: 15px;
+  height: 15px;
+  color: var(--color-success);
+}
+
+.pdetail-seller-text span {
+  font-size: 0.8125rem;
+  color: var(--color-text-tertiary);
+}
+
+.pdetail-seller-chevron {
+  flex: 0 0 auto;
+  color: var(--color-text-tertiary);
+}
+
+.pdetail-howto {
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  background: var(--color-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.pdetail-howto h2 {
+  margin: 0 0 var(--space-lg);
+  font-size: 1.0625rem;
+}
+
+.pdetail-howto-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.pdetail-howto-step + .pdetail-howto-step {
+  margin-top: var(--space-md);
+}
+
+.pdetail-howto-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-accent);
   color: #fff;
+}
+
+.pdetail-howto-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+}
+
+.pdetail-howto-text strong {
+  font-size: 0.9375rem;
+}
+
+.pdetail-howto-text span {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.pdetail-phone-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.pdetail-phone-btn:hover,
+.pdetail-phone-btn:focus-visible {
+  background: var(--color-secondary);
+}
+
+.pdetail-cta-primary,
+.pdetail-cta-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  flex: 1 1 160px;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+}
+
+.pdetail-cta-primary {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.pdetail-cta-primary:hover,
+.pdetail-cta-primary:focus-visible {
+  background: var(--color-primary-dark);
+  color: var(--color-bg);
+  text-decoration: none;
+}
+
+.pdetail-cta-outline {
+  background: none;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.pdetail-cta-outline:hover,
+.pdetail-cta-outline:focus-visible {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .pdetail-media {
+    position: static;
+  }
+
+  .pdetail-info-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card-image {
@@ -3640,11 +3945,15 @@ body.view-is-list .product-list {
 }
 
 .card-category {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-tertiary);
+  color: var(--cat-color, var(--color-text-tertiary));
   margin: 0 0 var(--space-xs);
 }
 
@@ -3866,8 +4175,7 @@ body.view-is-list .product-list {
    tam ekran lightbox (bkz. public/static/js/product-gallery.js).
    =================================================================== */
 .pgallery {
-  position: sticky;
-  top: var(--space-lg);
+  position: relative;
 }
 
 .pgallery-main {
