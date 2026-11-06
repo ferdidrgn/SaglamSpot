@@ -55,6 +55,7 @@ function toViewModel(doc) {
       ...(Array.isArray(data.imagesUrl) ? data.imagesUrl : []).filter(Boolean),
     ],
     isSpotProduct: Boolean(data.isSpotProduct),
+    isSold: Boolean(data.isSold),
     isReserved: Boolean(data.isReserved),
     dimensions: data.dimensions || null,
     material: data.material || null,
@@ -71,6 +72,18 @@ async function listActiveProducts({isSpotProduct, limit = 200} = {}) {
     query = query.where("isSpotProduct", "==", isSpotProduct);
   }
   const snapshot = await query.limit(limit).get();
+  return snapshot.docs
+      .map(toViewModel)
+      .sort((a, b) => b.createdAtSort - a.createdAtSort);
+}
+
+/**
+ * Satılmış ürünler — "eskiden ne satmışız" arşivi (bkz. /arama'daki
+ * "Satıldı" filtresi). Normal vitrinde hiç gösterilmez, bilerek ayrı bir
+ * fonksiyon: listActiveProducts'ın "isSold==false" varsayımını bozmadan.
+ */
+async function listSoldProducts({limit = 200} = {}) {
+  const snapshot = await productCollection().where("isSold", "==", true).limit(limit).get();
   return snapshot.docs
       .map(toViewModel)
       .sort((a, b) => b.createdAtSort - a.createdAtSort);
@@ -107,4 +120,4 @@ async function incrementWebViewCount(id) {
   await productCollection().doc(id).update({viewCountWeb: FieldValue.increment(1)}).catch(() => {});
 }
 
-module.exports = {listActiveProducts, getProductById, incrementWebViewCount, formatPrice, countSoldProducts};
+module.exports = {listActiveProducts, listSoldProducts, getProductById, incrementWebViewCount, formatPrice, countSoldProducts};

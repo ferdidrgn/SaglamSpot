@@ -1,6 +1,6 @@
 const {renderLayout, escapeHtml} = require("../render/layout");
 const {renderProductGrid} = require("../render/productCard");
-const {listActiveProducts} = require("../productRepo");
+const {listActiveProducts, listSoldProducts} = require("../productRepo");
 const {CATEGORY_LABELS} = require("../categories");
 const {t} = require("../i18n");
 
@@ -25,15 +25,22 @@ module.exports = async function searchRoute(req, res) {
   let products = [];
   let firestoreError = null;
 
+  // "Satıldı" filtresi: normal vitrinden tamamen ayrı bir havuz (isSold
+  // true) - "eskiden ne satmışız" arşivi. ARB'de karşılığı yok (brief:
+  // yeniden çeviri yok), bilerek Türkçe literal (bkz. "Rezerve" emsali).
+  const isSoldFilter = condition === "sold";
+
   try {
-    const all = await listActiveProducts({limit: 500});
+    const all = isSoldFilter
+      ? await listSoldProducts({limit: 500})
+      : await listActiveProducts({limit: 500});
     const needle = normalizeText(q);
 
     products = all.filter((p) => {
       if (needle && !normalizeText(p.name).includes(needle) && !normalizeText(p.desc).includes(needle)) return false;
       if (category && p.category !== category) return false;
-      if (condition === "new" && p.isSpotProduct) return false;
-      if (condition === "used" && !p.isSpotProduct) return false;
+      if (!isSoldFilter && condition === "new" && p.isSpotProduct) return false;
+      if (!isSoldFilter && condition === "used" && !p.isSpotProduct) return false;
       if (minPrice != null && !Number.isNaN(minPrice) && p.price < minPrice) return false;
       if (maxPrice != null && !Number.isNaN(maxPrice) && p.price > maxPrice) return false;
       return true;
@@ -46,16 +53,19 @@ module.exports = async function searchRoute(req, res) {
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === category ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
-  const conditionOptionsHtml = [["all", t(locale, "conditionAll")], ["new", t(locale, "conditionNew")], ["used", t(locale, "conditionUsed")]]
+  const conditionOptionsHtml = [["all", t(locale, "conditionAll")], ["new", t(locale, "conditionNew")], ["used", t(locale, "conditionUsed")], ["sold", "Satıldı"]]
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === condition ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
+  const emptyMessage = isSoldFilter ? "Henüz satılmış ürün yok." : t(locale, "searchEmptyMessage");
   const resultsHtml = firestoreError
     ? `<p class="status status-error">${escapeHtml(firestoreError)}</p>`
-    : renderProductGrid(products, locale, products.length ? null : t(locale, "searchEmptyMessage"));
+    : renderProductGrid(products, locale, products.length ? null : emptyMessage);
 
-  const hasQuery = q || category || condition !== "all" || minPrice != null || maxPrice != null;
-
+  // Önceden filtre uygulanmadan sayfaya ilk girişte "Henüz sonuç yok"
+  // yazan boş bir ipucu ekranı vardı — kullanıcı geri bildirimi: "hiçbir
+  // ürün yok diyor oysa var". Artık varsayılan olarak TÜM aktif ürünler
+  // (hiç filtre yokken) hemen gösteriliyor, tıpkı gerçek bir katalog gibi.
   const bodyHtml = `
 <section class="section-header">
   <p class="eyebrow">${escapeHtml(t(locale, "category"))}</p>
@@ -70,7 +80,7 @@ module.exports = async function searchRoute(req, res) {
   <button type="submit">${escapeHtml(t(locale, "apply"))}</button>
 </form>
 <section class="section">
-  ${hasQuery ? resultsHtml : `<p class="empty-state">${escapeHtml(t(locale, "searchEmptyTitle"))}</p>`}
+  ${resultsHtml}
 </section>`;
 
   res.set("Cache-Control", "no-cache, no-store, must-revalidate");

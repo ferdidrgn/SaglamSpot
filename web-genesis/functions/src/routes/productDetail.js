@@ -79,35 +79,45 @@ module.exports = async function productDetailRoute(req, res) {
     ? `<dl class="spec-list">${specRows.map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join("\n")}</dl>`
     : "";
 
-  const reservedNote = product.isReserved
+  const reservedNote = product.isReserved && !product.isSold
     ? "<p class=\"status status-error\">Rezerve</p>"
+    : "";
+  // Satılmış ürün — hâlâ görüntülenebilir (paylaşılan linkler/arşiv) ama
+  // artık mevcut değil: WhatsApp CTA'sı "ilgileniyorum" yerine benzerlerine
+  // yönlendirir, sepete ekleme tamamen kaldırılır.
+  const soldNote = product.isSold
+    ? "<p class=\"status status-error\">Bu ürün satıldı — artık mevcut değil.</p>"
     : "";
 
   // lib/core/services/deeplink/deeplink_service.dart'taki
   // contactAboutProduct() ile AYNI mesaj biçimi — esnafın WhatsApp'ta
   // gördüğü metin, kaynağı web ya da mobil fark etmeksizin tutarlı olsun.
   const shareUrl = productShareUrl(product.id, product.name);
-  const whatsappMessage = `Merhaba, "${product.name}" (₺${Math.round(product.price)}) ürünü ile ilgileniyorum.\n${shareUrl}`;
+  const whatsappMessage = product.isSold
+    ? `Merhaba, "${product.name}" ürününe benzer bir şey arıyorum, elinizde var mı?`
+    : `Merhaba, "${product.name}" (₺${Math.round(product.price)}) ürünü ile ilgileniyorum.\n${shareUrl}`;
   const whatsappHref = business.whatsappUrl(whatsappMessage);
   const categoryLabel = localizedCategoryLabel(locale, product.category);
   const conditionLabel = t(locale, product.isSpotProduct ? "conditionUsed" : "conditionNew");
+  const cartButtonHtml = product.isSold ? "" : `
+      <button type="button" class="cart-add-btn" data-cart-add
+        data-id="${escapeHtml(product.id)}"
+        data-name="${escapeHtml(product.name)}"
+        data-price="${product.price}">${escapeHtml(t(locale, "addToCartCta"))}</button>`;
 
   const bodyHtml = `
-<section class="product-detail">
+<section class="product-detail${product.isSold ? " product-detail-sold" : ""}">
   ${galleryHtml}
   <div class="detail-info">
     <p class="card-category">${escapeHtml(categoryLabel)} · ${escapeHtml(conditionLabel)}</p>
     <h1>${escapeHtml(product.name)}</h1>
     <p class="card-price">${previousPriceHtml}<span class="price-current" dir="ltr">${escapeHtml(product.priceLabel)}</span></p>
+    ${soldNote}
     ${reservedNote}
     ${product.desc ? `<p class="detail-desc">${escapeHtml(product.desc)}</p>` : ""}
     ${specHtml}
     <div class="detail-actions">
-      <a class="whatsapp-link" href="${escapeHtml(whatsappHref)}" rel="noopener">${escapeHtml(t(locale, "whatsappCta"))}</a>
-      <button type="button" class="cart-add-btn" data-cart-add
-        data-id="${escapeHtml(product.id)}"
-        data-name="${escapeHtml(product.name)}"
-        data-price="${product.price}">${escapeHtml(t(locale, "addToCartCta"))}</button>
+      <a class="whatsapp-link" href="${escapeHtml(whatsappHref)}" rel="noopener">${escapeHtml(product.isSold ? "Benzerini Sor" : t(locale, "whatsappCta"))}</a>${cartButtonHtml}
     </div>
   </div>
 </section>`;

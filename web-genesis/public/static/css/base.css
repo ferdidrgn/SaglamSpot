@@ -1992,6 +1992,31 @@ button:focus-visible {
   background: var(--color-accent);
 }
 
+.pcard-tag-sold {
+  background: var(--color-error);
+}
+
+/* "Satıldı" arşiv kartı — hâlâ incelenebilir (tıklanabilir) ama görsel
+   olarak net şekilde "artık mevcut değil" hissi verir: gri tonlama +
+   hafif saydamlık, hover'da normale döner (meraklısı rahat bakabilsin). */
+.pcard-sold .pcard-media img {
+  filter: grayscale(0.75) brightness(0.85);
+}
+
+.pcard-sold {
+  opacity: 0.86;
+  transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.pcard-sold:hover,
+.pcard-sold:has(.pcard-link:focus-visible) {
+  opacity: 1;
+}
+
+.pcard-sold:hover .pcard-media img {
+  filter: grayscale(0.3) brightness(0.95);
+}
+
 .pcard-reserved {
   position: absolute;
   top: var(--space-md);
@@ -2266,6 +2291,10 @@ button:focus-visible {
   border-radius: var(--radius-md);
   object-fit: cover;
   aspect-ratio: 4 / 3;
+}
+
+.product-detail-sold .detail-gallery img {
+  filter: grayscale(0.6) brightness(0.92);
 }
 
 .detail-info h1 {

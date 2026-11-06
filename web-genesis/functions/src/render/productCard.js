@@ -19,9 +19,12 @@ const CART_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"
 
 function renderProductCard(product, locale = DEFAULT_LOCALE) {
   const isSpot = product.isSpotProduct;
-  const tagLabel = isSpot ? t(locale, "usedProductBadge") : t(locale, "productCardNewBadge");
-  const tagClass = isSpot ? "pcard-tag-used" : "pcard-tag-new";
-  const reservedBadge = product.isReserved
+  // "Satıldı" arşivi (/arama?condition=sold) — ürün artık mevcut değil,
+  // kart bilerek soluk/gri gösterilir ve sepete eklenemez (cart-btn yok).
+  // ARB'de "satıldı" tek kelimelik kaynak yok, bilerek Türkçe literal.
+  const tagLabel = product.isSold ? "SATILDI" : (isSpot ? t(locale, "usedProductBadge") : t(locale, "productCardNewBadge"));
+  const tagClass = product.isSold ? "pcard-tag-sold" : (isSpot ? "pcard-tag-used" : "pcard-tag-new");
+  const reservedBadge = product.isReserved && !product.isSold
     ? "<span class=\"pcard-reserved\">Rezerve</span>"
     : "";
   const previousPriceHtml = product.previousPriceLabel
@@ -32,8 +35,15 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
     ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" width="320" height="320">`
     : "<div class=\"pcard-placeholder\" aria-hidden=\"true\"></div>";
 
+  const cartBtnHtml = product.isSold ? "" : `
+  <button type="button" class="pcard-cart-btn" data-cart-add
+    aria-label="${escapeHtml(t(locale, "addToCartCta"))}"
+    data-id="${escapeHtml(product.id)}"
+    data-name="${escapeHtml(product.name)}"
+    data-price="${product.price}">${CART_ICON}</button>`;
+
   return `
-<div class="pcard">
+<div class="pcard${product.isSold ? " pcard-sold" : ""}">
   <a class="pcard-link" href="${escapeHtml(product.path)}">
     <div class="pcard-media">
       ${imageHtml}
@@ -48,12 +58,7 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
         <span class="pcard-price">${previousPriceHtml}<span dir="ltr">${escapeHtml(product.priceLabel)}</span></span>
       </div>
     </div>
-  </a>
-  <button type="button" class="pcard-cart-btn" data-cart-add
-    aria-label="${escapeHtml(t(locale, "addToCartCta"))}"
-    data-id="${escapeHtml(product.id)}"
-    data-name="${escapeHtml(product.name)}"
-    data-price="${product.price}">${CART_ICON}</button>
+  </a>${cartBtnHtml}
 </div>`;
 }
 
