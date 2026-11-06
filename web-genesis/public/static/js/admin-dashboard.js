@@ -18,6 +18,26 @@ const closeBtn = document.getElementById("admin-form-close");
 
 let productsCache = [];
 
+// window.alert() yerine - admin paneli tek bir sekmede kullanıldığı için
+// native tarayıcı diyalogları (akışı tamamen durduran, markasız) yerine
+// kısa ömürlü, kendi kendine kapanan bir bildirim yeterli ve daha "modern".
+function toast(message, {error = false} = {}) {
+  let stack = document.querySelector(".toast-stack");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.className = "toast-stack";
+    document.body.appendChild(stack);
+  }
+  const el = document.createElement("div");
+  el.className = "toast" + (error ? " toast-error" : "");
+  el.textContent = message;
+  stack.appendChild(el);
+  window.setTimeout(() => {
+    el.classList.add("is-leaving");
+    el.addEventListener("animationend", () => el.remove(), {once: true});
+  }, 3200);
+}
+
 function escapeHtml(value) {
   return String(value)
       .replace(/&/g, "&amp;")
@@ -134,8 +154,9 @@ async function toggleField(docId, field) {
   try {
     await updateDoc(doc(db, "Product", docId), update);
     await loadProducts();
+    toast("Güncellendi.");
   } catch (err) {
-    window.alert("Güncellenemedi: " + err.message);
+    toast("Güncellenemedi: " + err.message, {error: true});
   }
 }
 
@@ -146,8 +167,9 @@ async function handleDelete(docId) {
   try {
     await deleteDoc(doc(db, "Product", docId));
     await loadProducts();
+    toast("Ürün silindi.");
   } catch (err) {
-    window.alert("Silinemedi: " + err.message);
+    toast("Silinemedi: " + err.message, {error: true});
   }
 }
 
@@ -159,15 +181,23 @@ modal.addEventListener("click", (e) => {
 });
 
 function closeForm() {
-  modal.hidden = true;
-  formEl.innerHTML = "";
-  delete formEl.dataset.editId;
+  // Önce saydamlaş (CSS transition), sonra DOM'dan tamamen kaldır -
+  // "hidden" anında atlanırsa geçiş hiç görünmezdi.
+  modal.classList.remove("is-open");
+  window.setTimeout(() => {
+    modal.hidden = true;
+    formEl.innerHTML = "";
+    delete formEl.dataset.editId;
+  }, 220);
 }
 
 function openForm(product) {
   formEl.dataset.editId = product ? product._docId : "";
   formEl.innerHTML = renderFormHtml(product);
   modal.hidden = false;
+  // Bir sonraki frame'de class eklenir ki tarayıcı "hidden kalkışı"nı
+  // transition'ın BAŞLANGICI olarak değil, başlangıç durumu olarak görsün.
+  requestAnimationFrame(() => modal.classList.add("is-open"));
   wireFormDynamic(Boolean(product && product.isSpotProduct));
   formEl.addEventListener("submit", handleSubmit, {once: true});
 }
@@ -233,7 +263,7 @@ function renderFormHtml(product) {
 <p id="admin-form-error" class="status status-error" hidden></p>
 <p id="admin-form-progress" class="status" hidden></p>
 <div class="admin-form-actions">
-  <button type="submit">${isEdit ? "Kaydet" : "Ürünü Ekle"}</button>
+  <button type="submit"><span class="btn-label">${isEdit ? "Kaydet" : "Ürünü Ekle"}</span></button>
 </div>`;
 }
 
@@ -359,6 +389,7 @@ async function handleSubmit(event) {
     await setDoc(docRef, data);
     closeForm();
     await loadProducts();
+    toast(editId ? "Ürün güncellendi." : "Ürün eklendi.");
   } catch (err) {
     errorEl.textContent = "Hata: " + err.message;
     errorEl.hidden = false;

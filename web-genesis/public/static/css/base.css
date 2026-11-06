@@ -1564,6 +1564,56 @@ button:focus-visible {
   max-width: 480px;
 }
 
+/* --- admin giriş ekranı --- */
+.admin-login-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-xl) 0;
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-xxxl) var(--space-xxl);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 48px -24px color-mix(in srgb, var(--color-primary-dark) 30%, transparent);
+  text-align: center;
+  animation: admin-card-in var(--motion-slow) var(--ease-standard) backwards;
+}
+
+@keyframes admin-card-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.admin-login-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--space-lg);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: #fff;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 0 10px 20px -8px color-mix(in srgb, var(--color-accent-dark) 55%, transparent);
+}
+
+.admin-login-card h1 {
+  margin-bottom: var(--space-lg);
+}
+
+.admin-login-card .admin-form {
+  text-align: left;
+}
+
 .admin-toolbar {
   display: flex;
   gap: var(--space-md);
@@ -1572,6 +1622,8 @@ button:focus-visible {
 
 .admin-toolbar button,
 .admin-form button[type="submit"] {
+  position: relative;
+  overflow: hidden;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -1580,6 +1632,44 @@ button:focus-visible {
   padding: var(--space-sm) var(--space-xl);
   background: var(--color-primary);
   color: var(--color-bg);
+  transition: transform var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+.admin-toolbar button:hover,
+.admin-form button[type="submit"]:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.admin-toolbar button:disabled,
+.admin-form button[type="submit"]:disabled {
+  cursor: wait;
+  opacity: 0.75;
+  transform: none;
+}
+
+/* Gönderim sırasında buton metni yerine dönen bir halka — native "disabled
+   gri buton" yerine net bir "işleniyor" geri bildirimi. */
+.admin-form button[type="submit"]:disabled .btn-label {
+  visibility: hidden;
+}
+
+.admin-form button[type="submit"]:disabled::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid color-mix(in srgb, var(--color-bg) 35%, transparent);
+  border-top-color: var(--color-bg);
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
 }
 
 .admin-secondary-btn {
@@ -1615,7 +1705,6 @@ button:focus-visible {
 .admin-form input[type="number"],
 .admin-form input[type="email"],
 .admin-form input[type="password"],
-.admin-form input[type="file"],
 .admin-form select,
 .admin-form textarea {
   font: inherit;
@@ -1625,6 +1714,36 @@ button:focus-visible {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: var(--space-sm) var(--space-md);
+  transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.admin-form input[type="text"]:focus,
+.admin-form input[type="number"]:focus,
+.admin-form input[type="email"]:focus,
+.admin-form input[type="password"]:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.admin-form input[type="file"] {
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg));
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-lg) var(--space-md);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+.admin-form input[type="file"]:hover,
+.admin-form input[type="file"]:focus {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
 }
 
 .admin-radio-group {
@@ -1666,6 +1785,12 @@ button:focus-visible {
   padding: var(--space-xxl) var(--space-lg);
   overflow-y: auto;
   z-index: 100;
+  opacity: 0;
+  transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.admin-modal.is-open {
+  opacity: 1;
 }
 
 .admin-modal-content {
@@ -1675,6 +1800,12 @@ button:focus-visible {
   padding: var(--space-xxl);
   max-width: 560px;
   width: 100%;
+  transform: translateY(16px) scale(0.97);
+  transition: transform var(--motion-normal) var(--ease-standard);
+}
+
+.admin-modal.is-open .admin-modal-content {
+  transform: none;
 }
 
 .admin-modal-close {
@@ -1703,6 +1834,66 @@ button:focus-visible {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  transition: transform var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
+  animation: admin-row-in var(--motion-normal) var(--ease-standard) backwards;
+}
+
+.admin-row:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-accent-light);
+  box-shadow: 0 12px 24px -16px color-mix(in srgb, var(--color-primary-dark) 35%, transparent);
+}
+
+@keyframes admin-row-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.admin-table > .admin-row:nth-child(1) { animation-delay: 0ms; }
+.admin-table > .admin-row:nth-child(2) { animation-delay: 40ms; }
+.admin-table > .admin-row:nth-child(3) { animation-delay: 80ms; }
+.admin-table > .admin-row:nth-child(n+4) { animation-delay: 120ms; }
+
+/* --- toast bildirimi (alert() yerine) --- */
+.toast-stack {
+  position: fixed;
+  right: var(--space-lg);
+  bottom: var(--space-lg);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 240px;
+  max-width: 340px;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-dark);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.5);
+  animation: toast-in var(--motion-normal) var(--ease-standard);
+}
+
+.toast-error {
+  background: var(--color-error);
+}
+
+.toast.is-leaving {
+  animation: toast-out var(--motion-fast) var(--ease-standard) forwards;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(6px) scale(0.98); }
 }
 
 .admin-row-thumb {

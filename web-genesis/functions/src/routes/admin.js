@@ -14,16 +14,19 @@ const {CATEGORY_LABELS, WEAR_TIER_LABELS} = require("../categories");
 
 function loginRoute(req, res) {
   const bodyHtml = `
-<section class="section-header admin-narrow">
-  <p class="eyebrow">Yönetici</p>
-  <h1>Giriş Yap</h1>
-</section>
-<form id="admin-login-form" class="admin-form admin-narrow">
-  <label>E-posta<input type="email" name="email" required autocomplete="username"></label>
-  <label>Şifre<input type="password" name="password" required autocomplete="current-password"></label>
-  <p id="admin-login-error" class="status status-error" hidden></p>
-  <button type="submit">Giriş Yap</button>
-</form>`;
+<div class="admin-login-stage">
+  <div class="admin-login-card">
+    <span class="admin-login-mark">S</span>
+    <p class="eyebrow" style="justify-content:center">Yönetici</p>
+    <h1>Giriş Yap</h1>
+    <form id="admin-login-form" class="admin-form">
+      <label>E-posta<input type="email" name="email" required autocomplete="username"></label>
+      <label>Şifre<input type="password" name="password" required autocomplete="current-password"></label>
+      <p id="admin-login-error" class="status status-error" hidden></p>
+      <button type="submit"><span class="btn-label">Giriş Yap</span></button>
+    </form>
+  </div>
+</div>`;
 
   res.set("Cache-Control", "no-store");
   res.status(200).send(renderLayout({
