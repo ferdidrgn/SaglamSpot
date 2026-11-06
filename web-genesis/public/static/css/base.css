@@ -1220,29 +1220,66 @@ button:focus-visible {
   text-align: center;
   padding: var(--space-xl) var(--space-lg);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, #fff 8%, transparent);
+  /* Şeridin pozisyona göre değişen açık/koyu gradyanı yüzünden kart
+     kenarları bazen soluk/düşük kontrast görünüyordu — her kartın kendi
+     koyu zemini (konumdan bağımsız) + belirgin çerçeve okunurluğu
+     sabitler. */
+  background: color-mix(in srgb, var(--color-primary-dark) 55%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid color-mix(in srgb, #fff 14%, transparent);
-  transition: transform var(--motion-normal) var(--ease-standard), background var(--motion-normal) var(--ease-standard);
+  border: 1px solid color-mix(in srgb, #fff 18%, transparent);
+  box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.5);
+  transition: transform var(--motion-normal) var(--ease-standard), background var(--motion-normal) var(--ease-standard), box-shadow var(--motion-normal) var(--ease-standard);
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  background: color-mix(in srgb, #fff 13%, transparent);
+  background: color-mix(in srgb, var(--color-primary-dark) 68%, transparent);
+  box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.55);
 }
 
 .stat-card-icon {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  margin-bottom: var(--space-sm);
-  background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
-  color: var(--color-primary-dark);
-  box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.35);
+  margin-bottom: var(--space-md);
+  /* Kartın altındaki şerit gradyanı pozisyona göre değiştiği için (sol
+     açık/sağ koyu) ikon dairesi SABİT, yüksek kontrastlı kendi rengini
+     taşır — hangi kartta olursa olsun okunurluk aynı kalır. */
+  background: radial-gradient(circle at 30% 28%, var(--color-accent-light), var(--color-accent) 55%, var(--color-accent-dark) 100%);
+  color: #fff;
+  border: 2px solid color-mix(in srgb, #fff 55%, transparent);
+  box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.45), 0 0 0 5px color-mix(in srgb, #fff 10%, transparent);
+}
+
+.stat-card-icon svg {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stat-card-icon {
+    animation: icon-pulse-ring 2.8s ease-out infinite;
+  }
+}
+
+@keyframes icon-pulse-ring {
+  0% { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.45), 0 0 0 0 color-mix(in srgb, var(--color-accent-light) 55%, transparent); }
+  70% { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.45), 0 0 0 10px color-mix(in srgb, var(--color-accent-light) 0%, transparent); }
+  100% { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.45), 0 0 0 0 color-mix(in srgb, var(--color-accent-light) 0%, transparent); }
+}
+
+.stat-card:hover .stat-card-icon {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.stat-card-icon {
+  transition: transform var(--motion-normal) var(--ease-standard);
 }
 
 .stat-card strong {
