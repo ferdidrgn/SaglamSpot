@@ -133,6 +133,11 @@ node_modules/
 .pnpm-store/
 android/app/google-services.json
 
+# web-genesis: deploy öncesi lib/l10n/*.arb'den kopyalanan üretilmiş kopya
+# (bkz. web-genesis/functions/scripts/copy-arb.js) — tek kaynak hâlâ
+# lib/l10n, burası commit edilmez (çift kaynak/çürüme riski).
+web-genesis/functions/l10n/
+
 # -----------------------
 # CLAUDE CODE (Agent worktree'leri vb. — harness'e özel, commit edilmez)
 # -----------------------

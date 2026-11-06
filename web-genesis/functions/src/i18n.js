@@ -26,12 +26,32 @@ const NATIVE_NAMES = {
   zh: "中文",
 };
 
+// İki aday konum: Cloud Functions'a deploy edilen paket SADECE
+// "web-genesis/functions" klasörünü içerdiği için deploy öncesi
+// scripts/copy-arb.js tarafından kopyalanan "../l10n" öncelikli denenir;
+// repo'nun tamamının diskte olduğu yerel emülatörde (predeploy çalışmaz)
+// ikinci aday (repo kökündeki orijinal dosya) devreye girer.
+const ARB_CANDIDATE_DIRS = [
+  path.join(__dirname, "../l10n"),
+  path.join(__dirname, "../../../lib/l10n"),
+];
+
+function readArbFile(locale) {
+  for (const dir of ARB_CANDIDATE_DIRS) {
+    try {
+      return fs.readFileSync(path.join(dir, `app_${locale}.arb`), "utf8");
+    } catch (_) {
+      // Bu adayda yok — sıradaki adaya geç.
+    }
+  }
+  return null;
+}
+
 const translations = {};
 for (const locale of SUPPORTED_LOCALES) {
   try {
-    const filePath = path.join(__dirname, "../../../lib/l10n", `app_${locale}.arb`);
-    const raw = fs.readFileSync(filePath, "utf8");
-    const parsed = JSON.parse(raw);
+    const raw = readArbFile(locale);
+    const parsed = raw ? JSON.parse(raw) : {};
     const clean = {};
     for (const [key, value] of Object.entries(parsed)) {
       if (!key.startsWith("@")) clean[key] = value;

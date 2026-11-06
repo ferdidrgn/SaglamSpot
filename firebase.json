@@ -195,6 +195,9 @@
       "source": "web-genesis/functions",
       "codebase": "genesis",
       "runtime": "nodejs22",
+      "predeploy": [
+        "node web-genesis/functions/scripts/copy-arb.js"
+      ],
       "ignore": [
         "node_modules",
         ".git",
