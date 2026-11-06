@@ -273,6 +273,45 @@
     targets.forEach((el) => observer.observe(el));
   }
 
+  // Ana sayfa hero'su — lib/features/home/presentation/widgets/
+  // home_page_hero_widgets.dart'taki HeroBanner'ın (PageView + Timer.periodic
+  // 6sn) karşılığı: slaytlar arası çapraz geçiş, ok/nokta gezinme.
+  function wireHeroCarousel() {
+    const root = document.querySelector("[data-hero-carousel]");
+    if (!root) return;
+    const slides = [...root.querySelectorAll(".hero-slide")];
+    const dots = [...root.querySelectorAll(".hero-dot")];
+    if (slides.length < 2) return;
+    let index = Math.max(0, slides.findIndex((s) => s.classList.contains("is-active")));
+    let timer = null;
+
+    function show(next) {
+      index = (next + slides.length) % slides.length;
+      slides.forEach((s, i) => s.classList.toggle("is-active", i === index));
+      dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
+    }
+
+    function restart() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => show(index + 1), 6000);
+    }
+
+    root.querySelector(".hero-arrow-prev")?.addEventListener("click", () => {
+      show(index - 1);
+      restart();
+    });
+    root.querySelector(".hero-arrow-next")?.addEventListener("click", () => {
+      show(index + 1);
+      restart();
+    });
+    dots.forEach((d, i) => d.addEventListener("click", () => {
+      show(i);
+      restart();
+    }));
+
+    restart();
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -299,5 +338,6 @@
     wireLanguageSwitcher();
     wireHeaderScroll();
     wireRevealAnimations();
+    wireHeroCarousel();
   });
 })();

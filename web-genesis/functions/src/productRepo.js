@@ -93,8 +93,18 @@ async function getProductById(id) {
   return null;
 }
 
+/**
+ * Ana sayfa istatistik şeridi için — home_page_web.dart'taki
+ * `soldProductsProvider.length` ile aynı anlam (kaç ürün teslim edilmiş).
+ * Doküman içeriğini çekmeden sadece sayıyı alan Firestore aggregate query.
+ */
+async function countSoldProducts() {
+  const snapshot = await productCollection().where("isSold", "==", true).count().get();
+  return snapshot.data().count;
+}
+
 async function incrementWebViewCount(id) {
   await productCollection().doc(id).update({viewCountWeb: FieldValue.increment(1)}).catch(() => {});
 }
 
-module.exports = {listActiveProducts, getProductById, incrementWebViewCount, formatPrice};
+module.exports = {listActiveProducts, getProductById, incrementWebViewCount, formatPrice, countSoldProducts};

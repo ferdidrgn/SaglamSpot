@@ -52,6 +52,29 @@ function categoryColor(category) {
   return CATEGORY_COLORS[category] || CATEGORY_COLORS.other;
 }
 
+// lib/features/home/presentation/page/home_page_web.dart'taki
+// _categoryPhotos ile AYNI Unsplash URL'leri — kategori dairesel rayı ve
+// "Yaşam Alanına Göre" panelinde Flutter ile birebir aynı görseller.
+const CATEGORY_PHOTOS = {
+  sofa: "https://images.unsplash.com/photo-1550254478-ead40cc54513?q=80&w=800",
+  chair: "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800",
+  table: "https://images.unsplash.com/photo-1617806118233-18e1de247200?q=80&w=800",
+  bed: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800",
+  wardrobe: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800",
+  white: "https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=800",
+  lighting: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?q=80&w=800",
+  homeTextile: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=800",
+  decor: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800",
+  officeFurniture: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=800",
+  outdoorGarden: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800",
+  kidsFurniture: "https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=800",
+  other: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800",
+};
+
+function categoryPhoto(category) {
+  return CATEGORY_PHOTOS[category] || CATEGORY_PHOTOS.other;
+}
+
 function categoryLabel(category) {
   return CATEGORY_LABELS[category] || CATEGORY_LABELS.other;
 }
@@ -70,4 +93,4 @@ function wearTierLabel(wearTier) {
   return wearTier ? WEAR_TIER_LABELS[wearTier] || null : null;
 }
 
-module.exports = {CATEGORY_LABELS, WEAR_TIER_LABELS, CATEGORY_COLORS, categoryLabel, localizedCategoryLabel, wearTierLabel, categoryColor};
+module.exports = {CATEGORY_LABELS, WEAR_TIER_LABELS, CATEGORY_COLORS, CATEGORY_PHOTOS, categoryLabel, localizedCategoryLabel, wearTierLabel, categoryColor, categoryPhoto};

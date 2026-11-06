@@ -321,115 +321,702 @@ button:focus-visible {
   }
 }
 
-/* --- ana sayfa hero: istatistik şeridi + ikinci CTA --- */
-.hero-home {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xxl);
-  align-items: center;
-  justify-content: space-between;
+/* ===================================================================
+   ANA SAYFA HERO — lib/features/home/presentation/widgets/
+   home_page_hero_widgets.dart'taki HeroBanner'ın karşılığı: tam genişlik
+   fotoğraf (otomatik dönen), çapraz karartma, köşe "HUD" çerçevesi,
+   eyebrow rozet + başlık + üç hap buton, ok/nokta gezinme, sağ üstte
+   camsı "öne çıkan ürün" kartları.
+   =================================================================== */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xs) var(--radius-xl) var(--radius-xl) var(--radius-xs);
+  height: 420px;
+  box-shadow: 0 20px 40px -18px color-mix(in srgb, var(--color-primary-dark) 35%, transparent);
 }
 
-.hero-main {
-  flex: 2 1 320px;
+.hero-banner::before {
+  /* HUD köşe çerçevesi — dört köşeye açık renkli "L" biçiminde çizgiler. */
+  content: "";
+  position: absolute;
+  inset: 16px;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) top left / 26px 2px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) top left / 2px 26px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) top right / 26px 2px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) top right / 2px 26px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) bottom left / 26px 2px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) bottom left / 2px 26px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) bottom right / 26px 2px no-repeat,
+    linear-gradient(var(--color-accent-light), var(--color-accent-light)) bottom right / 2px 26px no-repeat;
+  opacity: 0.85;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  align-items: center;
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-standard);
 }
 
-.hero-secondary-btn {
-  margin: 0;
-  background: transparent;
-  border-color: var(--color-primary);
+.hero-slide.is-active {
+  opacity: 1;
+  z-index: 1;
 }
 
-.hero-stats {
-  flex: 1 1 220px;
-  align-self: flex-start;
-  display: flex;
-  align-items: flex-start;
-  align-content: flex-start;
-  gap: var(--space-xl);
-  flex-wrap: wrap;
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.hero-stat {
-  min-width: 84px;
+.hero-banner-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary-dark) 92%, transparent) 0%, color-mix(in srgb, var(--color-accent-dark) 38%, transparent) 42%, transparent 82%);
 }
 
-.hero-stat {
+.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-huge);
+  max-width: 560px;
 }
 
-.hero-stat strong {
-  font-family: var(--font-serif);
-  font-size: 1.75rem;
-  color: var(--color-accent);
-  line-height: 1;
-}
-
-.hero-stat span {
-  font-size: 0.75rem;
-  color: var(--color-text-tertiary);
+.hero-eyebrow-pill {
+  display: inline-flex;
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  box-shadow: 0 10px 20px -8px color-mix(in srgb, var(--color-accent-dark) 60%, transparent);
 }
 
-@media (max-width: 760px) {
-  .hero-home {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .hero-stats {
-    border-top: 1px solid var(--color-border);
-    padding-top: var(--space-lg);
-  }
+.hero-content h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.1rem);
+  line-height: 1.08;
 }
 
-/* --- kategori rayı (ana sayfa) --- */
-.category-rail {
+.hero-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1rem;
+  max-width: 38ch;
+}
+
+.hero-pill-row {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.hero-pill-light {
+  background: #fff;
+  color: var(--color-primary);
+}
+
+.hero-pill-accent {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.hero-pill-outline {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.hero-pill:hover,
+.hero-pill:focus-visible {
+  text-decoration: none;
+  filter: brightness(1.06);
+}
+
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-accent-dark) 38%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  cursor: pointer;
+}
+
+.hero-arrow-prev {
+  left: var(--space-lg);
+}
+
+.hero-arrow-next {
+  right: var(--space-lg);
+}
+
+.hero-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-lg);
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.hero-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: width var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+.hero-dot.is-active {
+  width: 20px;
+  background: var(--color-accent-light);
+}
+
+.hero-featured-stack {
+  position: absolute;
+  top: var(--space-xxl);
+  right: var(--space-xxl);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 230px;
+}
+
+.hero-featured-card {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, #fff 16%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, #fff 25%, transparent);
+  box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.5);
+}
+
+.hero-featured-thumb {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-secondary);
+}
+
+.hero-featured-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-featured-info {
+  min-width: 0;
+}
+
+.hero-featured-num {
+  margin: 0;
+  color: var(--color-accent-light);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.hero-featured-name {
+  margin: 1px 0 0;
+  color: #fff;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-featured-meta {
+  margin: 2px 0 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  .hero-featured-stack {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-banner {
+    height: 520px;
+  }
+
+  .hero-content {
+    padding: var(--space-xl);
+    max-width: 100%;
+  }
+}
+
+/* ===================================================================
+   DAİRESEL KATEGORİ RAYI — home_page_web.dart'taki
+   _buildCircularCategoryItem ile aynı: fotoğraflı daireler + alt etiket.
+   =================================================================== */
+.category-rail {
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  padding: var(--space-sm) 2px var(--space-md);
+  scrollbar-width: thin;
 }
 
 .category-chip {
-  --chip-color: var(--color-accent);
-  display: inline-flex;
+  flex: none;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--chip-color) 14%, var(--color-surface));
-  border: 1px solid color-mix(in srgb, var(--chip-color) 35%, var(--color-border));
-  color: var(--color-text-primary);
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition: background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+  gap: var(--space-sm);
+  width: 84px;
+  text-align: center;
 }
 
-.category-chip::before {
-  content: "";
-  width: 8px;
-  height: 8px;
+.category-chip-avatar {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: var(--chip-color);
-  flex: none;
+  overflow: hidden;
+  background: var(--color-secondary);
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1px var(--color-border);
+  transition: transform var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.category-chip-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-chip-avatar.is-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: #fff;
+}
+
+.category-chip:hover .category-chip-avatar,
+.category-chip:focus-visible .category-chip-avatar {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--color-primary-dark) 40%, transparent), 0 0 0 1px var(--color-accent-light);
+}
+
+.category-chip-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.2;
 }
 
 .category-chip:hover,
 .category-chip:focus-visible {
-  background: color-mix(in srgb, var(--chip-color) 24%, var(--color-surface));
   text-decoration: none;
+}
+
+/* ===================================================================
+   GATEWAY (İKİ KAPI) KARTLARI — home_page_showcase_cards.dart'taki
+   GatewayCard ile aynı: büyük, köşe glow'lu, ikon kolajlı vitrin kartı.
+   =================================================================== */
+.gateway-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  align-items: stretch;
+}
+
+.gateway-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: var(--space-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.gateway-card-new {
+  background: #faf8f5;
+  border: 1px solid #e8e3dc;
+}
+
+.gateway-card-spot {
+  background: #f4f5f7;
+  border: 1px solid #e0e0e0;
+}
+
+.gateway-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 110% 120%, var(--glow-color, var(--color-accent)) 0%, transparent 60%);
+  opacity: 0.22;
+}
+
+.gateway-icon {
+  position: absolute;
+  right: -18px;
+  bottom: -18px;
+  opacity: 0.1;
+  color: var(--glow-color, var(--color-accent));
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.gateway-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--eyebrow-color, var(--color-accent));
+}
+
+.gateway-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.gateway-sub {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 0.8125rem;
+}
+
+.gateway-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.gateway-count {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glow-color, var(--color-accent)) 14%, transparent);
+  color: var(--glow-color, var(--color-accent));
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.gateway-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-pill);
+  background: var(--glow-color, var(--color-accent));
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.gateway-cta:hover,
+.gateway-cta:focus-visible {
+  text-decoration: none;
+  filter: brightness(1.08);
+}
+
+@media (max-width: 760px) {
+  .gateway-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================================================================
+   BENTO GÜVEN IZGARASI — home_page_web.dart'taki _buildTrustBar ile aynı.
+   =================================================================== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-lg);
+  height: 300px;
+}
+
+.bento-tile {
+  --tile-color: var(--color-accent);
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--tile-color) 8%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--tile-color) 18%, var(--color-border));
+}
+
+.bento-tile-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--tile-color), color-mix(in srgb, var(--tile-color) 70%, black));
+  color: #fff;
+  box-shadow: 0 8px 16px -6px color-mix(in srgb, var(--tile-color) 55%, transparent);
+}
+
+.bento-tile-label {
+  font-weight: 700;
   color: var(--color-text-primary);
-  transform: translateY(-1px);
+}
+
+.bento-tile-1 {
+  grid-column: 1;
+}
+
+.bento-tile-2,
+.bento-tile-3 {
+  grid-row: span 1;
+}
+
+.bento-tile-2 {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.bento-tile-3 {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.bento-tile-4 {
+  grid-column: 3;
+}
+
+@media (max-width: 760px) {
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+  }
+
+  .bento-tile-1 {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    height: 160px;
+  }
+
+  .bento-tile-2 {
+    grid-column: 1;
+    grid-row: 2;
+    height: 130px;
+  }
+
+  .bento-tile-3 {
+    grid-column: 2;
+    grid-row: 2;
+    height: 130px;
+  }
+
+  .bento-tile-4 {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    height: 110px;
+  }
+}
+
+/* ===================================================================
+   "YAŞAM ALANINA GÖRE" PANELİ — _buildRoomsInspirationBanner ile aynı:
+   solda sabit metin bloğu, sağda yatay kaydırmalı oda kartları.
+   =================================================================== */
+.rooms-panel {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: stretch;
+}
+
+.rooms-text {
+  flex: 0 0 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-xxl);
+  border-radius: var(--radius-xl);
+  background: var(--color-secondary);
+}
+
+.rooms-text h2 {
+  margin: 0;
+}
+
+.rooms-text p {
+  margin: 0;
+}
+
+.rooms-collage {
+  flex: 1;
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  padding-bottom: var(--space-xs);
+}
+
+.room-card {
+  position: relative;
+  flex: 0 0 240px;
+  height: 340px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 16px 30px -16px color-mix(in srgb, var(--color-primary-dark) 30%, transparent);
+}
+
+.room-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--motion-slow) var(--ease-standard);
+}
+
+.room-card:hover img,
+.room-card:focus-visible img {
+  transform: scale(1.08);
+}
+
+.room-card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: var(--space-lg);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), transparent 60%);
+  color: #fff;
+}
+
+.room-card-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-light);
+}
+
+.room-card-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+
+.room-card:hover,
+.room-card:focus-visible {
+  text-decoration: none;
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .rooms-panel {
+    flex-direction: column;
+  }
+
+  .rooms-text {
+    flex: none;
+  }
+}
+
+/* ===================================================================
+   İSTATİSTİK ŞERİDİ — home_page_web.dart'taki _buildStatsSection.
+   =================================================================== */
+.stats-band {
+  margin: var(--space-section) calc(var(--space-screen) * -1) 0;
+  padding: var(--space-huge) var(--space-screen);
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-primary-dark) 18%);
+}
+
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-lg);
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  flex: 1 1 180px;
+  max-width: 220px;
+  text-align: center;
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: var(--space-sm);
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 900;
+}
+
+.stat-card span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* --- footer (genişletilmiş) --- */
@@ -999,49 +1586,195 @@ button:focus-visible {
   }
 }
 
-/* --- product grid / card --- */
+/* --- product grid / "asimetrik vitrin kartı" ---
+   lib/core/widgets/custom_product_card.dart'taki GERÇEK Flutter kart
+   tasarımının karşılığı: fotoğraf kartın tamamını kaplar, taban şeridinde
+   karartma + isim/kategori/fiyat, sağ üst köşede flush durum etiketi,
+   köşeler asimetrik (sağ üst keskin, sol alt belirgin yuvarlak). */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--space-lg);
 }
 
-.product-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xs) var(--radius-lg) var(--radius-xs) var(--radius-lg);
+.pcard {
+  position: relative;
+  border-radius: 8px 34px 34px 8px;
   overflow: hidden;
-  transition: box-shadow var(--motion-normal) var(--ease-standard), border-color var(--motion-normal) var(--ease-standard);
+  box-shadow: 0 10px 18px -10px color-mix(in srgb, var(--color-primary-dark) 20%, transparent);
+  transition: box-shadow var(--motion-normal) var(--ease-standard), transform var(--motion-normal) var(--ease-standard);
 }
 
-.product-card:has(.card-link:hover),
-.product-card:has(.card-link:focus-visible) {
-  box-shadow: 0 16px 28px -14px color-mix(in srgb, var(--color-primary-dark) 28%, transparent);
-  border-color: var(--color-accent-light);
+.pcard-cart-btn {
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: color-mix(in srgb, #fff 22%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  transition: background var(--motion-fast) var(--ease-standard);
 }
 
-.card-link {
+.pcard-cart-btn:hover,
+.pcard-cart-btn:focus-visible {
+  background: color-mix(in srgb, #fff 38%, transparent);
+}
+
+.pcard-cart-btn.is-in-cart {
+  background: var(--color-success);
+  color: #fff;
+}
+
+.pcard:has(.pcard-link:hover),
+.pcard:has(.pcard-link:focus-visible) {
+  box-shadow: 0 22px 34px -14px color-mix(in srgb, var(--color-primary-dark) 32%, transparent), 0 10px 26px -10px color-mix(in srgb, var(--color-accent) 30%, transparent);
+  transform: translateY(-3px);
+}
+
+.pcard-link {
   display: block;
   color: inherit;
-  transition: transform var(--motion-fast) var(--ease-standard);
 }
 
-.card-link:hover,
-.card-link:focus-visible {
+.pcard-link:hover,
+.pcard-link:focus-visible {
   text-decoration: none;
   color: inherit;
-  transform: translateY(-2px);
 }
 
-.card-image img {
+.pcard-media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--color-secondary);
+  overflow: hidden;
+}
+
+.pcard-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
   transition: transform var(--motion-slow) var(--ease-standard);
 }
 
-.card-link:hover .card-image img,
-.card-link:focus-visible .card-image img {
-  transform: scale(1.04);
+.pcard-link:hover .pcard-media img,
+.pcard-link:focus-visible .pcard-media img {
+  transform: scale(1.06);
+}
+
+.pcard-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.pcard-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent 62%);
+  pointer-events: none;
+}
+
+.pcard-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-md);
+  border-bottom-left-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.pcard-tag-new {
+  background: #2e7d32;
+}
+
+.pcard-tag-used {
+  background: var(--color-accent);
+}
+
+.pcard-reserved {
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  padding: var(--space-xxs) var(--space-sm);
+  border-radius: var(--radius-pill);
+  background: var(--color-warning);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.pcard-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md) var(--space-md);
+}
+
+.pcard-info-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.pcard-name {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pcard-cat {
+  --cat-color: var(--color-accent-light);
+  margin: var(--space-xxs) 0 0;
+  color: var(--cat-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pcard-price {
+  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.pcard-price-prev {
+  text-decoration: line-through;
+  opacity: 0.7;
+  font-weight: 500;
+  font-size: 0.6875rem;
 }
 
 .cart-add-btn {
@@ -1224,41 +1957,6 @@ button:focus-visible {
     width: 50px;
     height: 50px;
   }
-}
-
-/* --- ürün kartı: hover'da "incele" ok ikonu --- */
-.card-view-affordance {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  background: color-mix(in srgb, var(--color-primary-dark) 22%, transparent);
-  transition: opacity var(--motion-fast) var(--ease-standard);
-}
-
-.card-view-affordance span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--color-surface);
-  color: var(--color-primary);
-  transform: scale(0.85);
-  transition: transform var(--motion-fast) var(--ease-standard);
-}
-
-.card-link:hover .card-view-affordance,
-.card-link:focus-visible .card-view-affordance {
-  opacity: 1;
-}
-
-.card-link:hover .card-view-affordance span,
-.card-link:focus-visible .card-view-affordance span {
-  transform: scale(1);
 }
 
 /* --- product detail --- */
