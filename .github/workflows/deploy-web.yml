@@ -1,41 +1,52 @@
 name: Deploy Web (Firebase Hosting)
 
-# main dalına her push'ta web build alınır ve Firebase Hosting'e (saglamspotcu sitesi,
-# proje: saglamspotflutter-2a1a8) canlıya deploy edilir.
+# main veya web-genesis dalina web-genesis ile ilgili bir dosya
+# degistiginde, web-genesis/public + genesisApp fonksiyonu Firebase
+# Hosting'e (saglamspotcu sitesi, proje: saglamspotflutter-2a1a8)
+# canliya deploy edilir. ESKIDEN burada Flutter web build'i deploy
+# ediliyordu - saglamspotcu.web.app artik web-genesis'i sunuyor
+# (bkz. firebase.json), bu yuzden workflow da ona gore guncellendi.
 on:
   push:
-    branches: [main]
+    branches: [main, web-genesis]
+    paths:
+      - "web-genesis/**"
+      - "firebase.json"
+      - ".firebaserc"
+      - "lib/l10n/**"
 
 concurrency:
   group: deploy-web-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
-    name: Build & Deploy Web
+  deploy:
+    name: Deploy web-genesis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Flutter SDK kur
-        uses: subosito/flutter-action@v2
+      - name: Node.js kur
+        uses: actions/setup-node@v4
         with:
-          channel: stable
-          cache: true
+          node-version: 22
 
-      - name: Bağımlılıkları al
-        run: flutter pub get
+      - name: Fonksiyon bağımlılıklarını kur
+        run: npm ci
+        working-directory: web-genesis/functions
 
-      - name: Web build (release)
-        run: flutter build web --release
+      - name: Firebase CLI kur
+        run: npm install -g firebase-tools
 
       # FIREBASE_SERVICE_ACCOUNT: Firebase Console > Project Settings > Service Accounts
       # > Generate new private key ile üretilen JSON'un TAMAMI bu secret'a yapıştırılmalı.
-      - name: Firebase Hosting'e deploy et
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-          projectId: saglamspotflutter-2a1a8
-          channelId: live
+      - name: Servis hesabı anahtarını yaz
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
+
+      - name: Firebase Hosting + Functions'a deploy et
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-sa.json
+        run: firebase deploy --only hosting:saglamspotcu,functions:genesis:genesisApp --project saglamspotflutter-2a1a8 --non-interactive
