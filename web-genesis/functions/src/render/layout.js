@@ -33,9 +33,39 @@ const ICON_WHATSAPP = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fil
 const ICON_INSTAGRAM = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.2\" cy=\"6.8\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/></svg>";
 const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M14 21v-7h2.4l.4-3H14V9.2c0-.9.25-1.5 1.6-1.5H17V5.1C16.7 5 15.8 5 14.8 5c-2.2 0-3.7 1.3-3.7 3.9V11H8.7v3H11v7h3z\"/></svg>";
 const ICON_PHONE = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>";
-// "Yukarı çık" düğmesinin topuzundaki ok — ipli lamba anahtarı metaforu
-// dekoratif, yön bu ikonla her zaman net (bkz. base.css .scrolltop-cord).
-const ICON_CHEVRON_UP = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" aria-hidden=\"true\"><path d=\"M5 15l7-7 7 7\"/></svg>";
+// "Yukarı çık" düğmesi — gerçek bir sarkıt/gece lambası ve boncuklu ip
+// anahtarı gibi: zil şeklinde abajur + sıcak ampul parıltısı, boncuklu
+// ip, ucunda ahşap/pirinç meşe palamudu (acorn) biçimli bir çekme topuzu.
+// Yön her zaman net olsun diye topuzun yüzeyine oyma bir yukarı ok
+// kazındı (bkz. base.css .scrolltop-cord).
+const SCROLLTOP_LAMP_SVG = `<svg viewBox="0 0 40 30" aria-hidden="true">
+  <rect x="16" y="0" width="8" height="4" rx="1.5" fill="var(--color-muted-dark)"/>
+  <path d="M10.5 15.5c0-7 4-11 9.5-11s9.5 4 9.5 11l3.5 5.5c.6 1-.1 2.2-1.3 2.2H8.3c-1.2 0-1.9-1.2-1.3-2.2z" fill="url(#stLampShade)" stroke="var(--color-primary-dark)" stroke-width="0.7"/>
+  <ellipse cx="20" cy="21" rx="8.5" ry="3.2" fill="url(#stLampGlow)"/>
+  <defs>
+    <linearGradient id="stLampShade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--color-accent-light)"/>
+      <stop offset="1" stop-color="var(--color-accent-dark)"/>
+    </linearGradient>
+    <radialGradient id="stLampGlow">
+      <stop offset="0" stop-color="var(--color-accent-light)" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="var(--color-accent-light)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>`;
+
+const SCROLLTOP_TASSEL_SVG = `<svg viewBox="0 0 32 42" aria-hidden="true">
+  <circle cx="16" cy="4" r="3.4" fill="none" stroke="var(--color-muted-dark)" stroke-width="2.2"/>
+  <path d="M16 7c7.5 0 12 6.2 12 13.5S23.8 38 16 38 4 27.8 4 20.5 8.5 7 16 7z" fill="url(#stTassel)" stroke="var(--color-primary-dark)" stroke-width="0.7"/>
+  <path d="M10.5 22.5L16 16l5.5 6.5" fill="none" stroke="var(--color-primary-dark)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+  <defs>
+    <linearGradient id="stTassel" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="var(--color-accent-light)"/>
+      <stop offset="0.55" stop-color="var(--color-accent)"/>
+      <stop offset="1" stop-color="var(--color-accent-dark)"/>
+    </linearGradient>
+  </defs>
+</svg>`;
 
 function escapeHtml(value) {
   return String(value)
@@ -180,8 +210,9 @@ ${bodyHtml}
 </footer>
 <a class="whatsapp-fab" href="${business.whatsappUrl()}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
 <button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık">
-  <span class="scrolltop-cord-rope" aria-hidden="true"></span>
-  <span class="scrolltop-cord-knob" aria-hidden="true">${ICON_CHEVRON_UP}</span>
+  <span class="scrolltop-lamp">${SCROLLTOP_LAMP_SVG}</span>
+  <span class="scrolltop-chain" aria-hidden="true"></span>
+  <span class="scrolltop-tassel">${SCROLLTOP_TASSEL_SVG}</span>
 </button>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
 ${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}

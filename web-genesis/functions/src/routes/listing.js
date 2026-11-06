@@ -40,9 +40,11 @@ function renderListingHero({eyebrow, title, subtitle, accent, heroImage, statsHt
 // bağımsız bir anahtarı yok (brief: yeniden çeviri yok, tek seferlik
 // pazarlama alıntısı) — "Rezerve"/"Satılan Ürünler" emsaliyle aynı
 // gerekçeyle bilerek Türkçe literal.
-function renderSpotQuote() {
+function renderSpotQuote(accent) {
   return `
-<div class="listing-quote-panel">
+<div class="listing-quote-panel" style="--listing-accent:${accent}">
+  <span class="listing-quote-glow" aria-hidden="true"></span>
+  <span class="listing-quote-badge">${ICONS.sparkle} İkinci Bahar</span>
   <span class="listing-quote-mark" aria-hidden="true">&ldquo;</span>
   <p class="listing-quote-text">Eskimiş değil, emek görmüş.<br>İyi mobilya asla eskimez, sadece ev değiştirir.</p>
   <p class="listing-quote-sub">Biz de tam bu yüzden buradayız: hâlâ hayatı olan parçaları, onlara değer verecek yeni bir eve ulaştırmak için.</p>
@@ -134,7 +136,7 @@ ${renderListingHero(theme.hero(locale, allProducts, categoryCount, heroImage))}
   ${renderTicker(locale)}
 </section>
 
-${theme.quoteHtml ? `<section class="section">${theme.quoteHtml()}</section>` : ""}
+${theme.quoteHtml ? `<section class="section">${theme.quoteHtml(theme.accent)}</section>` : ""}
 
 <section class="section">
   ${renderPhotoRail(locale, allProducts, path)}
@@ -182,6 +184,7 @@ const newTheme = {
 const spotTheme = {
   seoTitleKey: "seoSpotTitle",
   seoDescKey: "seoSpotDesc",
+  accent: SPOT_ACCENT,
   quoteHtml: renderSpotQuote,
   hero: (locale, products, categoryCount, heroImage) => ({
     eyebrow: t(locale, "gatewaySpotEyebrow"),

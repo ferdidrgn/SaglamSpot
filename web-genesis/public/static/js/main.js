@@ -566,6 +566,29 @@
     });
   }
 
+  // SSS sayfası kategori çipleri — tıklanınca sayfa yenilenmeden ilgili
+  // kategorideki <details> öğeleri dışındakiler gizlenir. JS kapalıyken
+  // çipler görünür ama işlevsiz kalır; o durumda zaten 22 sorunun hepsi
+  // gösterilir, hiçbir içerik kaybolmaz (progressive enhancement).
+  function wireFaqFilters() {
+    const row = document.querySelector("[data-faq-chip-row]");
+    const list = document.querySelector("[data-faq-list]");
+    if (!row || !list) return;
+    const chips = [...row.querySelectorAll("[data-faq-chip]")];
+    const items = [...list.querySelectorAll(".faq-item")];
+
+    row.addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-faq-chip]");
+      if (!chip) return;
+      const category = chip.dataset.faqChip;
+      chips.forEach((c) => c.classList.toggle("is-active", c === chip));
+      items.forEach((item) => {
+        const show = category === "all" || item.dataset.faqCategory === category;
+        item.classList.toggle("is-hidden", !show);
+      });
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -600,5 +623,6 @@
     wireShareButtons();
     wireCardCarousels();
     wireScrollTopCord();
+    wireFaqFilters();
   });
 })();

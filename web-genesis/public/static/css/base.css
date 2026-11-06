@@ -1728,33 +1728,135 @@ button:focus-visible {
 }
 
 /* --- hakkımızda / sss --- */
-.about-story p,
 .about-panel p {
   max-width: 68ch;
 }
 
+/* "Biz Kimiz" — saglamspotcu.web.app'teki (bu projenin kendi Flutter web
+   derlemesi) about_page.dart _buildOurStory() ile aynı: solda/üstte
+   fotoğraf, sağda/altta başlık + 3 paragraf + 3 istatistik. */
+.about-story {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxxl);
+}
+
+.about-story-media {
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+  max-height: 500px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--color-primary-dark) 30%, transparent);
+}
+
+.about-story-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-story-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-story-text p {
+  max-width: 60ch;
+}
+
+.story-highlight-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxxl);
+  margin-top: var(--space-xl);
+}
+
+.story-highlight {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.story-highlight strong {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  color: var(--color-primary);
+}
+
+.story-highlight span {
+  font-size: 0.8125rem;
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 760px) {
+  .about-story {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about-story-media {
+    aspect-ratio: 16 / 10;
+    max-height: none;
+  }
+}
+
+/* "İlkelerimiz" — about_page.dart _buildOurValues()/_buildValueCard()
+   ile aynı: başlıklı panel içinde ortalanmış, ikon rozetli 4 değer
+   kartı. İkon rengi AppColors.secondary yerine var(--color-accent) —
+   bkz. about.js'teki not (soluk bej zeminde ikon neredeyse görünmezdi). */
+.about-values-panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xxxl);
+  box-shadow: 0 16px 32px -20px color-mix(in srgb, var(--color-primary-dark) 25%, transparent);
+  text-align: center;
+}
+
+.about-values-panel .lede {
+  margin: 0 auto;
+}
+
 .value-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: var(--space-lg);
-  margin-top: var(--space-lg);
+  margin-top: var(--space-xxxl);
+  text-align: center;
 }
 
 .value-card {
-  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-lg);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xxl) var(--space-lg);
+}
+
+.value-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--value-color) 14%, var(--color-surface));
+  color: var(--value-color);
+  margin-bottom: var(--space-lg);
 }
 
 .value-card h3 {
-  font-size: 1.0625rem;
-  margin-bottom: var(--space-xs);
+  font-size: 1.125rem;
+  margin-bottom: var(--space-sm);
 }
 
 .value-card p {
   margin: 0;
   font-size: 0.9375rem;
+  color: var(--color-text-secondary);
 }
 
 /* ===================================================================
@@ -1861,13 +1963,48 @@ button:focus-visible {
 
 .listing-quote-panel {
   position: relative;
-  background: var(--color-primary-dark);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-primary-dark) 45%, color-mix(in srgb, var(--listing-accent, var(--color-accent)) 48%, var(--color-primary-dark)));
   color: var(--color-bg);
   border-radius: var(--radius-xl);
   padding: var(--space-xxxl);
+  box-shadow: 0 24px 44px -24px color-mix(in srgb, var(--listing-accent, var(--color-primary-dark)) 55%, transparent);
+}
+
+.listing-quote-glow {
+  position: absolute;
+  top: -45%;
+  right: -12%;
+  width: 65%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--listing-accent, var(--color-accent)) 65%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.listing-quote-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--listing-accent, var(--color-accent)) 35%, transparent);
+  color: var(--color-bg);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-lg);
+}
+
+.listing-quote-badge svg {
+  width: 13px;
+  height: 13px;
 }
 
 .listing-quote-mark {
+  position: relative;
   display: block;
   font-family: var(--font-serif);
   font-size: 3rem;
@@ -1876,17 +2013,19 @@ button:focus-visible {
 }
 
 .listing-quote-text {
+  position: relative;
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.375rem;
+  font-size: 1.5rem;
   max-width: 46ch;
   margin: var(--space-sm) 0 var(--space-md);
 }
 
 .listing-quote-sub {
+  position: relative;
   max-width: 60ch;
   margin: 0;
-  color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: color-mix(in srgb, var(--color-bg) 78%, transparent);
 }
 
 .listing-photo-rail {
@@ -2039,6 +2178,96 @@ button:focus-visible {
   gap: var(--space-xs);
 }
 
+/* lib/features/sss/presentation/pages/sss_page.dart _buildQuickHelpCard()
+   ile aynı: 3 ikonlu hızlı yardım kartı (telefon/çalışma saati/adres). */
+.faq-quick-help {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-lg);
+}
+
+.faq-quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.faq-quick-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--quick-color) 14%, var(--color-bg));
+  color: var(--quick-color);
+}
+
+.faq-quick-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.faq-quick-value {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* _buildCategoryFilters()/_buildMobileCategoryChips() ile aynı: sayım
+   rozetli kategori çipleri. JS olmadan da sayfa eksiksiz okunur — hiçbir
+   çip tıklanmasa bile 22 sorunun hepsi zaten görünür durumda. */
+.faq-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.faq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faq-chip span {
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-text-tertiary) 18%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.faq-chip:hover {
+  border-color: var(--chip-color, var(--color-accent-light));
+}
+
+.faq-chip.is-active {
+  background: var(--chip-color, var(--color-primary));
+  border-color: var(--chip-color, var(--color-primary));
+  color: #fff;
+}
+
+.faq-chip.is-active span {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
 .faq-list {
   display: grid;
   gap: var(--space-sm);
@@ -2051,7 +2280,14 @@ button:focus-visible {
   padding: var(--space-lg);
 }
 
+.faq-item.is-hidden {
+  display: none;
+}
+
 .faq-item summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
   cursor: pointer;
   font-weight: 600;
   list-style: none;
@@ -2065,6 +2301,7 @@ button:focus-visible {
   content: "+";
   display: inline-block;
   width: 1.2em;
+  flex: 0 0 auto;
   color: var(--color-accent);
   font-weight: 700;
 }
@@ -2073,8 +2310,33 @@ button:focus-visible {
   content: "−";
 }
 
+.faq-item-cat {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--chip-color) 12%, transparent);
+  color: var(--chip-color);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.faq-item-q {
+  flex: 1;
+  min-width: 0;
+}
+
 .faq-item p {
-  margin: var(--space-md) 0 0;
+  margin: var(--space-md) 0 0 2.6em;
+}
+
+@media (max-width: 560px) {
+  .faq-item summary {
+    flex-wrap: wrap;
+  }
+
+  .faq-item p {
+    margin-left: 0;
+  }
 }
 
 /* --- admin panel --- */
@@ -3163,20 +3425,24 @@ button:focus-visible {
   }
 }
 
-/* --- "ipli gece lambası" esinli yukarı çık düğmesi ---
-   WhatsApp FAB'ın hemen üstünde asılı duran bir ip + düğme: tavanda
-   küçük bir halka, aşağı sarkan ip, ucunda tıklanabilir topuz. Düğmeye
-   basılınca ip gerçek bir anahtar gibi aşağı "çekiliyor" (ip uzuyor,
-   topuz aşağı kayıyor), sonra ikisi de yerine zıplıyor ve sayfa yukarı
-   kayıyor. Yön belirsiz kalmasın diye topuzun içinde her zaman net bir
-   yukarı ok ikonu var — sadece dekoratif bir lamba ikonu değil. */
+/* --- gerçekçi "sarkıt gece lambası" ipi — yukarı çık düğmesi ---
+   WhatsApp FAB'ın hemen üstünde asılı: zil biçimli bir abajur + sıcak
+   ampul parıltısı, boncuklu bir ip, ucunda ahşap/pirinç meşe palamudu
+   (acorn) biçimli bir çekme topuzu. Düğmeye basılınca ip gerçek bir
+   anahtar gibi aşağı "çekiliyor" (ip uzuyor, topuz aşağı kayıyor),
+   sonra ikisi de yerine zıplıyor ve sayfa yukarı kayıyor. Yön belirsiz
+   kalmasın diye topuzun yüzeyine her zaman net bir yukarı ok oyuldu
+   (bkz. layout.js SCROLLTOP_TASSEL_SVG).  */
 .scrolltop-cord {
   position: fixed;
   right: var(--space-xl);
-  bottom: 92px;
+  bottom: 88px;
   z-index: 60;
   width: 56px;
-  height: 56px;
+  height: 148px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 0;
   border: none;
   background: none;
@@ -3193,62 +3459,71 @@ button:focus-visible {
   pointer-events: auto;
 }
 
-.scrolltop-cord-rope {
-  position: absolute;
-  left: 50%;
-  bottom: 100%;
-  width: 3px;
-  height: 34px;
-  margin-left: -1.5px;
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--color-text-tertiary) 50%, transparent), var(--color-muted-dark));
+.scrolltop-lamp {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 31px;
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--color-primary-dark) 35%, transparent));
+}
+
+.scrolltop-lamp svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scrolltop-lamp ellipse {
+    animation: scrolltop-glow-pulse 3.2s ease-in-out infinite;
+  }
+}
+
+@keyframes scrolltop-glow-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.scrolltop-chain {
+  flex: 1 1 auto;
+  width: 4px;
+  min-height: 42px;
+  margin: 1px 0;
+  background-image: repeating-linear-gradient(to bottom, var(--color-muted-dark) 0, var(--color-muted-dark) 4px, transparent 4px, transparent 9px);
   border-radius: 2px;
   transform-origin: top center;
   transition: transform 180ms var(--ease-move);
 }
 
-.scrolltop-cord-rope::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--color-muted-dark);
-  background: var(--color-bg);
+.scrolltop-tassel {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 44px;
+  transition: transform 180ms var(--ease-move);
+  filter: drop-shadow(0 8px 12px color-mix(in srgb, var(--color-primary-dark) 42%, transparent));
 }
 
-.scrolltop-cord-knob {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  color: var(--color-bg);
-  box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--color-primary-dark) 45%, transparent);
-  transition: transform 180ms var(--ease-move), background var(--motion-fast) var(--ease-standard);
+.scrolltop-tassel svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.scrolltop-cord:hover .scrolltop-cord-knob,
-.scrolltop-cord:focus-visible .scrolltop-cord-knob {
-  background: var(--color-primary-dark);
+.scrolltop-cord:hover .scrolltop-tassel,
+.scrolltop-cord:focus-visible .scrolltop-tassel {
+  transform: translateY(3px);
 }
 
-.scrolltop-cord.is-pulled .scrolltop-cord-rope {
-  transform: scaleY(1.45);
+.scrolltop-cord.is-pulled .scrolltop-chain {
+  transform: scaleY(1.4);
 }
 
-.scrolltop-cord.is-pulled .scrolltop-cord-knob {
-  transform: translateY(16px);
+.scrolltop-cord.is-pulled .scrolltop-tassel {
+  transform: translateY(24px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scrolltop-cord-rope,
-  .scrolltop-cord-knob {
+  .scrolltop-chain,
+  .scrolltop-tassel {
     transition: none;
   }
 }
@@ -3256,14 +3531,23 @@ button:focus-visible {
 @media (max-width: 600px) {
   .scrolltop-cord {
     right: var(--space-lg);
-    bottom: 82px;
-    width: 50px;
-    height: 50px;
+    bottom: 78px;
+    width: 46px;
+    height: 118px;
   }
 
-  .scrolltop-cord-knob {
-    width: 50px;
-    height: 50px;
+  .scrolltop-lamp {
+    width: 34px;
+    height: 25px;
+  }
+
+  .scrolltop-chain {
+    min-height: 30px;
+  }
+
+  .scrolltop-tassel {
+    width: 28px;
+    height: 36px;
   }
 }
 

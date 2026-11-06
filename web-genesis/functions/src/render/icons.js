@@ -27,6 +27,13 @@ const ICONS = {
   sofaCare: "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3\"/><path d=\"M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z\"/><path d=\"M4 17v2M20 17v2\"/></svg>",
   archiveBox: "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"5\" rx=\"1.2\"/><path d=\"M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9\"/><path d=\"M10 13h4\"/></svg>",
   moonComfort: "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z\"/></svg>",
+  // SSS sayfası "hızlı yardım" kartları (telefon/çalışma saati).
+  phoneOutline: "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>",
+  clockOutline: "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>",
+  // "Hakkımızda" İlkelerimiz kartları.
+  verifiedBadge: "<svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M12 2l2.4 1.2 2.6-.6 1.2 2.4 2.4 1.2-.6 2.6L21 11l-1.2 2.4.6 2.6-2.4 1.2-1.2 2.4-2.6-.6L12 20l-2.4-1.2-2.6.6-1.2-2.4-2.4-1.2.6-2.6L3 11l1.2-2.4-.6-2.6 2.4-1.2 1.2-2.4 2.6.6z\"/><path d=\"M9 12l2 2 4-4\"/></svg>",
+  heartOutline: "<svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M12 20.5s-7.5-4.6-9.7-9A5.2 5.2 0 0 1 12 6.2 5.2 5.2 0 0 1 21.7 11.5c-2.2 4.4-9.7 9-9.7 9z\"/></svg>",
+  leafOutline: "<svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M20 4C10 4 4 10 4 18v2h2c8 0 14-6 14-16V4z\"/><path d=\"M6 18c4-2 8-6 12-12\"/></svg>",
 };
 
 module.exports = {ICONS};
