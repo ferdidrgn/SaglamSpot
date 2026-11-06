@@ -41,4 +41,22 @@ module.exports = {
   get facebookUrl() {
     return `https://www.facebook.com/${this.facebookUser}`;
   },
+  // lib/core/util/comminucation_actions.dart'taki isOpenNow/todayHoursLabel
+  // ile AYNI mantık. Türkiye 2016'dan beri yaz saati uygulamıyor, sabit
+  // UTC+3 — sunucunun (Cloud Functions, UTC) kendi saat dilimine
+  // GÜVENİLMEDEN İstanbul saatini elle hesaplar.
+  _istanbulNow() {
+    return new Date(Date.now() + 3 * 60 * 60 * 1000);
+  },
+  get isOpenNow() {
+    const now = this._istanbulNow();
+    const isSunday = now.getUTCDay() === 0;
+    const openMinutes = (isSunday ? 10 : 9) * 60;
+    const closeMinutes = (isSunday ? 20 : 22) * 60;
+    const nowMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+    return nowMinutes >= openMinutes && nowMinutes < closeMinutes;
+  },
+  get todayHoursLabel() {
+    return this._istanbulNow().getUTCDay() === 0 ? "10:00 - 20:00" : "09:00 - 22:00";
+  },
 };

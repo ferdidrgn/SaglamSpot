@@ -166,6 +166,32 @@ function renderRoomsPanel(locale) {
 </div>`;
 }
 
+// lib/core/widgets/business_info_showcase.dart'taki canlı harita +
+// "şu an açık/kapalı" göstergesinin web karşılığı. "Şu an Açık/Kapalı"
+// için ARB'de bağımsız bir anahtar yok (brief: yeniden çeviri yok) —
+// "Rezerve"/"SATILDI" emsaliyle aynı gerekçeyle Türkçe literal.
+function renderStoreInfo(locale) {
+  const openNow = business.isOpenNow;
+  const mapSrc = `https://www.google.com/maps?q=${business.geo.latitude},${business.geo.longitude}&z=16&output=embed`;
+  return `
+<div class="store-info-panel">
+  <div class="store-info-map">
+    <iframe src="${escapeHtml(mapSrc)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="${escapeHtml(business.brandName)} konum haritası"></iframe>
+  </div>
+  <div class="store-info-card">
+    <span class="store-status-pill ${openNow ? "is-open" : "is-closed"}">
+      <span class="store-status-dot"></span>${openNow ? "Şu an Açık" : "Şu an Kapalı"}
+    </span>
+    <p class="store-info-address">${escapeHtml(business.address.line)}<br>${escapeHtml(business.address.district)}/${escapeHtml(business.address.city)}</p>
+    <p class="store-info-hours">${escapeHtml(business.workingHours).replace(/\n/g, "<br>")}</p>
+    <div class="hero-pill-row">
+      <a class="hero-pill hero-pill-accent" href="${escapeHtml(business.googleMapsUrl)}" target="_blank" rel="noopener">${ICONS.map} ${escapeHtml(t(locale, "aboutViewMapButton"))}</a>
+      <a class="hero-pill hero-pill-outline" style="color:var(--color-text-primary);border-color:var(--color-border)" href="tel:+${business.phoneNumberIntl}">${ICONS.explore} ${escapeHtml(business.displayPhone)}</a>
+    </div>
+  </div>
+</div>`;
+}
+
 function renderStatsBand(locale, productCount, categoryCount, soldCount) {
   const stats = [
     {icon: ICONS.inventory, value: productCount, suffix: "", label: t(locale, "statProducts")},
@@ -232,6 +258,10 @@ ${renderHero(locale, products)}
 
 <section class="section">
   ${renderRoomsPanel(locale)}
+</section>
+
+<section class="section">
+  ${renderStoreInfo(locale)}
 </section>
 
 <section class="section">

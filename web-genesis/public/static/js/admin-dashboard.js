@@ -15,8 +15,13 @@ const formEl = document.getElementById("admin-product-form");
 const newBtn = document.getElementById("admin-new-product-btn");
 const logoutBtn = document.getElementById("admin-logout-btn");
 const closeBtn = document.getElementById("admin-form-close");
+const searchInput = document.getElementById("admin-search-input");
+const filterSelect = document.getElementById("admin-filter-select");
+const bulkBar = document.getElementById("admin-bulk-bar");
+const bulkCountEl = document.getElementById("admin-bulk-count");
 
 let productsCache = [];
+const selectedIds = new Set();
 
 // window.alert() yerine - admin paneli tek bir sekmede kullanıldığı için
 // native tarayıcı diyalogları (akışı tamamen durduran, markasız) yerine
@@ -103,23 +108,69 @@ function findByDocId(docId) {
   return productsCache.find((p) => p._docId === docId);
 }
 
+// Arama/filtre tamamen istemci tarafında — envanter boyutu (onlarca/
+// yüzlerce ürün) için ayrı bir Firestore sorgusu gerektirmeyecek kadar
+// küçük, zaten tüm liste belleğe çekilmiş durumda (loadProducts).
+function filteredProducts() {
+  const needle = (searchInput?.value || "").toLocaleLowerCase("tr-TR").trim();
+  const filter = filterSelect?.value || "all";
+  return productsCache.filter((p) => {
+    if (needle) {
+      const haystack = `${p.name || ""} ${p.desc || ""}`.toLocaleLowerCase("tr-TR");
+      if (!haystack.includes(needle)) return false;
+    }
+    if (filter === "new" && p.isSpotProduct) return false;
+    if (filter === "used" && !p.isSpotProduct) return false;
+    if (filter === "sold" && !p.isSold) return false;
+    if (filter === "reserved" && !p.isReserved) return false;
+    return true;
+  });
+}
+
 function renderList() {
   if (!productsCache.length) {
     appRoot.innerHTML = "<p class=\"status\">Henüz ürün yok. \"+ Yeni Ürün\" ile ekleyin.</p>";
+    updateBulkBar();
     return;
   }
 
-  const sorted = productsCache.slice().sort((a, b) => (b._createdAt || "").localeCompare(a._createdAt || ""));
-  const rowsHtml = sorted.map(renderRow).join("");
+  const visible = filteredProducts().sort((a, b) => (b._createdAt || "").localeCompare(a._createdAt || ""));
+  if (!visible.length) {
+    appRoot.innerHTML = "<p class=\"status\">Bu arama/filtreyle eşleşen ürün yok.</p>";
+    updateBulkBar();
+    return;
+  }
+
+  // Artık görünmeyen satırların seçimi sessizce düşer (şaşırtıcı "görünmez
+  // seçim" durumunu önler).
+  const visibleIds = new Set(visible.map((p) => p._docId));
+  [...selectedIds].forEach((id) => { if (!visibleIds.has(id)) selectedIds.delete(id); });
+
+  const rowsHtml = visible.map(renderRow).join("");
   appRoot.innerHTML = `<div class="admin-table">${rowsHtml}</div>`;
 
   appRoot.querySelectorAll("[data-row-id]").forEach((row) => {
     const docId = row.dataset.rowId;
+    row.querySelector("[data-select]").addEventListener("change", (e) => {
+      if (e.target.checked) selectedIds.add(docId);
+      else selectedIds.delete(docId);
+      row.classList.toggle("is-selected", e.target.checked);
+      updateBulkBar();
+    });
     row.querySelector("[data-action=edit]").addEventListener("click", () => openForm(findByDocId(docId)));
     row.querySelector("[data-action=toggle-sold]").addEventListener("click", () => toggleField(docId, "isSold"));
     row.querySelector("[data-action=toggle-reserved]").addEventListener("click", () => toggleField(docId, "isReserved"));
     row.querySelector("[data-action=delete]").addEventListener("click", () => handleDelete(docId));
   });
+
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  if (!bulkBar) return;
+  const count = selectedIds.size;
+  bulkBar.hidden = count === 0;
+  if (count > 0) bulkCountEl.textContent = `${count} ürün seçili`;
 }
 
 function renderRow(p) {
@@ -129,7 +180,8 @@ function renderRow(p) {
   if (p.isReserved) flags.push("<span class=\"badge badge-reserved\">Rezerve</span>");
 
   return `
-<div class="admin-row" data-row-id="${escapeHtml(p._docId)}">
+<div class="admin-row${selectedIds.has(p._docId) ? " is-selected" : ""}" data-row-id="${escapeHtml(p._docId)}">
+  <input type="checkbox" class="admin-row-select" data-select ${selectedIds.has(p._docId) ? "checked" : ""} aria-label="Seç">
   <div class="admin-row-thumb">${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy">` : "<div class=\"card-image-placeholder\">Görsel yok</div>"}</div>
   <div class="admin-row-info">
     <p class="admin-row-name">${escapeHtml(p.name || "(isimsiz)")}</p>
@@ -143,6 +195,43 @@ function renderRow(p) {
     <button type="button" data-action="delete" class="admin-danger-btn">Sil</button>
   </div>
 </div>`;
+}
+
+searchInput?.addEventListener("input", renderList);
+filterSelect?.addEventListener("change", renderList);
+
+document.getElementById("admin-bulk-sold")?.addEventListener("click", () => bulkSetSold(true));
+document.getElementById("admin-bulk-unsold")?.addEventListener("click", () => bulkSetSold(false));
+document.getElementById("admin-bulk-delete")?.addEventListener("click", handleBulkDelete);
+
+async function bulkSetSold(sold) {
+  const ids = [...selectedIds];
+  if (!ids.length) return;
+  try {
+    await Promise.all(ids.map((id) => updateDoc(doc(db, "Product", id), {
+      isSold: sold,
+      _soldAt: sold ? formattedNow() : "",
+    })));
+    selectedIds.clear();
+    await loadProducts();
+    toast(`${ids.length} ürün güncellendi.`);
+  } catch (err) {
+    toast("Toplu güncelleme başarısız: " + err.message, {error: true});
+  }
+}
+
+async function handleBulkDelete() {
+  const ids = [...selectedIds];
+  if (!ids.length) return;
+  if (!window.confirm(`${ids.length} ürün silinsin mi? Bu geri alınamaz.`)) return;
+  try {
+    await Promise.all(ids.map((id) => deleteDoc(doc(db, "Product", id))));
+    selectedIds.clear();
+    await loadProducts();
+    toast(`${ids.length} ürün silindi.`);
+  } catch (err) {
+    toast("Toplu silme başarısız: " + err.message, {error: true});
+  }
 }
 
 async function toggleField(docId, field) {

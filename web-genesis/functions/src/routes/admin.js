@@ -49,6 +49,24 @@ function dashboardRoute(req, res) {
     <button type="button" id="admin-logout-btn" class="admin-secondary-btn">Çıkış Yap</button>
   </div>
 </section>
+<div class="admin-search-bar">
+  <input type="search" id="admin-search-input" placeholder="Ürün adı veya açıklamada ara...">
+  <select id="admin-filter-select">
+    <option value="all">Tümü</option>
+    <option value="new">Sıfır</option>
+    <option value="used">İkinci El</option>
+    <option value="sold">Satıldı</option>
+    <option value="reserved">Rezerve</option>
+  </select>
+</div>
+<div id="admin-bulk-bar" class="admin-bulk-bar" hidden>
+  <span id="admin-bulk-count"></span>
+  <div class="admin-bulk-actions">
+    <button type="button" id="admin-bulk-sold">Satıldı İşaretle</button>
+    <button type="button" id="admin-bulk-unsold" class="admin-secondary-btn">Satıldı Kaldır</button>
+    <button type="button" id="admin-bulk-delete" class="admin-danger-btn">Seçilenleri Sil</button>
+  </div>
+</div>
 <div id="admin-app" data-admin-app>
   <p class="status">Yükleniyor...</p>
 </div>
