@@ -3,7 +3,11 @@
 }
 
 html {
-  color-scheme: light dark;
+  /* Bilerek sadece "light" — form kontrolleri/scrollbar'lar da işletim
+     sistemi koyu temasına göre otomatik kararmasın (bkz. tokens.css'teki
+     not: koyu palet kullanıcıya "kötü/cansız" geldi, site artık OS
+     tercihinden bağımsız hep açık/canlı modda). */
+  color-scheme: light;
 }
 
 body {
@@ -374,6 +378,17 @@ button:focus-visible {
   object-fit: cover;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .hero-slide.is-active img {
+    animation: hero-kenburns 7s var(--ease-standard) forwards;
+  }
+}
+
+@keyframes hero-kenburns {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+
 .hero-banner-scrim {
   position: absolute;
   inset: 0;
@@ -398,7 +413,8 @@ button:focus-visible {
   display: inline-flex;
   padding: var(--space-xs) var(--space-lg);
   border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  background: linear-gradient(120deg, var(--color-accent), var(--color-accent-dark), var(--color-accent));
+  background-size: 220% 100%;
   color: #fff;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
@@ -406,6 +422,17 @@ button:focus-visible {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   box-shadow: 0 10px 20px -8px color-mix(in srgb, var(--color-accent-dark) 60%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-eyebrow-pill {
+    animation: pill-shift 4s ease-in-out infinite;
+  }
+}
+
+@keyframes pill-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .hero-content h1 {
@@ -460,6 +487,43 @@ button:focus-visible {
 .hero-pill:focus-visible {
   text-decoration: none;
   filter: brightness(1.06);
+  transform: translateY(-2px);
+}
+
+.hero-pill {
+  transition: transform var(--motion-fast) var(--ease-standard), filter var(--motion-fast) var(--ease-standard);
+}
+
+/* --- ana CTA'larda hover'da ışıltı (shine) sweep --- */
+.hero-pill-accent,
+.gateway-cta,
+.whatsapp-link,
+.cart-send-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-pill-accent::after,
+.gateway-cta::after,
+.whatsapp-link::after,
+.cart-send-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.55s ease;
+  pointer-events: none;
+}
+
+.hero-pill-accent:hover::after,
+.gateway-cta:hover::after,
+.whatsapp-link:hover::after,
+.cart-send-btn:hover::after {
+  left: 130%;
 }
 
 .hero-arrow {
@@ -535,6 +599,28 @@ button:focus-visible {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid color-mix(in srgb, #fff 25%, transparent);
   box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.5);
+  transition: transform var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+.hero-featured-card:hover,
+.hero-featured-card:focus-visible {
+  background: color-mix(in srgb, #fff 28%, transparent);
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-featured-card {
+    animation: card-float 4.5s ease-in-out infinite;
+  }
+
+  .hero-featured-card:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes card-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .hero-featured-thumb {

@@ -61,29 +61,37 @@
   --color-info: #6E7D8F;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* --- colors: dark (AppColors, _dark == true) --- */
-    --color-bg: #1C140E;
-    --color-surface: #3D2E22;
-    --color-secondary: #4A3826;
-    --color-secondary-variant: #5C4630;
-    --color-muted: #8A7560;
-    --color-muted-dark: #A8927A;
-    --color-text-primary: #F7F0E6;
-    --color-text-secondary: #DCCBB4;
-    --color-text-tertiary: #B4A088;
-    --color-border: #5C4630;
-    --color-divider: #4A3826;
-    --color-primary: #E0B074;
-    --color-primary-dark: #C79868;
-    --color-primary-light: #F0D4A8;
-    --color-accent: #E8B573;
-    --color-accent-dark: #D09850;
-    --color-accent-light: #F2D4A0;
-    --color-success: #A8C296;
-    --color-warning: #E8B984;
-    --color-error: #E08A70;
-    --color-info: #9DB2C7;
-  }
+/*
+ * NOT: Önceden burada otomatik `@media (prefers-color-scheme: dark)` vardı
+ * — işletim sistemi/tarayıcı koyu moddaysa site OTOMATİK koyu kahverengi
+ * palete geçiyordu. Gerçek kullanıcı geri bildirimi: bu koyu palet (kahve
+ * üstüne kahve, düşük kontrast) "kötü/cansız" görünüyordu — oysa aynı site
+ * açık modda sıcak/canlı (krem zemin, sarı koltuk fotoğrafı vb.) duruyor.
+ * Bu yüzden site artık işletim sistemi tercihinden BAĞIMSIZ, her zaman açık
+ * paleti kullanıyor (kod/değerler ileride gerçek bir tema anahtarı
+ * eklenirse diye silinmedi, sadece otomatik tetiklenmiyor).
+ */
+html[data-theme="dark"] {
+  /* --- colors: dark (AppColors, _dark == true) --- */
+  --color-bg: #1C140E;
+  --color-surface: #3D2E22;
+  --color-secondary: #4A3826;
+  --color-secondary-variant: #5C4630;
+  --color-muted: #8A7560;
+  --color-muted-dark: #A8927A;
+  --color-text-primary: #F7F0E6;
+  --color-text-secondary: #DCCBB4;
+  --color-text-tertiary: #B4A088;
+  --color-border: #5C4630;
+  --color-divider: #4A3826;
+  --color-primary: #E0B074;
+  --color-primary-dark: #C79868;
+  --color-primary-light: #F0D4A8;
+  --color-accent: #E8B573;
+  --color-accent-dark: #D09850;
+  --color-accent-light: #F2D4A0;
+  --color-success: #A8C296;
+  --color-warning: #E8B984;
+  --color-error: #E08A70;
+  --color-info: #9DB2C7;
 }
