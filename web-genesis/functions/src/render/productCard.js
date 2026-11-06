@@ -17,6 +17,8 @@ const {localizedCategoryLabel, categoryColor} = require("../categories");
  */
 const CART_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"9\" cy=\"20\" r=\"1.4\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"18\" cy=\"20\" r=\"1.4\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M2.5 3h2l2.2 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L20.5 7H6\"/></svg>";
 const FAV_ICON = "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 21s-7.5-4.6-10-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 10 6c-2.5 4.4-10 9-10 9z\"/></svg>";
+const CHEVRON_LEFT = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" aria-hidden=\"true\"><path d=\"M15 5l-7 7 7 7\"/></svg>";
+const CHEVRON_RIGHT = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" aria-hidden=\"true\"><path d=\"M9 5l7 7-7 7\"/></svg>";
 // home_page_web.dart'taki newArrivalsProducts ile AYNI eşik (son 10 gün).
 const NEW_ARRIVAL_MS = 10 * 24 * 60 * 60 * 1000;
 
@@ -34,9 +36,20 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
     ? `<span class="pcard-price-prev" dir="ltr">${escapeHtml(product.previousPriceLabel)}</span>`
     : "";
   const catColor = categoryColor(product.category);
-  const imageHtml = product.image
-    ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" width="320" height="320">`
+
+  // Flutter'daki CustomProductCard'ın ProductImageSwitcher'ı gibi: birden
+  // fazla görsel varsa kartın KENDİ üzerinde (detaya gitmeden) ok + üstte
+  // nokta göstergeli mini bir karusel. Tek görselde sade kalır.
+  const images = (product.images && product.images.length ? product.images : [product.image]).filter(Boolean);
+  const hasMultiple = images.length > 1;
+  const imageHtml = images.length
+    ? `<img class="pcard-img" data-card-img src="${escapeHtml(images[0])}" alt="${escapeHtml(product.name)}" loading="lazy" width="320" height="320">`
     : "<div class=\"pcard-placeholder\" aria-hidden=\"true\"></div>";
+  const carouselHtml = hasMultiple ? `
+      <div class="pcard-dots" data-card-dots aria-hidden="true">${images.map((_, i) => `<span class="pcard-dot${i === 0 ? " is-active" : ""}"></span>`).join("")}</div>
+      <button type="button" class="pcard-nav pcard-nav-prev" data-card-prev aria-label="Önceki görsel">${CHEVRON_LEFT}</button>
+      <button type="button" class="pcard-nav pcard-nav-next" data-card-next aria-label="Sonraki görsel">${CHEVRON_RIGHT}</button>` : "";
+  const imagesJsonAttr = hasMultiple ? ` data-card-images="${escapeHtml(JSON.stringify(images))}"` : "";
 
   const isNewArrival = !product.isSold && product.createdAtSort &&
     (Date.now() - product.createdAtSort) <= NEW_ARRIVAL_MS;
@@ -62,11 +75,12 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
     data-path="${escapeHtml(product.path)}">${FAV_ICON}</button>`;
 
   return `
-<div class="pcard${product.isSold ? " pcard-sold" : ""}">
+<div class="pcard${product.isSold ? " pcard-sold" : ""}" style="--cat-glow:${catColor}"${imagesJsonAttr}>
   <a class="pcard-link" href="${escapeHtml(product.path)}">
     <div class="pcard-media">
       ${imageHtml}
       <div class="pcard-scrim" aria-hidden="true"></div>
+      ${carouselHtml}
       <span class="pcard-tag ${tagClass}">${escapeHtml(tagLabel)}</span>
       ${reservedBadge}
       <div class="pcard-info">

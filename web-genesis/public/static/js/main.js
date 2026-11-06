@@ -511,6 +511,43 @@
     });
   }
 
+  // Ürün kartlarındaki mini görsel karuseli — lib/core/widgets/design_system/
+  // product_image_switcher.dart'ın (ProductImageSwitcher, dotsAtTop: true)
+  // web karşılığı: kartın KENDİSİNDE, detay sayfasına gitmeden ok/nokta ile
+  // gezinme. Her kart kendi index'ini tutar (bağımsız).
+  function wireCardCarousels() {
+    document.querySelectorAll("[data-card-images]").forEach((card) => {
+      let images;
+      try {
+        images = JSON.parse(card.dataset.cardImages || "[]");
+      } catch (_) {
+        images = [];
+      }
+      if (images.length < 2) return;
+
+      const img = card.querySelector("[data-card-img]");
+      const dots = [...card.querySelectorAll(".pcard-dot")];
+      let index = 0;
+
+      function show(i) {
+        index = (i + images.length) % images.length;
+        img.src = images[index];
+        dots.forEach((d, di) => d.classList.toggle("is-active", di === index));
+      }
+
+      card.querySelector("[data-card-prev]")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        show(index - 1);
+      });
+      card.querySelector("[data-card-next]")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        show(index + 1);
+      });
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -543,5 +580,6 @@
     wireHeroCarousel();
     wireStatCounters();
     wireShareButtons();
+    wireCardCarousels();
   });
 })();

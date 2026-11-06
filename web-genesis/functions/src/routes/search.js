@@ -12,13 +12,14 @@ function normalizeText(value) {
 // kombinasyona ayarlayıp otomatik gönderir. ARB'de bağımsız kaynakları
 // yok (brief: yeniden çeviri yok), bilerek Türkçe literal (bkz. "Rezerve"
 // emsali) — sadece hızlı kısayollar, ana filtre formunun yerini tutmaz.
+// NOT: "Satıldı Arşivi" bilerek BURADA yok — artık ayrı bir mod/filtre
+// değil, sayfanın kendi bölümü (bkz. module.exports altındaki not).
 function renderQuickChips(condition, maxPrice) {
   const chips = [
     {label: "Sıfır", href: "/arama?condition=new", active: condition === "new"},
     {label: "İkinci El", href: "/arama?condition=used", active: condition === "used"},
     {label: "500₺ altı", href: "/arama?maxPrice=500", active: maxPrice === 500},
     {label: "1000₺ altı", href: "/arama?maxPrice=1000", active: maxPrice === 1000},
-    {label: "Satıldı Arşivi", href: "/arama?condition=sold", active: condition === "sold"},
   ];
   return `<div class="search-quick-chips">${chips.map((c) => `
     <a class="search-quick-chip${c.active ? " is-active" : ""}" href="${c.href}">${c.label}</a>`).join("")}</div>`;
@@ -29,6 +30,18 @@ function renderQuickChips(condition, maxPrice) {
  * olmadan da tam çalışır (progressive enhancement). Firestore'da serbest
  * metin arama desteklenmediği için önce isSold==false ürünler çekilir,
  * filtreleme bellekte yapılır (envanter boyutu için yeterince hızlı).
+ *
+ * "Satıldı" ÖNCEDEN ayrı bir mod'du (condition=sold seçilince TÜM liste
+ * satılanlarla değişiyordu) — kullanıcı geri bildirimi: mobil uygulamadaki
+ * gibi satıştaki ürünler hep üstte, satılanlar hep altta AYRI bir bölümde
+ * olmalı, aynı filtreler (kategori/fiyat/arama/sıralama) İKİSİNE de aynı
+ * anda uygulanmalı — bir filtre uygulanınca "arşiv modundan" aniden
+ * çıkmak gibi şaşırtıcı bir geçiş olmamalı. Bu yüzden artık HER ZAMAN
+ * iki havuz (aktif + satılmış) PARALEL çekiliyor, aynı filtre/sıralama
+ * her ikisine ayrı ayrı uygulanıyor, ikisi de kendi bölümünde render
+ * ediliyor (bkz. lib/features/products/presentation/providers/
+ * product_filters_provider.dart'taki availableProducts/soldProducts
+ * ayrımı — aynı kavram).
  */
 module.exports = async function searchRoute(req, res) {
   const locale = req.locale;
@@ -42,45 +55,48 @@ module.exports = async function searchRoute(req, res) {
   const sort = (req.query.sort || "featured").toString();
 
   let products = [];
+  let soldProducts = [];
   let firestoreError = null;
-
-  // "Satıldı" filtresi: normal vitrinden tamamen ayrı bir havuz (isSold
-  // true) - "eskiden ne satmışız" arşivi. ARB'de karşılığı yok (brief:
-  // yeniden çeviri yok), bilerek Türkçe literal (bkz. "Rezerve" emsali).
-  const isSoldFilter = condition === "sold";
-
   let categoryCounts = {};
-  try {
-    const all = isSoldFilter
-      ? await listSoldProducts({limit: 500})
-      : await listActiveProducts({limit: 500});
-    const needle = normalizeText(q);
 
-    // Kategori HARİÇ diğer tüm filtreler — dropdown'daki "(N)" sayıları
-    // "şu an seçili diğer filtrelerle bu kategoriyi seçersem kaç ürün
-    // çıkar" anlamına gelsin diye (kategorinin kendisi hariç tutulur).
+  function applyFilters(list) {
+    const needle = normalizeText(q);
     const matchesExceptCategory = (p) => {
       if (needle && !normalizeText(p.name).includes(needle) && !normalizeText(p.desc).includes(needle)) return false;
-      if (!isSoldFilter && condition === "new" && p.isSpotProduct) return false;
-      if (!isSoldFilter && condition === "used" && !p.isSpotProduct) return false;
+      if (condition === "new" && p.isSpotProduct) return false;
+      if (condition === "used" && !p.isSpotProduct) return false;
       if (minPrice != null && !Number.isNaN(minPrice) && p.price < minPrice) return false;
       if (maxPrice != null && !Number.isNaN(maxPrice) && p.price > maxPrice) return false;
       return true;
     };
+    const preCategory = list.filter(matchesExceptCategory);
+    const filtered = preCategory.filter((p) => !category || p.category === category);
+    if (sort === "priceAsc") filtered.sort((a, b) => a.price - b.price);
+    else if (sort === "priceDesc") filtered.sort((a, b) => b.price - a.price);
+    else if (sort === "newest") filtered.sort((a, b) => b.createdAtSort - a.createdAtSort);
+    // "featured": listActiveProducts/listSoldProducts zaten en yeni->eski
+    // sırayla geliyor, ek bir sıralama gerekmiyor.
+    return {filtered, preCategory};
+  }
 
-    const preCategory = all.filter(matchesExceptCategory);
-    categoryCounts = preCategory.reduce((acc, p) => {
+  try {
+    const [allActive, allSold] = await Promise.all([
+      listActiveProducts({limit: 500}),
+      listSoldProducts({limit: 500}),
+    ]);
+
+    const activeResult = applyFilters(allActive);
+    products = activeResult.filtered;
+
+    // Kategori dropdown'ındaki "(N)" sayıları sadece AKTİF (satıştaki)
+    // ürünlere göre — asıl göz atma deneyimi bu, satılanlar ayrı/ikincil
+    // bir bölüm olduğu için sayaca dahil edilmiyor.
+    categoryCounts = activeResult.preCategory.reduce((acc, p) => {
       acc[p.category] = (acc[p.category] || 0) + 1;
       return acc;
     }, {});
 
-    products = preCategory.filter((p) => !category || p.category === category);
-
-    if (sort === "priceAsc") products.sort((a, b) => a.price - b.price);
-    else if (sort === "priceDesc") products.sort((a, b) => b.price - a.price);
-    else if (sort === "newest") products.sort((a, b) => b.createdAtSort - a.createdAtSort);
-    // "featured": listActiveProducts/listSoldProducts zaten en yeni->eski
-    // sırayla geliyor, ek bir sıralama gerekmiyor.
+    soldProducts = applyFilters(allSold).filtered;
   } catch (err) {
     firestoreError = err.message;
   }
@@ -90,7 +106,7 @@ module.exports = async function searchRoute(req, res) {
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === category ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
-  const conditionOptionsHtml = [["all", t(locale, "conditionAll")], ["new", t(locale, "conditionNew")], ["used", t(locale, "conditionUsed")], ["sold", "Satıldı"]]
+  const conditionOptionsHtml = [["all", t(locale, "conditionAll")], ["new", t(locale, "conditionNew")], ["used", t(locale, "conditionUsed")]]
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === condition ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
@@ -98,13 +114,22 @@ module.exports = async function searchRoute(req, res) {
       .map(([value, label]) => `<option value="${escapeHtml(value)}"${value === sort ? " selected" : ""}>${escapeHtml(label)}</option>`)
       .join("");
 
-  const emptyMessage = isSoldFilter ? "Henüz satılmış ürün yok." : t(locale, "searchEmptyMessage");
   const countLabel = !firestoreError && products.length
     ? `<p class="search-result-count">${escapeHtml(t(locale, "categoryProductCount", {count: products.length}))}</p>`
     : "";
   const resultsHtml = firestoreError
     ? `<p class="status status-error">${escapeHtml(firestoreError)}</p>`
-    : renderProductGrid(products, locale, products.length ? null : emptyMessage);
+    : renderProductGrid(products, locale, products.length ? null : t(locale, "searchEmptyMessage"));
+
+  // Satılan ürünler bölümü — sadece eşleşme varsa gösterilir (boşken
+  // "satılan yok" diye ayrı bir bölüm açmanın anlamı yok, sayfa gereksiz
+  // uzamasın).
+  const soldSectionHtml = !firestoreError && soldProducts.length ? `
+<section class="section search-sold-section">
+  <div class="search-sold-divider"><span>Satılan Ürünler</span></div>
+  <p class="search-result-count">${escapeHtml(t(locale, "categoryProductCount", {count: soldProducts.length}))} — artık mevcut değil, geçmiş vitrin olarak gösteriliyor.</p>
+  ${renderProductGrid(soldProducts, locale)}
+</section>` : "";
 
   // Önceden filtre uygulanmadan sayfaya ilk girişte "Henüz sonuç yok"
   // yazan boş bir ipucu ekranı vardı — kullanıcı geri bildirimi: "hiçbir
@@ -128,7 +153,8 @@ ${renderQuickChips(condition, maxPrice)}
 <section class="section">
   ${countLabel}
   ${resultsHtml}
-</section>`;
+</section>
+${soldSectionHtml}`;
 
   res.set("Cache-Control", "no-cache, no-store, must-revalidate");
   res.status(200).send(renderLayout({
