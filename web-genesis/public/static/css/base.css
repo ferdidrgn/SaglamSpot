@@ -350,6 +350,28 @@ button:focus-visible {
 .not-found {
   text-align: center;
   padding: var(--space-huge) 0;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.not-found-code {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(4rem, 3rem + 4vw, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
 }
 
 .site-footer {
