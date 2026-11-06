@@ -8,7 +8,15 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  /* Düz renk yerine çok hafif, token'lardan türeyen iki radial-gradient —
+     yeni bir hex İCAT ETMİYOR, sadece mevcut accent/primary'nin %4-6
+     opaklıkta bir "doku" izlenimi. Performans maliyeti yok (tek katman,
+     sabit arka plan). */
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(60rem 40rem at 90% -10%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 60%),
+    radial-gradient(50rem 36rem at -10% 110%, color-mix(in srgb, var(--color-primary) 6%, transparent), transparent 60%);
+  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -65,20 +73,32 @@ button:focus-visible {
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-lg);
   padding: var(--space-lg) var(--space-screen);
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border-bottom: 1px solid transparent;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   flex-wrap: wrap;
+  transition: box-shadow var(--motion-normal) var(--ease-standard), border-color var(--motion-normal) var(--ease-standard);
+}
+
+.site-header.is-scrolled {
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 8px 24px -16px color-mix(in srgb, var(--color-primary-dark) 40%, transparent);
 }
 
 .brand {
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.375rem;
+  letter-spacing: 0.01em;
   color: var(--color-text-primary);
 }
 
@@ -149,6 +169,8 @@ button:focus-visible {
 }
 
 .hero {
+  position: relative;
+  overflow: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xs) var(--radius-xl) var(--radius-xl) var(--radius-xs);
@@ -156,7 +178,71 @@ button:focus-visible {
   padding: var(--space-xxxl);
 }
 
+/* İki yumuşak, bulanık renk lekesi — yeni görsel/hex yok, sadece mevcut
+   accent/primary tonlarının %100 opak dairesi + blur ile "stüdyo
+   aydınlatması" hissi. Dekoratif, içerikten bağımsız (aria-hidden gerekmez
+   çünkü DOM'a hiç girmiyor). */
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero::before {
+  width: 280px;
+  height: 280px;
+  top: -120px;
+  right: -60px;
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+.hero::after {
+  width: 220px;
+  height: 220px;
+  bottom: -100px;
+  left: 10%;
+  background: color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 1.5rem + 2.2vw, 3rem);
+  letter-spacing: -0.01em;
+}
+
+/* --- görünüme girince belirme animasyonu (progressive enhancement) ---
+   Yalnızca main.js ".reveal-ready" sınıfını <html>'e eklediyse devreye
+   girer (JS kapalı/engelliyse veya prefers-reduced-motion varsa hiçbir şey
+   gizlenmez, içerik baştan tam görünür). */
+.reveal-ready .hero,
+.reveal-ready .section,
+.reveal-ready .product-card,
+.reveal-ready .value-card,
+.reveal-ready .faq-item,
+.reveal-ready .about-panel,
+.reveal-ready .category-rail {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--motion-slow) var(--ease-standard), transform var(--motion-slow) var(--ease-standard);
+}
+
+.reveal-ready .is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 600;
@@ -164,6 +250,14 @@ button:focus-visible {
   text-transform: uppercase;
   color: var(--color-accent);
   margin: 0 0 var(--space-sm);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
 }
 
 .lede {
@@ -224,6 +318,220 @@ button:focus-visible {
 @media (max-width: 600px) {
   .hero {
     padding: var(--space-xxl);
+  }
+}
+
+/* --- ana sayfa hero: istatistik şeridi + ikinci CTA --- */
+.hero-home {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxl);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-main {
+  flex: 2 1 320px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.hero-secondary-btn {
+  margin: 0;
+  background: transparent;
+  border-color: var(--color-primary);
+}
+
+.hero-stats {
+  flex: 1 1 220px;
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  min-width: 84px;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero-stat strong {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.hero-stat span {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 760px) {
+  .hero-home {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-stats {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-lg);
+  }
+}
+
+/* --- kategori rayı (ana sayfa) --- */
+.category-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.category-chip {
+  --chip-color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--chip-color) 14%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--chip-color) 35%, var(--color-border));
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+
+.category-chip::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip-color);
+  flex: none;
+}
+
+.category-chip:hover,
+.category-chip:focus-visible {
+  background: color-mix(in srgb, var(--chip-color) 24%, var(--color-surface));
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+}
+
+/* --- footer (genişletilmiş) --- */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr;
+  gap: var(--space-xxxl);
+  text-align: left;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.footer-brand {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.footer-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  max-width: 32ch;
+}
+
+.footer-social {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.footer-social a:hover,
+.footer-social a:focus-visible {
+  color: var(--color-surface);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.footer-col-title {
+  margin: 0 0 var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.footer-col a {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+}
+
+.footer-col a:hover,
+.footer-col a:focus-visible {
+  color: var(--color-accent);
+}
+
+.footer-hours {
+  margin: var(--space-xs) 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-tertiary);
+}
+
+.footer-rights {
+  text-align: center;
+  margin: var(--space-xxl) 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 760px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  .footer-desc {
+    max-width: none;
+    margin: 0 auto;
   }
 }
 
@@ -703,8 +1011,15 @@ button:focus-visible {
   flex-direction: column;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xs) var(--radius-lg) var(--radius-xs) var(--radius-lg);
   overflow: hidden;
+  transition: box-shadow var(--motion-normal) var(--ease-standard), border-color var(--motion-normal) var(--ease-standard);
+}
+
+.product-card:has(.card-link:hover),
+.product-card:has(.card-link:focus-visible) {
+  box-shadow: 0 16px 28px -14px color-mix(in srgb, var(--color-primary-dark) 28%, transparent);
+  border-color: var(--color-accent-light);
 }
 
 .card-link {
@@ -718,6 +1033,15 @@ button:focus-visible {
   text-decoration: none;
   color: inherit;
   transform: translateY(-2px);
+}
+
+.card-image img {
+  transition: transform var(--motion-slow) var(--ease-standard);
+}
+
+.card-link:hover .card-image img,
+.card-link:focus-visible .card-image img {
+  transform: scale(1.04);
 }
 
 .cart-add-btn {
@@ -854,6 +1178,87 @@ button:focus-visible {
   text-align: center;
   padding: var(--space-huge) 0;
   color: var(--color-text-tertiary);
+}
+
+/* --- yüzen WhatsApp butonu (FAB) --- */
+.whatsapp-fab {
+  position: fixed;
+  right: var(--space-xl);
+  bottom: var(--space-xl);
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-surface);
+  box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--color-primary-dark) 45%, transparent);
+  transition: transform var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+.whatsapp-fab:hover,
+.whatsapp-fab:focus-visible {
+  background: var(--color-accent-dark);
+  color: var(--color-surface);
+  text-decoration: none;
+  transform: translateY(-2px) scale(1.04);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .whatsapp-fab {
+    animation: fab-pulse 2.6s ease-in-out infinite;
+  }
+}
+
+@keyframes fab-pulse {
+  0%, 100% { box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--color-primary-dark) 45%, transparent), 0 0 0 0 color-mix(in srgb, var(--color-accent) 45%, transparent); }
+  50% { box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--color-primary-dark) 45%, transparent), 0 0 0 10px color-mix(in srgb, var(--color-accent) 0%, transparent); }
+}
+
+@media (max-width: 600px) {
+  .whatsapp-fab {
+    right: var(--space-lg);
+    bottom: var(--space-lg);
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* --- ürün kartı: hover'da "incele" ok ikonu --- */
+.card-view-affordance {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  background: color-mix(in srgb, var(--color-primary-dark) 22%, transparent);
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+.card-view-affordance span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  transform: scale(0.85);
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.card-link:hover .card-view-affordance,
+.card-link:focus-visible .card-view-affordance {
+  opacity: 1;
+}
+
+.card-link:hover .card-view-affordance span,
+.card-link:focus-visible .card-view-affordance span {
+  transform: scale(1);
 }
 
 /* --- product detail --- */

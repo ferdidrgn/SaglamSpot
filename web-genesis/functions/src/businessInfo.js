@@ -35,4 +35,10 @@ module.exports = {
   whatsappUrl(message = "Merhaba, mobilyalar hakkında bilgi almak istiyorum.") {
     return `https://wa.me/${this.phoneNumberIntl}?text=${encodeURIComponent(message)}`;
   },
+  get instagramUrl() {
+    return `https://www.instagram.com/${this.instagramUser}`;
+  },
+  get facebookUrl() {
+    return `https://www.facebook.com/${this.facebookUser}`;
+  },
 };

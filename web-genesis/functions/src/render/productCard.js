@@ -2,6 +2,10 @@ const {escapeHtml} = require("./layout");
 const {t, DEFAULT_LOCALE} = require("../i18n");
 const {localizedCategoryLabel} = require("../categories");
 
+// Metin yok (yeniden çeviri gerektirmez) — sadece hover'da beliren bir
+// "incele" ok ikonu, ürün kartının tamamı zaten tıklanabilir bağlantı.
+const VIEW_ICON = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg>";
+
 function renderProductCard(product, locale = DEFAULT_LOCALE) {
   const conditionBadge = product.isSpotProduct
     ? `<span class="badge badge-spot">${escapeHtml(t(locale, "conditionUsed"))}</span>`
@@ -24,6 +28,7 @@ function renderProductCard(product, locale = DEFAULT_LOCALE) {
     <div class="card-image">
       ${imageHtml}
       <div class="card-badges">${conditionBadge}${reservedBadge}</div>
+      <div class="card-view-affordance" aria-hidden="true"><span>${VIEW_ICON}</span></div>
     </div>
     <div class="card-body">
       <p class="card-category">${escapeHtml(localizedCategoryLabel(locale, product.category))}</p>

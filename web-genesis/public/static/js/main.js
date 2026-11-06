@@ -235,6 +235,44 @@
     render();
   }
 
+  // Header, sayfa kaydırıldığında hafif bir gölge/arkaplan kazanır — saf
+  // CSS ile yapılamayan tek şey (scroll konumuna bağlı), bu yüzden küçük
+  // bir JS dokunuşu. Animasyon değil, tek bir class toggle.
+  function wireHeaderScroll() {
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+    const update = () => header.classList.toggle("is-scrolled", window.scrollY > 4);
+    update();
+    window.addEventListener("scroll", update, {passive: true});
+  }
+
+  // Bölümler/kartlar görünüme girerken hafifçe belirip yukarı kayar.
+  // `prefers-reduced-motion` veya IntersectionObserver desteği yoksa HİÇBİR
+  // şey yapmıyoruz — <html> sınıfı eklenmediği sürece CSS tarafında içerik
+  // zaten tam görünür/opak kalır (bkz. base.css ".reveal-ready" kapsamı),
+  // yani JS kapalıyken de sayfa eksiksiz okunur.
+  function wireRevealAnimations() {
+    if (!("IntersectionObserver" in window)) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const targets = document.querySelectorAll(
+        ".hero, .section, .product-card, .value-card, .faq-item, .about-panel, .category-rail",
+    );
+    if (!targets.length) return;
+
+    document.documentElement.classList.add("reveal-ready");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.08, rootMargin: "0px 0px -40px 0px"});
+
+    targets.forEach((el) => observer.observe(el));
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -259,5 +297,7 @@
     wireAddButtons();
     renderCartApp();
     wireLanguageSwitcher();
+    wireHeaderScroll();
+    wireRevealAnimations();
   });
 })();
