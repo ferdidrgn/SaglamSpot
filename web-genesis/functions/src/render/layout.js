@@ -33,6 +33,9 @@ const ICON_WHATSAPP = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fil
 const ICON_INSTAGRAM = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.2\" cy=\"6.8\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/></svg>";
 const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M14 21v-7h2.4l.4-3H14V9.2c0-.9.25-1.5 1.6-1.5H17V5.1C16.7 5 15.8 5 14.8 5c-2.2 0-3.7 1.3-3.7 3.9V11H8.7v3H11v7h3z\"/></svg>";
 const ICON_PHONE = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>";
+// "Yukarı çık" düğmesinin topuzundaki ok — ipli lamba anahtarı metaforu
+// dekoratif, yön bu ikonla her zaman net (bkz. base.css .scrolltop-cord).
+const ICON_CHEVRON_UP = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" aria-hidden=\"true\"><path d=\"M5 15l7-7 7 7\"/></svg>";
 
 function escapeHtml(value) {
   return String(value)
@@ -176,6 +179,10 @@ ${bodyHtml}
   <p class="footer-rights">${escapeHtml(t(locale, "allRightsReserved"))}</p>
 </footer>
 <a class="whatsapp-fab" href="${business.whatsappUrl()}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
+<button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık">
+  <span class="scrolltop-cord-rope" aria-hidden="true"></span>
+  <span class="scrolltop-cord-knob" aria-hidden="true">${ICON_CHEVRON_UP}</span>
+</button>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
 ${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}
 ${extraScripts.map((s) => `<script src="${versionedAsset(s)}" type="module"></script>`).join("\n")}

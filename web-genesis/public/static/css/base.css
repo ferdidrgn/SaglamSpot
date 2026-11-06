@@ -1251,6 +1251,110 @@ button:focus-visible {
 }
 
 /* ===================================================================
+   BAKIM ÖNERİLERİ — yatay kaydırmalı ipucu kartları.
+   =================================================================== */
+.care-tips-row {
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  padding-bottom: var(--space-sm);
+  scroll-snap-type: x proximity;
+}
+
+.care-tip-card {
+  position: relative;
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+}
+
+.care-tip-media {
+  height: 170px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+  box-shadow: 0 14px 26px -16px color-mix(in srgb, var(--color-primary-dark) 32%, transparent);
+}
+
+.care-tip-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--motion-slow) var(--ease-standard);
+}
+
+.care-tip-card:hover .care-tip-media img {
+  transform: scale(1.06);
+}
+
+.care-tip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
+  color: var(--color-accent-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.care-tip-eyebrow {
+  margin: 0 0 2px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.care-tip-title {
+  margin: 0 0 var(--space-xs);
+  font-size: 1.0625rem;
+}
+
+.care-tip-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* ===================================================================
+   #SağlamSpot ile Paylaşın — Pinterest tarzı mozaik galeri. CSS
+   `columns` ile değişken yükseklik: satır/sütun hesaplamasına gerek yok.
+   =================================================================== */
+.share-mosaic {
+  columns: 4 200px;
+  column-gap: var(--space-lg);
+}
+
+.share-mosaic-item {
+  display: block;
+  break-inside: avoid;
+  margin-bottom: var(--space-lg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 14px 26px -16px color-mix(in srgb, var(--color-primary-dark) 28%, transparent);
+}
+
+.share-mosaic-item img {
+  width: 100%;
+  display: block;
+  transition: transform var(--motion-slow) var(--ease-standard);
+}
+
+.share-mosaic-item:hover img,
+.share-mosaic-item:focus-visible img {
+  transform: scale(1.06);
+}
+
+.share-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-xxl);
+}
+
+/* ===================================================================
    İSTATİSTİK ŞERİDİ — home_page_web.dart'taki _buildStatsSection.
    =================================================================== */
 .stats-band {
@@ -1651,6 +1755,266 @@ button:focus-visible {
 .value-card p {
   margin: 0;
   font-size: 0.9375rem;
+}
+
+/* ===================================================================
+   /sifir ve /spot — saglamspotcu.web.app'teki (bu projenin KENDİ
+   Flutter web derlemesi) koleksiyon sayfası düzeni: hero + foto rayı +
+   yan menü/arama/sıralama + ızgara. --listing-accent her sayfanın
+   kendi vurgu rengini taşır (bkz. catalogTheme.js).
+   =================================================================== */
+.listing-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxxl);
+  padding: var(--space-section) 0;
+}
+
+.listing-hero-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.listing-hero-eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--listing-accent, var(--color-accent));
+  margin-bottom: var(--space-sm);
+}
+
+.listing-hero-text h1 {
+  margin: 0 0 var(--space-sm);
+  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+}
+
+.listing-hero-stats,
+.listing-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxl);
+  margin-top: var(--space-lg);
+}
+
+.listing-hero-stats strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  color: var(--color-text-primary);
+}
+
+.listing-hero-stats span {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+.listing-hero-tags {
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.listing-hero-tags span[aria-hidden] {
+  color: var(--color-muted-dark);
+}
+
+.listing-hero-media {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 20px 36px -18px color-mix(in srgb, var(--color-primary-dark) 35%, transparent);
+}
+
+.listing-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-hero-badge {
+  position: absolute;
+  left: var(--space-lg);
+  bottom: var(--space-lg);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .listing-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.listing-quote-panel {
+  position: relative;
+  background: var(--color-primary-dark);
+  color: var(--color-bg);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xxxl);
+}
+
+.listing-quote-mark {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--listing-accent, var(--color-accent-light));
+}
+
+.listing-quote-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.375rem;
+  max-width: 46ch;
+  margin: var(--space-sm) 0 var(--space-md);
+}
+
+.listing-quote-sub {
+  max-width: 60ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+}
+
+.listing-photo-rail {
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  padding-bottom: var(--space-sm);
+}
+
+.listing-photo-card {
+  position: relative;
+  flex: 0 0 200px;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.listing-photo-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--motion-slow) var(--ease-standard);
+}
+
+.listing-photo-card:hover img,
+.listing-photo-card:focus-visible img {
+  transform: scale(1.08);
+}
+
+.listing-photo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: var(--space-md);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent 65%);
+  color: #fff;
+}
+
+.listing-photo-title {
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.listing-photo-card:hover,
+.listing-photo-card:focus-visible {
+  text-decoration: none;
+  color: #fff;
+}
+
+.listing-photo-count {
+  font-size: 0.6875rem;
+  opacity: 0.85;
+}
+
+.listing-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-xxxl);
+  align-items: start;
+}
+
+.listing-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: sticky;
+  top: 96px;
+}
+
+.listing-sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.listing-sidebar-link:hover,
+.listing-sidebar-link:focus-visible {
+  text-decoration: none;
+  background: var(--color-secondary);
+  color: var(--color-text-primary);
+}
+
+.listing-sidebar-link.is-active {
+  background: var(--listing-accent, var(--color-accent));
+  color: #fff;
+  font-weight: 700;
+}
+
+.listing-sidebar-count {
+  font-size: 0.75rem;
+  color: inherit;
+  opacity: 0.75;
+}
+
+.listing-main {
+  min-width: 0;
+}
+
+.listing-toolbar {
+  margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 860px) {
+  .listing-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-sidebar {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-lg);
+  }
+
+  .listing-sidebar-link {
+    flex: 0 0 auto;
+  }
 }
 
 .about-panel {
@@ -2794,6 +3158,110 @@ button:focus-visible {
   .whatsapp-fab {
     right: var(--space-lg);
     bottom: var(--space-lg);
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* --- "ipli gece lambası" esinli yukarı çık düğmesi ---
+   WhatsApp FAB'ın hemen üstünde asılı duran bir ip + düğme: tavanda
+   küçük bir halka, aşağı sarkan ip, ucunda tıklanabilir topuz. Düğmeye
+   basılınca ip gerçek bir anahtar gibi aşağı "çekiliyor" (ip uzuyor,
+   topuz aşağı kayıyor), sonra ikisi de yerine zıplıyor ve sayfa yukarı
+   kayıyor. Yön belirsiz kalmasın diye topuzun içinde her zaman net bir
+   yukarı ok ikonu var — sadece dekoratif bir lamba ikonu değil. */
+.scrolltop-cord {
+  position: fixed;
+  right: var(--space-xl);
+  bottom: 92px;
+  z-index: 60;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity var(--motion-normal) var(--ease-standard), transform var(--motion-normal) var(--ease-standard);
+}
+
+.scrolltop-cord.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.scrolltop-cord-rope {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 3px;
+  height: 34px;
+  margin-left: -1.5px;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--color-text-tertiary) 50%, transparent), var(--color-muted-dark));
+  border-radius: 2px;
+  transform-origin: top center;
+  transition: transform 180ms var(--ease-move);
+}
+
+.scrolltop-cord-rope::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--color-muted-dark);
+  background: var(--color-bg);
+}
+
+.scrolltop-cord-knob {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--color-primary-dark) 45%, transparent);
+  transition: transform 180ms var(--ease-move), background var(--motion-fast) var(--ease-standard);
+}
+
+.scrolltop-cord:hover .scrolltop-cord-knob,
+.scrolltop-cord:focus-visible .scrolltop-cord-knob {
+  background: var(--color-primary-dark);
+}
+
+.scrolltop-cord.is-pulled .scrolltop-cord-rope {
+  transform: scaleY(1.45);
+}
+
+.scrolltop-cord.is-pulled .scrolltop-cord-knob {
+  transform: translateY(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrolltop-cord-rope,
+  .scrolltop-cord-knob {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .scrolltop-cord {
+    right: var(--space-lg);
+    bottom: 82px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .scrolltop-cord-knob {
     width: 50px;
     height: 50px;
   }

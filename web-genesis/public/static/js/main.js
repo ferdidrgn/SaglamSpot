@@ -548,6 +548,24 @@
     });
   }
 
+  // Mobilya temalı "ipli gece lambası" esinli yukarı çık düğmesi — tıklanınca
+  // ip gerçek bir anahtar gibi önce aşağı "çekiliyor" (CSS .is-pulled),
+  // sonra sayfa yukarı kayıyor. 480px'den az kaydırıldıysa gizli kalır.
+  function wireScrollTopCord() {
+    const btn = document.querySelector("[data-scroll-top]");
+    if (!btn) return;
+    const update = () => btn.classList.toggle("is-visible", window.scrollY > 480);
+    update();
+    window.addEventListener("scroll", update, {passive: true});
+    btn.addEventListener("click", () => {
+      if (btn.classList.contains("is-pulled")) return;
+      btn.classList.add("is-pulled");
+      window.setTimeout(() => btn.classList.remove("is-pulled"), 260);
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({top: 0, behavior: reduceMotion ? "auto" : "smooth"});
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -581,5 +599,6 @@
     wireStatCounters();
     wireShareButtons();
     wireCardCarousels();
+    wireScrollTopCord();
   });
 })();

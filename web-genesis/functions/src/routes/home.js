@@ -5,13 +5,8 @@ const {CATEGORY_LABELS, categoryPhoto} = require("../categories");
 const {ICONS} = require("../render/icons");
 const business = require("../businessInfo");
 const {t} = require("../i18n");
-
-// lib/core/theme/catalog_theme.dart'taki NewCollectionPalette/SpotPalette
-// ile AYNI hex'ler — iki kapı kartının kendi (marka ana paletinden ayrı,
-// bilerek zıt hissettirilen) renk dili. Yeni renk İCAT EDİLMEDİ.
-const NEW_ACCENT = "#2C241E";
-const NEW_BADGE_GREEN = "#2E7D32";
-const SPOT_ACCENT = "#E65100";
+const {NEW_BADGE_GREEN, SPOT_ACCENT} = require("../catalogTheme");
+const {renderTicker} = require("../render/trustTicker");
 
 // home_page_web.dart'taki _heroImages ile AYNI 3 fotoğraf.
 const HERO_IMAGES = [
@@ -55,20 +50,6 @@ function renderHero(locale, products) {
   <div class="hero-dots">${dotsHtml}</div>
   ${featuredHtml}
 </section>`;
-}
-
-function renderTicker(locale) {
-  const items = [
-    [ICONS.verified, t(locale, "productTrustBadgeVerified")],
-    [ICONS.handshake, t(locale, "productTrustBadgeNegotiate")],
-    [ICONS.truck, t(locale, "productTrustBadgeDelivery")],
-    [ICONS.storefront, t(locale, "sellerTrustLine")],
-    [ICONS.award, t(locale, "usp1Title")],
-    [ICONS.sparkle, t(locale, "qualityFurniture")],
-  ];
-  const itemsHtml = items.map(([icon, label]) => `<span class="ticker-item">${icon}${escapeHtml(label)}</span>`).join("");
-  // İki kopya art arda — %-50 translateX ile kesintisiz döngü illüzyonu.
-  return `<div class="ticker" aria-hidden="true"><div class="ticker-track">${itemsHtml}${itemsHtml}</div></div>`;
 }
 
 function renderCategoryRail(locale) {
@@ -192,6 +173,70 @@ function renderStoreInfo(locale) {
 </div>`;
 }
 
+// "Uzmanından Bakım Önerileri" — saglamspotcu.web.app ana sayfasının
+// (bu projenin KENDİ Flutter web derlemesi) karşılığı: kısa, pratik
+// mobilya bakım tüyoları. Metinler ARB'de yok (brief: yeniden çeviri
+// yok) — "Satılan Ürünler"/"Rezerve" emsaliyle aynı gerekçeyle bilerek
+// Türkçe literal, yalnızca bu bölüme özel kısa pazarlama metni.
+// Görseller CATEGORY_PHOTOS'taki (zaten doğrulanmış) fotoğraflar.
+function renderCareTips(locale) {
+  const tips = [
+    {
+      icon: ICONS.sofaCare,
+      eyebrow: "Yerleştirme",
+      title: "Oturma Grubunu Avantajlı Yerleştirin",
+      desc: "Koltuğu duvardan 2-3 cm boşluk bırakarak yerleştirin; hem hava sirkülasyonu sağlar hem kumaşın nem tutmasını önler.",
+      image: categoryPhoto("sofa"),
+    },
+    {
+      icon: ICONS.sparkle,
+      eyebrow: "Temizlik",
+      title: "Ahşap Yüzeyleri Doğru Temizleyin",
+      desc: "Tozu kuru mikrofiber bezle alın, ayda bir nemli bezle silin; sert kimyasallar cilayı zamanla matlaştırır.",
+      image: categoryPhoto("officeFurniture"),
+    },
+    {
+      icon: ICONS.archiveBox,
+      eyebrow: "Düzen",
+      title: "Dolap İçini Ferah Tutun",
+      desc: "Ağır parçaları alt raflara, sık kullandıklarınızı göz hizasına yerleştirin; hem pratik hem dengeli bir yük dağılımı sağlar.",
+      image: categoryPhoto("white"),
+    },
+    {
+      icon: ICONS.moonComfort,
+      eyebrow: "Konfor",
+      title: "Yatak Odasında Rahat Uyku",
+      desc: "Yatak başlığını pencereden uzak, sabah ışığını kesecek şekilde konumlandırın; küçük bir fark uyku kalitenizi belirgin artırır.",
+      image: categoryPhoto("bed"),
+    },
+  ];
+  return `
+<div class="care-tips-row">${tips.map((tip) => `
+    <article class="care-tip-card">
+      <div class="care-tip-media"><img src="${escapeHtml(tip.image)}" alt="" loading="lazy"></div>
+      <span class="care-tip-icon">${tip.icon}</span>
+      <p class="care-tip-eyebrow">${escapeHtml(tip.eyebrow)}</p>
+      <h3 class="care-tip-title">${escapeHtml(tip.title)}</h3>
+      <p class="care-tip-desc">${escapeHtml(tip.desc)}</p>
+    </article>`).join("")}</div>`;
+}
+
+// "#SağlamSpot ile Kurulumunuzu Paylaşın" — mozaik (Pinterest tarzı,
+// değişken yükseklikli) galeri. CSS `columns` ile satır/sütun hesabı
+// olmadan doğal mozaik görünümü; JS gerekmiyor. Aynı (zaten doğrulanmış)
+// kategori fotoğrafları, burada küçük kare/dikdörtgen kartlar olarak.
+function renderShareGallery(locale) {
+  const photos = Object.keys(CATEGORY_LABELS).filter((k) => k !== "other").map((key) => categoryPhoto(key));
+  return `
+<div class="share-mosaic">${photos.map((url) => `
+    <a class="share-mosaic-item" href="${escapeHtml(business.instagramUrl)}" target="_blank" rel="noopener">
+      <img src="${escapeHtml(url)}" alt="" loading="lazy">
+    </a>`).join("")}</div>
+<div class="share-cta-row">
+  <a class="hero-pill hero-pill-accent" href="${escapeHtml(business.instagramUrl)}" target="_blank" rel="noopener">${ICONS.explore} Instagram'da Paylaş</a>
+</div>`;
+}
+
 function renderStatsBand(locale, productCount, categoryCount, soldCount) {
   const stats = [
     {icon: ICONS.inventory, value: productCount, suffix: "", label: t(locale, "statProducts")},
@@ -262,6 +307,18 @@ ${renderHero(locale, products)}
 
 <section class="section">
   ${renderStoreInfo(locale)}
+</section>
+
+<section class="section care-tips-section">
+  <p class="eyebrow">İpuçları</p>
+  <h2>Uzmanından Bakım Önerileri</h2>
+  ${renderCareTips(locale)}
+</section>
+
+<section class="section share-gallery-section">
+  <p class="eyebrow">Paylaşın</p>
+  <h2>#SağlamSpot ile Kurulumunuzu Paylaşın</h2>
+  ${renderShareGallery(locale)}
 </section>
 
 <section class="section">
