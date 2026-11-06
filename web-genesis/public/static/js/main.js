@@ -445,25 +445,29 @@
         <a class="pcard-link" href="${escapeHtml(item.path)}">
           <div class="pcard-media">
             ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy">` : "<div class=\"pcard-placeholder\"></div>"}
-            <div class="pcard-scrim" aria-hidden="true"></div>
-            <div class="pcard-info">
-              <div class="pcard-info-text">
-                <p class="pcard-name">${escapeHtml(item.name)}</p>
-              </div>
-              <span class="pcard-price"><span dir="ltr">${formatPrice(item.price)}</span></span>
-            </div>
+          </div>
+          <div class="pcard-body">
+            <p class="pcard-name">${escapeHtml(item.name)}</p>
+            <span class="pcard-price"><span dir="ltr">${formatPrice(item.price)}</span></span>
           </div>
         </a>
-        <button type="button" class="pcard-cart-btn pcard-fav-btn is-favorited" data-favorite-toggle
-          data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name)}" data-price="${item.price}"
-          data-image="${escapeHtml(item.image)}" data-path="${escapeHtml(item.path)}"
-          aria-label="Favoriden kaldır">${FAV_ICON}</button>
+        <div class="pcard-actions">
+          <button type="button" class="pcard-icon-btn pcard-fav-btn is-favorited" data-favorite-toggle
+            data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name)}" data-price="${item.price}"
+            data-image="${escapeHtml(item.image)}" data-path="${escapeHtml(item.path)}"
+            aria-label="Favoriden kaldır">${FAV_ICON}</button>
+          <button type="button" class="pcard-icon-btn pcard-share-btn" data-share-product
+            data-share-url="${escapeHtml(item.path)}" data-share-title="${escapeHtml(item.name)}"
+            aria-label="Paylaş">${FAV_SHARE_ICON}</button>
+        </div>
       </div>`).join("")}</div>`;
+    wireShareButtons();
 
     wireFavoriteButtons();
   }
 
   const FAV_ICON = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 21s-7.5-4.6-10-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 10 6c-2.5 4.4-10 9-10 9z\"/></svg>";
+  const FAV_SHARE_ICON = "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"18\" cy=\"5\" r=\"2.5\"/><circle cx=\"6\" cy=\"12\" r=\"2.5\"/><circle cx=\"18\" cy=\"19\" r=\"2.5\"/><path d=\"M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6\"/></svg>";
 
   // Ürün detayındaki paylaş butonu — Web Share API varsa (çoğu mobil
   // tarayıcı) native paylaşım sayfası açılır; yoksa link panoya kopyalanır
@@ -589,6 +593,42 @@
     });
   }
 
+  // /arama'daki ızgara/liste görünüm geçişi — saglamspotcu.web.app'teki
+  // GERÇEK tasarımla aynı iki ikon. Tercih <body> sınıfı üzerinden CSS
+  // ile uygulanır (bkz. base.css .product-list), localStorage'ta
+  // kalıcıdır (yalnızca bu tarayıcıya özel bir kolaylık — sunucuya
+  // gitmiyor).
+  function wireViewToggle() {
+    const toggle = document.querySelector("[data-view-toggle]");
+    if (!toggle) return;
+    const buttons = [...toggle.querySelectorAll("[data-view-btn]")];
+
+    function apply(view) {
+      document.body.classList.toggle("view-is-list", view === "list");
+      buttons.forEach((btn) => btn.classList.toggle("is-active", btn.dataset.viewBtn === view));
+    }
+
+    let saved = "grid";
+    try {
+      saved = localStorage.getItem("saglamspot_arama_view") || "grid";
+    } catch (_) {
+      // localStorage engellenmiş olabilir — varsayılan ızgarada kal.
+    }
+    apply(saved);
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const view = btn.dataset.viewBtn;
+        apply(view);
+        try {
+          localStorage.setItem("saglamspot_arama_view", view);
+        } catch (_) {
+          // yok say.
+        }
+      });
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -624,5 +664,6 @@
     wireCardCarousels();
     wireScrollTopCord();
     wireFaqFilters();
+    wireViewToggle();
   });
 })();
