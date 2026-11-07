@@ -20,7 +20,7 @@ module.exports = async function sitemapRoute(req, res) {
   const baseUrl = getBaseUrl(req);
   const today = new Date().toISOString().slice(0, 10);
 
-  const staticEntries = ["/", "/sifir", "/spot", "/arama", "/sepet", "/hakkimizda", "/sss"]
+  const staticEntries = ["/", "/sifir", "/spot", "/arama", "/sepet", "/hakkimizda", "/sss", "/gizlilik"]
       .map((path) => ({loc: `${baseUrl}${path}`, lastmod: today, changefreq: "daily", priority: path === "/" ? "1.0" : "0.7"}));
 
   let productEntries = [];

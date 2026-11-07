@@ -161,6 +161,46 @@ function renderLayout({
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ================= GOOGLE SEARCH CONSOLE / YANDEX DOĞRULAMA =================
+     Eskiden web/index.html'deki (Flutter web derlemesi) GERÇEK doğrulama
+     kodları — saglamspotcu.web.app artık web-genesis'i sunduğu için bu
+     etiketler olmadan Search Console/Yandex Webmaster'daki site
+     sahipliği doğrulaması KOPARDI. Bing'in kendi kodu Flutter tarafında
+     da hiç gerçek değildi (yer tutucu metin), o yüzden taşınmadı. -->
+<meta name="google-site-verification" content="auwiqgjhUHUDIchgyzDfclFcgXn-B7MaMIl3fNXWphE">
+<meta name="yandex-verification" content="94ec8563034a9a5f">
+<!-- ================= GOOGLE ANALYTICS ================= -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3Z4LKNJ3N7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", "G-3Z4LKNJ3N7");
+</script>
+<!-- ================= GOOGLE ADSENSE =================
+     Eskiden sadece web/index.html'de (Flutter web) vardı — web-genesis'e
+     geçişte taşınmamıştı, yani canlıda AdSense HİÇ yüklenmiyordu. Asıl
+     reklam alanları (<ins class="adsbygoogle">) henüz bu sitede YOK;
+     bu script tek başına hesabın siteyi doğrulamasını ve "Otomatik
+     reklamlar"ı (AdSense panelinden açılırsa) mümkün kılar. İleride
+     belirli bir sayfaya elle bir reklam birimi eklenirse pushAdsenseAd()
+     AYNI webdriver/bot korumasıyla (Playwright/Selenium görsel kontrolde
+     gerçek reklamlara istek gitmesin diye, bkz. saglamspot-ui SKILL.md
+     §5) o birimi doldurur. -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5779807348211992" crossorigin="anonymous"></script>
+<script>
+  function pushAdsenseAd() {
+    if (navigator.webdriver) {
+      console.warn("AdSense: otomasyon tarayıcısı tespit edildi, reklam yüklenmedi.");
+      return;
+    }
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.warn("AdSense push hatası:", e);
+    }
+  }
+</script>
 <script>
 // Firebase Hosting, Cloud Functions'a rewrite ederken Cookie başlığını
 // İLETMİYOR (bkz. localeMiddleware.js'teki uzun not) — bu yüzden dil
@@ -276,7 +316,7 @@ ${bodyHtml}
       <p class="footer-hours">${escapeHtml(business.workingHours).replace(/\n/g, "<br>")}</p>
     </div>
   </div>
-  <p class="footer-rights">${escapeHtml(t(locale, "allRightsReserved"))}</p>
+  <p class="footer-rights">${escapeHtml(t(locale, "allRightsReserved"))} · <a href="/gizlilik">Gizlilik Politikası</a></p>
 </footer>
 <a class="whatsapp-fab" href="${business.whatsappUrl(undefined, locale)}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
 <button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık" title="Işığı çek, yukarı çık">${SCROLLTOP_LAMP_SVG}</button>
