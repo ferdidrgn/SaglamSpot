@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.ferdidrgn.saglamspot",
+      "sha256_cert_fingerprints": [
+        "54:3B:D9:56:F1:98:CD:5F:8E:02:F3:F1:DC:2E:57:5A:87:25:55:CC:71:CE:45:AF:56:F3:C1:64:A8:8B:C3:B3"
+      ]
+    }
+  }
+]

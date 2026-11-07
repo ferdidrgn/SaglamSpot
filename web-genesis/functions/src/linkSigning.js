@@ -12,10 +12,11 @@ const HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
 
 /**
  * lib/core/services/deeplink/deeplink_service.dart'taki `_domain` ile
- * AYNI — WhatsApp mesajlarına eklenen linkler BİLEREK bu (şu an canlı
- * olan Flutter) adrese işaret ediyor, web-genesis'in henüz yayında
- * olmayan kendi adresine değil. web-genesis canlıya alınıp bu domain'i
- * devraldığında burası da güncellenmeli.
+ * AYNI. web-genesis bu domain'i artık devraldı (saglamspotcu.web.app
+ * canlıda web-genesis'i sunuyor) — bu yüzden bu linkler hem bu sitenin
+ * KENDİ sayfalarına hem de (public/.well-known/ altındaki Universal
+ * Links/App Links dosyaları sayesinde) telefonda yüklüyse doğrudan
+ * mobil uygulamaya açılabiliyor.
  */
 const SHARE_DOMAIN = "https://saglamspotcu.web.app";
 
