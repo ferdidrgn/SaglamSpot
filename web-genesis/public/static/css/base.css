@@ -5132,3 +5132,191 @@ body.view-is-list .product-list {
     position: static;
   }
 }
+
+/* ===================================================================
+   MOBİL YOĞUNLUK SIKILAŞTIRMASI — kullanıcı geri bildirimi: "her şey çok
+   büyük, her sayfa çok büyük, durmadan aşağı kaydırıyorum, bitmiyor."
+   Kök neden tek bir çirkin öğe değil, BİRİKEN bir örüntüydü: envanter
+   kartları/istatistik kartları/değer kartları/bento kareleri gibi
+   ızgaralar masaüstünde satır satır dizilirken, mobilde (auto-fit
+   minmax(...) veya flex-wrap ile) TEK SÜTUNA düşüyor — 4 kart yan yana
+   yerine alt alta 4 tam genişlik kart oluyor, her biri kendi
+   padding'ini/ikonunu taşıyınca sayfa 2-3 katına çıkıyor. productDetail
+   sayfasındaki "Kategori/Durum/Teslimat/Konum" kutuları ise bunun TAM
+   TERSİ bir hatayla aynı sonucu veriyordu: masaüstünde zaten 2 sütunlu,
+   kompakt kutular, mobilde BİLEREK 1 sütuna düşürülmüştü (muhtemelen
+   "mobilde daralt" refleksiyle, ama bu kutular küçük ikon+kısa metin,
+   daralmaya hiç ihtiyaçları yok) — 2x2 yerine 4 tam genişlik satır.
+   Her kural burada SADECE mobil için (≤760px/≤640px) — masaüstü hiç
+   dokunulmadı, hepsi yeni/var olan mobil media query'lerin İÇİNDE. */
+@media (max-width: 640px) {
+  /* --- Ana sayfa istatistik şeridi: 4 kart alt alta yerine 2x2 --- */
+  .stats-band {
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+
+  .stat-card {
+    flex: none;
+    max-width: none;
+    padding: var(--space-lg) var(--space-sm);
+  }
+
+  .stat-card-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .stat-card-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .stat-card strong {
+    font-size: 1.625rem;
+  }
+
+  /* --- "İlkelerimiz" değer kartları: 4 kart alt alta yerine 2x2 --- */
+  .about-values-panel {
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .value-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+  }
+
+  .value-card {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .value-card-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--space-md);
+  }
+
+  .value-card h3 {
+    font-size: 1rem;
+  }
+
+  .value-card p {
+    font-size: 0.875rem;
+  }
+
+  /* --- Bento güven ızgarası: 4 kare alt alta yerine 2x2 --- */
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+
+  .bento-tile {
+    padding: var(--space-lg);
+    min-height: 130px;
+    gap: var(--space-sm);
+  }
+
+  .bento-tile-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bento-tile-label {
+    font-size: 0.9375rem;
+  }
+
+  /* --- Ürün ızgarası (ana sayfa/arama/sıfır/spot/favoriler): tek sütun
+     yerine 2 sütun — her kart artık yarım genişlik, kare görsel de
+     yarıya küçülüyor, envanter aynı alanda YARI yükseklikte sığıyor. */
+  .product-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+  }
+
+  .pcard {
+    max-width: none;
+  }
+
+  .pcard-body {
+    padding: var(--space-sm) var(--space-sm) var(--space-md);
+  }
+
+  .pcard-name {
+    font-size: 0.9375rem;
+  }
+
+  .pcard-price {
+    font-size: 0.8125rem;
+    padding: 2px var(--space-sm);
+  }
+
+  /* --- Mağaza bilgi paneli: harita 320px yerine 200px, kart dolgusu
+     daraltıldı — ekran görüntüsünde tam da bu (harita+saatler+butonlar
+     arası devasa boşluk) şikayet edilen yerdi. */
+  .store-info-map,
+  .store-info-map iframe {
+    min-height: 200px;
+  }
+
+  .store-info-card {
+    padding: var(--space-lg);
+    gap: var(--space-sm);
+  }
+
+  /* --- "Yaşam Alanına Göre" oda kartları: 340px yerine 220px --- */
+  .rooms-text {
+    padding: var(--space-lg);
+  }
+
+  .room-card {
+    height: 220px;
+  }
+
+  /* --- Ürün detayı: Kategori/Durum/Teslimat/Konum kutuları — ÖNCEDEN
+     burada bilerek 1 sütuna düşürülüyordu, oysa masaüstünde zaten
+     kompakt 2 sütun; küçük ikon+kısa metin kutuları daralmaya hiç
+     ihtiyaç duymuyor. 2x2'yi KORUYORUZ (yukarıdaki @media (max-width:
+     760px) içindeki eski "1fr" kuralını burada ezip geri 2 sütuna
+     alıyoruz — aynı dosyada SONRA geldiği için kazanır). */
+  .pdetail-info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pdetail-info-tile {
+    padding: var(--space-sm);
+  }
+
+  .pdetail-seller-card,
+  .pdetail-howto {
+    margin-bottom: var(--space-lg);
+  }
+
+  /* --- Bölümler arası dikey ritim: 28px yerine 16px — tek başına küçük
+     ama 10+ bölüm üst üste binince toplam kaydırma mesafesini belirgin
+     kısaltıyor. --- */
+  .section {
+    margin-top: var(--space-lg);
+  }
+
+  /* --- Footer: linkler arasındaki boşluk zaten dar (8px) ama blok
+     aralıkları (marka/keşfet/iletişim sütunları arası, alt telif hakkı
+     satırı) gereğinden fazla geniş — sıkılaştırıldı. --- */
+  .site-footer {
+    padding: var(--space-xl) var(--space-screen);
+  }
+
+  .footer-grid {
+    gap: var(--space-xl);
+  }
+
+  .footer-rights {
+    margin-top: var(--space-lg);
+  }
+}
