@@ -564,7 +564,7 @@
     btn.addEventListener("click", () => {
       if (btn.classList.contains("is-pulled")) return;
       btn.classList.add("is-pulled");
-      window.setTimeout(() => btn.classList.remove("is-pulled"), 260);
+      window.setTimeout(() => btn.classList.remove("is-pulled"), 360);
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       window.scrollTo({top: 0, behavior: reduceMotion ? "auto" : "smooth"});
     });
