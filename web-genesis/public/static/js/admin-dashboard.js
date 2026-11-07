@@ -5,9 +5,45 @@ import {
   storageRef, uploadBytes, getDownloadURL, deleteObject,
   httpsCallable,
 } from "./firebase-client.js";
+import {renderDonutChart, renderBarChart} from "./admin-charts.js";
 
 const categoryLabels = (window.__DATA__ && window.__DATA__.categoryLabels) || {};
 const wearTierLabels = (window.__DATA__ && window.__DATA__.wearTierLabels) || {};
+
+const EDIT_ICON = "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12 20h9\"/><path d=\"M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z\"/></svg>";
+const TRASH_ICON = "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13\"/></svg>";
+
+// --- İstatistikler sekmesi ikonları ---
+const ICON_BOX = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M3 8l9-5 9 5-9 5-9-5z\"/><path d=\"M3 8v8l9 5 9-5V8\"/><path d=\"M12 13v8\"/></svg>";
+const ICON_SPARKLE = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l1.8 5.6L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.4z\"/></svg>";
+const ICON_TAG = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20 12.5L12.5 20 3 10.5V3h7.5L20 12.5z\"/><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\" fill=\"var(--color-surface)\"/></svg>";
+const ICON_CLOCK = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>";
+const ICON_WALLET = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z\"/><path d=\"M16 12h3\"/></svg>";
+const ICON_CHART = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M4 20V10M12 20V4M20 20v-7\"/></svg>";
+const ICON_EYE = "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>";
+
+// Kategori renkleri lib/features/products/data/models/category_meta.dart
+// (defaultCategoryMeta) ile AYNI hex'ler — categories.js'teki CATEGORY_COLORS
+// ile birebir aynı liste, sadece burada admin tarafında tekrarlanıyor
+// (admin paneli ayrı bir client-side modül, ortak import yok).
+const CATEGORY_COLOR_MAP = {
+  sofa: "#2E7D6B", chair: "#C5A358", table: "#B2673E", bed: "#6B5CA5",
+  wardrobe: "#3E6B8A", white: "#5A8A6B", lighting: "#E0A458", homeTextile: "#C97B84",
+  decor: "#8A5A7A", officeFurniture: "#43536B", outdoorGarden: "#4FA8D8",
+  kidsFurniture: "#E0724A", other: "#7A7F87",
+};
+function categoryColorFor(key) {
+  return CATEGORY_COLOR_MAP[key] || CATEGORY_COLOR_MAP.other;
+}
+
+// "dd.MM.yyyy, HH:mm" → Date (bkz. productRepo.js parseTrDateTime — admin
+// paneli ayrı bir client modül olduğu için burada küçük bir kopyası var).
+function parseTrDate(value) {
+  if (!value) return null;
+  const m = /^(\d{2})\.(\d{2})\.(\d{4})/.exec(value);
+  if (!m) return null;
+  return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+}
 
 const appRoot = document.querySelector("[data-admin-app]");
 const modal = document.getElementById("admin-form-modal");
@@ -19,9 +55,29 @@ const searchInput = document.getElementById("admin-search-input");
 const filterSelect = document.getElementById("admin-filter-select");
 const bulkBar = document.getElementById("admin-bulk-bar");
 const bulkCountEl = document.getElementById("admin-bulk-count");
+const fabBtn = document.getElementById("admin-fab-btn");
 
 let productsCache = [];
 const selectedIds = new Set();
+
+// --- Sekmeler (Ürünler / İstatistikler) ---
+document.querySelectorAll("[data-admin-tab]").forEach((tabBtn) => {
+  tabBtn.addEventListener("click", () => {
+    const target = tabBtn.dataset.adminTab;
+    document.querySelectorAll("[data-admin-tab]").forEach((b) => {
+      b.classList.toggle("is-active", b === tabBtn);
+      b.setAttribute("aria-selected", String(b === tabBtn));
+    });
+    document.querySelectorAll("[data-admin-panel]").forEach((panel) => {
+      const active = panel.dataset.adminPanel === target;
+      panel.classList.toggle("is-active", active);
+      panel.hidden = !active;
+    });
+    if (target === "stats") renderStats();
+  });
+});
+
+fabBtn?.addEventListener("click", () => openForm(null));
 
 // window.alert() yerine - admin paneli tek bir sekmede kullanıldığı için
 // native tarayıcı diyalogları (akışı tamamen durduran, markasız) yerine
@@ -99,6 +155,7 @@ async function loadProducts() {
     const snap = await getDocs(collection(db, "Product"));
     productsCache = snap.docs.map((d) => ({...d.data(), _docId: d.id}));
     renderList();
+    renderStats();
   } catch (err) {
     appRoot.innerHTML = `<p class="status status-error">Ürünler yüklenemedi: ${escapeHtml(err.message)}</p>`;
   }
@@ -188,14 +245,168 @@ function renderRow(p) {
     <p class="admin-row-meta">${escapeHtml(categoryLabels[p.category] || p.category || "")} · ${p.isSpotProduct ? "İkinci El" : "Sıfır"} · ${formatPrice(p.price)}</p>
     <p class="admin-row-flags">${flags.join(" ")}</p>
   </div>
+  <div class="admin-row-switches">
+    <button type="button" class="admin-switch${p.isSold ? " is-on" : ""}" data-action="toggle-sold" role="switch" aria-checked="${p.isSold ? "true" : "false"}">
+      <span class="admin-switch-track"></span>Satıldı
+    </button>
+    <button type="button" class="admin-switch is-danger${p.isReserved ? " is-on" : ""}" data-action="toggle-reserved" role="switch" aria-checked="${p.isReserved ? "true" : "false"}">
+      <span class="admin-switch-track"></span>Rezerve
+    </button>
+  </div>
   <div class="admin-row-actions">
-    <button type="button" data-action="edit">Düzenle</button>
-    <button type="button" data-action="toggle-sold">${p.isSold ? "Satıldı Kaldır" : "Satıldı İşaretle"}</button>
-    <button type="button" data-action="toggle-reserved">${p.isReserved ? "Rezerve Kaldır" : "Rezerve Et"}</button>
-    <button type="button" data-action="delete" class="admin-danger-btn">Sil</button>
+    <button type="button" class="admin-row-icon-btn" data-action="edit" aria-label="Düzenle" title="Düzenle">${EDIT_ICON}</button>
+    <button type="button" class="admin-row-icon-btn admin-danger-btn" data-action="delete" aria-label="Sil" title="Sil">${TRASH_ICON}</button>
   </div>
 </div>`;
 }
+
+// --- İstatistikler sekmesi: filtreler tamamen Ürünler sekmesindeki
+// aynı productsCache üzerinden hesaplanır (ayrı bir Firestore sorgusu
+// yok) — "her şeyle filtre yapılabilsin" isteği üzerine durum/satış
+// durumu/fiyat aralığı/tarih aralığı/kategori (çoklu seçim) hepsi
+// birlikte uygulanıyor, tüm grafikler + KPI kartları aynı anda güncelleniyor.
+function statsFilterState() {
+  const categories = [...document.querySelectorAll("#stats-category-chips input:checked")].map((c) => c.value);
+  return {
+    condition: document.getElementById("stats-condition")?.value || "all",
+    status: document.getElementById("stats-status")?.value || "all",
+    minPrice: Number(document.getElementById("stats-min-price")?.value) || null,
+    maxPrice: Number(document.getElementById("stats-max-price")?.value) || null,
+    dateFrom: document.getElementById("stats-date-from")?.value || "",
+    dateTo: document.getElementById("stats-date-to")?.value || "",
+    categories,
+  };
+}
+
+function statsFilteredProducts() {
+  const f = statsFilterState();
+  return productsCache.filter((p) => {
+    if (f.condition === "new" && p.isSpotProduct) return false;
+    if (f.condition === "used" && !p.isSpotProduct) return false;
+    if (f.status === "active" && p.isSold) return false;
+    if (f.status === "sold" && !p.isSold) return false;
+    if (f.status === "reserved" && !p.isReserved) return false;
+    if (f.categories.length && !f.categories.includes(p.category)) return false;
+    const price = Number(p.price) || 0;
+    if (f.minPrice != null && price < f.minPrice) return false;
+    if (f.maxPrice != null && price > f.maxPrice) return false;
+    const created = parseTrDate(p._createdAt);
+    if (f.dateFrom && created && created < new Date(f.dateFrom)) return false;
+    if (f.dateTo && created && created > new Date(`${f.dateTo}T23:59:59`)) return false;
+    return true;
+  });
+}
+
+function renderStats() {
+  const kpiEl = document.getElementById("admin-stats-kpis");
+  if (!kpiEl) return;
+  const list = statsFilteredProducts();
+
+  const activeCount = list.filter((p) => !p.isSold).length;
+  const soldCount = list.filter((p) => p.isSold).length;
+  const reservedCount = list.filter((p) => p.isReserved && !p.isSold).length;
+  const totalValue = list.filter((p) => !p.isSold).reduce((s, p) => s + (Number(p.price) || 0), 0);
+  const avgPrice = activeCount ? Math.round(totalValue / activeCount) : 0;
+  const totalViews = list.reduce((s, p) => s + (Number(p.viewCountWeb) || 0) + (Number(p.viewCountMobile) || 0), 0);
+
+  const kpis = [
+    [ICON_BOX, "var(--color-primary)", list.length.toLocaleString("tr-TR"), "Toplam Ürün"],
+    [ICON_SPARKLE, "var(--color-success)", activeCount.toLocaleString("tr-TR"), "Aktif Ürün"],
+    [ICON_TAG, "var(--color-error)", soldCount.toLocaleString("tr-TR"), "Satıldı"],
+    [ICON_CLOCK, "var(--color-warning)", reservedCount.toLocaleString("tr-TR"), "Rezerve"],
+    [ICON_WALLET, "var(--color-accent)", `${totalValue.toLocaleString("tr-TR")} ₺`, "Aktif Stok Değeri"],
+    [ICON_CHART, "var(--color-info)", `${avgPrice.toLocaleString("tr-TR")} ₺`, "Ortalama Fiyat"],
+    [ICON_EYE, "var(--color-accent-dark)", totalViews.toLocaleString("tr-TR"), "Toplam Görüntülenme"],
+  ];
+  kpiEl.innerHTML = kpis.map(([icon, color, value, label], i) => `
+    <div class="admin-stat-card" style="--stat-color:${color};animation-delay:${i * 40}ms">
+      <span class="admin-stat-icon">${icon}</span>
+      <span class="admin-stat-text"><strong>${value}</strong><span>${label}</span></span>
+    </div>`).join("");
+
+  const catCounts = {};
+  list.forEach((p) => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
+  const catSegments = Object.entries(catCounts)
+      .map(([key, value]) => ({label: categoryLabels[key] || key, value, color: categoryColorFor(key)}))
+      .sort((a, b) => b.value - a.value);
+  renderDonutChart(document.getElementById("chart-category"), catSegments, {centerLabel: "ürün"});
+
+  renderDonutChart(document.getElementById("chart-condition"), [
+    {label: "Sıfır", value: list.filter((p) => !p.isSpotProduct).length, color: "#2E7D32"},
+    {label: "İkinci El", value: list.filter((p) => p.isSpotProduct).length, color: "var(--color-accent)"},
+  ], {centerLabel: "ürün"});
+
+  renderDonutChart(document.getElementById("chart-status"), [
+    {label: "Aktif", value: activeCount - reservedCount, color: "var(--color-success)"},
+    {label: "Rezerve", value: reservedCount, color: "var(--color-warning)"},
+    {label: "Satıldı", value: soldCount, color: "var(--color-error)"},
+  ], {centerLabel: "ürün"});
+
+  const priceBuckets = [[0, 500], [500, 1000], [1000, 2500], [2500, 5000], [5000, Infinity]];
+  renderBarChart(document.getElementById("chart-price"), priceBuckets.map(([min, max]) => ({
+    label: max === Infinity ? `${min}+` : `${min}-${max}`,
+    value: list.filter((p) => { const price = Number(p.price) || 0; return price >= min && price < max; }).length,
+    color: "var(--color-accent)",
+  })));
+
+  const months = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString("tr-TR", {month: "short"}), count: 0});
+  }
+  list.forEach((p) => {
+    const created = parseTrDate(p._createdAt);
+    if (!created) return;
+    const bucket = months.find((m) => m.key === `${created.getFullYear()}-${created.getMonth()}`);
+    if (bucket) bucket.count += 1;
+  });
+  renderBarChart(document.getElementById("chart-timeline"), months.map((m) => ({label: m.label, value: m.count, color: "var(--color-primary)"})));
+
+  const topViewed = list
+      .map((p) => ({...p, _views: (Number(p.viewCountWeb) || 0) + (Number(p.viewCountMobile) || 0)}))
+      .filter((p) => p._views > 0)
+      .sort((a, b) => b._views - a._views)
+      .slice(0, 8);
+  renderBarChart(document.getElementById("chart-top-viewed"), topViewed.map((p) => ({
+    label: p.name && p.name.length > 9 ? `${p.name.slice(0, 9)}…` : (p.name || "?"),
+    value: p._views,
+    color: "var(--color-info)",
+  })));
+
+  const stockByCategory = {};
+  list.filter((p) => !p.isSold).forEach((p) => {
+    stockByCategory[p.category] = (stockByCategory[p.category] || 0) + (Number(p.price) || 0);
+  });
+  renderBarChart(
+      document.getElementById("chart-stock-value"),
+      Object.entries(stockByCategory)
+          .sort((a, b) => b[1] - a[1])
+          .map(([key, value]) => ({label: categoryLabels[key] || key, value, color: categoryColorFor(key)})),
+      {valueFormatter: (v) => `${v.toLocaleString("tr-TR")}₺`},
+  );
+}
+
+["stats-condition", "stats-status", "stats-min-price", "stats-max-price", "stats-date-from", "stats-date-to"].forEach((id) => {
+  const el = document.getElementById(id);
+  el?.addEventListener("input", renderStats);
+  el?.addEventListener("change", renderStats);
+});
+
+document.getElementById("stats-category-chips")?.addEventListener("change", renderStats);
+
+document.getElementById("stats-filter-reset")?.addEventListener("click", () => {
+  ["stats-min-price", "stats-max-price", "stats-date-from", "stats-date-to"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  const conditionEl = document.getElementById("stats-condition");
+  const statusEl = document.getElementById("stats-status");
+  if (conditionEl) conditionEl.value = "all";
+  if (statusEl) statusEl.value = "all";
+  document.querySelectorAll("#stats-category-chips input").forEach((c) => { c.checked = false; });
+  renderStats();
+});
 
 searchInput?.addEventListener("input", renderList);
 filterSelect?.addEventListener("change", renderList);

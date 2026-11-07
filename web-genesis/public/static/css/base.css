@@ -2913,7 +2913,7 @@ body.view-is-list .product-list {
 
 .admin-row {
   display: grid;
-  grid-template-columns: 20px 80px 1fr auto;
+  grid-template-columns: 20px 80px 1fr auto auto;
   gap: var(--space-lg);
   align-items: center;
   padding: var(--space-md) var(--space-lg);
@@ -3036,14 +3036,27 @@ body.view-is-list .product-list {
   padding: var(--space-xs) var(--space-sm);
 }
 
+.admin-row-switches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
 @media (max-width: 640px) {
   .admin-row {
     grid-template-columns: 20px 60px 1fr;
   }
 
+  .admin-row-switches,
   .admin-row-actions {
     grid-column: 1 / -1;
     justify-content: flex-start;
+  }
+
+  .admin-row-switches {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
   }
 }
 
@@ -3107,6 +3120,477 @@ body.view-is-list .product-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
+}
+
+/* ===================================================================
+   ADMIN — sekmeler, anahtar (switch) kontroller, mobil FAB, iskelet
+   yükleme ve "İstatistikler" sekmesinin filtre paneli + KPI kartları +
+   el yapımı SVG grafikleri (bkz. admin-charts.js).
+   =================================================================== */
+.admin-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0 var(--space-xl);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.admin-tab {
+  position: relative;
+  padding: var(--space-sm) var(--space-lg) var(--space-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.admin-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.admin-tab.is-active {
+  color: var(--color-text-primary);
+}
+
+.admin-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: var(--space-lg);
+  right: var(--space-lg);
+  bottom: -1px;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+.admin-panel {
+  display: none;
+}
+
+.admin-panel.is-active {
+  display: block;
+  animation: admin-card-in var(--motion-normal) var(--ease-standard) backwards;
+}
+
+/* --- durum anahtarı (toggle switch) — Satıldı/Rezerve için düz metin
+   butonları yerine; durumu tek bakışta görünür, dokunması keyifli. --- */
+.admin-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-switch-track {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  transition: background var(--motion-fast) var(--ease-standard);
+  flex: 0 0 auto;
+}
+
+.admin-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform var(--motion-fast) var(--ease-move);
+}
+
+.admin-switch.is-on .admin-switch-track {
+  background: var(--color-success);
+}
+
+.admin-switch.is-on .admin-switch-track::after {
+  transform: translateX(16px);
+}
+
+.admin-switch.is-danger.is-on .admin-switch-track {
+  background: var(--color-warning);
+}
+
+/* --- aksiyon ikon butonları (satır başına: düzenle/sil) --- */
+.admin-row-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+
+.admin-row-icon-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
+}
+
+.admin-row-icon-btn.admin-danger-btn {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: none;
+  padding: 0;
+}
+
+.admin-row-icon-btn.admin-danger-btn:hover {
+  background: color-mix(in srgb, var(--color-error) 10%, transparent);
+}
+
+/* --- mobilde her zaman erişilebilir "+ Yeni Ürün" FAB --- */
+.admin-fab {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .admin-toolbar #admin-new-product-btn {
+    display: none;
+  }
+
+  .admin-fab {
+    position: fixed;
+    right: var(--space-lg);
+    bottom: var(--space-lg);
+    z-index: 55;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 14px 28px -10px color-mix(in srgb, var(--color-primary-dark) 50%, transparent);
+    transition: transform var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+  }
+
+  .admin-fab:hover,
+  .admin-fab:focus-visible {
+    background: var(--color-accent-dark);
+    transform: scale(1.06);
+  }
+
+  .admin-search-bar {
+    flex-direction: column;
+  }
+}
+
+/* --- iskelet (skeleton) yükleme durumu — "Yükleniyor..." düz metni
+   yerine gerçek liste satırlarının hayaleti, algılanan hızı artırır. */
+.admin-skeleton-row {
+  display: grid;
+  grid-template-columns: 20px 80px 1fr auto;
+  gap: var(--space-lg);
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.admin-skeleton-block {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-secondary) 25%, var(--color-divider) 37%, var(--color-secondary) 63%);
+  background-size: 400% 100%;
+  animation: admin-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes admin-skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-skeleton-block {
+    animation: none;
+  }
+}
+
+/* --- İstatistikler sekmesi --- */
+.admin-filter-panel {
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.admin-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-md);
+}
+
+.admin-filter-field label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-tertiary);
+}
+
+.admin-filter-field select,
+.admin-filter-field input {
+  width: 100%;
+  font: inherit;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.admin-filter-range {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.admin-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+/* Kategori çipleri gizli bir checkbox içeriyor (bkz. admin.js) — işaretli
+   durumu `.search-quick-chip.is-active` yerine `:has()` ile sürüyor. */
+.admin-filter-chip:has(input:checked) {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.admin-filter-reset {
+  margin-top: var(--space-lg);
+  background: none;
+  border: none;
+  color: var(--color-accent-dark);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xxxl);
+}
+
+.admin-stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  animation: admin-row-in var(--motion-normal) var(--ease-standard) backwards;
+}
+
+.admin-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--stat-color, var(--color-accent)) 14%, var(--color-bg));
+  color: var(--stat-color, var(--color-accent-dark));
+}
+
+.admin-stat-text strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  color: var(--color-text-primary);
+}
+
+.admin-stat-text span {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+.admin-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+.admin-chart-card {
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.admin-chart-card h3 {
+  margin: 0 0 var(--space-lg);
+  font-size: 0.9375rem;
+}
+
+.admin-chart-card.admin-chart-wide {
+  grid-column: 1 / -1;
+}
+
+/* --- halka (donut) grafik --- */
+.achart-donut-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-lg);
+}
+
+.achart-donut-seg {
+  transition: stroke-dasharray 700ms var(--ease-standard);
+}
+
+.achart-donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.achart-donut-center strong {
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  color: var(--color-text-primary);
+}
+
+.achart-donut-center span {
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+}
+
+.achart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.achart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.8125rem;
+}
+
+.achart-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.achart-legend-label {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-text-secondary);
+}
+
+.achart-legend-value {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.achart-empty {
+  color: var(--color-text-tertiary);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
+/* --- çubuk grafik --- */
+.achart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-md);
+  height: calc(var(--achart-height, 160px) + 50px);
+  overflow-x: auto;
+  padding-bottom: var(--space-xs);
+}
+
+.achart-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  flex: 1 0 44px;
+  height: 100%;
+}
+
+.achart-bar-value {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.achart-bar-track {
+  flex: 1;
+  width: 100%;
+  max-width: 36px;
+  display: flex;
+  align-items: flex-end;
+  background: var(--color-divider);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.achart-bar-fill {
+  width: 100%;
+  height: 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height 650ms var(--ease-standard);
+}
+
+.achart-bar-label {
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .achart-donut-seg,
+  .achart-bar-fill {
+    transition: none;
+  }
 }
 
 /* --- cart (sepet) --- */
