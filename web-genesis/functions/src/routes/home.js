@@ -175,41 +175,58 @@ function renderStoreInfo(locale) {
 
 // "Uzmanından Bakım Önerileri" — saglamspotcu.web.app ana sayfasının
 // (bu projenin KENDİ Flutter web derlemesi) karşılığı: kısa, pratik
-// mobilya bakım tüyoları. Metinler ARB'de yok (brief: yeniden çeviri
-// yok) — "Satılan Ürünler"/"Rezerve" emsaliyle aynı gerekçeyle bilerek
-// Türkçe literal, yalnızca bu bölüme özel kısa pazarlama metni.
-// Görseller CATEGORY_PHOTOS'taki (zaten doğrulanmış) fotoğraflar.
+// mobilya bakım tüyoları. İlk 10'u ARB'deki GERÇEK, 11 dile çevrilmiş
+// tip1..tip10 anahtarlarından (lib/l10n/app_*.arb) — önceden bu 4 kart
+// bu anahtarları HİÇ kullanmıyor, kendi başına yazılmış (ve ARB'dekiyle
+// örtüşen ama birebir aynı olmayan) Türkçe literal metin taşıyordu.
+// Kalan 15'i ("en az 15 tane daha ekle, kimsenin bilmediği pratik
+// ipuçları" — kullanıcı isteği) ARB'de karşılığı yok, "Rezerve"/admin
+// paneli emsaliyle AYNI gerekçeyle bilerek Türkçe literal. Görseller
+// CATEGORY_PHOTOS'taki (zaten doğrulanmış) fotoğraflar — kart sayısı
+// artık viewport'a sığandan fazla olduğu için .care-tips-row'daki
+// (zaten var olan, hiç tetiklenmemiş) yatay scroll/snap devreye giriyor.
 function renderCareTips(locale) {
-  const tips = [
-    {
-      icon: ICONS.sofaCare,
-      eyebrow: "Yerleştirme",
-      title: "Oturma Grubunu Avantajlı Yerleştirin",
-      desc: "Koltuğu duvardan 2-3 cm boşluk bırakarak yerleştirin; hem hava sirkülasyonu sağlar hem kumaşın nem tutmasını önler.",
-      image: categoryPhoto("sofa"),
-    },
-    {
-      icon: ICONS.sparkle,
-      eyebrow: "Temizlik",
-      title: "Ahşap Yüzeyleri Doğru Temizleyin",
-      desc: "Tozu kuru mikrofiber bezle alın, ayda bir nemli bezle silin; sert kimyasallar cilayı zamanla matlaştırır.",
-      image: categoryPhoto("officeFurniture"),
-    },
-    {
-      icon: ICONS.archiveBox,
-      eyebrow: "Düzen",
-      title: "Dolap İçini Ferah Tutun",
-      desc: "Ağır parçaları alt raflara, sık kullandıklarınızı göz hizasına yerleştirin; hem pratik hem dengeli bir yük dağılımı sağlar.",
-      image: categoryPhoto("white"),
-    },
-    {
-      icon: ICONS.moonComfort,
-      eyebrow: "Konfor",
-      title: "Yatak Odasında Rahat Uyku",
-      desc: "Yatak başlığını pencereden uzak, sabah ışığını kesecek şekilde konumlandırın; küçük bir fark uyku kalitenizi belirgin artırır.",
-      image: categoryPhoto("bed"),
-    },
+  const arbTipMeta = [
+    {icon: ICONS.sofaCare, image: categoryPhoto("sofa")},
+    {icon: ICONS.sparkle, image: categoryPhoto("officeFurniture")},
+    {icon: ICONS.archiveBox, image: categoryPhoto("white")},
+    {icon: ICONS.moonComfort, image: categoryPhoto("bed")},
+    {icon: ICONS.inventory, image: categoryPhoto("wardrobe")},
+    {icon: ICONS.shieldCheck, image: categoryPhoto("table")},
+    {icon: ICONS.heartOutline, image: categoryPhoto("homeTextile")},
+    {icon: ICONS.sparkle, image: categoryPhoto("lighting")},
+    {icon: ICONS.grid, image: categoryPhoto("decor")},
+    {icon: ICONS.leafOutline, image: categoryPhoto("outdoorGarden")},
   ];
+  const arbTips = arbTipMeta.map((meta, i) => {
+    const n = i + 1;
+    return {
+      ...meta,
+      eyebrow: t(locale, `tip${n}Category`),
+      title: t(locale, `tip${n}Title`),
+      desc: t(locale, `tip${n}Desc`),
+    };
+  });
+
+  const extraTips = [
+    {icon: ICONS.leafOutline, eyebrow: "Koku", title: "Kumaşlardaki Kokuyu Yok Edin", desc: "Kabartma tozunu kumaşın üzerine serpip 20 dakika bekletin, sonra vakumlayın; nemli/hayvan kokusunu kimyasal kullanmadan çeker.", image: categoryPhoto("sofa")},
+    {icon: ICONS.shieldCheck, eyebrow: "Metal Bakımı", title: "Metal Ayaklarda Pas Önleme", desc: "Metal mobilya ayaklarının altına keçe veya plastik taban koyun; hem zemin çizilmez hem nem birikip paslanma riski azalır.", image: categoryPhoto("officeFurniture")},
+    {icon: ICONS.sparkle, eyebrow: "Cam", title: "Cam Yüzeyleri Buğusuz Parlatın", desc: "Cam sehpaları gazeteyle silmek eski bir usta hilesidir; kağıt lifleri cam üzerinde iz bırakmadan pürüzsüz bir parlaklık bırakır.", image: categoryPhoto("table")},
+    {icon: ICONS.sofaCare, eyebrow: "Deri Bakımı", title: "Deri Koltuğu Çatlamadan Koruyun", desc: "Deri koltuklara 3-4 ayda bir az miktarda deri bakım kremi uygulayın; kaloriferin/sobanın yakınına yerleştirmekten kaçının, aksi hâlde deri hızla çatlar.", image: categoryPhoto("sofa")},
+    {icon: ICONS.history, eyebrow: "Halı", title: "Halıdaki Mobilya İzlerini Giderin", desc: "Mobilyanın bıraktığı çukur halı izine birkaç buz küpü koyup eriyene kadar bekleyin, sonra ipleri fırçayla kabartın; halı eski hâline döner.", image: categoryPhoto("homeTextile")},
+    {icon: ICONS.inventory, eyebrow: "Çekmece", title: "Sıkışan Çekmeceyi Kolay Açılır Yapın", desc: "Çekmece raylarına az miktarda mum veya sabun sürün; kayma anındaki sürtünmeyi azaltıp can sıkıcı gıcırtıyı da keser.", image: categoryPhoto("wardrobe")},
+    {icon: ICONS.archiveBox, eyebrow: "Nem Önleme", title: "Dolap İçi Nem ve Küfü Önleyin", desc: "Dolabın bir köşesine silika jel paketi veya kömür parçası koyun; nemi çeker, küf ve kötü kokuyu daha oluşmadan engeller.", image: categoryPhoto("wardrobe")},
+    {icon: ICONS.clockOutline, eyebrow: "Renk Koruma", title: "Mobilya Rengini Soldurmayın", desc: "Ahşap mobilyaları doğrudan güneş alan pencere önüne koymayın; UV ışığı birkaç ay içinde rengi gözle görülür şekilde soldurur.", image: categoryPhoto("table")},
+    {icon: ICONS.chair, eyebrow: "Onarım", title: "Gevşeyen Vidaları Kalıcı Sıkın", desc: "Gevşeyen ahşap vida yuvasını kürdan veya ahşap macunuyla doldurup kuruduktan sonra tekrar vidalayın; vida bir daha gevşemez.", image: categoryPhoto("chair")},
+    {icon: ICONS.sparkle, eyebrow: "Çizik Onarımı", title: "Küçük Çizikleri Görünmez Edin", desc: "Ahşap üzerindeki ince çizikleri aynı renk tonundaki ceviz içiyle ovarak kapatabilirsiniz; profesyonel bakım kadar etkili ve dakikalar sürer.", image: categoryPhoto("decor")},
+    {icon: ICONS.truck, eyebrow: "Taşıma", title: "Mobilya Taşırken Zeminde İz Bırakmayın", desc: "Ağır mobilyaları kaydırmadan önce altına eski bir battaniye veya halı parçası serin; hem zemin çizilmez hem taşıma çok daha kolaylaşır.", image: categoryPhoto("officeFurniture")},
+    {icon: ICONS.sofaCare, eyebrow: "Minder Bakımı", title: "Minderlerin Şeklini Koruyun", desc: "Koltuk minderlerini haftada bir ters çevirip kabartın; hep aynı yönde oturmak minderin bir tarafını kalıcı olarak çökertir.", image: categoryPhoto("sofa")},
+    {icon: ICONS.sparkle, eyebrow: "Toz Alma", title: "Tozu Havaya Değil Beze Hapsedin", desc: "Tüy alırken kuru bez yerine hafif nemli mikrofiber kullanın; kuru bez tozu havaya kaldırıp kısa süre sonra aynı yüzeye tekrar kondurur.", image: categoryPhoto("white")},
+    {icon: ICONS.leafOutline, eyebrow: "Doğal Koruma", title: "Güve ve Böceklerden Doğal Koruma", desc: "Dolap raflarına birkaç defne yaprağı veya lavanta kesesi koyun; güveleri kimyasal kullanmadan uzak tutar, kıyafetlere hoş bir koku bırakır.", image: categoryPhoto("wardrobe")},
+    {icon: ICONS.clockOutline, eyebrow: "Mevsimsel Bakım", title: "Mevsim Geçişinde Mobilya Bakımı", desc: "Kışın kuru ısıtılmış hava ahşabı çatlatır; odaya küçük bir nemlendirici veya su dolu bir kap koymak nem dengesini korumaya yeter.", image: categoryPhoto("bed")},
+  ];
+
+  const tips = [...arbTips, ...extraTips];
   return `
 <div class="care-tips-row">${tips.map((tip) => `
     <article class="care-tip-card">
