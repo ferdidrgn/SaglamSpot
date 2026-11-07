@@ -534,6 +534,13 @@ button:focus-visible {
   font-size: 0.875rem;
 }
 
+/* data-share-instagram butonu (bkz. home.js'teki not) — tarayıcı
+   varsayılan buton çerçevesini sıfırlar, geri kalanı .hero-pill-accent'tan geliyor. */
+.hero-pill[data-share-instagram] {
+  border: 0;
+  cursor: pointer;
+}
+
 .hero-pill-light {
   background: #fff;
   color: var(--color-primary);
@@ -1346,6 +1353,19 @@ button:focus-visible {
 .share-mosaic-item:hover img,
 .share-mosaic-item:focus-visible img {
   transform: scale(1.06);
+}
+
+/* Bu kartlar artık <a> değil <button> (bkz. home.js'teki not) — tarayıcı
+   varsayılan buton çerçevesi/dolgusu/arkaplanı sıfırlanır, görsel kendi
+   kuralından geliyor zaten. */
+.share-mosaic-item[data-share-instagram] {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
 .share-cta-row {

@@ -225,15 +225,28 @@ function renderCareTips(locale) {
 // değişken yükseklikli) galeri. CSS `columns` ile satır/sütun hesabı
 // olmadan doğal mozaik görünümü; JS gerekmiyor. Aynı (zaten doğrulanmış)
 // kategori fotoğrafları, burada küçük kare/dikdörtgen kartlar olarak.
+//
+// ÖNCEDEN bu kartlar/butonlar business.instagramUrl'e (instagram.com/
+// saglamspot) gidiyordu — kullanıcı geri bildirimi: "buradaki instagram
+// hesabı bize ait değil, bizim sadece facebook sayfamız var". Yani bu
+// hesaba YÖNLENDİRMEK yanlış/yabancı bir hesaba trafik gönderiyordu.
+// Buradaki asıl niyet zaten "ziyaret et" değil "#SağlamSpot ile KENDİ
+// kurulumunu paylaş" — artık gerçekten bunu yapıyor: tıklanınca (mobilde)
+// native paylaşım sayfası açılıyor (wireShareButtons'taki navigator.share
+// ile AYNI yöntem, data-share-instagram), kullanıcı istediği uygulamayı
+// (Instagram dahil) seçip paylaşabiliyor; hesap sahipliği hiç gerekmiyor
+// çünkü bir profile değil, kullanıcının KENDİ paylaşımına #SağlamSpot
+// etiketi öneriliyor (@mention DEĞİL — o hesap bizim değil).
 function renderShareGallery(locale) {
   const photos = Object.keys(CATEGORY_LABELS).filter((k) => k !== "other").map((key) => categoryPhoto(key));
+  const shareText = "Sağlam Spot'tan aldığım mobilyalarla evim yenilendi! #SağlamSpot";
   return `
 <div class="share-mosaic">${photos.map((url) => `
-    <a class="share-mosaic-item" href="${escapeHtml(business.instagramUrl)}" target="_blank" rel="noopener">
+    <button type="button" class="share-mosaic-item" data-share-instagram data-share-text="${escapeHtml(shareText)}">
       <img src="${escapeHtml(url)}" alt="" loading="lazy">
-    </a>`).join("")}</div>
+    </button>`).join("")}</div>
 <div class="share-cta-row">
-  <a class="hero-pill hero-pill-accent" href="${escapeHtml(business.instagramUrl)}" target="_blank" rel="noopener">${ICONS.explore} Instagram'da Paylaş</a>
+  <button type="button" class="hero-pill hero-pill-accent" data-share-instagram data-share-text="${escapeHtml(shareText)}">${ICONS.explore} Instagram'da Paylaş</button>
 </div>`;
 }
 

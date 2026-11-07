@@ -516,6 +516,37 @@
     });
   }
 
+  // Ana sayfadaki "#SağlamSpot ile Kurulumunuzu Paylaşın" mozaiği/CTA'sı —
+  // ÖNCEDEN business.instagramUrl'e (bize AİT OLMAYAN bir hesaba) link
+  // veriyordu (gerçek kullanıcı geri bildirimi: "bu hesap bize ait değil,
+  // sadece facebook sayfamız var"). Artık bir profile yönlendirmek yerine
+  // wireShareButtons'taki AYNI navigator.share yöntemiyle kullanıcının
+  // KENDİ paylaşımını açıyor, önerilen metinde sadece #SağlamSpot etiketi
+  // var (@mention yok — o hesap bizim değil, birini yanlış etiketlemeyelim).
+  function wireInstagramShare() {
+    document.querySelectorAll("[data-share-instagram]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const text = btn.dataset.shareText || "#SağlamSpot";
+        if (navigator.share) {
+          try {
+            await navigator.share({text, url: SHARE_DOMAIN});
+            return;
+          } catch (_) {
+            // kullanıcı paylaşım sayfasını iptal etti — sessizce yok say.
+            return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          toast("Paylaşım metni kopyalandı — Instagram'da gönderiye yapıştırabilirsiniz.");
+        } catch (_) {
+          toast(text);
+        }
+        window.open("https://www.instagram.com/", "_blank", "noopener");
+      });
+    });
+  }
+
   // Ürün kartlarındaki mini görsel karuseli — lib/core/widgets/design_system/
   // product_image_switcher.dart'ın (ProductImageSwitcher, dotsAtTop: true)
   // web karşılığı: kartın KENDİSİNDE, detay sayfasına gitmeden ok/nokta ile
@@ -652,7 +683,21 @@
     let controller = null;
     let debounceTimer = null;
 
-    function reinitLiveFilterRoot() {
+    function reinitLiveFilterRoot(root) {
+      // wireRevealAnimations() sayfa ilk yüklendiğinde .section/.product-grid
+      // gibi öğeleri IntersectionObserver'a kaydedip görünüme girince
+      // ".is-visible" ekliyor (bkz. base.css ".reveal-ready" kapsamı — bu
+      // sınıf olmadan içerik opacity:0 kalır). Burada innerHTML ile
+      // TAMAMEN YENİ öğeler takılıyor, hiçbiri o gözlemciye hiç
+      // kaydedilmedi — sonuç: "X ürün" yazıyor ama ızgara SONSUZA KADAR
+      // görünmez kalıyordu (gerçek kullanıcı geri bildirimiyle
+      // yakalandı). Canlı filtre sonrası zaten bakılan bir alanı
+      // yeniden "beliriyormuş" gibi anime etmenin bir anlamı da yok —
+      // doğrudan görünür yapıyoruz.
+      if (document.documentElement.classList.contains("reveal-ready")) {
+        root.querySelectorAll(".hero, .section, .product-grid, .bento-grid, .gateway-grid, .value-card, .faq-item, .about-panel, .category-rail")
+            .forEach((el) => el.classList.add("is-visible"));
+      }
       wireAddButtons();
       wireFavoriteButtons();
       wireShareButtons();
@@ -695,7 +740,7 @@
 
         root.innerHTML = parsedRoot.innerHTML;
         if (parsed.title) document.title = parsed.title;
-        reinitLiveFilterRoot();
+        reinitLiveFilterRoot(root);
 
         if (focusRestore) {
           const next = root.querySelector(`[name="${focusRestore.name}"]`);
@@ -811,6 +856,7 @@
     wireHeroCarousel();
     wireStatCounters();
     wireShareButtons();
+    wireInstagramShare();
     wireCardCarousels();
     wireScrollTopCord();
     wireFaqFilters();

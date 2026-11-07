@@ -8,16 +8,23 @@ function normalizeText(value) {
   return (value || "").toLocaleLowerCase("tr-TR").trim();
 }
 
-// Mevcut filtre durumunu KORUYARAK kategoriyi değiştiren link — kategori
-// sekmesine tıklamak arama metnini/sıralamayı/fiyat aralığını sıfırlamaz.
-function buildCategoryHref({q, condition, minPrice, maxPrice, sort}, category) {
+// Mevcut filtre durumunu KORUYARAK tek bir alanı değiştiren link — bir
+// kategori sekmesine/hızlı çipe tıklamak DİĞER filtreleri (arama metni,
+// sıralama, fiyat aralığı...) SIFIRLAMAMALI. Önceden kategori sekmeleri
+// bunu yapıyordu ama hızlı çipler (Sıfır/İkinci El/fiyat) KENDİ sabit
+// href'lerini kullanıyordu ("/arama?condition=used" gibi) — kullanıcı
+// "tabure" yazıp sonra "İkinci El" çipine tıklayınca yazdığı metin
+// SİLİNİYORDU (gerçek kullanıcı geri bildirimiyle yakalandı). Artık her
+// ikisi de AYNI birleştirme fonksiyonunu kullanıyor.
+function buildHref(state, overrides) {
+  const merged = {...state, ...overrides};
   const params = new URLSearchParams();
-  if (q) params.set("q", q);
-  if (condition && condition !== "all") params.set("condition", condition);
-  if (category) params.set("category", category);
-  if (minPrice != null) params.set("minPrice", String(minPrice));
-  if (maxPrice != null) params.set("maxPrice", String(maxPrice));
-  if (sort && sort !== "featured") params.set("sort", sort);
+  if (merged.q) params.set("q", merged.q);
+  if (merged.condition && merged.condition !== "all") params.set("condition", merged.condition);
+  if (merged.category) params.set("category", merged.category);
+  if (merged.minPrice != null) params.set("minPrice", String(merged.minPrice));
+  if (merged.maxPrice != null) params.set("maxPrice", String(merged.maxPrice));
+  if (merged.sort && merged.sort !== "featured") params.set("sort", merged.sort);
   const qs = params.toString();
   return `/arama${qs ? `?${qs}` : ""}`;
 }
@@ -31,17 +38,20 @@ function renderCategoryTabs(state, categoryCounts, totalCount) {
     ...Object.keys(CATEGORY_LABELS).map((key) => [key, `${localizedCategoryLabel(state.locale, key)} (${categoryCounts[key] || 0})`]),
   ];
   return `<nav class="category-tabs" aria-label="${escapeHtml(t(state.locale, "category"))}">${tabs.map(([key, label]) => `
-    <a class="category-tab${key === state.category ? " is-active" : ""}" href="${buildCategoryHref(state, key)}">${escapeHtml(label)}</a>`).join("")}</nav>`;
+    <a class="category-tab${key === state.category ? " is-active" : ""}" href="${buildHref(state, {category: key})}">${escapeHtml(label)}</a>`).join("")}</nav>`;
 }
 
 // Hızlı filtre çipleri (durum/fiyat) — ARB'de bağımsız kaynakları yok
 // (brief: yeniden çeviri yok), bilerek Türkçe literal (bkz. "Rezerve").
-function renderQuickChips(condition, maxPrice) {
+// Zaten aktif olan çipe tekrar tıklamak onu kapatır (toggle) — tersi,
+// "500₺ altı"na tıklayıp başka türlü kapatamamak kafa karıştırıcıydı.
+function renderQuickChips(state) {
+  const {condition, maxPrice} = state;
   const chips = [
-    {label: "Sıfır", href: "/arama?condition=new", active: condition === "new"},
-    {label: "İkinci El", href: "/arama?condition=used", active: condition === "used"},
-    {label: "500₺ altı", href: "/arama?maxPrice=500", active: maxPrice === 500},
-    {label: "1000₺ altı", href: "/arama?maxPrice=1000", active: maxPrice === 1000},
+    {label: "Sıfır", href: buildHref(state, {condition: condition === "new" ? "all" : "new"}), active: condition === "new"},
+    {label: "İkinci El", href: buildHref(state, {condition: condition === "used" ? "all" : "used"}), active: condition === "used"},
+    {label: "500₺ altı", href: buildHref(state, {maxPrice: maxPrice === 500 ? null : 500}), active: maxPrice === 500},
+    {label: "1000₺ altı", href: buildHref(state, {maxPrice: maxPrice === 1000 ? null : 1000}), active: maxPrice === 1000},
   ];
   return `<div class="search-quick-chips">${chips.map((c) => `
     <a class="search-quick-chip${c.active ? " is-active" : ""}" href="${c.href}">${c.label}</a>`).join("")}</div>`;
@@ -184,7 +194,7 @@ module.exports = async function searchRoute(req, res) {
     </div>
   </div>
   ${renderCategoryTabs(state, categoryCounts, totalCount)}
-  ${renderQuickChips(condition, maxPrice)}
+  ${renderQuickChips(state)}
   <section class="section" data-product-section>
     <div class="search-section-title">
       <h2>Mevcut Koleksiyon</h2>

@@ -59,7 +59,6 @@ function versionedAsset(relativePath) {
 // Küçük, tek renkli (currentColor) SVG ikonlar — harici bir ikon fontu/paket
 // eklemeden footer sosyal bağlantıları için. Yalnızca çizgi/şekil, metin yok.
 const ICON_WHATSAPP = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm5.8 14.17c-.24.68-1.4 1.3-1.93 1.37-.49.07-1.1.1-1.78-.11-.41-.13-.94-.3-1.62-.6-2.84-1.23-4.7-4.1-4.84-4.29-.14-.19-1.15-1.53-1.15-2.92s.72-2.07.98-2.35c.24-.26.52-.33.7-.33h.5c.16 0 .37-.02.58.44.24.56.8 1.93.87 2.07.07.14.12.3.02.49-.1.19-.15.3-.3.47-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.28.74 1.22 1.6 1.97 1.1.98 2.03 1.28 2.31 1.43.28.14.44.12.6-.07.17-.19.72-.84.91-1.13.19-.28.38-.23.63-.14.26.1 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.36z\"/></svg>";
-const ICON_INSTAGRAM = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.2\" cy=\"6.8\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/></svg>";
 const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M14 21v-7h2.4l.4-3H14V9.2c0-.9.25-1.5 1.6-1.5H17V5.1C16.7 5 15.8 5 14.8 5c-2.2 0-3.7 1.3-3.7 3.9V11H8.7v3H11v7h3z\"/></svg>";
 const ICON_PHONE = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>";
 // "Yukarı çık" düğmesi — gece lambası ipi metaforu, TEK bir SVG içinde:
@@ -249,7 +248,6 @@ ${bodyHtml}
       <p class="footer-desc">${escapeHtml(t(locale, "footerDesc"))}</p>
       <div class="footer-social">
         <a href="${business.whatsappUrl(undefined, locale)}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}" title="WhatsApp">${ICON_WHATSAPP}</a>
-        <a href="${escapeHtml(business.instagramUrl)}" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">${ICON_INSTAGRAM}</a>
         <a href="${escapeHtml(business.facebookUrl)}" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook">${ICON_FACEBOOK}</a>
         <a href="tel:+${business.phoneNumberIntl}" aria-label="${escapeHtml(t(locale, "aboutContactPhoneLabel"))}" title="${escapeHtml(business.displayPhone)}">${ICON_PHONE}</a>
       </div>
