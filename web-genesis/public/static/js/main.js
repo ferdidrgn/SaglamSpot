@@ -39,11 +39,11 @@
     return items.findIndex((item) => item.id === id);
   }
 
-  function toggleCartItem(id, name, price) {
+  function toggleCartItem(id, name, price, image, path) {
     const items = readCart();
     const idx = findIndex(items, id);
     if (idx === -1) {
-      items.push({id, name, price, quantity: 1});
+      items.push({id, name, price, quantity: 1, image: image || "", path: path || ""});
     } else {
       items.splice(idx, 1);
     }
@@ -170,7 +170,7 @@
       sync();
       btn.addEventListener("click", () => {
         const wasInCart = findIndex(readCart(), id) !== -1;
-        toggleCartItem(id, btn.dataset.name, Number(btn.dataset.price));
+        toggleCartItem(id, btn.dataset.name, Number(btn.dataset.price), btn.dataset.image, btn.dataset.path);
         sync();
         updateBadge();
         pulsePressFeel(btn);
@@ -194,15 +194,31 @@
       // Her ürün ikinci el/spot mobilyada TEK bir fiziksel parça — "2 adet"
       // gibi bir şey hiç yok, bu yüzden sepette adet artır/azalt kontrolü
       // kafa karıştırıcıydı (kullanıcı geri bildirimi: "bizde bir üründen
-      // 1 adet var zaten"). Her satır artık sadece isim+fiyat+kaldır.
-      const rowsHtml = items.map((item) => `
+      // 1 adet var zaten"). Her satır artık isim+fiyat+kaldır YANINDA küçük
+      // bir ürün görseli de taşıyor ve tıklanınca ürün detayına gidip geri
+      // dönülebiliyor (kullanıcı isteği) — item.image/item.path sepete
+      // eklenen SIRADA kaydediliyor (bkz. wireAddButtons/toggleCartItem);
+      // bu alanlar olmadan eklenmiş eski sepet kayıtları (göç yok, zaten
+      // sepet sadece bu tarayıcıya özel geçici bir liste) sadece tıklanamaz
+      // kalır, hata vermez.
+      const rowsHtml = items.map((item) => {
+        const mediaHtml = item.image
+          ? `<img src="${escapeHtml(item.image)}" alt="" loading="lazy">`
+          : "";
+        const infoHtml = `
+            <span class="cart-row-media">${mediaHtml}</span>
+            <span class="cart-row-info">
+              <span class="cart-row-name">${escapeHtml(item.name)}</span>
+              <span class="cart-row-price">${formatPrice(item.price)}</span>
+            </span>`;
+        return `
         <div class="cart-row" data-row="${item.id}">
-          <div class="cart-row-info">
-            <p class="cart-row-name">${escapeHtml(item.name)}</p>
-            <p class="cart-row-price">${formatPrice(item.price)}</p>
-          </div>
+          ${item.path
+            ? `<a class="cart-row-link" href="${escapeHtml(item.path)}">${infoHtml}</a>`
+            : `<span class="cart-row-link">${infoHtml}</span>`}
           <button type="button" class="cart-row-remove" data-remove>${escapeHtml(CART_STRINGS.remove || "")}</button>
-        </div>`).join("");
+        </div>`;
+      }).join("");
 
       const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 

@@ -199,7 +199,9 @@ module.exports = async function productDetailRoute(req, res) {
       <button type="button" class="pdetail-cta-primary" data-cart-add
         data-id="${escapeHtml(product.id)}"
         data-name="${escapeHtml(product.name)}"
-        data-price="${product.price}">${BAG_ICON}${escapeHtml(t(locale, "addToCartCta"))}</button>`;
+        data-price="${product.price}"
+        data-image="${escapeHtml(product.images[0] || "")}"
+        data-path="${escapeHtml(req.path)}">${BAG_ICON}${escapeHtml(t(locale, "addToCartCta"))}</button>`;
 
   const favButtonHtml = `
       <button type="button" class="pcard-icon-btn pcard-fav-btn" data-favorite-toggle

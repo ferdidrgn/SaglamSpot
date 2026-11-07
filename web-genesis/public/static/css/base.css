@@ -1694,19 +1694,42 @@ button:focus-visible {
   color: var(--color-text-tertiary);
 }
 
+/* Mobil footer — ÖNCEDEN tek sütuna düşüp HER ŞEYİ (marka, 5 link,
+   iletişim satırları) ortalanmış, tam genişlik, alt alta diziyordu; her
+   link kendi satırını kaplayınca footer tek başına neredeyse 2 ekran
+   boyu oluyordu (kullanıcı geri bildirimi + başka sitelerin mobil
+   footer'larına bakıldığında: marka/sosyal satırı ortalı kalsa da link
+   grupları genelde yan yana KOMPAKT sütunlar hâlinde, sola hizalı).
+   Artık marka+açıklama+sosyal üstte tam genişlik ve ortalı kalıyor,
+   "Keşfet"/"İletişim" altında YAN YANA iki sola-hizalı sütun oluyor. */
 @media (max-width: 760px) {
   .footer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl) var(--space-lg);
+    text-align: left;
+  }
+
+  .footer-brand-col {
+    grid-column: 1 / -1;
     text-align: center;
   }
 
-  .footer-social {
+  .footer-brand-col .footer-social {
     justify-content: center;
   }
 
-  .footer-desc {
+  .footer-brand-col .footer-desc {
     max-width: none;
     margin: 0 auto;
+  }
+
+  .footer-col:not(.footer-brand-col) {
+    gap: var(--space-xs);
+  }
+
+  .footer-col:not(.footer-brand-col) a,
+  .footer-col:not(.footer-brand-col) p {
+    font-size: 0.875rem;
   }
 }
 
@@ -3734,9 +3757,57 @@ body.view-is-list .product-list {
   border-radius: var(--radius-md);
 }
 
+/* Satır artık ürüne (varsa) tıklanıp detaya gidilebiliyor (kullanıcı
+   isteği: "item'a tıklayınca detay sayfasına gidip geri dönebilsin") —
+   küçük bir görsel + isim/fiyat tek bir <a> içinde, "Kaldır" ise ayrı
+   bir eylem olduğu için bu linkin DIŞINDA (iç içe tıklanabilir öğe
+   olmasın diye). */
+.cart-row-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cart-row-link:hover,
+.cart-row-link:focus-visible {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cart-row-link:hover .cart-row-name {
+  color: var(--color-accent);
+}
+
+.cart-row-media {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.cart-row-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cart-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .cart-row-name {
   margin: 0;
   font-weight: 600;
+  transition: color var(--motion-fast) var(--ease-standard);
 }
 
 .cart-row-price {
@@ -5357,10 +5428,6 @@ body.view-is-list .product-list {
      satırı) gereğinden fazla geniş — sıkılaştırıldı. --- */
   .site-footer {
     padding: var(--space-xl) var(--space-screen);
-  }
-
-  .footer-grid {
-    gap: var(--space-xl);
   }
 
   .footer-rights {
