@@ -158,6 +158,31 @@ function renderLayout({
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
+// Firebase Hosting, Cloud Functions'a rewrite ederken Cookie başlığını
+// İLETMİYOR (bkz. localeMiddleware.js'teki uzun not) — bu yüzden dil
+// seçimi çerezle KALICI OLAMIYOR. Burada (parse'ın EN BAŞINDA, henüz
+// hiçbir şey boyanmadan) localStorage'daki seçimi şu an render edilmiş
+// dille karşılaştırıp farklıysa ?lang= ekleyip SESSİZCE yönlendiriyoruz
+// — çoğu zaman görünür bir "yanlış dil" karesi olmadan. ?lang= zaten
+// varsa (kullanıcı az önce seçiciden değiştirdi ya da bu zaten o
+// yönlendirmenin kendisi) TEKRAR yönlendirme YAPMIYORUZ (sonsuz döngü).
+(function () {
+  try {
+    var saved = localStorage.getItem("saglamspot_lang");
+    var current = document.documentElement.lang;
+    if (saved && saved !== current) {
+      var url = new URL(window.location.href);
+      if (url.searchParams.get("lang") !== saved) {
+        url.searchParams.set("lang", saved);
+        window.location.replace(url.pathname + url.search);
+      }
+    }
+  } catch (_) {
+    // localStorage engellenmiş olabilir (gizli pencere vb.) — sessizce yok say.
+  }
+})();
+</script>
+<script>
 // saglamspotcu.web.app ESKİDEN bir Flutter PWA'sı sunuyordu ve
 // (flutter_service_worker.js) bir Service Worker kaydediyordu. SW'ler
 // normal tarayıcı önbelleğinin TAMAMEN DIŞINDA çalışır — bazı stratejiler

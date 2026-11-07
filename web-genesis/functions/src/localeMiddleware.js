@@ -32,18 +32,29 @@ function bestAcceptLanguageMatch(header) {
 
 /**
  * Dil, Flutter uygulamasının web/index.html'deki NOTU ile AYNI prensiple
- * tek URL üzerinde, istemci tarafı (burada: çerez) tercihiyle belirlenir
- * — her dil için ayrı bir URL/rota yok (hreflang eklenmedi, aynı
- * gerekçeyle). `?lang=xx` ile gelen bir istek çerezi kurar ve aynı yola
- * (query olmadan) 302 ile yönlendirilir, böylece URL'ler temiz kalır.
+ * tek URL üzerinde, istemci tarafı tercihiyle belirlenir — her dil için
+ * ayrı bir URL/rota yok (hreflang eklenmedi, aynı gerekçeyle).
+ *
+ * ÖNCEDEN `?lang=xx` gelince çerez kurup query'siz AYNI yola 302
+ * yönlendiriyorduk (URL'ler temiz kalsın diye) — ama Firebase Hosting,
+ * Cloud Functions'a rewrite ederken `Cookie` başlığını fonksiyona
+ * İLETMİYOR (canlıda doğrulandı: aynı istek doğrudan Cloud Run URL'ine
+ * gidince çerez okunuyor, saglamspotcu.web.app üzerinden gidince HER
+ * ZAMAN yok sayılıyor). Sonuç: dil seçici canlıda fiilen çalışmıyordu —
+ * seçim o anda bile uygulanmıyordu (redirect'in KENDİSİ çerezi okuyan
+ * istek, ve o istek çerezsiz geliyordu). Artık `?lang=xx` varken
+ * YÖNLENDİRME YAPMADAN doğrudan o dille render ediyoruz; çerezi hâlâ
+ * (zararsız, en kötü durumda yok sayılan) bir "iyi niyet" denemesi
+ * olarak kuruyoruz. Seçimin SONRAKİ sayfalarda da kalması
+ * main.js'teki localStorage tabanlı mekanizmaya bırakıldı (bkz.
+ * layout.js'teki <head> en üstündeki betik + main.js wireLiveFilter).
  */
 function localeMiddleware(req, res, next) {
   const requestedLang = req.query.lang;
   if (requestedLang && isSupportedLocale(requestedLang)) {
     res.cookie(COOKIE_NAME, requestedLang, {maxAge: 31536000000, path: "/"});
-    const url = new URL(req.originalUrl, "http://localhost");
-    url.searchParams.delete("lang");
-    res.redirect(302, url.pathname + url.search);
+    req.locale = requestedLang;
+    next();
     return;
   }
 

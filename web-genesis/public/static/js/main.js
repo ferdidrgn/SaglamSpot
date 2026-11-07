@@ -666,6 +666,18 @@
         window.location.href = url;
         return;
       }
+      // Canlıda çerez localeMiddleware.js'e İLETİLMİYOR (bkz. o dosyadaki
+      // not) — bu yüzden aktif dil SADECE URL'deki ?lang= üzerinden
+      // taşınabiliyor. fetch ile yapılan bu "canlı filtre" istekleri
+      // tam sayfa navigasyonu OLMADIĞI için <head>'in başındaki
+      // localStorage betiği hiç çalışmaz; o yüzden mevcut URL'de ?lang=
+      // varsa hedef URL'e burada elle taşıyoruz, yoksa filtre/arama
+      // sırasında sessizce Türkçe'ye düşerdi.
+      const resolved = new URL(url, window.location.href);
+      const activeLang = new URL(window.location.href).searchParams.get("lang");
+      if (activeLang && !resolved.searchParams.has("lang")) resolved.searchParams.set("lang", activeLang);
+      url = resolved.pathname + (resolved.search ? resolved.search : "");
+
       if (controller) controller.abort();
       controller = new AbortController();
 
@@ -762,6 +774,15 @@
     const select = document.getElementById("lang-switcher");
     if (!select) return;
     select.addEventListener("change", () => {
+      // Firebase Hosting çerezi fonksiyona iletmediği için seçim sunucu
+      // tarafında kalıcı olamıyor — localStorage'a da yazıyoruz ki
+      // <head>'in en üstündeki betik sonraki sayfa yüklemelerinde bu
+      // seçimi ?lang= olarak geri uygulayabilsin (bkz. layout.js).
+      try {
+        localStorage.setItem("saglamspot_lang", select.value);
+      } catch (_) {
+        // yok say.
+      }
       const url = new URL(window.location.href);
       url.searchParams.set("lang", select.value);
       window.location.href = url.pathname + url.search;
