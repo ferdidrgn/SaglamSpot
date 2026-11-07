@@ -32,7 +32,7 @@ let _assetManifest = null;
 function loadAssetManifest() {
   if (_assetManifest) return _assetManifest;
   try {
-    _assetManifest = JSON.parse(fs.readFileSync(path.join(__dirname, "../assetManifest.json"), "utf8"));
+    _assetManifest = JSON.parse(fs.readFileSync(path.join(__dirname, "../../assetManifest.json"), "utf8"));
   } catch (_) {
     _assetManifest = {};
   }
