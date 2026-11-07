@@ -4811,12 +4811,23 @@ body.view-is-list .product-list {
   border-color: var(--color-accent);
 }
 
-/* --- tam ekran lightbox --- */
+/* --- tam ekran lightbox ---
+   ÖNEMLİ: "display: flex" eskiden koşulsuzdu ve tarayıcının [hidden]
+   özniteliğine uyguladığı varsayılan "display:none" kuralını EZİYORDU
+   (ikisi de aynı özgüllükte, sonradan gelen kazanır) — sonuç: bu
+   position:fixed; inset:0 katman HER ZAMAN tüm sayfayı kaplıyordu,
+   sadece opacity:0 ile görünmez kalıyordu ama pointer-events hâlâ
+   AKTİFTİ. Ürün detay sayfasındaki TÜM butonlar (sepete ekle, favori,
+   paylaş, galeri okları) bu görünmez katmana tıklanmış gibi algılanıp
+   altındaki gerçek butona hiç ulaşmıyordu (gerçek kullanıcı geri
+   bildirimiyle yakalandı: "hiçbir buton çalışmıyor"). Artık display:flex
+   sadece [hidden] YOKKEN uygulanıyor — product-gallery.js zaten kapatma
+   animasyonu bitince (220ms) hidden=true yapıyor, bu değişiklik o akışı
+   bozmuyor, sadece kapalıyken katmanı hit-testing'den TAMAMEN çıkarıyor. */
 .pgallery-lightbox {
   position: fixed;
   inset: 0;
   z-index: 300;
-  display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(10, 7, 5, 0.94);
@@ -4824,8 +4835,108 @@ body.view-is-list .product-list {
   transition: opacity var(--motion-normal) var(--ease-standard);
 }
 
+.pgallery-lightbox:not([hidden]) {
+  display: flex;
+}
+
 .pgallery-lightbox.is-open {
   opacity: 1;
+}
+
+/* --- "Paylaş" popup'ı (WhatsApp/Instagram seçimi) — bkz. main.js
+   openSharePopup(). Aynı [hidden]/display ilişkisini kullanıyor (yukarıdaki
+   lightbox'taki notla aynı gerekçe: kapalıyken sayfanın geri kalanını
+   TIKLANAMAZ hâle getirmemeli). */
+.share-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  background: rgba(10, 7, 5, 0.5);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+.share-popup-overlay:not([hidden]) {
+  display: flex;
+}
+
+.share-popup-overlay.is-open {
+  opacity: 1;
+}
+
+.share-popup {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xxl) var(--space-xl) var(--space-xl);
+  box-shadow: 0 24px 48px -20px color-mix(in srgb, var(--color-primary-dark) 35%, transparent);
+  text-align: center;
+  transform: translateY(8px);
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.share-popup-overlay.is-open .share-popup {
+  transform: translateY(0);
+}
+
+.share-popup-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+}
+
+.share-popup-close:hover {
+  background: var(--color-secondary);
+}
+
+.share-popup-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  margin: 0 0 var(--space-lg);
+  color: var(--color-text-primary);
+}
+
+.share-popup-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.share-popup-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+
+.share-popup-option:hover {
+  background: var(--color-secondary);
+  transform: translateY(-1px);
 }
 
 .pgallery-lightbox-img {

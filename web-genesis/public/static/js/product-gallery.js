@@ -18,6 +18,19 @@
   const mainImg = root.querySelector("[data-gallery-main]");
   const thumbs = [...root.querySelectorAll("[data-gallery-thumb]")];
   const lightbox = document.querySelector("[data-gallery-lightbox]");
+  // Sunucu bu <div>'i .pdetail-media'nın (position:sticky — bu da kendi
+  // stacking context'ini oluşturur) İÇİNE basıyor. position:fixed bir
+  // öğe görsel olarak viewport'a göre konumlanır AMA z-index karşılaştırması
+  // hâlâ en yakın stacking-context ATASININ İÇİNDE kalır — yani lightbox'ın
+  // z-index:300'ü sadece .pdetail-media alt ağacı İÇİNDE geçerli, site
+  // header'ın (kök seviyede z-index:50) ÜSTÜNE hiç çıkamıyordu; kapatma
+  // butonuna/oklara tıklamak aslında altında kalan header'daki dil
+  // seçiciye tıklıyordu (gerçek kullanıcı geri bildirimiyle yakalandı).
+  // Standart "portal" çözümü: lightbox'ı doğrudan <body>'nin çocuğu yap,
+  // böylece kök seviyede kendi z-index'iyle yarışır.
+  if (lightbox && lightbox.parentElement !== document.body) {
+    document.body.appendChild(lightbox);
+  }
   const lightboxImg = lightbox ? lightbox.querySelector("[data-gallery-lightbox-img]") : null;
   const counters = document.querySelectorAll("[data-gallery-counter]");
   const prevBtns = document.querySelectorAll("[data-gallery-prev]");

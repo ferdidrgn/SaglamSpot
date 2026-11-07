@@ -458,7 +458,7 @@
             data-image="${escapeHtml(item.image)}" data-path="${escapeHtml(item.path)}"
             aria-label="Favoriden kaldır">${FAV_ICON}</button>
           <button type="button" class="pcard-icon-btn pcard-share-btn" data-share-product
-            data-share-url="${escapeHtml(item.path)}" data-share-title="${escapeHtml(item.name)}"
+            data-share-id="${escapeHtml(item.id)}" data-share-title="${escapeHtml(item.name)}"
             aria-label="Paylaş">${FAV_SHARE_ICON}</button>
         </div>
       </div>`).join("")}</div>`;
@@ -491,27 +491,90 @@
     }, 2600);
   }
 
+  const SHARE_CLOSE_ICON = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg>";
+  const SHARE_WHATSAPP_ICON = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm5.8 14.17c-.24.68-1.4 1.3-1.93 1.37-.49.07-1.1.1-1.78-.11-.41-.13-.94-.3-1.62-.6-2.84-1.23-4.7-4.1-4.84-4.29-.14-.19-1.15-1.53-1.15-2.92s.72-2.07.98-2.35c.24-.26.52-.33.7-.33h.5c.16 0 .37-.02.58.44.24.56.8 1.93.87 2.07.07.14.12.3.02.49-.1.19-.15.3-.3.47-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.28.74 1.22 1.6 1.97 1.1.98 2.03 1.28 2.31 1.43.28.14.44.12.6-.07.17-.19.72-.84.91-1.13.19-.28.38-.23.63-.14.26.1 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.36z\"/></svg>";
+  const SHARE_INSTAGRAM_ICON = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.2\" cy=\"6.8\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/></svg>";
+
+  // "Paylaş" ikon butonları (ürün kartları, ürün detay, favoriler) —
+  // ÖNCEDEN navigator.share varsa işletim sisteminin kendi paylaşım
+  // sayfasını açıyordu, yoksa linki sessizce panoya kopyalıyordu.
+  // Kullanıcı geri bildirimi: "paylaş butonuna basınca linki kopyalama,
+  // wp de mi mesaj mı atsın instagramdan mı atsın o popup'ı aç" — artık
+  // her yerde AYNI açık seçim popup'ı açılıyor (OS'un kendi sayfasına
+  // bırakmak yerine). WhatsApp gerçek bir web share hedefi sunduğu için
+  // (wa.me/?text=) doğrudan çalışıyor; Instagram'ın böyle bir "gönderi
+  // oluştur" web adresi YOK (bkz. wireInstagramShare'teki not) — en
+  // iyi ihtimalle metni panoya kopyalayıp instagram.com'u açıyoruz.
+  let sharePopup = null;
+  function buildSharePopup() {
+    if (sharePopup) return sharePopup;
+    const overlay = document.createElement("div");
+    overlay.className = "share-popup-overlay";
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <div class="share-popup" role="dialog" aria-modal="true" aria-label="Paylaş">
+        <button type="button" class="share-popup-close" data-popup-close aria-label="Kapat">${SHARE_CLOSE_ICON}</button>
+        <p class="share-popup-title">Nasıl paylaşmak istersin?</p>
+        <div class="share-popup-options">
+          <button type="button" class="share-popup-option" data-popup-via="whatsapp">${SHARE_WHATSAPP_ICON} WhatsApp'ta Paylaş</button>
+          <button type="button" class="share-popup-option" data-popup-via="instagram">${SHARE_INSTAGRAM_ICON} Instagram'da Paylaş</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    let pending = null;
+    function close() {
+      overlay.classList.remove("is-open");
+      window.setTimeout(() => {
+        overlay.hidden = true;
+      }, 150);
+    }
+    overlay.querySelector("[data-popup-close]").addEventListener("click", close);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !overlay.hidden) close();
+    });
+    overlay.querySelector("[data-popup-via=\"whatsapp\"]").addEventListener("click", () => {
+      if (!pending) return;
+      const text = pending.title ? `${pending.title} ${pending.url}` : pending.url;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+      close();
+    });
+    overlay.querySelector("[data-popup-via=\"instagram\"]").addEventListener("click", async () => {
+      if (!pending) return;
+      const text = pending.title ? `${pending.title} ${pending.url}` : pending.url;
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Bağlantı kopyalandı — Instagram'da gönderiye yapıştırabilirsiniz.");
+      } catch (_) {
+        toast(text);
+      }
+      window.open("https://www.instagram.com/", "_blank", "noopener");
+      close();
+    });
+
+    sharePopup = {overlay, setPending: (p) => { pending = p; }};
+    return sharePopup;
+  }
+
+  function openSharePopup(title, url) {
+    const {overlay, setPending} = buildSharePopup();
+    setPending({title, url});
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add("is-open"));
+  }
+
   function wireShareButtons() {
     document.querySelectorAll("[data-share-product]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const url = btn.dataset.shareUrl;
-        const title = btn.dataset.shareTitle || "";
-        if (navigator.share) {
-          try {
-            await navigator.share({title, url});
-            return;
-          } catch (_) {
-            // Kullanıcı paylaşım sayfasını iptal etti — sessizce yok say,
-            // panoya kopyalamaya DÜŞME (iptal = "kopyala" anlamına gelmez).
-            return;
-          }
-        }
-        try {
-          await navigator.clipboard.writeText(url);
-          toast("Bağlantı kopyalandı.");
-        } catch (_) {
-          toast(url);
-        }
+        // Favoriler sayfasındaki kartlarda sunucudan gelen tam/imzalı bir
+        // URL yok (sadece uygulama-içi gezinme için göreli bir yol
+        // saklanıyor) — data-share-id varsa cart/WhatsApp mesajlarında
+        // kullanılan AYNI productShareUrl() ile isteğe bağlı hesaplıyoruz.
+        const url = btn.dataset.shareUrl || (btn.dataset.shareId ? await productShareUrl(btn.dataset.shareId, btn.dataset.shareTitle || "") : "");
+        openSharePopup(btn.dataset.shareTitle || "", url);
       });
     });
   }
