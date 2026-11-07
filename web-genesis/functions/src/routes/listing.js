@@ -142,7 +142,7 @@ ${theme.quoteHtml ? `<section class="section">${theme.quoteHtml(theme.accent)}</
   ${renderPhotoRail(locale, allProducts, path)}
 </section>
 
-<section class="section listing-layout">
+<section class="section listing-layout" data-live-filter data-live-url="${path}">
   ${renderSidebar(locale, allProducts, path, category)}
   <div class="listing-main">
     ${renderToolbar(locale, {basePath: path, q, sort, category})}

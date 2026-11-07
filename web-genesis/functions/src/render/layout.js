@@ -157,6 +157,26 @@ function renderLayout({
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+// saglamspotcu.web.app ESKİDEN bir Flutter PWA'sı sunuyordu ve
+// (flutter_service_worker.js) bir Service Worker kaydediyordu. SW'ler
+// normal tarayıcı önbelleğinin TAMAMEN DIŞINDA çalışır — bazı stratejiler
+// sayfayı sunucuya hiç sormadan eski/önbellekteki HTML'i gösterir. Site
+// artık web-genesis'i sunuyor; bu eski SW hâlâ kayıtlıysa butonlar/
+// animasyonlar "çalışmıyormuş" gibi görünür (gerçek kullanıcı geri
+// bildirimiyle yakalandı). Her sayfa yüklemesinde böyle bir kayıt
+// bulunursa sessizce kaldırılır (kayıt yoksa bu no-op, zararsız).
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function (regs) {
+    regs.forEach(function (reg) { reg.unregister(); });
+  }).catch(function () {});
+}
+if (window.caches && caches.keys) {
+  caches.keys().then(function (keys) {
+    keys.forEach(function (key) { caches.delete(key); });
+  }).catch(function () {});
+}
+</script>
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${safeDescription}">
 <meta name="robots" content="${escapeHtml(robots)}">

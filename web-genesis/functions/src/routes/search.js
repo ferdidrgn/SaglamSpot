@@ -152,36 +152,48 @@ module.exports = async function searchRoute(req, res) {
   // yazan boş bir ipucu ekranı vardı — kullanıcı geri bildirimi: "hiçbir
   // ürün yok diyor oysa var". Artık varsayılan olarak TÜM aktif ürünler
   // (hiç filtre yokken) hemen gösteriliyor, tıpkı gerçek bir katalog gibi.
+  // data-live-filter: bu kökün İÇİ, main.js'teki live-filter.js tarafından
+  // sayfa YENİDEN YÜKLENMEDEN fetch+DOM değişimiyle güncellenir (yazarken
+  // debounce'lu, sekme/çip/sıralama değişince anında). Sunucuda YENİ bir
+  // route/endpoint YOK — aynı /arama tam HTML'i fetch edilip istemcide bu
+  // kökün içi çıkarılıp takılıyor; JS kapalıyken formlar/linkler zaten
+  // normal GET ile çalışır (progressive enhancement).
   const bodyHtml = `
-<div class="search-toolbar">
-  <a class="search-back-btn" href="/" aria-label="${escapeHtml(t(locale, "home"))}">${BACK_ICON}</a>
-  <form class="search-pill" method="get" action="/arama" role="search">
-    ${SEARCH_ICON}
-    <input type="search" name="q" placeholder="${escapeHtml(t(locale, "productNameLabel"))}" value="${escapeHtml(q)}" aria-label="${escapeHtml(t(locale, "productNameLabel"))}">
-    ${category ? `<input type="hidden" name="category" value="${escapeHtml(category)}">` : ""}
-    ${condition !== "all" ? `<input type="hidden" name="condition" value="${escapeHtml(condition)}">` : ""}
-  </form>
-  <label class="search-sort-pill">
-    ${SORT_ICON}
-    <select name="sort" aria-label="Sırala" onchange="location.href=this.value">
-      ${[["featured", t(locale, "sortFeatured")], ["priceAsc", t(locale, "sortPriceAsc")], ["priceDesc", t(locale, "sortPriceDesc")], ["newest", t(locale, "sortSpotProductsDefault")]].map(([value, label]) => `<option value="${escapeHtml(buildCategoryHref({...state, sort: value === "featured" ? null : value}, category))}"${value === sort ? " selected" : ""}>${escapeHtml(label)}</option>`).join("")}
-    </select>
-  </label>
-  <div class="view-toggle" data-view-toggle role="group" aria-label="Görünüm">
-    <button type="button" class="view-toggle-btn is-active" data-view-btn="grid" aria-label="Izgara görünümü">${GRID_ICON}</button>
-    <button type="button" class="view-toggle-btn" data-view-btn="list" aria-label="Liste görünümü">${LIST_ICON}</button>
+<div data-live-filter data-live-url="/arama">
+  <div class="search-toolbar">
+    <a class="search-back-btn" href="/" aria-label="${escapeHtml(t(locale, "home"))}">${BACK_ICON}</a>
+    <form class="search-pill" method="get" action="/arama" role="search">
+      ${SEARCH_ICON}
+      <input type="search" name="q" placeholder="${escapeHtml(t(locale, "productNameLabel"))}" value="${escapeHtml(q)}" aria-label="${escapeHtml(t(locale, "productNameLabel"))}">
+      ${category ? `<input type="hidden" name="category" value="${escapeHtml(category)}">` : ""}
+      ${condition !== "all" ? `<input type="hidden" name="condition" value="${escapeHtml(condition)}">` : ""}
+      ${sort !== "featured" ? `<input type="hidden" name="sort" value="${escapeHtml(sort)}">` : ""}
+    </form>
+    <form class="search-sort-pill" method="get" action="/arama">
+      ${SORT_ICON}
+      <input type="hidden" name="q" value="${escapeHtml(q)}">
+      ${category ? `<input type="hidden" name="category" value="${escapeHtml(category)}">` : ""}
+      ${condition !== "all" ? `<input type="hidden" name="condition" value="${escapeHtml(condition)}">` : ""}
+      <select name="sort" aria-label="Sırala" onchange="this.form.requestSubmit()">
+        ${[["featured", t(locale, "sortFeatured")], ["priceAsc", t(locale, "sortPriceAsc")], ["priceDesc", t(locale, "sortPriceDesc")], ["newest", t(locale, "sortSpotProductsDefault")]].map(([value, label]) => `<option value="${escapeHtml(value)}"${value === sort ? " selected" : ""}>${escapeHtml(label)}</option>`).join("")}
+      </select>
+    </form>
+    <div class="view-toggle" data-view-toggle role="group" aria-label="Görünüm">
+      <button type="button" class="view-toggle-btn is-active" data-view-btn="grid" aria-label="Izgara görünümü">${GRID_ICON}</button>
+      <button type="button" class="view-toggle-btn" data-view-btn="list" aria-label="Liste görünümü">${LIST_ICON}</button>
+    </div>
   </div>
-</div>
-${renderCategoryTabs(state, categoryCounts, totalCount)}
-${renderQuickChips(condition, maxPrice)}
-<section class="section" data-product-section>
-  <div class="search-section-title">
-    <h2>Mevcut Koleksiyon</h2>
-    <p>${escapeHtml(t(locale, "categoryProductCount", {count: products.length}))}</p>
-  </div>
-  ${resultsHtml}
-</section>
-${soldSectionHtml}`;
+  ${renderCategoryTabs(state, categoryCounts, totalCount)}
+  ${renderQuickChips(condition, maxPrice)}
+  <section class="section" data-product-section>
+    <div class="search-section-title">
+      <h2>Mevcut Koleksiyon</h2>
+      <p>${escapeHtml(t(locale, "categoryProductCount", {count: products.length}))}</p>
+    </div>
+    ${resultsHtml}
+  </section>
+  ${soldSectionHtml}
+</div>`;
 
   res.set("Cache-Control", "no-cache, no-store, must-revalidate");
   res.status(200).send(renderLayout({
