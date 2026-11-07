@@ -125,14 +125,35 @@ button:focus-visible {
   align-items: center;
 }
 
-#lang-switcher {
-  font: inherit;
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary);
+/* Dil seçici artık bir ikon + <select> çifti (bkz. layout.js'teki
+   ICON_GLOBE notu) — küre ikonu dil değiştirmenin bir seçenek olduğunu
+   ilk bakışta belli eder, önceden çıplak "Türkçe" yazısı bunu hiç
+   anlatmıyordu. */
+.lang-switcher-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-tertiary);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: var(--space-xxs) var(--space-sm);
+  transition: border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+
+.lang-switcher-wrap:hover,
+.lang-switcher-wrap:focus-within {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+#lang-switcher {
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  padding: 0;
   cursor: pointer;
 }
 
@@ -4360,6 +4381,29 @@ body.view-is-list .product-list {
   cursor: pointer;
   border: none;
   white-space: nowrap;
+  transform: scale(1);
+  transition: transform var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+/* Dokunma/basım hissi — parmak/fare basılıyken hafifçe çöker (gerçek bir
+   düğmeye basar gibi), bırakınca `.is-pressed` (bkz. main.js) kısa bir
+   geri sekmeyle (overshoot) normale döner. Salt CSS :active sadece basılı
+   TUTARKEN çalışır, bırakınca sekme olmadan aniden sıçrardı — bu yüzden
+   bırakma anı için ayrı bir keyframe var. */
+.pdetail-cta-primary:active,
+.pdetail-cta-outline:active {
+  transform: scale(0.96);
+}
+
+.pdetail-cta-primary.is-pressed,
+.pdetail-cta-outline.is-pressed {
+  animation: cta-release-bounce 360ms var(--ease-standard);
+}
+
+@keyframes cta-release-bounce {
+  0% { transform: scale(0.96); }
+  55% { transform: scale(1.035); }
+  100% { transform: scale(1); }
 }
 
 .pdetail-cta-primary {
@@ -4937,6 +4981,50 @@ body.view-is-list .product-list {
 .share-popup-option:hover {
   background: var(--color-secondary);
   transform: translateY(-1px);
+}
+
+/* --- "Sepete eklendi" etiketi (bkz. main.js showCartAddedTag()) ---
+   Marka zaten her üründe fiyat/durum için aynı sivri uçlu "etiket"
+   şeklini kullanıyor (.pcard-tag, clip-path: polygon(...)) — buton
+   tıklanınca sanki ürüne gerçek bir etiket iliştiriliyormuş gibi
+   düğmenin üstünde belirip hafifçe sallanıyor, sonra sepet simgesinin
+   olduğu yöne (yukarı/sağa) doğru süzülüp kayboluyor. Jenerik bir
+   "toast" yerine markanın KENDİ görsel diliyle konuşan bir onay. */
+.cart-added-tag {
+  position: fixed;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px 7px 10px;
+  clip-path: polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%);
+  background: var(--color-success);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -14px) scale(0.8) rotate(-7deg);
+}
+
+.cart-added-tag.is-shown {
+  animation: cart-tag-drop 480ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.cart-added-tag.is-leaving {
+  animation: cart-tag-leave 420ms ease-in forwards;
+}
+
+@keyframes cart-tag-drop {
+  0% { transform: translate(-50%, -14px) scale(0.8) rotate(-7deg); opacity: 0; }
+  55% { transform: translate(-50%, -46px) scale(1.04) rotate(4deg); opacity: 1; }
+  100% { transform: translate(-50%, -40px) scale(1) rotate(-2deg); opacity: 1; }
+}
+
+@keyframes cart-tag-leave {
+  0% { transform: translate(-50%, -40px) scale(1) rotate(-2deg); opacity: 1; }
+  100% { transform: translate(calc(-50% + 40px), -84px) scale(0.6) rotate(10deg); opacity: 0; }
 }
 
 .pgallery-lightbox-img {

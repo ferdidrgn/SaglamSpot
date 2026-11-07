@@ -125,6 +125,40 @@
   // 'addToCartCta')) — istemci sadece "sepette mi" görsel durumunu
   // (yeşil arkaplan) değiştiriyor, metni DEĞİŞTİRMİYOR. Böylece "kaldır"
   // kelimesi için ayrı bir çeviri kaynağına ihtiyaç kalmıyor.
+  const CART_TAG_ICON = "<svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" aria-hidden=\"true\"><path d=\"M5 13l4 4L19 7\"/></svg>";
+
+  // "Sepete eklendi" onayı — markanın her üründe zaten kullandığı sivri
+  // uçlu "etiket" şekliyle (bkz. base.css .cart-added-tag notu): sanki
+  // ürüne gerçek bir fiyat etiketi takılıyormuş gibi düğmenin üstünde
+  // belirip hafifçe sallanıyor, sonra sepet simgesine doğru (yukarı/sağa)
+  // süzülüp kayboluyor. Sadece EKLERKEN gösterilir, kaldırırken değil.
+  function showCartAddedTag(anchorEl) {
+    const rect = anchorEl.getBoundingClientRect();
+    const tag = document.createElement("div");
+    tag.className = "cart-added-tag";
+    tag.innerHTML = `${CART_TAG_ICON}<span>Sepete eklendi</span>`;
+    tag.style.left = `${rect.left + rect.width / 2}px`;
+    tag.style.top = `${rect.top}px`;
+    document.body.appendChild(tag);
+    requestAnimationFrame(() => tag.classList.add("is-shown"));
+    window.setTimeout(() => {
+      tag.classList.remove("is-shown");
+      tag.classList.add("is-leaving");
+      tag.addEventListener("animationend", () => tag.remove(), {once: true});
+    }, 1400);
+  }
+
+  // Butona "dokunma hissi" — :active basılı tutarken hafifçe çöker (bkz.
+  // base.css), bıraktığında/tıklama tamamlandığında bu sınıf kısa bir
+  // geri-sekme (overshoot) oynatır; salt :active bırakınca sekmesiz aniden
+  // normale dönerdi, bu daha "gerçek bir düğmeye bastım" hissi veriyor.
+  function pulsePressFeel(btn) {
+    btn.classList.remove("is-pressed");
+    void btn.offsetWidth; // reflow — art arda tıklamalarda animasyonu yeniden başlatır.
+    btn.classList.add("is-pressed");
+    btn.addEventListener("animationend", () => btn.classList.remove("is-pressed"), {once: true});
+  }
+
   function wireAddButtons() {
     document.querySelectorAll("[data-cart-add]").forEach((btn) => {
       const id = btn.dataset.id;
@@ -135,9 +169,12 @@
       };
       sync();
       btn.addEventListener("click", () => {
+        const wasInCart = findIndex(readCart(), id) !== -1;
         toggleCartItem(id, btn.dataset.name, Number(btn.dataset.price));
         sync();
         updateBadge();
+        pulsePressFeel(btn);
+        if (!wasInCart) showCartAddedTag(btn);
       });
     });
   }
