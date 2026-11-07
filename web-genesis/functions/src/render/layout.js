@@ -33,25 +33,26 @@ const ICON_WHATSAPP = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fil
 const ICON_INSTAGRAM = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.2\" cy=\"6.8\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/></svg>";
 const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M14 21v-7h2.4l.4-3H14V9.2c0-.9.25-1.5 1.6-1.5H17V5.1C16.7 5 15.8 5 14.8 5c-2.2 0-3.7 1.3-3.7 3.9V11H8.7v3H11v7h3z\"/></svg>";
 const ICON_PHONE = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>";
-// "Yukarı çık" düğmesi — sade bir gece lambası ipi metaforu: küçük,
-// yumuşak parıltılı bir ampul + ince düz bir ip + sitenin kendi yuvarlak
-// buton diliyle (bkz. .whatsapp-fab) birebir uyumlu, net bir yukarı ok
-// ikonlu daire. Önceki iki deneme (boncuklu ip + çıngırak abajur, sonra
-// ahşap meşe palamudu topuz) kullanıcıya "iğrenç"/"olmamış" geldi —
-// burada kasıtlı olarak SADE geometri (daire, düz çizgi) + CSS'teki
-// esnek "boing" animasyonuna (bkz. base.css .scrolltop-chain) güveniliyor.
-const SCROLLTOP_LAMP_SVG = `<svg viewBox="0 0 28 28" aria-hidden="true">
-  <circle cx="14" cy="14" r="13" fill="url(#stGlow)"/>
-  <circle cx="14" cy="14" r="5" fill="var(--color-accent-light)"/>
-  <defs>
-    <radialGradient id="stGlow">
-      <stop offset="0" stop-color="var(--color-accent-light)" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="var(--color-accent-light)" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
+// "Yukarı çık" düğmesi — gece lambası ipi metaforu, TEK bir SVG içinde:
+// tavan bağlantısı + sıcak parıltılı abajur (sabit) + altında sarkan
+// ip/püskül grubu (hover'da hafif sallanır, tıklanınca gerçek bir ip gibi
+// aşağı "çekilip" geri döner). Önceki üç deneme ("boncuklu ip + çıngırak
+// abajur", "ahşap meşe palamudu topuz", "aşırı sade daire") kullanıcıya
+// hep kötü geldi — teknik, kullanıcının beğendiği https://tiyatrol.web.app
+// sitesindeki perde/ip düğmesinden (hover'da sallanma + tıklamada
+// translateY tug keyframe'i, transform-box:view-box ile SVG içi grup
+// döndürme) birebir alınıp bizim ampul+ip temamıza uyarlandı.
+const SCROLLTOP_LAMP_SVG = `<svg viewBox="0 0 64 100" aria-hidden="true">
+  <rect x="26" y="0" width="12" height="6" rx="3" class="lamp-mount"></rect>
+  <path class="lamp-shade" d="M15 27c0-10 7.5-18 17-18s17 8 17 18l5.5 8.5c1.3 2.2-.4 5-3 5H12.5c-2.6 0-4.3-2.8-3-5z"></path>
+  <ellipse class="lamp-glow" cx="32" cy="35" rx="11" ry="4.5"></ellipse>
+  <g class="cord-ip">
+    <path class="cord-line" d="M32 42v18"></path>
+    <rect x="28.5" y="60" width="7" height="6" rx="2" class="cord-cap"></rect>
+    <path class="cord-tassel" d="M26 66h12l3 14H23Z"></path>
+    <path class="cord-fringe" d="M27 72v8M32 72v8M37 72v8"></path>
+  </g>
 </svg>`;
-
-const ICON_CHEVRON_UP = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" aria-hidden=\"true\"><path d=\"M5 15l7-7 7 7\"/></svg>";
 
 function escapeHtml(value) {
   return String(value)
@@ -195,11 +196,7 @@ ${bodyHtml}
   <p class="footer-rights">${escapeHtml(t(locale, "allRightsReserved"))}</p>
 </footer>
 <a class="whatsapp-fab" href="${business.whatsappUrl()}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
-<button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık">
-  <span class="scrolltop-lamp">${SCROLLTOP_LAMP_SVG}</span>
-  <span class="scrolltop-chain" aria-hidden="true"></span>
-  <span class="scrolltop-knob" aria-hidden="true">${ICON_CHEVRON_UP}</span>
-</button>
+<button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık" title="Işığı çek, yukarı çık">${SCROLLTOP_LAMP_SVG}</button>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
 ${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}
 ${extraScripts.map((s) => `<script src="${versionedAsset(s)}" type="module"></script>`).join("\n")}
