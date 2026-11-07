@@ -137,6 +137,10 @@ android/app/google-services.json
 # (bkz. web-genesis/functions/scripts/copy-arb.js) — tek kaynak hâlâ
 # lib/l10n, burası commit edilmez (çift kaynak/çürüme riski).
 web-genesis/functions/l10n/
+# web-genesis: deploy öncesi web-genesis/public'teki statik dosyalardan
+# hesaplanan içerik hash'i manifesti (bkz. generate-asset-manifest.js) —
+# her predeploy'da yeniden üretilir, commit edilmez.
+web-genesis/functions/assetManifest.json
 
 # -----------------------
 # CLAUDE CODE (Agent worktree'leri vb. — harness'e özel, commit edilmez)

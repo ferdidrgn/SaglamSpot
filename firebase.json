@@ -74,7 +74,8 @@
       "codebase": "genesis",
       "runtime": "nodejs22",
       "predeploy": [
-        "node web-genesis/functions/scripts/copy-arb.js"
+        "node web-genesis/functions/scripts/copy-arb.js",
+        "node web-genesis/functions/scripts/generate-asset-manifest.js"
       ],
       "ignore": [
         "node_modules",

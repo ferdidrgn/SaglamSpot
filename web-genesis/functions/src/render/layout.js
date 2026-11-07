@@ -12,16 +12,45 @@ const {getBaseUrl} = require("../requestUrl");
  * bu yüzden her dosyanın URL'sine içerik hash'i eklenir: hash değişmediği
  * sürece agresif önbellekleme güvenli, değiştiğinde URL de değişip anında
  * yeni içerik çeker. Build adımı olmadan (hand-rolled) basit bir çözüm.
+ *
+ * ÖNEMLİ: Deploy edilen Cloud Functions paketi SADECE "web-genesis/
+ * functions" klasörünü içerir (bkz. firebase.json), "web-genesis/public"
+ * canlıda bu paketin içinde DEĞİL — aşağıdaki doğrudan dosya okuma
+ * CANLIDA HER ZAMAN BAŞARISIZ oluyor ve sessizce "v=0" sabit değerine
+ * düşüyordu. Sonuç: her deploy'dan sonra bile CSS/JS URL'si HİÇ
+ * değişmiyordu, `immutable` önbellek başlığıyla birlikte ziyaretçiler
+ * SONSUZA KADAR eski CSS/JS görmeye devam ediyordu (gerçek bir kullanıcı
+ * geri bildirimiyle yakalandı: yeni "yukarı çık" animasyonu hiç
+ * görünmüyordu). Artık önce generate-asset-manifest.js'in (predeploy
+ * kancası) deploy ZAMANINDA ürettiği assetManifest.json okunuyor — o
+ * dosya "web-genesis/functions/" İÇİNDE olduğu için deploy paketine
+ * giriyor. Manifest yoksa (yerel emülatör gibi repo'nun tamamı diskte
+ * olan ortamlar) eski doğrudan-okuma yöntemine düşülüyor.
  */
 const _assetHashCache = {};
+let _assetManifest = null;
+function loadAssetManifest() {
+  if (_assetManifest) return _assetManifest;
+  try {
+    _assetManifest = JSON.parse(fs.readFileSync(path.join(__dirname, "../assetManifest.json"), "utf8"));
+  } catch (_) {
+    _assetManifest = {};
+  }
+  return _assetManifest;
+}
 function versionedAsset(relativePath) {
   if (!_assetHashCache[relativePath]) {
-    try {
-      const fullPath = path.join(__dirname, "../../../public", relativePath);
-      const content = fs.readFileSync(fullPath);
-      _assetHashCache[relativePath] = crypto.createHash("sha256").update(content).digest("hex").slice(0, 10);
-    } catch (_) {
-      _assetHashCache[relativePath] = "0";
+    const manifest = loadAssetManifest();
+    if (manifest[relativePath]) {
+      _assetHashCache[relativePath] = manifest[relativePath];
+    } else {
+      try {
+        const fullPath = path.join(__dirname, "../../../public", relativePath);
+        const content = fs.readFileSync(fullPath);
+        _assetHashCache[relativePath] = crypto.createHash("sha256").update(content).digest("hex").slice(0, 10);
+      } catch (_) {
+        _assetHashCache[relativePath] = "0";
+      }
     }
   }
   return `/${relativePath}?v=${_assetHashCache[relativePath]}`;
@@ -34,23 +63,26 @@ const ICON_INSTAGRAM = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fi
 const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M14 21v-7h2.4l.4-3H14V9.2c0-.9.25-1.5 1.6-1.5H17V5.1C16.7 5 15.8 5 14.8 5c-2.2 0-3.7 1.3-3.7 3.9V11H8.7v3H11v7h3z\"/></svg>";
 const ICON_PHONE = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>";
 // "Yukarı çık" düğmesi — gece lambası ipi metaforu, TEK bir SVG içinde:
-// tavan bağlantısı + sıcak parıltılı abajur (sabit) + altında sarkan
-// ip/püskül grubu (hover'da hafif sallanır, tıklanınca gerçek bir ip gibi
-// aşağı "çekilip" geri döner). Önceki üç deneme ("boncuklu ip + çıngırak
-// abajur", "ahşap meşe palamudu topuz", "aşırı sade daire") kullanıcıya
-// hep kötü geldi — teknik, kullanıcının beğendiği https://tiyatrol.web.app
-// sitesindeki perde/ip düğmesinden (hover'da sallanma + tıklamada
-// translateY tug keyframe'i, transform-box:view-box ile SVG içi grup
-// döndürme) birebir alınıp bizim ampul+ip temamıza uyarlandı.
-const SCROLLTOP_LAMP_SVG = `<svg viewBox="0 0 64 100" aria-hidden="true">
-  <rect x="26" y="0" width="12" height="6" rx="3" class="lamp-mount"></rect>
-  <path class="lamp-shade" d="M15 27c0-10 7.5-18 17-18s17 8 17 18l5.5 8.5c1.3 2.2-.4 5-3 5H12.5c-2.6 0-4.3-2.8-3-5z"></path>
-  <ellipse class="lamp-glow" cx="32" cy="35" rx="11" ry="4.5"></ellipse>
+// tavan bağlantısı + şişkin/tatlı yuvarlak bir abajur (sabit, sıcak
+// parıltılı) + altında sarkan ip/püskül grubu (hover'da hafif sallanır,
+// tıklanınca gerçek bir ip gibi aşağı "çekilip" geri döner, SONRA sayfa
+// yukarı kayar). Önceki dört deneme ("boncuklu ip + çıngırak abajur",
+// "ahşap meşe palamudu topuz", "aşırı sade daire", "ince/köşeli abajur")
+// kullanıcıya hep kötü geldi — teknik, kullanıcının beğendiği
+// https://tiyatrol.web.app sitesindeki perde/ip düğmesinden (hover'da
+// sallanma + tıklamada translateY tug keyframe'i, transform-box:view-box
+// ile SVG içi grup döndürme) birebir alınıp bizim "obez/tatlı" yuvarlak
+// gece lambası temamıza uyarlandı.
+const SCROLLTOP_LAMP_SVG = `<svg viewBox="0 0 64 98" aria-hidden="true">
+  <rect x="27" y="0" width="10" height="5" rx="2.5" class="lamp-mount"></rect>
+  <path class="lamp-mount-rod" d="M32 5v6"></path>
+  <circle class="lamp-shade" cx="32" cy="29" r="21"></circle>
+  <ellipse class="lamp-glow" cx="32" cy="44" rx="12" ry="5"></ellipse>
   <g class="cord-ip">
-    <path class="cord-line" d="M32 42v18"></path>
-    <rect x="28.5" y="60" width="7" height="6" rx="2" class="cord-cap"></rect>
-    <path class="cord-tassel" d="M26 66h12l3 14H23Z"></path>
-    <path class="cord-fringe" d="M27 72v8M32 72v8M37 72v8"></path>
+    <path class="cord-line" d="M32 47v15"></path>
+    <rect x="28.5" y="61" width="7" height="6" rx="2" class="cord-cap"></rect>
+    <path class="cord-tassel" d="M26 67h12l3 14H23Z"></path>
+    <path class="cord-fringe" d="M27 73v8M32 73v8M37 73v8"></path>
   </g>
 </svg>`;
 
