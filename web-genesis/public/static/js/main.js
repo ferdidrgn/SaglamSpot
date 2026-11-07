@@ -224,6 +224,7 @@
             const cartUrl = await cartShareUrl(items);
             const allProductsLine = (CART_STRINGS.allProductsLine || "{url}").split("{url}").join(cartUrl);
             message += allProductsLine;
+            message += CART_STRINGS.localeNote || "";
 
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`, "_blank", "noopener");
           } finally {
@@ -629,6 +630,134 @@
     });
   }
 
+  // /arama, /sifir, /spot — arama/filtre/sıralama/kategori artık sayfayı
+  // YENİDEN YÜKLEMEDEN çalışır (kullanıcı geri bildirimi: "sayfa refresh
+  // atıyor, en üste scroll gidiyor, bu kadar basit bir şeyin daha dinamik
+  // olması gerekir"). search.js/listing.js aynı HTML'i sunucudan basıyor,
+  // burada tek fark: form submit / kategori-sekmesi-tıklama / yazarken
+  // (debounce'lu) tam sayfa navigasyonu YERİNE o URL'i fetch edip
+  // [data-live-filter] kökünün İÇİNİ değiştiriyoruz. Navigasyon hiç
+  // olmadığı için tarayıcı scroll konumunu KENDİLİĞİNDEN korur — "en üste
+  // zıplama" sorunu burada ayrı bir kod YAZMADAN çözülüyor.
+  // Dinleyiciler document üzerinde (delegation) — kök her değiştiğinde
+  // yeniden bağlamaya gerek yok, sadece içindeki favori/sepet/paylaş/
+  // karusel/görünüm-geçişi gibi doğrudan querySelectorAll ile bağlanan
+  // şeyler swap sonrası yeniden çalıştırılır (bkz. reinitLiveFilterRoot).
+  function wireLiveFilter() {
+    const liveRoot = () => document.querySelector("[data-live-filter]");
+    if (!liveRoot()) return;
+
+    liveRoot().setAttribute("aria-live", "polite");
+
+    let controller = null;
+    let debounceTimer = null;
+
+    function reinitLiveFilterRoot() {
+      wireAddButtons();
+      wireFavoriteButtons();
+      wireShareButtons();
+      wireCardCarousels();
+      wireViewToggle();
+    }
+
+    async function go(url, {push, focusRestore} = {}) {
+      const root = liveRoot();
+      if (!root) {
+        window.location.href = url;
+        return;
+      }
+      if (controller) controller.abort();
+      controller = new AbortController();
+
+      if (push === "push") window.history.pushState(null, "", url);
+      else if (push === "replace") window.history.replaceState(null, "", url);
+
+      root.classList.add("is-live-loading");
+      try {
+        const res = await fetch(url, {signal: controller.signal, headers: {"X-Live-Filter": "1"}});
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const html = await res.text();
+        const parsed = new DOMParser().parseFromString(html, "text/html");
+        const parsedRoot = parsed.querySelector("[data-live-filter]");
+        if (!parsedRoot) throw new Error("data-live-filter not found in response");
+
+        root.innerHTML = parsedRoot.innerHTML;
+        if (parsed.title) document.title = parsed.title;
+        reinitLiveFilterRoot();
+
+        if (focusRestore) {
+          const next = root.querySelector(`[name="${focusRestore.name}"]`);
+          if (next) {
+            next.focus();
+            if (typeof next.setSelectionRange === "function") {
+              try {
+                next.setSelectionRange(focusRestore.start, focusRestore.end);
+              } catch (_) {
+                // bazı input türlerinde (örn. type=search bazı tarayıcılarda) desteklenmiyor olabilir.
+              }
+            }
+          }
+        }
+      } catch (err) {
+        if (err.name === "AbortError") return;
+        window.location.href = url;
+        return;
+      } finally {
+        root.classList.remove("is-live-loading");
+      }
+    }
+
+    function isSamePathname(href) {
+      try {
+        const resolved = new URL(href, window.location.href);
+        return resolved.origin === window.location.origin && resolved.pathname === window.location.pathname;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    document.addEventListener("submit", (e) => {
+      const form = e.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      if (form.method && form.method.toLowerCase() !== "get") return;
+      if (!form.closest("[data-live-filter]")) return;
+      e.preventDefault();
+      const params = new URLSearchParams(new FormData(form));
+      const qs = params.toString();
+      const url = form.getAttribute("action") + (qs ? `?${qs}` : "");
+      go(url, {push: "push"});
+    });
+
+    document.addEventListener("input", (e) => {
+      const input = e.target;
+      if (!(input instanceof HTMLInputElement) || input.name !== "q") return;
+      if (!input.closest("[data-live-filter]")) return;
+      const form = input.closest("form");
+      if (!form) return;
+      const focusRestore = {name: "q", start: input.selectionStart, end: input.selectionEnd};
+      window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        const params = new URLSearchParams(new FormData(form));
+        const qs = params.toString();
+        const url = form.getAttribute("action") + (qs ? `?${qs}` : "");
+        go(url, {push: "replace", focusRestore});
+      }, 380);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const anchor = e.target.closest("a[href]");
+      if (!anchor || anchor.target === "_blank" || anchor.hasAttribute("download")) return;
+      if (!liveRoot() || !isSamePathname(anchor.getAttribute("href"))) return;
+      e.preventDefault();
+      go(anchor.getAttribute("href"), {push: "push"});
+    });
+
+    window.addEventListener("popstate", () => {
+      go(window.location.href, {push: null});
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -665,5 +794,6 @@
     wireScrollTopCord();
     wireFaqFilters();
     wireViewToggle();
+    wireLiveFilter();
   });
 })();

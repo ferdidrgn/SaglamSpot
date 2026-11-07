@@ -1,5 +1,6 @@
 const {renderLayout, escapeHtml} = require("../render/layout");
 const {t} = require("../i18n");
+const {LOCALE_TR_NAMES} = require("../businessInfo");
 
 /**
  * Sepet tamamen İSTEMCİ TARAFINDA (localStorage) tutulur — gerçek bir
@@ -42,8 +43,12 @@ module.exports = function cartRoute(req, res) {
         remove: "Kaldır",
         // ARB'de kaynağı yok (brief: yeniden çeviri yok) — bilerek Türkçe.
         note: "Online ödeme yok — mesajı gönderdikten sonra mağazadan dönüş bekleyin.",
-        greeting: t(locale, "cartWhatsappGreeting"),
-        allProductsLine: t(locale, "cartWhatsappAllProductsLine"),
+        // WhatsApp mesaj GÖVDESİ her zaman Türkçe (esnaf sadece Türkçe
+        // okuyor) — site diline göre ÇEVRİLMEZ, bu yüzden t(locale,...)
+        // DEĞİL, ARB'deki tr değeriyle AYNI sabit Türkçe metin kullanılır.
+        greeting: "Merhaba, şu ürünler hakkında bilgi almak istiyorum:\n\n",
+        allProductsLine: "Tüm ürünler: {url}",
+        localeNote: LOCALE_TR_NAMES[locale] ? `\n\n— Not: Bu talep sitenin ${LOCALE_TR_NAMES[locale]} sürümünden gönderildi.` : "",
       },
     },
   }));

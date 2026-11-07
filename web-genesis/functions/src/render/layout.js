@@ -223,7 +223,7 @@ ${bodyHtml}
       <p class="footer-brand">${escapeHtml(siteName)}</p>
       <p class="footer-desc">${escapeHtml(t(locale, "footerDesc"))}</p>
       <div class="footer-social">
-        <a href="${business.whatsappUrl()}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}" title="WhatsApp">${ICON_WHATSAPP}</a>
+        <a href="${business.whatsappUrl(undefined, locale)}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}" title="WhatsApp">${ICON_WHATSAPP}</a>
         <a href="${escapeHtml(business.instagramUrl)}" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">${ICON_INSTAGRAM}</a>
         <a href="${escapeHtml(business.facebookUrl)}" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook">${ICON_FACEBOOK}</a>
         <a href="tel:+${business.phoneNumberIntl}" aria-label="${escapeHtml(t(locale, "aboutContactPhoneLabel"))}" title="${escapeHtml(business.displayPhone)}">${ICON_PHONE}</a>
@@ -240,14 +240,14 @@ ${bodyHtml}
     <div class="footer-col">
       <p class="footer-col-title">${escapeHtml(t(locale, "contact"))}</p>
       <a href="tel:+${business.phoneNumberIntl}" dir="ltr">${escapeHtml(business.displayPhone)}</a>
-      <a href="${business.whatsappUrl()}" rel="noopener">${escapeHtml(t(locale, "whatsappCta"))}</a>
+      <a href="${business.whatsappUrl(undefined, locale)}" rel="noopener">${escapeHtml(t(locale, "whatsappCta"))}</a>
       <a href="${escapeHtml(business.googleMapsUrl)}" target="_blank" rel="noopener">${escapeHtml(business.address.line)}, ${escapeHtml(business.address.district)}/${escapeHtml(business.address.city)}</a>
       <p class="footer-hours">${escapeHtml(business.workingHours).replace(/\n/g, "<br>")}</p>
     </div>
   </div>
   <p class="footer-rights">${escapeHtml(t(locale, "allRightsReserved"))}</p>
 </footer>
-<a class="whatsapp-fab" href="${business.whatsappUrl()}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
+<a class="whatsapp-fab" href="${business.whatsappUrl(undefined, locale)}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
 <button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık" title="Işığı çek, yukarı çık">${SCROLLTOP_LAMP_SVG}</button>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
 ${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}

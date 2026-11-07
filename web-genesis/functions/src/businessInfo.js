@@ -3,6 +3,23 @@
  * (Flutter) ile BİREBİR aynı tutulmalı. Tek kaynak burası değil, oradaki
  * dosya; bu sadece web-genesis'in kendi kopyası.
  */
+// Müşterinin tarayıcıda seçtiği arayüz dili Türkçe değilse WhatsApp
+// mesajının sonuna eklenen not için — esnaf sadece Türkçe okuyor, mesaj
+// gövdesi HER ZAMAN Türkçe kalır (bkz. whatsappUrl) ama bu notla hangi
+// dilde gezindiğini görür.
+const LOCALE_TR_NAMES = {
+  en: "İngilizce",
+  ar: "Arapça",
+  de: "Almanca",
+  el: "Yunanca",
+  it: "İtalyanca",
+  ky: "Kırgızca",
+  ru: "Rusça",
+  uk: "Ukraynaca",
+  uz: "Özbekçe",
+  zh: "Çince",
+};
+
 module.exports = {
   brandName: "Sağlam Spot",
   phoneNumberIntl: "905392019961",
@@ -32,8 +49,10 @@ module.exports = {
     {stop: "İçerenköy Durağı (Kayışdağı Yönü)", lines: ["19", "19F", "19FB", "14KS", "18UK", "KM46-1"]},
     {stop: "İçerenköy Durağı (Yeniyol)", lines: ["10", "319", "KM46", "13AB", "14T"]},
   ],
-  whatsappUrl(message = "Merhaba, mobilyalar hakkında bilgi almak istiyorum.") {
-    return `https://wa.me/${this.phoneNumberIntl}?text=${encodeURIComponent(message)}`;
+  whatsappUrl(message = "Merhaba, mobilyalar hakkında bilgi almak istiyorum.", locale) {
+    const langName = LOCALE_TR_NAMES[locale];
+    const fullMessage = langName ? `${message}\n\n— Not: Bu talep sitenin ${langName} sürümünden gönderildi.` : message;
+    return `https://wa.me/${this.phoneNumberIntl}?text=${encodeURIComponent(fullMessage)}`;
   },
   get instagramUrl() {
     return `https://www.instagram.com/${this.instagramUser}`;
@@ -60,3 +79,4 @@ module.exports = {
     return this._istanbulNow().getUTCDay() === 0 ? "10:00 - 20:00" : "09:00 - 22:00";
   },
 };
+module.exports.LOCALE_TR_NAMES = LOCALE_TR_NAMES;

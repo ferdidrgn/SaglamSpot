@@ -45,7 +45,7 @@ app.use((req, res) => {
   <div class="not-found-actions">
     <a class="hero-pill hero-pill-accent" href="/">${ICONS.explore} ${escapeHtml(t(locale, "home"))}</a>
     <a class="hero-pill hero-pill-outline" style="color:var(--color-text-primary);border-color:var(--color-border)" href="/arama">🔍 ${escapeHtml(t(locale, "searchHint"))}</a>
-    <a class="whatsapp-link" href="${business.whatsappUrl()}" rel="noopener">${escapeHtml(t(locale, "whatsappCta"))}</a>
+    <a class="whatsapp-link" href="${business.whatsappUrl(undefined, locale)}" rel="noopener">${escapeHtml(t(locale, "whatsappCta"))}</a>
   </div>
 </section>`;
 

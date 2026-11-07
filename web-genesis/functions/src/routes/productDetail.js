@@ -194,7 +194,7 @@ module.exports = async function productDetailRoute(req, res) {
   const whatsappMessage = product.isSold
     ? `Merhaba, "${product.name}" ürününe benzer bir şey arıyorum, elinizde var mı?`
     : `Merhaba, "${product.name}" (₺${Math.round(product.price)}) ürünü ile ilgileniyorum.\n${shareUrl}`;
-  const whatsappHref = business.whatsappUrl(whatsappMessage);
+  const whatsappHref = business.whatsappUrl(whatsappMessage, locale);
   const cartButtonHtml = product.isSold ? "" : `
       <button type="button" class="pdetail-cta-primary" data-cart-add
         data-id="${escapeHtml(product.id)}"

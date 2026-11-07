@@ -2444,6 +2444,15 @@ body.view-is-list .product-list {
   margin-bottom: var(--space-lg);
 }
 
+/* /arama, /sifir, /spot: live-filter.js sayfayı yeniden yüklemeden
+   fetch+DOM değişimiyle güncellerken kısa bir "yükleniyor" geri bildirimi
+   — tam opak kaybolma değil, hafif soluklaşma + tekrar tıklamayı engelleme. */
+[data-live-filter].is-live-loading {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+
 @media (max-width: 860px) {
   .listing-layout {
     grid-template-columns: 1fr;

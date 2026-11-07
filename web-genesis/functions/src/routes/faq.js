@@ -96,7 +96,7 @@ module.exports = function faqRoute(req, res) {
     <dt>${escapeHtml(t(locale, "sssStoreAddressTitle"))}</dt>
     <dd>${escapeHtml(t(locale, "sssStoreAddressValue"))}</dd>
   </dl>
-  <a class="whatsapp-link" href="${business.whatsappUrl()}" rel="noopener">${escapeHtml(t(locale, "sssVisitStoreButton"))}</a>
+  <a class="whatsapp-link" href="${business.whatsappUrl(undefined, locale)}" rel="noopener">${escapeHtml(t(locale, "sssVisitStoreButton"))}</a>
 </section>`;
 
   res.set("Cache-Control", "public, max-age=300");
