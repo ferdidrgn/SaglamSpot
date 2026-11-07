@@ -65,6 +65,13 @@ const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fil
 // (kullanıcı geri bildirimi). Diğer ikonlarla AYNI tek-renk çizgi dili:
 // meridyen çizgili klasik "dünya/küre" glifi.
 const ICON_GLOBE = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z\"/></svg>";
+// Mobilde menü aç/kapa düğmesi — önceden mobilde nav HİÇ daralmıyordu,
+// 8 bağlantı + dil seçici kendi genişliklerine göre satır satır
+// sarıyordu (kullanıcı geri bildirimi: "en üst kısım çok alan kaplıyor,
+// sayfanın %30'u kaplanarak scroll oluyor"). Artık ≤760px'te nav/dil
+// seçici bu düğmeyle açılan bir dropdown panele taşınıyor (bkz. base.css
+// .nav-toggle/.site-nav-group notu, main.js wireNavToggle()).
+const ICON_MENU = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 7h16M4 12h16M4 17h16\"/></svg>";
 const ICON_PHONE = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M6.5 4h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z\"/></svg>";
 // "Yukarı çık" düğmesi — gece lambası ipi metaforu, TEK bir SVG içinde:
 // tavan bağlantısı + şişkin/tatlı yuvarlak bir abajur (sabit, sıcak
@@ -276,7 +283,8 @@ ${jsonLdHtml}
 <a class="skip-link" href="#content">İçeriğe geç</a>
 <header class="site-header">
   <a class="brand" href="/">${escapeHtml(siteName)}</a>
-  <div class="site-nav-group">
+  <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-panel" aria-label="Menü">${ICON_MENU}</button>
+  <div class="site-nav-group" id="site-nav-panel" data-nav-panel>
     <nav class="site-nav" aria-label="${escapeHtml(t(locale, "home"))}">
       ${navHtml}
     </nav>

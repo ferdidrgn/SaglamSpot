@@ -118,6 +118,23 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
+/* Mobil menü düğmesi — masaüstünde hiç görünmez (nav zaten sığıyor),
+   sadece ≤760px'teki dropdown panel için (bkz. aşağıdaki media query
+   ve layout.js'teki ICON_MENU notu). */
+.nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .site-nav {
   display: flex;
   gap: var(--space-lg);
@@ -184,6 +201,63 @@ button:focus-visible {
 
 .cart-badge[hidden] {
   display: none;
+}
+
+/* --- mobil başlık: 8 nav bağlantısı + dil seçici artık satır satır
+   SARMIYOR (eskiden sarıp başlığı ekranın ~%30'unu kaplayan, içeriğe
+   inmeden kaydırma gerektiren bir bloğa dönüştürüyordu — gerçek
+   kullanıcı geri bildirimiyle yakalandı). ≤760px'te nav/dil seçici bir
+   dropdown panele taşınıyor, .nav-toggle düğmesiyle açılıp kapanıyor
+   (bkz. main.js wireNavToggle()). .site-header zaten position:sticky —
+   bu da pozisyonlanmış bir öğe sayıldığından panelin position:absolute
+   referansı için ayrıca position:relative eklemeye gerek yok. */
+@media (max-width: 760px) {
+  .site-header {
+    flex-wrap: nowrap;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav-group {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 16px 32px -20px color-mix(in srgb, var(--color-primary-dark) 45%, transparent);
+    padding: var(--space-sm) var(--space-screen) var(--space-lg);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .site-nav-group.is-open {
+    display: flex;
+  }
+
+  .site-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-link {
+    display: block;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-divider);
+    font-size: 1rem;
+  }
+
+  .lang-switcher-wrap {
+    margin-top: var(--space-md);
+    align-self: flex-start;
+  }
 }
 
 #content {
@@ -3651,7 +3725,7 @@ body.view-is-list .product-list {
 
 .cart-row {
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: var(--space-lg);
   padding: var(--space-lg);
@@ -3669,31 +3743,6 @@ body.view-is-list .product-list {
   margin: 0;
   color: var(--color-text-tertiary);
   font-size: 0.875rem;
-}
-
-.cart-row-qty {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-family: var(--font-mono);
-}
-
-.cart-row-qty button {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.cart-row-subtotal {
-  margin: 0;
-  font-weight: 700;
-  white-space: nowrap;
 }
 
 .cart-row-remove {
@@ -3717,10 +3766,15 @@ body.view-is-list .product-list {
 }
 
 .cart-send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
   border: none;
   cursor: pointer;
   width: 100%;
-  text-align: center;
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1rem;
 }
 
 .cart-send-btn:disabled {
@@ -3732,13 +3786,6 @@ body.view-is-list .product-list {
   text-align: center;
   font-size: 0.8125rem;
   margin-top: var(--space-sm);
-}
-
-@media (max-width: 560px) {
-  .cart-row {
-    grid-template-columns: 1fr auto;
-    row-gap: var(--space-sm);
-  }
 }
 
 /* --- product grid / "asimetrik vitrin kartı" ---

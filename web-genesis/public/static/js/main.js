@@ -191,18 +191,16 @@
         return;
       }
 
+      // Her ürün ikinci el/spot mobilyada TEK bir fiziksel parça — "2 adet"
+      // gibi bir şey hiç yok, bu yüzden sepette adet artır/azalt kontrolü
+      // kafa karıştırıcıydı (kullanıcı geri bildirimi: "bizde bir üründen
+      // 1 adet var zaten"). Her satır artık sadece isim+fiyat+kaldır.
       const rowsHtml = items.map((item) => `
         <div class="cart-row" data-row="${item.id}">
           <div class="cart-row-info">
             <p class="cart-row-name">${escapeHtml(item.name)}</p>
             <p class="cart-row-price">${formatPrice(item.price)}</p>
           </div>
-          <div class="cart-row-qty">
-            <button type="button" data-qty-dec aria-label="−">−</button>
-            <span>${item.quantity}</span>
-            <button type="button" data-qty-inc aria-label="+">+</button>
-          </div>
-          <p class="cart-row-subtotal">${formatPrice(item.price * item.quantity)}</p>
           <button type="button" class="cart-row-remove" data-remove>${escapeHtml(CART_STRINGS.remove || "")}</button>
         </div>`).join("");
 
@@ -214,25 +212,11 @@
           <span>${escapeHtml(CART_STRINGS.total || "")}</span>
           <strong>${formatPrice(total)}</strong>
         </div>
-        <button type="button" class="whatsapp-link cart-send-btn" data-send-whatsapp>${escapeHtml(CART_STRINGS.sendButton || "")}</button>
+        <button type="button" class="whatsapp-link cart-send-btn" data-send-whatsapp>${SHARE_WHATSAPP_ICON}<span>${escapeHtml(CART_STRINGS.sendButton || "")}</span></button>
         <p class="cart-note">${escapeHtml(CART_STRINGS.note || "")}</p>`;
 
       root.querySelectorAll("[data-row]").forEach((row) => {
         const id = row.dataset.row;
-        row.querySelector("[data-qty-inc]").addEventListener("click", () => {
-          const current = readCart();
-          const item = current.find((i) => i.id === id);
-          setQuantity(current, id, (item ? item.quantity : 0) + 1);
-          updateBadge();
-          render();
-        });
-        row.querySelector("[data-qty-dec]").addEventListener("click", () => {
-          const current = readCart();
-          const item = current.find((i) => i.id === id);
-          setQuantity(current, id, (item ? item.quantity : 1) - 1);
-          updateBadge();
-          render();
-        });
         row.querySelector("[data-remove]").addEventListener("click", () => {
           setQuantity(readCart(), id, 0);
           updateBadge();
@@ -241,10 +225,11 @@
       });
 
       const sendBtn = root.querySelector("[data-send-whatsapp]");
+      const sendBtnLabel = sendBtn ? sendBtn.querySelector("span") : null;
       if (sendBtn) {
         sendBtn.addEventListener("click", async () => {
           sendBtn.disabled = true;
-          sendBtn.textContent = (CART_STRINGS.sending || "…");
+          if (sendBtnLabel) sendBtnLabel.textContent = (CART_STRINGS.sending || "…");
           try {
             // lib/features/cart/presentation/pages/cart_page.dart
             // _sendCartToWhatsApp ile AYNI mesaj biçimi (çeviriler
@@ -252,9 +237,7 @@
             let message = CART_STRINGS.greeting || "";
             for (const item of items) {
               const link = await productShareUrl(item.id, item.name);
-              message += `• ${item.name}`;
-              if (item.quantity > 1) message += ` (x${item.quantity})`;
-              message += ` — ${Math.round(item.price * item.quantity)}₺\n`;
+              message += `• ${item.name} — ${Math.round(item.price)}₺\n`;
               message += `  ${link}\n\n`;
             }
             message += `${CART_STRINGS.total || "Toplam"}: ${Math.round(total)}₺\n\n`;
@@ -266,7 +249,7 @@
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`, "_blank", "noopener");
           } finally {
             sendBtn.disabled = false;
-            sendBtn.textContent = CART_STRINGS.sendButton || "";
+            if (sendBtnLabel) sendBtnLabel.textContent = CART_STRINGS.sendButton || "";
           }
         });
       }
@@ -915,6 +898,38 @@
     });
   }
 
+  // Mobil menü düğmesi — ≤760px'te nav/dil seçici artık satır satır
+  // sarıp başlığı şişirmek yerine bu düğmeyle açılan bir dropdown
+  // panelde (bkz. base.css .nav-toggle/.site-nav-group notu).
+  function wireNavToggle() {
+    const toggle = document.querySelector("[data-nav-toggle]");
+    const panel = document.querySelector("[data-nav-panel]");
+    if (!toggle || !panel) return;
+
+    function close() {
+      panel.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    function open() {
+      panel.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+    }
+
+    toggle.addEventListener("click", () => {
+      if (panel.classList.contains("is-open")) close();
+      else open();
+    });
+    panel.querySelectorAll("a").forEach((link) => link.addEventListener("click", close));
+    document.addEventListener("click", (e) => {
+      if (!panel.classList.contains("is-open")) return;
+      if (panel.contains(e.target) || toggle.contains(e.target)) return;
+      close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && panel.classList.contains("is-open")) close();
+    });
+  }
+
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
     if (!select) return;
@@ -950,6 +965,7 @@
     updateFavBadge();
     wireFavoriteButtons();
     renderFavoritesApp();
+    wireNavToggle();
     wireLanguageSwitcher();
     wireHeaderScroll();
     wireRevealAnimations();
