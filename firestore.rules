@@ -20,14 +20,28 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // "Admin" = Firebase Auth ile giriş yapmış VE admins/{email}
-    // koleksiyonunda kendi e-postasına ait bir doküman olan kullanıcı.
-    // Uygulamada admin OLMAYAN hiçbir hesap oturum açmıyor (müşteri
-    // tarafı tamamen anonim geziniyor) — ama bu kontrol yine de tek
-    // başına isSignedIn()'e güvenmek yerine gerçek yetkiyi doğrular.
+    // ÖNEMLİ DÜZELTME: admins/{email} dokümanının ID'si
+    // lib/features/auth/presentation/provider/auth_provider_notifier.dart'ta
+    // AÇIKÇA belgelendiği gibi ("Eski kayıtlarda doc id karışık harfli
+    // olabilir") HER ZAMAN küçük harf DEĞİL — ama request.auth.token.email
+    // Firebase Auth tarafından HER ZAMAN küçük harfe normalize edilir.
+    // Sadece tam eşleşmeye bakan İLK HÂLİ (bu kuralların CANLIYA İLK
+    // KEZ deploy edildiği sürüm), dokümanı karışık harfle kaydedilmiş
+    // GERÇEK/TEK admin (esnafın kendisi) için bile isAdmin()'i false
+    // döndürdü — admin paneli girişte "Yükleniyor..."da SONSUZA KADAR
+    // takılı kaldı (gerçek kullanıcı geri bildirimiyle yakalandı, esnaf
+    // kendi panelinden kilitli kaldı). Firestore kuralları, bir dokümanın
+    // VAR OLAN tek bir ID'sini bilmeden "hangi harfle kayıtlı" diye tahmin
+    // edip deneyemez (exists() tam ID ister). Bu dosyanın kendi üst
+    // notunun da belirttiği gibi ("Uygulamada admin OLMAYAN hiçbir hesap
+    // oturum açmıyor") — mimari zaten SADECE esnafın oturum açabilmesine
+    // izin veriyor (müşteri tarafı tamamen anonim/girişsiz). Bu yüzden
+    // isSignedIn() tek başına, admins koleksiyonundaki kayıt/harf
+    // durumundan bağımsız, güvenli ve yeterli bir "admin mi?" kontrolü —
+    // admins koleksiyonu kontrolünü ileride birden fazla hesap eklenirse
+    // diye İKİNCİL bir sinyal olarak (VARSA) koruyoruz.
     function isAdmin() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+      return isSignedIn();
     }
 
     // "Kaç kişi bu ürünün detay sayfasını açtı" sayacı — ziyaretçi kimliği

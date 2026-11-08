@@ -134,18 +134,31 @@ function fileToBase64(file) {
 }
 
 // --- Auth guard ---
+// Bu callback'teki HERHANGİ bir beklenmeyen hata (ör. Firestore
+// isteği reddedilirse) önceden hiç yakalanmıyordu - async fonksiyon
+// sessizce reddoluyor, ne loadProducts() çağrılıyor ne de girişe
+// yönlendiriliyordu; sonuç: admin paneli "Yükleniyor..."da SONSUZA
+// KADAR takılı kalıyordu (gerçek kullanıcı geri bildirimiyle
+// yakalandı - bkz. firestore.rules/firebase-client.js'teki ilgili
+// notlar). Artık ne olursa olsun ya panel yükleniyor ya da kullanıcı
+// girişe dönüyor, asla sonsuz "Yükleniyor..." kalmıyor.
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "/admin/login";
     return;
   }
-  const admin = await isCurrentUserAdmin();
-  if (!admin) {
-    await firebaseSignOut(auth);
-    window.location.href = "/admin/login";
-    return;
+  try {
+    const admin = await isCurrentUserAdmin();
+    if (!admin) {
+      await firebaseSignOut(auth);
+      window.location.href = "/admin/login";
+      return;
+    }
+    await loadProducts();
+  } catch (err) {
+    console.error("Admin oturum kontrolü başarısız:", err);
+    appRoot.innerHTML = `<p class="status status-error">Yönetici kontrolü başarısız oldu: ${escapeHtml(err.message)}. Sayfayı yenileyin ya da tekrar giriş yapın.</p>`;
   }
-  loadProducts();
 });
 
 logoutBtn.addEventListener("click", async () => {
