@@ -14,6 +14,7 @@ import 'core/services/admin_session_cache.dart';
 import 'core/services/category_watch_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
 import 'core/services/dynamic_color_cache.dart';
+import 'core/services/favorite_ids_cache.dart';
 import 'core/services/onboarding_cache.dart';
 import 'core/services/theme_mode_cache.dart';
 import 'core/theme/app_colors.dart';
@@ -79,6 +80,7 @@ void main() async {
     DynamicColorCache.load(),
     BackgroundPatternCache.load(),
     CategoryWatchCache.load(),
+    FavoriteIdsCache.load(),
   ]);
 
   // 4. Firebase ve çekirdek servisler (ikincil servisler kendi içinde
@@ -184,6 +186,15 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             // sayfa kendi AnnotatedRegion'ını (BasePageWrapper, Keşfet'in
             // AppBar'ı) tanımlıyorsa o hâlâ önceliklidir, bu yalnızca
             // tanımlamayanlar için güvenli bir varsayılan.
+            //
+            // systemNavigationBarColor: MainActivity.kt'de TRANSPARENT
+            // atanıyor ve stok Android'de bu doğru çalışıyor, ama MIUI
+            // (Xiaomi) gibi bazı OEM kabuklarında şeffaf gezinme çubuğu
+            // yok sayılıp varsayılan OPAK SİYAH gösteriliyor (gerçek
+            // cihazda doğrulandı). Burada GÜNCEL arka plan rengini açıkça
+            // atamak bu cihazlarda doğru rengi garantiliyor; Android 15+
+            // zorunlu kenar-kenar cihazlarda bu atama native tarafta zaten
+            // yok sayılıyor (zararsız, hâlâ şeffaf kalıyor).
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
                 statusBarIconBrightness: effectiveBrightness == Brightness.dark
@@ -194,6 +205,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                     effectiveBrightness == Brightness.dark
                         ? Brightness.light
                         : Brightness.dark,
+                systemNavigationBarColor: effectiveBrightness == Brightness.dark
+                    ? AppColors.darkBackground
+                    : AppColors.background,
+                systemNavigationBarDividerColor: Colors.transparent,
               ),
               child: MediaQuery(
                 // Editoryal tipografi sınırlarını tarayıcıların zoraki font büyütme manipülasyonlarından koru
