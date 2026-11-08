@@ -6,6 +6,7 @@ import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/notification_inbox_cache.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
@@ -23,6 +24,14 @@ class NotificationsPage extends ConsumerStatefulWidget {
 }
 
 class _NotificationsPageState extends ConsumerState<NotificationsPage> {
+  // Bir bildirime dokunulunca o kart kısa süreliğine "yükleniyor" gösterir
+  // ve TÜM liste kilitlenir — context.go() senkron olduğu için hedef
+  // sayfanın gerçek yüklenişini bekleyemiyoruz, ama en azından dokunuşun
+  // bir karşılığı olduğu görülür ve kullanıcı art arda başka bildirimlere
+  // basıp üst üste binen navigasyon çağrıları (sayfaların "tuhaf açılması")
+  // tetiklemez.
+  String? _navigatingId;
+
   @override
   void initState() {
     super.initState();
@@ -70,12 +79,20 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                         separatorBuilder: (final _, final __) => const SizedBox(height: 10),
                         itemBuilder: (final context, final index) => _NotificationCard(
                           notification: items[index],
+                          isNavigating: _navigatingId == items[index].id,
+                          disabled: _navigatingId != null &&
+                              _navigatingId != items[index].id,
                           onTap: () {
+                            if (_navigatingId != null) return;
+                            setState(() => _navigatingId = items[index].id);
                             ref.read(notificationInboxProvider.notifier).markRead(items[index].id);
                             final path = items[index].path;
                             if (path != null && path.isNotEmpty) {
                               NavigationHandler.globalGoTo(path);
                             }
+                            Future.delayed(const Duration(milliseconds: 550), () {
+                              if (mounted) setState(() => _navigatingId = null);
+                            });
                           },
                         ),
                       ),
@@ -139,8 +156,15 @@ enum _MenuAction { markAllRead, clearAll }
 class _NotificationCard extends StatelessWidget {
   final AppNotification notification;
   final VoidCallback onTap;
+  final bool isNavigating;
+  final bool disabled;
 
-  const _NotificationCard({required this.notification, required this.onTap});
+  const _NotificationCard({
+    required this.notification,
+    required this.onTap,
+    this.isNavigating = false,
+    this.disabled = false,
+  });
 
   String _relativeTime(final BuildContext context) {
     final diff = DateTime.now().difference(notification.receivedAt);
@@ -151,12 +175,18 @@ class _NotificationCard extends StatelessWidget {
   }
 
   @override
-  Widget build(final BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
+  Widget build(final BuildContext context) => AnimatedOpacity(
+        duration: AppMotion.fast,
+        opacity: disabled ? 0.45 : 1,
+        child: Material(
+          color: AppColors.mobileSurface,
+          borderRadius: BorderRadius.circular(18),
+          child: InkWell(
+            onTap: disabled ? null : onTap,
+            borderRadius: BorderRadius.circular(18),
+            child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: AppColors.mobileSurface,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
                 color: notification.read
@@ -179,7 +209,13 @@ class _NotificationCard extends StatelessWidget {
                   gradient: AppColors.mobileAccentGradient,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.campaign_rounded, color: Colors.white, size: 19),
+                child: isNavigating
+                    ? const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Icon(Icons.campaign_rounded, color: Colors.white, size: 19),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -209,6 +245,8 @@ class _NotificationCard extends StatelessWidget {
                       color: AppColors.mobilePrimary, shape: BoxShape.circle),
                 ),
             ],
+          ),
+            ),
           ),
         ),
       );
