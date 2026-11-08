@@ -3008,11 +3008,18 @@ body.view-is-list .product-list {
   justify-content: flex-end;
 }
 
+/* ÖNEMLİ: "display: flex" eskiden koşulsuzdu ve [hidden] özniteliğinin
+   varsayılan "display:none"ını EZİYORDU (bkz. .pgallery-lightbox'taki
+   AYNI hatanın notu, base.css'te) — sonuç: bu position:fixed; inset:0
+   katman admin paneli her yüklendiğinde (form hiç açılmasa bile)
+   GÖRÜNMEZ ama TIKLANABİLİR durumda tüm sayfayı kaplıyordu. Admin
+   panelindeki "hiçbir buton çalışmıyor, sanki önümde sadece bir resim
+   var" şikayetinin tam açıklaması buydu (gerçek kullanıcı geri
+   bildirimiyle yakalandı). display artık sadece [hidden] YOKKEN uygulanıyor. */
 .admin-modal {
   position: fixed;
   inset: 0;
   background: color-mix(in srgb, var(--color-primary-dark) 55%, transparent);
-  display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: var(--space-xxl) var(--space-lg);
@@ -3020,6 +3027,10 @@ body.view-is-list .product-list {
   z-index: 100;
   opacity: 0;
   transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.admin-modal:not([hidden]) {
+  display: flex;
 }
 
 .admin-modal.is-open {
