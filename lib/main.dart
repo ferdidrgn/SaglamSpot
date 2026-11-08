@@ -9,6 +9,7 @@ import 'core/config/app_initializer.dart';
 import 'core/config/app_router.dart';
 import 'core/config/remote_config_gate.dart';
 import 'core/localization/locale_provider.dart';
+import 'core/providers/notification_inbox_provider.dart';
 import 'core/services/admin_session_cache.dart';
 import 'core/services/category_watch_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
@@ -112,6 +113,19 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     DeeplinkListener.stop();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
+    // Push bildirimleri (foreground/background handler, bkz.
+    // notification_service.dart) doğrudan diske (SharedPreferences)
+    // yazıyor, notificationInboxProvider'ın bellekteki state'ini DEĞİL —
+    // uygulama arka plandan dönünce (ör. bildirime dokunmadan, sadece
+    // uygulamayı tekrar açarak) ana sayfadaki zil rozeti bu olmadan eski
+    // sayıda takılı kalırdı.
+    if (state == AppLifecycleState.resumed) {
+      ref.invalidate(notificationInboxProvider);
+    }
   }
 
   @override
