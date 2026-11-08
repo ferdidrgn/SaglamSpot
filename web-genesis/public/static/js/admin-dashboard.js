@@ -37,6 +37,23 @@ function categoryColorFor(key) {
   return CATEGORY_COLOR_MAP[key] || CATEGORY_COLOR_MAP.other;
 }
 
+// Sıfır ürün renk seçenekleri — Flutter'daki ColorVariantPicker
+// (lib/features/products/presentation/widgets/color_variant_picker.dart)
+// ile AYNI palet: admin hex kodu yazmak yerine dokunarak seçer, mobil ile
+// tutarlı aynı renkler çıkar.
+const PRODUCT_COLOR_PALETTE = [
+  "#0F302A", "#C5A358", "#8B5E3C", "#5A6E6A", "#3E6B8A",
+  "#B2673E", "#6B5CA5", "#1A1A1A", "#E5E0D8", "#D32F2F",
+];
+
+function colorSwatchesHtml(selectedColors) {
+  const extra = selectedColors.filter((c) => !PRODUCT_COLOR_PALETTE.includes(c));
+  return [...PRODUCT_COLOR_PALETTE, ...extra].map((hex) => {
+    const selected = selectedColors.includes(hex);
+    return `<button type="button" class="admin-color-swatch${selected ? " is-selected" : ""}" data-hex="${escapeHtml(hex)}" style="--swatch-color:${escapeHtml(hex)}" aria-pressed="${selected}" aria-label="${escapeHtml(hex)}" title="${escapeHtml(hex)}"></button>`;
+  }).join("");
+}
+
 // "dd.MM.yyyy, HH:mm" → Date (bkz. productRepo.js parseTrDateTime — admin
 // paneli ayrı bir client modül olduğu için burada küçük bir kopyası var).
 function parseTrDate(value) {
@@ -588,9 +605,15 @@ function renderFormHtml(product) {
   </label>
 </div>
 <div data-field="availableColors" ${isSpot ? "hidden" : ""}>
-  <label>Renk Seçenekleri (opsiyonel, virgülle ayrılmış hex — örn. #2E7D6B,#C79868)
-    <input type="text" name="availableColors" value="${escapeHtml((product && product.availableColors || []).join(","))}">
-  </label>
+  <label>Renk Seçenekleri (opsiyonel — dokunarak seç, ya da "+" ile istediğin rengi seç)</label>
+  <div class="admin-color-swatches" data-color-swatches>
+    ${colorSwatchesHtml((product && product.availableColors) || [])}
+    <label class="admin-color-swatch-custom" title="Özel renk seç">
+      +
+      <input type="color" data-color-custom-input value="#8B5E3C">
+    </label>
+  </div>
+  <input type="hidden" name="availableColors" data-colors-input value="${escapeHtml((product && product.availableColors || []).join(","))}">
 </div>
 <label>Fotoğraflar ${isEdit ? "(boş bırakırsanız mevcut görseller korunur)" : ""}
   <input type="file" name="images" accept="image/*" multiple>
@@ -612,6 +635,8 @@ function wireFormDynamic(initialIsSpot) {
   const radios = formEl.querySelectorAll("input[name=isSpotProduct]");
   const wearTierField = formEl.querySelector("[data-field=wearTier]");
   const colorsField = formEl.querySelector("[data-field=availableColors]");
+  const colorsInput = formEl.querySelector("[data-colors-input]");
+  const swatchesEl = formEl.querySelector("[data-color-swatches]");
 
   function sync(isSpot) {
     wearTierField.hidden = !isSpot;
@@ -620,6 +645,45 @@ function wireFormDynamic(initialIsSpot) {
 
   radios.forEach((radio) => radio.addEventListener("change", () => sync(radio.value === "true" && radio.checked)));
   sync(initialIsSpot);
+
+  function syncColorsInput() {
+    const selected = [...swatchesEl.querySelectorAll(".admin-color-swatch[aria-pressed=true]")].map((b) => b.dataset.hex);
+    colorsInput.value = selected.join(",");
+  }
+
+  // Hex yazmak yerine dokunarak seç — seçili swatch'ları virgüllü hex
+  // listesine çevirip gizli input'a yaz (handleSubmit hâlâ aynı
+  // availableColors alanını okuyor).
+  swatchesEl?.addEventListener("click", (event) => {
+    const btn = event.target.closest(".admin-color-swatch");
+    if (!btn) return;
+    const nowSelected = btn.getAttribute("aria-pressed") !== "true";
+    btn.setAttribute("aria-pressed", String(nowSelected));
+    btn.classList.toggle("is-selected", nowSelected);
+    syncColorsInput();
+  });
+
+  // "+" özel renk seçici — tarayıcının kendi RGB/renk tekerleği popup'ını
+  // açar; seçilen rengi paletteki gibi yeni bir swatch olarak ekler (zaten
+  // varsa onu seçili yapar, tekrar eklemez).
+  const customInput = formEl.querySelector("[data-color-custom-input]");
+  customInput?.addEventListener("change", () => {
+    const hex = customInput.value.toUpperCase();
+    let btn = swatchesEl.querySelector(`.admin-color-swatch[data-hex="${hex}"]`);
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "admin-color-swatch";
+      btn.dataset.hex = hex;
+      btn.style.setProperty("--swatch-color", hex);
+      btn.title = hex;
+      btn.setAttribute("aria-label", hex);
+      customInput.closest(".admin-color-swatch-custom").insertAdjacentElement("beforebegin", btn);
+    }
+    btn.setAttribute("aria-pressed", "true");
+    btn.classList.add("is-selected");
+    syncColorsInput();
+  });
 }
 
 async function handleSubmit(event) {

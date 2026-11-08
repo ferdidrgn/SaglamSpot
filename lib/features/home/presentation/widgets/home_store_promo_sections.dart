@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
+import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_tokens.dart';
@@ -17,12 +19,15 @@ import '../../../../features/products/presentation/providers/category_meta_provi
 import '../../../../features/products/presentation/providers/favorites_provider.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
 
-/// Soft welcome row — greeting + circular search, brand colors only.
-class HomeWelcomeHeader extends StatelessWidget {
+/// Soft welcome row — greeting + circular search (+ bildirim, yalnızca
+/// native mobilde — push altyapısı olmayan web'de anlamsız) aynı dairesel
+/// dilde, marka renkleriyle.
+class HomeWelcomeHeader extends ConsumerWidget {
   const HomeWelcomeHeader({super.key});
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final unreadCount = kIsWeb ? 0 : ref.watch(unreadNotificationCountProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.sm),
@@ -55,23 +60,89 @@ class HomeWelcomeHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          TactilePress(
-            onTap: () => NavigationHandler.goToSearch(context),
-            child: Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.mobileAccent, width: 1.4),
-              ),
-              child: Icon(Icons.search_rounded,
-                  color: AppColors.mobileAccent, size: 22),
+          if (!kIsWeb) ...[
+            _HeaderCircleButton(
+              icon: Icons.notifications_outlined,
+              tooltip: context.l10n.notificationsTitle,
+              badgeCount: unreadCount,
+              onTap: () => NavigationHandler.goToNotifications(context),
             ),
+            const SizedBox(width: AppSpacing.sm),
+          ],
+          _HeaderCircleButton(
+            icon: Icons.search_rounded,
+            tooltip: context.l10n.searchHint,
+            onTap: () => NavigationHandler.goToSearch(context),
           ),
         ],
       ),
     );
   }
+}
+
+class _HeaderCircleButton extends StatelessWidget {
+  const _HeaderCircleButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+    this.badgeCount = 0,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+  final int badgeCount;
+
+  @override
+  Widget build(final BuildContext context) => Tooltip(
+        message: tooltip,
+        child: Semantics(
+          button: true,
+          label: tooltip,
+          child: TactilePress(
+            onTap: onTap,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border:
+                        Border.all(color: AppColors.mobileAccent, width: 1.4),
+                  ),
+                  child: Icon(icon, color: AppColors.mobileAccent, size: 22),
+                ),
+                if (badgeCount > 0)
+                  Positioned(
+                    top: -2,
+                    right: -2,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      constraints: const BoxConstraints(minWidth: 18),
+                      decoration: BoxDecoration(
+                        color: AppColors.error,
+                        borderRadius: AppRadius.all(AppRadius.pill),
+                        border: Border.all(color: AppColors.mobileSurface, width: 1.5),
+                      ),
+                      child: Text(
+                        badgeCount > 9 ? '9+' : '$badgeCount',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
 /// Special-pick carousel — lifestyle photos + authentic Sağlam Spot copy
