@@ -4,14 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_design_tokens.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/design_system/adaptive_backdrop_blur.dart';
 import '../../../features/cart/presentation/providers/cart_provider.dart';
 import '../../../features/products/presentation/providers/favorites_provider.dart';
 
-/// Kenara yapışık, koyu marka renkli (AppColors.primary) modern alt
-/// navigasyon — eski "yüzen pill" tasarımının yerini aldı (kullanıcı
-/// isteği: düz, tam genişlikte, marka rengi). Destinations: Home /
-/// Discover / Cart / Favorites / Profile.
+/// Soft, floating bottom nav — thin outline icons, brand-tinted active
+/// pill, project colors only. Destinations: Home / Discover / Cart /
+/// Favorites / Profile (matches the storeflow reference while staying
+/// on Sağlam Spot routes).
 class MobileBottomNav extends ConsumerWidget {
   const MobileBottomNav({super.key});
 
@@ -56,38 +58,43 @@ class MobileBottomNav extends ConsumerWidget {
       ),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.35),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 64,
-          child: Row(
-            children: [
-              for (final item in items)
-                Expanded(
-                  child: _NavButton(
-                    item: item,
-                    isActive: _isActive(currentPath, item.path),
-                    onTap: () {
-                      if (_isActive(currentPath, item.path)) {
-                        return;
-                      }
-                      HapticFeedback.selectionClick();
-                      context.go(item.path);
-                    },
+    return SafeArea(
+      top: false,
+      minimum: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.sm),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        child: AdaptiveBackdropBlur(
+          sigma: context.glass.blurLg,
+          child: Container(
+            height: 68,
+            decoration: BoxDecoration(
+              color: AppColors.mobileSurface.withValues(alpha: 0.92),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              border: Border.all(
+                color: AppColors.mobileBorder.withValues(alpha: 0.55),
+              ),
+              boxShadow: AppShadows.level3(AppColors.mobilePrimary),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+            child: Row(
+              children: [
+                for (final item in items)
+                  Expanded(
+                    child: _NavButton(
+                      item: item,
+                      isActive: _isActive(currentPath, item.path),
+                      onTap: () {
+                        if (_isActive(currentPath, item.path)) {
+                          return;
+                        }
+                        HapticFeedback.selectionClick();
+                        context.go(item.path);
+                      },
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -132,7 +139,7 @@ class _NavButton extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final Color color =
-        isActive ? Colors.white : Colors.white.withValues(alpha: 0.6);
+        isActive ? AppColors.mobileAccent : AppColors.mobileMutedDark;
 
     return Semantics(
       button: true,
@@ -148,7 +155,7 @@ class _NavButton extends StatelessWidget {
               vertical: AppSpacing.sm, horizontal: 2),
           decoration: BoxDecoration(
             color: isActive
-                ? Colors.white.withValues(alpha: 0.16)
+                ? AppColors.mobileAccent.withValues(alpha: 0.14)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
@@ -176,15 +183,14 @@ class _NavButton extends StatelessWidget {
                             horizontal: 5, vertical: 1),
                         constraints: const BoxConstraints(minWidth: 16),
                         decoration: BoxDecoration(
-                          color: AppColors.accentLight,
+                          color: AppColors.mobileAccent,
                           borderRadius: BorderRadius.circular(AppRadius.pill),
-                          border: Border.all(color: AppColors.primary, width: 1.5),
                         ),
                         child: Text(
                           '${item.badgeCount}',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: AppColors.primaryDark,
+                          style: const TextStyle(
+                            color: Colors.white,
                             fontSize: 9.5,
                             fontWeight: FontWeight.w800,
                           ),
