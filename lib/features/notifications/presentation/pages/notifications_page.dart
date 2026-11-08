@@ -15,11 +15,30 @@ import '../../../../shared/navigation/widgets/nav_handler.dart';
 /// Bildirim gelen kutusu — hem push (FCM) hem uygulama içi bildirimlerin
 /// ortak listesi. Veri kaynağı: NotificationInboxCache (cihazda kalıcı,
 /// bkz. core/services/notification_service.dart).
-class NotificationsPage extends ConsumerWidget {
+class NotificationsPage extends ConsumerStatefulWidget {
   const NotificationsPage({super.key});
 
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
+  ConsumerState<NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends ConsumerState<NotificationsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // notificationInboxProvider ilk açılışta BİR KEZ diskten okunup
+    // bellekte tutuluyor (AsyncNotifier) — ama push bildirimleri
+    // (foreground/background handler, bkz. notification_service.dart)
+    // doğrudan NotificationInboxCache'e (statik, SharedPreferences) yazıyor,
+    // provider'ın bellekteki state'ini GÜNCELLEMİYOR. Bu yüzden ekran her
+    // açıldığında diskten taze okuma zorlanıyor, aksi halde az önce gelen
+    // bir bildirim listede görünmez.
+    WidgetsBinding.instance.addPostFrameCallback(
+        (final _) => ref.invalidate(notificationInboxProvider));
+  }
+
+  @override
+  Widget build(final BuildContext context) {
     final inboxAsync = ref.watch(notificationInboxProvider);
 
     final scaffold = Scaffold(
