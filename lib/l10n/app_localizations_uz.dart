@@ -2105,152 +2105,35 @@ class AppLocalizationsUz extends AppLocalizations {
       'Bir necha daqiqada haqiqiy sotuvchidan haqiqiy javob oling.';
 
   @override
-  String get firebaseServicesTooltip => 'Firebase Servisleri';
+  String get firebaseChecking => 'Tekshirilmoqda…';
 
   @override
-  String get firebaseServicesTitle => 'Firebase Servisleri';
-
-  @override
-  String get firebaseCrashlyticsTitle => 'Çökme Raporlama';
-
-  @override
-  String get firebaseCrashlyticsToggle => 'Çökme Raporlarını Gönder';
-
-  @override
-  String get firebaseCrashlyticsSubtitle =>
-      'Kapatılırsa uygulama hataları Firebase\'e bildirilmez';
-
-  @override
-  String get firebaseChecking => 'Kontrol ediliyor…';
-
-  @override
-  String get firebaseCrashedLastSession => 'Bir önceki oturumda uygulama çöktü';
-
-  @override
-  String get firebaseNoCrashLastSession => 'Bir önceki oturumda çökme olmadı';
-
-  @override
-  String get firebaseStatsConsoleOnly =>
-      'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir';
-
-  @override
-  String get firebaseAnalyticsTitle => 'Kullanım Analitiği';
-
-  @override
-  String get firebaseAnalyticsToggle => 'Kullanım Analitiği Topla';
-
-  @override
-  String get firebaseAnalyticsSubtitle =>
-      'Kapatılırsa uygulama içi kullanım verisi toplanmaz';
-
-  @override
-  String get firebaseRemoteConfigTitle => 'Remote Config';
-
-  @override
-  String firebaseAdsEnabledValue(String value) {
-    return 'Reklamlar: $value';
-  }
-
-  @override
-  String get firebaseValueOn => 'Açık';
-
-  @override
-  String get firebaseValueOff => 'Kapalı';
-
-  @override
-  String firebaseMaintenanceModeValue(String value) {
-    return 'Bakım modu: $value';
-  }
-
-  @override
-  String firebaseForceUpdateMinVersionValue(String value) {
-    return 'Zorunlu güncelleme eşiği: $value';
-  }
-
-  @override
-  String firebaseLastFetch(String time) {
-    return 'Son güncelleme: $time';
-  }
-
-  @override
-  String get firebaseRefreshConfig => 'Şimdi Güncelle';
-
-  @override
-  String get firebaseConfigConsoleOnly =>
-      'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz';
-
-  @override
-  String get firebaseConfigRefreshed => 'Remote Config güncellendi';
-
-  @override
-  String get firebaseConfigUnchanged => 'Remote Config zaten güncel';
-
-  @override
-  String get firebaseAppCheckTitle => 'App Check';
-
-  @override
-  String get firebaseAppCheckWebUnsupported =>
-      'App Check web\'de kullanılmıyor';
-
-  @override
-  String get firebaseActive => 'Aktif';
-
-  @override
-  String get firebaseAppCheckDesc =>
-      'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz';
-
-  @override
-  String get firebaseNotificationsTitle => 'Bildirimler (FCM)';
+  String get firebaseNotificationsTitle => 'Bildirishnomalar (FCM)';
 
   @override
   String get firebaseTokenAvailable =>
-      'Bu cihaz için bildirim belirteci mevcut';
+      'Bu qurilma uchun bildirishnoma tokeni mavjud';
 
   @override
   String get firebaseTokenUnavailable =>
-      'Bu cihaz için henüz bildirim belirteci yok';
+      'Bu qurilma uchun hali bildirishnoma tokeni yo\'q';
 
   @override
-  String get firebasePermissionGranted => 'Bildirim izni verildi';
+  String get firebasePermissionGranted => 'Bildirishnoma uchun ruxsat berildi';
 
   @override
-  String get firebasePermissionDenied => 'Bildirim izni verilmedi';
+  String get firebasePermissionDenied =>
+      'Bildirishnoma uchun ruxsat berilmagan';
 
   @override
-  String get firebaseOpenNotificationSettings => 'Bildirim Ayarlarını Aç';
+  String get firebaseOpenNotificationSettings =>
+      'Bildirishnoma sozlamalarini ochish';
 
   @override
-  String get productStatsTooltip => 'İstatistikler';
+  String get productStatsTooltip => 'Statistika';
 
   @override
-  String get productStatsTitle => 'İstatistikler';
-
-  @override
-  String get productStatsTotalViews => 'Toplam Görüntülenme (Web + Mobil)';
-
-  @override
-  String get productStatsWeb => 'Web';
-
-  @override
-  String get productStatsMobile => 'Mobil';
-
-  @override
-  String productStatsAvailableSection(int count) {
-    return 'Mevcut Ürünler ($count)';
-  }
-
-  @override
-  String productStatsSoldSection(int count) {
-    return 'Satılmış Ürünler ($count)';
-  }
-
-  @override
-  String get productStatsEmpty => 'Henüz ürün yok';
-
-  @override
-  String productStatsRowBreakdown(int web, int mobile) {
-    return 'Web: $web · Mobil: $mobile';
-  }
+  String get productStatsTitle => 'Statistika';
 
   @override
   String get maintenancePageTitle => 'Texnik ishlar';
@@ -2356,4 +2239,148 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get categoryWatchDescription =>
       'Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz.';
+
+  @override
+  String get notificationsAdminTooltip => 'Bildirishnomalar';
+
+  @override
+  String get notificationsAdminTitle => 'Bildirishnomalar va kampaniyalar';
+
+  @override
+  String get campaignComposerSectionTitle => 'Yangi bildirishnoma yuborish';
+
+  @override
+  String get campaignTitleLabel => 'Sarlavha';
+
+  @override
+  String get campaignBodyLabel => 'Xabar';
+
+  @override
+  String get campaignBodyHint =>
+      'Masalan: Bu dam olish kunlari barcha divan to\'plamlariga 20% chegirma!';
+
+  @override
+  String get campaignLinkSectionTitle => 'Havola (ixtiyoriy)';
+
+  @override
+  String get campaignLinkNone => 'Yo\'q';
+
+  @override
+  String get campaignLinkProduct => 'Mahsulotga o\'tish';
+
+  @override
+  String get campaignLinkPage => 'Sahifaga o\'tish';
+
+  @override
+  String get campaignPickProduct => 'Mahsulotni tanlang';
+
+  @override
+  String get campaignPickProductEmpty => 'Avval mahsulot qo\'shing';
+
+  @override
+  String get campaignPageDiscover => 'Kashf etish';
+
+  @override
+  String get campaignPageNew => 'Yangi mahsulotlar';
+
+  @override
+  String get campaignPageSpot => 'Ikkinchi qo\'l mahsulotlar';
+
+  @override
+  String get campaignSegmentSectionTitle => 'Kimga yuborilsin?';
+
+  @override
+  String get campaignSegmentAll => 'Barcha foydalanuvchilar';
+
+  @override
+  String get campaignSegmentFavorited => 'Sevimlisi borlar';
+
+  @override
+  String get campaignSegmentCategory => 'Kategoriya kuzatuvchilari';
+
+  @override
+  String get campaignSendButton => 'Bildirishnomani yuborish';
+
+  @override
+  String get campaignSendConfirmTitle => 'Bu bildirishnoma yuborilsinmi?';
+
+  @override
+  String get campaignSendConfirmMessage =>
+      'Bu bildirishnoma siz tanlagan segmentdagi barcha foydalanuvchilarga yuboriladi. Bu amalni ortga qaytarib bo\'lmaydi.';
+
+  @override
+  String get campaignSendSuccessAll =>
+      'Bildirishnoma barcha foydalanuvchilarga yuborildi.';
+
+  @override
+  String campaignSendSuccessCount(int count) {
+    return 'Bildirishnoma $count ta qurilmaga yuborildi.';
+  }
+
+  @override
+  String get campaignSendSuccessZero =>
+      'Yuborildi, lekin bu segmentda hech qanday qurilma topilmadi.';
+
+  @override
+  String campaignSendError(String error) {
+    return 'Bildirishnoma yuborilmadi: $error';
+  }
+
+  @override
+  String get campaignTitleRequired => 'Sarlavha va xabar talab qilinadi.';
+
+  @override
+  String get statsRangeToday => 'Bugun';
+
+  @override
+  String get statsRangeWeek => 'Shu hafta';
+
+  @override
+  String get statsRangeMonth => 'Shu oy';
+
+  @override
+  String get statsRangeYear => 'Shu yil';
+
+  @override
+  String get statsRangeCustom => 'Moslashtirilgan';
+
+  @override
+  String get statsPlatformAll => 'Barchasi';
+
+  @override
+  String get statsPlatformWeb => 'Veb';
+
+  @override
+  String get statsPlatformMobile => 'Mobil';
+
+  @override
+  String get statsMetricViews => 'Ko\'rishlar';
+
+  @override
+  String get statsMetricClicks => 'WhatsApp bosishlari';
+
+  @override
+  String get statsMetricFavorites => 'Sevimlilar';
+
+  @override
+  String get statsMetricSales => 'Sotuvlar';
+
+  @override
+  String get statsRevenueLabel => 'Daromad';
+
+  @override
+  String get statsWebFavoriteNote =>
+      'Eslatma: vebdagi sevimlilar faqat brauzerda saqlanadi, shuning uchun sevimlilar soniga kirmaydi.';
+
+  @override
+  String get statsTrendTitle => 'Vaqt bo\'yicha tendensiya';
+
+  @override
+  String get statsByCategoryTitle => 'Kategoriya bo\'yicha taqsimot';
+
+  @override
+  String get statsTopProductsTitle => 'Eng ko\'p e\'tibor olgan mahsulotlar';
+
+  @override
+  String get statsNoData => 'Bu oraliqda ma\'lumot yo\'q';
 }

@@ -553,7 +553,6 @@
   "specialOfferTitle": "Konforu Hissedin",
   "specialOfferBody": "Spot ve sıfır mobilyada cebinize uygun fırsatlar.",
   "shopNow": "İncele",
-  "onboardingNext": "İleri",
   "cartTitle": "Sepetim",
   "cartEmptyTitle": "Sepetiniz Boş",
   "cartEmptyDesc": "Beğendiğiniz ürünleri sepete ekleyin, sonra tek mesajla bize sorun.",
@@ -784,61 +783,7 @@
   "featureRow2Desc": "Seçili semtlere sigortalı ve hızlı teslimat.",
   "featureRow3Title": "WhatsApp'tan Anında Yanıt",
   "featureRow3Desc": "Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı.",
-  "firebaseServicesTooltip": "Firebase Servisleri",
-  "firebaseServicesTitle": "Firebase Servisleri",
-  "firebaseCrashlyticsTitle": "Çökme Raporlama",
-  "firebaseCrashlyticsToggle": "Çökme Raporlarını Gönder",
-  "firebaseCrashlyticsSubtitle": "Kapatılırsa uygulama hataları Firebase'e bildirilmez",
   "firebaseChecking": "Kontrol ediliyor…",
-  "firebaseCrashedLastSession": "Bir önceki oturumda uygulama çöktü",
-  "firebaseNoCrashLastSession": "Bir önceki oturumda çökme olmadı",
-  "firebaseStatsConsoleOnly": "Detaylı çökme istatistikleri yalnızca Firebase Console'da görüntülenebilir",
-  "firebaseAnalyticsTitle": "Kullanım Analitiği",
-  "firebaseAnalyticsToggle": "Kullanım Analitiği Topla",
-  "firebaseAnalyticsSubtitle": "Kapatılırsa uygulama içi kullanım verisi toplanmaz",
-  "firebaseRemoteConfigTitle": "Remote Config",
-  "firebaseAdsEnabledValue": "Reklamlar: {value}",
-  "@firebaseAdsEnabledValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseValueOn": "Açık",
-  "firebaseValueOff": "Kapalı",
-  "firebaseMaintenanceModeValue": "Bakım modu: {value}",
-  "@firebaseMaintenanceModeValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseForceUpdateMinVersionValue": "Zorunlu güncelleme eşiği: {value}",
-  "@firebaseForceUpdateMinVersionValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseLastFetch": "Son güncelleme: {time}",
-  "@firebaseLastFetch": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseRefreshConfig": "Şimdi Güncelle",
-  "firebaseConfigConsoleOnly": "Değerler yalnızca Firebase Console > Remote Config'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz",
-  "firebaseConfigRefreshed": "Remote Config güncellendi",
-  "firebaseConfigUnchanged": "Remote Config zaten güncel",
-  "firebaseAppCheckTitle": "App Check",
-  "firebaseAppCheckWebUnsupported": "App Check web'de kullanılmıyor",
-  "firebaseActive": "Aktif",
-  "firebaseAppCheckDesc": "İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz",
   "firebaseNotificationsTitle": "Bildirimler (FCM)",
   "firebaseTokenAvailable": "Bu cihaz için bildirim belirteci mevcut",
   "firebaseTokenUnavailable": "Bu cihaz için henüz bildirim belirteci yok",
@@ -847,37 +792,6 @@
   "firebaseOpenNotificationSettings": "Bildirim Ayarlarını Aç",
   "productStatsTooltip": "İstatistikler",
   "productStatsTitle": "İstatistikler",
-  "productStatsTotalViews": "Toplam Görüntülenme (Web + Mobil)",
-  "productStatsWeb": "Web",
-  "productStatsMobile": "Mobil",
-  "productStatsAvailableSection": "Mevcut Ürünler ({count})",
-  "@productStatsAvailableSection": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "productStatsSoldSection": "Satılmış Ürünler ({count})",
-  "@productStatsSoldSection": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "productStatsEmpty": "Henüz ürün yok",
-  "productStatsRowBreakdown": "Web: {web} · Mobil: {mobile}",
-  "@productStatsRowBreakdown": {
-    "placeholders": {
-      "web": {
-        "type": "int"
-      },
-      "mobile": {
-        "type": "int"
-      }
-    }
-  },
   "maintenancePageTitle": "Bakımdayız",
   "maintenancePageDesc": "Sağlam Spot şu anda kısa bir bakım çalışması nedeniyle kullanılamıyor. Kısa süre içinde tekrar hizmetinizdeyiz.",
   "maintenancePageRetry": "Tekrar Dene",
@@ -887,17 +801,17 @@
   "productViewCountLabel": "{count} kez görüntülendi",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} ve çevresi",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Arka plan dokusu",
@@ -923,11 +837,76 @@
   "productFinderWhatsappMessage": "Merhaba, {category} kategorisinde {condition} bir ürün arıyorum. Bütçem: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "Yeni Ürün Bildirimleri",
-  "categoryWatchDescription": "Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim."
+  "categoryWatchDescription": "Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim.",
+  "notificationsAdminTooltip": "Bildirimler",
+  "notificationsAdminTitle": "Bildirimler & Kampanya",
+  "campaignComposerSectionTitle": "Yeni Bildirim Gönder",
+  "campaignTitleLabel": "Başlık",
+  "campaignBodyLabel": "Mesaj",
+  "campaignBodyHint": "Örn: Bu hafta sonu tüm oturma gruplarında %20 indirim!",
+  "campaignLinkSectionTitle": "Bağlantı (opsiyonel)",
+  "campaignLinkNone": "Yok",
+  "campaignLinkProduct": "Bir ürüne git",
+  "campaignLinkPage": "Bir sayfaya git",
+  "campaignPickProduct": "Ürün Seç",
+  "campaignPickProductEmpty": "Önce bir ürün ekleyin",
+  "campaignPageDiscover": "Keşfet",
+  "campaignPageNew": "Sıfır Ürünler",
+  "campaignPageSpot": "Spot Ürünler",
+  "campaignSegmentSectionTitle": "Kime gönderilsin?",
+  "campaignSegmentAll": "Tüm Kullanıcılar",
+  "campaignSegmentFavorited": "Favorisi Olanlar",
+  "campaignSegmentCategory": "Kategori Takipçileri",
+  "campaignSendButton": "Bildirimi Gönder",
+  "campaignSendConfirmTitle": "Bildirim Gönderilsin mi?",
+  "campaignSendConfirmMessage": "Bu bildirim seçtiğiniz hedefteki tüm kullanıcılara gönderilecek. Bu işlem geri alınamaz.",
+  "campaignSendSuccessAll": "Bildirim tüm kullanıcılara gönderildi.",
+  "campaignSendSuccessCount": "Bildirim {count} cihaza gönderildi.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Gönderildi ama bu segmentte hiç cihaz bulunamadı.",
+  "campaignSendError": "Bildirim gönderilemedi: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Başlık ve mesaj gerekli.",
+  "statsRangeToday": "Bugün",
+  "statsRangeWeek": "Bu Hafta",
+  "statsRangeMonth": "Bu Ay",
+  "statsRangeYear": "Bu Yıl",
+  "statsRangeCustom": "Özel",
+  "statsPlatformAll": "Tümü",
+  "statsPlatformWeb": "Web",
+  "statsPlatformMobile": "Mobil",
+  "statsMetricViews": "Görüntülenme",
+  "statsMetricClicks": "WhatsApp Tıklaması",
+  "statsMetricFavorites": "Favori",
+  "statsMetricSales": "Satış",
+  "statsRevenueLabel": "Gelir",
+  "statsWebFavoriteNote": "Not: Web'deki favoriler sadece tarayıcıda saklanır, bu yüzden favori sayısına dahil değildir.",
+  "statsTrendTitle": "Zaman İçindeki Trend",
+  "statsByCategoryTitle": "Kategoriye Göre Dağılım",
+  "statsTopProductsTitle": "En Çok Etkileşim Alan Ürünler",
+  "statsNoData": "Bu aralıkta veri yok"
 }

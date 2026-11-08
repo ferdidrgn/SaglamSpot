@@ -703,18 +703,18 @@
   "deferredLoadError": "加载失败：{error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - 页面未找到",
   "notFoundPathPrefix": "路径：{path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "返回首页",
@@ -728,7 +728,6 @@
   "reservedBadge": "已预留",
   "priceDropBadge": "降价",
   "newProductsSearchHint": "搜索家具、沙发、桌子或分类...",
-  "onboardingNext": "下一步",
   "onboardingCategoriesChip": "13个分类",
   "onboardingBargainChip": "可议价",
   "onboardingFastReplyChip": "快速回复",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "登录失败：{code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "未知错误",
   "productViewCountLabel": "已浏览 {count} 次",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones}及周边地区",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "背景纹理",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "您好，我想找{category}类别中的{condition}产品。我的预算：{budget}。",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "新品通知",
-  "categoryWatchDescription": "当您关注的分类中添加新商品时，我们会通知您。"
+  "categoryWatchDescription": "当您关注的分类中添加新商品时，我们会通知您。",
+  "notificationsAdminTooltip": "通知",
+  "notificationsAdminTitle": "通知与推广活动",
+  "campaignComposerSectionTitle": "发送新通知",
+  "campaignTitleLabel": "标题",
+  "campaignBodyLabel": "消息内容",
+  "campaignBodyHint": "例如：本周末所有沙发套装八折优惠！",
+  "campaignLinkSectionTitle": "链接（可选）",
+  "campaignLinkNone": "无",
+  "campaignLinkProduct": "跳转到商品",
+  "campaignLinkPage": "跳转到页面",
+  "campaignPickProduct": "选择商品",
+  "campaignPickProductEmpty": "请先添加商品",
+  "campaignPageDiscover": "发现",
+  "campaignPageNew": "全新商品",
+  "campaignPageSpot": "二手商品",
+  "campaignSegmentSectionTitle": "发送给谁？",
+  "campaignSegmentAll": "所有用户",
+  "campaignSegmentFavorited": "有收藏的用户",
+  "campaignSegmentCategory": "分类关注者",
+  "campaignSendButton": "发送通知",
+  "campaignSendConfirmTitle": "要发送此通知吗？",
+  "campaignSendConfirmMessage": "此通知将发送给您所选目标中的所有用户，此操作无法撤销。",
+  "campaignSendSuccessAll": "通知已发送给所有用户。",
+  "campaignSendSuccessCount": "通知已发送到 {count} 台设备。",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "已发送，但该分组中未找到任何设备。",
+  "campaignSendError": "通知发送失败：{error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "标题和消息内容为必填项。",
+  "statsRangeToday": "今天",
+  "statsRangeWeek": "本周",
+  "statsRangeMonth": "本月",
+  "statsRangeYear": "本年",
+  "statsRangeCustom": "自定义",
+  "statsPlatformAll": "全部",
+  "statsPlatformWeb": "网页",
+  "statsPlatformMobile": "移动端",
+  "statsMetricViews": "浏览量",
+  "statsMetricClicks": "WhatsApp点击量",
+  "statsMetricFavorites": "收藏量",
+  "statsMetricSales": "销售量",
+  "statsRevenueLabel": "收入",
+  "statsWebFavoriteNote": "注意：网页端的收藏仅保存在浏览器本地，因此不计入收藏统计。",
+  "statsTrendTitle": "时间趋势",
+  "statsByCategoryTitle": "按分类统计",
+  "statsTopProductsTitle": "互动最多的商品",
+  "statsNoData": "该时间段内暂无数据",
+  "firebaseChecking": "正在检查…",
+  "firebaseNotificationsTitle": "通知 (FCM)",
+  "firebaseTokenAvailable": "此设备已有通知令牌",
+  "firebaseTokenUnavailable": "此设备尚无通知令牌",
+  "firebasePermissionGranted": "已授予通知权限",
+  "firebasePermissionDenied": "尚未授予通知权限",
+  "firebaseOpenNotificationSettings": "打开通知设置",
+  "productStatsTooltip": "统计数据",
+  "productStatsTitle": "统计数据"
 }

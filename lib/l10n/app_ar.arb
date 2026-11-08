@@ -703,18 +703,18 @@
   "deferredLoadError": "فشل التحميل: {error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - الصفحة غير موجودة",
   "notFoundPathPrefix": "المسار: {path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "العودة إلى الصفحة الرئيسية",
@@ -728,7 +728,6 @@
   "reservedBadge": "محجوز",
   "priceDropBadge": "خفض السعر",
   "newProductsSearchHint": "ابحث عن أثاث، أريكة، طاولة أو فئة...",
-  "onboardingNext": "التالي",
   "onboardingCategoriesChip": "13 فئة",
   "onboardingBargainChip": "مجال للتفاوض",
   "onboardingFastReplyChip": "رد سريع",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "فشل تسجيل الدخول: {code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "خطأ غير معروف",
   "productViewCountLabel": "شوهد {count} مرة",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} والمناطق المجاورة",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "نسيج الخلفية",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "مرحبًا، أبحث عن منتج {condition} في فئة {category}. ميزانيتي: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "إشعارات المنتجات الجديدة",
-  "categoryWatchDescription": "سنخبرك عند إضافة منتج جديد في الفئات التي تتابعها."
+  "categoryWatchDescription": "سنخبرك عند إضافة منتج جديد في الفئات التي تتابعها.",
+  "notificationsAdminTooltip": "الإشعارات",
+  "notificationsAdminTitle": "الإشعارات والحملات",
+  "campaignComposerSectionTitle": "إرسال إشعار جديد",
+  "campaignTitleLabel": "العنوان",
+  "campaignBodyLabel": "الرسالة",
+  "campaignBodyHint": "مثال: خصم 20٪ على جميع طاقم الصالون هذا الأسبوع!",
+  "campaignLinkSectionTitle": "رابط (اختياري)",
+  "campaignLinkNone": "لا يوجد",
+  "campaignLinkProduct": "الانتقال إلى منتج",
+  "campaignLinkPage": "الانتقال إلى صفحة",
+  "campaignPickProduct": "اختر منتجًا",
+  "campaignPickProductEmpty": "أضف منتجًا أولاً",
+  "campaignPageDiscover": "استكشاف",
+  "campaignPageNew": "منتجات جديدة",
+  "campaignPageSpot": "منتجات مستعملة",
+  "campaignSegmentSectionTitle": "لمن يتم الإرسال؟",
+  "campaignSegmentAll": "جميع المستخدمين",
+  "campaignSegmentFavorited": "من لديهم مفضلات",
+  "campaignSegmentCategory": "متابعو الفئة",
+  "campaignSendButton": "إرسال الإشعار",
+  "campaignSendConfirmTitle": "هل تريد إرسال هذا الإشعار؟",
+  "campaignSendConfirmMessage": "سيتم إرسال هذا الإشعار إلى جميع المستخدمين في الهدف الذي اخترته. لا يمكن التراجع عن هذا الإجراء.",
+  "campaignSendSuccessAll": "تم إرسال الإشعار إلى جميع المستخدمين.",
+  "campaignSendSuccessCount": "تم إرسال الإشعار إلى {count} جهازًا.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "تم الإرسال، ولكن لم يتم العثور على أي جهاز في هذه الفئة.",
+  "campaignSendError": "تعذر إرسال الإشعار: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "العنوان والرسالة مطلوبان.",
+  "statsRangeToday": "اليوم",
+  "statsRangeWeek": "هذا الأسبوع",
+  "statsRangeMonth": "هذا الشهر",
+  "statsRangeYear": "هذا العام",
+  "statsRangeCustom": "مخصص",
+  "statsPlatformAll": "الكل",
+  "statsPlatformWeb": "الويب",
+  "statsPlatformMobile": "الهاتف",
+  "statsMetricViews": "المشاهدات",
+  "statsMetricClicks": "نقرات واتساب",
+  "statsMetricFavorites": "المفضلة",
+  "statsMetricSales": "المبيعات",
+  "statsRevenueLabel": "الإيراد",
+  "statsWebFavoriteNote": "ملاحظة: يتم حفظ المفضلة على الويب في المتصفح فقط، لذا فهي غير مشمولة في عدد المفضلة.",
+  "statsTrendTitle": "الاتجاه بمرور الوقت",
+  "statsByCategoryTitle": "التوزيع حسب الفئة",
+  "statsTopProductsTitle": "المنتجات الأكثر تفاعلاً",
+  "statsNoData": "لا توجد بيانات في هذه الفترة",
+  "firebaseChecking": "جارٍ التحقق…",
+  "firebaseNotificationsTitle": "الإشعارات (FCM)",
+  "firebaseTokenAvailable": "يوجد رمز إشعار لهذا الجهاز",
+  "firebaseTokenUnavailable": "لا يوجد رمز إشعار لهذا الجهاز بعد",
+  "firebasePermissionGranted": "تم منح إذن الإشعارات",
+  "firebasePermissionDenied": "لم يتم منح إذن الإشعارات",
+  "firebaseOpenNotificationSettings": "فتح إعدادات الإشعارات",
+  "productStatsTooltip": "الإحصائيات",
+  "productStatsTitle": "الإحصائيات"
 }

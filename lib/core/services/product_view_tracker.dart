@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'analytics_event_logger.dart';
 
 /// Bir ürünün detay sayfasının kaç kez açıldığını, platforma göre AYRI
 /// sayan minik sayaç. Firestore'a doğrudan `FieldValue.increment(1)` ile
@@ -10,9 +11,13 @@ import 'package:flutter/foundation.dart';
 /// Ziyaretçi kimliği/cihaz/IP TUTULMAZ — bu bilinçli bir tercih: tekil
 /// ziyaretçi analitiği değil, "bu ürüne ne kadar ilgi var" için basit ve
 /// dürüst bir ham sayaç (bkz. Product.viewCountWeb/viewCountMobile
-/// dokümantasyonu).
+/// dokümantasyonu). Admin istatistikler ekranının tarih bazlı grafikleri
+/// için AYRICA tek tek zaman damgalı bir olay kaydı tutulur (bkz.
+/// AnalyticsEventLogger) — bu ömür boyu sayaç yerine değil, ONUNLA
+/// BİRLİKTE.
 abstract final class ProductViewTracker {
-  static Future<void> trackView(final String productId) async {
+  static Future<void> trackView(
+      final String productId, final String category) async {
     if (productId.isEmpty) return;
     try {
       final field = kIsWeb ? 'viewCountWeb' : 'viewCountMobile';
@@ -25,5 +30,7 @@ abstract final class ProductViewTracker {
       // ağ/izin hatası burada sessizce yutulur.
       debugPrint('👁️ Görüntülenme sayacı güncellenemedi: $e');
     }
+    AnalyticsEventLogger.log(
+        type: 'view', productId: productId, category: category);
   }
 }

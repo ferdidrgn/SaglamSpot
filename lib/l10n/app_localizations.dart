@@ -3932,167 +3932,11 @@ abstract class AppLocalizations {
   /// **'Sorularınıza dakikalar içinde gerçek bir esnaf yanıtı.'**
   String get featureRow3Desc;
 
-  /// No description provided for @firebaseServicesTooltip.
-  ///
-  /// In tr, this message translates to:
-  /// **'Firebase Servisleri'**
-  String get firebaseServicesTooltip;
-
-  /// No description provided for @firebaseServicesTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Firebase Servisleri'**
-  String get firebaseServicesTitle;
-
-  /// No description provided for @firebaseCrashlyticsTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Çökme Raporlama'**
-  String get firebaseCrashlyticsTitle;
-
-  /// No description provided for @firebaseCrashlyticsToggle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Çökme Raporlarını Gönder'**
-  String get firebaseCrashlyticsToggle;
-
-  /// No description provided for @firebaseCrashlyticsSubtitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kapatılırsa uygulama hataları Firebase\'e bildirilmez'**
-  String get firebaseCrashlyticsSubtitle;
-
   /// No description provided for @firebaseChecking.
   ///
   /// In tr, this message translates to:
   /// **'Kontrol ediliyor…'**
   String get firebaseChecking;
-
-  /// No description provided for @firebaseCrashedLastSession.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bir önceki oturumda uygulama çöktü'**
-  String get firebaseCrashedLastSession;
-
-  /// No description provided for @firebaseNoCrashLastSession.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bir önceki oturumda çökme olmadı'**
-  String get firebaseNoCrashLastSession;
-
-  /// No description provided for @firebaseStatsConsoleOnly.
-  ///
-  /// In tr, this message translates to:
-  /// **'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir'**
-  String get firebaseStatsConsoleOnly;
-
-  /// No description provided for @firebaseAnalyticsTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kullanım Analitiği'**
-  String get firebaseAnalyticsTitle;
-
-  /// No description provided for @firebaseAnalyticsToggle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kullanım Analitiği Topla'**
-  String get firebaseAnalyticsToggle;
-
-  /// No description provided for @firebaseAnalyticsSubtitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kapatılırsa uygulama içi kullanım verisi toplanmaz'**
-  String get firebaseAnalyticsSubtitle;
-
-  /// No description provided for @firebaseRemoteConfigTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Remote Config'**
-  String get firebaseRemoteConfigTitle;
-
-  /// No description provided for @firebaseAdsEnabledValue.
-  ///
-  /// In tr, this message translates to:
-  /// **'Reklamlar: {value}'**
-  String firebaseAdsEnabledValue(String value);
-
-  /// No description provided for @firebaseValueOn.
-  ///
-  /// In tr, this message translates to:
-  /// **'Açık'**
-  String get firebaseValueOn;
-
-  /// No description provided for @firebaseValueOff.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kapalı'**
-  String get firebaseValueOff;
-
-  /// No description provided for @firebaseMaintenanceModeValue.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bakım modu: {value}'**
-  String firebaseMaintenanceModeValue(String value);
-
-  /// No description provided for @firebaseForceUpdateMinVersionValue.
-  ///
-  /// In tr, this message translates to:
-  /// **'Zorunlu güncelleme eşiği: {value}'**
-  String firebaseForceUpdateMinVersionValue(String value);
-
-  /// No description provided for @firebaseLastFetch.
-  ///
-  /// In tr, this message translates to:
-  /// **'Son güncelleme: {time}'**
-  String firebaseLastFetch(String time);
-
-  /// No description provided for @firebaseRefreshConfig.
-  ///
-  /// In tr, this message translates to:
-  /// **'Şimdi Güncelle'**
-  String get firebaseRefreshConfig;
-
-  /// No description provided for @firebaseConfigConsoleOnly.
-  ///
-  /// In tr, this message translates to:
-  /// **'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz'**
-  String get firebaseConfigConsoleOnly;
-
-  /// No description provided for @firebaseConfigRefreshed.
-  ///
-  /// In tr, this message translates to:
-  /// **'Remote Config güncellendi'**
-  String get firebaseConfigRefreshed;
-
-  /// No description provided for @firebaseConfigUnchanged.
-  ///
-  /// In tr, this message translates to:
-  /// **'Remote Config zaten güncel'**
-  String get firebaseConfigUnchanged;
-
-  /// No description provided for @firebaseAppCheckTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'App Check'**
-  String get firebaseAppCheckTitle;
-
-  /// No description provided for @firebaseAppCheckWebUnsupported.
-  ///
-  /// In tr, this message translates to:
-  /// **'App Check web\'de kullanılmıyor'**
-  String get firebaseAppCheckWebUnsupported;
-
-  /// No description provided for @firebaseActive.
-  ///
-  /// In tr, this message translates to:
-  /// **'Aktif'**
-  String get firebaseActive;
-
-  /// No description provided for @firebaseAppCheckDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz'**
-  String get firebaseAppCheckDesc;
 
   /// No description provided for @firebaseNotificationsTitle.
   ///
@@ -4141,48 +3985,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'İstatistikler'**
   String get productStatsTitle;
-
-  /// No description provided for @productStatsTotalViews.
-  ///
-  /// In tr, this message translates to:
-  /// **'Toplam Görüntülenme (Web + Mobil)'**
-  String get productStatsTotalViews;
-
-  /// No description provided for @productStatsWeb.
-  ///
-  /// In tr, this message translates to:
-  /// **'Web'**
-  String get productStatsWeb;
-
-  /// No description provided for @productStatsMobile.
-  ///
-  /// In tr, this message translates to:
-  /// **'Mobil'**
-  String get productStatsMobile;
-
-  /// No description provided for @productStatsAvailableSection.
-  ///
-  /// In tr, this message translates to:
-  /// **'Mevcut Ürünler ({count})'**
-  String productStatsAvailableSection(int count);
-
-  /// No description provided for @productStatsSoldSection.
-  ///
-  /// In tr, this message translates to:
-  /// **'Satılmış Ürünler ({count})'**
-  String productStatsSoldSection(int count);
-
-  /// No description provided for @productStatsEmpty.
-  ///
-  /// In tr, this message translates to:
-  /// **'Henüz ürün yok'**
-  String get productStatsEmpty;
-
-  /// No description provided for @productStatsRowBreakdown.
-  ///
-  /// In tr, this message translates to:
-  /// **'Web: {web} · Mobil: {mobile}'**
-  String productStatsRowBreakdown(int web, int mobile);
 
   /// No description provided for @maintenancePageTitle.
   ///
@@ -4370,6 +4172,276 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim.'**
   String get categoryWatchDescription;
+
+  /// No description provided for @notificationsAdminTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler'**
+  String get notificationsAdminTooltip;
+
+  /// No description provided for @notificationsAdminTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler & Kampanya'**
+  String get notificationsAdminTitle;
+
+  /// No description provided for @campaignComposerSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Bildirim Gönder'**
+  String get campaignComposerSectionTitle;
+
+  /// No description provided for @campaignTitleLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlık'**
+  String get campaignTitleLabel;
+
+  /// No description provided for @campaignBodyLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mesaj'**
+  String get campaignBodyLabel;
+
+  /// No description provided for @campaignBodyHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: Bu hafta sonu tüm oturma gruplarında %20 indirim!'**
+  String get campaignBodyHint;
+
+  /// No description provided for @campaignLinkSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantı (opsiyonel)'**
+  String get campaignLinkSectionTitle;
+
+  /// No description provided for @campaignLinkNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yok'**
+  String get campaignLinkNone;
+
+  /// No description provided for @campaignLinkProduct.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir ürüne git'**
+  String get campaignLinkProduct;
+
+  /// No description provided for @campaignLinkPage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir sayfaya git'**
+  String get campaignLinkPage;
+
+  /// No description provided for @campaignPickProduct.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Seç'**
+  String get campaignPickProduct;
+
+  /// No description provided for @campaignPickProductEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önce bir ürün ekleyin'**
+  String get campaignPickProductEmpty;
+
+  /// No description provided for @campaignPageDiscover.
+  ///
+  /// In tr, this message translates to:
+  /// **'Keşfet'**
+  String get campaignPageDiscover;
+
+  /// No description provided for @campaignPageNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfır Ürünler'**
+  String get campaignPageNew;
+
+  /// No description provided for @campaignPageSpot.
+  ///
+  /// In tr, this message translates to:
+  /// **'Spot Ürünler'**
+  String get campaignPageSpot;
+
+  /// No description provided for @campaignSegmentSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kime gönderilsin?'**
+  String get campaignSegmentSectionTitle;
+
+  /// No description provided for @campaignSegmentAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm Kullanıcılar'**
+  String get campaignSegmentAll;
+
+  /// No description provided for @campaignSegmentFavorited.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favorisi Olanlar'**
+  String get campaignSegmentFavorited;
+
+  /// No description provided for @campaignSegmentCategory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori Takipçileri'**
+  String get campaignSegmentCategory;
+
+  /// No description provided for @campaignSendButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimi Gönder'**
+  String get campaignSendButton;
+
+  /// No description provided for @campaignSendConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Gönderilsin mi?'**
+  String get campaignSendConfirmTitle;
+
+  /// No description provided for @campaignSendConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bildirim seçtiğiniz hedefteki tüm kullanıcılara gönderilecek. Bu işlem geri alınamaz.'**
+  String get campaignSendConfirmMessage;
+
+  /// No description provided for @campaignSendSuccessAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim tüm kullanıcılara gönderildi.'**
+  String get campaignSendSuccessAll;
+
+  /// No description provided for @campaignSendSuccessCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim {count} cihaza gönderildi.'**
+  String campaignSendSuccessCount(int count);
+
+  /// No description provided for @campaignSendSuccessZero.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gönderildi ama bu segmentte hiç cihaz bulunamadı.'**
+  String get campaignSendSuccessZero;
+
+  /// No description provided for @campaignSendError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim gönderilemedi: {error}'**
+  String campaignSendError(String error);
+
+  /// No description provided for @campaignTitleRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlık ve mesaj gerekli.'**
+  String get campaignTitleRequired;
+
+  /// No description provided for @statsRangeToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün'**
+  String get statsRangeToday;
+
+  /// No description provided for @statsRangeWeek.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu Hafta'**
+  String get statsRangeWeek;
+
+  /// No description provided for @statsRangeMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu Ay'**
+  String get statsRangeMonth;
+
+  /// No description provided for @statsRangeYear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu Yıl'**
+  String get statsRangeYear;
+
+  /// No description provided for @statsRangeCustom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel'**
+  String get statsRangeCustom;
+
+  /// No description provided for @statsPlatformAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümü'**
+  String get statsPlatformAll;
+
+  /// No description provided for @statsPlatformWeb.
+  ///
+  /// In tr, this message translates to:
+  /// **'Web'**
+  String get statsPlatformWeb;
+
+  /// No description provided for @statsPlatformMobile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobil'**
+  String get statsPlatformMobile;
+
+  /// No description provided for @statsMetricViews.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görüntülenme'**
+  String get statsMetricViews;
+
+  /// No description provided for @statsMetricClicks.
+  ///
+  /// In tr, this message translates to:
+  /// **'WhatsApp Tıklaması'**
+  String get statsMetricClicks;
+
+  /// No description provided for @statsMetricFavorites.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favori'**
+  String get statsMetricFavorites;
+
+  /// No description provided for @statsMetricSales.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satış'**
+  String get statsMetricSales;
+
+  /// No description provided for @statsRevenueLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gelir'**
+  String get statsRevenueLabel;
+
+  /// No description provided for @statsWebFavoriteNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Not: Web\'deki favoriler sadece tarayıcıda saklanır, bu yüzden favori sayısına dahil değildir.'**
+  String get statsWebFavoriteNote;
+
+  /// No description provided for @statsTrendTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman İçindeki Trend'**
+  String get statsTrendTitle;
+
+  /// No description provided for @statsByCategoryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategoriye Göre Dağılım'**
+  String get statsByCategoryTitle;
+
+  /// No description provided for @statsTopProductsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Çok Etkileşim Alan Ürünler'**
+  String get statsTopProductsTitle;
+
+  /// No description provided for @statsNoData.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu aralıkta veri yok'**
+  String get statsNoData;
 }
 
 class _AppLocalizationsDelegate

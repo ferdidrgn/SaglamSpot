@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/services/analytics_event_logger.dart';
 import '../../../../core/services/favorite_notification_sync.dart';
 import '../../domain/entites/product.dart';
 
@@ -19,6 +20,13 @@ class FavoritesNotifier extends Notifier<List<Product>> {
     if (contains(product.id)) return;
     state = [product, ...state];
     _sync();
+    // Admin > İstatistikler ekranındaki "favori" metriği BURADAN gelir —
+    // sadece EKLEME anında (kaldırma sayılmaz), bkz. AnalyticsEventLogger.
+    AnalyticsEventLogger.log(
+      type: 'favorite',
+      productId: product.id,
+      category: product.category.name,
+    );
   }
 
   void remove(final String productId) {

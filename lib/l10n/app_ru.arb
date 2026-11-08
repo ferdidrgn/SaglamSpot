@@ -703,18 +703,18 @@
   "deferredLoadError": "Не удалось загрузить: {error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - Страница не найдена",
   "notFoundPathPrefix": "Путь: {path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "Вернуться на главную",
@@ -728,7 +728,6 @@
   "reservedBadge": "ЗАБРОНИРОВАНО",
   "priceDropBadge": "Снижение цены",
   "newProductsSearchHint": "Поиск мебели, дивана, стола или категории...",
-  "onboardingNext": "Далее",
   "onboardingCategoriesChip": "13 категорий",
   "onboardingBargainChip": "Возможность торга",
   "onboardingFastReplyChip": "Быстрый ответ",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "Не удалось войти: {code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "Неизвестная ошибка",
   "productViewCountLabel": "Просмотрено {count} раз",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} и окрестности",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Текстура фона",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "Здравствуйте, ищу {condition} товар в категории {category}. Мой бюджет: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "Уведомления о новых товарах",
-  "categoryWatchDescription": "Мы сообщим вам, когда в отслеживаемых категориях появится новый товар."
+  "categoryWatchDescription": "Мы сообщим вам, когда в отслеживаемых категориях появится новый товар.",
+  "notificationsAdminTooltip": "Уведомления",
+  "notificationsAdminTitle": "Уведомления и кампании",
+  "campaignComposerSectionTitle": "Отправить новое уведомление",
+  "campaignTitleLabel": "Заголовок",
+  "campaignBodyLabel": "Сообщение",
+  "campaignBodyHint": "Например: скидка 20% на все комплекты мягкой мебели в эти выходные!",
+  "campaignLinkSectionTitle": "Ссылка (опционально)",
+  "campaignLinkNone": "Нет",
+  "campaignLinkProduct": "Перейти к товару",
+  "campaignLinkPage": "Перейти на страницу",
+  "campaignPickProduct": "Выбрать товар",
+  "campaignPickProductEmpty": "Сначала добавьте товар",
+  "campaignPageDiscover": "Каталог",
+  "campaignPageNew": "Новые товары",
+  "campaignPageSpot": "Товары с пробегом",
+  "campaignSegmentSectionTitle": "Кому отправить?",
+  "campaignSegmentAll": "Все пользователи",
+  "campaignSegmentFavorited": "С избранными товарами",
+  "campaignSegmentCategory": "Подписчики категории",
+  "campaignSendButton": "Отправить уведомление",
+  "campaignSendConfirmTitle": "Отправить это уведомление?",
+  "campaignSendConfirmMessage": "Это уведомление будет отправлено всем пользователям в выбранном сегменте. Это действие нельзя отменить.",
+  "campaignSendSuccessAll": "Уведомление отправлено всем пользователям.",
+  "campaignSendSuccessCount": "Уведомление отправлено на {count} устройств.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Отправлено, но в этом сегменте не найдено ни одного устройства.",
+  "campaignSendError": "Не удалось отправить уведомление: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Заголовок и сообщение обязательны.",
+  "statsRangeToday": "Сегодня",
+  "statsRangeWeek": "На этой неделе",
+  "statsRangeMonth": "В этом месяце",
+  "statsRangeYear": "В этом году",
+  "statsRangeCustom": "Произвольный",
+  "statsPlatformAll": "Все",
+  "statsPlatformWeb": "Веб",
+  "statsPlatformMobile": "Мобильный",
+  "statsMetricViews": "Просмотры",
+  "statsMetricClicks": "Клики по WhatsApp",
+  "statsMetricFavorites": "Избранное",
+  "statsMetricSales": "Продажи",
+  "statsRevenueLabel": "Доход",
+  "statsWebFavoriteNote": "Примечание: избранное на сайте хранится только в браузере, поэтому не учитывается в счётчике избранного.",
+  "statsTrendTitle": "Динамика во времени",
+  "statsByCategoryTitle": "Разбивка по категориям",
+  "statsTopProductsTitle": "Товары с наибольшей активностью",
+  "statsNoData": "Нет данных за этот период",
+  "firebaseChecking": "Проверка…",
+  "firebaseNotificationsTitle": "Уведомления (FCM)",
+  "firebaseTokenAvailable": "Для этого устройства есть токен уведомлений",
+  "firebaseTokenUnavailable": "Для этого устройства пока нет токена уведомлений",
+  "firebasePermissionGranted": "Разрешение на уведомления предоставлено",
+  "firebasePermissionDenied": "Разрешение на уведомления не предоставлено",
+  "firebaseOpenNotificationSettings": "Открыть настройки уведомлений",
+  "productStatsTooltip": "Статистика",
+  "productStatsTitle": "Статистика"
 }

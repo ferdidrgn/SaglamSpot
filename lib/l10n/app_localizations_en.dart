@@ -2096,99 +2096,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Get a real answer from a real shopkeeper in minutes.';
 
   @override
-  String get firebaseServicesTooltip => 'Firebase Services';
-
-  @override
-  String get firebaseServicesTitle => 'Firebase Services';
-
-  @override
-  String get firebaseCrashlyticsTitle => 'Crash Reporting';
-
-  @override
-  String get firebaseCrashlyticsToggle => 'Send Crash Reports';
-
-  @override
-  String get firebaseCrashlyticsSubtitle =>
-      'If turned off, app errors are not reported to Firebase';
-
-  @override
   String get firebaseChecking => 'Checking…';
-
-  @override
-  String get firebaseCrashedLastSession =>
-      'The app crashed in the previous session';
-
-  @override
-  String get firebaseNoCrashLastSession => 'No crash in the previous session';
-
-  @override
-  String get firebaseStatsConsoleOnly =>
-      'Detailed crash statistics are only viewable in the Firebase Console';
-
-  @override
-  String get firebaseAnalyticsTitle => 'Usage Analytics';
-
-  @override
-  String get firebaseAnalyticsToggle => 'Collect Usage Analytics';
-
-  @override
-  String get firebaseAnalyticsSubtitle =>
-      'If turned off, in-app usage data is not collected';
-
-  @override
-  String get firebaseRemoteConfigTitle => 'Remote Config';
-
-  @override
-  String firebaseAdsEnabledValue(String value) {
-    return 'Ads: $value';
-  }
-
-  @override
-  String get firebaseValueOn => 'On';
-
-  @override
-  String get firebaseValueOff => 'Off';
-
-  @override
-  String firebaseMaintenanceModeValue(String value) {
-    return 'Maintenance mode: $value';
-  }
-
-  @override
-  String firebaseForceUpdateMinVersionValue(String value) {
-    return 'Forced update threshold: $value';
-  }
-
-  @override
-  String firebaseLastFetch(String time) {
-    return 'Last updated: $time';
-  }
-
-  @override
-  String get firebaseRefreshConfig => 'Refresh Now';
-
-  @override
-  String get firebaseConfigConsoleOnly =>
-      'Values can only be changed from Firebase Console > Remote Config — here you can only view and refresh the current value';
-
-  @override
-  String get firebaseConfigRefreshed => 'Remote Config updated';
-
-  @override
-  String get firebaseConfigUnchanged => 'Remote Config is already up to date';
-
-  @override
-  String get firebaseAppCheckTitle => 'App Check';
-
-  @override
-  String get firebaseAppCheckWebUnsupported => 'App Check is not used on web';
-
-  @override
-  String get firebaseActive => 'Active';
-
-  @override
-  String get firebaseAppCheckDesc =>
-      'A security layer verifying requests come from a genuine app instance — cannot be turned off';
 
   @override
   String get firebaseNotificationsTitle => 'Notifications (FCM)';
@@ -2215,33 +2123,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productStatsTitle => 'Statistics';
-
-  @override
-  String get productStatsTotalViews => 'Total Views (Web + Mobile)';
-
-  @override
-  String get productStatsWeb => 'Web';
-
-  @override
-  String get productStatsMobile => 'Mobile';
-
-  @override
-  String productStatsAvailableSection(int count) {
-    return 'Available Products ($count)';
-  }
-
-  @override
-  String productStatsSoldSection(int count) {
-    return 'Sold Products ($count)';
-  }
-
-  @override
-  String get productStatsEmpty => 'No products yet';
-
-  @override
-  String productStatsRowBreakdown(int web, int mobile) {
-    return 'Web: $web · Mobile: $mobile';
-  }
 
   @override
   String get maintenancePageTitle => 'Under Maintenance';
@@ -2346,4 +2227,146 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get categoryWatchDescription =>
       'We\'ll let you know when a new item is added in the categories you\'re following.';
+
+  @override
+  String get notificationsAdminTooltip => 'Notifications';
+
+  @override
+  String get notificationsAdminTitle => 'Notifications & Campaigns';
+
+  @override
+  String get campaignComposerSectionTitle => 'Send a New Notification';
+
+  @override
+  String get campaignTitleLabel => 'Title';
+
+  @override
+  String get campaignBodyLabel => 'Message';
+
+  @override
+  String get campaignBodyHint => 'E.g.: 20% off all sofa sets this weekend!';
+
+  @override
+  String get campaignLinkSectionTitle => 'Link (optional)';
+
+  @override
+  String get campaignLinkNone => 'None';
+
+  @override
+  String get campaignLinkProduct => 'Go to a product';
+
+  @override
+  String get campaignLinkPage => 'Go to a page';
+
+  @override
+  String get campaignPickProduct => 'Pick a Product';
+
+  @override
+  String get campaignPickProductEmpty => 'Add a product first';
+
+  @override
+  String get campaignPageDiscover => 'Discover';
+
+  @override
+  String get campaignPageNew => 'New Products';
+
+  @override
+  String get campaignPageSpot => 'Second-hand Products';
+
+  @override
+  String get campaignSegmentSectionTitle => 'Who should receive it?';
+
+  @override
+  String get campaignSegmentAll => 'All Users';
+
+  @override
+  String get campaignSegmentFavorited => 'Users with Favorites';
+
+  @override
+  String get campaignSegmentCategory => 'Category Followers';
+
+  @override
+  String get campaignSendButton => 'Send Notification';
+
+  @override
+  String get campaignSendConfirmTitle => 'Send This Notification?';
+
+  @override
+  String get campaignSendConfirmMessage =>
+      'This notification will be sent to all users in your chosen target. This cannot be undone.';
+
+  @override
+  String get campaignSendSuccessAll => 'Notification sent to all users.';
+
+  @override
+  String campaignSendSuccessCount(int count) {
+    return 'Notification sent to $count devices.';
+  }
+
+  @override
+  String get campaignSendSuccessZero =>
+      'Sent, but no devices were found in this segment.';
+
+  @override
+  String campaignSendError(String error) {
+    return 'Could not send notification: $error';
+  }
+
+  @override
+  String get campaignTitleRequired => 'Title and message are required.';
+
+  @override
+  String get statsRangeToday => 'Today';
+
+  @override
+  String get statsRangeWeek => 'This Week';
+
+  @override
+  String get statsRangeMonth => 'This Month';
+
+  @override
+  String get statsRangeYear => 'This Year';
+
+  @override
+  String get statsRangeCustom => 'Custom';
+
+  @override
+  String get statsPlatformAll => 'All';
+
+  @override
+  String get statsPlatformWeb => 'Web';
+
+  @override
+  String get statsPlatformMobile => 'Mobile';
+
+  @override
+  String get statsMetricViews => 'Views';
+
+  @override
+  String get statsMetricClicks => 'WhatsApp Clicks';
+
+  @override
+  String get statsMetricFavorites => 'Favorites';
+
+  @override
+  String get statsMetricSales => 'Sales';
+
+  @override
+  String get statsRevenueLabel => 'Revenue';
+
+  @override
+  String get statsWebFavoriteNote =>
+      'Note: web favorites are stored only in the browser, so they are not included in the favorite count.';
+
+  @override
+  String get statsTrendTitle => 'Trend Over Time';
+
+  @override
+  String get statsByCategoryTitle => 'Breakdown by Category';
+
+  @override
+  String get statsTopProductsTitle => 'Most Engaged Products';
+
+  @override
+  String get statsNoData => 'No data in this range';
 }

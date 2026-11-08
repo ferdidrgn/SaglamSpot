@@ -703,18 +703,18 @@
   "deferredLoadError": "Laden fehlgeschlagen: {error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - Seite nicht gefunden",
   "notFoundPathPrefix": "Pfad: {path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "Zurück zur Startseite",
@@ -728,7 +728,6 @@
   "reservedBadge": "RESERVIERT",
   "priceDropBadge": "Preissenkung",
   "newProductsSearchHint": "Möbel, Sofa, Tisch oder Kategorie suchen...",
-  "onboardingNext": "Weiter",
   "onboardingCategoriesChip": "13 Kategorien",
   "onboardingBargainChip": "Verhandlungsspielraum",
   "onboardingFastReplyChip": "Schnelle Antwort",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "Anmeldung fehlgeschlagen: {code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "Unbekannter Fehler",
   "productViewCountLabel": "{count} Mal angesehen",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} und Umgebung",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Hintergrundtextur",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "Hallo, ich suche ein {condition} Produkt in der Kategorie {category}. Mein Budget: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "Neue-Angebote-Benachrichtigungen",
-  "categoryWatchDescription": "Wir benachrichtigen dich, wenn ein neues Produkt in deinen verfolgten Kategorien hinzugefügt wird."
+  "categoryWatchDescription": "Wir benachrichtigen dich, wenn ein neues Produkt in deinen verfolgten Kategorien hinzugefügt wird.",
+  "notificationsAdminTooltip": "Benachrichtigungen",
+  "notificationsAdminTitle": "Benachrichtigungen & Kampagnen",
+  "campaignComposerSectionTitle": "Neue Benachrichtigung senden",
+  "campaignTitleLabel": "Titel",
+  "campaignBodyLabel": "Nachricht",
+  "campaignBodyHint": "Z. B.: Dieses Wochenende 20 % Rabatt auf alle Sofagarnituren!",
+  "campaignLinkSectionTitle": "Link (optional)",
+  "campaignLinkNone": "Keiner",
+  "campaignLinkProduct": "Zu einem Produkt gehen",
+  "campaignLinkPage": "Zu einer Seite gehen",
+  "campaignPickProduct": "Produkt auswählen",
+  "campaignPickProductEmpty": "Fügen Sie zuerst ein Produkt hinzu",
+  "campaignPageDiscover": "Entdecken",
+  "campaignPageNew": "Neue Produkte",
+  "campaignPageSpot": "Second-Hand-Produkte",
+  "campaignSegmentSectionTitle": "Wer soll es erhalten?",
+  "campaignSegmentAll": "Alle Benutzer",
+  "campaignSegmentFavorited": "Nutzer mit Favoriten",
+  "campaignSegmentCategory": "Kategorie-Abonnenten",
+  "campaignSendButton": "Benachrichtigung senden",
+  "campaignSendConfirmTitle": "Benachrichtigung senden?",
+  "campaignSendConfirmMessage": "Diese Benachrichtigung wird an alle Benutzer im ausgewählten Ziel gesendet. Dies kann nicht widerrufen werden.",
+  "campaignSendSuccessAll": "Benachrichtigung an alle Benutzer gesendet.",
+  "campaignSendSuccessCount": "Benachrichtigung an {count} Geräte gesendet.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Gesendet, aber in diesem Segment wurden keine Geräte gefunden.",
+  "campaignSendError": "Benachrichtigung konnte nicht gesendet werden: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Titel und Nachricht sind erforderlich.",
+  "statsRangeToday": "Heute",
+  "statsRangeWeek": "Diese Woche",
+  "statsRangeMonth": "Diesen Monat",
+  "statsRangeYear": "Dieses Jahr",
+  "statsRangeCustom": "Benutzerdefiniert",
+  "statsPlatformAll": "Alle",
+  "statsPlatformWeb": "Web",
+  "statsPlatformMobile": "Mobil",
+  "statsMetricViews": "Aufrufe",
+  "statsMetricClicks": "WhatsApp-Klicks",
+  "statsMetricFavorites": "Favoriten",
+  "statsMetricSales": "Verkäufe",
+  "statsRevenueLabel": "Umsatz",
+  "statsWebFavoriteNote": "Hinweis: Web-Favoriten werden nur im Browser gespeichert und sind daher nicht in der Favoritenzahl enthalten.",
+  "statsTrendTitle": "Trend im Zeitverlauf",
+  "statsByCategoryTitle": "Aufschlüsselung nach Kategorie",
+  "statsTopProductsTitle": "Produkte mit der meisten Interaktion",
+  "statsNoData": "Keine Daten in diesem Zeitraum",
+  "firebaseChecking": "Wird geprüft…",
+  "firebaseNotificationsTitle": "Benachrichtigungen (FCM)",
+  "firebaseTokenAvailable": "Für dieses Gerät ist ein Benachrichtigungstoken vorhanden",
+  "firebaseTokenUnavailable": "Für dieses Gerät gibt es noch keinen Benachrichtigungstoken",
+  "firebasePermissionGranted": "Benachrichtigungsberechtigung erteilt",
+  "firebasePermissionDenied": "Benachrichtigungsberechtigung nicht erteilt",
+  "firebaseOpenNotificationSettings": "Benachrichtigungseinstellungen öffnen",
+  "productStatsTooltip": "Statistiken",
+  "productStatsTitle": "Statistiken"
 }

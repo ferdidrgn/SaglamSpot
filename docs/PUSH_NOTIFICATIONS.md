@@ -8,14 +8,21 @@ erişimim yok — bu adımları sizin tamamlamanız gerekiyor.
 
 ## Mimari özeti
 
-Bu proje ayrı bir bildirim gönderme sunucusu (backend) veya Cloud
-Function **içermiyor**. Bunun yerine:
+Artık admin panelinden (hem Flutter mobil hem web-genesis) kod
+yazmadan, Firebase Console'a hiç girmeden gerçek bir kampanya/duyuru
+bildirimi gönderilebiliyor — bkz. aşağıdaki **"Admin panelinden
+bildirim/kampanya gönderme"** bölümü. Firebase Console'daki Messaging
+paneli de HÂLÂ kullanılabilir (iki yol birbirini dışlamaz), ama artık
+zorunlu değil.
 
 1. Her cihaz açılışta otomatik olarak `all_users` adlı bir **FCM
    konusuna (topic)** abone olur (bkz. `NotificationService.init()`).
-2. Siz (mağaza sahibi) Firebase Console'daki **Messaging** panelinden
-   hiç kod yazmadan bu konuya (`all_users`) hedefli bir kampanya/anlık
-   mesaj gönderirsiniz.
+2. Admin panelinden ("Bildirimler" sekmesi/ekranı) başlık+metin yazıp,
+   isteğe bağlı bir ürüne/sayfaya bağlayıp, bir hedef (herkese/
+   favorileyenlere/bir kategoriyi takip edenlere) seçip gönderiliyor —
+   bkz. `functions/index.js > sendCampaignNotification`. Alternatif
+   olarak Firebase Console'daki **Messaging** panelinden de (konu adı
+   `all_users`) hiç kod yazmadan gönderilebilir.
 3. Uygulama bu mesajı yakalar:
    - Uygulama **kapalı/arka planda** iken: Android/iOS bunu otomatik
      sistem bildirimi olarak gösterir (ekstra kod gerekmez).
@@ -26,6 +33,43 @@ Function **içermiyor**. Bunun yerine:
      kutusuna** kaydedilir (`NotificationInboxCache`, SharedPreferences
      tabanlı) ve uygulama içindeki **🔔 zil ikonundan** (ana sayfa
      başlığı) erişilebilir; okunmamış sayısı kırmızı rozetle gösterilir.
+   - Admin kampanyasının bir ürüne/sayfaya bağlantısı varsa, bildirime
+     (sistem bildirimi ya da gelen kutusundaki satır) dokununca
+     doğrudan o sayfaya gidilir (`NotificationHandler.globalGoTo` /
+     `data.path` — bkz. aşağıdaki "Bağlantılı bildirimler" bölümü).
+
+## Admin panelinden bildirim/kampanya gönderme
+
+Esnaf, Firebase Console'a hiç girmeden:
+
+1. **Flutter mobil**: Admin paneli → "Bildirimler" kart (kampanya
+   borusu ikonu) → `AdminNotificationsPage`.
+2. **web-genesis**: `/admin` → **Bildirimler** sekmesi.
+
+İkisinde de aynı form: Başlık, Mesaj, isteğe bağlı bir **Bağlantı**
+(bir ürüne ya da sabit bir sayfaya — Keşfet/Sıfır Ürünler/Spot
+Ürünler) ve bir **hedef** (Tüm Kullanıcılar / Favorisi Olanlar /
+bir Kategoriyi Takip Edenler). "Gönder" dendiğinde ikisi de AYNI
+callable Cloud Function'ı (`sendCampaignNotification`,
+`functions/index.js`) çağırır — tek gönderim mantığı, iki istemci.
+Fonksiyon admin yetkisini (Admin SDK ile `assertIsAdmin`) sunucu
+tarafında tekrar doğrular; segment hedefleri YENİ bir abonelik alt
+yapısı gerektirmez, zaten var olan `notification_subscriptions`
+(favorileyenler) ve `category_watch_subscriptions` (kategori
+takipçileri) koleksiyonlarını kullanır. Gönderilen her kampanya ayrıca
+`notification_broadcasts`'a yazılır (uygulama içi gelen kutusu için).
+
+### Bağlantılı bildirimler
+Admin bir ürün seçtiyse, sunucu `sitemap()`/`prerender()` ile AYNI
+imzalama şemasıyla (`toSlug`/`signProductId`) imzalı bir
+`/product/<slug>-<id>?sig=...` yolu üretir; sabit bir sayfa seçtiyse
+(`/discover`, `/new`, `/spot`) o yol kullanılır. Bu yol, FCM
+mesajının `data.path` alanında taşınır; `NotificationService.
+_onNotificationTapped` (bildirime dokunma) ve `NotificationsPage`
+(gelen kutusundaki satıra dokunma) bu yolu `NavigationHandler.
+globalGoTo` ile açar. Push bildirimleri şu an SADECE Android/iOS'a
+gittiği için (aşağıya bakın) bu yönlendirme her zaman MOBİL uygulama
+içinde açılır — web admin panelinden gönderilse bile.
 
 ## Kodda hazır olanlar
 
@@ -121,13 +165,11 @@ ID'lerini `notification_subscriptions/{fcmToken}` Firestore
 dokümanına yazar (bkz. `lib/core/services/favorite_notification_sync.dart`,
 `FavoritesNotifier` her favori ekleme/çıkarmada tetikler).
 
-### ⚠️ Firestore güvenlik kuralı eklemeniz GEREKİYOR
-
-Bu projede Firestore kuralları repo'da değil, Firebase Console'da
-tutuluyor — bu yüzden aşağıdaki kuralı **siz** Console → Firestore
-Database → Rules sekmesinden eklemelisiniz (aksi halde müşteri
-cihazları `notification_subscriptions`'a yazamaz, favori senkronu
-sessizce başarısız olur):
+### Firestore güvenlik kuralı
+Bu kural (ve `category_watch_subscriptions`/`analytics_events`
+kuralları) artık repoda, `firestore.rules` dosyasında — Console'da
+elle eklemenize gerek yok, `firebase deploy --only firestore:rules`
+ile deploy edilir.
 
 ```
 match /notification_subscriptions/{token} {
@@ -139,18 +181,10 @@ match /notification_subscriptions/{token} {
 
 ## Bilinen sınırlamalar
 
-- Belirli kullanıcı gruplarına hedefli bildirim artık MÜMKÜN (yukarıdaki
-  `notifyPriceDrop` — favorileyenlere özel) ama genel yayın hâlâ sadece
-  "herkese" (`all_users` konusu) ya da "favorileyenlere" şeklinde; daha
-  ince segmentasyon (örn. "sadece belirli bir semtte oturanlar") için ek
-  geliştirme gerekir.
-- Bildirime dokunduğunda belirli bir ürün sayfasına yönlendirme şu an
-  YOK — sadece uygulamayı açıyor. Bu, mesaj verisine (`data` alanı) bir
-  ürün ID'si eklenerek ve `NotificationService._onNotificationTapped`
-  içinde yönlendirme kodu yazılarak eklenebilir (istenirse ayrı bir
-  işte yapılabilir). Yeni fonksiyonlar zaten `data.productId`
-  gönderiyor, sadece istemci tarafında okuyup yönlendirme eklenmesi
-  yeterli.
+- Admin panelinden hedefli gönderim "herkese" / "favorisi olanlara" /
+  "bir kategoriyi takip edenlere" şeklinde; daha ince segmentasyon
+  (örn. "sadece belirli bir semtte oturanlar") için ek geliştirme
+  gerekir.
 - `notifyPriceDrop` gece de anında gönderilir (günlük özetteki gibi
   "sabaha ertele" mantığı yok) — kişiye özel/nadir bir olay olduğu için
   bilinçli olarak böyle bırakıldı, istenirse aynı erteleme mantığı buna
@@ -175,10 +209,8 @@ Flutter tarafı, cihazın takip ettiği kategorileri
 (bkz. `lib/core/services/category_watch_sync.dart`,
 `CategoryWatchNotifier` her kategori işaretleme/kaldırmada tetikler).
 
-### ⚠️ Bu özellik için de bir Firestore güvenlik kuralı eklemeniz GEREKİYOR
-
-`notification_subscriptions` için yukarıda eklediğiniz kuralın AYNISI,
-yeni koleksiyon için:
+### Firestore güvenlik kuralı
+`notification_subscriptions` ile AYNI desen, `firestore.rules`'ta:
 
 ```
 match /category_watch_subscriptions/{token} {
@@ -187,3 +219,22 @@ match /category_watch_subscriptions/{token} {
                && request.resource.data.categories is list;
 }
 ```
+
+## İstatistikler (görüntülenme/tıklama/favori/satış, tarih filtreli)
+
+Admin panelindeki (hem Flutter hem web-genesis) "İstatistikler"
+ekranı artık ürün dokümanlarındaki ömür boyu ham sayaçların (eski
+hâli) ÖTESİNDE, `analytics_events` koleksiyonundan okuyan gerçek,
+tarih aralığı seçilebilen bir panel: günlük/haftalık/aylık/yıllık
+(ve özel aralık) filtreleme, platform (web/mobil) filtresi, kategori
+kırılımı, zaman içindeki trend grafiği ve en çok etkileşim alan
+ürünler. Bkz. `lib/core/services/analytics_event_logger.dart`
+(Flutter) ve `web-genesis/functions/src/analyticsEvents.js` (web) —
+her ikisi de AYNI koleksiyona, AYNI şekilde yazar. Ziyaretçi kimliği
+TUTULMAZ (viewCountWeb/Mobile sayaçlarıyla AYNI felsefe) — sadece
+olay türü + ürün/kategori + platform + zaman.
+
+Web'deki favoriler tamamen tarayıcıda (localStorage) tutulduğu için
+(bkz. `public/static/js/main.js`) web tarafında favori OLAYI
+günlüklenmez — istatistik ekranında bu açıkça belirtilir (uydurma bir
+sayı göstermek yerine).

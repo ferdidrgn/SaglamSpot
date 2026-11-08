@@ -100,6 +100,29 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Gerçek, zaman damgalı istatistik olayları (görüntülenme/tıklama/
+    // favori/satış) — admin panelindeki tarih filtreli grafikler/tablolar
+    // BUNDAN okur (bkz. core/services/analytics_event_logger.dart ve
+    // web-genesis functions/src/analyticsEvents.js). Ziyaretçi kimliği
+    // TUTULMAZ (viewCountWeb/Mobile sayaçlarıyla AYNI felsefe) — sadece
+    // olay türü + ürün/kategori + zaman. Girişsiz ziyaretçiler SADECE
+    // view/contact_click/favori yazabilir, SADECE bu şekle uyarsa; 'satış'
+    // olayını (fiyat içerdiği için) yalnızca admin (ürünü satıldı
+    // işaretlerken) yazabilir. Okuma SADECE admin'e açık — bu istatistikler
+    // esnafın kendi iş verisi, herkese açık değil.
+    function isValidPublicAnalyticsEvent() {
+      return request.resource.data.type in ['view', 'contact_click', 'favorite']
+        && request.resource.data.platform in ['web', 'mobile']
+        && request.resource.data.keys().hasOnly(['type', 'productId', 'category', 'platform', 'createdAt'])
+        && request.resource.data.productId is string
+        && request.resource.data.createdAt == request.time;
+    }
+    match /analytics_events/{eventId} {
+      allow read: if isAdmin();
+      allow create: if isValidPublicAnalyticsEvent() || isAdmin();
+      allow update, delete: if false;
+    }
+
     // Tanımlanmamış her şey: kapalı.
     match /{document=**} {
       allow read, write: if false;

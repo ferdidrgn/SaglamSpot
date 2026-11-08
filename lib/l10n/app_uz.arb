@@ -703,18 +703,18 @@
   "deferredLoadError": "Yuklab bo'lmadi: {error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - Sahifa topilmadi",
   "notFoundPathPrefix": "Yo'l: {path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "Bosh sahifaga qaytish",
@@ -728,7 +728,6 @@
   "reservedBadge": "BAND QILINGAN",
   "priceDropBadge": "Narx tushishi",
   "newProductsSearchHint": "Mebel, divan, stol yoki kategoriya qidirish...",
-  "onboardingNext": "Keyingi",
   "onboardingCategoriesChip": "13 ta kategoriya",
   "onboardingBargainChip": "Kelishish imkoniyati",
   "onboardingFastReplyChip": "Tezkor javob",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "Kirish amalga oshmadi: {code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "Noma'lum xato",
   "productViewCountLabel": "{count} marta ko'rildi",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} va atrofi",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Fon teksturasi",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "Salom, {category} toifasida {condition} mahsulot qidiryapman. Byudjetim: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "Yangi Mahsulot Bildirishnomalari",
-  "categoryWatchDescription": "Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz."
+  "categoryWatchDescription": "Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz.",
+  "notificationsAdminTooltip": "Bildirishnomalar",
+  "notificationsAdminTitle": "Bildirishnomalar va kampaniyalar",
+  "campaignComposerSectionTitle": "Yangi bildirishnoma yuborish",
+  "campaignTitleLabel": "Sarlavha",
+  "campaignBodyLabel": "Xabar",
+  "campaignBodyHint": "Masalan: Bu dam olish kunlari barcha divan to'plamlariga 20% chegirma!",
+  "campaignLinkSectionTitle": "Havola (ixtiyoriy)",
+  "campaignLinkNone": "Yo'q",
+  "campaignLinkProduct": "Mahsulotga o'tish",
+  "campaignLinkPage": "Sahifaga o'tish",
+  "campaignPickProduct": "Mahsulotni tanlang",
+  "campaignPickProductEmpty": "Avval mahsulot qo'shing",
+  "campaignPageDiscover": "Kashf etish",
+  "campaignPageNew": "Yangi mahsulotlar",
+  "campaignPageSpot": "Ikkinchi qo'l mahsulotlar",
+  "campaignSegmentSectionTitle": "Kimga yuborilsin?",
+  "campaignSegmentAll": "Barcha foydalanuvchilar",
+  "campaignSegmentFavorited": "Sevimlisi borlar",
+  "campaignSegmentCategory": "Kategoriya kuzatuvchilari",
+  "campaignSendButton": "Bildirishnomani yuborish",
+  "campaignSendConfirmTitle": "Bu bildirishnoma yuborilsinmi?",
+  "campaignSendConfirmMessage": "Bu bildirishnoma siz tanlagan segmentdagi barcha foydalanuvchilarga yuboriladi. Bu amalni ortga qaytarib bo'lmaydi.",
+  "campaignSendSuccessAll": "Bildirishnoma barcha foydalanuvchilarga yuborildi.",
+  "campaignSendSuccessCount": "Bildirishnoma {count} ta qurilmaga yuborildi.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Yuborildi, lekin bu segmentda hech qanday qurilma topilmadi.",
+  "campaignSendError": "Bildirishnoma yuborilmadi: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Sarlavha va xabar talab qilinadi.",
+  "statsRangeToday": "Bugun",
+  "statsRangeWeek": "Shu hafta",
+  "statsRangeMonth": "Shu oy",
+  "statsRangeYear": "Shu yil",
+  "statsRangeCustom": "Moslashtirilgan",
+  "statsPlatformAll": "Barchasi",
+  "statsPlatformWeb": "Veb",
+  "statsPlatformMobile": "Mobil",
+  "statsMetricViews": "Ko'rishlar",
+  "statsMetricClicks": "WhatsApp bosishlari",
+  "statsMetricFavorites": "Sevimlilar",
+  "statsMetricSales": "Sotuvlar",
+  "statsRevenueLabel": "Daromad",
+  "statsWebFavoriteNote": "Eslatma: vebdagi sevimlilar faqat brauzerda saqlanadi, shuning uchun sevimlilar soniga kirmaydi.",
+  "statsTrendTitle": "Vaqt bo'yicha tendensiya",
+  "statsByCategoryTitle": "Kategoriya bo'yicha taqsimot",
+  "statsTopProductsTitle": "Eng ko'p e'tibor olgan mahsulotlar",
+  "statsNoData": "Bu oraliqda ma'lumot yo'q",
+  "firebaseChecking": "Tekshirilmoqda…",
+  "firebaseNotificationsTitle": "Bildirishnomalar (FCM)",
+  "firebaseTokenAvailable": "Bu qurilma uchun bildirishnoma tokeni mavjud",
+  "firebaseTokenUnavailable": "Bu qurilma uchun hali bildirishnoma tokeni yo'q",
+  "firebasePermissionGranted": "Bildirishnoma uchun ruxsat berildi",
+  "firebasePermissionDenied": "Bildirishnoma uchun ruxsat berilmagan",
+  "firebaseOpenNotificationSettings": "Bildirishnoma sozlamalarini ochish",
+  "productStatsTooltip": "Statistika",
+  "productStatsTitle": "Statistika"
 }

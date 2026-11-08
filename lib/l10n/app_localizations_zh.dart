@@ -2004,152 +2004,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get featureRow3Desc => '几分钟内获得店主的真实回复。';
 
   @override
-  String get firebaseServicesTooltip => 'Firebase Servisleri';
+  String get firebaseChecking => '正在检查…';
 
   @override
-  String get firebaseServicesTitle => 'Firebase Servisleri';
+  String get firebaseNotificationsTitle => '通知 (FCM)';
 
   @override
-  String get firebaseCrashlyticsTitle => 'Çökme Raporlama';
+  String get firebaseTokenAvailable => '此设备已有通知令牌';
 
   @override
-  String get firebaseCrashlyticsToggle => 'Çökme Raporlarını Gönder';
+  String get firebaseTokenUnavailable => '此设备尚无通知令牌';
 
   @override
-  String get firebaseCrashlyticsSubtitle =>
-      'Kapatılırsa uygulama hataları Firebase\'e bildirilmez';
+  String get firebasePermissionGranted => '已授予通知权限';
 
   @override
-  String get firebaseChecking => 'Kontrol ediliyor…';
+  String get firebasePermissionDenied => '尚未授予通知权限';
 
   @override
-  String get firebaseCrashedLastSession => 'Bir önceki oturumda uygulama çöktü';
+  String get firebaseOpenNotificationSettings => '打开通知设置';
 
   @override
-  String get firebaseNoCrashLastSession => 'Bir önceki oturumda çökme olmadı';
+  String get productStatsTooltip => '统计数据';
 
   @override
-  String get firebaseStatsConsoleOnly =>
-      'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir';
-
-  @override
-  String get firebaseAnalyticsTitle => 'Kullanım Analitiği';
-
-  @override
-  String get firebaseAnalyticsToggle => 'Kullanım Analitiği Topla';
-
-  @override
-  String get firebaseAnalyticsSubtitle =>
-      'Kapatılırsa uygulama içi kullanım verisi toplanmaz';
-
-  @override
-  String get firebaseRemoteConfigTitle => 'Remote Config';
-
-  @override
-  String firebaseAdsEnabledValue(String value) {
-    return 'Reklamlar: $value';
-  }
-
-  @override
-  String get firebaseValueOn => 'Açık';
-
-  @override
-  String get firebaseValueOff => 'Kapalı';
-
-  @override
-  String firebaseMaintenanceModeValue(String value) {
-    return 'Bakım modu: $value';
-  }
-
-  @override
-  String firebaseForceUpdateMinVersionValue(String value) {
-    return 'Zorunlu güncelleme eşiği: $value';
-  }
-
-  @override
-  String firebaseLastFetch(String time) {
-    return 'Son güncelleme: $time';
-  }
-
-  @override
-  String get firebaseRefreshConfig => 'Şimdi Güncelle';
-
-  @override
-  String get firebaseConfigConsoleOnly =>
-      'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz';
-
-  @override
-  String get firebaseConfigRefreshed => 'Remote Config güncellendi';
-
-  @override
-  String get firebaseConfigUnchanged => 'Remote Config zaten güncel';
-
-  @override
-  String get firebaseAppCheckTitle => 'App Check';
-
-  @override
-  String get firebaseAppCheckWebUnsupported =>
-      'App Check web\'de kullanılmıyor';
-
-  @override
-  String get firebaseActive => 'Aktif';
-
-  @override
-  String get firebaseAppCheckDesc =>
-      'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz';
-
-  @override
-  String get firebaseNotificationsTitle => 'Bildirimler (FCM)';
-
-  @override
-  String get firebaseTokenAvailable =>
-      'Bu cihaz için bildirim belirteci mevcut';
-
-  @override
-  String get firebaseTokenUnavailable =>
-      'Bu cihaz için henüz bildirim belirteci yok';
-
-  @override
-  String get firebasePermissionGranted => 'Bildirim izni verildi';
-
-  @override
-  String get firebasePermissionDenied => 'Bildirim izni verilmedi';
-
-  @override
-  String get firebaseOpenNotificationSettings => 'Bildirim Ayarlarını Aç';
-
-  @override
-  String get productStatsTooltip => 'İstatistikler';
-
-  @override
-  String get productStatsTitle => 'İstatistikler';
-
-  @override
-  String get productStatsTotalViews => 'Toplam Görüntülenme (Web + Mobil)';
-
-  @override
-  String get productStatsWeb => 'Web';
-
-  @override
-  String get productStatsMobile => 'Mobil';
-
-  @override
-  String productStatsAvailableSection(int count) {
-    return 'Mevcut Ürünler ($count)';
-  }
-
-  @override
-  String productStatsSoldSection(int count) {
-    return 'Satılmış Ürünler ($count)';
-  }
-
-  @override
-  String get productStatsEmpty => 'Henüz ürün yok';
-
-  @override
-  String productStatsRowBreakdown(int web, int mobile) {
-    return 'Web: $web · Mobil: $mobile';
-  }
+  String get productStatsTitle => '统计数据';
 
   @override
   String get maintenancePageTitle => '维护中';
@@ -2250,4 +2129,143 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get categoryWatchDescription => '当您关注的分类中添加新商品时，我们会通知您。';
+
+  @override
+  String get notificationsAdminTooltip => '通知';
+
+  @override
+  String get notificationsAdminTitle => '通知与推广活动';
+
+  @override
+  String get campaignComposerSectionTitle => '发送新通知';
+
+  @override
+  String get campaignTitleLabel => '标题';
+
+  @override
+  String get campaignBodyLabel => '消息内容';
+
+  @override
+  String get campaignBodyHint => '例如：本周末所有沙发套装八折优惠！';
+
+  @override
+  String get campaignLinkSectionTitle => '链接（可选）';
+
+  @override
+  String get campaignLinkNone => '无';
+
+  @override
+  String get campaignLinkProduct => '跳转到商品';
+
+  @override
+  String get campaignLinkPage => '跳转到页面';
+
+  @override
+  String get campaignPickProduct => '选择商品';
+
+  @override
+  String get campaignPickProductEmpty => '请先添加商品';
+
+  @override
+  String get campaignPageDiscover => '发现';
+
+  @override
+  String get campaignPageNew => '全新商品';
+
+  @override
+  String get campaignPageSpot => '二手商品';
+
+  @override
+  String get campaignSegmentSectionTitle => '发送给谁？';
+
+  @override
+  String get campaignSegmentAll => '所有用户';
+
+  @override
+  String get campaignSegmentFavorited => '有收藏的用户';
+
+  @override
+  String get campaignSegmentCategory => '分类关注者';
+
+  @override
+  String get campaignSendButton => '发送通知';
+
+  @override
+  String get campaignSendConfirmTitle => '要发送此通知吗？';
+
+  @override
+  String get campaignSendConfirmMessage => '此通知将发送给您所选目标中的所有用户，此操作无法撤销。';
+
+  @override
+  String get campaignSendSuccessAll => '通知已发送给所有用户。';
+
+  @override
+  String campaignSendSuccessCount(int count) {
+    return '通知已发送到 $count 台设备。';
+  }
+
+  @override
+  String get campaignSendSuccessZero => '已发送，但该分组中未找到任何设备。';
+
+  @override
+  String campaignSendError(String error) {
+    return '通知发送失败：$error';
+  }
+
+  @override
+  String get campaignTitleRequired => '标题和消息内容为必填项。';
+
+  @override
+  String get statsRangeToday => '今天';
+
+  @override
+  String get statsRangeWeek => '本周';
+
+  @override
+  String get statsRangeMonth => '本月';
+
+  @override
+  String get statsRangeYear => '本年';
+
+  @override
+  String get statsRangeCustom => '自定义';
+
+  @override
+  String get statsPlatformAll => '全部';
+
+  @override
+  String get statsPlatformWeb => '网页';
+
+  @override
+  String get statsPlatformMobile => '移动端';
+
+  @override
+  String get statsMetricViews => '浏览量';
+
+  @override
+  String get statsMetricClicks => 'WhatsApp点击量';
+
+  @override
+  String get statsMetricFavorites => '收藏量';
+
+  @override
+  String get statsMetricSales => '销售量';
+
+  @override
+  String get statsRevenueLabel => '收入';
+
+  @override
+  String get statsWebFavoriteNote => '注意：网页端的收藏仅保存在浏览器本地，因此不计入收藏统计。';
+
+  @override
+  String get statsTrendTitle => '时间趋势';
+
+  @override
+  String get statsByCategoryTitle => '按分类统计';
+
+  @override
+  String get statsTopProductsTitle => '互动最多的商品';
+
+  @override
+  String get statsNoData => '该时间段内暂无数据';
 }

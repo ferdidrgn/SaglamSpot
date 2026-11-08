@@ -1,5 +1,6 @@
 const {renderLayout, escapeHtml} = require("../render/layout");
 const {getProductById, incrementWebViewCount, listActiveProducts} = require("../productRepo");
+const {logAnalyticsEvent} = require("../analyticsEvents");
 const {productShareUrl} = require("../linkSigning");
 const {localizedCategoryLabel, categoryColor} = require("../categories");
 const {renderProductGrid} = require("../render/productCard");
@@ -75,6 +76,15 @@ module.exports = async function productDetailRoute(req, res) {
   }
 
   await incrementWebViewCount(product.id);
+  // Admin > İstatistikler ekranındaki tarih filtreli "görüntülenme"
+  // metriği BURADAN gelir (bkz. analyticsEvents.js) — isteği ASLA
+  // engellemez (içeride best-effort, hatayı yutar).
+  logAnalyticsEvent({
+    type: "view",
+    productId: product.id,
+    category: product.category,
+    platform: "web",
+  });
 
   // Birden fazla görsel varsa tam ekran, kaydırılabilir/oklu bir galeri
   // (lightbox) — bkz. public/static/js/product-gallery.js. Tek görsel/hiç
@@ -273,8 +283,8 @@ module.exports = async function productDetailRoute(req, res) {
     <div class="detail-actions">
       <a class="pdetail-phone-btn" href="tel:+${business.phoneNumberIntl}" aria-label="${escapeHtml(t(locale, "callCta"))}">${PHONE_ICON}</a>
       ${product.isSold
-        ? `<a class="pdetail-cta-primary" href="${escapeHtml(whatsappHref)}" rel="noopener">${CHAT_ICON}Benzerini Sor</a>`
-        : `${cartButtonHtml}<a class="pdetail-cta-outline" href="${escapeHtml(whatsappHref)}" rel="noopener">${CHAT_ICON}${escapeHtml(t(locale, "whatsappCta"))}</a>`}
+        ? `<a class="pdetail-cta-primary" href="${escapeHtml(whatsappHref)}" rel="noopener" data-contact-cta data-product-id="${escapeHtml(product.id)}" data-category="${escapeHtml(product.category)}">${CHAT_ICON}Benzerini Sor</a>`
+        : `${cartButtonHtml}<a class="pdetail-cta-outline" href="${escapeHtml(whatsappHref)}" rel="noopener" data-contact-cta data-product-id="${escapeHtml(product.id)}" data-category="${escapeHtml(product.category)}">${CHAT_ICON}${escapeHtml(t(locale, "whatsappCta"))}</a>`}
     </div>
   </div>
 </section>

@@ -1,7 +1,8 @@
 import {
   auth, db, storage, functions,
   onAuthStateChanged, firebaseSignOut, isCurrentUserAdmin,
-  collection, doc, getDocs, setDoc, updateDoc, deleteDoc,
+  collection, doc, getDocs, setDoc, updateDoc, deleteDoc, addDoc,
+  query, where, orderBy, Timestamp, serverTimestamp,
   storageRef, uploadBytes, getDownloadURL, deleteObject,
   httpsCallable,
 } from "./firebase-client.js";
@@ -73,7 +74,11 @@ document.querySelectorAll("[data-admin-tab]").forEach((tabBtn) => {
       panel.classList.toggle("is-active", active);
       panel.hidden = !active;
     });
-    if (target === "stats") renderStats();
+    if (target === "stats") {
+      renderStats();
+      renderEngagementStats();
+    }
+    if (target === "notifications") populateCampaignProductSelect();
   });
 });
 
@@ -415,14 +420,36 @@ document.getElementById("admin-bulk-sold")?.addEventListener("click", () => bulk
 document.getElementById("admin-bulk-unsold")?.addEventListener("click", () => bulkSetSold(false));
 document.getElementById("admin-bulk-delete")?.addEventListener("click", handleBulkDelete);
 
+// Admin > İstatistikler ekranındaki tarih filtreli "satış" metriği ve
+// gelir trendi BURADAN gelir (bkz. firestore.rules > analytics_events,
+// isAdmin() dalı) — sadece satılmamış → satıldı GEÇİŞİNDE yazılır,
+// "Satıldı Kaldır" ya da zaten satılmış bir ürünü tekrar işaretlemede
+// tekrar sayılmaz.
+async function logSaleEvent(product) {
+  try {
+    await addDoc(collection(db, "analytics_events"), {
+      type: "sale",
+      productId: product._docId,
+      category: product.category || "other",
+      platform: "web",
+      price: Number(product.price) || 0,
+      createdAt: serverTimestamp(),
+    });
+  } catch (err) {
+    console.error("logSaleEvent başarısız:", err);
+  }
+}
+
 async function bulkSetSold(sold) {
   const ids = [...selectedIds];
   if (!ids.length) return;
   try {
+    const newlySold = sold ? ids.map((id) => findByDocId(id)).filter((p) => p && !p.isSold) : [];
     await Promise.all(ids.map((id) => updateDoc(doc(db, "Product", id), {
       isSold: sold,
       _soldAt: sold ? formattedNow() : "",
     })));
+    await Promise.all(newlySold.map((p) => logSaleEvent(p)));
     selectedIds.clear();
     await loadProducts();
     toast(`${ids.length} ürün güncellendi.`);
@@ -453,6 +480,7 @@ async function toggleField(docId, field) {
   if (field === "isSold") update._soldAt = next ? formattedNow() : "";
   try {
     await updateDoc(doc(db, "Product", docId), update);
+    if (field === "isSold" && next) await logSaleEvent(product);
     await loadProducts();
     toast("Güncellendi.");
   } catch (err) {
@@ -697,3 +725,312 @@ async function handleSubmit(event) {
     formEl.addEventListener("submit", handleSubmit, {once: true});
   }
 }
+
+// --- "Etkileşim İstatistikleri" (görüntülenme/tıklama/favori/satış,
+// tarih aralığı + platform filtreli) — ESKİ istatistikler bölümünün
+// (yukarıda, statsFilteredProducts tabanlı) AKSİNE, bu bölüm ürün
+// dokümanlarından değil `analytics_events` koleksiyonundan (bkz.
+// core/services/analytics_event_logger.dart'ın web karşılığı:
+// web-genesis/functions/src/analyticsEvents.js) okur — gerçek, zaman
+// damgalı olaylar. Envanter anlık görüntüsü (stok değeri, fiyat
+// dağılımı vb.) hâlâ değerli olduğu için YUKARIDAKİ bölüm KALDIRILMADI,
+// bu YENİ bölüm onun yanına eklendi.
+const engagementState = {range: "today", customFrom: "", customTo: "", platform: "all", metric: "view"};
+let engagementEventsCache = null; // {key, events}
+
+function engagementRangeDates() {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  switch (engagementState.range) {
+    case "week": {
+      const start = new Date(today);
+      start.setDate(start.getDate() - ((today.getDay() + 6) % 7)); // Pazartesi
+      return {start, end: today};
+    }
+    case "month":
+      return {start: new Date(now.getFullYear(), now.getMonth(), 1), end: today};
+    case "year":
+      return {start: new Date(now.getFullYear(), 0, 1), end: today};
+    case "custom": {
+      const from = engagementState.customFrom ? new Date(engagementState.customFrom) : today;
+      const to = engagementState.customTo ? new Date(engagementState.customTo) : today;
+      return {start: from, end: to};
+    }
+    default: // "today"
+      return {start: today, end: today};
+  }
+}
+
+async function fetchEngagementEvents() {
+  const {start, end} = engagementRangeDates();
+  const key = `${start.toISOString()}_${end.toISOString()}`;
+  if (engagementEventsCache && engagementEventsCache.key === key) return engagementEventsCache.events;
+
+  const endInclusive = new Date(end);
+  endInclusive.setHours(23, 59, 59, 999);
+
+  const eventsQuery = query(
+      collection(db, "analytics_events"),
+      where("createdAt", ">=", Timestamp.fromDate(start)),
+      where("createdAt", "<=", Timestamp.fromDate(endInclusive)),
+      orderBy("createdAt"),
+  );
+  const snap = await getDocs(eventsQuery);
+  const events = snap.docs.map((d) => {
+    const data = d.data();
+    return {
+      type: data.type,
+      productId: data.productId,
+      category: data.category || "other",
+      platform: data.platform || "mobile",
+      price: typeof data.price === "number" ? data.price : null,
+      createdAt: data.createdAt && data.createdAt.toDate ? data.createdAt.toDate() : new Date(),
+    };
+  });
+  engagementEventsCache = {key, events};
+  return events;
+}
+
+function engagementTrendBars(events) {
+  const {start, end} = engagementRangeDates();
+  const days = Math.round((end - start) / 86400000) + 1;
+  const bucketByMonth = days > 120;
+  const bucketByWeek = !bucketByMonth && days > 31;
+
+  function weekStartOf(d) {
+    const ws = new Date(d);
+    ws.setDate(ws.getDate() - ((ws.getDay() + 6) % 7));
+    return ws;
+  }
+  function keyFor(d) {
+    if (bucketByMonth) return `${d.getFullYear()}-${d.getMonth()}`;
+    if (bucketByWeek) {
+      const ws = weekStartOf(d);
+      return `${ws.getFullYear()}-${ws.getMonth()}-${ws.getDate()}`;
+    }
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }
+  function labelFor(d) {
+    return bucketByMonth ? d.toLocaleDateString("tr-TR", {month: "short"}) : `${d.getDate()}/${d.getMonth() + 1}`;
+  }
+
+  const buckets = new Map();
+  if (bucketByMonth) {
+    let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    const endCursor = new Date(end.getFullYear(), end.getMonth(), 1);
+    while (cursor <= endCursor) {
+      buckets.set(keyFor(cursor), {label: labelFor(cursor), count: 0});
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+    }
+  } else {
+    const step = bucketByWeek ? 7 : 1;
+    let cursor = new Date(start);
+    while (cursor <= end) {
+      buckets.set(keyFor(cursor), {label: labelFor(cursor), count: 0});
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + step);
+    }
+  }
+
+  events.forEach((e) => {
+    const bucket = buckets.get(keyFor(e.createdAt));
+    if (bucket) bucket.count += 1;
+  });
+
+  return [...buckets.values()].map((b) => ({label: b.label, value: b.count, color: "var(--color-primary)"}));
+}
+
+const ENGAGEMENT_METRIC_LABELS = {
+  view: "Görüntülenme", contact_click: "WhatsApp Tıklaması", favorite: "Favori", sale: "Satış",
+};
+
+async function renderEngagementStats() {
+  const kpiEl = document.getElementById("engagement-kpis");
+  if (!kpiEl) return;
+
+  let allEvents;
+  try {
+    allEvents = await fetchEngagementEvents();
+  } catch (err) {
+    kpiEl.innerHTML = `<p class="status status-error">İstatistikler yüklenemedi: ${escapeHtml(err.message)}</p>`;
+    return;
+  }
+
+  const events = engagementState.platform === "all" ?
+    allEvents :
+    allEvents.filter((e) => e.platform === engagementState.platform);
+
+  const views = events.filter((e) => e.type === "view").length;
+  const clicks = events.filter((e) => e.type === "contact_click").length;
+  const favorites = events.filter((e) => e.type === "favorite").length;
+  const sales = events.filter((e) => e.type === "sale");
+  const revenue = sales.reduce((s, e) => s + (e.price || 0), 0);
+
+  const kpis = [
+    [ICON_EYE, "var(--color-info)", views.toLocaleString("tr-TR"), "Görüntülenme"],
+    [ICON_SPARKLE, "var(--color-success)", clicks.toLocaleString("tr-TR"), "WhatsApp Tıklaması"],
+    [ICON_TAG, "var(--color-error)", favorites.toLocaleString("tr-TR"), "Favori"],
+    [ICON_WALLET, "var(--color-accent)", sales.length.toLocaleString("tr-TR"), "Satış"],
+    [ICON_CHART, "var(--color-primary)", `${revenue.toLocaleString("tr-TR")} ₺`, "Gelir"],
+  ];
+  kpiEl.innerHTML = kpis.map(([icon, color, value, label], i) => `
+    <div class="admin-stat-card" style="--stat-color:${color};animation-delay:${i * 40}ms">
+      <span class="admin-stat-icon">${icon}</span>
+      <span class="admin-stat-text"><strong>${value}</strong><span>${label}</span></span>
+    </div>`).join("");
+
+  const favoriteNote = document.getElementById("engagement-web-favorite-note");
+  if (favoriteNote) favoriteNote.hidden = engagementState.platform === "mobile";
+
+  const metricEvents = events.filter((e) => e.type === engagementState.metric);
+
+  renderBarChart(document.getElementById("chart-engagement-trend"), engagementTrendBars(metricEvents));
+
+  const catCounts = {};
+  metricEvents.forEach((e) => { catCounts[e.category] = (catCounts[e.category] || 0) + 1; });
+  renderBarChart(
+      document.getElementById("chart-engagement-category"),
+      Object.entries(catCounts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([key, value]) => ({label: categoryLabels[key] || key, value, color: categoryColorFor(key)})),
+  );
+
+  const prodCounts = {};
+  metricEvents.forEach((e) => { prodCounts[e.productId] = (prodCounts[e.productId] || 0) + 1; });
+  const topBars = Object.entries(prodCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([id, value]) => {
+        const product = findByDocId(id);
+        const name = product ? product.name : id;
+        return {
+          label: name.length > 12 ? `${name.slice(0, 12)}…` : name,
+          value,
+          color: "var(--color-info)",
+        };
+      });
+  renderBarChart(document.getElementById("chart-engagement-top"), topBars);
+}
+
+document.querySelectorAll("#engagement-range-chips [data-range]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#engagement-range-chips [data-range]")
+        .forEach((b) => b.classList.toggle("is-active", b === btn));
+    engagementState.range = btn.dataset.range;
+    const customRangeEl = document.getElementById("engagement-custom-range");
+    if (customRangeEl) customRangeEl.hidden = btn.dataset.range !== "custom";
+    if (btn.dataset.range !== "custom") renderEngagementStats();
+  });
+});
+
+["engagement-date-from", "engagement-date-to"].forEach((id) => {
+  document.getElementById(id)?.addEventListener("change", () => {
+    engagementState.customFrom = document.getElementById("engagement-date-from").value;
+    engagementState.customTo = document.getElementById("engagement-date-to").value;
+    if (engagementState.range === "custom" && engagementState.customFrom && engagementState.customTo) {
+      renderEngagementStats();
+    }
+  });
+});
+
+document.querySelectorAll("#engagement-platform-chips [data-platform]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#engagement-platform-chips [data-platform]")
+        .forEach((b) => b.classList.toggle("is-active", b === btn));
+    engagementState.platform = btn.dataset.platform;
+    renderEngagementStats();
+  });
+});
+
+document.querySelectorAll("#engagement-metric-chips [data-metric]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#engagement-metric-chips [data-metric]")
+        .forEach((b) => b.classList.toggle("is-active", b === btn));
+    engagementState.metric = btn.dataset.metric;
+    renderEngagementStats();
+  });
+});
+
+// --- "Bildirimler" sekmesi: gerçek FCM kampanya gönderimi ---
+// `functions/index.js > sendCampaignNotification` — Flutter admin
+// panelinin (bkz. lib/features/home/presentation/providers/
+// campaign_notification_provider.dart) çağırdığı AYNI callable, burada
+// web istemci SDK'sıyla çağrılıyor. Tek gönderim mantığı, iki istemci.
+const campaignForm = document.getElementById("campaign-form");
+const campaignLinkType = document.getElementById("campaign-link-type");
+const campaignProductField = document.querySelector("[data-field=campaign-product]");
+const campaignPageField = document.querySelector("[data-field=campaign-page]");
+const campaignProductSelect = document.getElementById("campaign-product-select");
+const campaignSegment = document.getElementById("campaign-segment");
+const campaignCategoryField = document.querySelector("[data-field=campaign-category]");
+const campaignErrorEl = document.getElementById("campaign-error");
+
+campaignLinkType?.addEventListener("change", () => {
+  if (campaignProductField) campaignProductField.hidden = campaignLinkType.value !== "product";
+  if (campaignPageField) campaignPageField.hidden = campaignLinkType.value !== "page";
+});
+
+campaignSegment?.addEventListener("change", () => {
+  if (campaignCategoryField) campaignCategoryField.hidden = campaignSegment.value !== "category";
+});
+
+function populateCampaignProductSelect() {
+  if (!campaignProductSelect) return;
+  const available = productsCache.filter((p) => !p.isSold);
+  campaignProductSelect.innerHTML = available.length ?
+    available.map((p) => `<option value="${escapeHtml(p._docId)}">${escapeHtml(p.name)}</option>`).join("") :
+    "<option value=\"\" disabled>Önce bir ürün ekleyin</option>";
+}
+
+campaignForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!campaignErrorEl) return;
+  campaignErrorEl.hidden = true;
+
+  const title = document.getElementById("campaign-title").value.trim();
+  const body = document.getElementById("campaign-body").value.trim();
+  if (!title || !body) {
+    campaignErrorEl.textContent = "Başlık ve mesaj gerekli.";
+    campaignErrorEl.hidden = false;
+    return;
+  }
+
+  const segmentValue = campaignSegment.value === "category" ?
+    `category:${document.getElementById("campaign-category-select").value}` :
+    campaignSegment.value;
+
+  if (!window.confirm("Bu bildirim seçtiğiniz hedefteki tüm kullanıcılara gönderilecek. Bu işlem geri alınamaz.")) {
+    return;
+  }
+
+  const payload = {title, body, segment: segmentValue};
+  if (campaignLinkType.value === "product") {
+    payload.linkType = "product";
+    payload.productId = campaignProductSelect.value;
+  } else if (campaignLinkType.value === "page") {
+    payload.linkType = "page";
+    payload.page = document.getElementById("campaign-page-select").value;
+  }
+
+  const submitBtn = campaignForm.querySelector("button[type=submit]");
+  submitBtn.disabled = true;
+  try {
+    const sendCampaign = httpsCallable(functions, "sendCampaignNotification");
+    const result = await sendCampaign(payload);
+    const sentCount = result.data && typeof result.data.sentCount === "number" ? result.data.sentCount : -1;
+    const message = sentCount < 0 ?
+      "Bildirim tüm kullanıcılara gönderildi." :
+      sentCount === 0 ?
+        "Gönderildi ama bu segmentte hiç cihaz bulunamadı." :
+        `Bildirim ${sentCount} cihaza gönderildi.`;
+    toast(message);
+    campaignForm.reset();
+    if (campaignProductField) campaignProductField.hidden = true;
+    if (campaignPageField) campaignPageField.hidden = true;
+    if (campaignCategoryField) campaignCategoryField.hidden = true;
+  } catch (err) {
+    campaignErrorEl.textContent = "Bildirim gönderilemedi: " + err.message;
+    campaignErrorEl.hidden = false;
+  } finally {
+    submitBtn.disabled = false;
+  }
+});

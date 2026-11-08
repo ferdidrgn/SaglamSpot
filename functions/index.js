@@ -430,6 +430,133 @@ exports.notifyPriceDrop = onDocumentUpdated("Product/{productId}", async (event)
 });
 
 /**
+ * ADMİN KAMPANYA/BİLDİRİM GÖNDERİMİ — admin panelinden (hem Flutter mobil
+ * hem web-genesis) esnafın başlık+metin yazıp (isteğe bağlı bir ürüne/
+ * sayfaya link ekleyip) TÜM kullanıcılara veya bir SEGMENTE push
+ * bildirimi gönderebildiği gerçek sistem. Daha önce bu iş için kod YOKTU
+ * (bkz. docs/PUSH_NOTIFICATIONS.md'nin eski hali) — esnaf Firebase
+ * Console'un Messaging panelini kullanmak ZORUNDAYDI. Artık o akışın
+ * YANINA (onu geçersiz kılmadan — Console'dan da hâlâ gönderilebilir)
+ * admin panelinden tek tuşla gönderim eklendi.
+ *
+ * Segmentler, HALİHAZIRDA var olan iki eşleştirme koleksiyonunu
+ * kullanır — yeni bir "abonelik" alt yapısı İCAT EDİLMEDİ:
+ *   - "all"            → `all_users` konusu (her cihaz init() sırasında
+ *                         abone olur, bkz. notification_service.dart).
+ *   - "favorited"       → notification_subscriptions'taki TÜM token'lar
+ *                         (en az bir ürünü favorileyen cihazlar).
+ *   - "category:<key>"  → category_watch_subscriptions'ta bu kategoriyi
+ *                         takip eden cihazlar.
+ * notifyPriceDrop/notifyCategoryWatchers'taki AYNI "500'lük parçala +
+ * geçersiz token'ları temizle" deseni tekrar kullanılıyor.
+ *
+ * `link` alanı (opsiyonel) iki şekilde gelebilir:
+ *   - {linkType:"product", productId} → sunucu ürünü okur, sitemap()/
+ *     prerender()'daki AYNI toSlug()/signProductId() ile imzalı
+ *     `/product/<slug>-<id>?sig=...` yolunu üretir (dışa paylaşılan
+ *     linklerle AYNI imzalama şeması — DeepLinkSecurityEngine ekstra bir
+ *     kod değişikliği gerektirmeden doğrular).
+ *   - {linkType:"page", page} SABİT, güvenli bir liste içinden (açık
+ *     yönlendirme/arbitrary path riski olmasın diye).
+ * Bildirime dokunulduğunda bu yol `NavigationHandler.globalGoTo` ile
+ * açılır (bkz. notification_service.dart > _onNotificationTapped).
+ *
+ * Aynı zamanda `notification_broadcasts`'a da yazılır — onProductCreated
+ * ile AYNI desen — böylece push cihaza o an ulaşmasa bile (izin az önce
+ * verilmiş, cihaz çevrimdışıymış vb.) bildirim uygulama-içi gelen
+ * kutusunda kaybolmaz.
+ */
+const ALLOWED_CAMPAIGN_PAGES = ["/discover", "/new", "/spot"];
+
+exports.sendCampaignNotification = onCall(
+    {timeoutSeconds: 30, memory: "256MiB"},
+    async (request) => {
+      await assertIsAdmin(request);
+
+      const title = typeof request.data?.title === "string" ? request.data.title.trim() : "";
+      const body = typeof request.data?.body === "string" ? request.data.body.trim() : "";
+      const segment = typeof request.data?.segment === "string" ? request.data.segment : "all";
+      const linkType = typeof request.data?.linkType === "string" ? request.data.linkType : "none";
+
+      if (!title || !body) {
+        throw new HttpsError("invalid-argument", "Başlık ve metin gerekli.");
+      }
+      if (segment !== "all" && segment !== "favorited" && !segment.startsWith("category:")) {
+        throw new HttpsError("invalid-argument", "Geçersiz segment.");
+      }
+
+      const db = getFirestore();
+      const data = {type: "admin_campaign"};
+
+      if (linkType === "product") {
+        const productId = typeof request.data?.productId === "string" ? request.data.productId : "";
+        if (!productId) throw new HttpsError("invalid-argument", "productId gerekli.");
+        const productSnap = await db.collection("Product").doc(productId).get();
+        if (!productSnap.exists) throw new HttpsError("not-found", "Ürün bulunamadı.");
+        const productData = productSnap.data();
+        data.path = `/product/${encodeURIComponent(`${toSlug(productData.name)}-${productId}`)}?sig=${signProductId(productId)}`;
+      } else if (linkType === "page") {
+        const page = typeof request.data?.page === "string" ? request.data.page : "";
+        if (!ALLOWED_CAMPAIGN_PAGES.includes(page)) {
+          throw new HttpsError("invalid-argument", "Geçersiz sayfa.");
+        }
+        data.path = page;
+      }
+
+      let sentCount = -1; // -1: "topic"e gönderildi, kesin alıcı sayısı bilinmiyor.
+
+      if (segment === "all") {
+        await getMessaging().send({topic: "all_users", notification: {title, body}, data});
+      } else {
+        const isFavorited = segment === "favorited";
+        const collectionName = isFavorited ? "notification_subscriptions" : "category_watch_subscriptions";
+        const snap = isFavorited ?
+          await db.collection(collectionName).get() :
+          await db.collection(collectionName)
+              .where("categories", "array-contains", segment.slice("category:".length))
+              .get();
+
+        const tokens = snap.docs.map((d) => d.id);
+        sentCount = 0;
+
+        if (tokens.length > 0) {
+          const chunks = [];
+          for (let i = 0; i < tokens.length; i += 500) chunks.push(tokens.slice(i, i + 500));
+
+          const staleTokens = [];
+          for (const chunk of chunks) {
+            try {
+              const response = await getMessaging().sendEachForMulticast({tokens: chunk, notification: {title, body}, data});
+              sentCount += response.successCount;
+              response.responses.forEach((r, i) => {
+                if (!r.success && r.error &&
+                    r.error.code === "messaging/registration-token-not-registered") {
+                  staleTokens.push(chunk[i]);
+                }
+              });
+            } catch (err) {
+              console.error("sendCampaignNotification: FCM gönderimi başarısız.", err);
+            }
+          }
+
+          await Promise.all(staleTokens.map((t) =>
+            db.collection(collectionName).doc(t).delete().catch(() => {})));
+        }
+      }
+
+      await db.collection("notification_broadcasts").add({
+        title,
+        body,
+        type: "admin_campaign",
+        ...(data.path ? {path: data.path} : {}),
+        createdAt: FieldValue.serverTimestamp(),
+      });
+
+      return {success: true, sentCount};
+    },
+);
+
+/**
  * Dinamik ÜRÜN sitemap'i — web/sitemap.xml (statik, her zaman çalışan,
  * ana sayfaları listeleyen dosya) ile ÇAKIŞMAZ, onu TAMAMLAR. Ayrı bir
  * yolda (/sitemap-products.xml) yayınlanır ki fonksiyon deploy edilmese

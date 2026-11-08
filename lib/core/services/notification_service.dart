@@ -2,6 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../../shared/navigation/widgets/nav_handler.dart';
 import 'notification_inbox_cache.dart';
 
 /// FCM (push) mesajını uygulama arka planda/kapalıyken yakalar. Dart'ın
@@ -23,6 +24,7 @@ Future<void> firebaseMessagingBackgroundHandler(
     title: title,
     body: body,
     receivedAt: DateTime.now(),
+    path: message.data['path'] as String?,
   ));
 }
 
@@ -129,6 +131,7 @@ final class NotificationService {
       title: title,
       body: body,
       receivedAt: DateTime.now(),
+      path: message.data['path'] as String?,
     ));
 
     if (!kIsWeb) {
@@ -150,10 +153,15 @@ final class NotificationService {
   }
 
   /// Kullanıcı bir bildirime dokunup uygulamayı açtığında (arka plandan
-  /// veya kapalıyken) çalışır. Şimdilik sadece okunmuş işaretlemiyoruz —
-  /// gelecekte burada belirli bir sayfaya yönlendirme eklenebilir
-  /// (örn. mesaj verisinde bir ürün ID'si taşınıyorsa).
+  /// veya kapalıyken) çalışır. Admin kampanya bildirimi bir ürüne/sayfaya
+  /// bağlıysa (`data.path` — bkz. functions/index.js >
+  /// sendCampaignNotification), BuildContext gerektirmeyen
+  /// `NavigationHandler.globalGoTo` ile doğrudan oraya gider.
   static Future<void> _onNotificationTapped(final RemoteMessage message) async {
     debugPrint('🔔 Bildirime dokunuldu: ${message.messageId}');
+    final path = message.data['path'] as String?;
+    if (path != null && path.isNotEmpty) {
+      NavigationHandler.globalGoTo(path);
+    }
   }
 }

@@ -51,8 +51,13 @@ class NotificationsPage extends ConsumerWidget {
                         separatorBuilder: (final _, final __) => const SizedBox(height: 10),
                         itemBuilder: (final context, final index) => _NotificationCard(
                           notification: items[index],
-                          onTap: () =>
-                              ref.read(notificationInboxProvider.notifier).markRead(items[index].id),
+                          onTap: () {
+                            ref.read(notificationInboxProvider.notifier).markRead(items[index].id);
+                            final path = items[index].path;
+                            if (path != null && path.isNotEmpty) {
+                              NavigationHandler.globalGoTo(path);
+                            }
+                          },
                         ),
                       ),
               ),
