@@ -2112,152 +2112,34 @@ class AppLocalizationsEl extends AppLocalizations {
       'Λάβετε πραγματική απάντηση από τον καταστηματάρχη σε λίγα λεπτά.';
 
   @override
-  String get firebaseServicesTooltip => 'Firebase Servisleri';
+  String get firebaseChecking => 'Έλεγχος…';
 
   @override
-  String get firebaseServicesTitle => 'Firebase Servisleri';
-
-  @override
-  String get firebaseCrashlyticsTitle => 'Çökme Raporlama';
-
-  @override
-  String get firebaseCrashlyticsToggle => 'Çökme Raporlarını Gönder';
-
-  @override
-  String get firebaseCrashlyticsSubtitle =>
-      'Kapatılırsa uygulama hataları Firebase\'e bildirilmez';
-
-  @override
-  String get firebaseChecking => 'Kontrol ediliyor…';
-
-  @override
-  String get firebaseCrashedLastSession => 'Bir önceki oturumda uygulama çöktü';
-
-  @override
-  String get firebaseNoCrashLastSession => 'Bir önceki oturumda çökme olmadı';
-
-  @override
-  String get firebaseStatsConsoleOnly =>
-      'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir';
-
-  @override
-  String get firebaseAnalyticsTitle => 'Kullanım Analitiği';
-
-  @override
-  String get firebaseAnalyticsToggle => 'Kullanım Analitiği Topla';
-
-  @override
-  String get firebaseAnalyticsSubtitle =>
-      'Kapatılırsa uygulama içi kullanım verisi toplanmaz';
-
-  @override
-  String get firebaseRemoteConfigTitle => 'Remote Config';
-
-  @override
-  String firebaseAdsEnabledValue(String value) {
-    return 'Reklamlar: $value';
-  }
-
-  @override
-  String get firebaseValueOn => 'Açık';
-
-  @override
-  String get firebaseValueOff => 'Kapalı';
-
-  @override
-  String firebaseMaintenanceModeValue(String value) {
-    return 'Bakım modu: $value';
-  }
-
-  @override
-  String firebaseForceUpdateMinVersionValue(String value) {
-    return 'Zorunlu güncelleme eşiği: $value';
-  }
-
-  @override
-  String firebaseLastFetch(String time) {
-    return 'Son güncelleme: $time';
-  }
-
-  @override
-  String get firebaseRefreshConfig => 'Şimdi Güncelle';
-
-  @override
-  String get firebaseConfigConsoleOnly =>
-      'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz';
-
-  @override
-  String get firebaseConfigRefreshed => 'Remote Config güncellendi';
-
-  @override
-  String get firebaseConfigUnchanged => 'Remote Config zaten güncel';
-
-  @override
-  String get firebaseAppCheckTitle => 'App Check';
-
-  @override
-  String get firebaseAppCheckWebUnsupported =>
-      'App Check web\'de kullanılmıyor';
-
-  @override
-  String get firebaseActive => 'Aktif';
-
-  @override
-  String get firebaseAppCheckDesc =>
-      'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz';
-
-  @override
-  String get firebaseNotificationsTitle => 'Bildirimler (FCM)';
+  String get firebaseNotificationsTitle => 'Ειδοποιήσεις (FCM)';
 
   @override
   String get firebaseTokenAvailable =>
-      'Bu cihaz için bildirim belirteci mevcut';
+      'Υπάρχει διακριτικό ειδοποίησης για αυτή τη συσκευή';
 
   @override
   String get firebaseTokenUnavailable =>
-      'Bu cihaz için henüz bildirim belirteci yok';
+      'Δεν υπάρχει ακόμη διακριτικό ειδοποίησης για αυτή τη συσκευή';
 
   @override
-  String get firebasePermissionGranted => 'Bildirim izni verildi';
+  String get firebasePermissionGranted => 'Η άδεια ειδοποιήσεων χορηγήθηκε';
 
   @override
-  String get firebasePermissionDenied => 'Bildirim izni verilmedi';
+  String get firebasePermissionDenied => 'Η άδεια ειδοποιήσεων δεν χορηγήθηκε';
 
   @override
-  String get firebaseOpenNotificationSettings => 'Bildirim Ayarlarını Aç';
+  String get firebaseOpenNotificationSettings =>
+      'Άνοιγμα ρυθμίσεων ειδοποιήσεων';
 
   @override
-  String get productStatsTooltip => 'İstatistikler';
+  String get productStatsTooltip => 'Στατιστικά';
 
   @override
-  String get productStatsTitle => 'İstatistikler';
-
-  @override
-  String get productStatsTotalViews => 'Toplam Görüntülenme (Web + Mobil)';
-
-  @override
-  String get productStatsWeb => 'Web';
-
-  @override
-  String get productStatsMobile => 'Mobil';
-
-  @override
-  String productStatsAvailableSection(int count) {
-    return 'Mevcut Ürünler ($count)';
-  }
-
-  @override
-  String productStatsSoldSection(int count) {
-    return 'Satılmış Ürünler ($count)';
-  }
-
-  @override
-  String get productStatsEmpty => 'Henüz ürün yok';
-
-  @override
-  String productStatsRowBreakdown(int web, int mobile) {
-    return 'Web: $web · Mobil: $mobile';
-  }
+  String get productStatsTitle => 'Στατιστικά';
 
   @override
   String get maintenancePageTitle => 'Υπό Συντήρηση';
@@ -2363,4 +2245,149 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get categoryWatchDescription =>
       'Θα σας ενημερώσουμε όταν προστεθεί νέο προϊόν στις κατηγορίες που παρακολουθείτε.';
+
+  @override
+  String get notificationsAdminTooltip => 'Ειδοποιήσεις';
+
+  @override
+  String get notificationsAdminTitle => 'Ειδοποιήσεις & Καμπάνιες';
+
+  @override
+  String get campaignComposerSectionTitle => 'Αποστολή νέας ειδοποίησης';
+
+  @override
+  String get campaignTitleLabel => 'Τίτλος';
+
+  @override
+  String get campaignBodyLabel => 'Μήνυμα';
+
+  @override
+  String get campaignBodyHint =>
+      'Π.χ.: 20% έκπτωση σε όλα τα σαλόνια αυτό το σαββατοκύριακο!';
+
+  @override
+  String get campaignLinkSectionTitle => 'Σύνδεσμος (προαιρετικό)';
+
+  @override
+  String get campaignLinkNone => 'Κανένα';
+
+  @override
+  String get campaignLinkProduct => 'Μετάβαση σε προϊόν';
+
+  @override
+  String get campaignLinkPage => 'Μετάβαση σε σελίδα';
+
+  @override
+  String get campaignPickProduct => 'Επιλέξτε προϊόν';
+
+  @override
+  String get campaignPickProductEmpty => 'Προσθέστε πρώτα ένα προϊόν';
+
+  @override
+  String get campaignPageDiscover => 'Ανακάλυψη';
+
+  @override
+  String get campaignPageNew => 'Καινούργια προϊόντα';
+
+  @override
+  String get campaignPageSpot => 'Μεταχειρισμένα προϊόντα';
+
+  @override
+  String get campaignSegmentSectionTitle => 'Σε ποιον να σταλεί;';
+
+  @override
+  String get campaignSegmentAll => 'Όλοι οι χρήστες';
+
+  @override
+  String get campaignSegmentFavorited => 'Χρήστες με αγαπημένα';
+
+  @override
+  String get campaignSegmentCategory => 'Ακόλουθοι κατηγορίας';
+
+  @override
+  String get campaignSendButton => 'Αποστολή ειδοποίησης';
+
+  @override
+  String get campaignSendConfirmTitle => 'Αποστολή αυτής της ειδοποίησης;';
+
+  @override
+  String get campaignSendConfirmMessage =>
+      'Αυτή η ειδοποίηση θα σταλεί σε όλους τους χρήστες του επιλεγμένου στόχου. Δεν μπορεί να αναιρεθεί.';
+
+  @override
+  String get campaignSendSuccessAll =>
+      'Η ειδοποίηση εστάλη σε όλους τους χρήστες.';
+
+  @override
+  String campaignSendSuccessCount(int count) {
+    return 'Η ειδοποίηση εστάλη σε $count συσκευές.';
+  }
+
+  @override
+  String get campaignSendSuccessZero =>
+      'Εστάλη, αλλά δεν βρέθηκαν συσκευές σε αυτό το τμήμα.';
+
+  @override
+  String campaignSendError(String error) {
+    return 'Αποτυχία αποστολής ειδοποίησης: $error';
+  }
+
+  @override
+  String get campaignTitleRequired =>
+      'Ο τίτλος και το μήνυμα είναι υποχρεωτικά.';
+
+  @override
+  String get statsRangeToday => 'Σήμερα';
+
+  @override
+  String get statsRangeWeek => 'Αυτή την εβδομάδα';
+
+  @override
+  String get statsRangeMonth => 'Αυτόν τον μήνα';
+
+  @override
+  String get statsRangeYear => 'Αυτό το έτος';
+
+  @override
+  String get statsRangeCustom => 'Προσαρμοσμένο';
+
+  @override
+  String get statsPlatformAll => 'Όλα';
+
+  @override
+  String get statsPlatformWeb => 'Ιστός';
+
+  @override
+  String get statsPlatformMobile => 'Κινητό';
+
+  @override
+  String get statsMetricViews => 'Προβολές';
+
+  @override
+  String get statsMetricClicks => 'Κλικ WhatsApp';
+
+  @override
+  String get statsMetricFavorites => 'Αγαπημένα';
+
+  @override
+  String get statsMetricSales => 'Πωλήσεις';
+
+  @override
+  String get statsRevenueLabel => 'Έσοδα';
+
+  @override
+  String get statsWebFavoriteNote =>
+      'Σημείωση: τα αγαπημένα στο web αποθηκεύονται μόνο στο πρόγραμμα περιήγησης, γι\' αυτό δεν περιλαμβάνονται στον αριθμό αγαπημένων.';
+
+  @override
+  String get statsTrendTitle => 'Τάση με την πάροδο του χρόνου';
+
+  @override
+  String get statsByCategoryTitle => 'Ανάλυση ανά κατηγορία';
+
+  @override
+  String get statsTopProductsTitle => 'Προϊόντα με τη μεγαλύτερη αλληλεπίδραση';
+
+  @override
+  String get statsNoData => 'Δεν υπάρχουν δεδομένα σε αυτό το εύρος';
 }

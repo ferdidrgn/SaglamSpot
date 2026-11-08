@@ -8,6 +8,7 @@ import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
 import '../../../../core/config/seo/wrapper/seo_service.dart';
+import '../../../../core/services/analytics_event_logger.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/product_view_tracker.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -77,6 +78,23 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
   // varsa (studioImagesUrl), kullanıcı orijinal mağaza fotoğrafı ile
   // stüdyo versiyonu arasında geçiş yapabilir.
   bool _showStudioVersion = false;
+
+  /// WhatsApp'tan sorma CTA'sı — Admin > İstatistikler ekranındaki
+  /// "tıklama" metriği BURADAN gelir (bkz. AnalyticsEventLogger). Asıl
+  /// WhatsApp açma işlemini engellemeyecek şekilde, günlükleme ayrı ve
+  /// best-effort (await edilmez).
+  void _contactAboutProduct(final Product product) {
+    FurnitureShareService.contactAboutProduct(
+      productId: product.id,
+      productName: product.name,
+      price: product.price,
+    );
+    AnalyticsEventLogger.log(
+      type: 'contact_click',
+      productId: product.id,
+      category: product.category.name,
+    );
+  }
 
   String? _studioUrlFor(final Product product, final int index) {
     if (index >= product.studioImagesUrl.length) return null;
@@ -184,7 +202,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
           // sayacı — platforma göre AYRI (bkz. firestore.rules'daki
           // isValidViewIncrement). Sessizce başarısız olur (izin/ağ
           // sorunu ürün detayını göstermeyi ASLA engellemez).
-          ProductViewTracker.trackView(product.id);
+          ProductViewTracker.trackView(product.id, product.category.name);
         }
 
         return Scaffold(
@@ -1165,11 +1183,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
             label: context.l10n.whatsappCta,
             icon: Icons.chat_bubble_rounded,
             filled: false,
-            onTap: () => FurnitureShareService.contactAboutProduct(
-              productId: product.id,
-              productName: product.name,
-              price: product.price,
-            ),
+            onTap: () => _contactAboutProduct(product),
           ),
         ),
       ],
@@ -1329,11 +1343,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage>
                 label: context.l10n.whatsappCta,
                 icon: Icons.chat_bubble_rounded,
                 filled: false,
-                onTap: () => FurnitureShareService.contactAboutProduct(
-                  productId: product.id,
-                  productName: product.name,
-                  price: product.price,
-                ),
+                onTap: () => _contactAboutProduct(product),
               ),
             ),
           ],

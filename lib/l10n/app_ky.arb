@@ -703,18 +703,18 @@
   "deferredLoadError": "Жүктөлбөй калды: {error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - Барак табылган жок",
   "notFoundPathPrefix": "Жол: {path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "Башкы бетке кайтуу",
@@ -728,7 +728,6 @@
   "reservedBadge": "БРОНДОЛГОН",
   "priceDropBadge": "Баа төмөндөдү",
   "newProductsSearchHint": "Эмерек, диван, стол же категория издөө...",
-  "onboardingNext": "Кийинки",
   "onboardingCategoriesChip": "13 категория",
   "onboardingBargainChip": "Соода келишүү мүмкүнчүлүгү",
   "onboardingFastReplyChip": "Тез жооп",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "Кирүү ишке ашкан жок: {code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "Белгисиз ката",
   "productViewCountLabel": "{count} жолу көрүлдү",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} жана айланасы",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Фон текстурасы",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "Салам, {category} категориясынан {condition} зат издеп жатам. Менин бюджетим: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "Жаңы товар билдирүүлөрү",
-  "categoryWatchDescription": "Сиз көзөмөлдөп жаткан категорияларда жаңы товар кошулганда билдиребиз."
+  "categoryWatchDescription": "Сиз көзөмөлдөп жаткан категорияларда жаңы товар кошулганда билдиребиз.",
+  "notificationsAdminTooltip": "Билдирмелер",
+  "notificationsAdminTitle": "Билдирмелер жана кампаниялар",
+  "campaignComposerSectionTitle": "Жаңы билдирме жөнөтүү",
+  "campaignTitleLabel": "Аталышы",
+  "campaignBodyLabel": "Билдирүү",
+  "campaignBodyHint": "Мисалы: Бу дем алыш күндөрү бардык дивандарга 20% арзандатуу!",
+  "campaignLinkSectionTitle": "Шилтеме (милдеттүү эмес)",
+  "campaignLinkNone": "Жок",
+  "campaignLinkProduct": "Бир товарга өтүү",
+  "campaignLinkPage": "Бир баракчага өтүү",
+  "campaignPickProduct": "Товар тандоо",
+  "campaignPickProductEmpty": "Адегенде товар кошуңуз",
+  "campaignPageDiscover": "Изилдөө",
+  "campaignPageNew": "Жаңы товарлар",
+  "campaignPageSpot": "Колдонулган товарлар",
+  "campaignSegmentSectionTitle": "Кимге жөнөтүлсүн?",
+  "campaignSegmentAll": "Бардык колдонуучулар",
+  "campaignSegmentFavorited": "Тандалмалары барлар",
+  "campaignSegmentCategory": "Категорияны ээрчигендер",
+  "campaignSendButton": "Билдирмени жөнөтүү",
+  "campaignSendConfirmTitle": "Бул билдирме жөнөтүлсүнбү?",
+  "campaignSendConfirmMessage": "Бул билдирме сиз тандаган топтогу бардык колдонуучуларга жөнөтүлөт. Бул аракетти артка кайтарууга болбойт.",
+  "campaignSendSuccessAll": "Билдирме бардык колдонуучуларга жөнөтүлдү.",
+  "campaignSendSuccessCount": "Билдирме {count} түзмөккө жөнөтүлдү.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Жөнөтүлдү, бирок бул топтон эч бир түзмөк табылган жок.",
+  "campaignSendError": "Билдирме жөнөтүлбөй калды: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Аталышы жана билдирүү керек.",
+  "statsRangeToday": "Бүгүн",
+  "statsRangeWeek": "Бул жума",
+  "statsRangeMonth": "Бул ай",
+  "statsRangeYear": "Бул жыл",
+  "statsRangeCustom": "Ыңгайлаштырылган",
+  "statsPlatformAll": "Баары",
+  "statsPlatformWeb": "Веб",
+  "statsPlatformMobile": "Мобилдик",
+  "statsMetricViews": "Көрүүлөр",
+  "statsMetricClicks": "WhatsApp'ка чыкылдатуулар",
+  "statsMetricFavorites": "Тандалмалар",
+  "statsMetricSales": "Сатуулар",
+  "statsRevenueLabel": "Киреше",
+  "statsWebFavoriteNote": "Эскертүү: вебдеги тандалмалар бир гана браузерде сакталат, ошондуктан тандалмалар санына кирбейт.",
+  "statsTrendTitle": "Убакыт ичиндеги тенденция",
+  "statsByCategoryTitle": "Категория боюнча бөлүштүрүү",
+  "statsTopProductsTitle": "Эң көп активдүүлүк алган товарлар",
+  "statsNoData": "Бул аралыкта маалымат жок",
+  "firebaseChecking": "Текшерилип жатат…",
+  "firebaseNotificationsTitle": "Билдирмелер (FCM)",
+  "firebaseTokenAvailable": "Бул түзмөк үчүн билдирме токени бар",
+  "firebaseTokenUnavailable": "Бул түзмөк үчүн билдирме токени азырынча жок",
+  "firebasePermissionGranted": "Билдирме уруксаты берилди",
+  "firebasePermissionDenied": "Билдирме уруксаты берилген жок",
+  "firebaseOpenNotificationSettings": "Билдирме жөндөөлөрүн ачуу",
+  "productStatsTooltip": "Статистика",
+  "productStatsTitle": "Статистика"
 }

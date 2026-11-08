@@ -15,7 +15,7 @@ import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
 import '../widgets/admin_dashboard_product_grid.dart';
 import '../widgets/admin_dashboard_stat_card.dart';
-import 'admin_firebase_services_page.dart';
+import 'admin_notifications_page.dart';
 import 'admin_product_stats_page.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../../../products/presentation/providers/product_mutation_provider.dart';
@@ -171,14 +171,13 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
             const SizedBox(width: AppSpacing.sm + 2),
             Expanded(
               child: _AdminToolTile(
-                icon: Icons.cloud_outlined,
-                label: context.l10n.firebaseServicesTooltip,
+                icon: Icons.campaign_outlined,
+                label: context.l10n.notificationsAdminTooltip,
                 color: AppColors.mobileAccentDark,
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (final _) =>
-                            const AdminFirebaseServicesPage())),
+                        builder: (final _) => const AdminNotificationsPage())),
               ),
             ),
           ],

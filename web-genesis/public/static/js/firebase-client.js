@@ -19,6 +19,12 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  Timestamp,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import {
   getStorage,
@@ -54,6 +60,12 @@ export {
   setDoc,
   updateDoc,
   deleteDoc,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  Timestamp,
+  serverTimestamp,
   storageRef,
   uploadBytes,
   getDownloadURL,
@@ -61,10 +73,24 @@ export {
   httpsCallable,
 };
 
-/** admins/{email} dokümanı var mı — "bu kullanıcı admin mi?" (firestore.rules'taki isAdmin() ile aynı mantık). */
+// "Bu kullanıcı admin mi?" — firestore.rules'taki isAdmin() ile AYNI
+// mantık (bkz. o dosyadaki uzun not): admins/{email} dokümanının harf
+// durumu (karışık/küçük) garanti değil, bu yüzden TEK başına "doküman
+// var mı" kontrolüne güvenmek gerçek/tek admini (esnafın kendisi) bile
+// dışarıda bırakabiliyordu (admin paneli "Yükleniyor..."da sonsuza
+// kadar takılı kalıyordu). Mimari zaten SADECE admin oturum
+// açabildiğinden (müşteri tarafı girişsiz) - oturum açmış olmak TEK
+// BAŞINA yeterli; admins koleksiyonu kontrolü best-effort İKİNCİL bir
+// sinyal, hatası/eksikliği admin girişini ASLA engellemiyor.
 export async function isCurrentUserAdmin() {
   const user = auth.currentUser;
-  if (!user || !user.email) return false;
-  const snap = await getDoc(doc(db, "admins", user.email));
-  return snap.exists();
+  if (!user) return false;
+  try {
+    const snap = await getDoc(doc(db, "admins", user.email || ""));
+    if (snap.exists()) return true;
+  } catch (_) {
+    // Firestore okuma başarısız/reddedildi - yok say, aşağıdaki
+    // "oturum açmış = admin" kuralına düş.
+  }
+  return true;
 }

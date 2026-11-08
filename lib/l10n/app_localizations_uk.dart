@@ -2095,152 +2095,33 @@ class AppLocalizationsUk extends AppLocalizations {
       'Отримайте справжню відповідь від продавця за лічені хвилини.';
 
   @override
-  String get firebaseServicesTooltip => 'Firebase Servisleri';
+  String get firebaseChecking => 'Перевірка…';
 
   @override
-  String get firebaseServicesTitle => 'Firebase Servisleri';
+  String get firebaseNotificationsTitle => 'Сповіщення (FCM)';
 
   @override
-  String get firebaseCrashlyticsTitle => 'Çökme Raporlama';
-
-  @override
-  String get firebaseCrashlyticsToggle => 'Çökme Raporlarını Gönder';
-
-  @override
-  String get firebaseCrashlyticsSubtitle =>
-      'Kapatılırsa uygulama hataları Firebase\'e bildirilmez';
-
-  @override
-  String get firebaseChecking => 'Kontrol ediliyor…';
-
-  @override
-  String get firebaseCrashedLastSession => 'Bir önceki oturumda uygulama çöktü';
-
-  @override
-  String get firebaseNoCrashLastSession => 'Bir önceki oturumda çökme olmadı';
-
-  @override
-  String get firebaseStatsConsoleOnly =>
-      'Detaylı çökme istatistikleri yalnızca Firebase Console\'da görüntülenebilir';
-
-  @override
-  String get firebaseAnalyticsTitle => 'Kullanım Analitiği';
-
-  @override
-  String get firebaseAnalyticsToggle => 'Kullanım Analitiği Topla';
-
-  @override
-  String get firebaseAnalyticsSubtitle =>
-      'Kapatılırsa uygulama içi kullanım verisi toplanmaz';
-
-  @override
-  String get firebaseRemoteConfigTitle => 'Remote Config';
-
-  @override
-  String firebaseAdsEnabledValue(String value) {
-    return 'Reklamlar: $value';
-  }
-
-  @override
-  String get firebaseValueOn => 'Açık';
-
-  @override
-  String get firebaseValueOff => 'Kapalı';
-
-  @override
-  String firebaseMaintenanceModeValue(String value) {
-    return 'Bakım modu: $value';
-  }
-
-  @override
-  String firebaseForceUpdateMinVersionValue(String value) {
-    return 'Zorunlu güncelleme eşiği: $value';
-  }
-
-  @override
-  String firebaseLastFetch(String time) {
-    return 'Son güncelleme: $time';
-  }
-
-  @override
-  String get firebaseRefreshConfig => 'Şimdi Güncelle';
-
-  @override
-  String get firebaseConfigConsoleOnly =>
-      'Değerler yalnızca Firebase Console > Remote Config\'ten değiştirilebilir — burada sadece güncel değeri görüp yenileyebilirsiniz';
-
-  @override
-  String get firebaseConfigRefreshed => 'Remote Config güncellendi';
-
-  @override
-  String get firebaseConfigUnchanged => 'Remote Config zaten güncel';
-
-  @override
-  String get firebaseAppCheckTitle => 'App Check';
-
-  @override
-  String get firebaseAppCheckWebUnsupported =>
-      'App Check web\'de kullanılmıyor';
-
-  @override
-  String get firebaseActive => 'Aktif';
-
-  @override
-  String get firebaseAppCheckDesc =>
-      'İsteklerin gerçek bir uygulama örneğinden geldiğini doğrulayan güvenlik katmanı — kapatılamaz';
-
-  @override
-  String get firebaseNotificationsTitle => 'Bildirimler (FCM)';
-
-  @override
-  String get firebaseTokenAvailable =>
-      'Bu cihaz için bildirim belirteci mevcut';
+  String get firebaseTokenAvailable => 'Для цього пристрою є токен сповіщень';
 
   @override
   String get firebaseTokenUnavailable =>
-      'Bu cihaz için henüz bildirim belirteci yok';
+      'Для цього пристрою ще немає токена сповіщень';
 
   @override
-  String get firebasePermissionGranted => 'Bildirim izni verildi';
+  String get firebasePermissionGranted => 'Дозвіл на сповіщення надано';
 
   @override
-  String get firebasePermissionDenied => 'Bildirim izni verilmedi';
+  String get firebasePermissionDenied => 'Дозвіл на сповіщення не надано';
 
   @override
-  String get firebaseOpenNotificationSettings => 'Bildirim Ayarlarını Aç';
+  String get firebaseOpenNotificationSettings =>
+      'Відкрити налаштування сповіщень';
 
   @override
-  String get productStatsTooltip => 'İstatistikler';
+  String get productStatsTooltip => 'Статистика';
 
   @override
-  String get productStatsTitle => 'İstatistikler';
-
-  @override
-  String get productStatsTotalViews => 'Toplam Görüntülenme (Web + Mobil)';
-
-  @override
-  String get productStatsWeb => 'Web';
-
-  @override
-  String get productStatsMobile => 'Mobil';
-
-  @override
-  String productStatsAvailableSection(int count) {
-    return 'Mevcut Ürünler ($count)';
-  }
-
-  @override
-  String productStatsSoldSection(int count) {
-    return 'Satılmış Ürünler ($count)';
-  }
-
-  @override
-  String get productStatsEmpty => 'Henüz ürün yok';
-
-  @override
-  String productStatsRowBreakdown(int web, int mobile) {
-    return 'Web: $web · Mobil: $mobile';
-  }
+  String get productStatsTitle => 'Статистика';
 
   @override
   String get maintenancePageTitle => 'Технічні роботи';
@@ -2345,4 +2226,148 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get categoryWatchDescription =>
       'Повідомимо, коли у відстежуваних категоріях з\'явиться новий товар.';
+
+  @override
+  String get notificationsAdminTooltip => 'Сповіщення';
+
+  @override
+  String get notificationsAdminTitle => 'Сповіщення та кампанії';
+
+  @override
+  String get campaignComposerSectionTitle => 'Надіслати нове сповіщення';
+
+  @override
+  String get campaignTitleLabel => 'Заголовок';
+
+  @override
+  String get campaignBodyLabel => 'Повідомлення';
+
+  @override
+  String get campaignBodyHint =>
+      'Напр.: Знижка 20% на всі комплекти м\'яких меблів цими вихідними!';
+
+  @override
+  String get campaignLinkSectionTitle => 'Посилання (необов\'язково)';
+
+  @override
+  String get campaignLinkNone => 'Немає';
+
+  @override
+  String get campaignLinkProduct => 'Перейти до товару';
+
+  @override
+  String get campaignLinkPage => 'Перейти на сторінку';
+
+  @override
+  String get campaignPickProduct => 'Вибрати товар';
+
+  @override
+  String get campaignPickProductEmpty => 'Спочатку додайте товар';
+
+  @override
+  String get campaignPageDiscover => 'Каталог';
+
+  @override
+  String get campaignPageNew => 'Нові товари';
+
+  @override
+  String get campaignPageSpot => 'Товари з пробігом';
+
+  @override
+  String get campaignSegmentSectionTitle => 'Кому надіслати?';
+
+  @override
+  String get campaignSegmentAll => 'Усі користувачі';
+
+  @override
+  String get campaignSegmentFavorited => 'З обраними товарами';
+
+  @override
+  String get campaignSegmentCategory => 'Підписники категорії';
+
+  @override
+  String get campaignSendButton => 'Надіслати сповіщення';
+
+  @override
+  String get campaignSendConfirmTitle => 'Надіслати це сповіщення?';
+
+  @override
+  String get campaignSendConfirmMessage =>
+      'Це сповіщення буде надіслано всім користувачам у вибраному сегменті. Цю дію неможливо скасувати.';
+
+  @override
+  String get campaignSendSuccessAll =>
+      'Сповіщення надіслано всім користувачам.';
+
+  @override
+  String campaignSendSuccessCount(int count) {
+    return 'Сповіщення надіслано на $count пристроїв.';
+  }
+
+  @override
+  String get campaignSendSuccessZero =>
+      'Надіслано, але в цьому сегменті не знайдено жодного пристрою.';
+
+  @override
+  String campaignSendError(String error) {
+    return 'Не вдалося надіслати сповіщення: $error';
+  }
+
+  @override
+  String get campaignTitleRequired => 'Заголовок і повідомлення обов\'язкові.';
+
+  @override
+  String get statsRangeToday => 'Сьогодні';
+
+  @override
+  String get statsRangeWeek => 'Цього тижня';
+
+  @override
+  String get statsRangeMonth => 'Цього місяця';
+
+  @override
+  String get statsRangeYear => 'Цього року';
+
+  @override
+  String get statsRangeCustom => 'Довільний';
+
+  @override
+  String get statsPlatformAll => 'Усі';
+
+  @override
+  String get statsPlatformWeb => 'Веб';
+
+  @override
+  String get statsPlatformMobile => 'Мобільний';
+
+  @override
+  String get statsMetricViews => 'Перегляди';
+
+  @override
+  String get statsMetricClicks => 'Кліки WhatsApp';
+
+  @override
+  String get statsMetricFavorites => 'Обране';
+
+  @override
+  String get statsMetricSales => 'Продажі';
+
+  @override
+  String get statsRevenueLabel => 'Доход';
+
+  @override
+  String get statsWebFavoriteNote =>
+      'Примітка: обране на сайті зберігається лише в браузері, тому не враховується в кількості обраного.';
+
+  @override
+  String get statsTrendTitle => 'Динаміка в часі';
+
+  @override
+  String get statsByCategoryTitle => 'Розподіл за категоріями';
+
+  @override
+  String get statsTopProductsTitle => 'Товари з найбільшою активністю';
+
+  @override
+  String get statsNoData => 'Немає даних за цей період';
 }

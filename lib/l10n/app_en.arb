@@ -553,7 +553,6 @@
   "specialOfferTitle": "Experience Comfort",
   "specialOfferBody": "Great finds in spot and brand-new furniture, priced for you.",
   "shopNow": "Shop Now",
-  "onboardingNext": "Next",
   "cartTitle": "My Cart",
   "cartEmptyTitle": "Your Cart is Empty",
   "cartEmptyDesc": "Add items you like, then ask about them all in one message.",
@@ -784,61 +783,7 @@
   "featureRow2Desc": "Insured, fast delivery to selected neighborhoods.",
   "featureRow3Title": "Instant WhatsApp Reply",
   "featureRow3Desc": "Get a real answer from a real shopkeeper in minutes.",
-  "firebaseServicesTooltip": "Firebase Services",
-  "firebaseServicesTitle": "Firebase Services",
-  "firebaseCrashlyticsTitle": "Crash Reporting",
-  "firebaseCrashlyticsToggle": "Send Crash Reports",
-  "firebaseCrashlyticsSubtitle": "If turned off, app errors are not reported to Firebase",
   "firebaseChecking": "Checking…",
-  "firebaseCrashedLastSession": "The app crashed in the previous session",
-  "firebaseNoCrashLastSession": "No crash in the previous session",
-  "firebaseStatsConsoleOnly": "Detailed crash statistics are only viewable in the Firebase Console",
-  "firebaseAnalyticsTitle": "Usage Analytics",
-  "firebaseAnalyticsToggle": "Collect Usage Analytics",
-  "firebaseAnalyticsSubtitle": "If turned off, in-app usage data is not collected",
-  "firebaseRemoteConfigTitle": "Remote Config",
-  "firebaseAdsEnabledValue": "Ads: {value}",
-  "@firebaseAdsEnabledValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseValueOn": "On",
-  "firebaseValueOff": "Off",
-  "firebaseMaintenanceModeValue": "Maintenance mode: {value}",
-  "@firebaseMaintenanceModeValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseForceUpdateMinVersionValue": "Forced update threshold: {value}",
-  "@firebaseForceUpdateMinVersionValue": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseLastFetch": "Last updated: {time}",
-  "@firebaseLastFetch": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "firebaseRefreshConfig": "Refresh Now",
-  "firebaseConfigConsoleOnly": "Values can only be changed from Firebase Console > Remote Config — here you can only view and refresh the current value",
-  "firebaseConfigRefreshed": "Remote Config updated",
-  "firebaseConfigUnchanged": "Remote Config is already up to date",
-  "firebaseAppCheckTitle": "App Check",
-  "firebaseAppCheckWebUnsupported": "App Check is not used on web",
-  "firebaseActive": "Active",
-  "firebaseAppCheckDesc": "A security layer verifying requests come from a genuine app instance — cannot be turned off",
   "firebaseNotificationsTitle": "Notifications (FCM)",
   "firebaseTokenAvailable": "A notification token exists for this device",
   "firebaseTokenUnavailable": "No notification token yet for this device",
@@ -847,37 +792,6 @@
   "firebaseOpenNotificationSettings": "Open Notification Settings",
   "productStatsTooltip": "Statistics",
   "productStatsTitle": "Statistics",
-  "productStatsTotalViews": "Total Views (Web + Mobile)",
-  "productStatsWeb": "Web",
-  "productStatsMobile": "Mobile",
-  "productStatsAvailableSection": "Available Products ({count})",
-  "@productStatsAvailableSection": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "productStatsSoldSection": "Sold Products ({count})",
-  "@productStatsSoldSection": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "productStatsEmpty": "No products yet",
-  "productStatsRowBreakdown": "Web: {web} · Mobile: {mobile}",
-  "@productStatsRowBreakdown": {
-    "placeholders": {
-      "web": {
-        "type": "int"
-      },
-      "mobile": {
-        "type": "int"
-      }
-    }
-  },
   "maintenancePageTitle": "Under Maintenance",
   "maintenancePageDesc": "Sağlam Spot is temporarily unavailable due to short maintenance work. We'll be back shortly.",
   "maintenancePageRetry": "Try Again",
@@ -887,17 +801,17 @@
   "productViewCountLabel": "Viewed {count} times",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} and nearby areas",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Background texture",
@@ -923,11 +837,76 @@
   "productFinderWhatsappMessage": "Hi, I'm looking for a {condition} item in the {category} category. My budget: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "New Listing Alerts",
-  "categoryWatchDescription": "We'll let you know when a new item is added in the categories you're following."
+  "categoryWatchDescription": "We'll let you know when a new item is added in the categories you're following.",
+  "notificationsAdminTooltip": "Notifications",
+  "notificationsAdminTitle": "Notifications & Campaigns",
+  "campaignComposerSectionTitle": "Send a New Notification",
+  "campaignTitleLabel": "Title",
+  "campaignBodyLabel": "Message",
+  "campaignBodyHint": "E.g.: 20% off all sofa sets this weekend!",
+  "campaignLinkSectionTitle": "Link (optional)",
+  "campaignLinkNone": "None",
+  "campaignLinkProduct": "Go to a product",
+  "campaignLinkPage": "Go to a page",
+  "campaignPickProduct": "Pick a Product",
+  "campaignPickProductEmpty": "Add a product first",
+  "campaignPageDiscover": "Discover",
+  "campaignPageNew": "New Products",
+  "campaignPageSpot": "Second-hand Products",
+  "campaignSegmentSectionTitle": "Who should receive it?",
+  "campaignSegmentAll": "All Users",
+  "campaignSegmentFavorited": "Users with Favorites",
+  "campaignSegmentCategory": "Category Followers",
+  "campaignSendButton": "Send Notification",
+  "campaignSendConfirmTitle": "Send This Notification?",
+  "campaignSendConfirmMessage": "This notification will be sent to all users in your chosen target. This cannot be undone.",
+  "campaignSendSuccessAll": "Notification sent to all users.",
+  "campaignSendSuccessCount": "Notification sent to {count} devices.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Sent, but no devices were found in this segment.",
+  "campaignSendError": "Could not send notification: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Title and message are required.",
+  "statsRangeToday": "Today",
+  "statsRangeWeek": "This Week",
+  "statsRangeMonth": "This Month",
+  "statsRangeYear": "This Year",
+  "statsRangeCustom": "Custom",
+  "statsPlatformAll": "All",
+  "statsPlatformWeb": "Web",
+  "statsPlatformMobile": "Mobile",
+  "statsMetricViews": "Views",
+  "statsMetricClicks": "WhatsApp Clicks",
+  "statsMetricFavorites": "Favorites",
+  "statsMetricSales": "Sales",
+  "statsRevenueLabel": "Revenue",
+  "statsWebFavoriteNote": "Note: web favorites are stored only in the browser, so they are not included in the favorite count.",
+  "statsTrendTitle": "Trend Over Time",
+  "statsByCategoryTitle": "Breakdown by Category",
+  "statsTopProductsTitle": "Most Engaged Products",
+  "statsNoData": "No data in this range"
 }

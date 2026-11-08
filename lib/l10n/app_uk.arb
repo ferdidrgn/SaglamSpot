@@ -703,18 +703,18 @@
   "deferredLoadError": "Не вдалося завантажити: {error}",
   "@deferredLoadError": {
     "placeholders": {
-        "error": {
-          "type": "String"
-        }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "notFoundTitle": "404 - Сторінку не знайдено",
   "notFoundPathPrefix": "Шлях: {path}",
   "@notFoundPathPrefix": {
     "placeholders": {
-        "path": {
-          "type": "String"
-        }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "notFoundBackHome": "Повернутися на головну",
@@ -728,7 +728,6 @@
   "reservedBadge": "ЗАБРОНЬОВАНО",
   "priceDropBadge": "Зниження ціни",
   "newProductsSearchHint": "Пошук меблів, дивана, столу чи категорії...",
-  "onboardingNext": "Далі",
   "onboardingCategoriesChip": "13 категорій",
   "onboardingBargainChip": "Можливість торгу",
   "onboardingFastReplyChip": "Швидка відповідь",
@@ -756,26 +755,26 @@
   "authErrorGeneric": "Не вдалося увійти: {code}",
   "@authErrorGeneric": {
     "placeholders": {
-        "code": {
-          "type": "String"
-        }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "authErrorUnknown": "Невідома помилка",
   "productViewCountLabel": "Переглянуто {count} разів",
   "@productViewCountLabel": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deliveryZonesAndSurroundings": "{zones} та околиці",
   "@deliveryZonesAndSurroundings": {
     "placeholders": {
-        "zones": {
-          "type": "String"
-        }
+      "zones": {
+        "type": "String"
+      }
     }
   },
   "settingsBackgroundTexture": "Текстура фону",
@@ -801,11 +800,85 @@
   "productFinderWhatsappMessage": "Вітаю, шукаю {condition} товар у категорії {category}. Мій бюджет: {budget}.",
   "@productFinderWhatsappMessage": {
     "placeholders": {
-      "category": {"type": "String"},
-      "condition": {"type": "String"},
-      "budget": {"type": "String"}
+      "category": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
     }
   },
   "categoryWatchSectionTitle": "Сповіщення про нові товари",
-  "categoryWatchDescription": "Повідомимо, коли у відстежуваних категоріях з'явиться новий товар."
+  "categoryWatchDescription": "Повідомимо, коли у відстежуваних категоріях з'явиться новий товар.",
+  "notificationsAdminTooltip": "Сповіщення",
+  "notificationsAdminTitle": "Сповіщення та кампанії",
+  "campaignComposerSectionTitle": "Надіслати нове сповіщення",
+  "campaignTitleLabel": "Заголовок",
+  "campaignBodyLabel": "Повідомлення",
+  "campaignBodyHint": "Напр.: Знижка 20% на всі комплекти м'яких меблів цими вихідними!",
+  "campaignLinkSectionTitle": "Посилання (необов'язково)",
+  "campaignLinkNone": "Немає",
+  "campaignLinkProduct": "Перейти до товару",
+  "campaignLinkPage": "Перейти на сторінку",
+  "campaignPickProduct": "Вибрати товар",
+  "campaignPickProductEmpty": "Спочатку додайте товар",
+  "campaignPageDiscover": "Каталог",
+  "campaignPageNew": "Нові товари",
+  "campaignPageSpot": "Товари з пробігом",
+  "campaignSegmentSectionTitle": "Кому надіслати?",
+  "campaignSegmentAll": "Усі користувачі",
+  "campaignSegmentFavorited": "З обраними товарами",
+  "campaignSegmentCategory": "Підписники категорії",
+  "campaignSendButton": "Надіслати сповіщення",
+  "campaignSendConfirmTitle": "Надіслати це сповіщення?",
+  "campaignSendConfirmMessage": "Це сповіщення буде надіслано всім користувачам у вибраному сегменті. Цю дію неможливо скасувати.",
+  "campaignSendSuccessAll": "Сповіщення надіслано всім користувачам.",
+  "campaignSendSuccessCount": "Сповіщення надіслано на {count} пристроїв.",
+  "@campaignSendSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "campaignSendSuccessZero": "Надіслано, але в цьому сегменті не знайдено жодного пристрою.",
+  "campaignSendError": "Не вдалося надіслати сповіщення: {error}",
+  "@campaignSendError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "campaignTitleRequired": "Заголовок і повідомлення обов'язкові.",
+  "statsRangeToday": "Сьогодні",
+  "statsRangeWeek": "Цього тижня",
+  "statsRangeMonth": "Цього місяця",
+  "statsRangeYear": "Цього року",
+  "statsRangeCustom": "Довільний",
+  "statsPlatformAll": "Усі",
+  "statsPlatformWeb": "Веб",
+  "statsPlatformMobile": "Мобільний",
+  "statsMetricViews": "Перегляди",
+  "statsMetricClicks": "Кліки WhatsApp",
+  "statsMetricFavorites": "Обране",
+  "statsMetricSales": "Продажі",
+  "statsRevenueLabel": "Доход",
+  "statsWebFavoriteNote": "Примітка: обране на сайті зберігається лише в браузері, тому не враховується в кількості обраного.",
+  "statsTrendTitle": "Динаміка в часі",
+  "statsByCategoryTitle": "Розподіл за категоріями",
+  "statsTopProductsTitle": "Товари з найбільшою активністю",
+  "statsNoData": "Немає даних за цей період",
+  "firebaseChecking": "Перевірка…",
+  "firebaseNotificationsTitle": "Сповіщення (FCM)",
+  "firebaseTokenAvailable": "Для цього пристрою є токен сповіщень",
+  "firebaseTokenUnavailable": "Для цього пристрою ще немає токена сповіщень",
+  "firebasePermissionGranted": "Дозвіл на сповіщення надано",
+  "firebasePermissionDenied": "Дозвіл на сповіщення не надано",
+  "firebaseOpenNotificationSettings": "Відкрити налаштування сповіщень",
+  "productStatsTooltip": "Статистика",
+  "productStatsTitle": "Статистика"
 }

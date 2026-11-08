@@ -123,3 +123,31 @@
 
   render();
 })();
+
+// Admin > İstatistikler ekranındaki tarih filtreli "tıklama" metriği —
+// bu dosyanın (yukarıdaki) galeri IIFE'si görsel YOKSA erken çıkıyor,
+// bu yüzden tıklama günlüğü AYRI, bağımsız bir blokta: tek/hiç görseli
+// olan ürünlerde de çalışsın. `data-contact-cta` anchor'ları normal
+// şekilde wa.me'ye gider (preventDefault YOK) — fetch `keepalive:true`
+// ile sayfa ayrılsa bile isteğin tamamlanmasını garanti eder (bkz.
+// functions/src/routes/trackClick.js).
+(function () {
+  "use strict";
+  document.querySelectorAll("[data-contact-cta]").forEach((el) => {
+    el.addEventListener("click", () => {
+      try {
+        fetch("/api/track-click", {
+          method: "POST",
+          keepalive: true,
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            productId: el.dataset.productId || "",
+            category: el.dataset.category || "",
+          }),
+        }).catch(() => {});
+      } catch (_) {
+        // Günlükleme ASLA WhatsApp'a gitmeyi engellemez.
+      }
+    });
+  });
+})();

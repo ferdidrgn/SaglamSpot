@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import '../ads/ads_manager.dart';
 import '../services/app_check_service.dart';
-import '../services/firebase_feature_prefs.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_cache.dart';
 import '../services/remote_config_service.dart';
@@ -22,14 +21,7 @@ abstract final class AppInitializer {
       // 🌐 Web platformunda URL adresindeki '#' işaretini kaldır
       if (PlatformChecker.isWeb) usePathUrlStrategy();
 
-      // Bölgesel tarih formatları + Admin > Firebase Servisleri ekranından
-      // değiştirilen Çökme Raporu/Analitik tercihi — ikisi bağımsız, paralel
-      // yüklenir. Tercih, SDK'lara Firebase başlatılır başlatılmaz
-      // uygulanabilsin diye Firebase'den ÖNCE okunur.
-      await Future.wait([
-        DateFormatter.initializeLocale(),
-        FirebaseFeaturePrefs.load(),
-      ]);
+      await DateFormatter.initializeLocale();
       debugPrint(
           '🔐 Güvenli depolama alt yapısı ve yerelleştirme modülleri aktif.');
 
@@ -81,19 +73,19 @@ abstract final class AppInitializer {
         await AppCheckService
             .init(); // Sizin özgün yerel App Check başlatıcınız
 
-        // Admin ekranından kayıtlı Çökme Raporu/Analitik tercihini SDK'lara
-        // bildir — kullanıcı bir önceki oturumda kapattıysa bu oturumda da
-        // kapalı kalsın.
-        // Bu iki tercih çağrısı ilk kareyi beklemek zorunda değil —
-        // runApp'i bekletmeden arka planda uygulanır.
+        // Çökme raporlama/kullanım analitiği her zaman açık — bunlar
+        // geliştiriciye (bana) ait arka plan telemetrisi, esnafın
+        // açıp/kapatacağı bir admin ayarı DEĞİL (eski "Firebase Servisleri"
+        // ekranındaki anahtarlar kaldırıldı, bkz. admin_notifications_page.dart
+        // dokümantasyonu). Bu iki çağrı ilk kareyi beklemez — runApp'i
+        // bekletmeden arka planda uygulanır.
         unawaited(FirebaseAnalytics.instance
-            .setAnalyticsCollectionEnabled(FirebaseFeaturePrefs.analyticsEnabled)
+            .setAnalyticsCollectionEnabled(true)
             .catchError((final Object _) {}));
 
         if (!kIsWeb) {
           unawaited(FirebaseCrashlytics.instance
-              .setCrashlyticsCollectionEnabled(
-                  FirebaseFeaturePrefs.crashlyticsEnabled)
+              .setCrashlyticsCollectionEnabled(true)
               .catchError((final Object _) {}));
           _setupCrashlyticsPipeline();
         }

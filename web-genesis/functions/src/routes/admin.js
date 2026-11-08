@@ -58,6 +58,7 @@ function dashboardRoute(req, res) {
 <div class="admin-tabs" role="tablist">
   <button type="button" class="admin-tab is-active" data-admin-tab="products" role="tab" aria-selected="true">Ürünler</button>
   <button type="button" class="admin-tab" data-admin-tab="stats" role="tab" aria-selected="false">İstatistikler</button>
+  <button type="button" class="admin-tab" data-admin-tab="notifications" role="tab" aria-selected="false">Bildirimler</button>
 </div>
 
 <div id="admin-panel-products" class="admin-panel is-active" data-admin-panel="products">
@@ -161,6 +162,116 @@ function dashboardRoute(req, res) {
       <div id="chart-stock-value"></div>
     </div>
   </div>
+
+  <section class="section-header" style="margin-top:var(--space-xxxl)">
+    <h2>Etkileşim İstatistikleri</h2>
+    <p class="lede">Görüntülenme, WhatsApp tıklaması, favori ve satış — tarih aralığına göre.</p>
+  </section>
+
+  <div class="admin-filter-panel">
+    <p class="eyebrow" style="margin-bottom:0">Tarih Aralığı</p>
+    <div class="admin-filter-chips" id="engagement-range-chips">
+      <button type="button" class="search-quick-chip admin-filter-chip is-active" data-range="today">Bugün</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-range="week">Bu Hafta</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-range="month">Bu Ay</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-range="year">Bu Yıl</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-range="custom">Özel</button>
+    </div>
+    <div class="admin-filter-range" id="engagement-custom-range" style="margin-top:var(--space-md)" hidden>
+      <input type="date" id="engagement-date-from">
+      <span>–</span>
+      <input type="date" id="engagement-date-to">
+    </div>
+    <p class="eyebrow" style="margin:var(--space-lg) 0 0">Platform</p>
+    <div class="admin-filter-chips" id="engagement-platform-chips" style="margin-top:var(--space-sm)">
+      <button type="button" class="search-quick-chip admin-filter-chip is-active" data-platform="all">Tümü</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-platform="web">Web</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-platform="mobile">Mobil</button>
+    </div>
+  </div>
+
+  <div class="admin-stats-grid" id="engagement-kpis"></div>
+  <p class="status" id="engagement-web-favorite-note" hidden>
+    Not: Web'deki favoriler sadece tarayıcıda saklanır, bu yüzden favori sayısına dahil değildir.
+  </p>
+
+  <div class="admin-chart-card admin-chart-wide" style="margin-top:var(--space-xl)">
+    <h3>Zaman İçindeki Trend</h3>
+    <div class="admin-filter-chips" id="engagement-metric-chips">
+      <button type="button" class="search-quick-chip admin-filter-chip is-active" data-metric="view">Görüntülenme</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-metric="contact_click">WhatsApp Tıklaması</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-metric="favorite">Favori</button>
+      <button type="button" class="search-quick-chip admin-filter-chip" data-metric="sale">Satış</button>
+    </div>
+    <div id="chart-engagement-trend" style="margin-top:var(--space-lg)"></div>
+  </div>
+
+  <div class="admin-charts-grid" style="margin-top:var(--space-lg)">
+    <div class="admin-chart-card admin-chart-wide">
+      <h3>Kategoriye Göre Dağılım</h3>
+      <div id="chart-engagement-category"></div>
+    </div>
+    <div class="admin-chart-card admin-chart-wide">
+      <h3>En Çok Etkileşim Alan Ürünler</h3>
+      <div id="chart-engagement-top"></div>
+    </div>
+  </div>
+</div>
+
+<div id="admin-panel-notifications" class="admin-panel" data-admin-panel="notifications" hidden>
+  <section class="section-header">
+    <h2>Yeni Bildirim Gönder</h2>
+    <p class="lede">Tüm kullanıcılara ya da bir segmente gerçek bir push bildirimi/kampanya mesajı gönderin.</p>
+  </section>
+
+  <form id="campaign-form" class="admin-form" style="max-width:560px">
+    <label>Başlık
+      <input type="text" id="campaign-title" name="title" required maxlength="80">
+    </label>
+    <label>Mesaj
+      <textarea id="campaign-body" name="body" rows="3" required maxlength="200" placeholder="Örn: Bu hafta sonu tüm oturma gruplarında %20 indirim!"></textarea>
+    </label>
+
+    <label>Bağlantı (opsiyonel)
+      <select id="campaign-link-type">
+        <option value="none">Yok</option>
+        <option value="product">Bir ürüne git</option>
+        <option value="page">Bir sayfaya git</option>
+      </select>
+    </label>
+    <div data-field="campaign-product" hidden>
+      <label>Ürün
+        <select id="campaign-product-select"></select>
+      </label>
+    </div>
+    <div data-field="campaign-page" hidden>
+      <label>Sayfa
+        <select id="campaign-page-select">
+          <option value="/discover">Keşfet</option>
+          <option value="/new">Sıfır Ürünler</option>
+          <option value="/spot">Spot Ürünler</option>
+        </select>
+      </label>
+    </div>
+
+    <label>Kime gönderilsin?
+      <select id="campaign-segment">
+        <option value="all">Tüm Kullanıcılar</option>
+        <option value="favorited">Favorisi Olanlar</option>
+        <option value="category">Kategori Takipçileri</option>
+      </select>
+    </label>
+    <div data-field="campaign-category" hidden>
+      <label>Kategori
+        <select id="campaign-category-select">${Object.entries(CATEGORY_LABELS).map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select>
+      </label>
+    </div>
+
+    <p id="campaign-error" class="status status-error" hidden></p>
+    <div class="admin-form-actions">
+      <button type="submit"><span class="btn-label">Bildirimi Gönder</span></button>
+    </div>
+  </form>
 </div>
 
 <div id="admin-form-modal" class="admin-modal" hidden>

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/enum/enums.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
+import '../../../../core/services/analytics_event_logger.dart';
 import '../../../../core/services/studio_image_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
@@ -452,6 +453,18 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           updatedProduct,
           _newSelectedImages.isEmpty ? null : _newSelectedImages,
         );
+
+    // Admin > İstatistikler ekranındaki "satış" metriği ve gelir trendi
+    // BURADAN gelir — sadece satılmamış → satıldı GEÇİŞİNDE (tekrar
+    // kaydetmede/zaten satılmış bir ürünü düzenlemede tekrar sayılmaz).
+    if (!_currentProduct!.isSold && _isSold) {
+      AnalyticsEventLogger.log(
+        type: 'sale',
+        productId: updatedProduct.id,
+        category: updatedProduct.category.name,
+        price: updatedProduct.price,
+      );
+    }
 
     final bool studioQuotaHit = StudioImageService.quotaExceededNotifier.value;
     StudioImageService.quotaExceededNotifier.value = false;

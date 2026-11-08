@@ -1,5 +1,6 @@
 const express = require("express");
 const homeRoute = require("./routes/home");
+const trackClickRoute = require("./routes/trackClick");
 const {newProductsRoute, spotProductsRoute} = require("./routes/listing");
 const productDetailRoute = require("./routes/productDetail");
 const searchRoute = require("./routes/search");
@@ -33,6 +34,7 @@ app.get("/sitemap.xml", sitemapRoute);
 app.get("/admin/login", loginRoute);
 app.get("/admin", dashboardRoute);
 app.get("/product/:slugWithId", productDetailRoute);
+app.post("/api/track-click", express.json({limit: "2kb"}), trackClickRoute);
 
 app.use((req, res) => {
   const locale = req.locale;

@@ -10,12 +10,20 @@ class AppNotification {
   final DateTime receivedAt;
   final bool read;
 
+  /// Admin kampanya/duyuru bildirimi bir ürüne/sayfaya bağlıysa (bkz.
+  /// functions/index.js > sendCampaignNotification), dokununca
+  /// `NavigationHandler.globalGoTo(path)` ile açılacak uygulama-içi yol
+  /// (örn. "/product/koltuk-takimi-abc123?sig=..." veya "/new"). Yoksa null
+  /// — dokununca sadece okundu işaretlenir.
+  final String? path;
+
   const AppNotification({
     required this.id,
     required this.title,
     required this.body,
     required this.receivedAt,
     this.read = false,
+    this.path,
   });
 
   AppNotification copyWith({final bool? read}) => AppNotification(
@@ -24,6 +32,7 @@ class AppNotification {
         body: body,
         receivedAt: receivedAt,
         read: read ?? this.read,
+        path: path,
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,6 +41,7 @@ class AppNotification {
         'body': body,
         'receivedAt': receivedAt.toIso8601String(),
         'read': read,
+        if (path != null) 'path': path,
       };
 
   factory AppNotification.fromJson(final Map<String, dynamic> json) => AppNotification(
@@ -40,6 +50,7 @@ class AppNotification {
         body: json['body'] as String? ?? '',
         receivedAt: DateTime.tryParse(json['receivedAt'] as String? ?? '') ?? DateTime.now(),
         read: json['read'] as bool? ?? false,
+        path: json['path'] as String?,
       );
 }
 

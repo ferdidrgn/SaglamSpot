@@ -47,6 +47,7 @@ class NotificationInboxNotifier extends AsyncNotifier<List<AppNotification>> {
               receivedAt: createdAt is Timestamp
                   ? createdAt.toDate()
                   : DateTime.now(),
+              path: data['path'] as String?,
             );
           })
           .whereType<AppNotification>()
