@@ -20,28 +20,31 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // ÖNEMLİ DÜZELTME: admins/{email} dokümanının ID'si
-    // lib/features/auth/presentation/provider/auth_provider_notifier.dart'ta
-    // AÇIKÇA belgelendiği gibi ("Eski kayıtlarda doc id karışık harfli
-    // olabilir") HER ZAMAN küçük harf DEĞİL — ama request.auth.token.email
-    // Firebase Auth tarafından HER ZAMAN küçük harfe normalize edilir.
-    // Sadece tam eşleşmeye bakan İLK HÂLİ (bu kuralların CANLIYA İLK
-    // KEZ deploy edildiği sürüm), dokümanı karışık harfle kaydedilmiş
-    // GERÇEK/TEK admin (esnafın kendisi) için bile isAdmin()'i false
-    // döndürdü — admin paneli girişte "Yükleniyor..."da SONSUZA KADAR
-    // takılı kaldı (gerçek kullanıcı geri bildirimiyle yakalandı, esnaf
-    // kendi panelinden kilitli kaldı). Firestore kuralları, bir dokümanın
-    // VAR OLAN tek bir ID'sini bilmeden "hangi harfle kayıtlı" diye tahmin
-    // edip deneyemez (exists() tam ID ister). Bu dosyanın kendi üst
-    // notunun da belirttiği gibi ("Uygulamada admin OLMAYAN hiçbir hesap
-    // oturum açmıyor") — mimari zaten SADECE esnafın oturum açabilmesine
-    // izin veriyor (müşteri tarafı tamamen anonim/girişsiz). Bu yüzden
-    // isSignedIn() tek başına, admins koleksiyonundaki kayıt/harf
-    // durumundan bağımsız, güvenli ve yeterli bir "admin mi?" kontrolü —
-    // admins koleksiyonu kontrolünü ileride birden fazla hesap eklenirse
-    // diye İKİNCİL bir sinyal olarak (VARSA) koruyoruz.
+    // GÜVENLİK DÜZELTMESİ (2026-11-09): isAdmin() önceden sadece
+    // isSignedIn() döndürüyordu — yani Firebase Auth'ta GEÇERLİ BİR HESABI
+    // OLAN HERKES (müşteri taraf girişsiz olsa da, "Email/Password"
+    // sağlayıcısı açıkken herkes kendi hesabını Identity Toolkit REST
+    // API'siyle, istemci apiKey'i kullanarak self-signup edebilir — bu
+    // apiKey Flutter web derlemesinde zaten herkese açıktır) doğrudan
+    // Firestore SDK üzerinden Product/CategoryMeta create/update/delete
+    // yapabiliyor ve analytics_events okuyabiliyordu (Cloud Functions'taki
+    // assertIsAdmin() GERÇEK admins koleksiyonunu kontrol ediyordu, bu
+    // yüzden callable fonksiyonlar etkilenmiyordu — storage.rules da
+    // zaten doğru şekilde exists(/admins/email) kontrolü yapıyordu).
+    //
+    // Önceki değişikliğin asıl amacı (admins doküman ID'sinin karışık
+    // harfli olabilmesi, bkz. auth_provider_notifier.dart) hâlâ geçerli
+    // bir sorun; çözüm isAdmin()'i gevşetmek değil, HEM küçük harfli HEM
+    // orijinal (ham) e-posta ID'sini exists() ile kontrol etmekti —
+    // request.auth.token.email zaten Firebase Auth tarafından küçük
+    // harfe normalize edilir, ama eski karışık-harfli dokümanlar için bu
+    // tam eşleşmeyebilir. Kalıcı çözüm: admins koleksiyonundaki TÜM
+    // dokümanları küçük harfli ID'ye taşıyın (bkz. admin_managers_page.dart
+    // zaten yeni eklemelerde küçük harf kullanıyor) — o zaman aşağıdaki
+    // tek satırlık kontrol her zaman yeterli olur.
     function isAdmin() {
-      return isSignedIn();
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
     }
 
     // "Kaç kişi bu ürünün detay sayfasını açtı" sayacı — ziyaretçi kimliği

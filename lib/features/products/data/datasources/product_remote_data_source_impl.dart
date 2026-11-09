@@ -144,16 +144,49 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final List<dynamic>? newImages,
   ) async {
     try {
+      // Düzenlemeden ÖNCEKİ (canlıdaki) foto listesini oku — admin'in bu
+      // turda GERÇEKTEN kaldırdığı dosyaları bulmanın tek yolu bu
+      // (product.imagesUrl bu noktada zaten UI'da kalan/silinmemiş
+      // listeyi taşıyor, "önce ne vardı" bilgisi başka yerde yok).
+      final beforeSnap = await _productRef.doc(product.id).get();
+      final beforeData = beforeSnap.data();
+      final List<String> previousImageUrls = beforeData == null
+          ? const []
+          : List<String>.from(
+              (beforeData['imagesUrl'] as List?) ?? const []);
+      final List<String> previousStudioUrls = beforeData == null
+          ? const []
+          : List<String>.from(
+              (beforeData['studioImagesUrl'] as List?) ?? const []);
+
       // Stüdyo görseli yalnızca YENİ fotoğraflarla birlikte imagesUrl'e
       // katılır (bkz. _handleImageUpdate) — bu turda katılım olduysa ayrı
       // alan boşaltılır, olmadıysa (fotoğraf değişmediyse) hiç dokunulmaz.
       final bool mergingNewStudio = newImages != null && newImages.isNotEmpty;
       final imageUrls = await _handleImageUpdate(product, newImages);
+      final finalStudioUrls =
+          mergingNewStudio ? const <String>[] : product.studioImagesUrl;
       final now = _formattedNow();
+
+      // GÜVENLİK/VERİ KAYBI DÜZELTMESİ: eskiden burada, yeni fotoğraf
+      // eklenirken admin'in KORUDUĞU mevcut fotoğraflar da Storage'dan
+      // (ve nihai listeden) silinip sadece yeni seçilenler kalıyordu
+      // (bkz. _handleImageUpdate'in eski hâli). Şimdi sadece gerçekten
+      // kaldırılmış (önceden vardı, artık ne ana listede ne stüdyo
+      // listesinde olan) dosyalar siliniyor — "bir foto kaldır"
+      // kaldırılanı hem kayıttan hem depodan temizliyor, "yeni foto
+      // ekle" eskileri yok etmiyor.
+      final removed = [...previousImageUrls, ...previousStudioUrls]
+          .where((final u) =>
+              u.isNotEmpty &&
+              !imageUrls.contains(u) &&
+              !finalStudioUrls.contains(u))
+          .toList();
+      if (removed.isNotEmpty) await _deleteImages(removed);
 
       final updateData = {
         'imagesUrl': imageUrls,
-        'studioImagesUrl': mergingNewStudio ? const <String>[] : product.studioImagesUrl,
+        'studioImagesUrl': finalStudioUrls,
         '_updatedAt': now,
       };
 
@@ -198,9 +231,16 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   ) async {
     if (newImages == null || newImages.isEmpty) return product.imagesUrl;
 
-    await _deleteImages([...product.imagesUrl, ...product.studioImagesUrl]);
-    final uploaded = await _uploadImages(newImages, product.id);
+    // `product.imagesUrl` bu noktada admin'in KORUDUĞU (X ile silmediği)
+    // mevcut fotoğrafları taşır — eskiden burada hepsi silinip sadece
+    // yeni seçilenler kalıyordu (admin "bir foto daha ekle" deyip eski
+    // fotoğrafları hiç silmek istemese bile hepsi kayboluyordu). Şimdi
+    // eskiler KORUNUYOR, yeni seçilenler dosya adı çakışmasın diye mevcut
+    // sayıdan devam eden indekslerle yükleniyor.
+    final uploaded = await _uploadImages(newImages, product.id,
+        startIndex: product.imagesUrl.length);
     return [
+      ...product.imagesUrl,
       ...uploaded,
       ...product.studioImagesUrl.where((final u) => u.isNotEmpty),
     ];
@@ -208,12 +248,13 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   Future<List<String>> _uploadImages(
     final List<dynamic> images,
-    final String productId,
-  ) async {
+    final String productId, {
+    final int startIndex = 0,
+  }) async {
     final List<String> urls = [];
 
     for (int i = 0; i < images.length; i++) {
-      final ref = _storage.ref('product_images/$productId/$i.jpg');
+      final ref = _storage.ref('product_images/$productId/${startIndex + i}.jpg');
 
       final image = images[i];
 

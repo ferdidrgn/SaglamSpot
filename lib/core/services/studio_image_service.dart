@@ -35,7 +35,20 @@ class StudioImageService {
   /// "aylık stüdyo limiti doldu" bilgisini gösterir, sonra sıfırlar.
   static final ValueNotifier<bool> quotaExceededNotifier = ValueNotifier<bool>(false);
 
+  // Firebase Callable Functions'ın varsayılan istek gövdesi sınırı ~10MB —
+  // base64 kodlaması ham baytı ~%33 büyütür, bu yüzden callable'a hiç
+  // gitmeden önce burada erken ve net bir sınır koyuyoruz (aksi halde admin
+  // büyük bir fotoğraf seçtiğinde 45 saniyelik timeout'tan sonra belirsiz
+  // bir hata görürdü).
+  static const int _maxImageBytes = 7 * 1024 * 1024;
+
   static Future<StudioImageOutcome> generate(final Uint8List imageBytes) async {
+    if (imageBytes.length > _maxImageBytes) {
+      final mb = (imageBytes.length / (1024 * 1024)).toStringAsFixed(1);
+      return StudioImageOutcome(StudioImageResult.failed, null,
+          errorMessage: 'Fotoğraf çok büyük ($mb MB) — stüdyo önizlemesi '
+              'atlandı, orijinal fotoğraf olduğu gibi yüklenecek.');
+    }
     try {
       final callable = FirebaseFunctions.instance.httpsCallable(
         'removeProductBackground',

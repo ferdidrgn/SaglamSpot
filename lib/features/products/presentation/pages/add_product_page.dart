@@ -230,9 +230,12 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   // ---------------- ACTIONS ----------------
 
   Future<void> _submit() async {
+    final parsedPrice = double.tryParse(_price.text.replaceAll(',', '.'));
     if (_name.text.trim().isEmpty ||
         _price.text.trim().isEmpty ||
-        _images.isEmpty) {
+        _images.isEmpty ||
+        parsedPrice == null ||
+        parsedPrice <= 0) {
       _snack(context.l10n.fillRequiredFields, error: true);
       return;
     }
@@ -258,7 +261,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       name: _name.text.trim(),
       desc: _desc.text.trim(),
       category: _selectedCategory ?? ProductCategory.other,
-      price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
+      price: parsedPrice,
       isSold: false,
       isSpotProduct: _isSecondHand,
       dimensions:

@@ -953,9 +953,13 @@ function prerenderProductUrl(data, fallbackId) {
 }
 
 function prerenderPageShell({title, description, canonical, bodyHtml, jsonLd}) {
+  // JSON.stringify "</script" dizisini kaçırmaz — ürün adı/açıklaması
+  // (admin tarafından girilir) böyle bir alt dize içerirse script etiketini
+  // erken kapatıp ardına rastgele HTML/JS enjekte edebilir. "<" karakterini
+  // unicode kaçışıyla değiştirmek bunu JSON'u bozmadan engeller.
   const jsonLdBlocks = (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
       .filter(Boolean)
-      .map((obj) => `<script type="application/ld+json">${JSON.stringify(obj)}</script>`)
+      .map((obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c")}</script>`)
       .join("\n");
 
   return `<!DOCTYPE html>

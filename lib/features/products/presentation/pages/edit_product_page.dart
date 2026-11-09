@@ -401,6 +401,18 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   }
 
   Future<void> _handleUpdate() async {
+    final double? parsedPrice =
+        double.tryParse(_priceController.text.replaceAll(',', '.'));
+    if (_nameController.text.trim().isEmpty ||
+        parsedPrice == null ||
+        parsedPrice <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: AppColors.error,
+        content: Text(context.l10n.fillRequiredFields),
+      ));
+      return;
+    }
+
     final bool pickedNewImages = _newSelectedImages.isNotEmpty;
 
     // Yeni fotoğraflar seçildiyse ve stüdyo önizlemesi hâlâ üretiliyorsa,
@@ -410,8 +422,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       if (!mounted) return;
     }
 
-    final double newPrice =
-        double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0;
+    final double newPrice = parsedPrice;
     // Fiyat gerçekten düşürüldüyse eski fiyatı sakla — kartlardaki
     // "İndirimde" rozeti bunu kullanır (bkz. custom_product_card.dart).
     // Fiyat artmış/aynı kalmışsa dokunma: rozet zaten previousPrice >
