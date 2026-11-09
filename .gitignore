@@ -16,7 +16,18 @@
 # Derleme ve Önbellek Dosyaları
 /android/.gradle
 /android/captures/
+/android/build/
 .gradle/
+
+# R8/ProGuard çıktıları (her release build'de yeniden üretilir, her
+# seferinde onlarca MB'lık diff yaratır — repoda tutulmamalı)
+/android/app/mapping.txt
+/android/app/seeds.txt
+/android/app/unused.txt
+
+# Flutter tarafından otomatik üretilir, kendi içinde "do not edit or
+# check into version control" uyarısı var
+.flutter-plugins-dependencies
 
 # Android Studio IDE Ayarları
 /android/.idea
