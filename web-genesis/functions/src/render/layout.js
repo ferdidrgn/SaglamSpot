@@ -160,7 +160,13 @@ function renderLayout({
   const langOptionsHtml = SUPPORTED_LOCALES.map((loc) =>
     `<option value="${loc}" ${loc === locale ? "selected" : ""}>${escapeHtml(NATIVE_NAMES[loc])}</option>`).join("");
 
-  const jsonLdHtml = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : "";
+  // JSON.stringify "</script" dizisini kaçırmaz — ürün adı/açıklaması
+  // (jsonLd.name/description, admin tarafından girilir) böyle bir alt dize
+  // içerirse script etiketini erken kapatıp ardına rastgele HTML/JS enjekte
+  // edebilir (bu GERÇEK ziyaretçilere giden canlı sayfa, sadece bot'lara
+  // değil). "<" karakterini unicode kaçışıyla değiştirmek JSON'u bozmadan
+  // bunu engeller.
+  const jsonLdHtml = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>` : "";
   const dir = isRtl(locale) ? "rtl" : "ltr";
 
   return `<!DOCTYPE html>
@@ -329,7 +335,7 @@ ${bodyHtml}
 <a class="whatsapp-fab" href="${business.whatsappUrl(undefined, locale)}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
 <button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık" title="Işığı çek, yukarı çık">${SCROLLTOP_LAMP_SVG}</button>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
-${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData)};</script>` : ""}
+${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData).replace(/</g, "\\u003c")};</script>` : ""}
 ${extraScripts.map((s) => `<script src="${versionedAsset(s)}" type="module"></script>`).join("\n")}
 </body>
 </html>`;
