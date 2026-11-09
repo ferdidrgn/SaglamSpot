@@ -19,6 +19,13 @@ class CategoryMeta {
   final int order;
   final bool isActive;
 
+  /// "Kategori beğenme" aggregate sayacı (bkz.
+  /// core/providers/category_likes_provider.dart) — Product.viewCountWeb/
+  /// Mobile'daki AYNI "basit, dürüst, anonim ham sayaç" felsefesi. Admin'in
+  /// hangi kategorinin en çok beğenildiğini görebilmesi için
+  /// admin_product_stats_page.dart'ta okunur.
+  final int likeCount;
+
   const CategoryMeta({
     required this.category,
     required this.icon,
@@ -26,6 +33,7 @@ class CategoryMeta {
     required this.order,
     this.customLabel,
     this.isActive = true,
+    this.likeCount = 0,
   });
 
   CategoryMeta copyWith({
@@ -34,6 +42,7 @@ class CategoryMeta {
     final Color? color,
     final int? order,
     final bool? isActive,
+    final int? likeCount,
   }) =>
       CategoryMeta(
         category: category,
@@ -42,10 +51,12 @@ class CategoryMeta {
         color: color ?? this.color,
         order: order ?? this.order,
         isActive: isActive ?? this.isActive,
+        likeCount: likeCount ?? this.likeCount,
       );
 
   /// Firestore dokümanından gelen alan isimleri: icon, colorHex, order,
-  /// label, isActive — hepsi opsiyonel, eksik olan alan varsayılanı korur.
+  /// label, isActive, likeCount — hepsi opsiyonel, eksik olan alan
+  /// varsayılanı korur.
   factory CategoryMeta.fromFirestore(
     final Map<String, dynamic> data,
     final CategoryMeta fallback,
@@ -58,6 +69,7 @@ class CategoryMeta {
           : fallback.color,
       order: (data['order'] as num?)?.toInt(),
       isActive: data['isActive'] as bool?,
+      likeCount: (data['likeCount'] as num?)?.toInt() ?? 0,
     );
   }
 }

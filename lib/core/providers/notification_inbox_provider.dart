@@ -48,6 +48,7 @@ class NotificationInboxNotifier extends AsyncNotifier<List<AppNotification>> {
                   ? createdAt.toDate()
                   : DateTime.now(),
               path: data['path'] as String?,
+              imageUrl: data['imageUrl'] as String?,
             );
           })
           .whereType<AppNotification>()
@@ -67,6 +68,16 @@ class NotificationInboxNotifier extends AsyncNotifier<List<AppNotification>> {
 
   Future<void> add(final AppNotification notification) async {
     final updated = await NotificationInboxCache.add(notification);
+    state = AsyncData(updated);
+  }
+
+  Future<void> remove(final String id) async {
+    final updated = await NotificationInboxCache.remove(id);
+    state = AsyncData(updated);
+  }
+
+  Future<void> restore(final AppNotification notification) async {
+    final updated = await NotificationInboxCache.restore(notification);
     state = AsyncData(updated);
   }
 

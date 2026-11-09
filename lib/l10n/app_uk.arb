@@ -474,6 +474,7 @@
   "cartTotalLabel": "Разом",
   "cartWhatsappCta": "Надіслати кошик у WhatsApp",
   "cartItemRemoved": "Видалено з кошика",
+  "removedFromFavorites": "Видалено з улюблених",
   "addToCartCta": "До кошика",
   "addedToCartMessage": "Додано до кошика",
   "alreadyInCartMessage": "Вже у кошику",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Нові акції та оголошення з'являться тут",
   "markAllReadAction": "Позначити всі як прочитані",
   "clearAllAction": "Очистити все",
+  "notificationRemoved": "Сповіщення видалено",
+  "undo": "Відмінити",
   "timeJustNow": "Щойно",
   "timeMinutesAgo": "{minutes} хв тому",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Сповіщення про нові товари",
   "categoryWatchDescription": "Повідомимо, коли у відстежуваних категоріях з'явиться новий товар.",
+  "categoryLikesSectionTitle": "Категорії, які тобі подобаються",
+  "categoryLikesDescription": "Улюблені категорії виділяються на головній сторінці.",
   "notificationsAdminTooltip": "Сповіщення",
   "notificationsAdminTitle": "Сповіщення та кампанії",
   "campaignComposerSectionTitle": "Надіслати нове сповіщення",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Усі користувачі",
   "campaignSegmentFavorited": "З обраними товарами",
   "campaignSegmentCategory": "Підписники категорії",
+  "campaignSegmentFavoritedNew": "Цікавляться новими меблями",
+  "campaignSegmentFavoritedSpot": "Цікавляться вживаними меблями",
+  "campaignSegmentPriceRange": "Цікавляться ціновим діапазоном",
+  "campaignPriceMinLabel": "Мін. ціна (₺)",
+  "campaignPriceMaxLabel": "Макс. ціна (₺)",
+  "campaignPriceRangeInvalid": "Введіть коректний ціновий діапазон.",
+  "campaignPricePreviewButton": "Попередній перегляд аудиторії",
+  "campaignAudiencePreviewLoading": "Підрахунок цільової аудиторії…",
+  "campaignAudiencePreviewUnknown": "Усі пристрої — точну кількість неможливо показати заздалегідь.",
+  "campaignAudiencePreviewZero": "Наразі в цьому сегменті немає пристроїв.",
+  "campaignAudiencePreviewCount": "Наразі в цьому сегменті {count} пристроїв.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Надіслати сповіщення",
   "campaignSendConfirmTitle": "Надіслати це сповіщення?",
   "campaignSendConfirmMessage": "Це сповіщення буде надіслано всім користувачам у вибраному сегменті. Цю дію неможливо скасувати.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Заголовок і повідомлення обов'язкові.",
+  "campaignHistoryTitle": "Останні кампанії",
+  "campaignHistoryEmpty": "Кампанії ще не надсилалися.",
   "statsRangeToday": "Сьогодні",
   "statsRangeWeek": "Цього тижня",
   "statsRangeMonth": "Цього місяця",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Динаміка в часі",
   "statsByCategoryTitle": "Розподіл за категоріями",
   "statsTopProductsTitle": "Товари з найбільшою активністю",
+  "statsMostLikedCategoriesTitle": "Найпопулярніші категорії",
   "statsNoData": "Немає даних за цей період",
   "firebaseChecking": "Перевірка…",
   "firebaseNotificationsTitle": "Сповіщення (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Дозвіл на сповіщення не надано",
   "firebaseOpenNotificationSettings": "Відкрити налаштування сповіщень",
   "productStatsTooltip": "Статистика",
-  "productStatsTitle": "Статистика"
+  "productStatsTitle": "Статистика",
+  "adminManagersTooltip": "Адміністратори",
+  "adminManagersTitle": "Адміністратори",
+  "adminManagersIntro": "Додавайте або видаляйте облікові записи адміністраторів, які можуть входити до цієї панелі.",
+  "adminManagersAddSectionTitle": "Додати адміністратора",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "Додати",
+  "adminManagersInvalidEmail": "Введіть коректний email.",
+  "adminManagersAlreadyExists": "Ця людина вже адміністратор.",
+  "adminManagersAddedSuccess": "Адміністратора додано.",
+  "adminManagersListTitle": "Адміністратори",
+  "adminManagersYouBadge": "(ви)",
+  "adminManagersAddedByLabel": "Додав: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Скасувати доступ",
+  "adminManagersRemoveConfirmTitle": "Скасувати доступ адміністратора?",
+  "adminManagersRemoveConfirmMessage": "{email} більше не зможе увійти до панелі.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Доступ адміністратора скасовано.",
+  "adminManagersGenericError": "Щось пішло не так: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Адміністраторів ще немає.",
+  "adminOverviewTabLabel": "Огляд",
+  "adminOverviewMissingInfoTitle": "Неповні товари",
+  "adminOverviewMissingInfoSubtitle": "У {count} товарів немає фото або опису.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Усі товари мають повну інформацію.",
+  "adminProductSearchHint": "Пошук товару…",
+  "adminSelectModeEnter": "Вибрати",
+  "adminSelectModeExit": "Скасувати",
+  "adminSelectedCount": "Вибрано: {count}",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Позначити проданим",
+  "adminBulkDelete": "Видалити",
+  "adminBulkDeleteConfirmTitle": "Видалити {count} товарів?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Цю дію неможливо скасувати.",
+  "adminBulkMarkSoldSuccess": "{count} товарів позначено як продані.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} товарів видалено.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Товари"
 }

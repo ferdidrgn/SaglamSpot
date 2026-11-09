@@ -23,6 +23,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
   Timestamp,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -64,6 +65,7 @@ export {
   query,
   where,
   orderBy,
+  limit,
   Timestamp,
   serverTimestamp,
   storageRef,

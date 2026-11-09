@@ -1619,6 +1619,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get cartItemRemoved => 'Αφαιρέθηκε από το καλάθι';
 
   @override
+  String get removedFromFavorites => 'Αφαιρέθηκε από τα αγαπημένα';
+
+  @override
   String get addToCartCta => 'Προσθήκη στο Καλάθι';
 
   @override
@@ -1781,6 +1784,12 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get clearAllAction => 'Εκκαθάριση όλων';
+
+  @override
+  String get notificationRemoved => 'Η ειδοποίηση αφαιρέθηκε';
+
+  @override
+  String get undo => 'Αναίρεση';
 
   @override
   String get timeJustNow => 'Μόλις τώρα';
@@ -2247,6 +2256,13 @@ class AppLocalizationsEl extends AppLocalizations {
       'Θα σας ενημερώσουμε όταν προστεθεί νέο προϊόν στις κατηγορίες που παρακολουθείτε.';
 
   @override
+  String get categoryLikesSectionTitle => 'Κατηγορίες που σου αρέσουν';
+
+  @override
+  String get categoryLikesDescription =>
+      'Οι κατηγορίες που σου αρέσουν προβάλλονται στην αρχική σου σελίδα.';
+
+  @override
   String get notificationsAdminTooltip => 'Ειδοποιήσεις';
 
   @override
@@ -2305,6 +2321,44 @@ class AppLocalizationsEl extends AppLocalizations {
   String get campaignSegmentCategory => 'Ακόλουθοι κατηγορίας';
 
   @override
+  String get campaignSegmentFavoritedNew =>
+      'Ενδιαφέρονται για καινούργια έπιπλα';
+
+  @override
+  String get campaignSegmentFavoritedSpot => 'Ενδιαφέρονται για μεταχειρισμένα';
+
+  @override
+  String get campaignSegmentPriceRange => 'Ενδιαφέρονται για εύρος τιμών';
+
+  @override
+  String get campaignPriceMinLabel => 'Ελάχ. τιμή (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => 'Μέγ. τιμή (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid => 'Εισαγάγετε ένα έγκυρο εύρος τιμών.';
+
+  @override
+  String get campaignPricePreviewButton => 'Προεπισκόπηση κοινού';
+
+  @override
+  String get campaignAudiencePreviewLoading => 'Υπολογισμός κοινού-στόχου…';
+
+  @override
+  String get campaignAudiencePreviewUnknown =>
+      'Όλες οι συσκευές — ο ακριβής αριθμός δεν εμφανίζεται εκ των προτέρων.';
+
+  @override
+  String get campaignAudiencePreviewZero =>
+      'Δεν υπάρχουν συσκευές σε αυτό το τμήμα αυτή τη στιγμή.';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return 'Αυτή τη στιγμή υπάρχουν $count συσκευές σε αυτό το τμήμα.';
+  }
+
+  @override
   String get campaignSendButton => 'Αποστολή ειδοποίησης';
 
   @override
@@ -2335,6 +2389,12 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get campaignTitleRequired =>
       'Ο τίτλος και το μήνυμα είναι υποχρεωτικά.';
+
+  @override
+  String get campaignHistoryTitle => 'Πρόσφατες καμπάνιες';
+
+  @override
+  String get campaignHistoryEmpty => 'Δεν έχει σταλεί καμπάνια ακόμα.';
 
   @override
   String get statsRangeToday => 'Σήμερα';
@@ -2389,5 +2449,131 @@ class AppLocalizationsEl extends AppLocalizations {
   String get statsTopProductsTitle => 'Προϊόντα με τη μεγαλύτερη αλληλεπίδραση';
 
   @override
+  String get statsMostLikedCategoriesTitle => 'Οι πιο δημοφιλείς κατηγορίες';
+
+  @override
   String get statsNoData => 'Δεν υπάρχουν δεδομένα σε αυτό το εύρος';
+
+  @override
+  String get adminManagersTooltip => 'Διαχειριστές';
+
+  @override
+  String get adminManagersTitle => 'Διαχειριστές';
+
+  @override
+  String get adminManagersIntro =>
+      'Προσθέστε ή αφαιρέστε λογαριασμούς διαχειριστών που μπορούν να συνδεθούν σε αυτόν τον πίνακα.';
+
+  @override
+  String get adminManagersAddSectionTitle => 'Προσθήκη νέου διαχειριστή';
+
+  @override
+  String get adminManagersEmailLabel => 'Email';
+
+  @override
+  String get adminManagersEmailHint => 'name@example.com';
+
+  @override
+  String get adminManagersAddButton => 'Προσθήκη';
+
+  @override
+  String get adminManagersInvalidEmail => 'Εισαγάγετε έγκυρη διεύθυνση email.';
+
+  @override
+  String get adminManagersAlreadyExists =>
+      'Αυτό το άτομο είναι ήδη διαχειριστής.';
+
+  @override
+  String get adminManagersAddedSuccess => 'Ο διαχειριστής προστέθηκε.';
+
+  @override
+  String get adminManagersListTitle => 'Διαχειριστές';
+
+  @override
+  String get adminManagersYouBadge => '(εσείς)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return 'Προστέθηκε από: $email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => 'Ανάκληση πρόσβασης';
+
+  @override
+  String get adminManagersRemoveConfirmTitle =>
+      'Ανάκληση πρόσβασης διαχειριστή;';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return 'Ο/Η $email δεν θα μπορεί πλέον να συνδεθεί στον πίνακα.';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess => 'Η πρόσβαση διαχειριστή ανακλήθηκε.';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return 'Κάτι πήγε στραβά: $message';
+  }
+
+  @override
+  String get adminManagersEmpty => 'Δεν υπάρχουν ακόμη διαχειριστές.';
+
+  @override
+  String get adminOverviewTabLabel => 'Επισκόπηση';
+
+  @override
+  String get adminOverviewMissingInfoTitle => 'Ελλιπή προϊόντα';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return 'Σε $count προϊόντα λείπει φωτογραφία ή περιγραφή.';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone =>
+      'Όλα τα προϊόντα έχουν πλήρη στοιχεία.';
+
+  @override
+  String get adminProductSearchHint => 'Αναζήτηση προϊόντος…';
+
+  @override
+  String get adminSelectModeEnter => 'Επιλογή';
+
+  @override
+  String get adminSelectModeExit => 'Ακύρωση';
+
+  @override
+  String adminSelectedCount(int count) {
+    return '$count επιλεγμένα';
+  }
+
+  @override
+  String get adminBulkMarkSold => 'Σήμανση ως πουλημένο';
+
+  @override
+  String get adminBulkDelete => 'Διαγραφή';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return 'Διαγραφή $count προϊόντων;';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage =>
+      'Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return '$count προϊόντα σημειώθηκαν ως πουλημένα.';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return '$count προϊόντα διαγράφηκαν.';
+  }
+
+  @override
+  String get adminSidebarProducts => 'Προϊόντα';
 }

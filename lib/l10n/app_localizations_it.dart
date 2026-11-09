@@ -1614,6 +1614,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cartItemRemoved => 'Rimosso dal carrello';
 
   @override
+  String get removedFromFavorites => 'Rimosso dai preferiti';
+
+  @override
   String get addToCartCta => 'Aggiungi al Carrello';
 
   @override
@@ -1776,6 +1779,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get clearAllAction => 'Cancella tutto';
+
+  @override
+  String get notificationRemoved => 'Notifica rimossa';
+
+  @override
+  String get undo => 'Annulla';
 
   @override
   String get timeJustNow => 'Proprio ora';
@@ -2242,6 +2251,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Ti avviseremo quando viene aggiunto un nuovo prodotto nelle categorie che segui.';
 
   @override
+  String get categoryLikesSectionTitle => 'Categorie che ti piacciono';
+
+  @override
+  String get categoryLikesDescription =>
+      'Le categorie che ti piacciono vengono evidenziate nella tua home.';
+
+  @override
   String get notificationsAdminTooltip => 'Notifiche';
 
   @override
@@ -2300,6 +2316,45 @@ class AppLocalizationsIt extends AppLocalizations {
   String get campaignSegmentCategory => 'Follower della categoria';
 
   @override
+  String get campaignSegmentFavoritedNew => 'Interessati a mobili nuovi';
+
+  @override
+  String get campaignSegmentFavoritedSpot => 'Interessati a mobili usati';
+
+  @override
+  String get campaignSegmentPriceRange => 'Interessati a una fascia di prezzo';
+
+  @override
+  String get campaignPriceMinLabel => 'Prezzo min. (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => 'Prezzo max. (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid =>
+      'Inserisci una fascia di prezzo valida.';
+
+  @override
+  String get campaignPricePreviewButton => 'Anteprima pubblico';
+
+  @override
+  String get campaignAudiencePreviewLoading =>
+      'Conteggio del pubblico in corso…';
+
+  @override
+  String get campaignAudiencePreviewUnknown =>
+      'Tutti i dispositivi — il numero esatto non può essere mostrato in anticipo.';
+
+  @override
+  String get campaignAudiencePreviewZero =>
+      'Nessun dispositivo in questo segmento al momento.';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return 'Al momento $count dispositivi in questo segmento.';
+  }
+
+  @override
   String get campaignSendButton => 'Invia notifica';
 
   @override
@@ -2328,6 +2383,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get campaignTitleRequired => 'Titolo e messaggio sono obbligatori.';
+
+  @override
+  String get campaignHistoryTitle => 'Campagne recenti';
+
+  @override
+  String get campaignHistoryEmpty => 'Nessuna campagna inviata ancora.';
 
   @override
   String get statsRangeToday => 'Oggi';
@@ -2382,5 +2443,132 @@ class AppLocalizationsIt extends AppLocalizations {
   String get statsTopProductsTitle => 'Prodotti più interagiti';
 
   @override
+  String get statsMostLikedCategoriesTitle => 'Categorie più apprezzate';
+
+  @override
   String get statsNoData => 'Nessun dato in questo intervallo';
+
+  @override
+  String get adminManagersTooltip => 'Amministratori';
+
+  @override
+  String get adminManagersTitle => 'Amministratori';
+
+  @override
+  String get adminManagersIntro =>
+      'Aggiungi o rimuovi gli account amministratore che possono accedere a questo pannello.';
+
+  @override
+  String get adminManagersAddSectionTitle => 'Aggiungi un nuovo amministratore';
+
+  @override
+  String get adminManagersEmailLabel => 'Email';
+
+  @override
+  String get adminManagersEmailHint => 'nome@esempio.com';
+
+  @override
+  String get adminManagersAddButton => 'Aggiungi';
+
+  @override
+  String get adminManagersInvalidEmail =>
+      'Inserisci un indirizzo email valido.';
+
+  @override
+  String get adminManagersAlreadyExists =>
+      'Questa persona è già amministratore.';
+
+  @override
+  String get adminManagersAddedSuccess => 'Amministratore aggiunto.';
+
+  @override
+  String get adminManagersListTitle => 'Amministratori';
+
+  @override
+  String get adminManagersYouBadge => '(tu)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return 'Aggiunto da: $email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => 'Revoca accesso';
+
+  @override
+  String get adminManagersRemoveConfirmTitle =>
+      'Revocare l\'accesso amministratore?';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return '$email non potrà più accedere al pannello.';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess => 'Accesso amministratore revocato.';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return 'Qualcosa è andato storto: $message';
+  }
+
+  @override
+  String get adminManagersEmpty => 'Nessun amministratore ancora.';
+
+  @override
+  String get adminOverviewTabLabel => 'Panoramica';
+
+  @override
+  String get adminOverviewMissingInfoTitle => 'Prodotti incompleti';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return 'A $count prodotti manca una foto o una descrizione.';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone =>
+      'Tutti i prodotti hanno informazioni complete.';
+
+  @override
+  String get adminProductSearchHint => 'Cerca prodotto…';
+
+  @override
+  String get adminSelectModeEnter => 'Seleziona';
+
+  @override
+  String get adminSelectModeExit => 'Annulla';
+
+  @override
+  String adminSelectedCount(int count) {
+    return '$count selezionati';
+  }
+
+  @override
+  String get adminBulkMarkSold => 'Segna come venduto';
+
+  @override
+  String get adminBulkDelete => 'Elimina';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return 'Eliminare $count prodotti?';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage =>
+      'Questa azione non può essere annullata.';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return '$count prodotti segnati come venduti.';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return '$count prodotti eliminati.';
+  }
+
+  @override
+  String get adminSidebarProducts => 'Prodotti';
 }

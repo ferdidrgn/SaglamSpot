@@ -3050,6 +3050,12 @@ abstract class AppLocalizations {
   /// **'Sepetten kaldırıldı'**
   String get cartItemRemoved;
 
+  /// No description provided for @removedFromFavorites.
+  ///
+  /// In tr, this message translates to:
+  /// **'Favorilerden kaldırıldı'**
+  String get removedFromFavorites;
+
   /// No description provided for @addToCartCta.
   ///
   /// In tr, this message translates to:
@@ -3337,6 +3343,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Tümünü temizle'**
   String get clearAllAction;
+
+  /// No description provided for @notificationRemoved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim kaldırıldı'**
+  String get notificationRemoved;
+
+  /// No description provided for @undo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri al'**
+  String get undo;
 
   /// No description provided for @timeJustNow.
   ///
@@ -4173,6 +4191,18 @@ abstract class AppLocalizations {
   /// **'Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim.'**
   String get categoryWatchDescription;
 
+  /// No description provided for @categoryLikesSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beğendiğin Kategoriler'**
+  String get categoryLikesSectionTitle;
+
+  /// No description provided for @categoryLikesDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beğendiğin kategoriler ana sayfanda öne çıkar.'**
+  String get categoryLikesDescription;
+
   /// No description provided for @notificationsAdminTooltip.
   ///
   /// In tr, this message translates to:
@@ -4287,6 +4317,72 @@ abstract class AppLocalizations {
   /// **'Kategori Takipçileri'**
   String get campaignSegmentCategory;
 
+  /// No description provided for @campaignSegmentFavoritedNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfır Ürünle İlgilenenler'**
+  String get campaignSegmentFavoritedNew;
+
+  /// No description provided for @campaignSegmentFavoritedSpot.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkinci El ile İlgilenenler'**
+  String get campaignSegmentFavoritedSpot;
+
+  /// No description provided for @campaignSegmentPriceRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyat Aralığıyla İlgilenenler'**
+  String get campaignSegmentPriceRange;
+
+  /// No description provided for @campaignPriceMinLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Min. Fiyat (₺)'**
+  String get campaignPriceMinLabel;
+
+  /// No description provided for @campaignPriceMaxLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Maks. Fiyat (₺)'**
+  String get campaignPriceMaxLabel;
+
+  /// No description provided for @campaignPriceRangeInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli bir fiyat aralığı girin.'**
+  String get campaignPriceRangeInvalid;
+
+  /// No description provided for @campaignPricePreviewButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefi Göster'**
+  String get campaignPricePreviewButton;
+
+  /// No description provided for @campaignAudiencePreviewLoading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef kitle sayılıyor…'**
+  String get campaignAudiencePreviewLoading;
+
+  /// No description provided for @campaignAudiencePreviewUnknown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm cihazlar — kesin sayı önceden gösterilemez.'**
+  String get campaignAudiencePreviewUnknown;
+
+  /// No description provided for @campaignAudiencePreviewZero.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu segmentte şu an hiç cihaz yok.'**
+  String get campaignAudiencePreviewZero;
+
+  /// No description provided for @campaignAudiencePreviewCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu segmentte şu an {count} cihaz var.'**
+  String campaignAudiencePreviewCount(int count);
+
   /// No description provided for @campaignSendButton.
   ///
   /// In tr, this message translates to:
@@ -4334,6 +4430,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Başlık ve mesaj gerekli.'**
   String get campaignTitleRequired;
+
+  /// No description provided for @campaignHistoryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son Kampanyalar'**
+  String get campaignHistoryTitle;
+
+  /// No description provided for @campaignHistoryEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz kampanya gönderilmedi.'**
+  String get campaignHistoryEmpty;
 
   /// No description provided for @statsRangeToday.
   ///
@@ -4437,11 +4545,221 @@ abstract class AppLocalizations {
   /// **'En Çok Etkileşim Alan Ürünler'**
   String get statsTopProductsTitle;
 
+  /// No description provided for @statsMostLikedCategoriesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Çok Beğenilen Kategoriler'**
+  String get statsMostLikedCategoriesTitle;
+
   /// No description provided for @statsNoData.
   ///
   /// In tr, this message translates to:
   /// **'Bu aralıkta veri yok'**
   String get statsNoData;
+
+  /// No description provided for @adminManagersTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yöneticiler'**
+  String get adminManagersTooltip;
+
+  /// No description provided for @adminManagersTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yöneticiler'**
+  String get adminManagersTitle;
+
+  /// No description provided for @adminManagersIntro.
+  ///
+  /// In tr, this message translates to:
+  /// **'Panelde oturum açabilecek yönetici hesaplarını buradan ekleyip kaldırabilirsin.'**
+  String get adminManagersIntro;
+
+  /// No description provided for @adminManagersAddSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni yönetici ekle'**
+  String get adminManagersAddSectionTitle;
+
+  /// No description provided for @adminManagersEmailLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta'**
+  String get adminManagersEmailLabel;
+
+  /// No description provided for @adminManagersEmailHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'ornek@eposta.com'**
+  String get adminManagersEmailHint;
+
+  /// No description provided for @adminManagersAddButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekle'**
+  String get adminManagersAddButton;
+
+  /// No description provided for @adminManagersInvalidEmail.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli bir e-posta adresi yaz.'**
+  String get adminManagersInvalidEmail;
+
+  /// No description provided for @adminManagersAlreadyExists.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kişi zaten yönetici.'**
+  String get adminManagersAlreadyExists;
+
+  /// No description provided for @adminManagersAddedSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici eklendi.'**
+  String get adminManagersAddedSuccess;
+
+  /// No description provided for @adminManagersListTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yöneticiler'**
+  String get adminManagersListTitle;
+
+  /// No description provided for @adminManagersYouBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'(sen)'**
+  String get adminManagersYouBadge;
+
+  /// No description provided for @adminManagersAddedByLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekleyen: {email}'**
+  String adminManagersAddedByLabel(String email);
+
+  /// No description provided for @adminManagersRemoveButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yetkiyi kaldır'**
+  String get adminManagersRemoveButton;
+
+  /// No description provided for @adminManagersRemoveConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici yetkisi kaldırılsın mı?'**
+  String get adminManagersRemoveConfirmTitle;
+
+  /// No description provided for @adminManagersRemoveConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'{email} artık panele giriş yapamayacak.'**
+  String adminManagersRemoveConfirmMessage(String email);
+
+  /// No description provided for @adminManagersRemoveSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yönetici yetkisi kaldırıldı.'**
+  String get adminManagersRemoveSuccess;
+
+  /// No description provided for @adminManagersGenericError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir şeyler ters gitti: {message}'**
+  String adminManagersGenericError(String message);
+
+  /// No description provided for @adminManagersEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz yönetici yok.'**
+  String get adminManagersEmpty;
+
+  /// No description provided for @adminOverviewTabLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel bakış'**
+  String get adminOverviewTabLabel;
+
+  /// No description provided for @adminOverviewMissingInfoTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eksik bilgili ürün'**
+  String get adminOverviewMissingInfoTitle;
+
+  /// No description provided for @adminOverviewMissingInfoSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} üründe fotoğraf ya da açıklama eksik.'**
+  String adminOverviewMissingInfoSubtitle(int count);
+
+  /// No description provided for @adminOverviewMissingInfoNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm ürünlerin bilgileri tam.'**
+  String get adminOverviewMissingInfoNone;
+
+  /// No description provided for @adminProductSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün ara…'**
+  String get adminProductSearchHint;
+
+  /// No description provided for @adminSelectModeEnter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seç'**
+  String get adminSelectModeEnter;
+
+  /// No description provided for @adminSelectModeExit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get adminSelectModeExit;
+
+  /// No description provided for @adminSelectedCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} seçili'**
+  String adminSelectedCount(int count);
+
+  /// No description provided for @adminBulkMarkSold.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satıldı işaretle'**
+  String get adminBulkMarkSold;
+
+  /// No description provided for @adminBulkDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get adminBulkDelete;
+
+  /// No description provided for @adminBulkDeleteConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ürün silinsin mi?'**
+  String adminBulkDeleteConfirmTitle(int count);
+
+  /// No description provided for @adminBulkDeleteConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu işlem geri alınamaz.'**
+  String get adminBulkDeleteConfirmMessage;
+
+  /// No description provided for @adminBulkMarkSoldSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ürün satıldı olarak işaretlendi.'**
+  String adminBulkMarkSoldSuccess(int count);
+
+  /// No description provided for @adminBulkDeleteSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ürün silindi.'**
+  String adminBulkDeleteSuccess(int count);
+
+  /// No description provided for @adminSidebarProducts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünler'**
+  String get adminSidebarProducts;
 }
 
 class _AppLocalizationsDelegate

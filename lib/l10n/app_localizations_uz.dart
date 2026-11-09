@@ -1612,6 +1612,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get cartItemRemoved => 'Savatdan olib tashlandi';
 
   @override
+  String get removedFromFavorites => 'Sevimlilardan olib tashlandi';
+
+  @override
   String get addToCartCta => 'Savatga qo\'shish';
 
   @override
@@ -1774,6 +1777,12 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get clearAllAction => 'Barchasini tozalash';
+
+  @override
+  String get notificationRemoved => 'Bildirishnoma olib tashlandi';
+
+  @override
+  String get undo => 'Bekor qilish';
 
   @override
   String get timeJustNow => 'Hozirgina';
@@ -2241,6 +2250,13 @@ class AppLocalizationsUz extends AppLocalizations {
       'Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz.';
 
   @override
+  String get categoryLikesSectionTitle => 'Senga yoqgan toifalar';
+
+  @override
+  String get categoryLikesDescription =>
+      'Senga yoqgan toifalar bosh sahifangda ajratib ko\'rsatiladi.';
+
+  @override
   String get notificationsAdminTooltip => 'Bildirishnomalar';
 
   @override
@@ -2299,6 +2315,46 @@ class AppLocalizationsUz extends AppLocalizations {
   String get campaignSegmentCategory => 'Kategoriya kuzatuvchilari';
 
   @override
+  String get campaignSegmentFavoritedNew => 'Yangi mebelga qiziquvchilar';
+
+  @override
+  String get campaignSegmentFavoritedSpot =>
+      'Ikkinchi qo\'l mebelga qiziquvchilar';
+
+  @override
+  String get campaignSegmentPriceRange => 'Narx oralig\'iga qiziquvchilar';
+
+  @override
+  String get campaignPriceMinLabel => 'Min. narx (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => 'Maks. narx (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid =>
+      'To\'g\'ri narx oralig\'ini kiriting.';
+
+  @override
+  String get campaignPricePreviewButton => 'Auditoriyani ko\'rish';
+
+  @override
+  String get campaignAudiencePreviewLoading =>
+      'Maqsadli auditoriya hisoblanmoqda…';
+
+  @override
+  String get campaignAudiencePreviewUnknown =>
+      'Barcha qurilmalar — aniq son oldindan ko\'rsatilmaydi.';
+
+  @override
+  String get campaignAudiencePreviewZero =>
+      'Hozircha bu segmentda qurilma yo\'q.';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return 'Hozircha bu segmentda $count ta qurilma bor.';
+  }
+
+  @override
   String get campaignSendButton => 'Bildirishnomani yuborish';
 
   @override
@@ -2328,6 +2384,12 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get campaignTitleRequired => 'Sarlavha va xabar talab qilinadi.';
+
+  @override
+  String get campaignHistoryTitle => 'So\'nggi kampaniyalar';
+
+  @override
+  String get campaignHistoryEmpty => 'Hali hech qanday kampaniya yuborilmagan.';
 
   @override
   String get statsRangeToday => 'Bugun';
@@ -2382,5 +2444,131 @@ class AppLocalizationsUz extends AppLocalizations {
   String get statsTopProductsTitle => 'Eng ko\'p e\'tibor olgan mahsulotlar';
 
   @override
+  String get statsMostLikedCategoriesTitle => 'Eng ko\'p yoqtirilgan toifalar';
+
+  @override
   String get statsNoData => 'Bu oraliqda ma\'lumot yo\'q';
+
+  @override
+  String get adminManagersTooltip => 'Administratorlar';
+
+  @override
+  String get adminManagersTitle => 'Administratorlar';
+
+  @override
+  String get adminManagersIntro =>
+      'Bu panelga kira oladigan administrator hisoblarini qo\'shing yoki olib tashlang.';
+
+  @override
+  String get adminManagersAddSectionTitle => 'Yangi administrator qo\'shish';
+
+  @override
+  String get adminManagersEmailLabel => 'Email';
+
+  @override
+  String get adminManagersEmailHint => 'name@example.com';
+
+  @override
+  String get adminManagersAddButton => 'Qo\'shish';
+
+  @override
+  String get adminManagersInvalidEmail => 'To\'g\'ri email manzilini kiriting.';
+
+  @override
+  String get adminManagersAlreadyExists => 'Bu shaxs allaqachon administrator.';
+
+  @override
+  String get adminManagersAddedSuccess => 'Administrator qo\'shildi.';
+
+  @override
+  String get adminManagersListTitle => 'Administratorlar';
+
+  @override
+  String get adminManagersYouBadge => '(siz)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return 'Qo\'shgan: $email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => 'Huquqni bekor qilish';
+
+  @override
+  String get adminManagersRemoveConfirmTitle =>
+      'Administrator huquqi bekor qilinsinmi?';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return '$email endi panelga kira olmaydi.';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess =>
+      'Administrator huquqi bekor qilindi.';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return 'Nimadir xato ketdi: $message';
+  }
+
+  @override
+  String get adminManagersEmpty => 'Hozircha administrator yo\'q.';
+
+  @override
+  String get adminOverviewTabLabel => 'Umumiy ko\'rinish';
+
+  @override
+  String get adminOverviewMissingInfoTitle => 'To\'liq bo\'lmagan mahsulotlar';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return '$count mahsulotda rasm yoki tavsif yo\'q.';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone =>
+      'Barcha mahsulotlar to\'liq ma\'lumotga ega.';
+
+  @override
+  String get adminProductSearchHint => 'Mahsulot qidirish…';
+
+  @override
+  String get adminSelectModeEnter => 'Tanlash';
+
+  @override
+  String get adminSelectModeExit => 'Bekor qilish';
+
+  @override
+  String adminSelectedCount(int count) {
+    return '$count tanlandi';
+  }
+
+  @override
+  String get adminBulkMarkSold => 'Sotilgan deb belgilash';
+
+  @override
+  String get adminBulkDelete => 'O\'chirish';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return '$count mahsulot o\'chirilsinmi?';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage =>
+      'Bu amalni ortga qaytarib bo\'lmaydi.';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return '$count mahsulot sotilgan deb belgilandi.';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return '$count mahsulot o\'chirildi.';
+  }
+
+  @override
+  String get adminSidebarProducts => 'Mahsulotlar';
 }

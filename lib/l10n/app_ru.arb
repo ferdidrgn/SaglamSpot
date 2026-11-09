@@ -474,6 +474,7 @@
   "cartTotalLabel": "Итого",
   "cartWhatsappCta": "Отправить корзину в WhatsApp",
   "cartItemRemoved": "Удалено из корзины",
+  "removedFromFavorites": "Удалено из избранного",
   "addToCartCta": "В корзину",
   "addedToCartMessage": "Добавлено в корзину",
   "alreadyInCartMessage": "Уже в корзине",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Новые акции и объявления появятся здесь",
   "markAllReadAction": "Отметить все как прочитанные",
   "clearAllAction": "Очистить всё",
+  "notificationRemoved": "Уведомление удалено",
+  "undo": "Отменить",
   "timeJustNow": "Только что",
   "timeMinutesAgo": "{minutes} мин. назад",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Уведомления о новых товарах",
   "categoryWatchDescription": "Мы сообщим вам, когда в отслеживаемых категориях появится новый товар.",
+  "categoryLikesSectionTitle": "Категории, которые тебе нравятся",
+  "categoryLikesDescription": "Понравившиеся категории выделяются на главной странице.",
   "notificationsAdminTooltip": "Уведомления",
   "notificationsAdminTitle": "Уведомления и кампании",
   "campaignComposerSectionTitle": "Отправить новое уведомление",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Все пользователи",
   "campaignSegmentFavorited": "С избранными товарами",
   "campaignSegmentCategory": "Подписчики категории",
+  "campaignSegmentFavoritedNew": "Интересуются новой мебелью",
+  "campaignSegmentFavoritedSpot": "Интересуются б/у мебелью",
+  "campaignSegmentPriceRange": "Интересуются ценовым диапазоном",
+  "campaignPriceMinLabel": "Мин. цена (₺)",
+  "campaignPriceMaxLabel": "Макс. цена (₺)",
+  "campaignPriceRangeInvalid": "Введите корректный ценовой диапазон.",
+  "campaignPricePreviewButton": "Предпросмотр аудитории",
+  "campaignAudiencePreviewLoading": "Подсчёт целевой аудитории…",
+  "campaignAudiencePreviewUnknown": "Все устройства — точное число нельзя показать заранее.",
+  "campaignAudiencePreviewZero": "Сейчас в этом сегменте нет устройств.",
+  "campaignAudiencePreviewCount": "Сейчас в этом сегменте {count} устройств.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Отправить уведомление",
   "campaignSendConfirmTitle": "Отправить это уведомление?",
   "campaignSendConfirmMessage": "Это уведомление будет отправлено всем пользователям в выбранном сегменте. Это действие нельзя отменить.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Заголовок и сообщение обязательны.",
+  "campaignHistoryTitle": "Последние кампании",
+  "campaignHistoryEmpty": "Кампании пока не отправлялись.",
   "statsRangeToday": "Сегодня",
   "statsRangeWeek": "На этой неделе",
   "statsRangeMonth": "В этом месяце",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Динамика во времени",
   "statsByCategoryTitle": "Разбивка по категориям",
   "statsTopProductsTitle": "Товары с наибольшей активностью",
+  "statsMostLikedCategoriesTitle": "Самые популярные категории",
   "statsNoData": "Нет данных за этот период",
   "firebaseChecking": "Проверка…",
   "firebaseNotificationsTitle": "Уведомления (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Разрешение на уведомления не предоставлено",
   "firebaseOpenNotificationSettings": "Открыть настройки уведомлений",
   "productStatsTooltip": "Статистика",
-  "productStatsTitle": "Статистика"
+  "productStatsTitle": "Статистика",
+  "adminManagersTooltip": "Администраторы",
+  "adminManagersTitle": "Администраторы",
+  "adminManagersIntro": "Добавляйте или удаляйте аккаунты администраторов, которые могут входить в эту панель.",
+  "adminManagersAddSectionTitle": "Добавить администратора",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "Добавить",
+  "adminManagersInvalidEmail": "Введите корректный email.",
+  "adminManagersAlreadyExists": "Этот пользователь уже администратор.",
+  "adminManagersAddedSuccess": "Администратор добавлен.",
+  "adminManagersListTitle": "Администраторы",
+  "adminManagersYouBadge": "(вы)",
+  "adminManagersAddedByLabel": "Добавил: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Отозвать доступ",
+  "adminManagersRemoveConfirmTitle": "Отозвать доступ администратора?",
+  "adminManagersRemoveConfirmMessage": "{email} больше не сможет войти в панель.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Доступ администратора отозван.",
+  "adminManagersGenericError": "Что-то пошло не так: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Администраторов пока нет.",
+  "adminOverviewTabLabel": "Обзор",
+  "adminOverviewMissingInfoTitle": "Неполные товары",
+  "adminOverviewMissingInfoSubtitle": "У {count} товаров нет фото или описания.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "У всех товаров полная информация.",
+  "adminProductSearchHint": "Поиск товара…",
+  "adminSelectModeEnter": "Выбрать",
+  "adminSelectModeExit": "Отмена",
+  "adminSelectedCount": "Выбрано: {count}",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Отметить проданным",
+  "adminBulkDelete": "Удалить",
+  "adminBulkDeleteConfirmTitle": "Удалить {count} товаров?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Это действие нельзя отменить.",
+  "adminBulkMarkSoldSuccess": "{count} товаров отмечены как проданные.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} товаров удалено.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Товары"
 }

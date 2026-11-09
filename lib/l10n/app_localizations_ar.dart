@@ -1591,6 +1591,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cartItemRemoved => 'تمت الإزالة من السلة';
 
   @override
+  String get removedFromFavorites => 'تمت الإزالة من المفضلة';
+
+  @override
   String get addToCartCta => 'أضف إلى السلة';
 
   @override
@@ -1749,6 +1752,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get clearAllAction => 'مسح الكل';
+
+  @override
+  String get notificationRemoved => 'تمت إزالة الإشعار';
+
+  @override
+  String get undo => 'تراجع';
 
   @override
   String get timeJustNow => 'الآن';
@@ -2205,6 +2214,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'سنخبرك عند إضافة منتج جديد في الفئات التي تتابعها.';
 
   @override
+  String get categoryLikesSectionTitle => 'الفئات التي تحبها';
+
+  @override
+  String get categoryLikesDescription =>
+      'الفئات التي تحبها تظهر بشكل مميز في صفحتك الرئيسية.';
+
+  @override
   String get notificationsAdminTooltip => 'الإشعارات';
 
   @override
@@ -2263,6 +2279,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get campaignSegmentCategory => 'متابعو الفئة';
 
   @override
+  String get campaignSegmentFavoritedNew => 'مهتمون بالأثاث الجديد';
+
+  @override
+  String get campaignSegmentFavoritedSpot => 'مهتمون بالأثاث المستعمل';
+
+  @override
+  String get campaignSegmentPriceRange => 'مهتمون بنطاق سعري';
+
+  @override
+  String get campaignPriceMinLabel => 'أدنى سعر (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => 'أعلى سعر (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid => 'أدخل نطاق سعر صحيحًا.';
+
+  @override
+  String get campaignPricePreviewButton => 'معاينة الجمهور';
+
+  @override
+  String get campaignAudiencePreviewLoading => 'جارٍ حساب الجمهور المستهدف…';
+
+  @override
+  String get campaignAudiencePreviewUnknown =>
+      'جميع الأجهزة — لا يمكن إظهار العدد الدقيق مسبقًا.';
+
+  @override
+  String get campaignAudiencePreviewZero =>
+      'لا توجد أجهزة في هذا القطاع حاليًا.';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return 'يوجد حاليًا $count جهاز في هذا القطاع.';
+  }
+
+  @override
   String get campaignSendButton => 'إرسال الإشعار';
 
   @override
@@ -2291,6 +2344,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get campaignTitleRequired => 'العنوان والرسالة مطلوبان.';
+
+  @override
+  String get campaignHistoryTitle => 'آخر الحملات';
+
+  @override
+  String get campaignHistoryEmpty => 'لم يتم إرسال أي حملة بعد.';
 
   @override
   String get statsRangeToday => 'اليوم';
@@ -2345,5 +2404,127 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statsTopProductsTitle => 'المنتجات الأكثر تفاعلاً';
 
   @override
+  String get statsMostLikedCategoriesTitle => 'الفئات الأكثر تفضيلاً';
+
+  @override
   String get statsNoData => 'لا توجد بيانات في هذه الفترة';
+
+  @override
+  String get adminManagersTooltip => 'المسؤولون';
+
+  @override
+  String get adminManagersTitle => 'المسؤولون';
+
+  @override
+  String get adminManagersIntro =>
+      'أضف أو أزل حسابات المسؤولين التي يمكنها تسجيل الدخول إلى هذه اللوحة.';
+
+  @override
+  String get adminManagersAddSectionTitle => 'إضافة مسؤول جديد';
+
+  @override
+  String get adminManagersEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get adminManagersEmailHint => 'name@example.com';
+
+  @override
+  String get adminManagersAddButton => 'إضافة';
+
+  @override
+  String get adminManagersInvalidEmail => 'أدخل بريدًا إلكترونيًا صالحًا.';
+
+  @override
+  String get adminManagersAlreadyExists => 'هذا الشخص مسؤول بالفعل.';
+
+  @override
+  String get adminManagersAddedSuccess => 'تمت إضافة المسؤول.';
+
+  @override
+  String get adminManagersListTitle => 'المسؤولون';
+
+  @override
+  String get adminManagersYouBadge => '(أنت)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return 'أضافه: $email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => 'إلغاء الصلاحية';
+
+  @override
+  String get adminManagersRemoveConfirmTitle => 'إلغاء صلاحية المسؤول؟';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return 'لن يتمكن $email من تسجيل الدخول إلى اللوحة بعد الآن.';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess => 'تم إلغاء صلاحية المسؤول.';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return 'حدث خطأ ما: $message';
+  }
+
+  @override
+  String get adminManagersEmpty => 'لا يوجد مسؤولون حتى الآن.';
+
+  @override
+  String get adminOverviewTabLabel => 'نظرة عامة';
+
+  @override
+  String get adminOverviewMissingInfoTitle => 'منتجات ناقصة';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return 'تفتقر $count منتجات إلى صورة أو وصف.';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone => 'جميع المنتجات بمعلومات كاملة.';
+
+  @override
+  String get adminProductSearchHint => 'ابحث عن منتج…';
+
+  @override
+  String get adminSelectModeEnter => 'تحديد';
+
+  @override
+  String get adminSelectModeExit => 'إلغاء';
+
+  @override
+  String adminSelectedCount(int count) {
+    return 'تم تحديد $count';
+  }
+
+  @override
+  String get adminBulkMarkSold => 'وضع علامة مُباع';
+
+  @override
+  String get adminBulkDelete => 'حذف';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return 'حذف $count منتج؟';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage => 'لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return 'تم وضع علامة مُباع على $count منتج.';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return 'تم حذف $count منتج.';
+  }
+
+  @override
+  String get adminSidebarProducts => 'المنتجات';
 }

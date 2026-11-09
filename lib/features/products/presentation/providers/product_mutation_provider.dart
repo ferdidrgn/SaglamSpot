@@ -41,4 +41,49 @@ class ProductMutation extends _$ProductMutation {
     state = await AsyncValue.guard(
         () => ref.read(deleteProductUseCaseProvider).call(id));
   }
+
+  /// Admin paneldeki toplu "Satıldı işaretle" aksiyonu — galeri/fotoğraf
+  /// değişmez (`newImages: null`), sadece `isSold` güncellenir.
+  Future<void> markSold(final List<Product> products) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final useCase = ref.read(updateProductUseCaseProvider);
+      for (final product in products) {
+        await useCase.call(product.copyWith(isSold: true), null);
+      }
+    });
+    if (!ref.mounted) return;
+    ref.invalidate(productsProvider);
+  }
+
+  /// Toplu "Satıldı işaretle"nin SnackBar'daki "Geri al"ı — `markSold`
+  /// sadece önceden stokta olan ürünlere uygulandığı için burası da
+  /// güvenle hepsini stoğa geri döndürebilir.
+  Future<void> markAvailable(final List<Product> products) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final useCase = ref.read(updateProductUseCaseProvider);
+      for (final product in products) {
+        await useCase.call(product.copyWith(isSold: false), null);
+      }
+    });
+    if (!ref.mounted) return;
+    ref.invalidate(productsProvider);
+  }
+
+  /// Admin paneldeki toplu "Sil" aksiyonu — tek tek `deleteProductUseCase`
+  /// çağırır (TicketApp'in silme öncesi bilet kontrolü gibi bir bağımlılık
+  /// SaglamSpot'ta yok, bu yüzden ek bir sunucu kontrolüne gerek kalmadan
+  /// doğrudan silinir; UI tarafında onay zaten zorunlu).
+  Future<void> deleteMany(final List<String> ids) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final useCase = ref.read(deleteProductUseCaseProvider);
+      for (final id in ids) {
+        await useCase.call(id);
+      }
+    });
+    if (!ref.mounted) return;
+    ref.invalidate(productsProvider);
+  }
 }

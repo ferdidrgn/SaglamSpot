@@ -474,6 +474,7 @@
   "cartTotalLabel": "Totale",
   "cartWhatsappCta": "Invia carrello su WhatsApp",
   "cartItemRemoved": "Rimosso dal carrello",
+  "removedFromFavorites": "Rimosso dai preferiti",
   "addToCartCta": "Aggiungi al Carrello",
   "addedToCartMessage": "Aggiunto al carrello",
   "alreadyInCartMessage": "Già nel carrello",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Nuove campagne e annunci appariranno qui",
   "markAllReadAction": "Segna tutte come lette",
   "clearAllAction": "Cancella tutto",
+  "notificationRemoved": "Notifica rimossa",
+  "undo": "Annulla",
   "timeJustNow": "Proprio ora",
   "timeMinutesAgo": "{minutes} min fa",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Avvisi Nuovi Prodotti",
   "categoryWatchDescription": "Ti avviseremo quando viene aggiunto un nuovo prodotto nelle categorie che segui.",
+  "categoryLikesSectionTitle": "Categorie che ti piacciono",
+  "categoryLikesDescription": "Le categorie che ti piacciono vengono evidenziate nella tua home.",
   "notificationsAdminTooltip": "Notifiche",
   "notificationsAdminTitle": "Notifiche e campagne",
   "campaignComposerSectionTitle": "Invia una nuova notifica",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Tutti gli utenti",
   "campaignSegmentFavorited": "Utenti con preferiti",
   "campaignSegmentCategory": "Follower della categoria",
+  "campaignSegmentFavoritedNew": "Interessati a mobili nuovi",
+  "campaignSegmentFavoritedSpot": "Interessati a mobili usati",
+  "campaignSegmentPriceRange": "Interessati a una fascia di prezzo",
+  "campaignPriceMinLabel": "Prezzo min. (₺)",
+  "campaignPriceMaxLabel": "Prezzo max. (₺)",
+  "campaignPriceRangeInvalid": "Inserisci una fascia di prezzo valida.",
+  "campaignPricePreviewButton": "Anteprima pubblico",
+  "campaignAudiencePreviewLoading": "Conteggio del pubblico in corso…",
+  "campaignAudiencePreviewUnknown": "Tutti i dispositivi — il numero esatto non può essere mostrato in anticipo.",
+  "campaignAudiencePreviewZero": "Nessun dispositivo in questo segmento al momento.",
+  "campaignAudiencePreviewCount": "Al momento {count} dispositivi in questo segmento.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Invia notifica",
   "campaignSendConfirmTitle": "Inviare questa notifica?",
   "campaignSendConfirmMessage": "Questa notifica verrà inviata a tutti gli utenti nel target scelto. Non può essere annullata.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Titolo e messaggio sono obbligatori.",
+  "campaignHistoryTitle": "Campagne recenti",
+  "campaignHistoryEmpty": "Nessuna campagna inviata ancora.",
   "statsRangeToday": "Oggi",
   "statsRangeWeek": "Questa settimana",
   "statsRangeMonth": "Questo mese",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Andamento nel tempo",
   "statsByCategoryTitle": "Ripartizione per categoria",
   "statsTopProductsTitle": "Prodotti più interagiti",
+  "statsMostLikedCategoriesTitle": "Categorie più apprezzate",
   "statsNoData": "Nessun dato in questo intervallo",
   "firebaseChecking": "Verifica in corso…",
   "firebaseNotificationsTitle": "Notifiche (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Autorizzazione alle notifiche non concessa",
   "firebaseOpenNotificationSettings": "Apri impostazioni notifiche",
   "productStatsTooltip": "Statistiche",
-  "productStatsTitle": "Statistiche"
+  "productStatsTitle": "Statistiche",
+  "adminManagersTooltip": "Amministratori",
+  "adminManagersTitle": "Amministratori",
+  "adminManagersIntro": "Aggiungi o rimuovi gli account amministratore che possono accedere a questo pannello.",
+  "adminManagersAddSectionTitle": "Aggiungi un nuovo amministratore",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "nome@esempio.com",
+  "adminManagersAddButton": "Aggiungi",
+  "adminManagersInvalidEmail": "Inserisci un indirizzo email valido.",
+  "adminManagersAlreadyExists": "Questa persona è già amministratore.",
+  "adminManagersAddedSuccess": "Amministratore aggiunto.",
+  "adminManagersListTitle": "Amministratori",
+  "adminManagersYouBadge": "(tu)",
+  "adminManagersAddedByLabel": "Aggiunto da: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Revoca accesso",
+  "adminManagersRemoveConfirmTitle": "Revocare l'accesso amministratore?",
+  "adminManagersRemoveConfirmMessage": "{email} non potrà più accedere al pannello.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Accesso amministratore revocato.",
+  "adminManagersGenericError": "Qualcosa è andato storto: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Nessun amministratore ancora.",
+  "adminOverviewTabLabel": "Panoramica",
+  "adminOverviewMissingInfoTitle": "Prodotti incompleti",
+  "adminOverviewMissingInfoSubtitle": "A {count} prodotti manca una foto o una descrizione.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Tutti i prodotti hanno informazioni complete.",
+  "adminProductSearchHint": "Cerca prodotto…",
+  "adminSelectModeEnter": "Seleziona",
+  "adminSelectModeExit": "Annulla",
+  "adminSelectedCount": "{count} selezionati",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Segna come venduto",
+  "adminBulkDelete": "Elimina",
+  "adminBulkDeleteConfirmTitle": "Eliminare {count} prodotti?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Questa azione non può essere annullata.",
+  "adminBulkMarkSoldSuccess": "{count} prodotti segnati come venduti.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} prodotti eliminati.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Prodotti"
 }

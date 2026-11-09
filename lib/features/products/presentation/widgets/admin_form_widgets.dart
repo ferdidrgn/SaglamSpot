@@ -68,6 +68,7 @@ class AdminFormField extends StatelessWidget {
   final bool numeric;
   final int lines;
   final String? hintText;
+  final VoidCallback? onChanged;
 
   const AdminFormField({
     super.key,
@@ -77,6 +78,7 @@ class AdminFormField extends StatelessWidget {
     this.numeric = false,
     this.lines = 1,
     this.hintText,
+    this.onChanged,
   });
 
   @override
@@ -85,6 +87,7 @@ class AdminFormField extends StatelessWidget {
         child: TextField(
           controller: controller,
           maxLines: lines,
+          onChanged: onChanged == null ? null : (final _) => onChanged!(),
           keyboardType: numeric
               ? const TextInputType.numberWithOptions(decimal: true)
               : null,

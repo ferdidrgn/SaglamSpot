@@ -2,7 +2,7 @@ import {
   auth, db, storage, functions,
   onAuthStateChanged, firebaseSignOut, isCurrentUserAdmin,
   collection, doc, getDocs, setDoc, updateDoc, deleteDoc, addDoc,
-  query, where, orderBy, Timestamp, serverTimestamp,
+  query, where, orderBy, limit, Timestamp, serverTimestamp,
   storageRef, uploadBytes, getDownloadURL, deleteObject,
   httpsCallable,
 } from "./firebase-client.js";
@@ -94,8 +94,12 @@ document.querySelectorAll("[data-admin-tab]").forEach((tabBtn) => {
     if (target === "stats") {
       renderStats();
       renderEngagementStats();
+      renderLikedCategories();
     }
-    if (target === "notifications") populateCampaignProductSelect();
+    if (target === "notifications") {
+      populateCampaignProductSelect();
+      renderCampaignHistory();
+    }
   });
 });
 
@@ -988,6 +992,89 @@ async function renderEngagementStats() {
   renderBarChart(document.getElementById("chart-engagement-top"), topBars);
 }
 
+// "Kategori beğenme" (bkz. lib/core/providers/category_likes_provider.dart)
+// — CategoryMeta/{kategori}.likeCount, Product.viewCountWeb/Mobile'daki
+// AYNI "basit, dürüst, anonim sayaç" deseni. Tarih/platform filtresinden
+// BAĞIMSIZ, her zaman güncel bir toplam olduğu için renderEngagementStats'ın
+// (tarih aralığına bağlı) akışının dışında, sekme her açıldığında bir kez
+// okunur.
+async function renderLikedCategories() {
+  const container = document.getElementById("chart-liked-categories");
+  if (!container) return;
+  try {
+    const snap = await getDocs(collection(db, "CategoryMeta"));
+    const bars = snap.docs
+        .map((d) => ({key: d.id, count: d.data().likeCount || 0}))
+        .filter((e) => e.count > 0)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8)
+        .map((e) => ({
+          label: categoryLabels[e.key] || e.key,
+          value: e.count,
+          color: categoryColorFor(e.key),
+        }));
+    renderBarChart(container, bars);
+  } catch (err) {
+    container.innerHTML = `<p class="status status-error">Yüklenemedi: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+// Önceden gönderilmiş kampanyaların "kime, kaç cihaza gitti" geçmişi —
+// `notification_broadcasts`'tan (bkz. functions/index.js >
+// sendCampaignNotification'ın yazdığı segment/sentCount alanları) okunur.
+// Bu alanlar eklenmeden önce bu bilgi hiçbir yerde kalıcı görünmüyordu —
+// sadece gönderim anındaki tek seferlik toast'ta (bkz. Flutter tarafındaki
+// AYNI not: campaign_notification_provider.dart > campaignHistoryProvider).
+const CAMPAIGN_SEGMENT_LABELS = {
+  all: "Tüm Kullanıcılar",
+  favorited: "Favorisi Olanlar",
+  "favorited_condition:new": "Sıfır Ürünle İlgilenenler",
+  "favorited_condition:spot": "İkinci El ile İlgilenenler",
+};
+function campaignSegmentLabel(segment) {
+  if (!segment) return "";
+  if (CAMPAIGN_SEGMENT_LABELS[segment]) return CAMPAIGN_SEGMENT_LABELS[segment];
+  if (segment.startsWith("category:")) {
+    const key = segment.slice("category:".length);
+    return `Kategori Takipçileri: ${categoryLabels[key] || key}`;
+  }
+  if (segment.startsWith("favorited_price:")) return "Fiyat Aralığıyla İlgilenenler";
+  return segment;
+}
+function campaignSentCountLabel(sentCount) {
+  if (sentCount === null || sentCount === undefined) return "";
+  if (sentCount < 0) return "Bildirim tüm kullanıcılara gönderildi.";
+  if (sentCount === 0) return "Gönderildi ama bu segmentte hiç cihaz bulunamadı.";
+  return `Bildirim ${sentCount} cihaza gönderildi.`;
+}
+async function renderCampaignHistory() {
+  const container = document.getElementById("campaign-history");
+  if (!container) return;
+  try {
+    const snap = await getDocs(query(
+        collection(db, "notification_broadcasts"),
+        where("type", "==", "admin_campaign"),
+        orderBy("createdAt", "desc"),
+        limit(10),
+    ));
+    if (snap.empty) {
+      container.innerHTML = "<p class=\"lede\">Henüz kampanya gönderilmedi.</p>";
+      return;
+    }
+    container.innerHTML = snap.docs.map((d) => {
+      const data = d.data();
+      const meta = [campaignSegmentLabel(data.segment), campaignSentCountLabel(data.sentCount)]
+          .filter(Boolean).join(" · ");
+      return `<div class="admin-list-row">
+        <strong>${escapeHtml(data.title || "")}</strong>
+        <p class="status">${escapeHtml(meta)}</p>
+      </div>`;
+    }).join("");
+  } catch (err) {
+    container.innerHTML = `<p class="status status-error">Yüklenemedi: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
 document.querySelectorAll("#engagement-range-chips [data-range]").forEach((btn) => {
   btn.addEventListener("click", () => {
     document.querySelectorAll("#engagement-range-chips [data-range]")
@@ -1039,6 +1126,10 @@ const campaignPageField = document.querySelector("[data-field=campaign-page]");
 const campaignProductSelect = document.getElementById("campaign-product-select");
 const campaignSegment = document.getElementById("campaign-segment");
 const campaignCategoryField = document.querySelector("[data-field=campaign-category]");
+const campaignPriceField = document.querySelector("[data-field=campaign-price]");
+const campaignPriceMin = document.getElementById("campaign-price-min");
+const campaignPriceMax = document.getElementById("campaign-price-max");
+const campaignAudiencePreview = document.getElementById("campaign-audience-preview");
 const campaignErrorEl = document.getElementById("campaign-error");
 
 campaignLinkType?.addEventListener("change", () => {
@@ -1046,9 +1137,73 @@ campaignLinkType?.addEventListener("change", () => {
   if (campaignPageField) campaignPageField.hidden = campaignLinkType.value !== "page";
 });
 
+// Admin'in seçtiği segmentin GERÇEK Firestore segment string'i — "price"
+// (UI'da ayrı bir seçenek, min/max alanları gerektirir) dışında select
+// değeriyle birebir aynı. Alanlar eksik/geçersizse (ör. fiyat aralığı
+// henüz girilmemiş) null döner — ne önizleme ne gönderim yapılabilir.
+function resolveCampaignSegmentValue() {
+  if (campaignSegment.value === "category") {
+    return `category:${document.getElementById("campaign-category-select").value}`;
+  }
+  if (campaignSegment.value === "price") {
+    const min = Number(campaignPriceMin.value);
+    const max = Number(campaignPriceMax.value);
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min < 0 || max < min) return null;
+    return `favorited_price:${Math.round(min)}-${Math.round(max)}`;
+  }
+  return campaignSegment.value;
+}
+
+// Admin GÖNDERMEDEN ÖNCE seçtiği segmentte gerçekte kaç cihaz olduğunu
+// görsün diye (bkz. functions/index.js > getCampaignSegmentSize) —
+// "Favorisi Olanlar" segmentinin aslında TÜM kullanıcılara gitmiş gibi
+// görünmesi (kök neden: favori listesi cihazda hiç kalıcı tutulmuyordu)
+// esnafta güven kaybına yol açmıştı. "all" için kesin sayı FCM konu
+// aboneliğinden sorgulanamaz — sahte bir sayı UYDURULMAZ, durum açıkça
+// yazılır.
+let audiencePreviewToken = 0;
+async function refreshAudiencePreview() {
+  if (!campaignAudiencePreview) return;
+  const segmentValue = resolveCampaignSegmentValue();
+  const token = ++audiencePreviewToken;
+
+  if (!segmentValue) {
+    campaignAudiencePreview.textContent = "";
+    return;
+  }
+  if (segmentValue === "all") {
+    campaignAudiencePreview.textContent = "Tüm cihazlar — kesin sayı önceden gösterilemez.";
+    return;
+  }
+
+  campaignAudiencePreview.textContent = "Hedef kitle sayılıyor…";
+  try {
+    const getSize = httpsCallable(functions, "getCampaignSegmentSize");
+    const result = await getSize({segment: segmentValue});
+    if (token !== audiencePreviewToken) return; // Kullanıcı bu arada segmenti değiştirdi.
+    const size = result.data && typeof result.data.size === "number" ? result.data.size : null;
+    campaignAudiencePreview.textContent = size === null ?
+      "Tüm cihazlar — kesin sayı önceden gösterilemez." :
+      size === 0 ?
+        "Bu segmentte şu an hiç cihaz yok." :
+        `Bu segmentte şu an ${size} cihaz var.`;
+  } catch (err) {
+    if (token !== audiencePreviewToken) return;
+    campaignAudiencePreview.textContent = "";
+    console.error("getCampaignSegmentSize başarısız:", err);
+  }
+}
+
 campaignSegment?.addEventListener("change", () => {
   if (campaignCategoryField) campaignCategoryField.hidden = campaignSegment.value !== "category";
+  if (campaignPriceField) campaignPriceField.hidden = campaignSegment.value !== "price";
+  refreshAudiencePreview();
 });
+document.getElementById("campaign-category-select")?.addEventListener("change", refreshAudiencePreview);
+// Fiyat alanları her tuşta yeniden sorgulamaz (gereksiz Firestore taraması) —
+// yalnızca alandan çıkınca (blur) önizleme tazelenir.
+campaignPriceMin?.addEventListener("blur", refreshAudiencePreview);
+campaignPriceMax?.addEventListener("blur", refreshAudiencePreview);
 
 function populateCampaignProductSelect() {
   if (!campaignProductSelect) return;
@@ -1071,9 +1226,12 @@ campaignForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const segmentValue = campaignSegment.value === "category" ?
-    `category:${document.getElementById("campaign-category-select").value}` :
-    campaignSegment.value;
+  const segmentValue = resolveCampaignSegmentValue();
+  if (!segmentValue) {
+    campaignErrorEl.textContent = "Geçerli bir fiyat aralığı girin.";
+    campaignErrorEl.hidden = false;
+    return;
+  }
 
   if (!window.confirm("Bu bildirim seçtiğiniz hedefteki tüm kullanıcılara gönderilecek. Bu işlem geri alınamaz.")) {
     return;
@@ -1104,6 +1262,9 @@ campaignForm?.addEventListener("submit", async (event) => {
     if (campaignProductField) campaignProductField.hidden = true;
     if (campaignPageField) campaignPageField.hidden = true;
     if (campaignCategoryField) campaignCategoryField.hidden = true;
+    if (campaignPriceField) campaignPriceField.hidden = true;
+    if (campaignAudiencePreview) campaignAudiencePreview.textContent = "";
+    renderCampaignHistory();
   } catch (err) {
     campaignErrorEl.textContent = "Bildirim gönderilemedi: " + err.message;
     campaignErrorEl.hidden = false;

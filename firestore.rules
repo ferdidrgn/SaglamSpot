@@ -67,10 +67,25 @@ service cloud.firestore {
     }
 
     // Kategori görsel meta verisi (ikon/renk/sıra/özel etiket) — herkes
-    // okuyabilir, sadece admin yazabilir.
+    // okuyabilir, sadece admin yazabilir. İSTİSNA: `likeCount` — "kategori
+    // beğenme" (bkz. core/providers/category_likes_provider.dart), girişsiz
+    // cihazların Product.viewCountWeb/Mobile'daki AYNI "sadece 1 artır/azalt"
+    // deseniyle güncelleyebildiği basit, anonim, dürüst bir sayaç. Negatife
+    // düşemez (beğenmeden "unlike" gönderilemez).
+    function isValidLikeCreate() {
+      return request.resource.data.keys().hasOnly(['likeCount'])
+        && request.resource.data.likeCount == 1;
+    }
+    function isValidLikeDelta(delta) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likeCount'])
+        && request.resource.data.likeCount == resource.data.get('likeCount', 0) + delta
+        && request.resource.data.likeCount >= 0;
+    }
     match /CategoryMeta/{categoryId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAdmin() || isValidLikeCreate();
+      allow update: if isAdmin() || isValidLikeDelta(1) || isValidLikeDelta(-1);
+      allow delete: if isAdmin();
     }
 
     // Admin doğrulama kapısı — bir kullanıcı SADECE kendi e-postasına
@@ -93,6 +108,23 @@ service cloud.firestore {
       allow create, update: if request.resource.data.keys().hasOnly(['productIds', 'updatedAt'])
         && request.resource.data.productIds is list
         && request.resource.data.productIds.size() <= 200;
+      allow delete: if true;
+    }
+
+    // Kategori takip eşleşmesi ("Yeni Ürün Bildirimi") — notification_
+    // subscriptions ile AYNI desen, bkz. category_watch_sync.dart. Bu kural
+    // önceden HİÇ YOKTU: bu dosyanın en altındaki "tanımlanmamış her şey
+    // kapalı" kapsayıcısı bu koleksiyona da uygulanıyordu, yani her istemci
+    // yazımı (CategoryWatchSync.sync) sessizce (try/catch ile yutularak)
+    // başarısız oluyordu — kategori takip özelliği UI'da çalışıyormuş gibi
+    // görünse de (SharedPreferences'a kaydediliyor) Firestore'a HİÇBİR ZAMAN
+    // yansımıyordu; ne onProductCreated kategori bildirimleri ne de admin
+    // kampanyalarındaki "Kategori Takipçileri" segmenti gerçekte işliyordu.
+    match /category_watch_subscriptions/{token} {
+      allow read: if false;
+      allow create, update: if request.resource.data.keys().hasOnly(['categories', 'updatedAt'])
+        && request.resource.data.categories is list
+        && request.resource.data.categories.size() <= 50;
       allow delete: if true;
     }
 

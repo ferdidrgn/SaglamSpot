@@ -474,6 +474,7 @@
   "cartTotalLabel": "الإجمالي",
   "cartWhatsappCta": "إرسال السلة عبر واتساب",
   "cartItemRemoved": "تمت الإزالة من السلة",
+  "removedFromFavorites": "تمت الإزالة من المفضلة",
   "addToCartCta": "أضف إلى السلة",
   "addedToCartMessage": "تمت الإضافة إلى السلة",
   "alreadyInCartMessage": "هذا المنتج موجود بالفعل في السلة",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "ستظهر هنا العروض والإعلانات الجديدة",
   "markAllReadAction": "تعليم الكل كمقروء",
   "clearAllAction": "مسح الكل",
+  "notificationRemoved": "تمت إزالة الإشعار",
+  "undo": "تراجع",
   "timeJustNow": "الآن",
   "timeMinutesAgo": "قبل {minutes} دقيقة",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "إشعارات المنتجات الجديدة",
   "categoryWatchDescription": "سنخبرك عند إضافة منتج جديد في الفئات التي تتابعها.",
+  "categoryLikesSectionTitle": "الفئات التي تحبها",
+  "categoryLikesDescription": "الفئات التي تحبها تظهر بشكل مميز في صفحتك الرئيسية.",
   "notificationsAdminTooltip": "الإشعارات",
   "notificationsAdminTitle": "الإشعارات والحملات",
   "campaignComposerSectionTitle": "إرسال إشعار جديد",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "جميع المستخدمين",
   "campaignSegmentFavorited": "من لديهم مفضلات",
   "campaignSegmentCategory": "متابعو الفئة",
+  "campaignSegmentFavoritedNew": "مهتمون بالأثاث الجديد",
+  "campaignSegmentFavoritedSpot": "مهتمون بالأثاث المستعمل",
+  "campaignSegmentPriceRange": "مهتمون بنطاق سعري",
+  "campaignPriceMinLabel": "أدنى سعر (₺)",
+  "campaignPriceMaxLabel": "أعلى سعر (₺)",
+  "campaignPriceRangeInvalid": "أدخل نطاق سعر صحيحًا.",
+  "campaignPricePreviewButton": "معاينة الجمهور",
+  "campaignAudiencePreviewLoading": "جارٍ حساب الجمهور المستهدف…",
+  "campaignAudiencePreviewUnknown": "جميع الأجهزة — لا يمكن إظهار العدد الدقيق مسبقًا.",
+  "campaignAudiencePreviewZero": "لا توجد أجهزة في هذا القطاع حاليًا.",
+  "campaignAudiencePreviewCount": "يوجد حاليًا {count} جهاز في هذا القطاع.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "إرسال الإشعار",
   "campaignSendConfirmTitle": "هل تريد إرسال هذا الإشعار؟",
   "campaignSendConfirmMessage": "سيتم إرسال هذا الإشعار إلى جميع المستخدمين في الهدف الذي اخترته. لا يمكن التراجع عن هذا الإجراء.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "العنوان والرسالة مطلوبان.",
+  "campaignHistoryTitle": "آخر الحملات",
+  "campaignHistoryEmpty": "لم يتم إرسال أي حملة بعد.",
   "statsRangeToday": "اليوم",
   "statsRangeWeek": "هذا الأسبوع",
   "statsRangeMonth": "هذا الشهر",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "الاتجاه بمرور الوقت",
   "statsByCategoryTitle": "التوزيع حسب الفئة",
   "statsTopProductsTitle": "المنتجات الأكثر تفاعلاً",
+  "statsMostLikedCategoriesTitle": "الفئات الأكثر تفضيلاً",
   "statsNoData": "لا توجد بيانات في هذه الفترة",
   "firebaseChecking": "جارٍ التحقق…",
   "firebaseNotificationsTitle": "الإشعارات (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "لم يتم منح إذن الإشعارات",
   "firebaseOpenNotificationSettings": "فتح إعدادات الإشعارات",
   "productStatsTooltip": "الإحصائيات",
-  "productStatsTitle": "الإحصائيات"
+  "productStatsTitle": "الإحصائيات",
+  "adminManagersTooltip": "المسؤولون",
+  "adminManagersTitle": "المسؤولون",
+  "adminManagersIntro": "أضف أو أزل حسابات المسؤولين التي يمكنها تسجيل الدخول إلى هذه اللوحة.",
+  "adminManagersAddSectionTitle": "إضافة مسؤول جديد",
+  "adminManagersEmailLabel": "البريد الإلكتروني",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "إضافة",
+  "adminManagersInvalidEmail": "أدخل بريدًا إلكترونيًا صالحًا.",
+  "adminManagersAlreadyExists": "هذا الشخص مسؤول بالفعل.",
+  "adminManagersAddedSuccess": "تمت إضافة المسؤول.",
+  "adminManagersListTitle": "المسؤولون",
+  "adminManagersYouBadge": "(أنت)",
+  "adminManagersAddedByLabel": "أضافه: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "إلغاء الصلاحية",
+  "adminManagersRemoveConfirmTitle": "إلغاء صلاحية المسؤول؟",
+  "adminManagersRemoveConfirmMessage": "لن يتمكن {email} من تسجيل الدخول إلى اللوحة بعد الآن.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "تم إلغاء صلاحية المسؤول.",
+  "adminManagersGenericError": "حدث خطأ ما: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "لا يوجد مسؤولون حتى الآن.",
+  "adminOverviewTabLabel": "نظرة عامة",
+  "adminOverviewMissingInfoTitle": "منتجات ناقصة",
+  "adminOverviewMissingInfoSubtitle": "تفتقر {count} منتجات إلى صورة أو وصف.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "جميع المنتجات بمعلومات كاملة.",
+  "adminProductSearchHint": "ابحث عن منتج…",
+  "adminSelectModeEnter": "تحديد",
+  "adminSelectModeExit": "إلغاء",
+  "adminSelectedCount": "تم تحديد {count}",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "وضع علامة مُباع",
+  "adminBulkDelete": "حذف",
+  "adminBulkDeleteConfirmTitle": "حذف {count} منتج؟",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "لا يمكن التراجع عن هذا الإجراء.",
+  "adminBulkMarkSoldSuccess": "تم وضع علامة مُباع على {count} منتج.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "تم حذف {count} منتج.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "المنتجات"
 }

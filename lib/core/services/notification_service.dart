@@ -25,6 +25,7 @@ Future<void> firebaseMessagingBackgroundHandler(
     body: body,
     receivedAt: DateTime.now(),
     path: message.data['path'] as String?,
+    imageUrl: message.data['imageUrl'] as String?,
   ));
 }
 
@@ -132,6 +133,7 @@ final class NotificationService {
       body: body,
       receivedAt: DateTime.now(),
       path: message.data['path'] as String?,
+      imageUrl: message.data['imageUrl'] as String?,
     ));
 
     if (!kIsWeb) {

@@ -1533,6 +1533,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cartItemRemoved => '已从购物车移除';
 
   @override
+  String get removedFromFavorites => '已从收藏中移除';
+
+  @override
   String get addToCartCta => '加入购物车';
 
   @override
@@ -1689,6 +1692,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get clearAllAction => '清空全部';
+
+  @override
+  String get notificationRemoved => '通知已移除';
+
+  @override
+  String get undo => '撤销';
 
   @override
   String get timeJustNow => '刚刚';
@@ -2131,6 +2140,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get categoryWatchDescription => '当您关注的分类中添加新商品时，我们会通知您。';
 
   @override
+  String get categoryLikesSectionTitle => '你喜欢的分类';
+
+  @override
+  String get categoryLikesDescription => '你喜欢的分类会在首页突出显示。';
+
+  @override
   String get notificationsAdminTooltip => '通知';
 
   @override
@@ -2188,6 +2203,41 @@ class AppLocalizationsZh extends AppLocalizations {
   String get campaignSegmentCategory => '分类关注者';
 
   @override
+  String get campaignSegmentFavoritedNew => '对全新家具感兴趣';
+
+  @override
+  String get campaignSegmentFavoritedSpot => '对二手家具感兴趣';
+
+  @override
+  String get campaignSegmentPriceRange => '对某价格区间感兴趣';
+
+  @override
+  String get campaignPriceMinLabel => '最低价格 (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => '最高价格 (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid => '请输入有效的价格区间。';
+
+  @override
+  String get campaignPricePreviewButton => '预览受众';
+
+  @override
+  String get campaignAudiencePreviewLoading => '正在统计目标受众…';
+
+  @override
+  String get campaignAudiencePreviewUnknown => '全部设备——无法提前显示确切数量。';
+
+  @override
+  String get campaignAudiencePreviewZero => '该细分目前没有设备。';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return '该细分目前有 $count 台设备。';
+  }
+
+  @override
   String get campaignSendButton => '发送通知';
 
   @override
@@ -2214,6 +2264,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get campaignTitleRequired => '标题和消息内容为必填项。';
+
+  @override
+  String get campaignHistoryTitle => '最近的活动';
+
+  @override
+  String get campaignHistoryEmpty => '尚未发送任何活动。';
 
   @override
   String get statsRangeToday => '今天';
@@ -2267,5 +2323,126 @@ class AppLocalizationsZh extends AppLocalizations {
   String get statsTopProductsTitle => '互动最多的商品';
 
   @override
+  String get statsMostLikedCategoriesTitle => '最受喜欢的分类';
+
+  @override
   String get statsNoData => '该时间段内暂无数据';
+
+  @override
+  String get adminManagersTooltip => '管理员';
+
+  @override
+  String get adminManagersTitle => '管理员';
+
+  @override
+  String get adminManagersIntro => '添加或移除可以登录此后台的管理员账号。';
+
+  @override
+  String get adminManagersAddSectionTitle => '添加新管理员';
+
+  @override
+  String get adminManagersEmailLabel => '邮箱';
+
+  @override
+  String get adminManagersEmailHint => 'name@example.com';
+
+  @override
+  String get adminManagersAddButton => '添加';
+
+  @override
+  String get adminManagersInvalidEmail => '请输入有效的邮箱地址。';
+
+  @override
+  String get adminManagersAlreadyExists => '该用户已经是管理员。';
+
+  @override
+  String get adminManagersAddedSuccess => '管理员已添加。';
+
+  @override
+  String get adminManagersListTitle => '管理员';
+
+  @override
+  String get adminManagersYouBadge => '(你)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return '添加人：$email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => '撤销权限';
+
+  @override
+  String get adminManagersRemoveConfirmTitle => '撤销此管理员权限？';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return '$email 将无法再登录后台。';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess => '已撤销管理员权限。';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return '出错了：$message';
+  }
+
+  @override
+  String get adminManagersEmpty => '暂无管理员。';
+
+  @override
+  String get adminOverviewTabLabel => '概览';
+
+  @override
+  String get adminOverviewMissingInfoTitle => '信息不完整的商品';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return '有 $count 件商品缺少图片或描述。';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone => '所有商品信息均完整。';
+
+  @override
+  String get adminProductSearchHint => '搜索商品…';
+
+  @override
+  String get adminSelectModeEnter => '选择';
+
+  @override
+  String get adminSelectModeExit => '取消';
+
+  @override
+  String adminSelectedCount(int count) {
+    return '已选 $count 项';
+  }
+
+  @override
+  String get adminBulkMarkSold => '标记为已售';
+
+  @override
+  String get adminBulkDelete => '删除';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return '删除 $count 件商品？';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage => '此操作无法撤销。';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return '已将 $count 件商品标记为已售。';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return '已删除 $count 件商品。';
+  }
+
+  @override
+  String get adminSidebarProducts => '商品';
 }

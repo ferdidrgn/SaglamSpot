@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/widgets/gallery_section.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../products/data/models/category_meta.dart';
@@ -17,7 +18,20 @@ import '../../../products/presentation/providers/product_mutation_provider.dart'
 class AdminProductGrid extends StatelessWidget {
   final List<Product> products;
 
-  const AdminProductGrid({super.key, required this.products});
+  /// Toplu işlem (seçim) modu — true ise kartlar normal dokunuşlara
+  /// (düzenle/sil/galeri) kapanır, onun yerine dokunuş seçimi
+  /// açar/kapatır. `AdminDashboardPage`'deki "Seç" aksiyonundan gelir.
+  final bool selectionMode;
+  final Set<String> selectedIds;
+  final ValueChanged<String>? onToggleSelect;
+
+  const AdminProductGrid({
+    super.key,
+    required this.products,
+    this.selectionMode = false,
+    this.selectedIds = const {},
+    this.onToggleSelect,
+  });
 
   @override
   Widget build(final BuildContext context) {
@@ -51,8 +65,10 @@ class AdminProductGrid extends StatelessWidget {
       ),
       itemCount: products.length,
       itemBuilder: (final context, final index) {
+        final product = products[index];
+        final selected = selectedIds.contains(product.id);
         return TweenAnimationBuilder<double>(
-          key: ValueKey(products[index].id),
+          key: ValueKey(product.id),
           tween: Tween(begin: 0, end: 1),
           duration: Duration(milliseconds: 300 + (index % 6) * 60),
           curve: Curves.easeOutCubic,
@@ -61,7 +77,53 @@ class AdminProductGrid extends StatelessWidget {
             child: Transform.translate(
                 offset: Offset(0, (1 - t) * 16), child: child),
           ),
-          child: LuxuryProductCard(product: products[index]),
+          child: Stack(
+            children: [
+              IgnorePointer(
+                ignoring: selectionMode,
+                child: LuxuryProductCard(product: product),
+              ),
+              if (selectionMode)
+                Positioned.fill(
+                  child: Material(
+                    color: selected
+                        ? AppColors.mobilePrimary.withOpacity(0.18)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(24),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () => onToggleSelect?.call(product.id),
+                    ),
+                  ),
+                ),
+              if (selectionMode)
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: selected
+                          ? AppColors.mobilePrimary
+                          : AppColors.mobileSurface,
+                      border: Border.all(
+                          color: selected
+                              ? AppColors.mobilePrimary
+                              : AppColors.mobileBorder,
+                          width: 1.5),
+                      boxShadow: AppShadows.level1(AppColors.mobileTextPrimary),
+                    ),
+                    child: selected
+                        ? const Icon(Icons.check_rounded,
+                            size: 16, color: Colors.white)
+                        : null,
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

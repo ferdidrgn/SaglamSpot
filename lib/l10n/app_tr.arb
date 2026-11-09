@@ -559,6 +559,7 @@
   "cartTotalLabel": "Toplam",
   "cartWhatsappCta": "Sepeti WhatsApp'tan Gönder",
   "cartItemRemoved": "Sepetten kaldırıldı",
+  "removedFromFavorites": "Favorilerden kaldırıldı",
   "addToCartCta": "Sepete Ekle",
   "addedToCartMessage": "Sepete eklendi",
   "alreadyInCartMessage": "Bu ürün zaten sepette",
@@ -628,6 +629,8 @@
   "notificationsEmptyDesc": "Yeni kampanya ve duyurular burada görünecek",
   "markAllReadAction": "Tümünü okundu işaretle",
   "clearAllAction": "Tümünü temizle",
+  "notificationRemoved": "Bildirim kaldırıldı",
+  "undo": "Geri al",
   "timeJustNow": "Az önce",
   "timeMinutesAgo": "{minutes} dakika önce",
   "@timeMinutesAgo": {
@@ -850,6 +853,8 @@
   },
   "categoryWatchSectionTitle": "Yeni Ürün Bildirimleri",
   "categoryWatchDescription": "Takip ettiğin kategorilerde yeni ürün eklendiğinde haber verelim.",
+  "categoryLikesSectionTitle": "Beğendiğin Kategoriler",
+  "categoryLikesDescription": "Beğendiğin kategoriler ana sayfanda öne çıkar.",
   "notificationsAdminTooltip": "Bildirimler",
   "notificationsAdminTitle": "Bildirimler & Kampanya",
   "campaignComposerSectionTitle": "Yeni Bildirim Gönder",
@@ -869,6 +874,24 @@
   "campaignSegmentAll": "Tüm Kullanıcılar",
   "campaignSegmentFavorited": "Favorisi Olanlar",
   "campaignSegmentCategory": "Kategori Takipçileri",
+  "campaignSegmentFavoritedNew": "Sıfır Ürünle İlgilenenler",
+  "campaignSegmentFavoritedSpot": "İkinci El ile İlgilenenler",
+  "campaignSegmentPriceRange": "Fiyat Aralığıyla İlgilenenler",
+  "campaignPriceMinLabel": "Min. Fiyat (₺)",
+  "campaignPriceMaxLabel": "Maks. Fiyat (₺)",
+  "campaignPriceRangeInvalid": "Geçerli bir fiyat aralığı girin.",
+  "campaignPricePreviewButton": "Hedefi Göster",
+  "campaignAudiencePreviewLoading": "Hedef kitle sayılıyor…",
+  "campaignAudiencePreviewUnknown": "Tüm cihazlar — kesin sayı önceden gösterilemez.",
+  "campaignAudiencePreviewZero": "Bu segmentte şu an hiç cihaz yok.",
+  "campaignAudiencePreviewCount": "Bu segmentte şu an {count} cihaz var.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Bildirimi Gönder",
   "campaignSendConfirmTitle": "Bildirim Gönderilsin mi?",
   "campaignSendConfirmMessage": "Bu bildirim seçtiğiniz hedefteki tüm kullanıcılara gönderilecek. Bu işlem geri alınamaz.",
@@ -891,6 +914,8 @@
     }
   },
   "campaignTitleRequired": "Başlık ve mesaj gerekli.",
+  "campaignHistoryTitle": "Son Kampanyalar",
+  "campaignHistoryEmpty": "Henüz kampanya gönderilmedi.",
   "statsRangeToday": "Bugün",
   "statsRangeWeek": "Bu Hafta",
   "statsRangeMonth": "Bu Ay",
@@ -908,5 +933,96 @@
   "statsTrendTitle": "Zaman İçindeki Trend",
   "statsByCategoryTitle": "Kategoriye Göre Dağılım",
   "statsTopProductsTitle": "En Çok Etkileşim Alan Ürünler",
-  "statsNoData": "Bu aralıkta veri yok"
+  "statsMostLikedCategoriesTitle": "En Çok Beğenilen Kategoriler",
+  "statsNoData": "Bu aralıkta veri yok",
+  "adminManagersTooltip": "Yöneticiler",
+  "adminManagersTitle": "Yöneticiler",
+  "adminManagersIntro": "Panelde oturum açabilecek yönetici hesaplarını buradan ekleyip kaldırabilirsin.",
+  "adminManagersAddSectionTitle": "Yeni yönetici ekle",
+  "adminManagersEmailLabel": "E-posta",
+  "adminManagersEmailHint": "ornek@eposta.com",
+  "adminManagersAddButton": "Ekle",
+  "adminManagersInvalidEmail": "Geçerli bir e-posta adresi yaz.",
+  "adminManagersAlreadyExists": "Bu kişi zaten yönetici.",
+  "adminManagersAddedSuccess": "Yönetici eklendi.",
+  "adminManagersListTitle": "Yöneticiler",
+  "adminManagersYouBadge": "(sen)",
+  "adminManagersAddedByLabel": "Ekleyen: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Yetkiyi kaldır",
+  "adminManagersRemoveConfirmTitle": "Yönetici yetkisi kaldırılsın mı?",
+  "adminManagersRemoveConfirmMessage": "{email} artık panele giriş yapamayacak.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Yönetici yetkisi kaldırıldı.",
+  "adminManagersGenericError": "Bir şeyler ters gitti: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Henüz yönetici yok.",
+  "adminOverviewTabLabel": "Genel bakış",
+  "adminOverviewMissingInfoTitle": "Eksik bilgili ürün",
+  "adminOverviewMissingInfoSubtitle": "{count} üründe fotoğraf ya da açıklama eksik.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Tüm ürünlerin bilgileri tam.",
+  "adminProductSearchHint": "Ürün ara…",
+  "adminSelectModeEnter": "Seç",
+  "adminSelectModeExit": "Vazgeç",
+  "adminSelectedCount": "{count} seçili",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Satıldı işaretle",
+  "adminBulkDelete": "Sil",
+  "adminBulkDeleteConfirmTitle": "{count} ürün silinsin mi?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Bu işlem geri alınamaz.",
+  "adminBulkMarkSoldSuccess": "{count} ürün satıldı olarak işaretlendi.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} ürün silindi.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Ürünler"
 }

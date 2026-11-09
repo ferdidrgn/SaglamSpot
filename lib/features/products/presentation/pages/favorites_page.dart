@@ -115,6 +115,30 @@ class FavoritesPage extends ConsumerWidget {
       );
 }
 
+// Favoriden kaldırma geri alınabilir bir işlem — bu yüzden onay diyaloğu
+// YOK, `flutter-interactive-ui` skill'indeki "Geri alınabilir > onay
+// diyaloğu" kuralına göre direkt kaldırılır + Geri al SnackBar'ı
+// gösterilir (bu desen önceden burada EKSİKTİ — skill'in kendi kod
+// örneğindeki not da bunu söylüyordu: "removedFromFavorites ve undo
+// anahtarları henüz ARB'lerde YOK, bu deseni ilk kullanan değişiklik
+// ekler" — notifications_page.dart'taki AYNI düzeltmeyle birlikte bu
+// artık ikinci, tutarlı uygulaması).
+void _removeWithUndo(
+    final BuildContext context, final WidgetRef ref, final Product product) {
+  HapticFeedback.mediumImpact();
+  ref.read(favoritesProvider.notifier).toggle(product);
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      content: Text(context.l10n.removedFromFavorites),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: context.l10n.undo,
+        onPressed: () => ref.read(favoritesProvider.notifier).toggle(product),
+      ),
+    ));
+}
+
 /// Mobil favoriler listesindeki satır — sağdan sola kaydırılınca favoriden
 /// kaldırır (native app'lerde alışılmış "swipe to remove" jesti), üstüne
 /// dokununca ürün detayına gider, sağ uçtaki WhatsApp düğmesiyle doğrudan
@@ -128,10 +152,7 @@ class _FavoriteSwipeRow extends ConsumerWidget {
     return Dismissible(
       key: ValueKey(product.id),
       direction: DismissDirection.endToStart,
-      onDismissed: (final _) {
-        HapticFeedback.mediumImpact();
-        ref.read(favoritesProvider.notifier).remove(product.id);
-      },
+      onDismissed: (final _) => _removeWithUndo(context, ref, product),
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),

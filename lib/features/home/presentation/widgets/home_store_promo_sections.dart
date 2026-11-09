@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
 import '../../../../core/common/extentions/reg_exp_extentions.dart';
+import '../../../../core/providers/category_likes_provider.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -311,18 +313,33 @@ class _HomeCategoryChipsState extends ConsumerState<HomeCategoryChips> {
   @override
   Widget build(final BuildContext context) {
     final categories = ref.watch(orderedActiveCategoriesProvider);
+    final liked = ref.watch(categoryLikesProvider);
+
+    // Ana sayfaya ÖZEL kişiselleştirme: beğenilen kategoriler öne alınır,
+    // admin'in belirlediği sıra her iki grubun İÇİNDE korunur (stable
+    // sort — sadece gruplanıyor, yeniden sıralanmıyor). SADECE burada:
+    // Keşfet'teki dikey ray ve Arama bu listeyi KULLANMAZ, admin sırası
+    // orada olduğu gibi kalır (bkz. saglamspot-ui: Keşfet'in yerleşimi
+    // değişmez).
+    final personalized = liked.isEmpty
+        ? categories
+        : [
+            ...categories.where((final m) => liked.contains(m.category)),
+            ...categories.where((final m) => !liked.contains(m.category)),
+          ];
 
     return SizedBox(
       height: 92,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        itemCount: categories.length,
+        itemCount: personalized.length,
         separatorBuilder: (final _, final __) =>
             const SizedBox(width: AppSpacing.md),
         itemBuilder: (final context, final index) {
-          final CategoryMeta meta = categories[index];
+          final CategoryMeta meta = personalized[index];
           final selected = _selected == index;
+          final isLiked = liked.contains(meta.category);
           return TactilePress(
             onTap: () {
               setState(() => _selected = index);
@@ -331,29 +348,74 @@ class _HomeCategoryChipsState extends ConsumerState<HomeCategoryChips> {
             },
             child: Column(
               children: [
-                AnimatedContainer(
-                  duration: AppMotion.normal,
-                  curve: AppMotion.standard,
+                SizedBox(
                   width: 58,
                   height: 58,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? AppColors.mobileAccent
-                        : AppColors.mobileAccent.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
-                    border: Border.all(
-                      color: selected
-                          ? AppColors.mobileAccent
-                          : AppColors.mobileAccent.withValues(alpha: 0.28),
-                    ),
-                  ),
-                  child: Icon(
-                    meta.icon,
-                    color: selected
-                        ? Colors.white
-                        : AppColors.mobileAccentDark,
-                    size: 24,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      AnimatedContainer(
+                        duration: AppMotion.normal,
+                        curve: AppMotion.standard,
+                        width: 58,
+                        height: 58,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? AppColors.mobileAccent
+                              : AppColors.mobileAccent.withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
+                          border: Border.all(
+                            color: selected
+                                ? AppColors.mobileAccent
+                                : AppColors.mobileAccent.withValues(alpha: 0.28),
+                          ),
+                        ),
+                        child: Icon(
+                          meta.icon,
+                          color: selected
+                              ? Colors.white
+                              : AppColors.mobileAccentDark,
+                          size: 24,
+                        ),
+                      ),
+                      // Ana ikonun dokunma hedefinden AYRI, kendi hit-test'i
+                      // olan küçük bir "beğen" düğmesi — dokununca kategoriye
+                      // GİTMEZ, sadece beğeniyi değiştirir (bkz.
+                      // category_likes_provider.dart).
+                      Positioned(
+                        right: -4,
+                        top: -4,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            ref
+                                .read(categoryLikesProvider.notifier)
+                                .toggle(meta.category);
+                          },
+                          child: Container(
+                            width: 22,
+                            height: 22,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColors.mobileSurface,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.mobileBorder),
+                            ),
+                            child: Icon(
+                              isLiked
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              size: 13,
+                              color: isLiked
+                                  ? AppColors.error
+                                  : AppColors.mobileTextTertiary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 6),

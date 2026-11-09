@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/common/extentions/product_category_ex.dart';
+import '../../../../core/providers/category_likes_provider.dart';
 import '../../../../core/providers/category_watch_provider.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
@@ -130,6 +131,15 @@ class SettingsPage extends ConsumerWidget {
                     const SizedBox(height: 10),
                     const _CategoryWatchCard(),
                   ],
+                  // Kategori beğenme — category_watch'un (yukarıda, push
+                  // bildirimi gerektirdiği için SADECE mobilde) AKSİNE,
+                  // sadece bir ilgi (affinity) sinyali, bildirim tetiklemez
+                  // — bu yüzden web'de de gösterilir (bkz.
+                  // category_likes_provider.dart'taki ayrım notu).
+                  const SizedBox(height: 24),
+                  _SectionLabel(context.l10n.categoryLikesSectionTitle),
+                  const SizedBox(height: 10),
+                  const _CategoryLikesCard(),
                   const SizedBox(height: 24),
                   _SectionLabel(context.l10n.settingsGeneralSection),
                   const SizedBox(height: 10),
@@ -684,6 +694,59 @@ class _CategoryWatchCard extends ConsumerWidget {
                       label: meta.category.label(context),
                       icon: meta.icon,
                       selected: watched.contains(meta.category),
+                      activeColor: meta.color,
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        notifier.toggle(meta.category);
+                      },
+                    ))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Beğenilen kategorileri seçmek için çip ızgarası — `_CategoryWatchCard`
+/// ile AYNI görsel dil, ama FARKLI bir provider/anlam (bkz.
+/// category_likes_provider.dart'taki ayrım notu): burada seçim bildirim
+/// aboneliği değil, ana sayfa kişiselleştirmesini besleyen bir beğeni.
+class _CategoryLikesCard extends ConsumerWidget {
+  const _CategoryLikesCard();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final liked = ref.watch(categoryLikesProvider);
+    final notifier = ref.read(categoryLikesProvider.notifier);
+
+    return AtelierPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xs, AppSpacing.xs, AppSpacing.xs, AppSpacing.md),
+            child: Text(
+              context.l10n.categoryLikesDescription,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.mobileTextSecondary,
+                height: 1.4,
+              ),
+            ),
+          ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: defaultCategoryMeta.values
+                .map((final meta) => AtelierChoiceChip(
+                      label: meta.category.label(context),
+                      icon: liked.contains(meta.category)
+                          ? Icons.favorite_rounded
+                          : meta.icon,
+                      selected: liked.contains(meta.category),
                       activeColor: meta.color,
                       onTap: () {
                         HapticFeedback.selectionClick();

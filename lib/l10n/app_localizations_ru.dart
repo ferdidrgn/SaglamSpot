@@ -1607,6 +1607,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cartItemRemoved => 'Удалено из корзины';
 
   @override
+  String get removedFromFavorites => 'Удалено из избранного';
+
+  @override
   String get addToCartCta => 'В корзину';
 
   @override
@@ -1768,6 +1771,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get clearAllAction => 'Очистить всё';
+
+  @override
+  String get notificationRemoved => 'Уведомление удалено';
+
+  @override
+  String get undo => 'Отменить';
 
   @override
   String get timeJustNow => 'Только что';
@@ -2234,6 +2243,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Мы сообщим вам, когда в отслеживаемых категориях появится новый товар.';
 
   @override
+  String get categoryLikesSectionTitle => 'Категории, которые тебе нравятся';
+
+  @override
+  String get categoryLikesDescription =>
+      'Понравившиеся категории выделяются на главной странице.';
+
+  @override
   String get notificationsAdminTooltip => 'Уведомления';
 
   @override
@@ -2292,6 +2308,44 @@ class AppLocalizationsRu extends AppLocalizations {
   String get campaignSegmentCategory => 'Подписчики категории';
 
   @override
+  String get campaignSegmentFavoritedNew => 'Интересуются новой мебелью';
+
+  @override
+  String get campaignSegmentFavoritedSpot => 'Интересуются б/у мебелью';
+
+  @override
+  String get campaignSegmentPriceRange => 'Интересуются ценовым диапазоном';
+
+  @override
+  String get campaignPriceMinLabel => 'Мин. цена (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => 'Макс. цена (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid =>
+      'Введите корректный ценовой диапазон.';
+
+  @override
+  String get campaignPricePreviewButton => 'Предпросмотр аудитории';
+
+  @override
+  String get campaignAudiencePreviewLoading => 'Подсчёт целевой аудитории…';
+
+  @override
+  String get campaignAudiencePreviewUnknown =>
+      'Все устройства — точное число нельзя показать заранее.';
+
+  @override
+  String get campaignAudiencePreviewZero =>
+      'Сейчас в этом сегменте нет устройств.';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return 'Сейчас в этом сегменте $count устройств.';
+  }
+
+  @override
   String get campaignSendButton => 'Отправить уведомление';
 
   @override
@@ -2321,6 +2375,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get campaignTitleRequired => 'Заголовок и сообщение обязательны.';
+
+  @override
+  String get campaignHistoryTitle => 'Последние кампании';
+
+  @override
+  String get campaignHistoryEmpty => 'Кампании пока не отправлялись.';
 
   @override
   String get statsRangeToday => 'Сегодня';
@@ -2375,5 +2435,130 @@ class AppLocalizationsRu extends AppLocalizations {
   String get statsTopProductsTitle => 'Товары с наибольшей активностью';
 
   @override
+  String get statsMostLikedCategoriesTitle => 'Самые популярные категории';
+
+  @override
   String get statsNoData => 'Нет данных за этот период';
+
+  @override
+  String get adminManagersTooltip => 'Администраторы';
+
+  @override
+  String get adminManagersTitle => 'Администраторы';
+
+  @override
+  String get adminManagersIntro =>
+      'Добавляйте или удаляйте аккаунты администраторов, которые могут входить в эту панель.';
+
+  @override
+  String get adminManagersAddSectionTitle => 'Добавить администратора';
+
+  @override
+  String get adminManagersEmailLabel => 'Email';
+
+  @override
+  String get adminManagersEmailHint => 'name@example.com';
+
+  @override
+  String get adminManagersAddButton => 'Добавить';
+
+  @override
+  String get adminManagersInvalidEmail => 'Введите корректный email.';
+
+  @override
+  String get adminManagersAlreadyExists =>
+      'Этот пользователь уже администратор.';
+
+  @override
+  String get adminManagersAddedSuccess => 'Администратор добавлен.';
+
+  @override
+  String get adminManagersListTitle => 'Администраторы';
+
+  @override
+  String get adminManagersYouBadge => '(вы)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return 'Добавил: $email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => 'Отозвать доступ';
+
+  @override
+  String get adminManagersRemoveConfirmTitle =>
+      'Отозвать доступ администратора?';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return '$email больше не сможет войти в панель.';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess => 'Доступ администратора отозван.';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return 'Что-то пошло не так: $message';
+  }
+
+  @override
+  String get adminManagersEmpty => 'Администраторов пока нет.';
+
+  @override
+  String get adminOverviewTabLabel => 'Обзор';
+
+  @override
+  String get adminOverviewMissingInfoTitle => 'Неполные товары';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return 'У $count товаров нет фото или описания.';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone =>
+      'У всех товаров полная информация.';
+
+  @override
+  String get adminProductSearchHint => 'Поиск товара…';
+
+  @override
+  String get adminSelectModeEnter => 'Выбрать';
+
+  @override
+  String get adminSelectModeExit => 'Отмена';
+
+  @override
+  String adminSelectedCount(int count) {
+    return 'Выбрано: $count';
+  }
+
+  @override
+  String get adminBulkMarkSold => 'Отметить проданным';
+
+  @override
+  String get adminBulkDelete => 'Удалить';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return 'Удалить $count товаров?';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage => 'Это действие нельзя отменить.';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return '$count товаров отмечены как проданные.';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return '$count товаров удалено.';
+  }
+
+  @override
+  String get adminSidebarProducts => 'Товары';
 }

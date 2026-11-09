@@ -17,6 +17,14 @@ class AppNotification {
   /// — dokununca sadece okundu işaretlenir.
   final String? path;
 
+  /// Admin kampanyası bir ÜRÜNE bağlıysa (bkz. functions/index.js >
+  /// sendCampaignNotification), o ürünün ilk fotoğrafı — gelen kutusu
+  /// kartında küçük önizleme olarak gösterilir. Native push bildirimi
+  /// ayrıca FCM `notification.imageUrl` ile kendi "büyük resimli"
+  /// gösterimini (Android/iOS) ayrı ve otomatik olarak yapar; bu alan
+  /// SADECE uygulama-içi gelen kutusu kartı için.
+  final String? imageUrl;
+
   const AppNotification({
     required this.id,
     required this.title,
@@ -24,6 +32,7 @@ class AppNotification {
     required this.receivedAt,
     this.read = false,
     this.path,
+    this.imageUrl,
   });
 
   AppNotification copyWith({final bool? read}) => AppNotification(
@@ -33,6 +42,7 @@ class AppNotification {
         receivedAt: receivedAt,
         read: read ?? this.read,
         path: path,
+        imageUrl: imageUrl,
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,6 +52,7 @@ class AppNotification {
         'receivedAt': receivedAt.toIso8601String(),
         'read': read,
         if (path != null) 'path': path,
+        if (imageUrl != null) 'imageUrl': imageUrl,
       };
 
   factory AppNotification.fromJson(final Map<String, dynamic> json) => AppNotification(
@@ -51,6 +62,7 @@ class AppNotification {
         receivedAt: DateTime.tryParse(json['receivedAt'] as String? ?? '') ?? DateTime.now(),
         read: json['read'] as bool? ?? false,
         path: json['path'] as String?,
+        imageUrl: json['imageUrl'] as String?,
       );
 }
 
@@ -102,6 +114,27 @@ final class NotificationInboxCache {
         .toList();
     await _save(updated);
     return updated;
+  }
+
+  static Future<List<AppNotification>> remove(final String id) async {
+    final items = await load();
+    items.removeWhere((final n) => n.id == id);
+    await _save(items);
+    return items;
+  }
+
+  /// Sola kaydırıp silinen bir bildirimi "Geri al" ile geri eklemek için
+  /// (bkz. notifications_page.dart) — insert, listedeki konumunu bulup
+  /// sona eklemek yerine KORUR, aksi halde "geri al" bildirimi listenin
+  /// en üstüne/altına zıplatır.
+  static Future<List<AppNotification>> restore(
+      final AppNotification notification) async {
+    final items = await load();
+    if (items.any((final n) => n.id == notification.id)) return items;
+    items.add(notification);
+    items.sort((final a, final b) => b.receivedAt.compareTo(a.receivedAt));
+    await _save(items);
+    return items;
   }
 
   static Future<List<AppNotification>> markAllRead() async {

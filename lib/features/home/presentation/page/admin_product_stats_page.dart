@@ -10,6 +10,7 @@ import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../products/data/models/category_meta.dart';
 import '../../../products/domain/entites/product.dart';
+import '../../../products/presentation/providers/category_meta_provider.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
 import '../providers/analytics_stats_provider.dart';
 
@@ -123,9 +124,45 @@ class _AdminProductStatsPageState
               return _buildContent(context, events, productsById);
             },
           ),
+          const SizedBox(height: AppSpacing.xl),
+          _buildMostLikedCategories(context),
         ],
       ),
     ));
+  }
+
+  // "Kategori beğenme" — tarih aralığından bağımsız, her zaman güncel bir
+  // toplam (bkz. category_likes_provider.dart'taki CategoryMeta.likeCount
+  // notu). Bu yüzden events/_range'den AYRI, kendi provider'ını (zaten
+  // canlı bir Firestore akışı) doğrudan izler.
+  Widget _buildMostLikedCategories(final BuildContext context) {
+    final metaAsync = ref.watch(categoryMetaProvider);
+    final meta = metaAsync.value;
+    if (meta == null) return const SizedBox.shrink();
+
+    final liked = meta.values.where((final m) => m.likeCount > 0).toList()
+      ..sort((final a, final b) => b.likeCount.compareTo(a.likeCount));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionTitle(context, context.l10n.statsMostLikedCategoriesTitle),
+        const SizedBox(height: AppSpacing.md),
+        AtelierPanel(
+          child: AtelierHorizontalBreakdown(
+            bars: liked
+                .take(8)
+                .map((final m) => ChartBar(
+                      label: m.customLabel ?? m.category.label(context),
+                      value: m.likeCount.toDouble(),
+                      color: m.color,
+                    ))
+                .toList(),
+            emptyLabel: context.l10n.statsNoData,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildRangeChips(final BuildContext context) => Wrap(

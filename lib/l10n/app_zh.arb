@@ -474,6 +474,7 @@
   "cartTotalLabel": "合计",
   "cartWhatsappCta": "通过WhatsApp发送购物车",
   "cartItemRemoved": "已从购物车移除",
+  "removedFromFavorites": "已从收藏中移除",
   "addToCartCta": "加入购物车",
   "addedToCartMessage": "已加入购物车",
   "alreadyInCartMessage": "该商品已在购物车中",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "新活动和公告将显示在这里",
   "markAllReadAction": "全部标为已读",
   "clearAllAction": "清空全部",
+  "notificationRemoved": "通知已移除",
+  "undo": "撤销",
   "timeJustNow": "刚刚",
   "timeMinutesAgo": "{minutes}分钟前",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "新品通知",
   "categoryWatchDescription": "当您关注的分类中添加新商品时，我们会通知您。",
+  "categoryLikesSectionTitle": "你喜欢的分类",
+  "categoryLikesDescription": "你喜欢的分类会在首页突出显示。",
   "notificationsAdminTooltip": "通知",
   "notificationsAdminTitle": "通知与推广活动",
   "campaignComposerSectionTitle": "发送新通知",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "所有用户",
   "campaignSegmentFavorited": "有收藏的用户",
   "campaignSegmentCategory": "分类关注者",
+  "campaignSegmentFavoritedNew": "对全新家具感兴趣",
+  "campaignSegmentFavoritedSpot": "对二手家具感兴趣",
+  "campaignSegmentPriceRange": "对某价格区间感兴趣",
+  "campaignPriceMinLabel": "最低价格 (₺)",
+  "campaignPriceMaxLabel": "最高价格 (₺)",
+  "campaignPriceRangeInvalid": "请输入有效的价格区间。",
+  "campaignPricePreviewButton": "预览受众",
+  "campaignAudiencePreviewLoading": "正在统计目标受众…",
+  "campaignAudiencePreviewUnknown": "全部设备——无法提前显示确切数量。",
+  "campaignAudiencePreviewZero": "该细分目前没有设备。",
+  "campaignAudiencePreviewCount": "该细分目前有 {count} 台设备。",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "发送通知",
   "campaignSendConfirmTitle": "要发送此通知吗？",
   "campaignSendConfirmMessage": "此通知将发送给您所选目标中的所有用户，此操作无法撤销。",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "标题和消息内容为必填项。",
+  "campaignHistoryTitle": "最近的活动",
+  "campaignHistoryEmpty": "尚未发送任何活动。",
   "statsRangeToday": "今天",
   "statsRangeWeek": "本周",
   "statsRangeMonth": "本月",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "时间趋势",
   "statsByCategoryTitle": "按分类统计",
   "statsTopProductsTitle": "互动最多的商品",
+  "statsMostLikedCategoriesTitle": "最受喜欢的分类",
   "statsNoData": "该时间段内暂无数据",
   "firebaseChecking": "正在检查…",
   "firebaseNotificationsTitle": "通知 (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "尚未授予通知权限",
   "firebaseOpenNotificationSettings": "打开通知设置",
   "productStatsTooltip": "统计数据",
-  "productStatsTitle": "统计数据"
+  "productStatsTitle": "统计数据",
+  "adminManagersTooltip": "管理员",
+  "adminManagersTitle": "管理员",
+  "adminManagersIntro": "添加或移除可以登录此后台的管理员账号。",
+  "adminManagersAddSectionTitle": "添加新管理员",
+  "adminManagersEmailLabel": "邮箱",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "添加",
+  "adminManagersInvalidEmail": "请输入有效的邮箱地址。",
+  "adminManagersAlreadyExists": "该用户已经是管理员。",
+  "adminManagersAddedSuccess": "管理员已添加。",
+  "adminManagersListTitle": "管理员",
+  "adminManagersYouBadge": "(你)",
+  "adminManagersAddedByLabel": "添加人：{email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "撤销权限",
+  "adminManagersRemoveConfirmTitle": "撤销此管理员权限？",
+  "adminManagersRemoveConfirmMessage": "{email} 将无法再登录后台。",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "已撤销管理员权限。",
+  "adminManagersGenericError": "出错了：{message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "暂无管理员。",
+  "adminOverviewTabLabel": "概览",
+  "adminOverviewMissingInfoTitle": "信息不完整的商品",
+  "adminOverviewMissingInfoSubtitle": "有 {count} 件商品缺少图片或描述。",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "所有商品信息均完整。",
+  "adminProductSearchHint": "搜索商品…",
+  "adminSelectModeEnter": "选择",
+  "adminSelectModeExit": "取消",
+  "adminSelectedCount": "已选 {count} 项",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "标记为已售",
+  "adminBulkDelete": "删除",
+  "adminBulkDeleteConfirmTitle": "删除 {count} 件商品？",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "此操作无法撤销。",
+  "adminBulkMarkSoldSuccess": "已将 {count} 件商品标记为已售。",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "已删除 {count} 件商品。",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "商品"
 }

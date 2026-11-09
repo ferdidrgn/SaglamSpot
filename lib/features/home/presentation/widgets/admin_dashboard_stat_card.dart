@@ -1,7 +1,44 @@
 import 'package:flutter/material.dart';
+import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_tokens.dart';
+
+/// Stok / Satıldı / Toplam üçlüsü — mobil (`AdminDashboardPage`) ve web
+/// (`AdminDashboardPageWeb`) admin kabuklarının İKİSİ de aynı satırı
+/// kullanır, tek yerde tanımlı.
+class AdminStatsSummaryRow extends StatelessWidget {
+  const AdminStatsSummaryRow({super.key, required this.stock, required this.sold});
+
+  final int stock;
+  final int sold;
+
+  @override
+  Widget build(final BuildContext context) => Row(
+        children: [
+          Expanded(
+              child: AdminStatCard(
+                  label: context.l10n.stock,
+                  value: '$stock',
+                  icon: Icons.inventory_2_rounded,
+                  color: AppColors.success)),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+              child: AdminStatCard(
+                  label: context.l10n.sold,
+                  value: '$sold',
+                  icon: Icons.check_circle_rounded,
+                  color: AppColors.mobileAccentDark)),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+              child: AdminStatCard(
+                  label: context.l10n.totalCount,
+                  value: '${stock + sold}',
+                  icon: Icons.widgets_rounded,
+                  color: AppColors.info)),
+        ],
+      );
+}
 
 /// Yönetici panelinin üstündeki özet kartı (Stok / Satıldı / Toplam).
 /// Sayı serif ve büyük (panelin "okunan" bilgisi), etiket küçük; solda

@@ -1611,6 +1611,9 @@ class AppLocalizationsKy extends AppLocalizations {
   String get cartItemRemoved => 'Себеттен алынып салынды';
 
   @override
+  String get removedFromFavorites => 'Тандамалардан өчүрүлдү';
+
+  @override
   String get addToCartCta => 'Себетке кошуу';
 
   @override
@@ -1773,6 +1776,12 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get clearAllAction => 'Баарын тазалоо';
+
+  @override
+  String get notificationRemoved => 'Билдирме өчүрүлдү';
+
+  @override
+  String get undo => 'Болдурбоо';
 
   @override
   String get timeJustNow => 'Азыр эле';
@@ -2237,6 +2246,13 @@ class AppLocalizationsKy extends AppLocalizations {
       'Сиз көзөмөлдөп жаткан категорияларда жаңы товар кошулганда билдиребиз.';
 
   @override
+  String get categoryLikesSectionTitle => 'Сага жаккан категориялар';
+
+  @override
+  String get categoryLikesDescription =>
+      'Сага жаккан категориялар башкы бетиңде алдыга чыгат.';
+
+  @override
   String get notificationsAdminTooltip => 'Билдирмелер';
 
   @override
@@ -2295,6 +2311,44 @@ class AppLocalizationsKy extends AppLocalizations {
   String get campaignSegmentCategory => 'Категорияны ээрчигендер';
 
   @override
+  String get campaignSegmentFavoritedNew => 'Жаңы эмеректерге кызыгуучулар';
+
+  @override
+  String get campaignSegmentFavoritedSpot =>
+      'Экинчи кол эмеректерге кызыгуучулар';
+
+  @override
+  String get campaignSegmentPriceRange => 'Баа аралыгына кызыгуучулар';
+
+  @override
+  String get campaignPriceMinLabel => 'Мин. баа (₺)';
+
+  @override
+  String get campaignPriceMaxLabel => 'Макс. баа (₺)';
+
+  @override
+  String get campaignPriceRangeInvalid => 'Жарактуу баа аралыгын киргизиңиз.';
+
+  @override
+  String get campaignPricePreviewButton => 'Аудиторияны көрүү';
+
+  @override
+  String get campaignAudiencePreviewLoading =>
+      'Максаттуу аудитория эсептелип жатат…';
+
+  @override
+  String get campaignAudiencePreviewUnknown =>
+      'Бардык түзмөктөр — так сан алдын ала көрсөтүлбөйт.';
+
+  @override
+  String get campaignAudiencePreviewZero => 'Учурда бул сегментте түзмөк жок.';
+
+  @override
+  String campaignAudiencePreviewCount(int count) {
+    return 'Учурда бул сегментте $count түзмөк бар.';
+  }
+
+  @override
   String get campaignSendButton => 'Билдирмени жөнөтүү';
 
   @override
@@ -2324,6 +2378,12 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get campaignTitleRequired => 'Аталышы жана билдирүү керек.';
+
+  @override
+  String get campaignHistoryTitle => 'Акыркы кампаниялар';
+
+  @override
+  String get campaignHistoryEmpty => 'Азырынча кампания жөнөтүлгөн эмес.';
 
   @override
   String get statsRangeToday => 'Бүгүн';
@@ -2378,5 +2438,131 @@ class AppLocalizationsKy extends AppLocalizations {
   String get statsTopProductsTitle => 'Эң көп активдүүлүк алган товарлар';
 
   @override
+  String get statsMostLikedCategoriesTitle => 'Эң көп жактырылган категориялар';
+
+  @override
   String get statsNoData => 'Бул аралыкта маалымат жок';
+
+  @override
+  String get adminManagersTooltip => 'Администраторлор';
+
+  @override
+  String get adminManagersTitle => 'Администраторлор';
+
+  @override
+  String get adminManagersIntro =>
+      'Бул панелге кире алган администратор каттоо жазууларын кошуу же өчүрүү.';
+
+  @override
+  String get adminManagersAddSectionTitle => 'Жаңы администратор кошуу';
+
+  @override
+  String get adminManagersEmailLabel => 'Email';
+
+  @override
+  String get adminManagersEmailHint => 'name@example.com';
+
+  @override
+  String get adminManagersAddButton => 'Кошуу';
+
+  @override
+  String get adminManagersInvalidEmail => 'Жарактуу email дарегин жазыңыз.';
+
+  @override
+  String get adminManagersAlreadyExists =>
+      'Бул колдонуучу мурунтан администратор.';
+
+  @override
+  String get adminManagersAddedSuccess => 'Администратор кошулду.';
+
+  @override
+  String get adminManagersListTitle => 'Администраторлор';
+
+  @override
+  String get adminManagersYouBadge => '(сиз)';
+
+  @override
+  String adminManagersAddedByLabel(String email) {
+    return 'Кошкон: $email';
+  }
+
+  @override
+  String get adminManagersRemoveButton => 'Укукту алып салуу';
+
+  @override
+  String get adminManagersRemoveConfirmTitle =>
+      'Администратор укугу алынсынбы?';
+
+  @override
+  String adminManagersRemoveConfirmMessage(String email) {
+    return '$email эми панелге кире албайт.';
+  }
+
+  @override
+  String get adminManagersRemoveSuccess => 'Администратор укугу алынды.';
+
+  @override
+  String adminManagersGenericError(String message) {
+    return 'Бир нерсе туура эмес кетти: $message';
+  }
+
+  @override
+  String get adminManagersEmpty => 'Азырынча администратор жок.';
+
+  @override
+  String get adminOverviewTabLabel => 'Жалпы көрүнүш';
+
+  @override
+  String get adminOverviewMissingInfoTitle => 'Толук эмес товарлар';
+
+  @override
+  String adminOverviewMissingInfoSubtitle(int count) {
+    return '$count товарда сүрөт же сыпаттама жок.';
+  }
+
+  @override
+  String get adminOverviewMissingInfoNone =>
+      'Бардык товарлардын маалыматы толук.';
+
+  @override
+  String get adminProductSearchHint => 'Товар издөө…';
+
+  @override
+  String get adminSelectModeEnter => 'Тандоо';
+
+  @override
+  String get adminSelectModeExit => 'Жокко чыгаруу';
+
+  @override
+  String adminSelectedCount(int count) {
+    return '$count тандалды';
+  }
+
+  @override
+  String get adminBulkMarkSold => 'Сатылды деп белгилөө';
+
+  @override
+  String get adminBulkDelete => 'Өчүрүү';
+
+  @override
+  String adminBulkDeleteConfirmTitle(int count) {
+    return '$count товар өчүрүлсүнбү?';
+  }
+
+  @override
+  String get adminBulkDeleteConfirmMessage =>
+      'Бул аракетти артка кайтарууга болбойт.';
+
+  @override
+  String adminBulkMarkSoldSuccess(int count) {
+    return '$count товар сатылды деп белгиленди.';
+  }
+
+  @override
+  String adminBulkDeleteSuccess(int count) {
+    return '$count товар өчүрүлдү.';
+  }
+
+  @override
+  String get adminSidebarProducts => 'Товарлар';
 }

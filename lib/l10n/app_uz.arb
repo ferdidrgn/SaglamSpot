@@ -474,6 +474,7 @@
   "cartTotalLabel": "Jami",
   "cartWhatsappCta": "Savatni WhatsApp orqali yuborish",
   "cartItemRemoved": "Savatdan olib tashlandi",
+  "removedFromFavorites": "Sevimlilardan olib tashlandi",
   "addToCartCta": "Savatga qo'shish",
   "addedToCartMessage": "Savatga qo'shildi",
   "alreadyInCartMessage": "Allaqachon savatda",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Yangi aksiyalar va e'lonlar shu yerda ko'rinadi",
   "markAllReadAction": "Barchasini o'qilgan deb belgilash",
   "clearAllAction": "Barchasini tozalash",
+  "notificationRemoved": "Bildirishnoma olib tashlandi",
+  "undo": "Bekor qilish",
   "timeJustNow": "Hozirgina",
   "timeMinutesAgo": "{minutes} daqiqa oldin",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Yangi Mahsulot Bildirishnomalari",
   "categoryWatchDescription": "Siz kuzatayotgan toifalarda yangi mahsulot qoʻshilganda sizga xabar beramiz.",
+  "categoryLikesSectionTitle": "Senga yoqgan toifalar",
+  "categoryLikesDescription": "Senga yoqgan toifalar bosh sahifangda ajratib ko'rsatiladi.",
   "notificationsAdminTooltip": "Bildirishnomalar",
   "notificationsAdminTitle": "Bildirishnomalar va kampaniyalar",
   "campaignComposerSectionTitle": "Yangi bildirishnoma yuborish",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Barcha foydalanuvchilar",
   "campaignSegmentFavorited": "Sevimlisi borlar",
   "campaignSegmentCategory": "Kategoriya kuzatuvchilari",
+  "campaignSegmentFavoritedNew": "Yangi mebelga qiziquvchilar",
+  "campaignSegmentFavoritedSpot": "Ikkinchi qo'l mebelga qiziquvchilar",
+  "campaignSegmentPriceRange": "Narx oralig'iga qiziquvchilar",
+  "campaignPriceMinLabel": "Min. narx (₺)",
+  "campaignPriceMaxLabel": "Maks. narx (₺)",
+  "campaignPriceRangeInvalid": "To'g'ri narx oralig'ini kiriting.",
+  "campaignPricePreviewButton": "Auditoriyani ko'rish",
+  "campaignAudiencePreviewLoading": "Maqsadli auditoriya hisoblanmoqda…",
+  "campaignAudiencePreviewUnknown": "Barcha qurilmalar — aniq son oldindan ko'rsatilmaydi.",
+  "campaignAudiencePreviewZero": "Hozircha bu segmentda qurilma yo'q.",
+  "campaignAudiencePreviewCount": "Hozircha bu segmentda {count} ta qurilma bor.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Bildirishnomani yuborish",
   "campaignSendConfirmTitle": "Bu bildirishnoma yuborilsinmi?",
   "campaignSendConfirmMessage": "Bu bildirishnoma siz tanlagan segmentdagi barcha foydalanuvchilarga yuboriladi. Bu amalni ortga qaytarib bo'lmaydi.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Sarlavha va xabar talab qilinadi.",
+  "campaignHistoryTitle": "So'nggi kampaniyalar",
+  "campaignHistoryEmpty": "Hali hech qanday kampaniya yuborilmagan.",
   "statsRangeToday": "Bugun",
   "statsRangeWeek": "Shu hafta",
   "statsRangeMonth": "Shu oy",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Vaqt bo'yicha tendensiya",
   "statsByCategoryTitle": "Kategoriya bo'yicha taqsimot",
   "statsTopProductsTitle": "Eng ko'p e'tibor olgan mahsulotlar",
+  "statsMostLikedCategoriesTitle": "Eng ko'p yoqtirilgan toifalar",
   "statsNoData": "Bu oraliqda ma'lumot yo'q",
   "firebaseChecking": "Tekshirilmoqda…",
   "firebaseNotificationsTitle": "Bildirishnomalar (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Bildirishnoma uchun ruxsat berilmagan",
   "firebaseOpenNotificationSettings": "Bildirishnoma sozlamalarini ochish",
   "productStatsTooltip": "Statistika",
-  "productStatsTitle": "Statistika"
+  "productStatsTitle": "Statistika",
+  "adminManagersTooltip": "Administratorlar",
+  "adminManagersTitle": "Administratorlar",
+  "adminManagersIntro": "Bu panelga kira oladigan administrator hisoblarini qo'shing yoki olib tashlang.",
+  "adminManagersAddSectionTitle": "Yangi administrator qo'shish",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "Qo'shish",
+  "adminManagersInvalidEmail": "To'g'ri email manzilini kiriting.",
+  "adminManagersAlreadyExists": "Bu shaxs allaqachon administrator.",
+  "adminManagersAddedSuccess": "Administrator qo'shildi.",
+  "adminManagersListTitle": "Administratorlar",
+  "adminManagersYouBadge": "(siz)",
+  "adminManagersAddedByLabel": "Qo'shgan: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Huquqni bekor qilish",
+  "adminManagersRemoveConfirmTitle": "Administrator huquqi bekor qilinsinmi?",
+  "adminManagersRemoveConfirmMessage": "{email} endi panelga kira olmaydi.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Administrator huquqi bekor qilindi.",
+  "adminManagersGenericError": "Nimadir xato ketdi: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Hozircha administrator yo'q.",
+  "adminOverviewTabLabel": "Umumiy ko'rinish",
+  "adminOverviewMissingInfoTitle": "To'liq bo'lmagan mahsulotlar",
+  "adminOverviewMissingInfoSubtitle": "{count} mahsulotda rasm yoki tavsif yo'q.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Barcha mahsulotlar to'liq ma'lumotga ega.",
+  "adminProductSearchHint": "Mahsulot qidirish…",
+  "adminSelectModeEnter": "Tanlash",
+  "adminSelectModeExit": "Bekor qilish",
+  "adminSelectedCount": "{count} tanlandi",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Sotilgan deb belgilash",
+  "adminBulkDelete": "O'chirish",
+  "adminBulkDeleteConfirmTitle": "{count} mahsulot o'chirilsinmi?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Bu amalni ortga qaytarib bo'lmaydi.",
+  "adminBulkMarkSoldSuccess": "{count} mahsulot sotilgan deb belgilandi.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} mahsulot o'chirildi.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Mahsulotlar"
 }

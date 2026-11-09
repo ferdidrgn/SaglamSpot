@@ -215,6 +215,10 @@ function dashboardRoute(req, res) {
       <h3>En Çok Etkileşim Alan Ürünler</h3>
       <div id="chart-engagement-top"></div>
     </div>
+    <div class="admin-chart-card admin-chart-wide">
+      <h3>En Çok Beğenilen Kategoriler</h3>
+      <div id="chart-liked-categories"></div>
+    </div>
   </div>
 </div>
 
@@ -259,6 +263,9 @@ function dashboardRoute(req, res) {
         <option value="all">Tüm Kullanıcılar</option>
         <option value="favorited">Favorisi Olanlar</option>
         <option value="category">Kategori Takipçileri</option>
+        <option value="favorited_condition:new">Sıfır Ürünle İlgilenenler</option>
+        <option value="favorited_condition:spot">İkinci El ile İlgilenenler</option>
+        <option value="price">Fiyat Aralığıyla İlgilenenler</option>
       </select>
     </label>
     <div data-field="campaign-category" hidden>
@@ -266,12 +273,26 @@ function dashboardRoute(req, res) {
         <select id="campaign-category-select">${Object.entries(CATEGORY_LABELS).map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select>
       </label>
     </div>
+    <div data-field="campaign-price" hidden>
+      <label>Min. Fiyat (₺)
+        <input type="number" id="campaign-price-min" min="0" step="1">
+      </label>
+      <label>Maks. Fiyat (₺)
+        <input type="number" id="campaign-price-max" min="0" step="1">
+      </label>
+    </div>
 
+    <p id="campaign-audience-preview" class="lede" style="margin-top:-4px"></p>
     <p id="campaign-error" class="status status-error" hidden></p>
     <div class="admin-form-actions">
       <button type="submit"><span class="btn-label">Bildirimi Gönder</span></button>
     </div>
   </form>
+
+  <section class="section-header" style="margin-top:var(--space-xxl)">
+    <h2>Son Kampanyalar</h2>
+  </section>
+  <div id="campaign-history" class="lede">Yükleniyor…</div>
 </div>
 
 <div id="admin-form-modal" class="admin-modal" hidden>

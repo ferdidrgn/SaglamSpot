@@ -12,7 +12,7 @@ New repository secret**.
 
 | Dosya | Tetikleyici | Ne yapar |
 |---|---|---|
-| `deploy-web.yml` | push → `main` | `flutter build web --release` + Firebase Hosting'e deploy |
+| `deploy-web.yml` | push → `main`/`web-genesis` (web-genesis ile ilgili dosya değişince) | `web-genesis/public` + `genesisApp` fonksiyonu → Firebase Hosting'e (`saglamspotcu` sitesi) deploy — Flutter web BUILD EDİLMEZ, bkz. dosyanın kendi üst notu |
 | `deploy-android.yml` | push → `main` | İmzalı `flutter build appbundle --release` + Play Console'a yükleme (`internal` track) |
 | `deploy-ios.yml` | push → `main` | `flutter build ipa --no-codesign` ile SADECE derleme doğrulaması (imzalama/yükleme YOK — bkz. dosya içindeki not) |
 | `distribute-android-beta.yml` | push → `develop` veya manuel (`workflow_dispatch`) | İmzasız `flutter build apk --debug` + Firebase App Distribution ile test grubuna dağıtım |

@@ -474,6 +474,7 @@
   "cartTotalLabel": "Σύνολο",
   "cartWhatsappCta": "Αποστολή καλαθιού μέσω WhatsApp",
   "cartItemRemoved": "Αφαιρέθηκε από το καλάθι",
+  "removedFromFavorites": "Αφαιρέθηκε από τα αγαπημένα",
   "addToCartCta": "Προσθήκη στο Καλάθι",
   "addedToCartMessage": "Προστέθηκε στο καλάθι",
   "alreadyInCartMessage": "Ήδη στο καλάθι σας",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Νέες καμπάνιες και ανακοινώσεις θα εμφανίζονται εδώ",
   "markAllReadAction": "Σήμανση όλων ως αναγνωσμένων",
   "clearAllAction": "Εκκαθάριση όλων",
+  "notificationRemoved": "Η ειδοποίηση αφαιρέθηκε",
+  "undo": "Αναίρεση",
   "timeJustNow": "Μόλις τώρα",
   "timeMinutesAgo": "Πριν από {minutes} λεπτά",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Ειδοποιήσεις Νέων Προϊόντων",
   "categoryWatchDescription": "Θα σας ενημερώσουμε όταν προστεθεί νέο προϊόν στις κατηγορίες που παρακολουθείτε.",
+  "categoryLikesSectionTitle": "Κατηγορίες που σου αρέσουν",
+  "categoryLikesDescription": "Οι κατηγορίες που σου αρέσουν προβάλλονται στην αρχική σου σελίδα.",
   "notificationsAdminTooltip": "Ειδοποιήσεις",
   "notificationsAdminTitle": "Ειδοποιήσεις & Καμπάνιες",
   "campaignComposerSectionTitle": "Αποστολή νέας ειδοποίησης",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Όλοι οι χρήστες",
   "campaignSegmentFavorited": "Χρήστες με αγαπημένα",
   "campaignSegmentCategory": "Ακόλουθοι κατηγορίας",
+  "campaignSegmentFavoritedNew": "Ενδιαφέρονται για καινούργια έπιπλα",
+  "campaignSegmentFavoritedSpot": "Ενδιαφέρονται για μεταχειρισμένα",
+  "campaignSegmentPriceRange": "Ενδιαφέρονται για εύρος τιμών",
+  "campaignPriceMinLabel": "Ελάχ. τιμή (₺)",
+  "campaignPriceMaxLabel": "Μέγ. τιμή (₺)",
+  "campaignPriceRangeInvalid": "Εισαγάγετε ένα έγκυρο εύρος τιμών.",
+  "campaignPricePreviewButton": "Προεπισκόπηση κοινού",
+  "campaignAudiencePreviewLoading": "Υπολογισμός κοινού-στόχου…",
+  "campaignAudiencePreviewUnknown": "Όλες οι συσκευές — ο ακριβής αριθμός δεν εμφανίζεται εκ των προτέρων.",
+  "campaignAudiencePreviewZero": "Δεν υπάρχουν συσκευές σε αυτό το τμήμα αυτή τη στιγμή.",
+  "campaignAudiencePreviewCount": "Αυτή τη στιγμή υπάρχουν {count} συσκευές σε αυτό το τμήμα.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Αποστολή ειδοποίησης",
   "campaignSendConfirmTitle": "Αποστολή αυτής της ειδοποίησης;",
   "campaignSendConfirmMessage": "Αυτή η ειδοποίηση θα σταλεί σε όλους τους χρήστες του επιλεγμένου στόχου. Δεν μπορεί να αναιρεθεί.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Ο τίτλος και το μήνυμα είναι υποχρεωτικά.",
+  "campaignHistoryTitle": "Πρόσφατες καμπάνιες",
+  "campaignHistoryEmpty": "Δεν έχει σταλεί καμπάνια ακόμα.",
   "statsRangeToday": "Σήμερα",
   "statsRangeWeek": "Αυτή την εβδομάδα",
   "statsRangeMonth": "Αυτόν τον μήνα",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Τάση με την πάροδο του χρόνου",
   "statsByCategoryTitle": "Ανάλυση ανά κατηγορία",
   "statsTopProductsTitle": "Προϊόντα με τη μεγαλύτερη αλληλεπίδραση",
+  "statsMostLikedCategoriesTitle": "Οι πιο δημοφιλείς κατηγορίες",
   "statsNoData": "Δεν υπάρχουν δεδομένα σε αυτό το εύρος",
   "firebaseChecking": "Έλεγχος…",
   "firebaseNotificationsTitle": "Ειδοποιήσεις (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Η άδεια ειδοποιήσεων δεν χορηγήθηκε",
   "firebaseOpenNotificationSettings": "Άνοιγμα ρυθμίσεων ειδοποιήσεων",
   "productStatsTooltip": "Στατιστικά",
-  "productStatsTitle": "Στατιστικά"
+  "productStatsTitle": "Στατιστικά",
+  "adminManagersTooltip": "Διαχειριστές",
+  "adminManagersTitle": "Διαχειριστές",
+  "adminManagersIntro": "Προσθέστε ή αφαιρέστε λογαριασμούς διαχειριστών που μπορούν να συνδεθούν σε αυτόν τον πίνακα.",
+  "adminManagersAddSectionTitle": "Προσθήκη νέου διαχειριστή",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "Προσθήκη",
+  "adminManagersInvalidEmail": "Εισαγάγετε έγκυρη διεύθυνση email.",
+  "adminManagersAlreadyExists": "Αυτό το άτομο είναι ήδη διαχειριστής.",
+  "adminManagersAddedSuccess": "Ο διαχειριστής προστέθηκε.",
+  "adminManagersListTitle": "Διαχειριστές",
+  "adminManagersYouBadge": "(εσείς)",
+  "adminManagersAddedByLabel": "Προστέθηκε από: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Ανάκληση πρόσβασης",
+  "adminManagersRemoveConfirmTitle": "Ανάκληση πρόσβασης διαχειριστή;",
+  "adminManagersRemoveConfirmMessage": "Ο/Η {email} δεν θα μπορεί πλέον να συνδεθεί στον πίνακα.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Η πρόσβαση διαχειριστή ανακλήθηκε.",
+  "adminManagersGenericError": "Κάτι πήγε στραβά: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Δεν υπάρχουν ακόμη διαχειριστές.",
+  "adminOverviewTabLabel": "Επισκόπηση",
+  "adminOverviewMissingInfoTitle": "Ελλιπή προϊόντα",
+  "adminOverviewMissingInfoSubtitle": "Σε {count} προϊόντα λείπει φωτογραφία ή περιγραφή.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Όλα τα προϊόντα έχουν πλήρη στοιχεία.",
+  "adminProductSearchHint": "Αναζήτηση προϊόντος…",
+  "adminSelectModeEnter": "Επιλογή",
+  "adminSelectModeExit": "Ακύρωση",
+  "adminSelectedCount": "{count} επιλεγμένα",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Σήμανση ως πουλημένο",
+  "adminBulkDelete": "Διαγραφή",
+  "adminBulkDeleteConfirmTitle": "Διαγραφή {count} προϊόντων;",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
+  "adminBulkMarkSoldSuccess": "{count} προϊόντα σημειώθηκαν ως πουλημένα.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} προϊόντα διαγράφηκαν.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Προϊόντα"
 }

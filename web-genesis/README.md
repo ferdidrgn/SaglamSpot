@@ -20,23 +20,21 @@ Firestore emulator'ı çalıştırılmadığı için bu, GERÇEK (production) Fi
 verisini OKUR — bilerek: Faz 0/1'de ayrı bir emulator veri seti kurmak yerine
 gerçek ürün verisiyle çalışmak daha basit. Hiçbir yazma işlemi yapılmıyor.
 
-## Deploy — tek seferlik kurulum gerekir
+## Deploy
 
-Bu branch main'deki hosting site'ına (`saglamspotcu`) veya functions
-codebase'ine (`default`) HİÇ dokunmaz; ayrı bir hosting site + ayrı bir
-functions codebase (`genesis`) kullanır. İlk deploy'dan önce, Firebase'e
-giriş yapmış biri (bu repoda zaten `firebase login` yapılmış durumda) BİR
-KEREYE MAHSUS şu site'ı oluşturmalı:
+GÜNCELLEME: Bu bölüm önceden "ayrı bir `saglamspot-genesis` site'ı kur,
+`saglamspotcu`'ya hiç dokunma" planını anlatıyordu — bu artık DOĞRU DEĞİL.
+web-genesis o ayrı deneme aşamasından sonra canlıya ALINDI: `firebase.json`
+şu an `saglamspotcu` sitesinin TEK hosting girdisini (tüm istekler) bu
+klasördeki `genesisApp` fonksiyonuna (codebase: `genesis`) yönlendiriyor —
+yani `saglamspotcu.web.app` bugün GERÇEKTEN web-genesis'i sunuyor, eski
+Flutter web/`functions` (root) pipeline'ı artık orphan (bkz. ana
+`README.md`'nin "🌐 Web" bölümündeki güncel not). Ayrı bir
+`saglamspot-genesis` site'ı hiç oluşturulmadı/kullanılmadı.
+
+Canlı deploy (main veya `web-genesis` dalına push'ta GitHub Actions
+`.github/workflows/deploy-web.yml` ile otomatik):
 
 ```
-firebase hosting:sites:create saglamspot-genesis --project saglamspotflutter-2a1a8
+firebase deploy --only hosting:saglamspotcu,functions:genesis:genesisApp --project saglamspotflutter-2a1a8
 ```
-
-Bundan sonra deploy:
-
-```
-firebase deploy --only hosting:genesis,functions:genesis --project saglamspotflutter-2a1a8
-```
-
-Bu site oluşturma adımı canlı/paylaşılan bir altyapı değişikliği olduğu için
-otomatik yapılmadı — kullanıcı onayı/komutu gerekiyor.

@@ -559,6 +559,7 @@
   "cartTotalLabel": "Total",
   "cartWhatsappCta": "Send Cart via WhatsApp",
   "cartItemRemoved": "Removed from cart",
+  "removedFromFavorites": "Removed from favorites",
   "addToCartCta": "Add to Cart",
   "addedToCartMessage": "Added to cart",
   "alreadyInCartMessage": "Already in your cart",
@@ -628,6 +629,8 @@
   "notificationsEmptyDesc": "New campaigns and announcements will appear here",
   "markAllReadAction": "Mark all as read",
   "clearAllAction": "Clear all",
+  "notificationRemoved": "Notification removed",
+  "undo": "Undo",
   "timeJustNow": "Just now",
   "timeMinutesAgo": "{minutes} min ago",
   "@timeMinutesAgo": {
@@ -850,6 +853,8 @@
   },
   "categoryWatchSectionTitle": "New Listing Alerts",
   "categoryWatchDescription": "We'll let you know when a new item is added in the categories you're following.",
+  "categoryLikesSectionTitle": "Categories You Like",
+  "categoryLikesDescription": "Categories you like are highlighted on your home page.",
   "notificationsAdminTooltip": "Notifications",
   "notificationsAdminTitle": "Notifications & Campaigns",
   "campaignComposerSectionTitle": "Send a New Notification",
@@ -869,6 +874,24 @@
   "campaignSegmentAll": "All Users",
   "campaignSegmentFavorited": "Users with Favorites",
   "campaignSegmentCategory": "Category Followers",
+  "campaignSegmentFavoritedNew": "Interested in New Furniture",
+  "campaignSegmentFavoritedSpot": "Interested in Secondhand",
+  "campaignSegmentPriceRange": "Interested in a Price Range",
+  "campaignPriceMinLabel": "Min. Price (₺)",
+  "campaignPriceMaxLabel": "Max. Price (₺)",
+  "campaignPriceRangeInvalid": "Enter a valid price range.",
+  "campaignPricePreviewButton": "Preview Audience",
+  "campaignAudiencePreviewLoading": "Counting target audience…",
+  "campaignAudiencePreviewUnknown": "All devices — exact count can't be shown in advance.",
+  "campaignAudiencePreviewZero": "No devices in this segment right now.",
+  "campaignAudiencePreviewCount": "{count} devices are currently in this segment.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Send Notification",
   "campaignSendConfirmTitle": "Send This Notification?",
   "campaignSendConfirmMessage": "This notification will be sent to all users in your chosen target. This cannot be undone.",
@@ -891,6 +914,8 @@
     }
   },
   "campaignTitleRequired": "Title and message are required.",
+  "campaignHistoryTitle": "Recent Campaigns",
+  "campaignHistoryEmpty": "No campaigns sent yet.",
   "statsRangeToday": "Today",
   "statsRangeWeek": "This Week",
   "statsRangeMonth": "This Month",
@@ -908,5 +933,96 @@
   "statsTrendTitle": "Trend Over Time",
   "statsByCategoryTitle": "Breakdown by Category",
   "statsTopProductsTitle": "Most Engaged Products",
-  "statsNoData": "No data in this range"
+  "statsMostLikedCategoriesTitle": "Most Liked Categories",
+  "statsNoData": "No data in this range",
+  "adminManagersTooltip": "Admins",
+  "adminManagersTitle": "Admins",
+  "adminManagersIntro": "Add or remove the admin accounts that can sign in to this panel.",
+  "adminManagersAddSectionTitle": "Add a new admin",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "Add",
+  "adminManagersInvalidEmail": "Enter a valid email address.",
+  "adminManagersAlreadyExists": "This person is already an admin.",
+  "adminManagersAddedSuccess": "Admin added.",
+  "adminManagersListTitle": "Admins",
+  "adminManagersYouBadge": "(you)",
+  "adminManagersAddedByLabel": "Added by: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Revoke access",
+  "adminManagersRemoveConfirmTitle": "Revoke admin access?",
+  "adminManagersRemoveConfirmMessage": "{email} will no longer be able to sign in to the panel.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Admin access revoked.",
+  "adminManagersGenericError": "Something went wrong: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "No admins yet.",
+  "adminOverviewTabLabel": "Overview",
+  "adminOverviewMissingInfoTitle": "Incomplete products",
+  "adminOverviewMissingInfoSubtitle": "{count} products are missing a photo or description.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "All products have complete info.",
+  "adminProductSearchHint": "Search products…",
+  "adminSelectModeEnter": "Select",
+  "adminSelectModeExit": "Cancel",
+  "adminSelectedCount": "{count} selected",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Mark as sold",
+  "adminBulkDelete": "Delete",
+  "adminBulkDeleteConfirmTitle": "Delete {count} products?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "This action cannot be undone.",
+  "adminBulkMarkSoldSuccess": "{count} products marked as sold.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} products deleted.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Products"
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/common/extentions/app_context_ui_extension.dart';
 import '../../../../core/providers/notification_inbox_provider.dart';
@@ -9,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/widgets/design_system/atelier_background.dart';
 import '../../../../core/widgets/design_system/atelier_components.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
 import '../../../../shared/navigation/widgets/nav_handler.dart';
@@ -77,24 +79,44 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                         itemCount: items.length,
                         separatorBuilder: (final _, final __) => const SizedBox(height: 10),
-                        itemBuilder: (final context, final index) => _NotificationCard(
-                          notification: items[index],
-                          isNavigating: _navigatingId == items[index].id,
-                          disabled: _navigatingId != null &&
-                              _navigatingId != items[index].id,
-                          onTap: () {
-                            if (_navigatingId != null) return;
-                            setState(() => _navigatingId = items[index].id);
-                            ref.read(notificationInboxProvider.notifier).markRead(items[index].id);
-                            final path = items[index].path;
-                            if (path != null && path.isNotEmpty) {
-                              NavigationHandler.globalGoTo(path);
-                            }
-                            Future.delayed(const Duration(milliseconds: 550), () {
-                              if (mounted) setState(() => _navigatingId = null);
-                            });
-                          },
-                        ),
+                        itemBuilder: (final context, final index) {
+                          final notification = items[index];
+                          return _StaggeredEntrance(
+                            index: index,
+                            child: Dismissible(
+                              key: ValueKey(notification.id),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (final _) => _removeWithUndo(notification),
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                  color: AppColors.error,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Icon(Icons.delete_rounded, color: Colors.white),
+                              ),
+                              child: _NotificationCard(
+                                notification: notification,
+                                isNavigating: _navigatingId == notification.id,
+                                disabled: _navigatingId != null &&
+                                    _navigatingId != notification.id,
+                                onTap: () {
+                                  if (_navigatingId != null) return;
+                                  setState(() => _navigatingId = notification.id);
+                                  ref.read(notificationInboxProvider.notifier).markRead(notification.id);
+                                  final path = notification.path;
+                                  if (path != null && path.isNotEmpty) {
+                                    NavigationHandler.globalGoTo(path);
+                                  }
+                                  Future.delayed(const Duration(milliseconds: 550), () {
+                                    if (mounted) setState(() => _navigatingId = null);
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        },
                       ),
               ),
             ),
@@ -149,6 +171,86 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
         title: context.l10n.notificationsEmptyTitle,
         message: context.l10n.notificationsEmptyDesc,
       );
+
+  // Sola kaydırıp bir bildirimi listeden kaldırma geri alınabilir bir
+  // işlem — bu yüzden onay diyaloğu YOK, `flutter-interactive-ui`
+  // skill'indeki "Geri alınabilir > onay diyaloğu" kuralına göre direkt
+  // kaldırılır + Geri al SnackBar'ı gösterilir (bkz. favorites_page.dart'taki
+  // AYNI jest, oradaki undo'nun eksik olduğu not edildi — bu burada
+  // eklenerek kurala uyan ilk örnek oluyor).
+  void _removeWithUndo(final AppNotification notification) {
+    HapticFeedback.mediumImpact();
+    ref.read(notificationInboxProvider.notifier).remove(notification.id);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(context.l10n.notificationRemoved),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: context.l10n.undo,
+          onPressed: () =>
+              ref.read(notificationInboxProvider.notifier).restore(notification),
+        ),
+      ));
+  }
+}
+
+/// Liste ilk açıldığında her kart sırayla (kademeli) belirip hafifçe
+/// yukarı kayarak girer — `AppMotion.stagger` ile (bkz. app_tokens.dart'taki
+/// "liste girişlerinde öğe başına kademelendirme" notu). Azaltılmış
+/// hareket açıksa (MediaQuery.disableAnimationsOf) hiç animasyon
+/// OYNATILMAZ, kart doğrudan son haliyle görünür.
+class _StaggeredEntrance extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const _StaggeredEntrance({required this.index, required this.child});
+
+  @override
+  State<_StaggeredEntrance> createState() => _StaggeredEntranceState();
+}
+
+class _StaggeredEntranceState extends State<_StaggeredEntrance>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: AppMotion.normal);
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.value = 1;
+      return;
+    }
+    // Uzun listelerde her kart için ayrı ayrı bekleyip sonsuza uzayan bir
+    // giriş olmasın diye kademe en fazla ilk 12 öğe için uygulanır.
+    final delay = AppMotion.stagger * widget.index.clamp(0, 12);
+    Future.delayed(delay, () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final curved = CurvedAnimation(parent: _controller, curve: AppMotion.standard);
+    return FadeTransition(
+      opacity: curved,
+      child: SlideTransition(
+        position: curved.drive(Tween(begin: const Offset(0, 0.08), end: Offset.zero)),
+        child: widget.child,
+      ),
+    );
+  }
 }
 
 enum _MenuAction { markAllRead, clearAll }
@@ -202,21 +304,7 @@ class _NotificationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  gradient: AppColors.mobileAccentGradient,
-                  shape: BoxShape.circle,
-                ),
-                child: isNavigating
-                    ? const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Icon(Icons.campaign_rounded, color: Colors.white, size: 19),
-              ),
+              _Avatar(notification: notification, isNavigating: isNavigating),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -250,4 +338,55 @@ class _NotificationCard extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Bir ürüne bağlı kampanyada o ürünün ilk fotoğrafını (bkz.
+/// functions/index.js > sendCampaignNotification'ın `data.imageUrl`'ü)
+/// küçük bir önizleme olarak gösterir; yoksa (ürüne bağlı olmayan/eski
+/// bildirimler) önceki marka-gradyanlı kampanya ikonuna düşer.
+class _Avatar extends StatelessWidget {
+  final AppNotification notification;
+  final bool isNavigating;
+
+  const _Avatar({required this.notification, required this.isNavigating});
+
+  @override
+  Widget build(final BuildContext context) {
+    final imageUrl = notification.imageUrl;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        width: 42,
+        height: 42,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (imageUrl != null && imageUrl.isNotEmpty)
+              OptimizedCachedImage(
+                imageUrl: imageUrl,
+                width: 42,
+                height: 42,
+                fit: BoxFit.cover,
+                borderRadius: 0,
+              )
+            else
+              DecoratedBox(
+                decoration: BoxDecoration(gradient: AppColors.mobileAccentGradient),
+                child: const Center(
+                  child: Icon(Icons.campaign_rounded, color: Colors.white, size: 19),
+                ),
+              ),
+            if (isNavigating)
+              ColoredBox(
+                color: Colors.black.withOpacity(0.35),
+                child: const Padding(
+                  padding: EdgeInsets.all(11),
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }

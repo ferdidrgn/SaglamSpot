@@ -13,8 +13,11 @@ import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../auth/presentation/provider/auth_provider_notifier.dart';
 import '../../../products/domain/entites/product.dart';
 import '../../../products/presentation/pages/add_product_page.dart';
+import '../widgets/admin_dashboard_overview.dart';
 import '../widgets/admin_dashboard_product_grid.dart';
 import '../widgets/admin_dashboard_stat_card.dart';
+import 'admin_dashboard_page_web.dart';
+import 'admin_managers_page.dart';
 import 'admin_notifications_page.dart';
 import 'admin_product_stats_page.dart';
 import '../../../products/presentation/providers/product_filters_provider.dart';
@@ -36,15 +39,96 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
   late final TabController _tabController =
       TabController(length: 2, vsync: this);
   ProductCategory? _selectedCategory;
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  bool _selectionMode = false;
+  final Set<String> _selectedIds = {};
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _toggleSelectionMode() => setState(() {
+        _selectionMode = !_selectionMode;
+        _selectedIds.clear();
+      });
+
+  void _toggleSelect(final String id) => setState(() {
+        if (!_selectedIds.add(id)) _selectedIds.remove(id);
+      });
+
+  Future<void> _bulkMarkSold(final List<Product> all) async {
+    final selected = all
+        .where((final p) => _selectedIds.contains(p.id) && !p.isSold)
+        .toList();
+    if (selected.isEmpty) return;
+    await ref.read(productMutationProvider.notifier).markSold(selected);
+    if (!mounted) return;
+    setState(() {
+      _selectedIds.clear();
+      _selectionMode = false;
+    });
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(
+        content: Text(context.l10n.adminBulkMarkSoldSuccess(selected.length)),
+        action: SnackBarAction(
+          label: context.l10n.undo,
+          onPressed: () =>
+              ref.read(productMutationProvider.notifier).markAvailable(selected),
+        ),
+      ));
+  }
+
+  Future<void> _bulkDelete() async {
+    final ids = _selectedIds.toList();
+    if (ids.isEmpty) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (final context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(context.l10n.adminBulkDeleteConfirmTitle(ids.length)),
+        content: Text(context.l10n.adminBulkDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(context.l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Text(context.l10n.adminBulkDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await ref.read(productMutationProvider.notifier).deleteMany(ids);
+    if (!mounted) return;
+    setState(() {
+      _selectedIds.clear();
+      _selectionMode = false;
+    });
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+          SnackBar(content: Text(context.l10n.adminBulkDeleteSuccess(ids.length))));
   }
 
   @override
   Widget build(final BuildContext context) {
+    // Masaüstü web: sidebar'lı tamamen ayrı bir kabuk (bkz.
+    // admin_dashboard_page_web.dart) — mobildeki sekme/ızgara düzeni
+    // büyütülüp web diye sunulmuyor (CLAUDE.md).
+    if (kIsWeb) return const AdminDashboardPageWeb();
+
     ref.listen(productMutationProvider, (final _, final next) {
       if (next is AsyncData) ref.invalidate(productsProvider);
     });
@@ -53,10 +137,17 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
     final inStock = ref.watch(availableProductsProvider);
     final sold = ref.watch(soldProductsProvider);
 
-    List<Product> filtered(final List<Product> list) =>
-        _selectedCategory == null
-            ? list
-            : list.where((final p) => p.category == _selectedCategory).toList();
+    List<Product> filtered(final List<Product> list) {
+      var result = _selectedCategory == null
+          ? list
+          : list.where((final p) => p.category == _selectedCategory).toList();
+      final query = _searchQuery.trim().toLowerCase();
+      if (query.isNotEmpty) {
+        result =
+            result.where((final p) => p.name.toLowerCase().contains(query)).toList();
+      }
+      return result;
+    }
 
     final Widget scaffold = Scaffold(
       // Şeffaf değil: sistem durum/gezinme çubuklarının altındaki alan
@@ -80,10 +171,13 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                     actionLabel: context.l10n.retry,
                     onAction: () => ref.invalidate(productsProvider),
                   ),
-                  data: (final _) => Column(
+                  data: (final all) => Column(
                     children: [
+                      const AdminOverviewSection(),
+                      const SizedBox(height: AppSpacing.sm),
                       _buildStatsRow(inStock.length, sold.length),
                       _buildToolsRow(context),
+                      _buildSearchRow(context),
                       _buildTabBar(inStock.length, sold.length),
                       // Keşfet/Arama ile aynı dil: solda dikey kategori
                       // rayı, sağda ürünler.
@@ -111,14 +205,25 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                                 controller: _tabController,
                                 physics: const BouncingScrollPhysics(),
                                 children: [
-                                  AdminProductGrid(products: filtered(inStock)),
-                                  AdminProductGrid(products: filtered(sold)),
+                                  AdminProductGrid(
+                                    products: filtered(inStock),
+                                    selectionMode: _selectionMode,
+                                    selectedIds: _selectedIds,
+                                    onToggleSelect: _toggleSelect,
+                                  ),
+                                  AdminProductGrid(
+                                    products: filtered(sold),
+                                    selectionMode: _selectionMode,
+                                    selectedIds: _selectedIds,
+                                    onToggleSelect: _toggleSelect,
+                                  ),
                                 ],
                               ),
                             ),
                           ],
                         ),
                       ),
+                      if (_selectionMode) _buildSelectionBar(context, all),
                     ],
                   ),
                 ),
@@ -127,10 +232,10 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
           ),
         ),
       ),
-      floatingActionButton: _buildAddButton(context),
+      floatingActionButton: _selectionMode ? null : _buildAddButton(context),
     );
 
-    return kIsWeb ? scaffold : BackToHomeGuard(child: scaffold);
+    return BackToHomeGuard(child: scaffold);
   }
 
   Widget _buildHeader(final BuildContext context) => AtelierScreenHeader(
@@ -180,9 +285,86 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
                         builder: (final _) => const AdminNotificationsPage())),
               ),
             ),
+            const SizedBox(width: AppSpacing.sm + 2),
+            Expanded(
+              child: _AdminToolTile(
+                icon: Icons.admin_panel_settings_outlined,
+                label: context.l10n.adminManagersTooltip,
+                color: AppColors.mobilePrimary,
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (final _) => const AdminManagersPage())),
+              ),
+            ),
           ],
         ),
       );
+
+  Widget _buildSearchRow(final BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screen, 0, AppSpacing.screen, AppSpacing.sm),
+        child: Row(
+          children: [
+            Expanded(
+              child: AtelierSearchField(
+                hint: context.l10n.adminProductSearchHint,
+                controller: _searchController,
+                onChanged: (final q) => setState(() => _searchQuery = q),
+                onClear: () => setState(() => _searchQuery = ''),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            AtelierIconButton(
+              icon: _selectionMode
+                  ? Icons.close_rounded
+                  : Icons.checklist_rounded,
+              tooltip: _selectionMode
+                  ? context.l10n.adminSelectModeExit
+                  : context.l10n.adminSelectModeEnter,
+              onTap: _toggleSelectionMode,
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildSelectionBar(final BuildContext context, final List<Product> all) {
+    final count = _selectedIds.length;
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screen, AppSpacing.sm, AppSpacing.screen, AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColors.mobileSurface,
+          border: Border(top: BorderSide(color: AppColors.mobileBorder)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(context.l10n.adminSelectedCount(count),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.mobileTextPrimary)),
+            ),
+            TextButton.icon(
+              onPressed: count == 0 ? null : () => _bulkMarkSold(all),
+              icon: const Icon(Icons.sell_rounded, size: 18),
+              label: Text(context.l10n.adminBulkMarkSold,
+                  style: const TextStyle(fontSize: 12.5)),
+            ),
+            TextButton.icon(
+              onPressed: count == 0 ? null : _bulkDelete,
+              style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+              icon: const Icon(Icons.delete_rounded, size: 18),
+              label: Text(context.l10n.adminBulkDelete,
+                  style: const TextStyle(fontSize: 12.5)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Future<void> _confirmLogout(final BuildContext context) async {
     final bool? confirm = await showDialog<bool>(
@@ -220,30 +402,7 @@ class _AdminDashboardPageState extends ConsumerState<AdminDashboardPage>
   Widget _buildStatsRow(final int stock, final int sold) => Padding(
         padding: const EdgeInsets.fromLTRB(
             AppSpacing.screen, AppSpacing.sm, AppSpacing.screen, AppSpacing.md),
-        child: Row(
-          children: [
-            Expanded(
-                child: AdminStatCard(
-                    label: context.l10n.stock,
-                    value: '$stock',
-                    icon: Icons.inventory_2_rounded,
-                    color: AppColors.success)),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-                child: AdminStatCard(
-                    label: context.l10n.sold,
-                    value: '$sold',
-                    icon: Icons.check_circle_rounded,
-                    color: AppColors.mobileAccentDark)),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-                child: AdminStatCard(
-                    label: context.l10n.totalCount,
-                    value: '${stock + sold}',
-                    icon: Icons.widgets_rounded,
-                    color: AppColors.info)),
-          ],
-        ),
+        child: AdminStatsSummaryRow(stock: stock, sold: sold),
       );
 
   Widget _buildTabBar(final int stock, final int sold) => Padding(

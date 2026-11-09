@@ -474,6 +474,7 @@
   "cartTotalLabel": "Gesamt",
   "cartWhatsappCta": "Warenkorb per WhatsApp senden",
   "cartItemRemoved": "Aus dem Warenkorb entfernt",
+  "removedFromFavorites": "Aus Favoriten entfernt",
   "addToCartCta": "In den Warenkorb",
   "addedToCartMessage": "Zum Warenkorb hinzugefügt",
   "alreadyInCartMessage": "Bereits im Warenkorb",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Neue Kampagnen und Ankündigungen erscheinen hier",
   "markAllReadAction": "Alle als gelesen markieren",
   "clearAllAction": "Alle löschen",
+  "notificationRemoved": "Benachrichtigung entfernt",
+  "undo": "Rückgängig",
   "timeJustNow": "Gerade eben",
   "timeMinutesAgo": "Vor {minutes} Min.",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Neue-Angebote-Benachrichtigungen",
   "categoryWatchDescription": "Wir benachrichtigen dich, wenn ein neues Produkt in deinen verfolgten Kategorien hinzugefügt wird.",
+  "categoryLikesSectionTitle": "Kategorien, die dir gefallen",
+  "categoryLikesDescription": "Kategorien, die dir gefallen, werden auf deiner Startseite hervorgehoben.",
   "notificationsAdminTooltip": "Benachrichtigungen",
   "notificationsAdminTitle": "Benachrichtigungen & Kampagnen",
   "campaignComposerSectionTitle": "Neue Benachrichtigung senden",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Alle Benutzer",
   "campaignSegmentFavorited": "Nutzer mit Favoriten",
   "campaignSegmentCategory": "Kategorie-Abonnenten",
+  "campaignSegmentFavoritedNew": "Interessiert an Neumöbeln",
+  "campaignSegmentFavoritedSpot": "Interessiert an Gebrauchtmöbeln",
+  "campaignSegmentPriceRange": "Interessiert an einer Preisspanne",
+  "campaignPriceMinLabel": "Min. Preis (₺)",
+  "campaignPriceMaxLabel": "Max. Preis (₺)",
+  "campaignPriceRangeInvalid": "Geben Sie eine gültige Preisspanne ein.",
+  "campaignPricePreviewButton": "Zielgruppe anzeigen",
+  "campaignAudiencePreviewLoading": "Zielgruppe wird gezählt…",
+  "campaignAudiencePreviewUnknown": "Alle Geräte — genaue Anzahl kann vorher nicht angezeigt werden.",
+  "campaignAudiencePreviewZero": "Aktuell keine Geräte in diesem Segment.",
+  "campaignAudiencePreviewCount": "Aktuell {count} Geräte in diesem Segment.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Benachrichtigung senden",
   "campaignSendConfirmTitle": "Benachrichtigung senden?",
   "campaignSendConfirmMessage": "Diese Benachrichtigung wird an alle Benutzer im ausgewählten Ziel gesendet. Dies kann nicht widerrufen werden.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Titel und Nachricht sind erforderlich.",
+  "campaignHistoryTitle": "Letzte Kampagnen",
+  "campaignHistoryEmpty": "Noch keine Kampagnen gesendet.",
   "statsRangeToday": "Heute",
   "statsRangeWeek": "Diese Woche",
   "statsRangeMonth": "Diesen Monat",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Trend im Zeitverlauf",
   "statsByCategoryTitle": "Aufschlüsselung nach Kategorie",
   "statsTopProductsTitle": "Produkte mit der meisten Interaktion",
+  "statsMostLikedCategoriesTitle": "Beliebteste Kategorien",
   "statsNoData": "Keine Daten in diesem Zeitraum",
   "firebaseChecking": "Wird geprüft…",
   "firebaseNotificationsTitle": "Benachrichtigungen (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Benachrichtigungsberechtigung nicht erteilt",
   "firebaseOpenNotificationSettings": "Benachrichtigungseinstellungen öffnen",
   "productStatsTooltip": "Statistiken",
-  "productStatsTitle": "Statistiken"
+  "productStatsTitle": "Statistiken",
+  "adminManagersTooltip": "Administratoren",
+  "adminManagersTitle": "Administratoren",
+  "adminManagersIntro": "Füge Admin-Konten hinzu oder entferne sie, die sich bei diesem Panel anmelden können.",
+  "adminManagersAddSectionTitle": "Neuen Administrator hinzufügen",
+  "adminManagersEmailLabel": "E-Mail",
+  "adminManagersEmailHint": "name@beispiel.com",
+  "adminManagersAddButton": "Hinzufügen",
+  "adminManagersInvalidEmail": "Gib eine gültige E-Mail-Adresse ein.",
+  "adminManagersAlreadyExists": "Diese Person ist bereits Administrator.",
+  "adminManagersAddedSuccess": "Administrator hinzugefügt.",
+  "adminManagersListTitle": "Administratoren",
+  "adminManagersYouBadge": "(du)",
+  "adminManagersAddedByLabel": "Hinzugefügt von: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Zugriff entziehen",
+  "adminManagersRemoveConfirmTitle": "Admin-Zugriff entziehen?",
+  "adminManagersRemoveConfirmMessage": "{email} kann sich nicht mehr beim Panel anmelden.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Admin-Zugriff entzogen.",
+  "adminManagersGenericError": "Etwas ist schiefgelaufen: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Noch keine Administratoren.",
+  "adminOverviewTabLabel": "Überblick",
+  "adminOverviewMissingInfoTitle": "Unvollständige Produkte",
+  "adminOverviewMissingInfoSubtitle": "{count} Produkten fehlt ein Foto oder eine Beschreibung.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Alle Produkte sind vollständig.",
+  "adminProductSearchHint": "Produkt suchen…",
+  "adminSelectModeEnter": "Auswählen",
+  "adminSelectModeExit": "Abbrechen",
+  "adminSelectedCount": "{count} ausgewählt",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Als verkauft markieren",
+  "adminBulkDelete": "Löschen",
+  "adminBulkDeleteConfirmTitle": "{count} Produkte löschen?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Diese Aktion kann nicht widerrufen werden.",
+  "adminBulkMarkSoldSuccess": "{count} Produkte als verkauft markiert.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} Produkte gelöscht.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Produkte"
 }

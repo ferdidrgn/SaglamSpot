@@ -18,7 +18,14 @@ import '../providers/campaign_notification_provider.dart';
 
 enum _LinkType { none, product, page }
 
-enum _Segment { all, favorited, category }
+enum _Segment {
+  all,
+  favorited,
+  category,
+  favoritedConditionNew,
+  favoritedConditionSpot,
+  priceRange,
+}
 
 /// Admin > Bildirimler — esnafın TÜM kullanıcılara (veya bir segmente)
 /// başlık+metin yazıp (isteğe bağlı bir ürüne/sayfaya bağlayıp) GERÇEKTEN
@@ -42,6 +49,8 @@ class _AdminNotificationsPageState
     extends ConsumerState<AdminNotificationsPage> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
+  final _priceMinController = TextEditingController();
+  final _priceMaxController = TextEditingController();
 
   _LinkType _linkType = _LinkType.none;
   Product? _selectedProduct;
@@ -54,6 +63,8 @@ class _AdminNotificationsPageState
   void dispose() {
     _titleController.dispose();
     _bodyController.dispose();
+    _priceMinController.dispose();
+    _priceMaxController.dispose();
     super.dispose();
   }
 
@@ -67,7 +78,40 @@ class _AdminNotificationsPageState
     if (_segment == _Segment.category && _selectedCategory == null) {
       return false;
     }
+    if (_segment == _Segment.priceRange && _priceRange == null) return false;
     return true;
+  }
+
+  /// Fiyat alanlarından geçerli bir (min, max) aralığı okur — sayı değilse,
+  /// negatifse veya min > max ise null (segment seçilemez/gönderilemez).
+  (double, double)? get _priceRange {
+    final min = double.tryParse(_priceMinController.text.trim());
+    final max = double.tryParse(_priceMaxController.text.trim());
+    if (min == null || max == null || min < 0 || max < min) return null;
+    return (min, max);
+  }
+
+  /// Şu an seçili segmentin GERÇEK Firestore segment string'i — tüm alanlar
+  /// doldurulmadıysa (ör. kategori/fiyat aralığı eksik) null döner, bu
+  /// durumda ne önizleme sorgusu ne gönderim yapılabilir.
+  String? get _segmentValue {
+    switch (_segment) {
+      case _Segment.all:
+        return 'all';
+      case _Segment.favorited:
+        return 'favorited';
+      case _Segment.category:
+        final category = _selectedCategory;
+        return category == null ? null : 'category:${category.toFirestore()}';
+      case _Segment.favoritedConditionNew:
+        return 'favorited_condition:new';
+      case _Segment.favoritedConditionSpot:
+        return 'favorited_condition:spot';
+      case _Segment.priceRange:
+        final range = _priceRange;
+        if (range == null) return null;
+        return 'favorited_price:${range.$1.round()}-${range.$2.round()}';
+    }
   }
 
   Future<void> _confirmAndSend() async {
@@ -104,11 +148,8 @@ class _AdminNotificationsPageState
     );
     if (confirmed != true || !mounted) return;
 
-    final segmentValue = switch (_segment) {
-      _Segment.all => 'all',
-      _Segment.favorited => 'favorited',
-      _Segment.category => 'category:${_selectedCategory!.toFirestore()}',
-    };
+    final segmentValue = _segmentValue;
+    if (segmentValue == null) return;
 
     await ref.read(campaignNotificationProvider.notifier).send(
           title: _titleController.text.trim(),
@@ -134,6 +175,8 @@ class _AdminNotificationsPageState
           ..showSnackBar(SnackBar(content: Text(msg)));
         _titleController.clear();
         _bodyController.clear();
+        _priceMinController.clear();
+        _priceMaxController.clear();
         setState(() {
           _linkType = _LinkType.none;
           _selectedProduct = null;
@@ -292,6 +335,23 @@ class _AdminNotificationsPageState
                       selected: _segment == _Segment.category,
                       onTap: () => setState(() => _segment = _Segment.category),
                     ),
+                    AtelierChoiceChip(
+                      label: context.l10n.campaignSegmentFavoritedNew,
+                      selected: _segment == _Segment.favoritedConditionNew,
+                      onTap: () =>
+                          setState(() => _segment = _Segment.favoritedConditionNew),
+                    ),
+                    AtelierChoiceChip(
+                      label: context.l10n.campaignSegmentFavoritedSpot,
+                      selected: _segment == _Segment.favoritedConditionSpot,
+                      onTap: () =>
+                          setState(() => _segment = _Segment.favoritedConditionSpot),
+                    ),
+                    AtelierChoiceChip(
+                      label: context.l10n.campaignSegmentPriceRange,
+                      selected: _segment == _Segment.priceRange,
+                      onTap: () => setState(() => _segment = _Segment.priceRange),
+                    ),
                   ],
                 ),
                 if (_segment == _Segment.category) ...[
@@ -308,6 +368,41 @@ class _AdminNotificationsPageState
                         .toList(),
                   ),
                 ],
+                if (_segment == _Segment.priceRange) ...[
+                  const SizedBox(height: AppSpacing.sm + 2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AdminFormField(
+                          controller: _priceMinController,
+                          label: context.l10n.campaignPriceMinLabel,
+                          icon: Icons.arrow_downward_rounded,
+                          numeric: true,
+                          onChanged: () => setState(() {}),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: AdminFormField(
+                          controller: _priceMaxController,
+                          label: context.l10n.campaignPriceMaxLabel,
+                          icon: Icons.arrow_upward_rounded,
+                          numeric: true,
+                          onChanged: () => setState(() {}),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_priceRange == null &&
+                      (_priceMinController.text.isNotEmpty ||
+                          _priceMaxController.text.isNotEmpty)) ...[
+                    const SizedBox(height: 4),
+                    Text(context.l10n.campaignPriceRangeInvalid,
+                        style: TextStyle(fontSize: 12, color: AppColors.error)),
+                  ],
+                ],
+                const SizedBox(height: AppSpacing.sm + 2),
+                _AudiencePreview(segment: _segmentValue),
                 const SizedBox(height: AppSpacing.lg + 4),
                 AdminSubmitButton(
                   label: context.l10n.campaignSendButton,
@@ -355,9 +450,145 @@ class _AdminNotificationsPageState
               ],
             ),
           ),
+          const SizedBox(height: AppSpacing.sm),
+          AdminFormSection(
+            title: context.l10n.campaignHistoryTitle,
+            icon: Icons.history_rounded,
+            child: const _CampaignHistoryList(),
+          ),
         ],
       ),
     ));
+  }
+}
+
+/// Önceden gönderilen bir kampanyanın "kime, kaç cihaza gitti" bilgisini
+/// kalıcı olarak gösterir — eskiden bu sadece gönderim anındaki tek
+/// seferlik SnackBar'da vardı, ekran kapanınca kaybolurdu (bkz.
+/// campaign_notification_provider.dart > campaignHistoryProvider).
+class _CampaignHistoryList extends ConsumerWidget {
+  const _CampaignHistoryList();
+
+  String _segmentLabel(final BuildContext context, final String? segment) {
+    if (segment == null) return '';
+    if (segment == 'all') return context.l10n.campaignSegmentAll;
+    if (segment == 'favorited') return context.l10n.campaignSegmentFavorited;
+    if (segment == 'favorited_condition:new') return context.l10n.campaignSegmentFavoritedNew;
+    if (segment == 'favorited_condition:spot') return context.l10n.campaignSegmentFavoritedSpot;
+    if (segment.startsWith('category:')) {
+      final key = segment.substring('category:'.length);
+      for (final category in ProductCategory.values) {
+        if (category.toFirestore() == key) {
+          return '${context.l10n.campaignSegmentCategory}: ${category.label(context)}';
+        }
+      }
+      return context.l10n.campaignSegmentCategory;
+    }
+    if (segment.startsWith('favorited_price:')) {
+      return context.l10n.campaignSegmentPriceRange;
+    }
+    return segment;
+  }
+
+  String _sentCountLabel(final BuildContext context, final int? sentCount) {
+    if (sentCount == null) return '';
+    if (sentCount < 0) return context.l10n.campaignSendSuccessAll;
+    if (sentCount == 0) return context.l10n.campaignSendSuccessZero;
+    return context.l10n.campaignSendSuccessCount(sentCount);
+  }
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final historyAsync = ref.watch(campaignHistoryProvider);
+
+    return historyAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (final e, final _) => _InfoLine(
+        icon: Icons.cloud_off_rounded,
+        text: context.l10n.loadErrorMessage,
+        muted: true,
+      ),
+      data: (final entries) {
+        if (entries.isEmpty) {
+          return _InfoLine(
+            icon: Icons.history_rounded,
+            text: context.l10n.campaignHistoryEmpty,
+            muted: true,
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < entries.length; i++) ...[
+              Text(entries[i].title,
+                  style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.mobileTextPrimary)),
+              const SizedBox(height: 2),
+              Text(
+                [
+                  _segmentLabel(context, entries[i].segment),
+                  _sentCountLabel(context, entries[i].sentCount),
+                ].where((final s) => s.isNotEmpty).join(' · '),
+                style: TextStyle(fontSize: 11.5, color: AppColors.mobileTextTertiary),
+              ),
+              if (i != entries.length - 1) const SizedBox(height: 12),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// "Favorisi Olanlar" segmentine gönderilen bir kampanyanın gerçekte
+/// TÜM kullanıcılara gitmiş gibi görünmesi (bkz. FavoriteIdsCache'teki
+/// kök neden notu) esnafta güven kaybına yol açmıştı — bu widget admin'e
+/// GÖNDERMEDEN ÖNCE seçtiği segmentte gerçekte kaç cihaz olduğunu
+/// gösterir (bkz. getCampaignSegmentSize). "Tüm Kullanıcılar" FCM
+/// konusu olduğu için kesin sayı hiçbir zaman önceden bilinemez — bu
+/// durum "Tüm cihazlar" notuyla açıkça belirtilir, sahte bir sayı
+/// UYDURULMAZ.
+class _AudiencePreview extends ConsumerWidget {
+  final String? segment;
+
+  const _AudiencePreview({required this.segment});
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final segmentValue = segment;
+    if (segmentValue == null) return const SizedBox.shrink();
+
+    final text = segmentValue == 'all'
+        ? context.l10n.campaignAudiencePreviewUnknown
+        : ref.watch(campaignSegmentSizeProvider(segmentValue)).when(
+              data: (final size) => size == null
+                  ? context.l10n.campaignAudiencePreviewUnknown
+                  : size == 0
+                      ? context.l10n.campaignAudiencePreviewZero
+                      : context.l10n.campaignAudiencePreviewCount(size),
+              loading: () => context.l10n.campaignAudiencePreviewLoading,
+              error: (final _, final __) => context.l10n.campaignAudiencePreviewUnknown,
+            );
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.groups_rounded, size: 15, color: AppColors.textTertiary),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(text,
+                style: TextStyle(fontSize: 12, color: AppColors.textTertiary)),
+          ),
+        ],
+      ),
+    );
   }
 }
 

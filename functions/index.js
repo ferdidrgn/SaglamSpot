@@ -440,13 +440,28 @@ exports.notifyPriceDrop = onDocumentUpdated("Product/{productId}", async (event)
  * admin panelinden tek tuşla gönderim eklendi.
  *
  * Segmentler, HALİHAZIRDA var olan iki eşleştirme koleksiyonunu
- * kullanır — yeni bir "abonelik" alt yapısı İCAT EDİLMEDİ:
- *   - "all"            → `all_users` konusu (her cihaz init() sırasında
- *                         abone olur, bkz. notification_service.dart).
- *   - "favorited"       → notification_subscriptions'taki TÜM token'lar
- *                         (en az bir ürünü favorileyen cihazlar).
- *   - "category:<key>"  → category_watch_subscriptions'ta bu kategoriyi
- *                         takip eden cihazlar.
+ * kullanır — yeni bir "abonelik" alt yapısı İCAT EDİLMEDİ (bkz.
+ * resolveCampaignSegment):
+ *   - "all"                     → `all_users` konusu (her cihaz init()
+ *                                  sırasında abone olur, bkz.
+ *                                  notification_service.dart).
+ *   - "favorited"                → notification_subscriptions'taki TÜM
+ *                                  token'lar (en az bir ürünü favorileyen
+ *                                  cihazlar).
+ *   - "category:<key>"           → category_watch_subscriptions'ta bu
+ *                                  kategoriyi takip eden cihazlar.
+ *   - "favorited_condition:new"  → en az bir SIFIR ürünü favorileyenler
+ *   - "favorited_condition:spot" → en az bir İKİNCİ EL (spot) ürünü
+ *                                  favorileyenler (notification_
+ *                                  subscriptions'taki productIds, Product
+ *                                  koleksiyonundaki isSpotProduct ile
+ *                                  EŞLENEREK türetilir — yeni bir abonelik
+ *                                  yapısı değil, var olan favorileme
+ *                                  verisinin bir YORUMU).
+ *   - "favorited_price:<min>-<max>" → fiyatı bu aralıkta olan en az bir
+ *                                  ürünü favorileyenler (AYNI şekilde
+ *                                  notification_subscriptions + Product
+ *                                  fiyatının eşlenmesiyle türetilir).
  * notifyPriceDrop/notifyCategoryWatchers'taki AYNI "500'lük parçala +
  * geçersiz token'ları temizle" deseni tekrar kullanılıyor.
  *
@@ -468,6 +483,106 @@ exports.notifyPriceDrop = onDocumentUpdated("Product/{productId}", async (event)
  */
 const ALLOWED_CAMPAIGN_PAGES = ["/discover", "/new", "/spot"];
 
+/**
+ * notification_subscriptions'taki (bkz. favorite_notification_sync.dart)
+ * `productIds` dizilerini Product koleksiyonundaki GERÇEK ürün verisiyle
+ * (durum/fiyat) eşleyip, `predicate(productData)` doğru dönen en az bir
+ * ürünü favorileyen token'ları döner. Yeni bir abonelik yapısı DEĞİL —
+ * var olan favorileme verisinin fiyat/durum filtresiyle bir YORUMU.
+ */
+async function resolveFavoritedByProductFilter(db, predicate) {
+  const [subsSnap, productsSnap] = await Promise.all([
+    db.collection("notification_subscriptions").get(),
+    db.collection("Product").get(),
+  ]);
+
+  const matchingProductIds = new Set();
+  productsSnap.docs.forEach((doc) => {
+    if (predicate(doc.data())) matchingProductIds.add(doc.id);
+  });
+  if (matchingProductIds.size === 0) return [];
+
+  const tokens = [];
+  subsSnap.docs.forEach((doc) => {
+    const productIds = doc.data().productIds;
+    if (Array.isArray(productIds) && productIds.some((id) => matchingProductIds.has(id))) {
+      tokens.push(doc.id);
+    }
+  });
+  return tokens;
+}
+
+/**
+ * Bir kampanya segment string'ini GERÇEKTEN gönderilebilir bir hedefe
+ * çözer — {mode:"topic", topic} (kesin alıcı sayısı bilinmeyen FCM
+ * konusu) veya {mode:"tokens", tokens, staleCollection} (temizlenecek
+ * geçersiz token'ların hangi koleksiyondan silineceği de burada). Hem
+ * sendCampaignNotification hem getCampaignSegmentSize AYNI mantığı
+ * kullanır ki ikisi asla birbirinden sapmasın.
+ */
+async function resolveCampaignSegment(db, segment) {
+  if (segment === "all") return {mode: "topic", topic: "all_users"};
+
+  if (segment === "favorited") {
+    const snap = await db.collection("notification_subscriptions").get();
+    return {
+      mode: "tokens",
+      tokens: snap.docs.map((d) => d.id),
+      staleCollection: "notification_subscriptions",
+    };
+  }
+
+  if (segment.startsWith("category:")) {
+    const category = segment.slice("category:".length);
+    const snap = await db.collection("category_watch_subscriptions")
+        .where("categories", "array-contains", category).get();
+    return {
+      mode: "tokens",
+      tokens: snap.docs.map((d) => d.id),
+      staleCollection: "category_watch_subscriptions",
+    };
+  }
+
+  if (segment === "favorited_condition:new" || segment === "favorited_condition:spot") {
+    const wantsSpot = segment.endsWith(":spot");
+    const tokens = await resolveFavoritedByProductFilter(
+        db, (p) => Boolean(p.isSpotProduct) === wantsSpot);
+    return {mode: "tokens", tokens, staleCollection: "notification_subscriptions"};
+  }
+
+  if (segment.startsWith("favorited_price:")) {
+    const [minStr, maxStr] = segment.slice("favorited_price:".length).split("-");
+    const min = Number(minStr);
+    const max = Number(maxStr);
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min < 0 || max < min) {
+      throw new HttpsError("invalid-argument", "Geçersiz fiyat aralığı.");
+    }
+    const tokens = await resolveFavoritedByProductFilter(
+        db, (p) => typeof p.price === "number" && p.price >= min && p.price <= max);
+    return {mode: "tokens", tokens, staleCollection: "notification_subscriptions"};
+  }
+
+  throw new HttpsError("invalid-argument", "Geçersiz segment.");
+}
+
+/**
+ * Admin, kampanyayı GÖNDERMEDEN ÖNCE seçtiği segmentte gerçekte kaç cihaz
+ * olduğunu görebilsin diye (bkz. AdminNotificationsPage / admin-
+ * dashboard.js) — "favorited"/"category:*"/"favorited_condition:*"/
+ * "favorited_price:*" için GERÇEK bir sayı; "all" FCM konu abonesi
+ * olduğu ve konu abone sayısı Admin SDK'dan sorgulanamadığı için `null`
+ * döner (istemci bunu "önceden gösterilemez" olarak yorumlar).
+ */
+exports.getCampaignSegmentSize = onCall(
+    {timeoutSeconds: 15, memory: "256MiB"},
+    async (request) => {
+      await assertIsAdmin(request);
+      const segment = typeof request.data?.segment === "string" ? request.data.segment : "all";
+      const resolved = await resolveCampaignSegment(getFirestore(), segment);
+      return {size: resolved.mode === "topic" ? null : resolved.tokens.length};
+    },
+);
+
 exports.sendCampaignNotification = onCall(
     {timeoutSeconds: 30, memory: "256MiB"},
     async (request) => {
@@ -481,12 +596,10 @@ exports.sendCampaignNotification = onCall(
       if (!title || !body) {
         throw new HttpsError("invalid-argument", "Başlık ve metin gerekli.");
       }
-      if (segment !== "all" && segment !== "favorited" && !segment.startsWith("category:")) {
-        throw new HttpsError("invalid-argument", "Geçersiz segment.");
-      }
 
       const db = getFirestore();
       const data = {type: "admin_campaign"};
+      let imageUrl;
 
       if (linkType === "product") {
         const productId = typeof request.data?.productId === "string" ? request.data.productId : "";
@@ -495,6 +608,10 @@ exports.sendCampaignNotification = onCall(
         if (!productSnap.exists) throw new HttpsError("not-found", "Ürün bulunamadı.");
         const productData = productSnap.data();
         data.path = `/product/${encodeURIComponent(`${toSlug(productData.name)}-${productId}`)}?sig=${signProductId(productId)}`;
+        if (Array.isArray(productData.imagesUrl) && productData.imagesUrl.length > 0) {
+          imageUrl = productData.imagesUrl[0];
+          data.imageUrl = imageUrl;
+        }
       } else if (linkType === "page") {
         const page = typeof request.data?.page === "string" ? request.data.page : "";
         if (!ALLOWED_CAMPAIGN_PAGES.includes(page)) {
@@ -503,20 +620,19 @@ exports.sendCampaignNotification = onCall(
         data.path = page;
       }
 
+      // FCM'in Android/iOS'ta native "büyük resimli" bildirim gösterebilmesi
+      // için resim, `data` payload'ının YANINDA `notification.imageUrl`
+      // alanına da konur (Admin SDK alan adı budur) — platformlar bunu
+      // otomatik indirip gösterir, istemci kodu YAZMAYA gerek kalmaz.
+      const notificationPayload = {title, body, ...(imageUrl ? {imageUrl} : {})};
+
+      const resolved = await resolveCampaignSegment(db, segment);
       let sentCount = -1; // -1: "topic"e gönderildi, kesin alıcı sayısı bilinmiyor.
 
-      if (segment === "all") {
-        await getMessaging().send({topic: "all_users", notification: {title, body}, data});
+      if (resolved.mode === "topic") {
+        await getMessaging().send({topic: resolved.topic, notification: notificationPayload, data});
       } else {
-        const isFavorited = segment === "favorited";
-        const collectionName = isFavorited ? "notification_subscriptions" : "category_watch_subscriptions";
-        const snap = isFavorited ?
-          await db.collection(collectionName).get() :
-          await db.collection(collectionName)
-              .where("categories", "array-contains", segment.slice("category:".length))
-              .get();
-
-        const tokens = snap.docs.map((d) => d.id);
+        const tokens = resolved.tokens;
         sentCount = 0;
 
         if (tokens.length > 0) {
@@ -526,7 +642,8 @@ exports.sendCampaignNotification = onCall(
           const staleTokens = [];
           for (const chunk of chunks) {
             try {
-              const response = await getMessaging().sendEachForMulticast({tokens: chunk, notification: {title, body}, data});
+              const response = await getMessaging().sendEachForMulticast(
+                  {tokens: chunk, notification: notificationPayload, data});
               sentCount += response.successCount;
               response.responses.forEach((r, i) => {
                 if (!r.success && r.error &&
@@ -540,15 +657,23 @@ exports.sendCampaignNotification = onCall(
           }
 
           await Promise.all(staleTokens.map((t) =>
-            db.collection(collectionName).doc(t).delete().catch(() => {})));
+            db.collection(resolved.staleCollection).doc(t).delete().catch(() => {})));
         }
       }
 
+      // `segment`/`sentCount` admin'in "Son Kampanyalar" geçmişini (bkz.
+      // AdminNotificationsPage / admin-dashboard.js) gösterebilmesi için —
+      // bu alanlar olmadan hangi kampanyanın hangi segmente, kaç cihaza
+      // ulaştığı hiçbir yerde kalıcı olarak görünmüyordu (sadece o anki
+      // admin'in ekranındaki tek seferlik toast'ta).
       await db.collection("notification_broadcasts").add({
         title,
         body,
         type: "admin_campaign",
+        segment,
+        sentCount,
         ...(data.path ? {path: data.path} : {}),
+        ...(imageUrl ? {imageUrl} : {}),
         createdAt: FieldValue.serverTimestamp(),
       });
 
@@ -606,6 +731,85 @@ function escapeXml(value) {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&apos;");
 }
+
+/**
+ * Yönetici (admin) yönetimi — admin paneline "Yöneticiler" ekranı için.
+ * `admins/{email}` koleksiyonu istemciden TAMAMEN kapalı
+ * (`firestore.rules`: `allow list, write: if false`) — bu üç callable,
+ * Admin SDK ile o koleksiyonu güvenle okuyup/yazan TEK yol. Yetki kontrolü
+ * her birinde `assertIsAdmin` ile (removeProductBackground/
+ * sendCampaignNotification'daki AYNI desen).
+ */
+exports.adminListAdmins = onCall(
+    {timeoutSeconds: 15, memory: "256MiB"},
+    async (request) => {
+      await assertIsAdmin(request);
+      const snap = await getFirestore().collection("admins").get();
+      const admins = snap.docs.map((doc) => ({
+        email: doc.id,
+        addedAt: doc.data().addedAt ? doc.data().addedAt.toMillis() : null,
+        addedBy: doc.data().addedBy || null,
+      }));
+      admins.sort((a, b) => (a.addedAt || 0) - (b.addedAt || 0));
+      return {admins};
+    },
+);
+
+exports.adminAddAdmin = onCall(
+    {timeoutSeconds: 15, memory: "256MiB"},
+    async (request) => {
+      await assertIsAdmin(request);
+      const rawEmail = typeof request.data?.email === "string" ? request.data.email.trim() : "";
+      if (!rawEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail)) {
+        throw new HttpsError("invalid-argument", "Geçerli bir e-posta adresi gerekli.");
+      }
+      // Firebase Auth e-postaları girişte her zaman küçük harfe
+      // normalize eder (bkz. auth_provider_notifier.dart) — yeni admin
+      // kayıtlarını hep küçük harfle tutmak, eski karışık-harf sorununu
+      // büyütmemek için.
+      const email = rawEmail.toLowerCase();
+      const db = getFirestore();
+      const ref = db.doc(`admins/${email}`);
+      const existing = await ref.get();
+      if (existing.exists) {
+        return {already: true, email};
+      }
+      await ref.set({
+        addedAt: FieldValue.serverTimestamp(),
+        addedBy: request.auth.token.email,
+      });
+      return {already: false, email};
+    },
+);
+
+exports.adminRemoveAdmin = onCall(
+    {timeoutSeconds: 15, memory: "256MiB"},
+    async (request) => {
+      await assertIsAdmin(request);
+      const rawEmail = typeof request.data?.email === "string" ? request.data.email.trim() : "";
+      if (!rawEmail) {
+        throw new HttpsError("invalid-argument", "email gerekli.");
+      }
+      const callerEmail = request.auth.token.email;
+      const db = getFirestore();
+      const ref = db.doc(`admins/${rawEmail}`);
+      const snap = await ref.get();
+      if (!snap.exists) {
+        return {removed: false};
+      }
+      // Kendini ya da panelde kalan SON admini silmeye izin verme —
+      // aksi halde kimse giriş yapamayan bir panelde kilitli kalabilir.
+      if (rawEmail === callerEmail || rawEmail.toLowerCase() === callerEmail) {
+        throw new HttpsError("failed-precondition", "Kendi yönetici yetkini kaldıramazsın.");
+      }
+      const allAdmins = await db.collection("admins").get();
+      if (allAdmins.size <= 1) {
+        throw new HttpsError("failed-precondition", "Panelde en az bir yönetici kalmalı.");
+      }
+      await ref.delete();
+      return {removed: true};
+    },
+);
 
 exports.sitemap = onRequest({cors: true, memory: "256MiB"}, async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);

@@ -367,7 +367,7 @@ functions/                   Firebase Cloud Functions (Node.js 22)
 
 | Workflow | Ne yapar |
 |---|---|
-| `.github/workflows/deploy-web.yml` | `flutter build web --release` → Firebase Hosting'e canlı deploy |
+| `.github/workflows/deploy-web.yml` | `web-genesis/public` + `genesisApp` fonksiyonu → Firebase Hosting (`saglamspotcu` sitesi) canlı deploy (NOT: Flutter web artık burada build EDİLMİYOR — bkz. altındaki "🌐 Web" bölümü) |
 | `.github/workflows/deploy-android.yml` | İmzalı AAB build → Play Console'a (`internal` track) yükleme, versionCode'u otomatik artırır |
 | `.github/workflows/deploy-ios.yml` | `flutter build ipa --no-codesign` ile derleme doğrulaması |
 | `.github/workflows/distribute-android-beta.yml` | İmzasız debug APK → Firebase App Distribution (test grubu) |
@@ -399,20 +399,22 @@ flutter build ipa --release
 
 **🌐 Web**
 ```bash
-flutter build web --release
-firebase deploy --only hosting
-firebase deploy --only functions
+firebase deploy --only hosting:saglamspotcu,functions:genesis:genesisApp
 ```
-> `functions` deploy'u `prerender` fonksiyonunun botlara gösterdiği
-> ürün/liste HTML'ini üretir; insan ziyaretçilere döndürdüğü SPA
-> kabuğunu (`functions/public/index.html`) ise deploy ÖNCESİ otomatik
-> olarak az önceki `flutter build web` çıktısından kopyalar (bkz.
-> `functions/scripts/copy-spa-shell.js`, `firebase.json`'daki
-> `functions.predeploy`). Web'de görünür bir değişiklik yaptıysanız
-> (ama CI sadece hosting'i otomatik deploy ediyor) bu kabuğun güncel
-> kalması için `firebase deploy --only functions`'ı da ARA SIRA
-> yeniden çalıştırın, yoksa botlar eski bir SPA kabuğu görmeye devam
-> eder.
+> GÜNCEL DURUM (bu bölüm önceden eski bir pipeline'ı — `flutter build web`
+> çıktısının `functions/public/index.html`'e kopyalanıp `prerender`
+> fonksiyonunun botlara ayrı bir HTML döndürdüğü düzeni — anlatıyordu,
+> artık DOĞRU DEĞİL): `firebase.json`'daki `saglamspotcu` sitesinin TEK
+> hosting girdisi tüm istekleri (insan + bot) `web-genesis/functions`'taki
+> `genesisApp` fonksiyonuna yönlendiriyor (bkz. `.github/workflows/
+> deploy-web.yml`'in kendi üstündeki "ESKIDEN... artik web-genesis'i
+> sunuyor" notu). Flutter web build'i (`flutter build web`) artık
+> `saglamspotcu.web.app`'e HİÇ deploy EDİLMİYOR — eski `functions/`
+> (root) klasösündeki `copy-spa-shell.js`/`prerender`/`functions/public/`
+> kodu artık orphan (hiçbir hosting rewrite'ı ona ulaşmıyor). Flutter web
+> şu an sadece Android/iOS ile aynı kod tabanından yerel geliştirme/test
+> için var; canlıda kullanıcıya giden web deneyimi tamamen
+> `web-genesis/`.
 
 </td></tr>
 </table>

@@ -474,6 +474,7 @@
   "cartTotalLabel": "Жалпы",
   "cartWhatsappCta": "Себетти WhatsApp аркылуу жөнөтүү",
   "cartItemRemoved": "Себеттен алынып салынды",
+  "removedFromFavorites": "Тандамалардан өчүрүлдү",
   "addToCartCta": "Себетке кошуу",
   "addedToCartMessage": "Себетке кошулду",
   "alreadyInCartMessage": "Бул зат себетте бар",
@@ -539,6 +540,8 @@
   "notificationsEmptyDesc": "Жаңы акциялар жана жарыялар бул жерде көрүнөт",
   "markAllReadAction": "Баарын окулду деп белгилөө",
   "clearAllAction": "Баарын тазалоо",
+  "notificationRemoved": "Билдирме өчүрүлдү",
+  "undo": "Болдурбоо",
   "timeJustNow": "Азыр эле",
   "timeMinutesAgo": "{minutes} мүнөт мурун",
   "@timeMinutesAgo": {
@@ -813,6 +816,8 @@
   },
   "categoryWatchSectionTitle": "Жаңы товар билдирүүлөрү",
   "categoryWatchDescription": "Сиз көзөмөлдөп жаткан категорияларда жаңы товар кошулганда билдиребиз.",
+  "categoryLikesSectionTitle": "Сага жаккан категориялар",
+  "categoryLikesDescription": "Сага жаккан категориялар башкы бетиңде алдыга чыгат.",
   "notificationsAdminTooltip": "Билдирмелер",
   "notificationsAdminTitle": "Билдирмелер жана кампаниялар",
   "campaignComposerSectionTitle": "Жаңы билдирме жөнөтүү",
@@ -832,6 +837,24 @@
   "campaignSegmentAll": "Бардык колдонуучулар",
   "campaignSegmentFavorited": "Тандалмалары барлар",
   "campaignSegmentCategory": "Категорияны ээрчигендер",
+  "campaignSegmentFavoritedNew": "Жаңы эмеректерге кызыгуучулар",
+  "campaignSegmentFavoritedSpot": "Экинчи кол эмеректерге кызыгуучулар",
+  "campaignSegmentPriceRange": "Баа аралыгына кызыгуучулар",
+  "campaignPriceMinLabel": "Мин. баа (₺)",
+  "campaignPriceMaxLabel": "Макс. баа (₺)",
+  "campaignPriceRangeInvalid": "Жарактуу баа аралыгын киргизиңиз.",
+  "campaignPricePreviewButton": "Аудиторияны көрүү",
+  "campaignAudiencePreviewLoading": "Максаттуу аудитория эсептелип жатат…",
+  "campaignAudiencePreviewUnknown": "Бардык түзмөктөр — так сан алдын ала көрсөтүлбөйт.",
+  "campaignAudiencePreviewZero": "Учурда бул сегментте түзмөк жок.",
+  "campaignAudiencePreviewCount": "Учурда бул сегментте {count} түзмөк бар.",
+  "@campaignAudiencePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "campaignSendButton": "Билдирмени жөнөтүү",
   "campaignSendConfirmTitle": "Бул билдирме жөнөтүлсүнбү?",
   "campaignSendConfirmMessage": "Бул билдирме сиз тандаган топтогу бардык колдонуучуларга жөнөтүлөт. Бул аракетти артка кайтарууга болбойт.",
@@ -854,6 +877,8 @@
     }
   },
   "campaignTitleRequired": "Аталышы жана билдирүү керек.",
+  "campaignHistoryTitle": "Акыркы кампаниялар",
+  "campaignHistoryEmpty": "Азырынча кампания жөнөтүлгөн эмес.",
   "statsRangeToday": "Бүгүн",
   "statsRangeWeek": "Бул жума",
   "statsRangeMonth": "Бул ай",
@@ -871,6 +896,7 @@
   "statsTrendTitle": "Убакыт ичиндеги тенденция",
   "statsByCategoryTitle": "Категория боюнча бөлүштүрүү",
   "statsTopProductsTitle": "Эң көп активдүүлүк алган товарлар",
+  "statsMostLikedCategoriesTitle": "Эң көп жактырылган категориялар",
   "statsNoData": "Бул аралыкта маалымат жок",
   "firebaseChecking": "Текшерилип жатат…",
   "firebaseNotificationsTitle": "Билдирмелер (FCM)",
@@ -880,5 +906,95 @@
   "firebasePermissionDenied": "Билдирме уруксаты берилген жок",
   "firebaseOpenNotificationSettings": "Билдирме жөндөөлөрүн ачуу",
   "productStatsTooltip": "Статистика",
-  "productStatsTitle": "Статистика"
+  "productStatsTitle": "Статистика",
+  "adminManagersTooltip": "Администраторлор",
+  "adminManagersTitle": "Администраторлор",
+  "adminManagersIntro": "Бул панелге кире алган администратор каттоо жазууларын кошуу же өчүрүү.",
+  "adminManagersAddSectionTitle": "Жаңы администратор кошуу",
+  "adminManagersEmailLabel": "Email",
+  "adminManagersEmailHint": "name@example.com",
+  "adminManagersAddButton": "Кошуу",
+  "adminManagersInvalidEmail": "Жарактуу email дарегин жазыңыз.",
+  "adminManagersAlreadyExists": "Бул колдонуучу мурунтан администратор.",
+  "adminManagersAddedSuccess": "Администратор кошулду.",
+  "adminManagersListTitle": "Администраторлор",
+  "adminManagersYouBadge": "(сиз)",
+  "adminManagersAddedByLabel": "Кошкон: {email}",
+  "@adminManagersAddedByLabel": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveButton": "Укукту алып салуу",
+  "adminManagersRemoveConfirmTitle": "Администратор укугу алынсынбы?",
+  "adminManagersRemoveConfirmMessage": "{email} эми панелге кире албайт.",
+  "@adminManagersRemoveConfirmMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersRemoveSuccess": "Администратор укугу алынды.",
+  "adminManagersGenericError": "Бир нерсе туура эмес кетти: {message}",
+  "@adminManagersGenericError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "adminManagersEmpty": "Азырынча администратор жок.",
+  "adminOverviewTabLabel": "Жалпы көрүнүш",
+  "adminOverviewMissingInfoTitle": "Толук эмес товарлар",
+  "adminOverviewMissingInfoSubtitle": "{count} товарда сүрөт же сыпаттама жок.",
+  "@adminOverviewMissingInfoSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminOverviewMissingInfoNone": "Бардык товарлардын маалыматы толук.",
+  "adminProductSearchHint": "Товар издөө…",
+  "adminSelectModeEnter": "Тандоо",
+  "adminSelectModeExit": "Жокко чыгаруу",
+  "adminSelectedCount": "{count} тандалды",
+  "@adminSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkMarkSold": "Сатылды деп белгилөө",
+  "adminBulkDelete": "Өчүрүү",
+  "adminBulkDeleteConfirmTitle": "{count} товар өчүрүлсүнбү?",
+  "@adminBulkDeleteConfirmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteConfirmMessage": "Бул аракетти артка кайтарууга болбойт.",
+  "adminBulkMarkSoldSuccess": "{count} товар сатылды деп белгиленди.",
+  "@adminBulkMarkSoldSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBulkDeleteSuccess": "{count} товар өчүрүлдү.",
+  "@adminBulkDeleteSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminSidebarProducts": "Товарлар"
 }

@@ -11,6 +11,7 @@ import 'core/config/remote_config_gate.dart';
 import 'core/localization/locale_provider.dart';
 import 'core/providers/notification_inbox_provider.dart';
 import 'core/services/admin_session_cache.dart';
+import 'core/services/category_likes_cache.dart';
 import 'core/services/category_watch_cache.dart';
 import 'core/services/deeplink/deeplink_listener_service.dart';
 import 'core/services/dynamic_color_cache.dart';
@@ -81,6 +82,7 @@ void main() async {
     BackgroundPatternCache.load(),
     CategoryWatchCache.load(),
     FavoriteIdsCache.load(),
+    CategoryLikesCache.load(),
   ]);
 
   // 4. Firebase ve çekirdek servisler (ikincil servisler kendi içinde
