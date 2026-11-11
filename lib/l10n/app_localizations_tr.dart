@@ -544,6 +544,8 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+  @override
+  String get authErrorEmailNotVerified => 'Admin e-posta adresinizi doğrulayıp tekrar giriş yapın. Doğrulama e-postası gönderildi.';
 
   @override
   String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';

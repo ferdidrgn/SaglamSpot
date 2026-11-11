@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Benutzer nicht gefunden.",
   "authErrorAdminCheckTimeout": "Zeitüberschreitung bei der Berechtigungsprüfung.",
   "authErrorNotAdmin": "Dieses Konto verfügt nicht über Administratorrechte.",
+  "authErrorEmailNotVerified": "Bestätigen Sie die Admin-E-Mail und melden Sie sich erneut an. Eine Bestätigungs-E-Mail wurde gesendet.",
   "authErrorInvalidEmail": "Ungültige E-Mail-Adresse.",
   "authErrorUserDisabled": "Dieses Konto wurde deaktiviert.",
   "authErrorAccountNotFound": "Kein Benutzer mit dieser E-Mail-Adresse gefunden.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Diese Aktion kann nicht widerrufen werden.",
+  "adminBulkDeleteConfirmMessage": "Die Produkte werden archiviert und können bei Bedarf wiederhergestellt werden.",
   "adminBulkMarkSoldSuccess": "{count} Produkte als verkauft markiert.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} Produkte gelöscht.",
+  "adminBulkDeleteSuccess": "{count} Produkte archiviert.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

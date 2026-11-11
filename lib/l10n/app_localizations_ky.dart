@@ -548,6 +548,8 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'Бул аккаунттун админ укуктары жок.';
+  @override
+  String get authErrorEmailNotVerified => 'Админдин электрондук почтасын ырастаңыз жана кайра кириңиз. Ырастоо каты жөнөтүлдү.';
 
   @override
   String get authErrorInvalidEmail => 'Электрондук почта дареги жарамсыз.';

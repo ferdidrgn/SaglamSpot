@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Utente non trovato.",
   "authErrorAdminCheckTimeout": "Timeout durante il controllo dell'autorizzazione.",
   "authErrorNotAdmin": "Questo account non dispone di privilegi di amministratore.",
+  "authErrorEmailNotVerified": "Verifica l'email dell'amministratore e accedi di nuovo. È stata inviata un'email di verifica.",
   "authErrorInvalidEmail": "Indirizzo email non valido.",
   "authErrorUserDisabled": "Questo account è stato disabilitato.",
   "authErrorAccountNotFound": "Nessun utente trovato con questa email.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Questa azione non può essere annullata.",
+  "adminBulkDeleteConfirmMessage": "I prodotti verranno archiviati e potranno essere ripristinati se necessario.",
   "adminBulkMarkSoldSuccess": "{count} prodotti segnati come venduti.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} prodotti eliminati.",
+  "adminBulkDeleteSuccess": "{count} prodotti archiviati.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

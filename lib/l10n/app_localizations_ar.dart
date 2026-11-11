@@ -542,6 +542,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'لا يملك هذا الحساب صلاحيات المسؤول.';
+  @override
+  String get authErrorEmailNotVerified => 'تحقق من بريد المسؤول الإلكتروني ثم سجّل الدخول مرة أخرى. تم إرسال رسالة التحقق.';
 
   @override
   String get authErrorInvalidEmail => 'عنوان بريد إلكتروني غير صالح.';

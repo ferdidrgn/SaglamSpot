@@ -57,14 +57,14 @@ android {
 
     buildTypes {
         release {
-            // key.properties ve storeFile eksiksiz tanımlıysa release ile, değilse null/debug ile derler
+            // Release hiçbir koşulda debug anahtarıyla imzalanmamalıdır.
             val releaseSigning = signingConfigs.getByName("release")
-            signingConfig =
-                if (releaseSigning.storeFile != null && releaseSigning.storeFile!!.exists()) {
-                    releaseSigning
-                } else {
-                    signingConfigs.getByName("debug")
-                }
+            if (releaseSigning.storeFile == null || !releaseSigning.storeFile!!.exists()) {
+                throw GradleException(
+                    "Release keystore eksik. Güvenlik için release build debug anahtarına düşürülemez."
+                )
+            }
+            signingConfig = releaseSigning
 
             // 🛡️ Güvenlik, Obfuscation & Optimizasyon
             isMinifyEnabled = true

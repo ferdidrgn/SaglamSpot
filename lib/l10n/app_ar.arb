@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "المستخدم غير موجود.",
   "authErrorAdminCheckTimeout": "انتهت مهلة التحقق من الصلاحية.",
   "authErrorNotAdmin": "لا يملك هذا الحساب صلاحيات المسؤول.",
+  "authErrorEmailNotVerified": "تحقق من بريد المسؤول الإلكتروني ثم سجّل الدخول مرة أخرى. تم إرسال رسالة التحقق.",
   "authErrorInvalidEmail": "عنوان بريد إلكتروني غير صالح.",
   "authErrorUserDisabled": "تم تعطيل هذا الحساب.",
   "authErrorAccountNotFound": "لم يتم العثور على مستخدم بهذا البريد الإلكتروني.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "لا يمكن التراجع عن هذا الإجراء.",
+  "adminBulkDeleteConfirmMessage": "ستتم أرشفة المنتجات ويمكن استعادتها عند الحاجة.",
   "adminBulkMarkSoldSuccess": "تم وضع علامة مُباع على {count} منتج.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "تم حذف {count} منتج.",
+  "adminBulkDeleteSuccess": "تمت أرشفة {count} منتج.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

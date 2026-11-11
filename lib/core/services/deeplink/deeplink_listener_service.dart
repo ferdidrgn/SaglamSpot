@@ -52,12 +52,12 @@ final class DeeplinkListener {
     // Bu yüzden sorgu dizesi MUTLAKA path'e geri eklenir.
     final String location = uri.query.isEmpty ? path : '$path?${uri.query}';
 
-    debugPrint('🔗 Deeplink yakalandı: $location');
+    if (kDebugMode) debugPrint('🔗 Deeplink yakalandı: ${uri.path}');
 
     // Mevcut konum kontrolü (Sonsuz döngü ve gereksiz render önleyici)
     final currentPath = router.routerDelegate.currentConfiguration.uri.toString();
     if (currentPath == location) {
-      debugPrint('ℹ️ Zaten hedef sayfadasınız: $location');
+      if (kDebugMode) debugPrint('ℹ️ Deeplink hedefi zaten açık.');
       return;
     }
 
@@ -65,7 +65,7 @@ final class DeeplinkListener {
       // Tarayıcı geçmişi ve URL çubuğu senkronizasyonu için 'go' kullanıyoruz
       router.go(location);
     } catch (e) {
-      debugPrint('❌ Geçersiz Deeplink Yolu: $location');
+      debugPrint('❌ Geçersiz Deeplink yolu.');
     }
   }
 

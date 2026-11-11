@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Ο χρήστης δεν βρέθηκε.",
   "authErrorAdminCheckTimeout": "Ο έλεγχος εξουσιοδότησης έληξε.",
   "authErrorNotAdmin": "Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.",
+  "authErrorEmailNotVerified": "Επαληθεύστε το email διαχειριστή και συνδεθείτε ξανά. Στάλθηκε email επαλήθευσης.",
   "authErrorInvalidEmail": "Μη έγκυρη διεύθυνση email.",
   "authErrorUserDisabled": "Αυτός ο λογαριασμός έχει απενεργοποιηθεί.",
   "authErrorAccountNotFound": "Δεν βρέθηκε χρήστης με αυτό το email.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
+  "adminBulkDeleteConfirmMessage": "Τα προϊόντα θα αρχειοθετηθούν και μπορούν να αποκατασταθούν αν χρειαστεί.",
   "adminBulkMarkSoldSuccess": "{count} προϊόντα σημειώθηκαν ως πουλημένα.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} προϊόντα διαγράφηκαν.",
+  "adminBulkDeleteSuccess": "Αρχειοθετήθηκαν {count} προϊόντα.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

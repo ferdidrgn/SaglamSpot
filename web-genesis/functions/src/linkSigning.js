@@ -1,15 +1,11 @@
 /**
- * functions/index.js'teki sitemap() fonksiyonunun signProductId/toSlug'ı
+ * functions/index.js'teki sitemap() fonksiyonunun toSlug'ı
  * ve lib/core/services/deeplink/deeplink_service.dart +
  * lib/core/common/extentions/reg_exp_extentions.dart ile AYNI algoritma —
  * DEĞİŞTİRME. Buradaki bir karakter farkı bile mobil uygulamadan paylaşılan
  * linklerin (veya bu sitenin kendi ürettiği linklerin) doğrulamasını
  * bozar.
  */
-const {createHmac} = require("node:crypto");
-
-const HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
-
 /**
  * lib/core/services/deeplink/deeplink_service.dart'taki `_domain` ile
  * AYNI. web-genesis bu domain'i artık devraldı (saglamspotcu.web.app
@@ -19,10 +15,6 @@ const HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
  * mobil uygulamaya açılabiliyor.
  */
 const SHARE_DOMAIN = "https://saglamspotcu.web.app";
-
-function signProductId(id) {
-  return createHmac("sha256", HMAC_SECRET).update(id, "utf8").digest("hex");
-}
 
 function toSlug(name) {
   return (name || "")
@@ -39,15 +31,13 @@ function toSlug(name) {
 
 function productPath(id, name) {
   const slug = toSlug(name);
-  const sig = signProductId(id);
-  return `/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${sig}`;
+  return `/product/${encodeURIComponent(`${slug}-${id}`)}`;
 }
 
 /** Aynı ürün, WhatsApp mesajlarında kullanılan MUTLAK (SHARE_DOMAIN'li) link. */
 function productShareUrl(id, name) {
   const slug = toSlug(name);
-  const sig = signProductId(id);
-  return `${SHARE_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${sig}`;
+  return `${SHARE_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}`;
 }
 
 // lib/core/services/deeplink/deeplink_service.dart'taki encodeCartItemsParam
@@ -58,8 +48,7 @@ function encodeCartItemsParam(items) {
 
 function cartShareUrl(items) {
   const itemsParam = encodeCartItemsParam(items);
-  const sig = signProductId(itemsParam);
-  return `${SHARE_DOMAIN}/cart?items=${encodeURIComponent(itemsParam)}&sig=${sig}`;
+  return `${SHARE_DOMAIN}/cart?items=${encodeURIComponent(itemsParam)}`;
 }
 
-module.exports = {signProductId, toSlug, productPath, productShareUrl, encodeCartItemsParam, cartShareUrl, SHARE_DOMAIN};
+module.exports = {toSlug, productPath, productShareUrl, encodeCartItemsParam, cartShareUrl, SHARE_DOMAIN};

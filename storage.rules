@@ -20,12 +20,19 @@ service firebase.storage {
 
     function isAdmin() {
       return request.auth != null &&
+        request.auth.token.email_verified == true &&
         firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email));
     }
 
     match /product_images/{productId}/{fileName} {
       allow read: if true;
-      allow write: if isAdmin();
+      // Admin hesabı ele geçirilse bile keyfi dosya/çok büyük yükleme ile
+      // bucket'ın kötüye kullanılmasını sınırla. Uygulama tüm ürün görsellerini
+      // JPEG olarak ve numaralı dosya adıyla yükler.
+      allow write: if isAdmin()
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType == 'image/jpeg'
+        && fileName.matches('^[0-9]+\\.jpg$');
     }
 
     match /studio_images/{fileName} {

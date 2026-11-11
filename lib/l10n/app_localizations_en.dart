@@ -548,6 +548,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'This account does not have admin privileges.';
+  @override
+  String get authErrorEmailNotVerified => 'Verify your admin email address and sign in again. A verification email was sent.';
 
   @override
   String get authErrorInvalidEmail => 'Invalid email address.';

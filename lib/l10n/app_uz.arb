@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Foydalanuvchi topilmadi.",
   "authErrorAdminCheckTimeout": "Ruxsatni tekshirish vaqti tugadi.",
   "authErrorNotAdmin": "Bu hisobda administrator huquqlari yo'q.",
+  "authErrorEmailNotVerified": "Administrator emailini tasdiqlang va qayta kiring. Tasdiqlash xati yuborildi.",
   "authErrorInvalidEmail": "Elektron pochta manzili yaroqsiz.",
   "authErrorUserDisabled": "Bu hisob faolsizlantirilgan.",
   "authErrorAccountNotFound": "Bu elektron pochta bilan foydalanuvchi topilmadi.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Bu amalni ortga qaytarib bo'lmaydi.",
+  "adminBulkDeleteConfirmMessage": "Mahsulotlar arxivlanadi va kerak bo'lsa tiklanadi.",
   "adminBulkMarkSoldSuccess": "{count} mahsulot sotilgan deb belgilandi.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} mahsulot o'chirildi.",
+  "adminBulkDeleteSuccess": "{count} mahsulot arxivlandi.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

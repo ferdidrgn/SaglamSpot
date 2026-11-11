@@ -1,7 +1,7 @@
 import {
   auth, db, storage, functions,
   onAuthStateChanged, firebaseSignOut, isCurrentUserAdmin,
-  collection, doc, getDocs, setDoc, updateDoc, deleteDoc, addDoc,
+  collection, doc, getDocs, setDoc, updateDoc, addDoc,
   query, where, orderBy, limit, Timestamp, serverTimestamp,
   storageRef, uploadBytes, getDownloadURL, deleteObject,
   httpsCallable,
@@ -77,6 +77,7 @@ const fabBtn = document.getElementById("admin-fab-btn");
 
 let productsCache = [];
 const selectedIds = new Set();
+let canPermanentlyDelete = false;
 
 // --- Sekmeler (Ürünler / İstatistikler) ---
 document.querySelectorAll("[data-admin-tab]").forEach((tabBtn) => {
@@ -175,6 +176,8 @@ onAuthStateChanged(auth, async (user) => {
       window.location.href = "/admin/login";
       return;
     }
+    const adminProfile = await getDoc(doc(db, "admins", user.email || ""));
+    canPermanentlyDelete = adminProfile.data()?.canPermanentlyDelete === true;
     await loadProducts();
   } catch (err) {
     console.error("Admin oturum kontrolü başarısız:", err);
@@ -257,6 +260,8 @@ function renderList() {
     row.querySelector("[data-action=toggle-sold]").addEventListener("click", () => toggleField(docId, "isSold"));
     row.querySelector("[data-action=toggle-reserved]").addEventListener("click", () => toggleField(docId, "isReserved"));
     row.querySelector("[data-action=delete]").addEventListener("click", () => handleDelete(docId));
+    row.querySelector("[data-action=permanent-delete]")?.addEventListener(
+        "click", () => handlePermanentDelete(docId));
   });
 
   updateBulkBar();
@@ -294,7 +299,8 @@ function renderRow(p) {
   </div>
   <div class="admin-row-actions">
     <button type="button" class="admin-row-icon-btn" data-action="edit" aria-label="Düzenle" title="Düzenle">${EDIT_ICON}</button>
-    <button type="button" class="admin-row-icon-btn admin-danger-btn" data-action="delete" aria-label="Sil" title="Sil">${TRASH_ICON}</button>
+    <button type="button" class="admin-row-icon-btn admin-danger-btn" data-action="delete" aria-label="Arşivle" title="Arşivle">${TRASH_ICON}</button>
+    ${canPermanentlyDelete ? '<button type="button" class="admin-row-icon-btn admin-danger-btn" data-action="permanent-delete" aria-label="Kalıcı sil" title="Kalıcı sil">×</button>' : ""}
   </div>
 </div>`;
 }
@@ -482,6 +488,7 @@ async function bulkSetSold(sold) {
     await Promise.all(ids.map((id) => updateDoc(doc(db, "Product", id), {
       isSold: sold,
       _soldAt: sold ? formattedNow() : "",
+      lastModifiedBy: auth.currentUser?.email || "",
     })));
     await Promise.all(newlySold.map((p) => logSaleEvent(p)));
     selectedIds.clear();
@@ -495,12 +502,13 @@ async function bulkSetSold(sold) {
 async function handleBulkDelete() {
   const ids = [...selectedIds];
   if (!ids.length) return;
-  if (!window.confirm(`${ids.length} ürün silinsin mi? Bu geri alınamaz.`)) return;
+  if (!window.confirm(`${ids.length} ürün arşivlensin mi? Gerektiğinde geri yüklenebilir.`)) return;
   try {
-    await Promise.all(ids.map((id) => deleteDoc(doc(db, "Product", id))));
+    const archive = httpsCallable(functions, "archiveProduct");
+    await Promise.all(ids.map((id) => archive({productId: id, reason: "admin_bulk_archive"})));
     selectedIds.clear();
     await loadProducts();
-    toast(`${ids.length} ürün silindi.`);
+    toast(`${ids.length} ürün arşivlendi.`);
   } catch (err) {
     toast("Toplu silme başarısız: " + err.message, {error: true});
   }
@@ -511,6 +519,7 @@ async function toggleField(docId, field) {
   if (!product) return;
   const next = !product[field];
   const update = {[field]: next};
+  update.lastModifiedBy = auth.currentUser?.email || "";
   if (field === "isSold") update._soldAt = next ? formattedNow() : "";
   try {
     await updateDoc(doc(db, "Product", docId), update);
@@ -525,13 +534,30 @@ async function toggleField(docId, field) {
 async function handleDelete(docId) {
   const product = findByDocId(docId);
   if (!product) return;
-  if (!window.confirm(`"${product.name}" silinsin mi? Bu geri alınamaz.`)) return;
+  if (!window.confirm(`"${product.name}" arşivlensin mi? Gerektiğinde geri yüklenebilir.`)) return;
   try {
-    await deleteDoc(doc(db, "Product", docId));
+    const archive = httpsCallable(functions, "archiveProduct");
+    await archive({productId: docId, reason: "admin_archive"});
     await loadProducts();
-    toast("Ürün silindi.");
+    toast("Ürün arşivlendi.");
   } catch (err) {
     toast("Silinemedi: " + err.message, {error: true});
+  }
+}
+
+async function handlePermanentDelete(docId) {
+  const product = findByDocId(docId);
+  if (!product || !canPermanentlyDelete) return;
+  const typed = window.prompt(
+      `"${product.name}" kalıcı olarak silinecek. Bu işlem geri alınamaz. Onay için PERMANENTLY_DELETE yazın:`);
+  if (typed !== "PERMANENTLY_DELETE") return;
+  try {
+    const permanentlyDelete = httpsCallable(functions, "permanentlyDeleteProduct");
+    await permanentlyDelete({productId: docId, confirmation: typed});
+    await loadProducts();
+    toast("Ürün kalıcı olarak silindi.");
+  } catch (err) {
+    toast("Kalıcı silme başarısız: " + err.message, {error: true});
   }
 }
 
@@ -793,6 +819,7 @@ async function handleSubmit(event) {
       _updatedAt: now,
       _createdAt: existing ? (existing._createdAt || now) : now,
       _soldAt: existing ? (existing._soldAt || "") : "",
+      lastModifiedBy: auth.currentUser?.email || "",
     };
 
     await setDoc(docRef, data);

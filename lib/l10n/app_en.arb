@@ -204,6 +204,7 @@
   "authErrorUserNotFound": "User not found.",
   "authErrorAdminCheckTimeout": "Authorization check timed out.",
   "authErrorNotAdmin": "This account does not have admin privileges.",
+  "authErrorEmailNotVerified": "Verify your admin email address and sign in again. A verification email was sent.",
   "authErrorInvalidEmail": "Invalid email address.",
   "authErrorUserDisabled": "This account has been disabled.",
   "authErrorAccountNotFound": "No user found with this email.",
@@ -1007,7 +1008,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "This action cannot be undone.",
+  "adminBulkDeleteConfirmMessage": "Products will be archived and can be restored if needed.",
   "adminBulkMarkSoldSuccess": "{count} products marked as sold.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -1016,7 +1017,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} products deleted.",
+  "adminBulkDeleteSuccess": "{count} products archived.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

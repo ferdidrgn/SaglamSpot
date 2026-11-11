@@ -556,6 +556,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'Dieses Konto verfügt nicht über Administratorrechte.';
+  @override
+  String get authErrorEmailNotVerified => 'Bestätigen Sie die Admin-E-Mail und melden Sie sich erneut an. Eine Bestätigungs-E-Mail wurde gesendet.';
 
   @override
   String get authErrorInvalidEmail => 'Ungültige E-Mail-Adresse.';

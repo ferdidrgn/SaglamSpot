@@ -548,6 +548,8 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'Цей обліковий запис не має прав адміністратора.';
+  @override
+  String get authErrorEmailNotVerified => 'Підтвердьте електронну пошту адміністратора та увійдіть знову. Лист надіслано.';
 
   @override
   String get authErrorInvalidEmail => 'Недійсна адреса електронної пошти.';

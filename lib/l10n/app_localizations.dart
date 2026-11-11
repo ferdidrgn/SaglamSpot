@@ -1130,6 +1130,8 @@ abstract class AppLocalizations {
   /// **'Bu hesabın yönetici yetkisi bulunmuyor.'**
   String get authErrorNotAdmin;
 
+  String get authErrorEmailNotVerified;
+
   /// No description provided for @authErrorInvalidEmail.
   ///
   /// In tr, this message translates to:

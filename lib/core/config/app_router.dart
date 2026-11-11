@@ -32,34 +32,28 @@ import '../../features/sss/presentation/pages/sss_page.dart' deferred as sss;
 import '../../shared/navigation/widgets/navigation.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../services/admin_session_cache.dart';
-import '../services/deeplink/deeplink_service.dart';
 import '../services/onboarding_cache.dart';
 
 mixin DeepLinkSecurityEngine {
-  /// Gelen link imzasını sabit zamanlı (constant-time) algoritma döngüsü ile güvenli bir şekilde doğrular.
-  /// İmza, FurnitureShareService.signProductId ile AYNI anahtar/algoritma
-  /// kullanılarak üretilir — tek kaynak, iki farklı sırrın birbirini asla
-  /// doğrulayamaması riskini ortadan kaldırır.
+  /// Ürün/sepet linkleri herkese açık vitrin verisidir. Burada imza sırrı
+  /// tutulmaz; yalnızca gelen kimlik ve sepet biçimi doğrulanır. Yetki kontrolü
+  /// gerektiren hiçbir işlem bu linklerle yapılmaz.
   static bool verifySignedIdentifier(
-      final String rawId, final String signature) {
-    if (rawId.isEmpty || signature.isEmpty) return false;
-    try {
-      final String calculatedSignature =
-          FurnitureShareService.signProductId(rawId);
-      return _fixedTimeStringEquals(calculatedSignature, signature);
-    } catch (_) {
-      return false;
+      final String rawId, final String _signature) {
+    if (rawId.isEmpty || rawId.length > 200) return false;
+    if (rawId.contains(RegExp(r'[\u0000-\u001F\u007F]'))) return false;
+    if (rawId.contains(':')) {
+      return rawId.split(',').every((final item) {
+        final parts = item.split(':');
+        final quantity = int.tryParse(parts.length == 2 ? parts[1] : '');
+        return parts.length == 2 &&
+            RegExp(r'^[A-Za-z0-9_-]{1,120}$').hasMatch(parts[0]) &&
+            quantity != null &&
+            quantity >= 1 &&
+            quantity <= 99;
+      });
     }
-  }
-
-  /// Karakterleri bit düzeyinde XOR işlemine sokarak zamanlama analizi (side-channel timing) açıklarını engeller
-  static bool _fixedTimeStringEquals(final String a, final String b) {
-    if (a.length != b.length) return false;
-    int result = 0;
-    for (int i = 0; i < a.length; i++) {
-      result |= a.codeUnitAt(i) ^ b.codeUnitAt(i);
-    }
-    return result == 0;
+    return RegExp(r'^[A-Za-z0-9_-]{1,120}$').hasMatch(rawId);
   }
 }
 
@@ -278,9 +272,8 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
       GoRoute(
         path: '/cart',
         name: 'cart',
-        // WhatsApp'ta esnafa giden "Tüm ürünler: .../cart?items=...&sig=..."
-        // linkine tıklanınca, aynı imza mekanizmasıyla (product linkleriyle
-        // AYNI HMAC anahtarı) doğrulanan bir liste varsa sepete otomatik
+        // WhatsApp'ta esnafa giden "Tüm ürünler: .../cart?items=..."
+        // linkine tıklanınca biçim doğrulamasından geçen liste varsa sepete otomatik
         // yüklenir — esnaf mesajı tek tek okuyup ürün aramak yerine, sepeti
         // doğrudan uygulamada, gerçek ürün kartlarıyla görür.
         pageBuilder: (final context, final state) {
@@ -397,8 +390,7 @@ final appRouterProvider = Provider<GoRouter>((final Ref ref) {
             inboundSig,
           );
 
-          // Mobil cihazlarda imzasız derin linklerin içeriğe erişmesini engelle
-          if (!isSecure && !kIsWeb) {
+          if (!isSecure) {
             return const NoTransitionPage(
               child: ArchitecturalErrorScreen(
                   message: 'GÜVENLİK DOĞRULAMASI BAŞARISIZ'),

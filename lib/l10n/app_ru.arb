@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Пользователь не найден.",
   "authErrorAdminCheckTimeout": "Истекло время проверки авторизации.",
   "authErrorNotAdmin": "У этой учётной записи нет прав администратора.",
+  "authErrorEmailNotVerified": "Подтвердите электронную почту администратора и войдите снова. Письмо отправлено.",
   "authErrorInvalidEmail": "Недействительный адрес электронной почты.",
   "authErrorUserDisabled": "Эта учётная запись отключена.",
   "authErrorAccountNotFound": "Пользователь с таким email не найден.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Это действие нельзя отменить.",
+  "adminBulkDeleteConfirmMessage": "Товары будут помещены в архив и при необходимости восстановлены.",
   "adminBulkMarkSoldSuccess": "{count} товаров отмечены как проданные.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} товаров удалено.",
+  "adminBulkDeleteSuccess": "{count} товаров помещено в архив.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

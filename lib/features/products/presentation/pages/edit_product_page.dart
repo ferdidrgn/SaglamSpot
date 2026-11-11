@@ -121,6 +121,16 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
       );
     }
 
+    ref.listen<AsyncValue<void>>(productMutationProvider,
+        (final previous, final next) {
+      if (!mounted || next is! AsyncError) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: AppColors.error,
+        content: Text(
+            '${context.l10n.authOrConnectionError}: ${next.error}'),
+      ));
+    });
+
     final mutationState = ref.watch(productMutationProvider);
 
     return AtelierBackground(
@@ -464,6 +474,11 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
           updatedProduct,
           _newSelectedImages.isEmpty ? null : _newSelectedImages,
         );
+
+    // Firestore/Storage başarısızsa aşağıdaki satış metriği ve geri dönüş
+    // çalışmamalı; aksi halde admin ekranı başarı olmuş gibi kapanıyordu.
+    final mutationResult = ref.read(productMutationProvider);
+    if (mutationResult is AsyncError) return;
 
     // Admin > İstatistikler ekranındaki "satış" metriği ve gelir trendi
     // BURADAN gelir — sadece satılmamış → satıldı GEÇİŞİNDE (tekrar

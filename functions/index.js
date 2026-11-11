@@ -25,14 +25,14 @@
  */
 
 const {onCall, onRequest, HttpsError} = require("firebase-functions/v2/https");
-const {onDocumentCreated, onDocumentDeleted, onDocumentUpdated} = require("firebase-functions/v2/firestore");
+const {onDocumentCreated, onDocumentDeleted, onDocumentUpdated, onDocumentWritten} = require("firebase-functions/v2/firestore");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {defineSecret} = require("firebase-functions/params");
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore, FieldValue} = require("firebase-admin/firestore");
 const {getStorage} = require("firebase-admin/storage");
 const {getMessaging} = require("firebase-admin/messaging");
-const {randomUUID, createHmac} = require("crypto");
+const {randomUUID} = require("crypto");
 
 initializeApp();
 
@@ -58,9 +58,21 @@ async function assertIsAdmin(request) {
   if (!email) {
     throw new HttpsError("unauthenticated", "Bu işlem için giriş yapmış bir admin hesabı gerekli.");
   }
+  if (request.auth.token.email_verified !== true) {
+    throw new HttpsError("permission-denied", "Admin e-posta adresi doğrulanmalı.");
+  }
   const adminDoc = await getFirestore().doc(`admins/${email}`).get();
   if (!adminDoc.exists) {
     throw new HttpsError("permission-denied", "Bu işlem sadece admin hesapları için kullanılabilir.");
+  }
+}
+
+async function assertCanPermanentlyDelete(request) {
+  await assertIsAdmin(request);
+  const email = request.auth.token.email;
+  const adminSnap = await getFirestore().doc(`admins/${email}`).get();
+  if (adminSnap.data()?.canPermanentlyDelete !== true) {
+    throw new HttpsError("permission-denied", "Kalıcı silme yalnızca yetkili süper admin içindir.");
   }
 }
 
@@ -104,6 +116,13 @@ exports.removeProductBackground = onCall(
       const imageBase64 = request.data && request.data.imageBase64;
       if (!imageBase64 || typeof imageBase64 !== "string") {
         throw new HttpsError("invalid-argument", "imageBase64 gerekli.");
+      }
+      // Callable istek gövdesi remove.bg kotasını ve function belleğini
+      // tüketebilecek kadar büyütülemesin. İstemci tarafı sınırı 7 MiB ham
+      // görsel; base64 karşılığı yaklaşık 9.4 MiB'dir.
+      const maxBase64Length = 10 * 1024 * 1024;
+      if (imageBase64.length > maxBase64Length || !/^[A-Za-z0-9+/=]+$/.test(imageBase64)) {
+        throw new HttpsError("invalid-argument", "Geçersiz veya çok büyük görsel.");
       }
 
       const db = getFirestore();
@@ -188,6 +207,14 @@ exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event
   const data = event.data && event.data.data();
   if (!data) return;
 
+  // Admin panelindeki "sil" işlemi önce DeletedProduct arşivine taşır.
+  // Arşiv kaydı varsa görselleri silme; geri yükleme mümkün kalmalıdır.
+  const archived = await getFirestore()
+      .collection("DeletedProduct")
+      .doc(event.params.productId)
+      .get();
+  if (archived.exists) return;
+
   const urls = [
     ...(Array.isArray(data.imagesUrl) ? data.imagesUrl : []),
     ...(Array.isArray(data.studioImagesUrl) ? data.studioImagesUrl : []),
@@ -201,6 +228,145 @@ exports.onProductDeleted = onDocumentDeleted("Product/{productId}", async (event
     if (!path) return;
     await bucket.file(path).delete().catch(() => {});
   }));
+});
+
+/**
+ * Ürünü kalıcı olarak silmek yerine sunucu tarafında arşivler. İstemci
+ * DeletedProduct koleksiyonuna erişemez; admin doğrulaması burada tekrar edilir.
+ */
+exports.archiveProduct = onCall(async (request) => {
+  await assertIsAdmin(request);
+  const productId = request.data && request.data.productId;
+  const reason = request.data && request.data.reason;
+  if (typeof productId !== "string" || !/^[A-Za-z0-9_-]{1,120}$/.test(productId)) {
+    throw new HttpsError("invalid-argument", "Geçersiz ürün kimliği.");
+  }
+
+  const db = getFirestore();
+  const productRef = db.collection("Product").doc(productId);
+  const archiveRef = db.collection("DeletedProduct").doc(productId);
+  const productSnap = await productRef.get();
+  if (!productSnap.exists) throw new HttpsError("not-found", "Ürün bulunamadı.");
+
+  const email = request.auth.token.email;
+  const archivedData = {
+    ...productSnap.data(),
+    _archivedAt: FieldValue.serverTimestamp(),
+    _archivedBy: email,
+    _archiveReason: typeof reason === "string" ? reason.slice(0, 300) : "admin_archive",
+  };
+  await db.runTransaction(async (tx) => {
+    const current = await tx.get(productRef);
+    if (!current.exists) throw new HttpsError("not-found", "Ürün bulunamadı.");
+    tx.create(archiveRef, archivedData);
+    tx.delete(productRef);
+  });
+  await db.collection("admin_audit_logs").add({
+    action: "product_archived",
+    productId,
+    actorEmail: email,
+    reason: archivedData._archiveReason,
+    createdAt: FieldValue.serverTimestamp(),
+  });
+  return {success: true};
+});
+
+/** Yalnızca admin için arşivden geri yükleme. */
+exports.restoreProduct = onCall(async (request) => {
+  await assertIsAdmin(request);
+  const productId = request.data && request.data.productId;
+  if (typeof productId !== "string" || !/^[A-Za-z0-9_-]{1,120}$/.test(productId)) {
+    throw new HttpsError("invalid-argument", "Geçersiz ürün kimliği.");
+  }
+  const db = getFirestore();
+  const archiveRef = db.collection("DeletedProduct").doc(productId);
+  const productRef = db.collection("Product").doc(productId);
+  const archiveSnap = await archiveRef.get();
+  if (!archiveSnap.exists) throw new HttpsError("not-found", "Arşiv kaydı bulunamadı.");
+  if ((await productRef.get()).exists) {
+    throw new HttpsError("already-exists", "Bu ürün kimliği zaten kullanımda.");
+  }
+
+  const restored = {...archiveSnap.data()};
+  delete restored._archivedAt;
+  delete restored._archivedBy;
+  delete restored._archiveReason;
+  await db.runTransaction(async (tx) => {
+    tx.create(productRef, restored);
+    tx.delete(archiveRef);
+  });
+  await db.collection("admin_audit_logs").add({
+    action: "product_restored",
+    productId,
+    actorEmail: request.auth.token.email,
+    createdAt: FieldValue.serverTimestamp(),
+  });
+  return {success: true};
+});
+
+/**
+ * Kalıcı silme: yalnızca admins/{email}.canPermanentlyDelete=true olan,
+ * doğrulanmış süper admin çağırabilir. Normal panel işlemi arşivlemedir.
+ */
+exports.permanentlyDeleteProduct = onCall(async (request) => {
+  await assertCanPermanentlyDelete(request);
+  const productId = request.data && request.data.productId;
+  const confirmation = request.data && request.data.confirmation;
+  if (typeof productId !== "string" || !/^[A-Za-z0-9_-]{1,120}$/.test(productId) ||
+      confirmation !== "PERMANENTLY_DELETE") {
+    throw new HttpsError("invalid-argument", "Ürün kimliği veya onay geçersiz.");
+  }
+
+  const db = getFirestore();
+  const productRef = db.collection("Product").doc(productId);
+  const archiveRef = db.collection("DeletedProduct").doc(productId);
+  const productSnap = await productRef.get();
+  const archiveSnap = await archiveRef.get();
+  const sourceSnap = productSnap.exists ? productSnap : archiveSnap;
+  if (!sourceSnap.exists) throw new HttpsError("not-found", "Ürün bulunamadı.");
+  const data = sourceSnap.data() || {};
+  const auditRef = db.collection("admin_audit_logs").doc();
+  await db.runTransaction(async (tx) => {
+    tx.create(auditRef, {
+      action: "product_permanently_deleted",
+      productId,
+      actorEmail: request.auth.token.email,
+      source: productSnap.exists ? "Product" : "DeletedProduct",
+      createdAt: FieldValue.serverTimestamp(),
+    });
+    if (productSnap.exists) tx.delete(productRef);
+    if (archiveSnap.exists) tx.delete(archiveRef);
+  });
+
+  const urls = [
+    ...(Array.isArray(data.imagesUrl) ? data.imagesUrl : []),
+    ...(Array.isArray(data.studioImagesUrl) ? data.studioImagesUrl : []),
+  ].filter((url) => typeof url === "string" && url.length > 0);
+  const bucket = getStorage().bucket();
+  await Promise.all(urls.map(async (url) => {
+    const path = storagePathFromUrl(url);
+    if (path) await bucket.file(path).delete().catch(() => {});
+  }));
+  return {success: true};
+});
+
+/** Ürün oluşturma/düzenleme olaylarını append-only audit kaydına aktarır. */
+exports.auditProductWrites = onDocumentWritten("Product/{productId}", async (event) => {
+  const before = event.data && event.data.before.exists ? event.data.before.data() : null;
+  const after = event.data && event.data.after.exists ? event.data.after.data() : null;
+  if (!before && !after) return;
+  const action = !before ? "product_created" : "product_updated";
+  const current = after || before;
+  const fields = ["name", "category", "price", "isSold", "isReserved", "isSpotProduct"];
+  const changedFields = action === "product_created" ? fields : fields.filter((key) =>
+    JSON.stringify(before[key]) !== JSON.stringify(after[key]));
+  await getFirestore().collection("admin_audit_logs").add({
+    action,
+    productId: event.params.productId,
+    actorEmail: current.lastModifiedBy || "unknown",
+    changedFields,
+    createdAt: FieldValue.serverTimestamp(),
+  });
 });
 
 /**
@@ -467,10 +633,8 @@ exports.notifyPriceDrop = onDocumentUpdated("Product/{productId}", async (event)
  *
  * `link` alanı (opsiyonel) iki şekilde gelebilir:
  *   - {linkType:"product", productId} → sunucu ürünü okur, sitemap()/
- *     prerender()'daki AYNI toSlug()/signProductId() ile imzalı
- *     `/product/<slug>-<id>?sig=...` yolunu üretir (dışa paylaşılan
- *     linklerle AYNI imzalama şeması — DeepLinkSecurityEngine ekstra bir
- *     kod değişikliği gerektirmeden doğrular).
+ *     prerender()'daki AYNI toSlug() ile herkese açık
+ *     `/product/<slug>-<id>` yolunu üretir.
  *   - {linkType:"page", page} SABİT, güvenli bir liste içinden (açık
  *     yönlendirme/arbitrary path riski olmasın diye).
  * Bildirime dokunulduğunda bu yol `NavigationHandler.globalGoTo` ile
@@ -607,7 +771,7 @@ exports.sendCampaignNotification = onCall(
         const productSnap = await db.collection("Product").doc(productId).get();
         if (!productSnap.exists) throw new HttpsError("not-found", "Ürün bulunamadı.");
         const productData = productSnap.data();
-        data.path = `/product/${encodeURIComponent(`${toSlug(productData.name)}-${productId}`)}?sig=${signProductId(productId)}`;
+        data.path = `/product/${encodeURIComponent(`${toSlug(productData.name)}-${productId}`)}`;
         if (Array.isArray(productData.imagesUrl) && productData.imagesUrl.length > 0) {
           imageUrl = productData.imagesUrl[0];
           data.imageUrl = imageUrl;
@@ -691,9 +855,7 @@ exports.sendCampaignNotification = onCall(
  * BİREBİR AYNI imzalama şemasını kullanır (bkz.
  * lib/core/services/deeplink/deeplink_service.dart ve
  * lib/core/common/extentions/reg_exp_extentions.dart). Buradaki
- * DOMAIN/HMAC_SECRET/toSlug() farklılaşırsa, üretilen linkler uygulamanın
- * kendi DeepLinkSecurityEngine.verifySignedIdentifier kontrolünü geçemez
- * (mobilde "GÜVENLİK DOĞRULAMASI BAŞARISIZ" ekranı gösterilir).
+ * DOMAIN/toSlug() farklılaşırsa, üretilen linklerin SEO yolu farklılaşır.
  *
  * firebase.json → hosting.rewrites içinde "/sitemap-products.xml" bu
  * fonksiyona yönlendirilir (SPA catch-all rewrite'ından ÖNCE tanımlı).
@@ -702,12 +864,6 @@ exports.sendCampaignNotification = onCall(
  * ETKİLENMEZ.
  */
 const SITEMAP_DOMAIN = "https://saglamspotcu.web.app";
-const SITEMAP_HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
-
-function signProductId(id) {
-  return createHmac("sha256", SITEMAP_HMAC_SECRET).update(id, "utf8").digest("hex");
-}
-
 // lib/core/common/extentions/reg_exp_extentions.dart'taki toSlug() ile
 // AYNI sırada, AYNI karakter eşleştirmeleriyle çalışmalı.
 function toSlug(name) {
@@ -829,8 +985,7 @@ exports.sitemap = onRequest({cors: true, memory: "256MiB"}, async (req, res) => 
       if (!id || !name) return;
 
       const slug = toSlug(name);
-      const signature = signProductId(id);
-      const loc = `${SITEMAP_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${signature}`;
+      const loc = `${SITEMAP_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}`;
       const lastmod = doc.updateTime ?
         doc.updateTime.toDate().toISOString().slice(0, 10) :
         today;
@@ -942,14 +1097,11 @@ function prerenderEscapeHtml(value) {
       .replace(/'/g, "&#39;");
 }
 
-// sitemap() fonksiyonundaki signProductId/toSlug ile AYNI — kasıtlı
-// olarak yeniden tanımlanmadı, doğrudan yukarıdakiler çağrılıyor ki iki
-// farklı imzalama mantığı birbirinden sapmasın.
+// sitemap() fonksiyonundaki toSlug ile AYNI mantık kullanılır.
 function prerenderProductUrl(data, fallbackId) {
   const id = data._id || fallbackId;
   const slug = toSlug(data.name);
-  const signature = signProductId(id);
-  return `${SITEMAP_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${signature}`;
+  return `${SITEMAP_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}`;
 }
 
 function prerenderPageShell({title, description, canonical, bodyHtml, jsonLd}) {

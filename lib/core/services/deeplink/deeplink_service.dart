@@ -1,5 +1,3 @@
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
 import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,34 +7,22 @@ import '../../util/comminucation_actions.dart';
 final class FurnitureShareService {
   FurnitureShareService._(); //
 
-  // ELITE SECURITY REFACTOR: WhatsApp/Mail uyarılarını aşmak için onaylı domain ve kriptografik anahtar
+  // Ürün ve sepet linkleri herkese açık vitrin verisidir; client-side secret
+  // güvenlik sınırı değildir. Yetki yalnızca Firestore/Storage kuralları ve
+  // admin callable'larıyla korunur.
   static const String _domain = "https://saglamspotcu.web.app";
-  static const String _hmacSecret = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
 
   /// Genel mağaza linki (tekil ürün değil) — sepet gibi toplu mesajlarda
   /// "tüm ürünleri görmek isterseniz" şeklinde eklenir.
   static String get storeUrl => _domain;
 
-  /// Tek kaynaktan HMAC imzası. Hem dışa paylaşılan linkler (bu dosya) hem
-  /// de router'daki (app_router.dart → DeepLinkSecurityEngine) doğrulama
-  /// hem de uygulama içi gezinme (NavigationHandler.goToProduct) AYNI bu
-  /// fonksiyonu ve aynı anahtarı kullanır — iki farklı anahtarla imzalanıp
-  /// asla doğrulanamayan linkler üretilmesin diye.
-  static String signProductId(final String id) {
-    final key = utf8.encode(_hmacSecret);
-    final bytes = utf8.encode(id);
-    final hmac = Hmac(sha256, key);
-    return hmac.convert(bytes).toString();
-  }
-
-  /// 🛋️ Kriptografik İmzalı Güvenli Ürün Linki Oluşturucu
+  /// 🛋️ Herkese açık ürün linki oluşturucu.
   static String generateProductUrl(final String id, final String name) {
     final slug = name.toSlug(); // SEO uyumlu isim
-    final signature = signProductId(id);
 
     // URL parametreleri tarayıcı standartlarına göre encode edilir
     final safeSlugWithId = Uri.encodeComponent("$slug-$id");
-    return "$_domain/product/$safeSlugWithId?sig=$signature";
+    return "$_domain/product/$safeSlugWithId";
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -52,8 +38,8 @@ final class FurnitureShareService {
     return items.map((final i) => '${i.productId}:${i.quantity}').join(',');
   }
 
-  /// Bozuk/eksik parçaları sessizce atlar — imzası zaten ayrı doğrulanıyor,
-  /// burada tek amaç güvenli parse.
+  /// Bozuk/eksik parçaları sessizce atlar; sepet yalnızca herkese açık ürün
+  /// verisini temsil eder, satın alma veya ödeme yetkisi taşımaz.
   static Map<String, int> decodeCartItemsParam(final String raw) {
     final result = <String, int>{};
     for (final part in raw.split(',')) {
@@ -69,8 +55,7 @@ final class FurnitureShareService {
   static String generateCartUrl(
       final Iterable<({String productId, int quantity})> items) {
     final itemsParam = encodeCartItemsParam(items);
-    final signature = signProductId(itemsParam);
-    return "$_domain/cart?items=${Uri.encodeComponent(itemsParam)}&sig=$signature";
+    return "$_domain/cart?items=${Uri.encodeComponent(itemsParam)}";
   }
 
   /// 📤 Ürün Paylaş

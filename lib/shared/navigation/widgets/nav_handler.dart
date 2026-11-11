@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/services/deeplink/deeplink_service.dart';
 import '../providers/navigation_keys.dart';
 
 /// 🧭 Global Navigation Handler
@@ -15,20 +14,16 @@ class NavigationHandler {
   // PRODUCT NAVIGATION
   // ═══════════════════════════════════════════════════════════════
 
-  /// Ürün detay sayfasına git (nereden geldiğini kaydet). `sig`, router'daki
-  /// (app_router.dart → DeepLinkSecurityEngine) native mobil imza
-  /// doğrulamasını geçebilmek için FurnitureShareService ile AYNI anahtarla
-  /// üretilir — bu olmadan native uygulamada uygulama-içi ürün gezinmesi
-  /// güvenlik ekranına takılır.
+  /// Ürün detay sayfasına git (nereden geldiğini kaydet). Ürünler herkese açık
+  /// vitrin verisi olduğu için client-side imza/secret kullanılmaz.
   static void goToProduct({
     required final BuildContext context,
     required final String productId,
     required final String productSlug,
   }) {
     final String currentPath = GoRouterState.of(context).uri.path;
-    final String sig = FurnitureShareService.signProductId(productId);
     final String targetPath =
-        '/product/$productSlug-$productId?from=${Uri.encodeComponent(currentPath)}&sig=$sig';
+        '/product/$productSlug-$productId?from=${Uri.encodeComponent(currentPath)}';
 
     context.go(targetPath);
   }
@@ -42,8 +37,10 @@ class NavigationHandler {
     final state = GoRouterState.of(context);
     final fromRoute = state.uri.queryParameters['from'];
 
-    if (fromRoute != null && fromRoute.isNotEmpty) // Nereden geldiyse oraya dön
-      context.go(Uri.decodeComponent(fromRoute));
+    if (fromRoute != null && fromRoute.isNotEmpty) {
+      final decoded = Uri.decodeComponent(fromRoute);
+      context.go(_isSafeInternalLocation(decoded) ? decoded : '/');
+    }
     else {
       // from bilgisi yoksa Navigator stack kontrol et
       if (Navigator.canPop(context))
@@ -131,8 +128,28 @@ class NavigationHandler {
       NavigationKeys.rootNavigatorKey.currentState;
 
   /// Örn: Bildirim geldiğinde BuildContext olmadan sayfaya yönlendirme
-  static void globalGoTo(final String location) =>
-      _rootNav?.context.go(location);
+  static void globalGoTo(final String location) {
+    if (_isSafeInternalLocation(location)) _rootNav?.context.go(location);
+  }
+
+  /// Bildirim/deeplink verisi dış girdidir. Harici URL'leri, admin rotasını,
+  /// şema kaçışlarını ve kontrol karakterlerini uygulama navigasyonuna sokma.
+  static bool _isSafeInternalLocation(final String location) {
+    if (location.isEmpty || location.contains(RegExp(r'[\u0000-\u001F\u007F]'))) {
+      return false;
+    }
+    final uri = Uri.tryParse(location);
+    if (uri == null || uri.isAbsolute || location.startsWith('//') || !location.startsWith('/')) {
+      return false;
+    }
+    final path = uri.path;
+    if (path == '/admin' || path.startsWith('/admin/')) return false;
+    const allowed = <String>{
+      '/', '/new', '/spot', '/discover', '/search', '/about', '/sss',
+      '/cart', '/favorites', '/settings', '/notifications', '/privacy', '/terms',
+    };
+    return allowed.contains(path) || path.startsWith('/product/');
+  }
 
   // ═══════════════════════════════════════════════════════════════
   // UTILITY

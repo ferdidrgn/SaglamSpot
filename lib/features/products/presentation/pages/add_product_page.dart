@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -273,9 +272,14 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       wearTier: _isSecondHand ? _selectedWearTier : null,
     );
 
+    // Web'de XFile.path yerel bir dosya yolu değildir. Her platformda ortak
+    // bayt akışını kullanmak, web'de ürün kaydının sessizce başarısız olmasını
+    // ve dart:io bağımlılığı yüzünden kırılmasını önler.
+    final imageBytes = await Future.wait(
+        _images.map((final image) => image.readAsBytes()));
     await ref
         .read(productMutationProvider.notifier)
-        .add(product, _images.map((final e) => File(e.path)).toList());
+        .add(product, imageBytes);
   }
 
   /// Stüdyo önizlemesi kaydet anında hâlâ sürüyorsa, bitene kadar

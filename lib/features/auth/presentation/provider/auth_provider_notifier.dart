@@ -26,6 +26,7 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
   static const String errUserNotFound = 'post-login-user-null';
   static const String errAdminCheckTimeout = 'admin-check-timeout';
   static const String errNotAdmin = 'not-admin';
+  static const String errEmailNotVerified = 'email-not-verified';
   static const String errFirebaseUnavailable = 'firebase-unavailable';
 
   FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -76,6 +77,13 @@ class AuthNotifier extends Notifier<AsyncValue<User?>> {
       final user = credential.user;
       if (user == null) {
         state = AsyncValue.error(errUserNotFound, StackTrace.current);
+        return;
+      }
+
+      if (!user.emailVerified) {
+        await user.sendEmailVerification().catchError((_) {});
+        await _auth.signOut();
+        state = AsyncValue.error(errEmailNotVerified, StackTrace.current);
         return;
       }
 

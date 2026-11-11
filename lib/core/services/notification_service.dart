@@ -85,7 +85,7 @@ final class NotificationService {
 
     final token = await FirebaseMessaging.instance.getToken();
     currentToken = token;
-    debugPrint('📲 FCM cihaz token: $token');
+    if (kDebugMode) debugPrint('📲 FCM cihaz token alındı.');
   }
 
   /// Kullanıcıyı doğrudan İŞLETİM SİSTEMİ bildirim ayarlarına götürür

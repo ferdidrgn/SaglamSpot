@@ -555,6 +555,8 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.';
+  @override
+  String get authErrorEmailNotVerified => 'Επαληθεύστε το email διαχειριστή και συνδεθείτε ξανά. Στάλθηκε email επαλήθευσης.';
 
   @override
   String get authErrorInvalidEmail => 'Μη έγκυρη διεύθυνση email.';

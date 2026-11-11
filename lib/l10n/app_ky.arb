@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Колдонуучу табылган жок.",
   "authErrorAdminCheckTimeout": "Уруксатты текшерүү убакыты бүттү.",
   "authErrorNotAdmin": "Бул аккаунттун админ укуктары жок.",
+  "authErrorEmailNotVerified": "Админдин электрондук почтасын ырастаңыз жана кайра кириңиз. Ырастоо каты жөнөтүлдү.",
   "authErrorInvalidEmail": "Электрондук почта дареги жарамсыз.",
   "authErrorUserDisabled": "Бул аккаунт өчүрүлгөн.",
   "authErrorAccountNotFound": "Бул электрондук почта менен колдонуучу табылган жок.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Бул аракетти артка кайтарууга болбойт.",
+  "adminBulkDeleteConfirmMessage": "Товарлар архивделет жана керек болсо калыбына келтирилет.",
   "adminBulkMarkSoldSuccess": "{count} товар сатылды деп белгиленди.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} товар өчүрүлдү.",
+  "adminBulkDeleteSuccess": "{count} товар архивделди.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

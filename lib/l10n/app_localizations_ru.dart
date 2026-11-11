@@ -549,6 +549,8 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'У этой учётной записи нет прав администратора.';
+  @override
+  String get authErrorEmailNotVerified => 'Подтвердите электронную почту администратора и войдите снова. Письмо отправлено.';
 
   @override
   String get authErrorInvalidEmail =>

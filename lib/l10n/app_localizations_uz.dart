@@ -549,6 +549,8 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'Bu hisobda administrator huquqlari yo\'q.';
+  @override
+  String get authErrorEmailNotVerified => 'Administrator emailini tasdiqlang va qayta kiring. Tasdiqlash xati yuborildi.';
 
   @override
   String get authErrorInvalidEmail => 'Elektron pochta manzili yaroqsiz.';

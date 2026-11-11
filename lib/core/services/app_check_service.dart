@@ -5,9 +5,20 @@ abstract final class AppCheckService {
   /// AppCheck'i başlatır. Hata olursa uygulamayı bloklamaz.
   /// Play Store'da playIntegrity, debug'da debug token kullanılır.
   static Future<void> init() async {
-    if (kIsWeb) return; // Web desteklenmiyor
-
     try {
+      if (kIsWeb) {
+        const siteKey = String.fromEnvironment('RECAPTCHA_V3_SITE_KEY');
+        if (siteKey.isEmpty) {
+          debugPrint('⚠️ Web App Check site key eksik; provider başlatılmadı.');
+          return;
+        }
+        await FirebaseAppCheck.instance
+            .activate(webProvider: ReCaptchaV3Provider(siteKey))
+            .timeout(const Duration(seconds: 8));
+        debugPrint('🛡️ Web App Check başarıyla aktif.');
+        return;
+      }
+
       await FirebaseAppCheck.instance
           .activate(
             androidProvider: kReleaseMode

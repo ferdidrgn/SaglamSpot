@@ -531,6 +531,8 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => '此账户没有管理员权限。';
+  @override
+  String get authErrorEmailNotVerified => '请验证管理员邮箱后重新登录。验证邮件已发送。';
 
   @override
   String get authErrorInvalidEmail => '邮箱地址无效。';

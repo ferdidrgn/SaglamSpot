@@ -75,24 +75,19 @@ export {
   httpsCallable,
 };
 
-// "Bu kullanıcı admin mi?" — firestore.rules'taki isAdmin() ile AYNI
-// mantık (bkz. o dosyadaki uzun not): admins/{email} dokümanının harf
-// durumu (karışık/küçük) garanti değil, bu yüzden TEK başına "doküman
-// var mı" kontrolüne güvenmek gerçek/tek admini (esnafın kendisi) bile
-// dışarıda bırakabiliyordu (admin paneli "Yükleniyor..."da sonsuza
-// kadar takılı kalıyordu). Mimari zaten SADECE admin oturum
-// açabildiğinden (müşteri tarafı girişsiz) - oturum açmış olmak TEK
-// BAŞINA yeterli; admins koleksiyonu kontrolü best-effort İKİNCİL bir
-// sinyal, hatası/eksikliği admin girişini ASLA engellemiyor.
+// "Bu kullanıcı admin mi?" — arayüzdeki kontrol yalnızca yönlendirme içindir;
+// gerçek yetki Firestore kuralları ve callable fonksiyonlardadır. Firestore
+// okuması başarısız olduğunda güvenli varsayılan FALSE olmalıdır. Hata halinde
+// true dönmek, yanlış yapılandırılmış/geçici gevşek bir backend kuralını gerçek
+// bir yetki açığına dönüştürebilirdi.
 export async function isCurrentUserAdmin() {
   const user = auth.currentUser;
-  if (!user) return false;
+  if (!user || !user.emailVerified) return false;
   try {
     const snap = await getDoc(doc(db, "admins", user.email || ""));
-    if (snap.exists()) return true;
+    return snap.exists();
   } catch (_) {
-    // Firestore okuma başarısız/reddedildi - yok say, aşağıdaki
-    // "oturum açmış = admin" kuralına düş.
+    // Firestore okuma başarısız/reddedildi — güvenli varsayılan.
+    return false;
   }
-  return true;
 }

@@ -226,6 +226,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         return l10n.authErrorAdminCheckTimeout;
       case AuthNotifier.errNotAdmin:
         return l10n.authErrorNotAdmin;
+      case AuthNotifier.errEmailNotVerified:
+        return l10n.authErrorEmailNotVerified;
       case 'invalid-email':
         return l10n.authErrorInvalidEmail;
       case 'user-disabled':

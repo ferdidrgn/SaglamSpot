@@ -204,6 +204,7 @@
   "authErrorUserNotFound": "Kullanıcı bulunamadı.",
   "authErrorAdminCheckTimeout": "Yetki kontrolü zaman aşımına uğradı.",
   "authErrorNotAdmin": "Bu hesabın yönetici yetkisi bulunmuyor.",
+  "authErrorEmailNotVerified": "Admin e-posta adresinizi doğrulayıp tekrar giriş yapın. Doğrulama e-postası gönderildi.",
   "authErrorInvalidEmail": "Geçersiz e-posta adresi.",
   "authErrorUserDisabled": "Bu hesap devre dışı bırakılmış.",
   "authErrorAccountNotFound": "Bu e-posta ile kayıtlı kullanıcı bulunamadı.",
@@ -1007,7 +1008,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Bu işlem geri alınamaz.",
+  "adminBulkDeleteConfirmMessage": "Ürün arşivlenecek; gerektiğinde geri yüklenebilir.",
   "adminBulkMarkSoldSuccess": "{count} ürün satıldı olarak işaretlendi.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -1016,7 +1017,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} ürün silindi.",
+  "adminBulkDeleteSuccess": "{count} ürün arşivlendi.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

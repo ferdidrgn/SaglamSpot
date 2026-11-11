@@ -1,6 +1,6 @@
 // web-genesis — ilerici geliştirme (progressive enhancement) giriş noktası.
 // Sepet tamamen istemci tarafında (localStorage) tutulur; sunucu hiçbir
-// sepet durumu bilmez. Burada üretilen ürün/sepet linkleri ve HMAC imzası
+// sepet durumu bilmez. Ürün/sepet linkleri herkese açık vitrin yollarıdır.
 // lib/core/services/deeplink/deeplink_service.dart ile AYNI algoritma —
 // DEĞİŞTİRME (bkz. web-genesis/functions/src/linkSigning.js'teki not).
 // Çevrilen metinler (locale'e bağlı) sayfanın kendisinden window.__DATA__
@@ -10,7 +10,6 @@
   "use strict";
 
   const STORAGE_KEY = "saglamspot_sepet_v1";
-  const HMAC_SECRET = "SAGLAM_SPOT_CYBER_SECURITY_KEY_2026";
   const SHARE_DOMAIN = "https://saglamspotcu.web.app";
   const PHONE = "905392019961";
   const CART_STRINGS = (window.__DATA__ && window.__DATA__.cartStrings) || {};
@@ -89,36 +88,14 @@
         .replace(/[^a-z0-9-]/g, "");
   }
 
-  let hmacKeyPromise = null;
-  function getHmacKey() {
-    if (!hmacKeyPromise) {
-      hmacKeyPromise = crypto.subtle.importKey(
-          "raw",
-          new TextEncoder().encode(HMAC_SECRET),
-          {name: "HMAC", hash: "SHA-256"},
-          false,
-          ["sign"],
-      );
-    }
-    return hmacKeyPromise;
-  }
-
-  async function signHex(message) {
-    const key = await getHmacKey();
-    const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message));
-    return Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("");
-  }
-
-  async function productShareUrl(id, name) {
+  function productShareUrl(id, name) {
     const slug = toSlug(name);
-    const sig = await signHex(id);
-    return `${SHARE_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}?sig=${sig}`;
+    return `${SHARE_DOMAIN}/product/${encodeURIComponent(`${slug}-${id}`)}`;
   }
 
-  async function cartShareUrl(items) {
+  function cartShareUrl(items) {
     const itemsParam = items.map((i) => `${i.id}:${i.quantity}`).join(",");
-    const sig = await signHex(itemsParam);
-    return `${SHARE_DOMAIN}/cart?items=${encodeURIComponent(itemsParam)}&sig=${sig}`;
+    return `${SHARE_DOMAIN}/cart?items=${encodeURIComponent(itemsParam)}`;
   }
 
   // Buton metni locale'e göre sunucuda zaten doğru basıldı (t(locale,

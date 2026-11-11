@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../../../../../../core/util/date_formatter.dart';
 import '../datasources/product_remote_data_source.dart';
@@ -107,9 +109,11 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final ProductModel product, final List<dynamic> images) async {
     if (images.isEmpty) throw Exception('Yüklenecek görsel bulunamadı');
 
+    List<String> uploadedUrls = const [];
     try {
       final productId = _productRef.doc().id;
       final uploaded = await _uploadImages(images, productId);
+      uploadedUrls = uploaded;
       // remove.bg ile üretilen "stüdyo" (arka plansız) görsel — admin
       // panelinde fotoğraf SEÇİLİR seçilmez, buraya gelmeden ÖNCE üretilip
       // product.studioImagesUrl alanına GEÇİCİ olarak taşınmış oluyor (bkz.
@@ -130,10 +134,13 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       data['_createdAt'] = now;
       data['_updatedAt'] = now;
       data['_soldAt'] = '';
+      data['lastModifiedBy'] = FirebaseAuth.instance.currentUser?.email ?? '';
 
       // 3. Firestore'a yazma
       await _productRef.doc(productId).set(data);
     } catch (e) {
+      // Firestore yazılamadıysa başarılı Storage yüklemeleri yetim kalmasın.
+      if (uploadedUrls.isNotEmpty) await _deleteImages(uploadedUrls);
       _throwError('Ürün eklenirken hata oluştu', e);
     }
   }
@@ -143,6 +150,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     final ProductModel product,
     final List<dynamic>? newImages,
   ) async {
+    List<String> newlyUploadedUrls = const [];
     try {
       // Düzenlemeden ÖNCEKİ (canlıdaki) foto listesini oku — admin'in bu
       // turda GERÇEKTEN kaldırdığı dosyaları bulmanın tek yolu bu
@@ -166,6 +174,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final imageUrls = await _handleImageUpdate(product, newImages);
       final finalStudioUrls =
           mergingNewStudio ? const <String>[] : product.studioImagesUrl;
+      if (newImages != null && newImages.isNotEmpty) {
+        final int keptCount = product.imagesUrl.length;
+        final int uploadedEnd = imageUrls.length -
+            (mergingNewStudio ? product.studioImagesUrl.length : 0);
+        if (uploadedEnd > keptCount) {
+          newlyUploadedUrls = imageUrls.sublist(keptCount, uploadedEnd);
+        }
+      }
       final now = _formattedNow();
 
       // GÜVENLİK/VERİ KAYBI DÜZELTMESİ: eskiden burada, yeni fotoğraf
@@ -182,8 +198,6 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
               !imageUrls.contains(u) &&
               !finalStudioUrls.contains(u))
           .toList();
-      if (removed.isNotEmpty) await _deleteImages(removed);
-
       final updateData = {
         'imagesUrl': imageUrls,
         'studioImagesUrl': finalStudioUrls,
@@ -192,9 +206,18 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
       final fullData = product.toFirestore();
       fullData.addAll(updateData);
+      fullData['lastModifiedBy'] = FirebaseAuth.instance.currentUser?.email ?? '';
 
       await _productRef.doc(product.id).update(fullData);
+
+      // Eski dosyaları ancak Firestore kaydı başarıyla güncellendikten sonra
+      // sil. Böylece kayıt başarısız olduğunda mevcut ürün fotoğrafsız kalmaz.
+      if (removed.isNotEmpty) await _deleteImages(removed);
     } catch (e) {
+      // Yeni yüklemeler kayda alınamadıysa Storage'da yetim bırakma.
+      if (newlyUploadedUrls.isNotEmpty) {
+        await _deleteImages(newlyUploadedUrls);
+      }
       _throwError('Ürün güncellenirken hata oluştu', e);
     }
   }
@@ -206,16 +229,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<void> deleteProduct(final String productId) async {
     try {
-      // Storage'daki görselleri (orijinal + stüdyo) İSTEMCİDEN silmiyoruz —
-      // stüdyo dosyaları yalnızca sunucu tarafındaki Admin SDK ile
-      // yazıldığından (bkz. functions/index.js -> removeProductBackground),
-      // istemciye onları silme izni veren bir Storage kuralı hiç yok; bu
-      // yüzden client-side silme denemesi sessizce yetkisiz kalıp hiçbir
-      // şey silmiyordu. Bunun yerine Firestore dokümanı silindiğinde
-      // sunucu tarafında (Admin SDK ile, kurallardan tamamen muaf) otomatik
-      // tetiklenen bir Cloud Function (onProductDeleted) Storage'daki tüm
-      // görselleri güvenilir şekilde temizliyor.
-      await _productRef.doc(productId).delete();
+      // Kalıcı silme yerine Cloud Function arşivler ve audit kaydı üretir.
+      // Böylece ürün ve görseller geri yüklenebilir kalır.
+      await FirebaseFunctions.instance.httpsCallable('archiveProduct').call({
+        'productId': productId,
+        'reason': 'admin_archive',
+      });
     } catch (e) {
       _throwError('Ürün silinirken hata oluştu', e);
     }
@@ -257,11 +276,21 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final ref = _storage.ref('product_images/$productId/${startIndex + i}.jpg');
 
       final image = images[i];
+      const maxImageBytes = 10 * 1024 * 1024;
+      final int imageBytes = image is File
+          ? await image.length()
+          : image is Uint8List
+              ? image.length
+              : 0;
+      if (imageBytes == 0 || imageBytes > maxImageBytes) {
+        throw Exception('Görsel 10 MB sınırını aşamaz');
+      }
+      const metadata = SettableMetadata(contentType: 'image/jpeg');
 
       if (image is File)
-        await ref.putFile(image);
+        await ref.putFile(image, metadata);
       else if (image is Uint8List)
-        await ref.putData(image);
+        await ref.putData(image, metadata);
       else
         throw Exception('Geçersiz görsel türü');
 

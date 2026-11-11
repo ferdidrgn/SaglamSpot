@@ -51,6 +51,8 @@
 		</array>
 		<key>FirebaseAppDelegateProxyEnabled</key>
 		<true/>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Ürün fotoğraflarını seçebilmek için fotoğraf arşivinize erişim gerekir.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

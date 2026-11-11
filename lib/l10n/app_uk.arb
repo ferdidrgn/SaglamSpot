@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "Користувача не знайдено.",
   "authErrorAdminCheckTimeout": "Час перевірки авторизації вичерпано.",
   "authErrorNotAdmin": "Цей обліковий запис не має прав адміністратора.",
+  "authErrorEmailNotVerified": "Підтвердьте електронну пошту адміністратора та увійдіть знову. Лист надіслано.",
   "authErrorInvalidEmail": "Недійсна адреса електронної пошти.",
   "authErrorUserDisabled": "Цей обліковий запис відключено.",
   "authErrorAccountNotFound": "Користувача з такою поштою не знайдено.",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "Цю дію неможливо скасувати.",
+  "adminBulkDeleteConfirmMessage": "Товари буде заархівовано, і за потреби їх можна буде відновити.",
   "adminBulkMarkSoldSuccess": "{count} товарів позначено як продані.",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "{count} товарів видалено.",
+  "adminBulkDeleteSuccess": "{count} товарів заархівовано.",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

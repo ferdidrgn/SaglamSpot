@@ -749,6 +749,7 @@
   "authErrorUserNotFound": "未找到用户。",
   "authErrorAdminCheckTimeout": "权限验证超时。",
   "authErrorNotAdmin": "此账户没有管理员权限。",
+  "authErrorEmailNotVerified": "请验证管理员邮箱后重新登录。验证邮件已发送。",
   "authErrorInvalidEmail": "邮箱地址无效。",
   "authErrorUserDisabled": "此账户已被禁用。",
   "authErrorAccountNotFound": "未找到使用该邮箱的用户。",
@@ -979,7 +980,7 @@
       }
     }
   },
-  "adminBulkDeleteConfirmMessage": "此操作无法撤销。",
+  "adminBulkDeleteConfirmMessage": "产品将被归档，需要时可以恢复。",
   "adminBulkMarkSoldSuccess": "已将 {count} 件商品标记为已售。",
   "@adminBulkMarkSoldSuccess": {
     "placeholders": {
@@ -988,7 +989,7 @@
       }
     }
   },
-  "adminBulkDeleteSuccess": "已删除 {count} 件商品。",
+  "adminBulkDeleteSuccess": "已归档 {count} 件商品。",
   "@adminBulkDeleteSuccess": {
     "placeholders": {
       "count": {

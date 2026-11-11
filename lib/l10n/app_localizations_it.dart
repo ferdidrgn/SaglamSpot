@@ -554,6 +554,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'Questo account non dispone di privilegi di amministratore.';
+  @override
+  String get authErrorEmailNotVerified => "Verifica l'email dell'amministratore e accedi di nuovo. È stata inviata un'email di verifica.";
 
   @override
   String get authErrorInvalidEmail => 'Indirizzo email non valido.';
