@@ -183,6 +183,13 @@ function renderLayout({
   const jsonLdHtml = `<script type="application/ld+json">${JSON.stringify(structuredData).replace(/</g, "\\u003c")}</script>`;
   const dir = isRtl(locale) ? "rtl" : "ltr";
 
+  const pageData = inlineData ? {
+    ...inlineData,
+    // reCAPTCHA Enterprise site key is public by design. The corresponding
+    // Firebase registration remains in the console; no secret is rendered.
+    recaptchaEnterpriseSiteKey: process.env.RECAPTCHA_ENTERPRISE_SITE_KEY || "",
+  } : null;
+
   return `<!DOCTYPE html>
 <html lang="${locale}" dir="${dir}">
 <head>
@@ -354,7 +361,7 @@ ${bodyHtml}
 <a class="whatsapp-fab" href="${business.whatsappUrl(undefined, locale)}" rel="noopener" aria-label="${escapeHtml(t(locale, "whatsappCta"))}">${ICON_WHATSAPP}</a>
 <button type="button" class="scrolltop-cord" data-scroll-top aria-label="Yukarı çık" title="Işığı çek, yukarı çık">${SCROLLTOP_LAMP_SVG}</button>
 <script src="${versionedAsset("static/js/main.js")}" defer></script>
-${inlineData ? `<script>window.__DATA__ = ${JSON.stringify(inlineData).replace(/</g, "\\u003c")};</script>` : ""}
+${pageData ? `<script>window.__DATA__ = ${JSON.stringify(pageData).replace(/</g, "\\u003c")};</script>` : ""}
 ${extraScripts.map((s) => `<script src="${versionedAsset(s)}" type="module"></script>`).join("\n")}
 </body>
 </html>`;

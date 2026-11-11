@@ -7,13 +7,13 @@ abstract final class AppCheckService {
   static Future<void> init() async {
     try {
       if (kIsWeb) {
-        const siteKey = String.fromEnvironment('RECAPTCHA_V3_SITE_KEY');
+        const siteKey = String.fromEnvironment('RECAPTCHA_ENTERPRISE_SITE_KEY');
         if (siteKey.isEmpty) {
-          debugPrint('⚠️ Web App Check site key eksik; provider başlatılmadı.');
+          debugPrint('⚠️ Web App Check Enterprise site key eksik; provider başlatılmadı.');
           return;
         }
         await FirebaseAppCheck.instance
-            .activate(webProvider: ReCaptchaV3Provider(siteKey))
+            .activate(webProvider: ReCaptchaEnterpriseProvider(siteKey))
             .timeout(const Duration(seconds: 8));
         debugPrint('🛡️ Web App Check başarıyla aktif.');
         return;

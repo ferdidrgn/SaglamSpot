@@ -5,6 +5,10 @@
 // olarak yükleniyor — build adımı/npm bundle yok.
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js";
+import {
   getAuth,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
@@ -41,6 +45,15 @@ import {
 
 const config = window.__DATA__ && window.__DATA__.firebaseConfig;
 const app = initializeApp(config);
+const recaptchaEnterpriseSiteKey = window.__DATA__ && window.__DATA__.recaptchaEnterpriseSiteKey;
+if (recaptchaEnterpriseSiteKey) {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(recaptchaEnterpriseSiteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+} else {
+  console.warn("Firebase App Check Enterprise site key eksik; enforcement açılmamalı.");
+}
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
