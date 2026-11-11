@@ -166,7 +166,21 @@ function renderLayout({
   // edebilir (bu GERÇEK ziyaretçilere giden canlı sayfa, sadece bot'lara
   // değil). "<" karakterini unicode kaçışıyla değiştirmek JSON'u bozmadan
   // bunu engeller.
-  const jsonLdHtml = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>` : "";
+  const siteUrl = baseUrl || "https://saglamspotcu.web.app";
+  const siteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    "name": siteName,
+    "url": siteUrl,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${siteUrl}/arama?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+  const structuredData = jsonLd ? [siteJsonLd, jsonLd] : siteJsonLd;
+  const jsonLdHtml = `<script type="application/ld+json">${JSON.stringify(structuredData).replace(/</g, "\\u003c")}</script>`;
   const dir = isRtl(locale) ? "rtl" : "ltr";
 
   return `<!DOCTYPE html>
@@ -182,6 +196,8 @@ function renderLayout({
      da hiç gerçek değildi (yer tutucu metin), o yüzden taşınmadı. -->
 <meta name="google-site-verification" content="auwiqgjhUHUDIchgyzDfclFcgXn-B7MaMIl3fNXWphE">
 <meta name="yandex-verification" content="94ec8563034a9a5f">
+<meta name="application-name" content="Sağlam Spot">
+<meta name="keywords" content="sağlam spot, spot mobilya, ikinci el mobilya, sıfır mobilya, İçerenköy mobilya">
 <!-- ================= GOOGLE ANALYTICS ================= -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3Z4LKNJ3N7"></script>
 <script>
@@ -263,6 +279,7 @@ if (window.caches && caches.keys) {
 <meta name="description" content="${safeDescription}">
 <meta name="robots" content="${escapeHtml(robots)}">
 ${canonicalUrl ? `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">` : ""}
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" href="${versionedAsset("icons/Icon-192.png")}">
 <link rel="apple-touch-icon" href="${versionedAsset("icons/Icon-192.png")}">
 <meta property="og:site_name" content="${escapeHtml(siteName)}">
@@ -271,9 +288,11 @@ ${canonicalUrl ? `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">` : "
 <meta property="og:type" content="website">
 ${canonicalUrl ? `<meta property="og:url" content="${escapeHtml(canonicalUrl)}">` : ""}
 ${ogImage ? `<meta property="og:image" content="${escapeHtml(ogImage)}">` : ""}
+${ogImage ? `<meta property="og:image:width" content="512"><meta property="og:image:height" content="512">` : ""}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${escapeHtml(fullTitle)}">
 <meta name="twitter:description" content="${safeDescription}">
+${ogImage ? `<meta name="twitter:image" content="${escapeHtml(ogImage)}">` : ""}
 ${ogImage ? `<meta name="twitter:image" content="${escapeHtml(ogImage)}">` : ""}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

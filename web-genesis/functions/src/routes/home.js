@@ -375,8 +375,11 @@ ${renderStatsBand(locale, products.length, categoryCount, soldCount)}`;
       "@context": "https://schema.org",
       "@type": "FurnitureStore",
       "name": business.brandName,
+      "image": `${businessUrl(req)}/icons/Icon-512.png`,
+      "url": businessUrl(req),
       "telephone": `+${business.phoneNumberIntl}`,
       "email": business.email,
+      "priceRange": "₺₺",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": business.address.line,
@@ -393,6 +396,13 @@ ${renderStatsBand(locale, products.length, categoryCount, soldCount)}`;
         "@type": "OpeningHoursSpecification",
         ...spec,
       })),
+      "sameAs": [business.instagramUrl, business.facebookUrl],
     },
   }));
 };
+
+function businessUrl(req) {
+  const forwarded = req.get("x-forwarded-proto");
+  const protocol = forwarded ? forwarded.split(",")[0].trim() : req.protocol;
+  return `${protocol}://${req.get("host")}`;
+}

@@ -31,6 +31,9 @@ app.get("/hakkimizda", aboutRoute);
 app.get("/sss", faqRoute);
 app.get("/gizlilik", privacyRoute);
 app.get("/sitemap.xml", sitemapRoute);
+// Search Console ve eski Flutter robots.txt kayıtları için aynı dinamik
+// sitemap'i ikinci standart adreste de sun.
+app.get("/sitemap-products.xml", sitemapRoute);
 app.get("/admin/login", loginRoute);
 app.get("/admin", dashboardRoute);
 app.get("/product/:slugWithId", productDetailRoute);

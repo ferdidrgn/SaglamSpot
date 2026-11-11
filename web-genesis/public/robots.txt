@@ -3,5 +3,8 @@ Allow: /
 Disallow: /admin
 Disallow: /sepet
 Disallow: /favoriler
+Disallow: /arama
+Disallow: /gizlilik
 
-Sitemap: /sitemap.xml
+Sitemap: https://saglamspotcu.web.app/sitemap.xml
+Sitemap: https://saglamspotcu.web.app/sitemap-products.xml
