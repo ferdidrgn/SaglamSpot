@@ -1,19 +1,21 @@
 name: Deploy Web (Firebase Hosting)
 
-# main veya web-genesis dalina web-genesis ile ilgili bir dosya
-# degistiginde, web-genesis/public + genesisApp fonksiyonu Firebase
-# Hosting'e (saglamspotcu sitesi, proje: saglamspotflutter-2a1a8)
-# canliya deploy edilir. ESKIDEN burada Flutter web build'i deploy
-# ediliyordu - saglamspotcu.web.app artik web-genesis'i sunuyor
-# (bkz. firebase.json), bu yuzden workflow da ona gore guncellendi.
+# Flutter web uygulamasini statik dosya olarak Firebase Hosting'e dagitir.
+# Hosting sayfa isteklerini Cloud Function'a yonlendirmez.
 on:
   push:
-    branches: [main, web-genesis]
+    branches: [main]
     paths:
-      - "web-genesis/**"
+      - "lib/**"
+      - "web/**"
+      - "assets/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - "l10n.yaml"
       - "firebase.json"
       - ".firebaserc"
-      - "lib/l10n/**"
+      - ".github/workflows/deploy-web.yml"
+  workflow_dispatch:
 
 concurrency:
   group: deploy-web-${{ github.ref }}
@@ -21,32 +23,38 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy web-genesis
+    name: Build and deploy static Flutter web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Node.js kur
+      - name: Install Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Build static Flutter web
+        run: flutter build web --release
+
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Fonksiyon bağımlılıklarını kur
-        run: npm ci
-        working-directory: web-genesis/functions
-
-      - name: Firebase CLI kur
+      - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      # FIREBASE_SERVICE_ACCOUNT: Firebase Console > Project Settings > Service Accounts
-      # > Generate new private key ile üretilen JSON'un TAMAMI bu secret'a yapıştırılmalı.
-      - name: Servis hesabı anahtarını yaz
+      - name: Write Firebase service account
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
 
-      - name: Firebase Hosting + Functions'a deploy et
+      - name: Deploy static web to Firebase Hosting
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-sa.json
-        run: firebase deploy --only hosting:saglamspotcu,functions:genesis:genesisApp --project saglamspotflutter-2a1a8 --non-interactive
+        run: firebase deploy --only hosting:saglamspotcu --project saglamspotflutter-2a1a8 --non-interactive
