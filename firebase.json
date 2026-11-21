@@ -8,7 +8,7 @@
   "hosting": [
   {
     "site": "saglamspotcu",
-    "public": "build/web",
+    "public": "web-genesis/public",
     "ignore": [
       "firebase.json",
       "**/.DS_Store",
@@ -89,7 +89,7 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "function": "genesisApp"
       }
     ]
   }
