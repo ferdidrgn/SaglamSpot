@@ -2,6 +2,7 @@ import 'dart:html' as html;
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
 
 /// Web derlemesinde gerçek, canlı bir Google Haritalar embed'i (API
 /// anahtarı GEREKMEZ — `output=embed` sorgu parametresiyle herkese açık
@@ -54,8 +55,10 @@ class _GoogleMapsEmbedState extends State<GoogleMapsEmbed> {
         'google-maps-${_instanceCounter}-${DateTime.now().microsecondsSinceEpoch}';
 
     try {
-      ui_web.platformViewRegistry.registerViewFactory(_viewType, (final int viewId) {
-        final src = 'https://www.google.com/maps?q=${widget.latitude},${widget.longitude}'
+      ui_web.platformViewRegistry.registerViewFactory(_viewType,
+          (final int viewId) {
+        final src =
+            'https://www.google.com/maps?q=${widget.latitude},${widget.longitude}'
             '&z=${widget.zoom}&output=embed';
         return _iframe = html.IFrameElement()
           ..src = src
@@ -85,7 +88,7 @@ class _GoogleMapsEmbedState extends State<GoogleMapsEmbed> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => _setInteractive(true),
-                    child: const Align(
+                    child: Align(
                       alignment: Alignment.topRight,
                       child: Padding(
                         padding: EdgeInsets.all(12),
@@ -97,7 +100,7 @@ class _GoogleMapsEmbedState extends State<GoogleMapsEmbed> {
                           child: Padding(
                             padding: EdgeInsets.all(8),
                             child: Icon(Icons.touch_app_rounded,
-                                size: 18, color: Color(0xFF3E2F23)),
+                                size: 18, color: AppColors.textPrimary),
                           ),
                         ),
                       ),

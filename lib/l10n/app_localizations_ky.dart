@@ -548,8 +548,10 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'Бул аккаунттун админ укуктары жок.';
+
   @override
-  String get authErrorEmailNotVerified => 'Админдин электрондук почтасын ырастаңыз жана кайра кириңиз. Ырастоо каты жөнөтүлдү.';
+  String get authErrorEmailNotVerified =>
+      'Админдин электрондук почтасын ырастаңыз жана кайра кириңиз. Ырастоо каты жөнөтүлдү.';
 
   @override
   String get authErrorInvalidEmail => 'Электрондук почта дареги жарамсыз.';
@@ -2553,7 +2555,7 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String get adminBulkDeleteConfirmMessage =>
-      'Бул аракетти артка кайтарууга болбойт.';
+      'Товарлар архивделет жана керек болсо калыбына келтирилет.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2562,9 +2564,37 @@ class AppLocalizationsKy extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count товар өчүрүлдү.';
+    return '$count товар архивделди.';
   }
 
   @override
   String get adminSidebarProducts => 'Товарлар';
+
+  @override
+  String get settingsThemePalette => 'Түс палитрасы';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Алтын жылуулук';
+
+  @override
+  String get settingsThemePaletteLavender => 'Лаванда';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Түнкү көк';
+
+  @override
+  String get settingsAppLogo => 'Колдонмо сөлөкөтү';
+
+  @override
+  String get settingsAppLogoLuxe => 'Көрктүү логотип';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Иллюстрациялуу логотип';
+
+  @override
+  String get settingsAppLogoUpdated => 'Колдонмо сөлөкөтү жаңыртылды';
+
+  @override
+  String get settingsAppLogoError =>
+      'Колдонмо сөлөкөтүн өзгөртүү мүмкүн болгон жок. Кайра аракет кылыңыз.';
 }

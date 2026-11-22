@@ -1025,5 +1025,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Products"
+  "adminSidebarProducts": "Products",
+  "settingsThemePalette": "Color palette",
+  "settingsThemePaletteAtelier": "Golden hour",
+  "settingsThemePaletteLavender": "Lavender",
+  "settingsThemePaletteMidnight": "Midnight blue",
+  "settingsAppLogo": "App icon",
+  "settingsAppLogoLuxe": "Luxe logo",
+  "settingsAppLogoIllustrated": "Illustrated logo",
+  "settingsAppLogoUpdated": "App icon updated",
+  "settingsAppLogoError": "Could not change the app icon. Please try again."
 }

@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Товарлар"
+  "adminSidebarProducts": "Товарлар",
+  "settingsThemePalette": "Түс палитрасы",
+  "settingsThemePaletteAtelier": "Алтын жылуулук",
+  "settingsThemePaletteLavender": "Лаванда",
+  "settingsThemePaletteMidnight": "Түнкү көк",
+  "settingsAppLogo": "Колдонмо сөлөкөтү",
+  "settingsAppLogoLuxe": "Көрктүү логотип",
+  "settingsAppLogoIllustrated": "Иллюстрациялуу логотип",
+  "settingsAppLogoUpdated": "Колдонмо сөлөкөтү жаңыртылды",
+  "settingsAppLogoError": "Колдонмо сөлөкөтүн өзгөртүү мүмкүн болгон жок. Кайра аракет кылыңыз."
 }

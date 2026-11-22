@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Προϊόντα"
+  "adminSidebarProducts": "Προϊόντα",
+  "settingsThemePalette": "Παλέτα χρωμάτων",
+  "settingsThemePaletteAtelier": "Χρυσαφένια ζεστασιά",
+  "settingsThemePaletteLavender": "Λεβάντα",
+  "settingsThemePaletteMidnight": "Μεσάνυχτα",
+  "settingsAppLogo": "Εικονίδιο εφαρμογής",
+  "settingsAppLogoLuxe": "Κομψό λογότυπο",
+  "settingsAppLogoIllustrated": "Εικονογραφημένο λογότυπο",
+  "settingsAppLogoUpdated": "Το εικονίδιο ενημερώθηκε",
+  "settingsAppLogoError": "Δεν ήταν δυνατή η αλλαγή του εικονιδίου. Δοκιμάστε ξανά."
 }

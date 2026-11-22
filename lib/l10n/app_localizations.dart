@@ -1130,6 +1130,10 @@ abstract class AppLocalizations {
   /// **'Bu hesabın yönetici yetkisi bulunmuyor.'**
   String get authErrorNotAdmin;
 
+  /// No description provided for @authErrorEmailNotVerified.
+  ///
+  /// In tr, this message translates to:
+  /// **'Admin e-posta adresinizi doğrulayıp tekrar giriş yapın. Doğrulama e-postası gönderildi.'**
   String get authErrorEmailNotVerified;
 
   /// No description provided for @authErrorInvalidEmail.
@@ -4742,7 +4746,7 @@ abstract class AppLocalizations {
   /// No description provided for @adminBulkDeleteConfirmMessage.
   ///
   /// In tr, this message translates to:
-  /// **'Bu işlem geri alınamaz.'**
+  /// **'Ürün arşivlenecek; gerektiğinde geri yüklenebilir.'**
   String get adminBulkDeleteConfirmMessage;
 
   /// No description provided for @adminBulkMarkSoldSuccess.
@@ -4754,7 +4758,7 @@ abstract class AppLocalizations {
   /// No description provided for @adminBulkDeleteSuccess.
   ///
   /// In tr, this message translates to:
-  /// **'{count} ürün silindi.'**
+  /// **'{count} ürün arşivlendi.'**
   String adminBulkDeleteSuccess(int count);
 
   /// No description provided for @adminSidebarProducts.
@@ -4762,6 +4766,60 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ürünler'**
   String get adminSidebarProducts;
+
+  /// No description provided for @settingsThemePalette.
+  ///
+  /// In tr, this message translates to:
+  /// **'Renk paleti'**
+  String get settingsThemePalette;
+
+  /// No description provided for @settingsThemePaletteAtelier.
+  ///
+  /// In tr, this message translates to:
+  /// **'Altın sıcaklığı'**
+  String get settingsThemePaletteAtelier;
+
+  /// No description provided for @settingsThemePaletteLavender.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lavanta'**
+  String get settingsThemePaletteLavender;
+
+  /// No description provided for @settingsThemePaletteMidnight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gece mavisi'**
+  String get settingsThemePaletteMidnight;
+
+  /// No description provided for @settingsAppLogo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama simgesi'**
+  String get settingsAppLogo;
+
+  /// No description provided for @settingsAppLogoLuxe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Siyah logo'**
+  String get settingsAppLogoLuxe;
+
+  /// No description provided for @settingsAppLogoIllustrated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çizimli logo'**
+  String get settingsAppLogoIllustrated;
+
+  /// No description provided for @settingsAppLogoUpdated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama simgesi güncellendi'**
+  String get settingsAppLogoUpdated;
+
+  /// No description provided for @settingsAppLogoError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama simgesi değiştirilemedi. Yeniden deneyin.'**
+  String get settingsAppLogoError;
 }
 
 class _AppLocalizationsDelegate

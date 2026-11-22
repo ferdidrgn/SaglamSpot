@@ -549,8 +549,10 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'Bu hisobda administrator huquqlari yo\'q.';
+
   @override
-  String get authErrorEmailNotVerified => 'Administrator emailini tasdiqlang va qayta kiring. Tasdiqlash xati yuborildi.';
+  String get authErrorEmailNotVerified =>
+      'Administrator emailini tasdiqlang va qayta kiring. Tasdiqlash xati yuborildi.';
 
   @override
   String get authErrorInvalidEmail => 'Elektron pochta manzili yaroqsiz.';
@@ -2559,7 +2561,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get adminBulkDeleteConfirmMessage =>
-      'Bu amalni ortga qaytarib bo\'lmaydi.';
+      'Mahsulotlar arxivlanadi va kerak bo\'lsa tiklanadi.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2568,9 +2570,37 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count mahsulot o\'chirildi.';
+    return '$count mahsulot arxivlandi.';
   }
 
   @override
   String get adminSidebarProducts => 'Mahsulotlar';
+
+  @override
+  String get settingsThemePalette => 'Ranglar palitrasi';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Oltin iliqlik';
+
+  @override
+  String get settingsThemePaletteLavender => 'Lavanda';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Tungi ko‘k';
+
+  @override
+  String get settingsAppLogo => 'Ilova belgisi';
+
+  @override
+  String get settingsAppLogoLuxe => 'Nafis logotip';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Rasmli logotip';
+
+  @override
+  String get settingsAppLogoUpdated => 'Ilova belgisi yangilandi';
+
+  @override
+  String get settingsAppLogoError =>
+      'Ilova belgisini almashtirish imkoni bolmadi. Qayta urinib koring.';
 }

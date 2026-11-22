@@ -3,13 +3,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/common/extentions/app_context_ui_extension.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_tokens.dart';
 
-/// Native açılıştan sonra kısa markalı geçiş — sıcak marka rengi zemin,
-/// ortada logo mark + "Sağlam Spot" tipografi. Router'a dokunmaz; sadece
+/// Native açılıştan sonra kısa markalı geçiş — siyah/altın logoyu gösterir.
+/// Router'a dokunmaz; sadece
 /// görsel katman.
 class AppLaunchSplashOverlay extends StatefulWidget {
   const AppLaunchSplashOverlay({super.key, required this.child});
@@ -17,8 +14,7 @@ class AppLaunchSplashOverlay extends StatefulWidget {
   final Widget child;
 
   @override
-  State<AppLaunchSplashOverlay> createState() =>
-      _AppLaunchSplashOverlayState();
+  State<AppLaunchSplashOverlay> createState() => _AppLaunchSplashOverlayState();
 }
 
 class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
@@ -31,11 +27,6 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
     vsync: this,
     duration: _entryDuration,
   )..forward();
-
-  late final AnimationController _pulseController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1400),
-  )..repeat();
 
   late final AnimationController _exitController = AnimationController(
     vsync: this,
@@ -69,7 +60,6 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
         if (!mounted) {
           return;
         }
-        _pulseController.stop();
         setState(() => _overlayVisible = false);
       });
     });
@@ -79,7 +69,6 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
   void dispose() {
     _dismissTimer?.cancel();
     _entryController.dispose();
-    _pulseController.dispose();
     _exitController.dispose();
     super.dispose();
   }
@@ -95,12 +84,7 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
     // teması hâlâ varsayılan "açık" iken native splash koyu, bu katman
     // açık renkte açılıp rahatsız edici bir renk sıçraması/"bozukluk"
     // hissi yaratıyordu.
-    final bool isOsDark =
-        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-    final Color bg = isOsDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final Color ink = isOsDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final Color inkSecondary =
-        isOsDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    const bg = Color(0xFF191512);
 
     return Stack(
       children: [
@@ -117,43 +101,17 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
                       opacity: _logoFade,
                       child: ScaleTransition(
                         scale: _logoScale,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Doğal bronz/altın gradyanıyla (beyaza
-                            // boyamadan) — hem açık hem koyu zeminde iyi
-                            // kontrast veriyor, native splash'teki ikonla
-                            // da birebir aynı görünüyor.
-                            Image.asset(
-                              'assets/images/saglam_spot_logo_mark.png',
-                              width: 108,
-                              height: 108,
-                              fit: BoxFit.contain,
-                            ),
-                            const SizedBox(height: AppSpacing.xl),
-                            Text(
-                              context.l10n.loginBrand,
-                              style: AppTextStyles.serif(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                                color: ink,
-                                letterSpacing: 0.6,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            Text(
-                              context.l10n.homeWelcomeTagline,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 13,
-                                height: 1.35,
-                                color: inkSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xxxl),
-                            _LaunchPulseDots(
-                                controller: _pulseController, color: ink),
-                          ],
+                        child: Image.asset(
+                          'assets/images/saglam_spot_logo_luxe.png',
+                          width: math.min(
+                              MediaQuery.sizeOf(context).width -
+                                  AppSpacing.xxxl,
+                              360.0),
+                          height: math.min(
+                              MediaQuery.sizeOf(context).width -
+                                  AppSpacing.xxxl,
+                              360.0),
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
@@ -163,52 +121,6 @@ class _AppLaunchSplashOverlayState extends State<AppLaunchSplashOverlay>
             ),
           ),
       ],
-    );
-  }
-}
-
-class _LaunchPulseDots extends StatelessWidget {
-  const _LaunchPulseDots({required this.controller, required this.color});
-
-  final AnimationController controller;
-  final Color color;
-
-  static const int _dotCount = 3;
-  static const double _dotSize = 7;
-  static const double _dotGap = 6;
-
-  @override
-  Widget build(final BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (final context, final _) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(_dotCount, (final index) {
-            final double phase = (controller.value + index * 0.22) % 1.0;
-            final double wave = (math.sin(phase * 2 * math.pi) + 1) / 2;
-            final double opacity = 0.35 + 0.65 * wave;
-            final double scale = 0.78 + 0.22 * wave;
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: _dotGap / 2),
-              child: Opacity(
-                opacity: opacity,
-                child: Transform.scale(
-                  scale: scale,
-                  child: Container(
-                    width: _dotSize,
-                    height: _dotSize,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }),
-        );
-      },
     );
   }
 }

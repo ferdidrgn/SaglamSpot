@@ -549,8 +549,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'У этой учётной записи нет прав администратора.';
+
   @override
-  String get authErrorEmailNotVerified => 'Подтвердите электронную почту администратора и войдите снова. Письмо отправлено.';
+  String get authErrorEmailNotVerified =>
+      'Подтвердите электронную почту администратора и войдите снова. Письмо отправлено.';
 
   @override
   String get authErrorInvalidEmail =>
@@ -2549,7 +2551,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get adminBulkDeleteConfirmMessage => 'Это действие нельзя отменить.';
+  String get adminBulkDeleteConfirmMessage =>
+      'Товары будут помещены в архив и при необходимости восстановлены.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2558,9 +2561,37 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count товаров удалено.';
+    return '$count товаров помещено в архив.';
   }
 
   @override
   String get adminSidebarProducts => 'Товары';
+
+  @override
+  String get settingsThemePalette => 'Цветовая палитра';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Золотое тепло';
+
+  @override
+  String get settingsThemePaletteLavender => 'Лаванда';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Полуночный синий';
+
+  @override
+  String get settingsAppLogo => 'Значок приложения';
+
+  @override
+  String get settingsAppLogoLuxe => 'Элегантный логотип';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Иллюстрированный логотип';
+
+  @override
+  String get settingsAppLogoUpdated => 'Значок приложения обновлён';
+
+  @override
+  String get settingsAppLogoError =>
+      'Не удалось изменить значок приложения. Попробуйте ещё раз.';
 }

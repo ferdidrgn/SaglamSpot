@@ -531,6 +531,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => '此账户没有管理员权限。';
+
   @override
   String get authErrorEmailNotVerified => '请验证管理员邮箱后重新登录。验证邮件已发送。';
 
@@ -2433,7 +2434,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get adminBulkDeleteConfirmMessage => '此操作无法撤销。';
+  String get adminBulkDeleteConfirmMessage => '产品将被归档，需要时可以恢复。';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2442,9 +2443,36 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '已删除 $count 件商品。';
+    return '已归档 $count 件商品。';
   }
 
   @override
   String get adminSidebarProducts => '商品';
+
+  @override
+  String get settingsThemePalette => '配色方案';
+
+  @override
+  String get settingsThemePaletteAtelier => '金色暖调';
+
+  @override
+  String get settingsThemePaletteLavender => '薰衣草紫';
+
+  @override
+  String get settingsThemePaletteMidnight => '午夜蓝';
+
+  @override
+  String get settingsAppLogo => '应用图标';
+
+  @override
+  String get settingsAppLogoLuxe => '典雅徽标';
+
+  @override
+  String get settingsAppLogoIllustrated => '插画徽标';
+
+  @override
+  String get settingsAppLogoUpdated => '应用图标已更新';
+
+  @override
+  String get settingsAppLogoError => '无法更改应用图标，请重试。';
 }

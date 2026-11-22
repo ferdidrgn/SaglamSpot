@@ -159,3 +159,15 @@ web-genesis/functions/assetManifest.json
 .claude/*
 # Proje skill'leri (tasarım/animasyon/performans kuralları) repoda tutulur
 !.claude/skills/
+
+# -----------------------
+# YEREL CODEX / AGENT AYARLARI VE ÇALIŞMA VERİLERİ
+# -----------------------
+/.agents/
+/.codex/
+/.claude-flow/
+/.tmp_library/
+/AGENTS.md
+
+# Yerel logo konseptleri ve içlerindeki Edge profil/cache dökümleri
+/docs/logo-concepts/

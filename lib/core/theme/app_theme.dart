@@ -12,7 +12,8 @@ final appThemeProvider = Provider<AppTheme>((final ref) {
 
 class AppTheme {
   // --- Yardımcı Metot: Platforma Göre TextTheme Seçimi ve Renklendirme ---
-  TextTheme _getTextTheme(final Brightness brightness, final ColorScheme colors) {
+  TextTheme _getTextTheme(
+      final Brightness brightness, final ColorScheme colors) {
     // 1. Platforma göre (Web/Mobil) ana şablonu seçiyoruz
     final TextTheme baseTheme =
         kIsWeb ? AppTextStyles.webTextTheme : AppTextStyles.mobileTextTheme;
@@ -28,19 +29,21 @@ class AppTheme {
   ThemeData get lightTheme {
     final colorScheme = ColorScheme.light(
       primary: AppColors.primary,
-      onPrimary: AppColors.textLight,
+      onPrimary: AppColors.onPrimary,
       // Koyu yeşil üzerine beyaz metin
       primaryContainer: AppColors.primaryVariant,
       secondary: AppColors.secondary,
       onSecondary: AppColors.onSecondary,
       secondaryContainer: AppColors.secondaryVariant,
-      surface: AppColors.surface,
+      surface: AppColors.background,
       onSurface: AppColors.onSurface,
       onSurfaceVariant: AppColors.textSecondary,
       error: AppColors.error,
       onError: AppColors.white,
       // Material 3 yeni yüzey renkleri
-      surfaceContainerHighest: AppColors.surface,
+      surfaceContainer: AppColors.secondary,
+      surfaceContainerHigh: AppColors.surface,
+      surfaceContainerHighest: AppColors.secondaryVariant,
       outline: AppColors.border,
       shadow: Colors.black,
     );
@@ -91,21 +94,23 @@ class AppTheme {
 
   ThemeData get darkTheme {
     final colorScheme = ColorScheme.dark(
-      primary: AppColors.onPrimary,
+      primary: AppColors.primary,
       // Dark modda daha açık bir yeşil vurgu için
-      onPrimary: AppColors.primary,
+      onPrimary: AppColors.onPrimary,
       primaryContainer: AppColors.primaryVariant,
       secondary: AppColors.secondary,
       onSecondary: AppColors.onSecondary,
-      secondaryContainer: AppColors.darkCard,
-      surface: AppColors.darkSurface,
-      onSurface: AppColors.darkTextPrimary,
-      onSurfaceVariant: AppColors.darkTextSecondary,
+      secondaryContainer: AppColors.secondary,
+      surface: AppColors.background,
+      onSurface: AppColors.textPrimary,
+      onSurfaceVariant: AppColors.textSecondary,
       error: AppColors.error,
       onError: AppColors.white,
       // Material 3 yeni yüzey renkleri
-      surfaceContainerHighest: AppColors.darkSurface,
-      outline: AppColors.darkBorder,
+      surfaceContainer: AppColors.secondary,
+      surfaceContainerHigh: AppColors.surface,
+      surfaceContainerHighest: AppColors.secondaryVariant,
+      outline: AppColors.border,
       shadow: Colors.black,
     );
 
@@ -117,18 +122,17 @@ class AppTheme {
       fontFamily: AppTextStyles.fontFamily,
       // Global font ailesi
       brightness: Brightness.dark,
-      primaryColor: AppColors.darkBackground,
-      scaffoldBackgroundColor: AppColors.darkBackground,
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.background,
       colorScheme: colorScheme,
       textTheme: textTheme,
       // --- Metotların Kullanımı ---
       appBarTheme: _appBarTheme(
         colors: colorScheme,
         textTheme: textTheme,
-        bgColor: AppColors.darkBackground,
+        bgColor: AppColors.background,
       ),
-      cardTheme:
-          _cardTheme(colors: colorScheme, bgColor: AppColors.darkBackground),
+      cardTheme: _cardTheme(colors: colorScheme, bgColor: AppColors.background),
       elevatedButtonTheme: _elevatedButtonTheme(
         colors: colorScheme,
         textStyle: textTheme.labelLarge!,
@@ -241,7 +245,7 @@ class AppTheme {
         filled: true,
         fillColor: colors.brightness == Brightness.light
             ? AppColors.lightGrey.withOpacity(0.5)
-            : AppColors.darkSurface,
+            : AppColors.surface,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
@@ -333,7 +337,7 @@ class AppTheme {
       SnackBarThemeData(
         backgroundColor: colors.brightness == Brightness.light
             ? AppColors.textPrimary
-            : AppColors.darkCard,
+            : AppColors.surface,
         contentTextStyle: textTheme.bodyMedium?.copyWith(color: Colors.white),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

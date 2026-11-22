@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Prodotti"
+  "adminSidebarProducts": "Prodotti",
+  "settingsThemePalette": "Palette colori",
+  "settingsThemePaletteAtelier": "Luce dorata",
+  "settingsThemePaletteLavender": "Lavanda",
+  "settingsThemePaletteMidnight": "Blu notte",
+  "settingsAppLogo": "Icona app",
+  "settingsAppLogoLuxe": "Logo elegante",
+  "settingsAppLogoIllustrated": "Logo illustrato",
+  "settingsAppLogoUpdated": "Icona app aggiornata",
+  "settingsAppLogoError": "Impossibile modificare icona app. Riprova."
 }

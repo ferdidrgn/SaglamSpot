@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "商品"
+  "adminSidebarProducts": "商品",
+  "settingsThemePalette": "配色方案",
+  "settingsThemePaletteAtelier": "金色暖调",
+  "settingsThemePaletteLavender": "薰衣草紫",
+  "settingsThemePaletteMidnight": "午夜蓝",
+  "settingsAppLogo": "应用图标",
+  "settingsAppLogoLuxe": "典雅徽标",
+  "settingsAppLogoIllustrated": "插画徽标",
+  "settingsAppLogoUpdated": "应用图标已更新",
+  "settingsAppLogoError": "无法更改应用图标，请重试。"
 }

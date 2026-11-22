@@ -1025,5 +1025,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Ürünler"
+  "adminSidebarProducts": "Ürünler",
+  "settingsThemePalette": "Renk paleti",
+  "settingsThemePaletteAtelier": "Altın sıcaklığı",
+  "settingsThemePaletteLavender": "Lavanta",
+  "settingsThemePaletteMidnight": "Gece mavisi",
+  "settingsAppLogo": "Uygulama simgesi",
+  "settingsAppLogoLuxe": "Siyah logo",
+  "settingsAppLogoIllustrated": "Çizimli logo",
+  "settingsAppLogoUpdated": "Uygulama simgesi güncellendi",
+  "settingsAppLogoError": "Uygulama simgesi değiştirilemedi. Yeniden deneyin."
 }

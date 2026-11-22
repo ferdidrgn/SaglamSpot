@@ -19,10 +19,12 @@ import 'core/services/favorite_ids_cache.dart';
 import 'core/services/onboarding_cache.dart';
 import 'core/services/theme_mode_cache.dart';
 import 'core/theme/app_colors.dart';
+import 'core/theme/app_logo_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/background_pattern_provider.dart';
 import 'core/theme/dynamic_color_provider.dart';
 import 'core/theme/theme_mode_provider.dart';
+import 'core/theme/theme_palette_provider.dart';
 import 'features/splash/presentation/widgets/app_launch_splash_overlay.dart';
 import 'l10n/app_localizations.dart';
 
@@ -79,6 +81,8 @@ void main() async {
     AdminSessionCache.load(),
     ThemeModeCache.load(),
     DynamicColorCache.load(),
+    ThemePaletteCache.load(),
+    AppLogoCache.load(),
     BackgroundPatternCache.load(),
     CategoryWatchCache.load(),
     FavoriteIdsCache.load(),
@@ -137,7 +141,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     final appTheme = ref.watch(appThemeProvider);
     final localeAsync = ref.watch(localeControllerProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final themePalette = ref.watch(themePaletteProvider);
     final useDynamicColor = ref.watch(dynamicColorEnabledProvider);
+    AppColors.setPalette(themePalette);
 
     // DynamicColorBuilder yalnızca Android 12+ (ve destekleyen diğer
     // platformlarda) gerçek bir ColorScheme döner; iOS/web/eski Android'de
@@ -145,6 +151,18 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     // (bkz. configureDynamicColor).
     return DynamicColorBuilder(
       builder: (final lightDynamic, final darkDynamic) {
+        final effectiveBrightness = switch (themeMode) {
+          ThemeMode.light => Brightness.light,
+          ThemeMode.dark => Brightness.dark,
+          ThemeMode.system =>
+            WidgetsBinding.instance.platformDispatcher.platformBrightness,
+        };
+        AppColors.setBrightness(effectiveBrightness);
+        AppColors.configureDynamicColor(
+          enabled: useDynamicColor,
+          light: lightDynamic,
+          dark: darkDynamic,
+        );
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'Sağlam Spot',
@@ -208,7 +226,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                         ? Brightness.light
                         : Brightness.dark,
                 systemNavigationBarColor: effectiveBrightness == Brightness.dark
-                    ? AppColors.darkBackground
+                    ? AppColors.background
                     : AppColors.background,
                 systemNavigationBarDividerColor: Colors.transparent,
               ),
@@ -235,11 +253,11 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                           () => _router.go('/search'),
                     },
                     child: KeyedSubtree(
-                      // Parlaklık VEYA dinamik renk tercihi/şeması değiştiğinde
-                      // alt ağacı sıfırdan kurdurmak için ikisini de anahtara
-                      // katıyoruz.
+                      // Parlaklık, seçilen palet VEYA dinamik renk tercihi/
+                      // şeması değiştiğinde alt ağacı sıfırdan kurdurmak
+                      // için bunların hepsini anahtara katıyoruz.
                       key: ValueKey(
-                          '$effectiveBrightness-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
+                          '$effectiveBrightness-$themePalette-$useDynamicColor-${lightDynamic?.primary}-${darkDynamic?.primary}'),
                       child: RemoteConfigGate(
                           child: child ?? const SizedBox.shrink()),
                     ),

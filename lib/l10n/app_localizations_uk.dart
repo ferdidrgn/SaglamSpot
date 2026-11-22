@@ -548,8 +548,10 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'Цей обліковий запис не має прав адміністратора.';
+
   @override
-  String get authErrorEmailNotVerified => 'Підтвердьте електронну пошту адміністратора та увійдіть знову. Лист надіслано.';
+  String get authErrorEmailNotVerified =>
+      'Підтвердьте електронну пошту адміністратора та увійдіть знову. Лист надіслано.';
 
   @override
   String get authErrorInvalidEmail => 'Недійсна адреса електронної пошти.';
@@ -2541,7 +2543,8 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get adminBulkDeleteConfirmMessage => 'Цю дію неможливо скасувати.';
+  String get adminBulkDeleteConfirmMessage =>
+      'Товари буде заархівовано, і за потреби їх можна буде відновити.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2550,9 +2553,37 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count товарів видалено.';
+    return '$count товарів заархівовано.';
   }
 
   @override
   String get adminSidebarProducts => 'Товари';
+
+  @override
+  String get settingsThemePalette => 'Колірна палітра';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Золотисте тепло';
+
+  @override
+  String get settingsThemePaletteLavender => 'Лаванда';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Опівнічний синій';
+
+  @override
+  String get settingsAppLogo => 'Іконка застосунку';
+
+  @override
+  String get settingsAppLogoLuxe => 'Елегантний логотип';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Ілюстрований логотип';
+
+  @override
+  String get settingsAppLogoUpdated => 'Іконку застосунку оновлено';
+
+  @override
+  String get settingsAppLogoError =>
+      'Не вдалося змінити іконку застосунку. Спробуйте ще раз.';
 }

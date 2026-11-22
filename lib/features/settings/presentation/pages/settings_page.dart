@@ -12,14 +12,16 @@ import '../../../../core/providers/notification_inbox_provider.dart';
 import '../../../../core/services/deeplink/deeplink_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_logo_provider.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/theme/background_pattern_provider.dart';
-import '../../../../core/widgets/design_system/atelier_background.dart';
-import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/theme/dynamic_color_provider.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
+import '../../../../core/theme/theme_palette_provider.dart';
 import '../../../../core/util/comminucation_actions.dart';
+import '../../../../core/widgets/design_system/atelier_background.dart';
+import '../../../../core/widgets/design_system/atelier_components.dart';
 import '../../../../core/widgets/language_selector.dart';
 import '../../../../shared/navigation/widgets/back_navigation_guards.dart';
 import '../../../../shared/navigation/widgets/mobile_bottom_nav.dart';
@@ -113,6 +115,8 @@ class SettingsPage extends ConsumerWidget {
                   const SizedBox(height: 24),
                   _SectionLabel(context.l10n.settingsAppearanceSection),
                   const SizedBox(height: 10),
+                  const _ThemePaletteCard(),
+                  const SizedBox(height: 12),
                   const _ThemeModeCard(),
                   const SizedBox(height: 12),
                   const _BackgroundPatternCard(),
@@ -120,6 +124,10 @@ class SettingsPage extends ConsumerWidget {
                       defaultTargetPlatform == TargetPlatform.android) ...[
                     const SizedBox(height: 12),
                     const _DynamicColorCard(),
+                  ],
+                  if (!kIsWeb) ...[
+                    const SizedBox(height: 12),
+                    const _AppLogoCard(),
                   ],
                   // Push bildirimleri şu an SADECE Android/iOS'ta çalışıyor
                   // (web için Service Worker + VAPID anahtarı henüz kurulmadı,
@@ -391,6 +399,169 @@ class _SettingsTile extends StatelessWidget {
   }
 }
 
+/// Üç görsel referanstan çıkarılan sıcak, lavanta ve gece paletleri.
+class _ThemePaletteCard extends ConsumerWidget {
+  const _ThemePaletteCard();
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final selected = ref.watch(themePaletteProvider);
+    final options = <({
+      ThemePalette palette,
+      Color primary,
+      Color accent,
+      Color background,
+      String label
+    })>[
+      (
+        palette: ThemePalette.atelier,
+        primary: const Color(0xFF202238),
+        accent: const Color(0xFFF3A000),
+        background: const Color(0xFFE6E9F7),
+        label: context.l10n.settingsThemePaletteAtelier,
+      ),
+      (
+        palette: ThemePalette.lavender,
+        primary: const Color(0xFF6736D3),
+        accent: const Color(0xFFAA83EE),
+        background: const Color(0xFFF1ECFC),
+        label: context.l10n.settingsThemePaletteLavender,
+      ),
+      (
+        palette: ThemePalette.midnight,
+        primary: const Color(0xFF83A2FF),
+        accent: const Color(0xFF263E70),
+        background: const Color(0xFF080F18),
+        label: context.l10n.settingsThemePaletteMidnight,
+      ),
+    ];
+
+    return AtelierPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xs, AppSpacing.xs, 0, AppSpacing.md),
+            child: Text(
+              context.l10n.settingsThemePalette,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.mobileTextPrimary,
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              for (final option in options)
+                Expanded(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                    child: _ThemePaletteSwatch(
+                      option: option,
+                      selected: option.palette == selected,
+                      onTap: () async {
+                        await HapticFeedback.selectionClick();
+                        await ref
+                            .read(themePaletteProvider.notifier)
+                            .set(option.palette);
+                        ref.read(themeModeProvider.notifier).set(
+                              option.palette == ThemePalette.midnight
+                                  ? ThemeMode.dark
+                                  : ThemeMode.light,
+                            );
+                      },
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThemePaletteSwatch extends StatelessWidget {
+  const _ThemePaletteSwatch(
+      {required this.option, required this.selected, required this.onTap});
+
+  final ({
+    ThemePalette palette,
+    Color primary,
+    Color accent,
+    Color background,
+    String label
+  }) option;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(final BuildContext context) => Semantics(
+        button: true,
+        selected: selected,
+        label: option.label,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.all(AppRadius.md),
+          child: AnimatedContainer(
+            duration: AppMotion.fast,
+            padding: const EdgeInsets.all(AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: selected
+                  ? option.primary.withValues(alpha: 0.08)
+                  : Colors.transparent,
+              borderRadius: AppRadius.all(AppRadius.md),
+              border: Border.all(
+                color: selected ? option.primary : AppColors.mobileBorder,
+                width: selected ? 1.5 : 1,
+              ),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: option.background,
+                    borderRadius: AppRadius.all(AppRadius.sm),
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 24,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: option.primary,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(AppRadius.xs),
+                          bottomRight: Radius.circular(AppRadius.xs),
+                        ),
+                      ),
+                      child: Icon(Icons.circle, size: 9, color: option.accent),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  option.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    color: AppColors.mobileTextPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
 /// Görünüm seçici — Açık / Sistem / Koyu. "Sistem" seçilirse uygulama
 /// telefonun genel açık/koyu tercihini otomatik takip eder (ThemeMode.system,
 /// bkz. theme_mode_provider.dart — alt yapı zaten hazırdı, burada sadece
@@ -514,6 +685,170 @@ class _DynamicColorCard extends ConsumerWidget {
         value: enabled,
         onChanged: (final v) =>
             ref.read(dynamicColorEnabledProvider.notifier).set(v),
+      ),
+    );
+  }
+}
+
+/// Yerel uygulama başlatıcı simgesini iki marka logosu arasında değiştirir.
+class _AppLogoCard extends ConsumerStatefulWidget {
+  const _AppLogoCard();
+
+  @override
+  ConsumerState<_AppLogoCard> createState() => _AppLogoCardState();
+}
+
+class _AppLogoCardState extends ConsumerState<_AppLogoCard> {
+  bool _isUpdating = false;
+
+  @override
+  Widget build(final BuildContext context) {
+    final current = ref.watch(appLogoProvider);
+    final options = <({AppLogo logo, String asset, String label})>[
+      (
+        logo: AppLogo.luxe,
+        asset: 'assets/images/saglam_spot_logo_luxe.png',
+        label: context.l10n.settingsAppLogoLuxe,
+      ),
+      (
+        logo: AppLogo.illustrated,
+        asset: 'assets/images/saglam_spot_logo_illustrated.png',
+        label: context.l10n.settingsAppLogoIllustrated,
+      ),
+    ];
+
+    return AtelierPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xs, AppSpacing.xs, 0, AppSpacing.md),
+            child: Text(
+              context.l10n.settingsAppLogo,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.mobileTextPrimary,
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              for (final option in options)
+                Expanded(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                    child: Semantics(
+                      button: true,
+                      enabled: !_isUpdating,
+                      selected: current == option.logo,
+                      label: option.label,
+                      child: InkWell(
+                        onTap: _isUpdating
+                            ? null
+                            : () async {
+                                if (current == option.logo) {
+                                  return;
+                                }
+                                setState(() => _isUpdating = true);
+                                try {
+                                  await HapticFeedback.selectionClick();
+                                  await ref
+                                      .read(appLogoProvider.notifier)
+                                      .set(option.logo);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(SnackBar(
+                                        content: Text(context
+                                            .l10n.settingsAppLogoUpdated),
+                                        behavior: SnackBarBehavior.floating,
+                                      ));
+                                  }
+                                } on PlatformException {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(SnackBar(
+                                        content: Text(
+                                            context.l10n.settingsAppLogoError),
+                                        behavior: SnackBarBehavior.floating,
+                                      ));
+                                  }
+                                } on MissingPluginException {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(SnackBar(
+                                        content: Text(
+                                            context.l10n.settingsAppLogoError),
+                                        behavior: SnackBarBehavior.floating,
+                                      ));
+                                  }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => _isUpdating = false);
+                                  }
+                                }
+                              },
+                        borderRadius: AppRadius.all(AppRadius.md),
+                        child: AnimatedContainer(
+                          duration: AppMotion.fast,
+                          padding: const EdgeInsets.all(AppSpacing.sm),
+                          decoration: BoxDecoration(
+                            borderRadius: AppRadius.all(AppRadius.md),
+                            border: Border.all(
+                              color: current == option.logo
+                                  ? AppColors.mobilePrimary
+                                  : AppColors.mobileBorder,
+                              width: current == option.logo ? 1.5 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: AppRadius.all(AppRadius.sm),
+                                child: Image.asset(option.asset,
+                                    width: 52, height: 52, fit: BoxFit.cover),
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Expanded(
+                                child: Text(
+                                  option.label,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: current == option.logo
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: AppColors.mobileTextPrimary,
+                                  ),
+                                ),
+                              ),
+                              if (_isUpdating && current == option.logo)
+                                const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              else if (current == option.logo)
+                                Icon(Icons.check_circle_rounded,
+                                    color: AppColors.mobilePrimary, size: 19),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

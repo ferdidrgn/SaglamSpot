@@ -82,25 +82,21 @@ flutter:
   # zamanı asset paketine dahil etmek gereksiz yer kaplıyordu.
   assets:
     - assets/images/saglam_spot_logo_mark.png
+    - assets/images/saglam_spot_logo_luxe.png
+    - assets/images/saglam_spot_logo_illustrated.png
 
 
 # ================================================
 # NATIVE SPLASH SCREEN CONFIGURATION
 # ================================================
-# Renkler AppColors (lib/core/theme/app_colors.dart) ile TEK TEK eşleşir:
-#   açık: AppColors.background  -> #F5EFE6
-#   koyu: AppColors.darkBackground (= dark modda AppColors.background) -> #1C140E
-# Böylece native splash'ten Flutter'ın ilk karesine geçiş renkte SIÇRAMA
-# yapmaz (önceki sürümde color_dark yanlışlıkla #241A13 idi — bu, koyu
-# temanın gerçek scaffold rengi değil, AppColors.primaryDark/backgroundDark
-# gibi FARKLI bir sabitti; buradan düzeltildi).
+# Native açılışta varsayılan siyah/altın logoyu gösterir.
 flutter_native_splash:
   # Android <12 / iOS: tam logo (marka adı dahil) — bu yüzeylerde
   # Android 12'nin aksine görsel boyutu/oranı serbest.
-  color: "#F5EFE6"
-  image: "assets/images/saglam_spot_logo_full.png"
-  color_dark: "#1C140E"
-  image_dark: "assets/images/saglam_spot_logo_full.png"
+  color: "#191512"
+  image: "assets/images/saglam_spot_logo_luxe.png"
+  color_dark: "#191512"
+  image_dark: "assets/images/saglam_spot_logo_luxe.png"
 
   android_gravity: center
   ios_content_mode: center
@@ -113,20 +109,11 @@ flutter_native_splash:
   # Tam ekran bayrağı (fullscreen: true) Android 15 cihazlarda çakışma hatası üretir.
   fullscreen: false
 
-  # Android 12+ (yeni SplashScreen API): arkaplan + ayrı bir "ikon" katmanı
-  # olarak render edilir ve ikonun yalnızca iç 2/3'lük "safe zone"u görünür
-  # kalır (kenarlar sistem tarafından maskelenir) — bu yüzden marka adı
-  # yazılı tam logo yerine KARE, şeffaf zeminli "mark" (ikon) kullanılıyor;
-  # aksi halde kelime/harfler dairesel maskeyle kırpılırdı. Marka adı/tagline
-  # bu yüzden maskenin DIŞINDaki "branding" katmanında (ekranın altı, sabit
-  # 800x320 boyut — paketin kendi kuralı) ayrıca gösteriliyor; böylece
-  # Android 12+'ta da yalnızca çıplak ikon değil, tam kurumsal künye görünür.
+  # Android 12+ sistem maskesi logoyu ortada gösterir.
   android_12:
-    image: "assets/images/saglam_spot_logo_mark.png"
-    color: "#F5EFE6"
-    icon_background_color: "#F5EFE6"
-    branding: "assets/images/saglam_spot_wordmark_800x320.png"
-    image_dark: "assets/images/saglam_spot_logo_mark.png"
-    color_dark: "#1C140E"
-    icon_background_color_dark: "#1C140E"
-    branding_dark: "assets/images/saglam_spot_wordmark_800x320_dark.png"
+    image: "assets/images/saglam_spot_logo_luxe.png"
+    color: "#191512"
+    icon_background_color: "#191512"
+    image_dark: "assets/images/saglam_spot_logo_luxe.png"
+    color_dark: "#191512"
+    icon_background_color_dark: "#191512"

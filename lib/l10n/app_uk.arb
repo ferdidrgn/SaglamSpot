@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Товари"
+  "adminSidebarProducts": "Товари",
+  "settingsThemePalette": "Колірна палітра",
+  "settingsThemePaletteAtelier": "Золотисте тепло",
+  "settingsThemePaletteLavender": "Лаванда",
+  "settingsThemePaletteMidnight": "Опівнічний синій",
+  "settingsAppLogo": "Іконка застосунку",
+  "settingsAppLogoLuxe": "Елегантний логотип",
+  "settingsAppLogoIllustrated": "Ілюстрований логотип",
+  "settingsAppLogoUpdated": "Іконку застосунку оновлено",
+  "settingsAppLogoError": "Не вдалося змінити іконку застосунку. Спробуйте ще раз."
 }

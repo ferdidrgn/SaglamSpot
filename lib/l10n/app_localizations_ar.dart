@@ -542,8 +542,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'لا يملك هذا الحساب صلاحيات المسؤول.';
+
   @override
-  String get authErrorEmailNotVerified => 'تحقق من بريد المسؤول الإلكتروني ثم سجّل الدخول مرة أخرى. تم إرسال رسالة التحقق.';
+  String get authErrorEmailNotVerified =>
+      'تحقق من بريد المسؤول الإلكتروني ثم سجّل الدخول مرة أخرى. تم إرسال رسالة التحقق.';
 
   @override
   String get authErrorInvalidEmail => 'عنوان بريد إلكتروني غير صالح.';
@@ -2515,7 +2517,8 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get adminBulkDeleteConfirmMessage => 'لا يمكن التراجع عن هذا الإجراء.';
+  String get adminBulkDeleteConfirmMessage =>
+      'ستتم أرشفة المنتجات ويمكن استعادتها عند الحاجة.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2524,9 +2527,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return 'تم حذف $count منتج.';
+    return 'تمت أرشفة $count منتج.';
   }
 
   @override
   String get adminSidebarProducts => 'المنتجات';
+
+  @override
+  String get settingsThemePalette => 'لوحة الألوان';
+
+  @override
+  String get settingsThemePaletteAtelier => 'دفء الذهبي';
+
+  @override
+  String get settingsThemePaletteLavender => 'لافندر';
+
+  @override
+  String get settingsThemePaletteMidnight => 'أزرق منتصف الليل';
+
+  @override
+  String get settingsAppLogo => 'أيقونة التطبيق';
+
+  @override
+  String get settingsAppLogoLuxe => 'الشعار الفاخر';
+
+  @override
+  String get settingsAppLogoIllustrated => 'الشعار المصوّر';
+
+  @override
+  String get settingsAppLogoUpdated => 'تم تحديث أيقونة التطبيق';
+
+  @override
+  String get settingsAppLogoError =>
+      'تعذّر تغيير أيقونة التطبيق. حاول مرة أخرى.';
 }

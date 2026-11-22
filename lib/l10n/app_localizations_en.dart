@@ -548,8 +548,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'This account does not have admin privileges.';
+
   @override
-  String get authErrorEmailNotVerified => 'Verify your admin email address and sign in again. A verification email was sent.';
+  String get authErrorEmailNotVerified =>
+      'Verify your admin email address and sign in again. A verification email was sent.';
 
   @override
   String get authErrorInvalidEmail => 'Invalid email address.';
@@ -2538,7 +2540,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get adminBulkDeleteConfirmMessage => 'This action cannot be undone.';
+  String get adminBulkDeleteConfirmMessage =>
+      'Products will be archived and can be restored if needed.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2547,9 +2550,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count products deleted.';
+    return '$count products archived.';
   }
 
   @override
   String get adminSidebarProducts => 'Products';
+
+  @override
+  String get settingsThemePalette => 'Color palette';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Golden hour';
+
+  @override
+  String get settingsThemePaletteLavender => 'Lavender';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Midnight blue';
+
+  @override
+  String get settingsAppLogo => 'App icon';
+
+  @override
+  String get settingsAppLogoLuxe => 'Luxe logo';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Illustrated logo';
+
+  @override
+  String get settingsAppLogoUpdated => 'App icon updated';
+
+  @override
+  String get settingsAppLogoError =>
+      'Could not change the app icon. Please try again.';
 }

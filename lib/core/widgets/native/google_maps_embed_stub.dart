@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common/extentions/app_context_ui_extension.dart';
+import '../../theme/app_colors.dart';
 
 /// Mobil (Android/iOS) derlemesinde gömülü `<iframe>` yok — bunun yerine
 /// tıklanınca gerçek Google Haritalar uygulamasını/sayfasını açan, aynı
@@ -20,7 +21,8 @@ class GoogleMapsEmbed extends StatelessWidget {
   final double borderRadius;
 
   Future<void> _open() async {
-    final uri = Uri.parse('https://www.google.com/maps?q=$latitude,$longitude&z=$zoom');
+    final uri =
+        Uri.parse('https://www.google.com/maps?q=$latitude,$longitude&z=$zoom');
     try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (_) {
@@ -32,17 +34,20 @@ class GoogleMapsEmbed extends StatelessWidget {
   Widget build(final BuildContext context) => ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: Material(
-          color: const Color(0xFFEDE3D3),
+          color: AppColors.secondary,
           child: InkWell(
             onTap: _open,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.map_rounded, size: 40, color: Color(0xFF8B5A3A)),
+                  Icon(Icons.map_rounded,
+                      size: 40, color: AppColors.accentDark),
                   const SizedBox(height: 10),
                   Text(context.l10n.openInMapsButton,
-                      style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF3E2F23))),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary)),
                 ],
               ),
             ),

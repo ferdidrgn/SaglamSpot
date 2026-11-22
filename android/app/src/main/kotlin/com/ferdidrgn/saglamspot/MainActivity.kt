@@ -3,10 +3,44 @@ package com.ferdidrgn.saglamspot
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.content.ComponentName
+import android.content.pm.PackageManager
 import androidx.core.view.WindowCompat
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.saglamspot/app_icon")
+            .setMethodCallHandler { call, result ->
+                if (call.method != "setAppLogo") {
+                    result.notImplemented()
+                    return@setMethodCallHandler
+                }
+
+                val useIllustrated = call.arguments == "illustrated"
+                val selected = if (useIllustrated) ".LauncherIllustrated" else ".LauncherLuxe"
+                val other = if (useIllustrated) ".LauncherLuxe" else ".LauncherIllustrated"
+                try {
+                    packageManager.setComponentEnabledSetting(
+                        ComponentName(packageName, packageName + selected),
+                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                        PackageManager.DONT_KILL_APP,
+                    )
+                    packageManager.setComponentEnabledSetting(
+                        ComponentName(packageName, packageName + other),
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                        PackageManager.DONT_KILL_APP,
+                    )
+                    result.success(null)
+                } catch (error: Exception) {
+                    result.error("APP_ICON_UPDATE_FAILED", error.localizedMessage, null)
+                }
+            }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Native katmanda tam ekran geçiş pencerelerini temizle
         WindowCompat.setDecorFitsSystemWindows(window, false)

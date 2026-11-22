@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "المنتجات"
+  "adminSidebarProducts": "المنتجات",
+  "settingsThemePalette": "لوحة الألوان",
+  "settingsThemePaletteAtelier": "دفء الذهبي",
+  "settingsThemePaletteLavender": "لافندر",
+  "settingsThemePaletteMidnight": "أزرق منتصف الليل",
+  "settingsAppLogo": "أيقونة التطبيق",
+  "settingsAppLogoLuxe": "الشعار الفاخر",
+  "settingsAppLogoIllustrated": "الشعار المصوّر",
+  "settingsAppLogoUpdated": "تم تحديث أيقونة التطبيق",
+  "settingsAppLogoError": "تعذّر تغيير أيقونة التطبيق. حاول مرة أخرى."
 }

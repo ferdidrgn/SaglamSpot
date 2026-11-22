@@ -555,8 +555,10 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get authErrorNotAdmin =>
       'Αυτός ο λογαριασμός δεν έχει δικαιώματα διαχειριστή.';
+
   @override
-  String get authErrorEmailNotVerified => 'Επαληθεύστε το email διαχειριστή και συνδεθείτε ξανά. Στάλθηκε email επαλήθευσης.';
+  String get authErrorEmailNotVerified =>
+      'Επαληθεύστε το email διαχειριστή και συνδεθείτε ξανά. Στάλθηκε email επαλήθευσης.';
 
   @override
   String get authErrorInvalidEmail => 'Μη έγκυρη διεύθυνση email.';
@@ -2564,7 +2566,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get adminBulkDeleteConfirmMessage =>
-      'Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.';
+      'Τα προϊόντα θα αρχειοθετηθούν και μπορούν να αποκατασταθούν αν χρειαστεί.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2573,9 +2575,37 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count προϊόντα διαγράφηκαν.';
+    return 'Αρχειοθετήθηκαν $count προϊόντα.';
   }
 
   @override
   String get adminSidebarProducts => 'Προϊόντα';
+
+  @override
+  String get settingsThemePalette => 'Παλέτα χρωμάτων';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Χρυσαφένια ζεστασιά';
+
+  @override
+  String get settingsThemePaletteLavender => 'Λεβάντα';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Μεσάνυχτα';
+
+  @override
+  String get settingsAppLogo => 'Εικονίδιο εφαρμογής';
+
+  @override
+  String get settingsAppLogoLuxe => 'Κομψό λογότυπο';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Εικονογραφημένο λογότυπο';
+
+  @override
+  String get settingsAppLogoUpdated => 'Το εικονίδιο ενημερώθηκε';
+
+  @override
+  String get settingsAppLogoError =>
+      'Δεν ήταν δυνατή η αλλαγή του εικονιδίου. Δοκιμάστε ξανά.';
 }

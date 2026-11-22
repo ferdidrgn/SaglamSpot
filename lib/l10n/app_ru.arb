@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Товары"
+  "adminSidebarProducts": "Товары",
+  "settingsThemePalette": "Цветовая палитра",
+  "settingsThemePaletteAtelier": "Золотое тепло",
+  "settingsThemePaletteLavender": "Лаванда",
+  "settingsThemePaletteMidnight": "Полуночный синий",
+  "settingsAppLogo": "Значок приложения",
+  "settingsAppLogoLuxe": "Элегантный логотип",
+  "settingsAppLogoIllustrated": "Иллюстрированный логотип",
+  "settingsAppLogoUpdated": "Значок приложения обновлён",
+  "settingsAppLogoError": "Не удалось изменить значок приложения. Попробуйте ещё раз."
 }

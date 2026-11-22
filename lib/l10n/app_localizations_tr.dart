@@ -544,8 +544,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get authErrorNotAdmin => 'Bu hesabın yönetici yetkisi bulunmuyor.';
+
   @override
-  String get authErrorEmailNotVerified => 'Admin e-posta adresinizi doğrulayıp tekrar giriş yapın. Doğrulama e-postası gönderildi.';
+  String get authErrorEmailNotVerified =>
+      'Admin e-posta adresinizi doğrulayıp tekrar giriş yapın. Doğrulama e-postası gönderildi.';
 
   @override
   String get authErrorInvalidEmail => 'Geçersiz e-posta adresi.';
@@ -2537,7 +2539,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get adminBulkDeleteConfirmMessage => 'Bu işlem geri alınamaz.';
+  String get adminBulkDeleteConfirmMessage =>
+      'Ürün arşivlenecek; gerektiğinde geri yüklenebilir.';
 
   @override
   String adminBulkMarkSoldSuccess(int count) {
@@ -2546,9 +2549,37 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminBulkDeleteSuccess(int count) {
-    return '$count ürün silindi.';
+    return '$count ürün arşivlendi.';
   }
 
   @override
   String get adminSidebarProducts => 'Ürünler';
+
+  @override
+  String get settingsThemePalette => 'Renk paleti';
+
+  @override
+  String get settingsThemePaletteAtelier => 'Altın sıcaklığı';
+
+  @override
+  String get settingsThemePaletteLavender => 'Lavanta';
+
+  @override
+  String get settingsThemePaletteMidnight => 'Gece mavisi';
+
+  @override
+  String get settingsAppLogo => 'Uygulama simgesi';
+
+  @override
+  String get settingsAppLogoLuxe => 'Siyah logo';
+
+  @override
+  String get settingsAppLogoIllustrated => 'Çizimli logo';
+
+  @override
+  String get settingsAppLogoUpdated => 'Uygulama simgesi güncellendi';
+
+  @override
+  String get settingsAppLogoError =>
+      'Uygulama simgesi değiştirilemedi. Yeniden deneyin.';
 }

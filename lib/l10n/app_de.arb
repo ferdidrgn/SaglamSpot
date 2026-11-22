@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Produkte"
+  "adminSidebarProducts": "Produkte",
+  "settingsThemePalette": "Farbpalette",
+  "settingsThemePaletteAtelier": "Goldener Schein",
+  "settingsThemePaletteLavender": "Lavendel",
+  "settingsThemePaletteMidnight": "Mitternacht",
+  "settingsAppLogo": "App-Symbol",
+  "settingsAppLogoLuxe": "Elegantes Logo",
+  "settingsAppLogoIllustrated": "Illustriertes Logo",
+  "settingsAppLogoUpdated": "App-Symbol aktualisiert",
+  "settingsAppLogoError": "Das App-Symbol konnte nicht geändert werden. Bitte versuche es erneut."
 }

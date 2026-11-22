@@ -997,5 +997,14 @@
       }
     }
   },
-  "adminSidebarProducts": "Mahsulotlar"
+  "adminSidebarProducts": "Mahsulotlar",
+  "settingsThemePalette": "Ranglar palitrasi",
+  "settingsThemePaletteAtelier": "Oltin iliqlik",
+  "settingsThemePaletteLavender": "Lavanda",
+  "settingsThemePaletteMidnight": "Tungi ko‘k",
+  "settingsAppLogo": "Ilova belgisi",
+  "settingsAppLogoLuxe": "Nafis logotip",
+  "settingsAppLogoIllustrated": "Rasmli logotip",
+  "settingsAppLogoUpdated": "Ilova belgisi yangilandi",
+  "settingsAppLogoError": "Ilova belgisini almashtirish imkoni bolmadi. Qayta urinib koring."
 }
