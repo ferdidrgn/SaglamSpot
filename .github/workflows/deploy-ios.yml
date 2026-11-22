@@ -34,7 +34,7 @@ jobs:
       - name: Flutter SDK kur
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: "3.44.0"
           cache: true
 
       - name: Bağımlılıkları al
