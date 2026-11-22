@@ -99,16 +99,37 @@ button:focus-visible {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  flex-shrink: 0;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 1.375rem;
+  font-size: clamp(1.2rem, 1.45vw, 1.55rem);
   letter-spacing: 0.01em;
   color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: block;
+  width: clamp(2.5rem, 3.1vw, 2.875rem);
+  height: clamp(2.5rem, 3.1vw, 2.875rem);
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
 }
 
 .brand:hover {
   text-decoration: none;
   color: var(--color-accent);
+}
+
+.brand:hover .brand-mark {
+  border-color: var(--color-accent);
 }
 
 .site-nav-group {
@@ -118,8 +139,8 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
-/* Mobil menü düğmesi — masaüstünde hiç görünmez (nav zaten sığıyor),
-   sadece ≤760px'teki dropdown panel için (bkz. aşağıdaki media query
+/* Dar başlık menü düğmesi — geniş ekranda nav yerinde kalır,
+   ≤1100px'te dropdown paneli açar (bkz. aşağıdaki media query
    ve layout.js'teki ICON_MENU notu). */
 .nav-toggle {
   display: none;
@@ -142,26 +163,162 @@ button:focus-visible {
   align-items: center;
 }
 
-/* Dil seçici artık bir ikon + <select> çifti (bkz. layout.js'teki
-   ICON_GLOBE notu) — küre ikonu dil değiştirmenin bir seçenek olduğunu
-   ilk bakışta belli eder, önceden çıplak "Türkçe" yazısı bunu hiç
-   anlatmıyordu. */
-.lang-switcher-wrap {
+.lang-switcher {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: var(--color-text-tertiary);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-xxs) var(--space-sm);
-  transition: border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+  flex: 0 0 auto;
 }
 
-.lang-switcher-wrap:hover,
-.lang-switcher-wrap:focus-within {
+.lang-switcher-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 46px;
+  min-width: 150px;
+  padding: 0.55rem 0.85rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-standard), background-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.lang-switcher-trigger:hover,
+.lang-switcher-trigger[aria-expanded="true"] {
   border-color: var(--color-accent);
   color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 5%, var(--color-surface));
+}
+
+.lang-switcher-trigger[aria-expanded="true"] {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.lang-trigger-globe,
+.lang-trigger-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.lang-trigger-globe svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.lang-flag {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.lang-trigger-name {
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lang-trigger-chevron {
+  flex: 0 0 auto;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.lang-switcher-trigger[aria-expanded="true"] .lang-trigger-chevron {
+  transform: rotate(180deg);
+}
+
+.lang-menu {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + 0.55rem);
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: min(18rem, calc(100vw - 2rem));
+  max-height: min(70vh, 32rem);
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: 0 18px 42px -24px color-mix(in srgb, var(--color-primary-dark) 55%, transparent);
+}
+
+.lang-menu[hidden] {
+  display: none;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 46px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+
+.lang-option:hover,
+.lang-option:focus-visible {
+  border-color: var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-accent-dark);
+  outline-offset: 1px;
+}
+
+.lang-option.is-selected {
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
+  color: var(--color-accent-dark);
+}
+
+.lang-option-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.lang-option .lang-flag {
+  width: 1.55rem;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.lang-option-name {
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lang-option-code {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 #lang-switcher {
@@ -206,12 +363,12 @@ button:focus-visible {
 /* --- mobil başlık: 8 nav bağlantısı + dil seçici artık satır satır
    SARMIYOR (eskiden sarıp başlığı ekranın ~%30'unu kaplayan, içeriğe
    inmeden kaydırma gerektiren bir bloğa dönüştürüyordu — gerçek
-   kullanıcı geri bildirimiyle yakalandı). ≤760px'te nav/dil seçici bir
+   kullanıcı geri bildirimiyle yakalandı). ≤1100px'te nav/dil seçici bir
    dropdown panele taşınıyor, .nav-toggle düğmesiyle açılıp kapanıyor
    (bkz. main.js wireNavToggle()). .site-header zaten position:sticky —
    bu da pozisyonlanmış bir öğe sayıldığından panelin position:absolute
    referansı için ayrıca position:relative eklemeye gerek yok. */
-@media (max-width: 760px) {
+@media (max-width: 1100px) {
   .site-header {
     flex-wrap: nowrap;
   }
@@ -254,23 +411,28 @@ button:focus-visible {
     font-size: 1rem;
   }
 
-  .lang-switcher-wrap {
+  .lang-switcher {
     margin-top: var(--space-md);
     align-self: flex-start;
+  }
+
+  .lang-switcher-trigger {
+    min-height: 48px;
+    min-width: 168px;
   }
 }
 
 #content {
+  width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  padding: var(--space-section) var(--space-screen);
+  padding: var(--space-section) clamp(var(--space-screen), 2vw, var(--space-xxxl));
   min-height: 50vh;
 }
 
-/* Geniş ekranlarda (dizüstü/masaüstü monitör) 960px sabit genişlik yanlarda
-   kocaman boş şerit bırakıyordu — konteyner genişliği ekran genişliğine
-   göre kademeli olarak büyür, metin bloklarının kendi max-width'leri
-   (ör. .gateway-sub, .rooms-text p) okunurluğu zaten ayrı koruyor. */
+/* Geniş masaüstlerinde ana sayfanın hero/kategori şeritleri dar bir kolona
+   sıkışıp iki yanda büyük boşluk bırakmasın. Metin bloklarının kendi
+   max-width'leri okunurluğu korurken ana içerik ekranla birlikte genişler. */
 @media (min-width: 1100px) {
   #content {
     max-width: 1180px;
@@ -279,13 +441,19 @@ button:focus-visible {
 
 @media (min-width: 1440px) {
   #content {
-    max-width: 1360px;
+    max-width: min(94vw, 1600px);
   }
 }
 
 @media (min-width: 1800px) {
   #content {
-    max-width: 1560px;
+    max-width: min(92vw, 1920px);
+  }
+}
+
+@media (min-width: 2400px) {
+  #content {
+    max-width: min(90vw, 2160px);
   }
 }
 

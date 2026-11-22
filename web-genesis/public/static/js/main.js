@@ -925,7 +925,61 @@
 
   function wireLanguageSwitcher() {
     const select = document.getElementById("lang-switcher");
-    if (!select) return;
+    const trigger = document.getElementById("lang-switcher-trigger");
+    const menu = document.getElementById("lang-switcher-menu");
+    if (!select || !trigger || !menu) return;
+
+    const options = Array.from(menu.querySelectorAll("[data-lang-option]"));
+    const closeMenu = (restoreFocus = false) => {
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      if (restoreFocus) trigger.focus();
+    };
+    const openMenu = () => {
+      menu.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      const selected = options.find((option) => option.dataset.langOption === select.value);
+      (selected || options[0])?.focus();
+    };
+
+    trigger.addEventListener("click", () => {
+      if (menu.hidden) openMenu();
+      else closeMenu();
+    });
+
+    menu.addEventListener("click", (event) => {
+      const option = event.target.closest("[data-lang-option]");
+      if (!option) return;
+      const nextLocale = option.dataset.langOption;
+      closeMenu();
+      if (select.value === nextLocale) return;
+      select.value = nextLocale;
+      select.dispatchEvent(new Event("change", {bubbles: true}));
+    });
+
+    menu.addEventListener("keydown", (event) => {
+      const currentIndex = options.indexOf(document.activeElement);
+      let nextIndex = currentIndex;
+      if (event.key === "ArrowDown") nextIndex = (currentIndex + 1) % options.length;
+      else if (event.key === "ArrowUp") nextIndex = (currentIndex - 1 + options.length) % options.length;
+      else if (event.key === "Home") nextIndex = 0;
+      else if (event.key === "End") nextIndex = options.length - 1;
+      else if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu(true);
+        return;
+      } else {
+        return;
+      }
+      event.preventDefault();
+      options[nextIndex]?.focus();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (menu.hidden || trigger.contains(event.target) || menu.contains(event.target)) return;
+      closeMenu();
+    });
+
     select.addEventListener("change", () => {
       // Firebase Hosting çerezi fonksiyona iletmediği için seçim sunucu
       // tarafında kalıcı olamıyor — localStorage'a da yazıyoruz ki

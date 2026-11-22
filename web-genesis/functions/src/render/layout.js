@@ -60,15 +60,25 @@ function versionedAsset(relativePath) {
 // eklemeden footer sosyal bağlantıları için. Yalnızca çizgi/şekil, metin yok.
 const ICON_WHATSAPP = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm5.8 14.17c-.24.68-1.4 1.3-1.93 1.37-.49.07-1.1.1-1.78-.11-.41-.13-.94-.3-1.62-.6-2.84-1.23-4.7-4.1-4.84-4.29-.14-.19-1.15-1.53-1.15-2.92s.72-2.07.98-2.35c.24-.26.52-.33.7-.33h.5c.16 0 .37-.02.58.44.24.56.8 1.93.87 2.07.07.14.12.3.02.49-.1.19-.15.3-.3.47-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.28.74 1.22 1.6 1.97 1.1.98 2.03 1.28 2.31 1.43.28.14.44.12.6-.07.17-.19.72-.84.91-1.13.19-.28.38-.23.63-.14.26.1 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.36z\"/></svg>";
 const ICON_FACEBOOK = "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M14 21v-7h2.4l.4-3H14V9.2c0-.9.25-1.5 1.6-1.5H17V5.1C16.7 5 15.8 5 14.8 5c-2.2 0-3.7 1.3-3.7 3.9V11H8.7v3H11v7h3z\"/></svg>";
-// Dil seçicinin yanındaki küp — ÖNCEDEN çıplak bir <select> + "Türkçe"
-// metniydi, dil değiştirmenin bir seçenek olduğu hiç belli değildi
-// (kullanıcı geri bildirimi). Diğer ikonlarla AYNI tek-renk çizgi dili:
-// meridyen çizgili klasik "dünya/küre" glifi.
+// Dil menüsündeki küre işareti — özel açılır menüde seçiciyi belirginleştirir.
 const ICON_GLOBE = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z\"/></svg>";
+const LOCALE_FLAGS = {
+  tr: "🇹🇷",
+  en: "🇬🇧",
+  ar: "🇸🇦",
+  de: "🇩🇪",
+  el: "🇬🇷",
+  it: "🇮🇹",
+  ky: "🇰🇬",
+  ru: "🇷🇺",
+  uk: "🇺🇦",
+  uz: "🇺🇿",
+  zh: "🇨🇳",
+};
 // Mobilde menü aç/kapa düğmesi — önceden mobilde nav HİÇ daralmıyordu,
 // 8 bağlantı + dil seçici kendi genişliklerine göre satır satır
 // sarıyordu (kullanıcı geri bildirimi: "en üst kısım çok alan kaplıyor,
-// sayfanın %30'u kaplanarak scroll oluyor"). Artık ≤760px'te nav/dil
+// sayfanın %30'u kaplanarak scroll oluyor"). Artık ≤1100px'te nav/dil
 // seçici bu düğmeyle açılan bir dropdown panele taşınıyor (bkz. base.css
 // .nav-toggle/.site-nav-group notu, main.js wireNavToggle()).
 const ICON_MENU = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 7h16M4 12h16M4 17h16\"/></svg>";
@@ -159,6 +169,8 @@ function renderLayout({
 
   const langOptionsHtml = SUPPORTED_LOCALES.map((loc) =>
     `<option value="${loc}" ${loc === locale ? "selected" : ""}>${escapeHtml(NATIVE_NAMES[loc])}</option>`).join("");
+  const langMenuOptionsHtml = SUPPORTED_LOCALES.map((loc) =>
+    `<button class="lang-option${loc === locale ? " is-selected" : ""}" type="button" role="menuitemradio" aria-checked="${loc === locale}" data-lang-option="${loc}" lang="${loc}" dir="${isRtl(loc) ? "rtl" : "ltr"}"><span class="lang-option-main"><span class="lang-flag" aria-hidden="true">${LOCALE_FLAGS[loc]}</span><span class="lang-option-name">${escapeHtml(NATIVE_NAMES[loc])}</span></span><span class="lang-option-code" aria-hidden="true">${loc.toUpperCase()}</span></button>`).join("");
 
   // JSON.stringify "</script" dizisini kaçırmaz — ürün adı/açıklaması
   // (jsonLd.name/description, admin tarafından girilir) böyle bir alt dize
@@ -287,7 +299,7 @@ if (window.caches && caches.keys) {
 <meta name="robots" content="${escapeHtml(robots)}">
 ${canonicalUrl ? `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">` : ""}
 <link rel="manifest" href="/manifest.json">
-<link rel="icon" type="image/png" href="${versionedAsset("icons/Icon-192.png")}">
+<link rel="icon" type="image/png" href="${versionedAsset("icons/brand-favicon.png")}">
 <link rel="apple-touch-icon" href="${versionedAsset("icons/Icon-192.png")}">
 <meta property="og:site_name" content="${escapeHtml(siteName)}">
 <meta property="og:title" content="${escapeHtml(fullTitle)}">
@@ -314,15 +326,21 @@ ${jsonLdHtml}
      klavye/ekran okuyucu kullanıcılarına görünen bir yardımcı bağlantı. -->
 <a class="skip-link" href="#content">İçeriğe geç</a>
 <header class="site-header">
-  <a class="brand" href="/">${escapeHtml(siteName)}</a>
+  <a class="brand" href="/"><img class="brand-mark" src="${versionedAsset("icons/brand-favicon.png")}" alt="" width="40" height="40" decoding="async"><span>${escapeHtml(siteName)}</span></a>
   <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav-panel" aria-label="Menü">${ICON_MENU}</button>
   <div class="site-nav-group" id="site-nav-panel" data-nav-panel>
     <nav class="site-nav" aria-label="${escapeHtml(t(locale, "home"))}">
       ${navHtml}
     </nav>
-    <div class="lang-switcher-wrap">
-      ${ICON_GLOBE}
-      <select id="lang-switcher" data-lang-switcher aria-label="${escapeHtml(t(locale, "languageTooltip"))}">${langOptionsHtml}</select>
+    <div class="lang-switcher">
+      <select id="lang-switcher" data-lang-switcher aria-hidden="true" tabindex="-1" hidden>${langOptionsHtml}</select>
+      <button type="button" class="lang-switcher-trigger" id="lang-switcher-trigger" aria-label="${escapeHtml(t(locale, "languageTooltip"))}" aria-haspopup="menu" aria-expanded="false" aria-controls="lang-switcher-menu">
+        <span class="lang-trigger-globe">${ICON_GLOBE}</span>
+        <span class="lang-flag lang-trigger-flag" aria-hidden="true">${LOCALE_FLAGS[locale]}</span>
+        <span class="lang-trigger-name" data-lang-current-name lang="${locale}" dir="${dir}">${escapeHtml(NATIVE_NAMES[locale])}</span>
+        <svg class="lang-trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="lang-menu" id="lang-switcher-menu" role="menu" aria-label="${escapeHtml(t(locale, "languageTooltip"))}" hidden>${langMenuOptionsHtml}</div>
     </div>
   </div>
 </header>
