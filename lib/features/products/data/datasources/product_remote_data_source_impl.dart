@@ -285,7 +285,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       if (imageBytes == 0 || imageBytes > maxImageBytes) {
         throw Exception('Görsel 10 MB sınırını aşamaz');
       }
-      const metadata = SettableMetadata(contentType: 'image/jpeg');
+      final metadata = SettableMetadata(contentType: 'image/jpeg');
 
       if (image is File)
         await ref.putFile(image, metadata);

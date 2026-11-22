@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,6 +36,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   ProductWearTier? _selectedWearTier;
 
   final List<XFile> _images = [];
+  final Map<XFile, Future<Uint8List>> _imagePreviewBytes = {};
   bool _isSecondHand = false;
 
   // İlk fotoğraf SEÇİLİR SEÇİLMEZ (kaydet'e basmadan çok önce) arka planda
@@ -320,19 +322,35 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         separatorBuilder: (final _, final __) => const SizedBox(width: 10),
         itemBuilder: (final _, final i) {
           if (i < _images.length) {
-            return PhotoThumbnail(
-              image: FileImage(File(_images[i].path)),
-              onDelete: () => setState(() {
-                _images.removeAt(i);
-                // İlk fotoğraf silindiyse, ona dayanan stüdyo önizlemesi
-                // artık geçersiz — temizle (yeniden üretmiyoruz, admin
-                // isterse kalan fotoğraflarla devam eder).
-                if (i == 0) {
-                  _studioImageUrl = null;
-                  _studioFuture = null;
-                  _studioFailed = false;
+            final image = _images[i];
+            return FutureBuilder<Uint8List>(
+              future: _imagePreviewBytes.putIfAbsent(image, image.readAsBytes),
+              builder: (final context, final snapshot) {
+                if (!snapshot.hasData) {
+                  return const SizedBox(
+                    width: 96,
+                    height: 96,
+                    child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  );
                 }
-              }),
+                return PhotoThumbnail(
+                  image: MemoryImage(snapshot.data!),
+                  onDelete: () => setState(() {
+                    _images.removeAt(i);
+                    _imagePreviewBytes.remove(image);
+                    // İlk fotoğraf silindiyse, ona dayanan stüdyo önizlemesi
+                    // artık geçersiz — temizle (yeniden üretmiyoruz, admin
+                    // isterse kalan fotoğraflarla devam eder).
+                    if (i == 0) {
+                      _studioImageUrl = null;
+                      _studioFuture = null;
+                      _studioFailed = false;
+                    }
+                  }),
+                );
+              },
             );
           }
           if (showStudioTile && i == _images.length) {
@@ -357,7 +375,12 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     final images = await ImagePicker().pickMultiImage();
     if (images.isEmpty) return;
     final wasEmpty = _images.isEmpty;
-    setState(() => _images.addAll(images));
+    setState(() {
+      _images.addAll(images);
+      for (final image in images) {
+        _imagePreviewBytes[image] = image.readAsBytes();
+      }
+    });
     // Stüdyo önizlemesi sadece İLK kez fotoğraf eklendiğinde (ya da ilk
     // fotoğraf daha önce silinip yeniden eklendiğinde) tetiklenir — aylık
     // kotayı korumak için her zaman yalnızca "kapak" fotoğrafı işlenir.
