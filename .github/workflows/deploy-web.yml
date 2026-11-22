@@ -14,6 +14,7 @@ on:
       - "firebase.json"
       - ".firebaserc"
       - "lib/l10n/**"
+      - "pubspec.yaml"
       - ".github/workflows/deploy-web.yml"
 
 concurrency:
